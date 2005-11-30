@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 17:10:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 14:10:43 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,10 +211,10 @@ int main(int argc, char *argv[])
       {
         opt_iDataset = OFTrue;
 
-        // we don't know the real transfer syntax of the dataset, but this does 
-        // not matter. As long as the content of encapsulated pixel sequences is 
-        // some kind of JPEG bitstream supported by the underlying library, the 
-        // decompression will work. So we simply choose one of the lossless 
+        // we don't know the real transfer syntax of the dataset, but this does
+        // not matter. As long as the content of encapsulated pixel sequences is
+        // some kind of JPEG bitstream supported by the underlying library, the
+        // decompression will work. So we simply choose one of the lossless
         // transfer syntaxes, because these support all bit depths up to 16.
         opt_ixfer = EXS_JPEGProcess14TransferSyntax;
       }
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
     }
-    
+
     DcmDataset *dataset = fileformat.getDataset();
 
     if (opt_verbose)
@@ -326,6 +326,8 @@ int main(int argc, char *argv[])
         CERR << "Error: "
              << error.text()
              << ": decompressing file: " <<  opt_ifname << endl;
+       if (error == EJ_UnsupportedColorConversion)
+           CERR << "Try --conv-never to disable color space conversion" << endl;
         return 1;
     }
 
@@ -363,7 +365,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.10  2005-11-07 17:10:21  meichel
+ * Revision 1.11  2005-11-30 14:10:43  onken
+ * Added hint concerning --convert-never option when color conversion fails
+ *
+ * Revision 1.10  2005/11/07 17:10:21  meichel
  * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
  *   to make sure they do not destroy a file when output = input.
  *
