@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-22 13:55:50 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2005-11-30 12:51:45 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dctk.h"
 #include "dcpxitem.h"    /* for class DcmPixelItem */
 #include "cmdlnarg.h"
+#include "dcdebug.h"
 #include "ofstd.h"
 #include "ofconapp.h"
 
@@ -876,7 +877,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.12  2005-03-22 13:55:50  joergr
+ * Revision 1.13  2005-11-30 12:51:45  joergr
+ * Added missing header file "dcdebug.h".
+ *
+ * Revision 1.12  2005/03/22 13:55:50  joergr
  * Added call of macro LIBXML_TEST_VERSION.
  *
  * Revision 1.11  2004/11/29 17:04:08  joergr
