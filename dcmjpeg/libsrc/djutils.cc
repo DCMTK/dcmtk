@@ -21,10 +21,10 @@
  *
  *  Purpose: (STATUS: OK)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:40:01 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 14:13:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,13 +44,14 @@ const OFConditionConst EJC_IJG8_FrameBufferTooSmall(             OFM_dcmjpeg,  2
 const OFConditionConst EJC_IJG12_FrameBufferTooSmall(            OFM_dcmjpeg,  3, OF_error, "Buffer for decompressed image (12 bits/sample) too small"  );
 const OFConditionConst EJC_IJG16_FrameBufferTooSmall(            OFM_dcmjpeg,  4, OF_error, "Buffer for decompressed image (16 bits/sample) too small"  );
 const OFConditionConst EJC_UnsupportedPhotometricInterpretation( OFM_dcmjpeg,  5, OF_error, "Codec does not support this PhotometricInterpretation"  );
+const OFConditionConst EJC_UnsupportedColorConversion(           OFM_dcmjpeg,  6, OF_error, "Codec does not support this kind of color conversion"  );
 
 const OFCondition      EJ_Suspension(                           EJC_Suspension);
 const OFCondition      EJ_IJG8_FrameBufferTooSmall(             EJC_IJG8_FrameBufferTooSmall);
 const OFCondition      EJ_IJG12_FrameBufferTooSmall(            EJC_IJG12_FrameBufferTooSmall);
 const OFCondition      EJ_IJG16_FrameBufferTooSmall(            EJC_IJG16_FrameBufferTooSmall);
 const OFCondition      EJ_UnsupportedPhotometricInterpretation( EJC_UnsupportedPhotometricInterpretation);
-
+const OFCondition      EJ_UnsupportedColorConversion(           EJC_UnsupportedColorConversion);
 EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 {
   if (item)
@@ -69,7 +70,7 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
       }
       cp[i] = 0; // write terminating zero
       photometric = cp; // copy back into OFString
-      
+
       // now browse PhotometricInterpretationNames
       i = 0;
       while (PhotometricInterpretationNames[i].Name)
@@ -79,14 +80,17 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
       }
     }
   }
-  return EPI_Unknown;  
+  return EPI_Unknown;
 }
 
 
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
- * Revision 1.2  2002-11-27 15:40:01  meichel
+ * Revision 1.3  2005-11-30 14:13:14  onken
+ * Added OFCondition constant for "unsupported color space conversions"
+ *
+ * Revision 1.2  2002/11/27 15:40:01  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.1  2001/11/13 15:58:35  meichel

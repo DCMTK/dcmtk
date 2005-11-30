@@ -21,10 +21,10 @@
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:30 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 14:13:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,10 +44,10 @@ class DcmItem;
  */
 enum EJ_Mode
 {
-  /// JPEG baseline 
+  /// JPEG baseline
   EJM_baseline,
 
-  /// JPEG extended sequential 
+  /// JPEG extended sequential
   EJM_sequential,
 
   /// JPEG spectral selection
@@ -66,14 +66,14 @@ enum EJ_Mode
 enum E_SubSampling
 {
   /// 4:4:4 sampling (no subsampling)
-  ESS_444, 
+  ESS_444,
   /// 4:2:2 sampling (horizontal subsampling of chroma components
   ESS_422,
   /// 4:1:1 sampling (horizontal and vertical subsampling of chroma components)
   ESS_411
 };
 
-/** describes the condition under which a compressed or decompressed image 
+/** describes the condition under which a compressed or decompressed image
  *  receives a new SOP instance UID.
  */
 enum E_UIDCreation
@@ -99,10 +99,10 @@ enum E_PlanarConfiguration
    *  the SOP Class UID and decompressed photometric interpretation
    */
   EPC_default,
-   
+
   /// always create color-by-pixel planar configuration
   EPC_colorByPixel,
-  
+
   /// always create color-by-plane planar configuration
   EPC_colorByPlane
 };
@@ -118,12 +118,12 @@ enum E_CompressionColorSpaceConversion
    *  image is YCbCr in which case no color conversion is performed.
    */
   ECC_lossyYCbCr,
-  
+
   /** encode color images in RGB unless the source
    *  image is YCbCr in which case no color conversion is performed.
    */
   ECC_lossyRGB,
-  
+
   /** convert color images to monochrom before compressing
    */
   ECC_monochrome
@@ -144,7 +144,7 @@ enum E_DecompressionColorSpaceConversion
    *  RGB if JPEG data is color image and compression is lossy.
    */
   EDC_lossyOnly,
-  
+
   /** always perform color space conversion from YCbCr to
    *  RGB if JPEG data is color image.
    */
@@ -152,7 +152,7 @@ enum E_DecompressionColorSpaceConversion
 
   /** never perform any color space conversion.
    */
-  EDC_never  
+  EDC_never
 };
 
 
@@ -168,6 +168,8 @@ extern const OFCondition EJ_IJG12_FrameBufferTooSmall;
 extern const OFCondition EJ_IJG16_FrameBufferTooSmall;
 /// Codec does not support this PhotometricInterpretation
 extern const OFCondition EJ_UnsupportedPhotometricInterpretation;
+/// Codec does not support this kind of color conversion
+extern const OFCondition EJ_UnsupportedColorConversion;
 
 // reserved condition codes for IJG error messages
 const unsigned short EJCode_IJG8_Compression    = 0x0100;
@@ -197,7 +199,10 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djutils.h,v $
- * Revision 1.1  2001-11-13 15:56:30  meichel
+ * Revision 1.2  2005-11-30 14:13:13  onken
+ * Added OFCondition constant for "unsupported color space conversions"
+ *
+ * Revision 1.1  2001/11/13 15:56:30  meichel
  * Initial release of module dcmjpeg
  *
  *
