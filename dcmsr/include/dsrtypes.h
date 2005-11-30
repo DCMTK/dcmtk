@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-29 17:11:01 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2005-11-30 12:00:24 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -340,8 +340,10 @@ class DSRTypes
         DT_ChestCadSR,
         /// DICOM SOP Class: Procedure Log
         DT_ProcedureLog,
+        /// DICOM SOP Class: X-Ray Radiation Dose SR
+        DT_XRayRadiationDoseSR,
         /// internal type used to mark the last entry
-        DT_last = DT_ProcedureLog
+        DT_last = DT_XRayRadiationDoseSR
     };
 
     /** SR relationship types
@@ -1215,7 +1217,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.44  2004-11-29 17:11:01  joergr
+ *  Revision 1.45  2005-11-30 12:00:24  joergr
+ *  Added support for X-Ray Radiation Dose SR documents.
+ *
+ *  Revision 1.44  2004/11/29 17:11:01  joergr
  *  Added warning message when character set is unknown, unsupported  or cannot
  *  be mapped to the output format. Fixed minor formatting issues.
  *

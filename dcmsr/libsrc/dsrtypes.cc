@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-29 17:11:37 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2005-11-30 12:01:15 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@
 #include "dsrmamcc.h"
 #include "dsrchecc.h"
 #include "dsrprocc.h"
+#include "dsrxrdcc.h"
 
 #include "ofstd.h"
 
@@ -249,14 +250,15 @@ const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStr
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,          "",                              "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,      UID_BasicTextSR,                 "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,       UID_EnhancedSR,                  "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR,  UID_ComprehensiveSR,             "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectDoc,     UID_KeyObjectSelectionDocument,  "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR, UID_MammographyCADSR,            "SR", "Mammography CAD SR"},
-    {DSRTypes::DT_ChestCadSR,       UID_ChestCADSR,                  "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ProcedureLog,     UID_ProcedureLogStorage,         "SR", "Procedure Log"}
+    {DSRTypes::DT_invalid,             "",                             "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,         UID_BasicTextSR,                "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,          UID_EnhancedSR,                 "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,     UID_ComprehensiveSR,            "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectDoc,        UID_KeyObjectSelectionDocument, "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR,    UID_MammographyCADSR,           "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,          UID_ChestCADSR,                 "SR", "Chest CAD SR"},
+    {DSRTypes::DT_ProcedureLog,        UID_ProcedureLogStorage,        "SR", "Procedure Log"},
+    {DSRTypes::DT_XRayRadiationDoseSR, UID_XRayRadiationDoseSR,        "SR", "X-Ray Radiation Dose SR"}
 };
 
 
@@ -1172,6 +1174,9 @@ DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentTy
         case DT_ProcedureLog:
             checker = new DSRProcedureLogConstraintChecker();
             break;
+        case DT_XRayRadiationDoseSR:
+            checker = new DSRXRayRadiationDoseSRConstraintChecker();
+            break;
         default:
             break;
     }
@@ -1511,7 +1516,10 @@ OFBool DSRTypes::elementContainsExtendedCharacters(DcmElement &elem)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.46  2004-11-29 17:11:37  joergr
+ *  Revision 1.47  2005-11-30 12:01:15  joergr
+ *  Added support for X-Ray Radiation Dose SR documents.
+ *
+ *  Revision 1.46  2004/11/29 17:11:37  joergr
  *  Added warning message when character set is unknown, unsupported  or cannot
  *  be mapped to the output format. Added support for UTF-8 character set.
  *

@@ -143,7 +143,7 @@ writing:
 \subsection dicom_conformance DICOM Conformance
 
 The \b dsr2xml utility supports the following SOP Classes (according to
-DICOM 2004):
+DICOM 2004 and Supplement 94):
 
 \verbatim
 BasicTextSR                 1.2.840.10008.5.1.4.1.1.88.11
@@ -153,7 +153,11 @@ ProcedureLog                1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSR            1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocument  1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSR                  1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSR         1.2.840.10008.5.1.4.1.1.88.67
 \endverbatim
+
+Please note that currently only mandatory and some optional attributes are
+supported.
 
 \section command_line COMMAND LINE
 
@@ -201,7 +205,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2000-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

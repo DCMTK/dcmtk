@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-07-27 16:41:55 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2005-11-30 12:00:24 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1133,6 +1133,10 @@ class DSRDocument
     /// Manufacturer: (LO, 1, 2)
     DcmLongString       Manufacturer;
 
+    // --- Frame of Reference (C) ---
+
+    // tbd: conditional module for X-Ray Radiation Dose SR not yet supported
+
     // --- SR Document Series Module (M) ---
 
     /// Modality: (CS, 1, 1)
@@ -1186,7 +1190,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.36  2005-07-27 16:41:55  joergr
+ *  Revision 1.37  2005-11-30 12:00:24  joergr
+ *  Added support for X-Ray Radiation Dose SR documents.
+ *
+ *  Revision 1.36  2005/07/27 16:41:55  joergr
  *  Updated reference to DICOM standard edition.
  *
  *  Revision 1.35  2004/11/22 16:39:09  meichel
