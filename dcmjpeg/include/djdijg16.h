@@ -19,12 +19,12 @@
  *
  *  Author:  Norbert Olges, Marco Eichelberg
  *
- *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
+ *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:13:27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 14:08:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djdijg16.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ extern "C"
 class DJCodecParameter;
 
 /** this class encapsulates the decompression routines of the
- *  IJG JPEG library configured for 16 bits/sample. 
+ *  IJG JPEG library configured for 16 bits/sample.
  */
 class DJDecompressIJG16Bit : public DJDecoder
 {
@@ -68,20 +68,22 @@ public:
 
   /** suspended decompression routine. Decompresses a JPEG frame
    *  until finished or out of data. Can be called with new data
-   *  until a frame is complete. 
+   *  until a frame is complete.
    *  @param compressedFrameBuffer pointer to compressed input data, must not be NULL
    *  @param compressedFrameBufferSize size of buffer, in bytes
    *  @param uncompressedFrameBuffer pointer to uncompressed output data, must not be NULL.
    *     This buffer must not change between multiple decode() calls for a single frame.
    *  @param uncompressedFrameBufferSize size of buffer, in bytes (!)
    *     Buffer must be large enough to contain a complete frame.
+   *  @param isSigned OFTrue, if uncompressed pixel data is signed, OFFalse otherwise
    *  @return EC_Normal if successful, EC_Suspend if more data is needed, an error code otherwise.
    */
   virtual OFCondition decode(
     Uint8 *compressedFrameBuffer,
     Uint32 compressedFrameBufferSize,
     Uint8 *uncompressedFrameBuffer,
-    Uint32 uncompressedFrameBufferSize);
+    Uint32 uncompressedFrameBufferSize,
+    OFBool isSigned);
 
   /** returns the number of bytes per sample that will be written when decoding.
    */
@@ -97,7 +99,7 @@ public:
   {
     return decompressedColorModel;
   }
-  	
+
   /** callback function used to report warning messages and the like.
    *  Should not be called by user code directly.
    */
@@ -110,7 +112,7 @@ private:
 
   /// private undefined copy assignment operator
   DJDecompressIJG16Bit& operator=(const DJDecompressIJG16Bit&);
-  
+
   /// cleans up cinfo structure, called from destructor and error handlers
   void cleanup();
 
@@ -122,7 +124,7 @@ private:
 
   /// position of last suspend
   int suspension;
-  
+
   /// temporary storage for row buffer during suspension
   void *jsampBuffer;
 
@@ -139,7 +141,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djdijg16.h,v $
- * Revision 1.2  2001-11-19 15:13:27  meichel
+ * Revision 1.3  2005-11-30 14:08:57  onken
+ * Added check to decline automatic IJG color space conversion of signed pixel
+ * data, because IJG lib only handles unsigned input for conversions.
+ *
+ * Revision 1.2  2001/11/19 15:13:27  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning
  *   messages from the IJG library are printed on ofConsole, otherwise
  *   the library remains quiet.
