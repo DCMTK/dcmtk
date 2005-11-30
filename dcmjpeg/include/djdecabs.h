@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract base class for decompression classes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:18 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 14:12:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djdecabs.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,14 +39,14 @@
 #include "djutils.h" /* for enums */
 #include "diutils.h" /* for EP_Interpretation */
 
-/** abstract base class for decompression classes. 
+/** abstract base class for decompression classes.
  *  Implementations of this class must support suspended decompression
  *  in which compressed data for one frame is fed block by block
  *  into the decompression routine, see description below.
  */
 class DJDecoder
 {
-public: 
+public:
 
   /// default constructor
   DJDecoder()
@@ -66,20 +66,22 @@ public:
 
   /** suspended decompression routine. Decompresses a JPEG frame
    *  until finished or out of data. Can be called with new data
-   *  until a frame is complete. 
+   *  until a frame is complete.
    *  @param compressedFrameBuffer pointer to compressed input data, must not be NULL
    *  @param compressedFrameBufferSize size of buffer, in bytes
    *  @param uncompressedFrameBuffer pointer to uncompressed output data, must not be NULL.
    *     This buffer must not change between multiple decode() calls for a single frame.
    *  @param uncompressedFrameBufferSize size of buffer, in words???
    *     Buffer must be large enough to contain a complete frame.
+   *  @param isSigned OFTrue, if uncompressed pixel data is signed, OFFalse otherwise
    *  @return EC_Normal if successful, EC_Suspend if more data is needed, an error code otherwise.
    */
   virtual OFCondition decode(
     Uint8 *compressedFrameBuffer,
     Uint32 compressedFrameBufferSize,
     Uint8 *uncompressedFrameBuffer,
-    Uint32 uncompressedFrameBufferSize) = 0;
+    Uint32 uncompressedFrameBufferSize,
+    OFBool isSigned) = 0;
 
   /** returns the number of bytes per sample that will be written when decoding.
    */
@@ -97,7 +99,10 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djdecabs.h,v $
- * Revision 1.1  2001-11-13 15:56:18  meichel
+ * Revision 1.2  2005-11-30 14:12:27  onken
+ * Added decode() parameter denoting whether input is signed or unsigned
+ *
+ * Revision 1.1  2001/11/13 15:56:18  meichel
  * Initial release of module dcmjpeg
  *
  *
