@@ -21,10 +21,10 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-24 14:57:10 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-11-30 14:15:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,6 @@ OFCondition DJCodecDecoder::decode(
     const DcmStack& objStack) const
 {
   OFCondition result = EC_Normal;
-
   // assume we can cast the codec parameter to what we need
   const DJCodecParameter *djcp = (const DJCodecParameter *)cp;
 
@@ -99,35 +98,39 @@ OFCondition DJCodecDecoder::decode(
     OFBool createPlanarConfiguration = OFFalse;
     OFBool createPlanarConfigurationInitialized = OFFalse;
     EP_Interpretation colorModel = EPI_Unknown;
+    OFBool isSigned = OFFalse; Uint16 pixelRep = 0; // needed to decline color conversion of signed pixel data to RGB
 
-    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);                                 
+    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Rows, imageRows);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Columns, imageColumns);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, imageBitsStored);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_HighBit, imageHighBit);
+    if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
+    isSigned = (pixelRep == 0) ? OFFalse : OFTrue;
     // number of frames is an optional attribute - we don't mind if it isn't present.
-    if (result.good()) (void) ((DcmItem *)dataset)->findAndGetSint32(DCM_NumberOfFrames, imageFrames);                                 
+    if (result.good()) (void) ((DcmItem *)dataset)->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
 
-    // we consider SOP Class UID as optional since we only need it to determine SOP Class specific 
+    // we consider SOP Class UID as optional since we only need it to determine SOP Class specific
     // encoding rules for planar configuration.
-    if (result.good()) (void) ((DcmItem *)dataset)->findAndGetString(DCM_SOPClassUID, sopClassUID);                                 
+    if (result.good()) (void) ((DcmItem *)dataset)->findAndGetString(DCM_SOPClassUID, sopClassUID);
 
     EP_Interpretation dicomPI = DcmJpegHelper::getPhotometricInterpretation((DcmItem *)dataset);
+
     OFBool isYBR = OFFalse;
     if ((dicomPI == EPI_YBR_Full)||(dicomPI == EPI_YBR_Full_422)||(dicomPI == EPI_YBR_Partial_422)) isYBR = OFTrue;
-    
+
     if (imageFrames < 1) imageFrames = 1; // default in case this attribute contains garbage
     if (result.good())
-    {        
+    {
       DcmPixelItem *pixItem = NULL;
-      Uint8 * jpegData = NULL;        
+      Uint8 * jpegData = NULL;
       result = pixSeq->getItem(pixItem, 1); // first item is offset table, use second item
       if (result.good())
-      {                  
+      {
         Uint32 fragmentLength = pixItem->getLength();
         result = pixItem->getUint8Array(jpegData);
         if (result.good())
-        {                            
+        {
           Uint8 precision = scanJpegDataForBitDepth(jpegData, fragmentLength);
           if (precision == 0) result = EC_CannotChangeRepresentation; // something has gone wrong, bail out
           else
@@ -142,17 +145,17 @@ OFCondition DJCodecDecoder::decode(
               Uint16 *imageData16 = NULL;
               Sint32 currentFrame = 0;
               Uint32 currentItem = 1; // ignore offset table
-              
+
               result = uncompressedPixelData.createUint16Array(totalSize/sizeof(Uint16), imageData16);
               if (result.good())
               {
                 Uint8 *imageData8 = (Uint8 *)imageData16;
-                
+
                 while ((currentFrame < imageFrames)&&(result.good()))
                 {
                   result = jpeg->init();
                   if (result.good())
-                  {                    
+                  {
                     result = EJ_Suspension;
                     while (EJ_Suspension == result)
                     {
@@ -163,18 +166,18 @@ OFCondition DJCodecDecoder::decode(
                         result = pixItem->getUint8Array(jpegData);
                         if (result.good())
                         {
-                          result = jpeg->decode(jpegData, fragmentLength, imageData8, frameSize);
+                          result = jpeg->decode(jpegData, fragmentLength, imageData8, frameSize, isSigned);
                         }
                       }
-                    }                      
+                    }
                     if (result.good())
                     {
                       if (! createPlanarConfigurationInitialized)
                       {
                         // we need to know the decompressed photometric interpretation in order
-                        // to determine the final planar configuration.  However, this is only 
+                        // to determine the final planar configuration.  However, this is only
                         // known after the first call to jpeg->decode(), i.e. here.
-                        colorModel = jpeg->getDecompressedColorModel();                                              
+                        colorModel = jpeg->getDecompressedColorModel();
                         if (colorModel == EPI_Unknown)
                         {
                           // derive color model from DICOM photometric interpretation
@@ -193,21 +196,21 @@ OFCondition DJCodecDecoder::decode(
                           case EPC_colorByPlane:
                             createPlanarConfiguration = OFTrue;
                             break;
-                        }                        
+                        }
                         createPlanarConfigurationInitialized = OFTrue;
                       }
 
                       // convert planar configuration if necessary
                       if ((imageSamplesPerPixel == 3) && createPlanarConfiguration)
-                      {                  
+                      {
                         if (precision > 8)
                           result = createPlanarConfigurationWord((Uint16 *)imageData8, imageColumns, imageRows);
                           else result = createPlanarConfigurationByte(imageData8, imageColumns, imageRows);
                       }
                       currentFrame++;
-                      imageData8 += frameSize;    
+                      imageData8 += frameSize;
                     }
-                  }                  
+                  }
                 }
 
                 if (result.good())
@@ -215,14 +218,14 @@ OFCondition DJCodecDecoder::decode(
                   // decompression is complete, finally adjust byte order if necessary
                   if (jpeg->bytesPerSample() == 1) // we're writing bytes into words
                   {
-                    result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, imageData16, 
+                    result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, imageData16,
                       totalSize, sizeof(Uint16));
                   }
                 }
 
                 // adjust photometric interpretation depending on what conversion has taken place
                 if (result.good())
-                {                  
+                {
                   switch (colorModel)
                   {
                     case EPI_Monochrome2:
@@ -230,7 +233,7 @@ OFCondition DJCodecDecoder::decode(
                       if (result.good())
                       {
                         imageSamplesPerPixel = 1;
-                      	result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
+                        result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
                       }
                       break;
                     case EPI_YBR_Full:
@@ -238,7 +241,7 @@ OFCondition DJCodecDecoder::decode(
                       if (result.good())
                       {
                         imageSamplesPerPixel = 3;
-                      	result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
+                        result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
                       }
                       break;
                     case EPI_RGB:
@@ -246,23 +249,23 @@ OFCondition DJCodecDecoder::decode(
                       if (result.good())
                       {
                         imageSamplesPerPixel = 3;
-                      	result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
+                        result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
                       }
                       break;
                     default:
-                      /* leave photometric interpretation untouched unless it is YBR_FULL_422 
-                       * or YBR_PARTIAL_422. In this case, replace by YBR_FULL since decompression 
+                      /* leave photometric interpretation untouched unless it is YBR_FULL_422
+                       * or YBR_PARTIAL_422. In this case, replace by YBR_FULL since decompression
                        * eliminates the subsampling.
                        */
                       if ((dicomPI == EPI_YBR_Full_422)||(dicomPI == EPI_YBR_Partial_422))
                       {
                         result = ((DcmItem *)dataset)->putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
-                      }                      
+                      }
                       break;
                   }
                 }
 
-                // Bits Allocated is now either 8 or 16               
+                // Bits Allocated is now either 8 or 16
                 if (result.good())
                 {
                   if (precision > 8) result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_BitsAllocated, 16);
@@ -303,7 +306,7 @@ OFCondition DJCodecDecoder::decode(
     if (dataset->ident() == EVR_dataset)
     {
         // create new SOP instance UID if codec parameters require so
-        if (result.good() && (djcp->getUIDCreation() == EUC_always)) 
+        if (result.good() && (djcp->getUIDCreation() == EUC_always))
           result = DcmCodec::newInstance((DcmItem *)dataset, NULL, NULL, NULL);
     }
 
@@ -409,7 +412,7 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
       case 0xffd4:
       case 0xffd5:
       case 0xffd6:
-      case 0xffd7: 
+      case 0xffd7:
         offset +=2;
         break;
       case 0xffd8: // SOI
@@ -451,7 +454,7 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
       case 0xffec:
       case 0xffed:
       case 0xffee:
-      case 0xffef: 
+      case 0xffef:
         offset += readUint16(data+offset+2)+2;
         break;
       case 0xfff0: // JPGn
@@ -467,7 +470,7 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
       case 0xfffa:
       case 0xfffb:
       case 0xfffc:
-      case 0xfffd: 
+      case 0xfffd:
         offset += readUint16(data+offset+2)+2;
         break;
       case 0xfffe: // COM
@@ -475,9 +478,9 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
         break;
       case 0xff01: // TEM
         break;
-      default: 
+      default:
         if ((data[offset]==0xff) && (data[offset+1]>2) && (data[offset+1] <= 0xbf)) // RES reserved markers
-        { 
+        {
           offset += 2;
         }
         else return 0; // syntax error, stop parsing
@@ -559,14 +562,14 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
   if (sopClassUID)
   {
     OFString sopClass(sopClassUID);
-  
+
     // Hardcopy Color Image always requires color-by-plane
     if (sopClass == UID_HardcopyColorImageStorage) return OFTrue;
 
     // The 1996 Ultrasound Image IODs require color-by-plane if color model is YBR_FULL.
     if (photometricInterpretation == EPI_YBR_Full)
     {
-      if ((sopClass == UID_UltrasoundMultiframeImageStorage) 
+      if ((sopClass == UID_UltrasoundMultiframeImageStorage)
         ||(sopClass == UID_UltrasoundImageStorage)) return OFTrue;
     }
 
@@ -578,7 +581,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.6  2004-08-24 14:57:10  meichel
+ * Revision 1.7  2005-11-30 14:15:50  onken
+ * Added support for decoder modifications concerning color space conversions
+ * of signed pixel data
+ *
+ * Revision 1.6  2004/08/24 14:57:10  meichel
  * Updated compression helper methods. Image type is not set to SECONDARY
  *   any more, support for the purpose of reference code sequence added.
  *
