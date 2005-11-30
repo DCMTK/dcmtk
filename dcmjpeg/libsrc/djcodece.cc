@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 15:56:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-11-30 16:56:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,9 +123,12 @@ OFCondition DJCodecEncoder::encode(
   OFCondition result = EC_Normal;
   // assume we can cast the codec parameter to what we need
   const DJCodecParameter *djcp = (const DJCodecParameter *)cp;
-  // if true lossless mode is enabled, call "true lossless encoding"-engine
-  if (djcp->getTrueLosslessMode())
+
+  // if true lossless mode is enabled, and we're supposed to do lossless compression,
+  // call the "true lossless encoding"-engine
+  if (isLosslessProcess() && (djcp->getTrueLosslessMode()))
     return encodeTrueLossless(toRepParam, pixSeq, cp, objStack);
+
   DcmStack localStack(objStack);
   (void)localStack.pop();             // pop pixel data element from stack
   DcmObject *dataset = localStack.pop(); // this is the item in which the pixel data is located
@@ -1437,7 +1440,11 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.17  2005-11-29 15:56:55  onken
+ * Revision 1.18  2005-11-30 16:56:59  meichel
+ * Fixed bug in dcmjpeg module that caused the new lossless compressor
+ *   to be used for lossy processes
+ *
+ * Revision 1.17  2005/11/29 15:56:55  onken
  * Added commandline options --accept-acr-nema and --accept-palettes
  * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
  * these options. Thanks to Gilles Mevel for suggestion.
