@@ -78,7 +78,7 @@ compatibility options (ignored by +tl):
   +Mp   --accept-palettes
           accept incorrect palette attribute tags (0028,111x) and (0028,121x)
 
-  # If enabled, incorrect palette atribute tags are accepted
+  # If enabled, incorrect palette attribute tags are accepted
   # (only pseudo lossless encoder)
 \endverbatim
 
