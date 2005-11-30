@@ -135,46 +135,7 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
   ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpsri.h \
   ../../dcmqrdb/include/dcmqrdbs.h ../../dcmtls/include/tlstrans.h \
   ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/e_os2.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslconf.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/comp.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/crypto.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/stack.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/safestack.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslv.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ossl_typ.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/symhacks.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/bio.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/x509.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/buffer.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/evp.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/objects.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/obj_mac.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/asn1.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/bn.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ec.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdsa.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdh.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/rsa.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/dsa.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/dh.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/sha.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/x509_vfy.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/lhash.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/pkcs7.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/pem.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/pem2.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/kssl.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl2.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl3.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/pq_compat.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/tls1.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/dtls1.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/pqueue.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ssl23.h \
-  ../../dcmtls/include/tlslayer.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/err.h
+  ../../dcmtls/include/tlslayer.h
 dvpsab.o: dvpsab.cc ../../config/include/osconfig.h \
   ../../config/include/cfunix.h ../../ofstd/include/ofstring.h \
   ../../ofstd/include/oftypes.h ../../ofstd/include/ofcast.h \
@@ -1996,30 +1957,4 @@ dvsighdl.o: dvsighdl.cc ../../config/include/osconfig.h \
   ../../dcmdata/include/dcvrat.h ../include/dvpscf.h \
   ../../dcmsign/include/sicert.h ../../dcmsign/include/sinullpr.h \
   ../../dcmsign/include/sisprof.h ../../dcmsign/include/siprivat.h \
-  ../../dcmsign/include/siripemd.h ../../dcmsign/include/simac.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/x509.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/e_os2.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslconf.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/symhacks.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/buffer.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ossl_typ.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/evp.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/bio.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/crypto.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/stack.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/safestack.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/opensslv.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/objects.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/obj_mac.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/asn1.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/bn.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ec.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdsa.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/ecdh.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/rsa.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/dsa.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/dh.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/sha.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/x509_vfy.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/lhash.h \
-  /usr/local/apps/openssl-0.9.8a/include/openssl/pkcs7.h
+  ../../dcmsign/include/siripemd.h ../../dcmsign/include/simac.h
