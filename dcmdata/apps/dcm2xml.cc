@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:28:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-01 11:25:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,6 +262,7 @@ int main(int argc, char *argv[])
     OFBool loadIntoMemory = OFFalse;
     const char *opt_defaultCharset = NULL;
     E_TransferSyntax xfer = EXS_Unknown;
+    OFCmdUnsignedInt maxReadLength = DCM_MaxReadLength; // default: 4096 bytes
 
     SetDebugLevel(( 0 ));
 
@@ -308,7 +309,6 @@ int main(int argc, char *argv[])
         cmd.addOption("--encode-base64",       "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
 
     /* evaluate command line */
-    Uint32 maxReadLength = DCM_MaxReadLength; //set to default of DCMTK (4096 Bytes)
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
@@ -366,9 +366,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--max-read-length"))
         {
-            OFString str;
             app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 64, 4194302));
-            maxReadLength *= 1024; //convert kilo-byte to byte
+            maxReadLength *= 1024; // convert kilo-byte to byte
         }
         cmd.beginOptionBlock();
         if (cmd.findOption("--load-all"))
@@ -461,7 +460,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.18  2005-11-28 15:28:54  meichel
+ * Revision 1.19  2005-12-01 11:25:44  joergr
+ * Removed superfluous local variable. Changed type of variable "maxReadLength".
+ *
+ * Revision 1.18  2005/11/28 15:28:54  meichel
  * File dcdebug.h is not included by any other header file in the toolkit
  *   anymore, to minimize the risk of name clashes of macro debug().
  *

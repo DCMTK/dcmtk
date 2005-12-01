@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-17 11:26:11 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-01 11:25:44 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ static int printTagCount = 0;
 static const int MAX_PRINT_TAG_NAMES = 1024;
 static const char* printTagNames[MAX_PRINT_TAG_NAMES];
 static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
-static Uint32 maxReadLength = DCM_MaxReadLength; //set default to global setting
+static OFCmdUnsignedInt maxReadLength = DCM_MaxReadLength; // default: 4096 bytes
 
 static OFBool addPrintTagName(const char* tagName)
 {
@@ -153,6 +153,9 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",        "print this help text and exit");
       cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
+#ifdef USE_EXPERIMENTAL_QUIET_MODE
+      cmd.addOption("--quiet",                "-q",        "quiet mode, print no warnings and errors");
+#endif
       cmd.addOption("--debug",                "-d",        "debug mode, print debug information");
 
     cmd.addGroup("input options:");
@@ -233,6 +236,13 @@ int main(int argc, char *argv[])
 
       /* options */
 
+#ifdef USE_EXPERIMENTAL_QUIET_MODE
+      if (cmd.findOption("--quiet"))
+      {
+        // tbd: disable ofConsole output!
+        app.setQuietMode();
+      }
+#endif
       if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
@@ -322,9 +332,8 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--max-read-length"))
       {
-          OFString str;
           app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 64, 4194302));
-          maxReadLength *= 1024; //convert kilo-byte to byte
+          maxReadLength *= 1024; // convert kilo-byte to byte
       }
       cmd.beginOptionBlock();
       if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
@@ -532,7 +541,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.51  2005-11-17 11:26:11  onken
+ * Revision 1.52  2005-12-01 11:25:44  joergr
+ * Removed superfluous local variable. Changed type of variable "maxReadLength".
+ *
+ * Revision 1.51  2005/11/17 11:26:11  onken
  * Option --max-read-length now uses OFCommandLine to check, whether option
  * value is in range
  *
