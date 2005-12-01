@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:41:16 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2005-12-01 09:52:07 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ DiImage::DiImage(const DiDocument *docu,
         {
             ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
             ok &= (Document->getValue(DCM_BitsStored, BitsStored) > 0);
-            if ((Document->getValue(DCM_HighBit, HighBit) == 0) && ok)
+            if (((Document->getValue(DCM_HighBit, HighBit) == 0) || (HighBit == 0)) && ok)
             {
                 HighBit = BitsStored - 1;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -868,7 +868,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.30  2005-03-09 17:41:16  joergr
+ * Revision 1.31  2005-12-01 09:52:07  joergr
+ * Added heuristics for images where the value of HighBit is 0.
+ *
+ * Revision 1.30  2005/03/09 17:41:16  joergr
  * Added heuristics for images where the attribute HighBit is missing.
  * Fixed possibly uninitialized variable when determining the pixel height.
  *
