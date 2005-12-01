@@ -21,10 +21,10 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-04-22 15:36:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-01 09:10:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 const OFConditionConst DcmQRIndexDatabaseErrorC(OFM_imagectn, 0x001, OF_error, "DcmQR Index Database Error");
-const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);  
+const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);
 
 /* ========================= static data ========================= */
 
@@ -128,20 +128,20 @@ static char *DB_strdup(const char* str)
 }
 
 /************
-**	Add UID in Index Record to the UID found list
+**      Add UID in Index Record to the UID found list
  */
 
 static void DB_UIDAddFound (
-		DB_Private_Handle	*phandle,
-		IdxRecord 		*idxRec
-		)
+                DB_Private_Handle       *phandle,
+                IdxRecord               *idxRec
+                )
 {
     DB_UidList *plist ;
 
     plist = (DB_UidList *) malloc (sizeof (DB_UidList)) ;
     if (plist == NULL) {
-	CERR << "DB_UIDAddFound: out of memory" << endl;
-	return;
+        CERR << "DB_UIDAddFound: out of memory" << endl;
+        return;
     }
     plist->next = phandle->uidList ;
     plist->patient = NULL ;
@@ -150,182 +150,182 @@ static void DB_UIDAddFound (
     plist->image = NULL ;
 
     if ((int)phandle->queryLevel >= PATIENT_LEVEL)
-	plist->patient = DB_strdup ((char *) idxRec->PatientID) ;
+        plist->patient = DB_strdup ((char *) idxRec->PatientID) ;
     if ((int)phandle->queryLevel >= STUDY_LEVEL)
-	plist->study = DB_strdup ((char *) idxRec->StudyInstanceUID) ;
+        plist->study = DB_strdup ((char *) idxRec->StudyInstanceUID) ;
     if ((int)phandle->queryLevel >= SERIE_LEVEL)
-	plist->serie = DB_strdup ((char *) idxRec->SeriesInstanceUID) ;
+        plist->serie = DB_strdup ((char *) idxRec->SeriesInstanceUID) ;
     if ((int)phandle->queryLevel >= IMAGE_LEVEL)
-	plist->image = DB_strdup ((char *) idxRec->SOPInstanceUID) ;
+        plist->image = DB_strdup ((char *) idxRec->SOPInstanceUID) ;
 
     phandle->uidList = plist ;
 }
 
 
 /************
-**	Search if an Index Record has already been found
+**      Search if an Index Record has already been found
  */
 
 static int DB_UIDAlreadyFound (
-		DB_Private_Handle	*phandle,
-		IdxRecord 		*idxRec
-		)
+                DB_Private_Handle       *phandle,
+                IdxRecord               *idxRec
+                )
 {
     DB_UidList *plist ;
 
     for (plist = phandle->uidList ; plist ; plist = plist->next) {
-	if (  ((int)phandle->queryLevel >= PATIENT_LEVEL)
-	      && (strcmp (plist->patient, (char *) idxRec->PatientID) != 0)
-	    )
-	    continue ;
-	if (  ((int)phandle->queryLevel >= STUDY_LEVEL)
-	      && (strcmp (plist->study, (char *) idxRec->StudyInstanceUID) != 0)
-	    )
-	    continue ;
-	if (  ((int)phandle->queryLevel >= SERIE_LEVEL)
-	      && (strcmp (plist->serie, (char *) idxRec->SeriesInstanceUID) != 0)
-	    )
-	    continue ;
-	if (  ((int)phandle->queryLevel >= IMAGE_LEVEL)
-	      && (strcmp (plist->image, (char *) idxRec->SOPInstanceUID) != 0)
-	    )
-	    continue ;
-	return (OFTrue) ;
+        if (  ((int)phandle->queryLevel >= PATIENT_LEVEL)
+              && (strcmp (plist->patient, (char *) idxRec->PatientID) != 0)
+            )
+            continue ;
+        if (  ((int)phandle->queryLevel >= STUDY_LEVEL)
+              && (strcmp (plist->study, (char *) idxRec->StudyInstanceUID) != 0)
+            )
+            continue ;
+        if (  ((int)phandle->queryLevel >= SERIE_LEVEL)
+              && (strcmp (plist->serie, (char *) idxRec->SeriesInstanceUID) != 0)
+            )
+            continue ;
+        if (  ((int)phandle->queryLevel >= IMAGE_LEVEL)
+              && (strcmp (plist->image, (char *) idxRec->SOPInstanceUID) != 0)
+            )
+            continue ;
+        return (OFTrue) ;
     }
     return (OFFalse) ;
 }
 
 /************
- *	Initializes addresses in an IdxRecord
+ *      Initializes addresses in an IdxRecord
  */
 
-static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly) 
+static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
 {
     if (! linksOnly)
     {
-    	idx -> param[RECORDIDX_PatientsBirthDate]. XTag = DCM_PatientsBirthDate  ;
-    	idx -> param[RECORDIDX_PatientsBirthDate]. ValueLength = DA_MAX_LENGTH  ;
-    	idx -> PatientsBirthDate[0] = '\0' ;
-    	idx -> param[RECORDIDX_PatientsSex]. XTag = DCM_PatientsSex  ;
-    	idx -> param[RECORDIDX_PatientsSex]. ValueLength = CS_MAX_LENGTH  ;
-    	idx -> PatientsSex[0] = '\0' ;
-     	idx -> param[RECORDIDX_PatientsName]. XTag = DCM_PatientsName  ;
-    	idx -> param[RECORDIDX_PatientsName]. ValueLength = PN_MAX_LENGTH  ;
-    	idx -> PatientsName[0] = '\0' ;
-    	idx -> param[RECORDIDX_PatientID]. XTag = DCM_PatientID  ;
-    	idx -> param[RECORDIDX_PatientID]. ValueLength = LO_MAX_LENGTH  ;
-    	idx -> PatientID[0] = '\0' ;
-    	idx -> param[RECORDIDX_PatientsBirthTime]. XTag = DCM_PatientsBirthTime  ;
-    	idx -> param[RECORDIDX_PatientsBirthTime]. ValueLength = TM_MAX_LENGTH  ;
-    	idx -> PatientsBirthTime[0] = '\0' ;
-    	idx -> param[RECORDIDX_OtherPatientIDs]. XTag = DCM_OtherPatientIDs  ;
-    	idx -> param[RECORDIDX_OtherPatientIDs]. ValueLength = LO_MAX_LENGTH  ;
-    	idx -> OtherPatientIDs[0] = '\0' ;
-    	idx -> param[RECORDIDX_OtherPatientNames]. XTag = DCM_OtherPatientNames  ;
-    	idx -> param[RECORDIDX_OtherPatientNames]. ValueLength = PN_MAX_LENGTH  ;
-    	idx -> OtherPatientNames[0] = '\0' ;
-    	idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup  ;
-    	idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH  ;
-    	idx -> EthnicGroup[0] = '\0' ;
-     	idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. XTag = DCM_NumberOfPatientRelatedStudies  ;
-    	idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. ValueLength = IS_MAX_LENGTH  ;
-    	idx -> NumberofPatientRelatedStudies[0] = '\0' ;
-    	idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. XTag = DCM_NumberOfPatientRelatedSeries  ;
-    	idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. ValueLength = IS_MAX_LENGTH  ;
-    	idx -> NumberofPatientRelatedSeries[0] = '\0' ;
-    	idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. XTag = DCM_NumberOfPatientRelatedInstances  ;
-    	idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. ValueLength = IS_MAX_LENGTH  ;
-    	idx -> NumberofPatientRelatedInstances[0] = '\0' ;
-    	idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate  ;
-    	idx -> param[RECORDIDX_StudyDate]. ValueLength = DA_MAX_LENGTH  ;
-    	idx -> StudyDate[0] = '\0' ;
-    	idx -> param[RECORDIDX_StudyTime]. XTag = DCM_StudyTime  ;
-    	idx -> param[RECORDIDX_StudyTime]. ValueLength = TM_MAX_LENGTH  ;
-    	idx -> StudyTime[0] = '\0' ;
-    	idx -> param[RECORDIDX_StudyID]. XTag = DCM_StudyID  ;
-    	idx -> param[RECORDIDX_StudyID]. ValueLength = CS_MAX_LENGTH  ;
-    	idx -> StudyID[0] = '\0' ;
-    	idx -> param[RECORDIDX_StudyDescription]. XTag = DCM_StudyDescription  ;
-    	idx -> param[RECORDIDX_StudyDescription]. ValueLength = LO_MAX_LENGTH  ;
-    	idx -> StudyDescription[0] = '\0' ;
-    	idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. XTag = DCM_NameOfPhysiciansReadingStudy  ;
-    	idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. ValueLength = PN_MAX_LENGTH  ;
-    	idx -> NameOfPhysiciansReadingStudy[0] = '\0' ;
-    	idx -> param[RECORDIDX_AccessionNumber]. XTag = DCM_AccessionNumber;
-    	idx -> param[RECORDIDX_AccessionNumber]. ValueLength = CS_MAX_LENGTH ;
-    	idx -> AccessionNumber[0] = '\0' ;
-    	idx -> param[RECORDIDX_ReferringPhysiciansName]. XTag = DCM_ReferringPhysiciansName  ;
-    	idx -> param[RECORDIDX_ReferringPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
-    	idx -> ReferringPhysiciansName[0] = '\0' ;
-    	idx -> param[RECORDIDX_ProcedureDescription]. XTag = DCM_StudyDescription  ;
-    	idx -> param[RECORDIDX_ProcedureDescription]. ValueLength = LO_MAX_LENGTH ;
-    	idx -> ProcedureDescription[0] = '\0' ;
-    	idx -> param[RECORDIDX_AttendingPhysiciansName]. XTag = DCM_NameOfPhysiciansReadingStudy  ;
-    	idx -> param[RECORDIDX_AttendingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
-    	idx -> AttendingPhysiciansName[0] = '\0' ;
-    	idx -> param[RECORDIDX_StudyInstanceUID]. XTag = DCM_StudyInstanceUID  ;
-    	idx -> param[RECORDIDX_StudyInstanceUID]. ValueLength = UI_MAX_LENGTH ;
-    	idx -> StudyInstanceUID[0] = '\0' ;
-    	idx -> param[RECORDIDX_OtherStudyNumbers]. XTag = DCM_OtherStudyNumbers  ;
-    	idx -> param[RECORDIDX_OtherStudyNumbers]. ValueLength = IS_MAX_LENGTH ;
-    	idx -> OtherStudyNumbers[0] = '\0' ;
-    	idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. XTag = DCM_AdmittingDiagnosesDescription  ;
-    	idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. ValueLength = LO_MAX_LENGTH ;
-    	idx -> AdmittingDiagnosesDescription[0] = '\0' ;
-    	idx -> param[RECORDIDX_PatientsAge]. XTag = DCM_PatientsAge  ;
-    	idx -> param[RECORDIDX_PatientsAge]. ValueLength = AS_MAX_LENGTH ;
-    	idx -> PatientsAge[0] = '\0' ;
-    	idx -> param[RECORDIDX_PatientsSize]. XTag = DCM_PatientsSize  ;
-    	idx -> param[RECORDIDX_PatientsSize]. ValueLength = DS_MAX_LENGTH ;
-    	idx -> PatientsSize[0] = '\0' ;
-     	idx -> param[RECORDIDX_PatientsWeight]. XTag = DCM_PatientsWeight  ;
-    	idx -> param[RECORDIDX_PatientsWeight]. ValueLength = DS_MAX_LENGTH ;
-    	idx -> PatientsWeight[0] = '\0' ;
-    	idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation  ;
-    	idx -> param[RECORDIDX_Occupation]. ValueLength = SH_MAX_LENGTH ;
-    	idx -> Occupation[0] = '\0' ;
-    	idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. XTag = DCM_NumberOfStudyRelatedSeries  ;
-    	idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. ValueLength = IS_MAX_LENGTH ;
-    	idx -> NumberofStudyRelatedSeries[0] = '\0' ;
-    	idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. XTag = DCM_NumberOfStudyRelatedInstances  ;
-    	idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. ValueLength = IS_MAX_LENGTH ;
-    	idx -> NumberofStudyRelatedInstances[0] = '\0' ;
-    	idx -> param[RECORDIDX_SeriesNumber]. XTag = DCM_SeriesNumber  ;
-    	idx -> param[RECORDIDX_SeriesNumber]. ValueLength = IS_MAX_LENGTH ;
-    	idx -> SeriesNumber[0] = '\0' ;
-     	idx -> param[RECORDIDX_SeriesInstanceUID]. XTag = DCM_SeriesInstanceUID  ;
-    	idx -> param[RECORDIDX_SeriesInstanceUID]. ValueLength = UI_MAX_LENGTH ;
-    	idx -> SeriesInstanceUID[0] = '\0' ;
-    	idx -> param[RECORDIDX_Modality]. XTag = DCM_Modality  ;
-    	idx -> param[RECORDIDX_Modality]. ValueLength = CS_MAX_LENGTH ;
-    	idx -> ImageNumber[0] = '\0' ;
-    	idx -> param[RECORDIDX_ImageNumber]. XTag = DCM_InstanceNumber  ;
-    	idx -> param[RECORDIDX_ImageNumber]. ValueLength = IS_MAX_LENGTH ;
-    	idx -> ImageNumber[0] = '\0' ;
-    	idx -> param[RECORDIDX_SOPInstanceUID]. XTag = DCM_SOPInstanceUID  ;
-    	idx -> param[RECORDIDX_SOPInstanceUID]. ValueLength = UI_MAX_LENGTH ;
-    	idx -> SOPInstanceUID[0] = '\0'	;
+        idx -> param[RECORDIDX_PatientsBirthDate]. XTag = DCM_PatientsBirthDate  ;
+        idx -> param[RECORDIDX_PatientsBirthDate]. ValueLength = DA_MAX_LENGTH  ;
+        idx -> PatientsBirthDate[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientsSex]. XTag = DCM_PatientsSex  ;
+        idx -> param[RECORDIDX_PatientsSex]. ValueLength = CS_MAX_LENGTH  ;
+        idx -> PatientsSex[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientsName]. XTag = DCM_PatientsName  ;
+        idx -> param[RECORDIDX_PatientsName]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> PatientsName[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientID]. XTag = DCM_PatientID  ;
+        idx -> param[RECORDIDX_PatientID]. ValueLength = LO_MAX_LENGTH  ;
+        idx -> PatientID[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientsBirthTime]. XTag = DCM_PatientsBirthTime  ;
+        idx -> param[RECORDIDX_PatientsBirthTime]. ValueLength = TM_MAX_LENGTH  ;
+        idx -> PatientsBirthTime[0] = '\0' ;
+        idx -> param[RECORDIDX_OtherPatientIDs]. XTag = DCM_OtherPatientIDs  ;
+        idx -> param[RECORDIDX_OtherPatientIDs]. ValueLength = LO_MAX_LENGTH  ;
+        idx -> OtherPatientIDs[0] = '\0' ;
+        idx -> param[RECORDIDX_OtherPatientNames]. XTag = DCM_OtherPatientNames  ;
+        idx -> param[RECORDIDX_OtherPatientNames]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> OtherPatientNames[0] = '\0' ;
+        idx -> param[RECORDIDX_EthnicGroup]. XTag = DCM_EthnicGroup  ;
+        idx -> param[RECORDIDX_EthnicGroup]. ValueLength = SH_MAX_LENGTH  ;
+        idx -> EthnicGroup[0] = '\0' ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. XTag = DCM_NumberOfPatientRelatedStudies  ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. ValueLength = IS_MAX_LENGTH  ;
+        idx -> NumberofPatientRelatedStudies[0] = '\0' ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. XTag = DCM_NumberOfPatientRelatedSeries  ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. ValueLength = IS_MAX_LENGTH  ;
+        idx -> NumberofPatientRelatedSeries[0] = '\0' ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. XTag = DCM_NumberOfPatientRelatedInstances  ;
+        idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. ValueLength = IS_MAX_LENGTH  ;
+        idx -> NumberofPatientRelatedInstances[0] = '\0' ;
+        idx -> param[RECORDIDX_StudyDate]. XTag = DCM_StudyDate  ;
+        idx -> param[RECORDIDX_StudyDate]. ValueLength = DA_MAX_LENGTH  ;
+        idx -> StudyDate[0] = '\0' ;
+        idx -> param[RECORDIDX_StudyTime]. XTag = DCM_StudyTime  ;
+        idx -> param[RECORDIDX_StudyTime]. ValueLength = TM_MAX_LENGTH  ;
+        idx -> StudyTime[0] = '\0' ;
+        idx -> param[RECORDIDX_StudyID]. XTag = DCM_StudyID  ;
+        idx -> param[RECORDIDX_StudyID]. ValueLength = CS_MAX_LENGTH  ;
+        idx -> StudyID[0] = '\0' ;
+        idx -> param[RECORDIDX_StudyDescription]. XTag = DCM_StudyDescription  ;
+        idx -> param[RECORDIDX_StudyDescription]. ValueLength = LO_MAX_LENGTH  ;
+        idx -> StudyDescription[0] = '\0' ;
+        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. XTag = DCM_NameOfPhysiciansReadingStudy  ;
+        idx -> param[RECORDIDX_NameOfPhysiciansReadingStudy]. ValueLength = PN_MAX_LENGTH  ;
+        idx -> NameOfPhysiciansReadingStudy[0] = '\0' ;
+        idx -> param[RECORDIDX_AccessionNumber]. XTag = DCM_AccessionNumber;
+        idx -> param[RECORDIDX_AccessionNumber]. ValueLength = CS_MAX_LENGTH ;
+        idx -> AccessionNumber[0] = '\0' ;
+        idx -> param[RECORDIDX_ReferringPhysiciansName]. XTag = DCM_ReferringPhysiciansName  ;
+        idx -> param[RECORDIDX_ReferringPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
+        idx -> ReferringPhysiciansName[0] = '\0' ;
+        idx -> param[RECORDIDX_ProcedureDescription]. XTag = DCM_StudyDescription  ;
+        idx -> param[RECORDIDX_ProcedureDescription]. ValueLength = LO_MAX_LENGTH ;
+        idx -> ProcedureDescription[0] = '\0' ;
+        idx -> param[RECORDIDX_AttendingPhysiciansName]. XTag = DCM_NameOfPhysiciansReadingStudy  ;
+        idx -> param[RECORDIDX_AttendingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
+        idx -> AttendingPhysiciansName[0] = '\0' ;
+        idx -> param[RECORDIDX_StudyInstanceUID]. XTag = DCM_StudyInstanceUID  ;
+        idx -> param[RECORDIDX_StudyInstanceUID]. ValueLength = UI_MAX_LENGTH ;
+        idx -> StudyInstanceUID[0] = '\0' ;
+        idx -> param[RECORDIDX_OtherStudyNumbers]. XTag = DCM_OtherStudyNumbers  ;
+        idx -> param[RECORDIDX_OtherStudyNumbers]. ValueLength = IS_MAX_LENGTH ;
+        idx -> OtherStudyNumbers[0] = '\0' ;
+        idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. XTag = DCM_AdmittingDiagnosesDescription  ;
+        idx -> param[RECORDIDX_AdmittingDiagnosesDescription]. ValueLength = LO_MAX_LENGTH ;
+        idx -> AdmittingDiagnosesDescription[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientsAge]. XTag = DCM_PatientsAge  ;
+        idx -> param[RECORDIDX_PatientsAge]. ValueLength = AS_MAX_LENGTH ;
+        idx -> PatientsAge[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientsSize]. XTag = DCM_PatientsSize  ;
+        idx -> param[RECORDIDX_PatientsSize]. ValueLength = DS_MAX_LENGTH ;
+        idx -> PatientsSize[0] = '\0' ;
+        idx -> param[RECORDIDX_PatientsWeight]. XTag = DCM_PatientsWeight  ;
+        idx -> param[RECORDIDX_PatientsWeight]. ValueLength = DS_MAX_LENGTH ;
+        idx -> PatientsWeight[0] = '\0' ;
+        idx -> param[RECORDIDX_Occupation]. XTag = DCM_Occupation  ;
+        idx -> param[RECORDIDX_Occupation]. ValueLength = SH_MAX_LENGTH ;
+        idx -> Occupation[0] = '\0' ;
+        idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. XTag = DCM_NumberOfStudyRelatedSeries  ;
+        idx -> param[RECORDIDX_NumberofStudyRelatedSeries]. ValueLength = IS_MAX_LENGTH ;
+        idx -> NumberofStudyRelatedSeries[0] = '\0' ;
+        idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. XTag = DCM_NumberOfStudyRelatedInstances  ;
+        idx -> param[RECORDIDX_NumberofStudyRelatedInstances]. ValueLength = IS_MAX_LENGTH ;
+        idx -> NumberofStudyRelatedInstances[0] = '\0' ;
+        idx -> param[RECORDIDX_SeriesNumber]. XTag = DCM_SeriesNumber  ;
+        idx -> param[RECORDIDX_SeriesNumber]. ValueLength = IS_MAX_LENGTH ;
+        idx -> SeriesNumber[0] = '\0' ;
+        idx -> param[RECORDIDX_SeriesInstanceUID]. XTag = DCM_SeriesInstanceUID  ;
+        idx -> param[RECORDIDX_SeriesInstanceUID]. ValueLength = UI_MAX_LENGTH ;
+        idx -> SeriesInstanceUID[0] = '\0' ;
+        idx -> param[RECORDIDX_Modality]. XTag = DCM_Modality  ;
+        idx -> param[RECORDIDX_Modality]. ValueLength = CS_MAX_LENGTH ;
+        idx -> ImageNumber[0] = '\0' ;
+        idx -> param[RECORDIDX_ImageNumber]. XTag = DCM_InstanceNumber  ;
+        idx -> param[RECORDIDX_ImageNumber]. ValueLength = IS_MAX_LENGTH ;
+        idx -> ImageNumber[0] = '\0' ;
+        idx -> param[RECORDIDX_SOPInstanceUID]. XTag = DCM_SOPInstanceUID  ;
+        idx -> param[RECORDIDX_SOPInstanceUID]. ValueLength = UI_MAX_LENGTH ;
+        idx -> SOPInstanceUID[0] = '\0' ;
         idx -> param[RECORDIDX_SeriesDate]. XTag = DCM_SeriesDate;
         idx -> param[RECORDIDX_SeriesDate]. ValueLength = DA_MAX_LENGTH ;
-        idx -> SeriesDate[0] = '\0'	;
-    	idx -> param[RECORDIDX_SeriesTime]. XTag = DCM_SeriesTime;
-    	idx -> param[RECORDIDX_SeriesTime]. ValueLength = TM_MAX_LENGTH ;
-    	idx -> SeriesTime[0] = '\0'	;
-    	idx -> param[RECORDIDX_SeriesDescription]. XTag = DCM_SeriesDescription  ;
-    	idx -> param[RECORDIDX_SeriesDescription]. ValueLength = LO_MAX_LENGTH ;
-    	idx -> SeriesDescription[0] = '\0'	;
+        idx -> SeriesDate[0] = '\0'     ;
+        idx -> param[RECORDIDX_SeriesTime]. XTag = DCM_SeriesTime;
+        idx -> param[RECORDIDX_SeriesTime]. ValueLength = TM_MAX_LENGTH ;
+        idx -> SeriesTime[0] = '\0'     ;
+        idx -> param[RECORDIDX_SeriesDescription]. XTag = DCM_SeriesDescription  ;
+        idx -> param[RECORDIDX_SeriesDescription]. ValueLength = LO_MAX_LENGTH ;
+        idx -> SeriesDescription[0] = '\0'      ;
         idx -> param[RECORDIDX_ProtocolName]. XTag = DCM_ProtocolName  ;
-    	idx -> param[RECORDIDX_ProtocolName]. ValueLength = LO_MAX_LENGTH ;
-    	idx -> ProtocolName[0] = '\0'	;
+        idx -> param[RECORDIDX_ProtocolName]. ValueLength = LO_MAX_LENGTH ;
+        idx -> ProtocolName[0] = '\0'   ;
         idx -> param[RECORDIDX_OperatorsName ]. XTag = DCM_OperatorsName  ;
-    	idx -> param[RECORDIDX_OperatorsName ]. ValueLength = PN_MAX_LENGTH ;
-    	idx -> OperatorsName[0] = '\0';
+        idx -> param[RECORDIDX_OperatorsName ]. ValueLength = PN_MAX_LENGTH ;
+        idx -> OperatorsName[0] = '\0';
         idx -> param[RECORDIDX_PerformingPhysiciansName]. XTag = DCM_PerformingPhysiciansName  ;
-    	idx -> param[RECORDIDX_PerformingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
-    	idx -> PerformingPhysiciansName[0] = '\0';
+        idx -> param[RECORDIDX_PerformingPhysiciansName]. ValueLength = PN_MAX_LENGTH ;
+        idx -> PerformingPhysiciansName[0] = '\0';
         idx -> param[RECORDIDX_PresentationLabel]. XTag = DCM_ContentLabel  ;
-    	idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
-    	idx -> PresentationLabel[0] = '\0';
+        idx -> param[RECORDIDX_PresentationLabel]. ValueLength = CS_LABEL_MAX_LENGTH ;
+        idx -> PresentationLabel[0] = '\0';
     }
     idx -> param[RECORDIDX_PatientsBirthDate]. PValueField = (char *)idx -> PatientsBirthDate ;
     idx -> param[RECORDIDX_PatientsSex]. PValueField = (char *)idx -> PatientsSex ;
@@ -336,7 +336,7 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
     idx -> param[RECORDIDX_OtherPatientNames]. PValueField = (char *)idx -> OtherPatientNames ;
     idx -> param[RECORDIDX_EthnicGroup]. PValueField = (char *)idx -> EthnicGroup ;
     idx -> param[RECORDIDX_NumberofPatientRelatedStudies]. PValueField = (char *)idx -> NumberofPatientRelatedStudies ;
-    idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. PValueField = (char *) idx -> NumberofPatientRelatedSeries ;	
+    idx -> param[RECORDIDX_NumberofPatientRelatedSeries]. PValueField = (char *) idx -> NumberofPatientRelatedSeries ;
     idx -> param[RECORDIDX_NumberofPatientRelatedInstances]. PValueField = (char *) idx -> NumberofPatientRelatedInstances ;
     idx -> param[RECORDIDX_StudyDate]. PValueField = (char *) idx -> StudyDate ;
     idx -> param[RECORDIDX_StudyTime]. PValueField = (char *) idx -> StudyTime ;
@@ -377,7 +377,7 @@ static void DB_IdxInitRecord (IdxRecord *idx, int linksOnly)
  * We have had situations during demonstrations where size of the DB index file
  * has exploded.  It seems that a record is being written to a position
  * way past the end of file.
- * This seek function does some sanity error checking to try to identify 
+ * This seek function does some sanity error checking to try to identify
  * the problem.
  */
 static long DB_lseek(int fildes, long offset, int whence)
@@ -387,65 +387,65 @@ static long DB_lseek(int fildes, long offset, int whence)
     long endpos;
 
 
-    /* 
+    /*
     ** we should not be seeking to an offset < 0
     */
     if (offset < 0) {
-	CERR << "*** DB ALERT: attempt to seek before begining of file" << endl;
+        CERR << "*** DB ALERT: attempt to seek before begining of file" << endl;
     }
 
     /* get the current position */
     curpos = lseek(fildes, 0, SEEK_CUR);
     if (curpos < 0) {
         CERR << "DB_lseek: cannot get current position: " << strerror(errno) << endl;
-	return curpos;
+        return curpos;
     }
     /* get the end of file position */
     endpos = lseek(fildes, 0, SEEK_END);
     if (endpos < 0) {
         CERR << "DB_lseek: cannot get end of file position: " << strerror(errno) << endl;
-	return endpos;
+        return endpos;
     }
 
     /* return to current position */
     curpos = lseek(fildes, curpos, SEEK_SET);
     if (curpos < 0) {
         CERR << "DB_lseek: cannot reset current position: " << strerror(errno) << endl;
-	return curpos;
+        return curpos;
     }
 
     /* do the requested seek */
     pos = lseek(fildes, offset, whence);
     if (pos < 0) {
-	char msg[1024];
-	sprintf(msg, "DB_lseek: cannot seek to %ld", offset);
-	CERR << msg << ": " << strerror(errno) << endl;
-	return pos;
+        char msg[1024];
+        sprintf(msg, "DB_lseek: cannot seek to %ld", offset);
+        CERR << msg << ": " << strerror(errno) << endl;
+        return pos;
     }
 
-    /* 
+    /*
     ** print an alert if we are seeking to far
-    ** what is the limit? We don't expect the index file to be 
+    ** what is the limit? We don't expect the index file to be
     ** larger than 32Mb
     */
     const long maxFileSize = 33554432;
     if (pos > maxFileSize) {
-	CERR << "*** DB ALERT: attempt to seek beyond " << maxFileSize << " bytes" << endl;
+        CERR << "*** DB ALERT: attempt to seek beyond " << maxFileSize << " bytes" << endl;
     }
 
     /* print an alert if we are seeking beyond the end of file.
      * ignore when file is empty
      */
     if ((endpos > 0) && (pos > endpos)) {
-	CERR << "*** DB ALERT: attempt to seek beyond end of file" << endl
-	    << "              offset=" << offset << " filesize=" << endpos << endl;
+        CERR << "*** DB ALERT: attempt to seek beyond end of file" << endl
+            << "              offset=" << offset << " filesize=" << endpos << endl;
     }
 
     return pos;
 }
 
 /******************************
- *	Read an Index record
+ *      Read an Index record
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord *idxRec)
@@ -453,16 +453,16 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
 
     /*** Goto the right index in file
     **/
-	
-    DB_lseek (handle -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ; 
+
+    DB_lseek (handle -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ;
 
     /*** Read the record
     **/
 
     if (read (handle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
-	return (DcmQRIndexDatabaseError) ;
+        return (DcmQRIndexDatabaseError) ;
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
 
     /*** Initialize record links
     **/
@@ -473,14 +473,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
 
 
 /******************************
- *	Add an Index record
- *	Returns the index allocated for this record
+ *      Add an Index record
+ *      Returns the index allocated for this record
  */
 
 static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *idxRec)
 {
-    IdxRecord	rec ;
-    OFCondition	cond = EC_Normal;
+    IdxRecord   rec ;
+    OFCondition cond = EC_Normal;
 
     /*** Find free place for the record
     *** A place is free if filename is empty
@@ -488,117 +488,117 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
 
     *idx = 0 ;
 
-    DB_lseek (phandle -> pidx, (long) SIZEOF_STUDYDESC, SEEK_SET) ; 
+    DB_lseek (phandle -> pidx, (long) SIZEOF_STUDYDESC, SEEK_SET) ;
     while (read (phandle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
-	if (rec. filename [0] == '\0')
-	    break ;
-	(*idx)++ ;
+        if (rec. filename [0] == '\0')
+            break ;
+        (*idx)++ ;
     }
 
     /*** We have either found a free place or we are at the end of file. **/
 
-	
-    DB_lseek (phandle -> pidx, (long) (SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ; 
+
+    DB_lseek (phandle -> pidx, (long) (SIZEOF_STUDYDESC + (*idx) * SIZEOF_IDXRECORD), SEEK_SET) ;
 
     if (write (phandle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
-	cond = DcmQRIndexDatabaseError ;
+        cond = DcmQRIndexDatabaseError ;
     else
-	cond = EC_Normal ;
+        cond = EC_Normal ;
 
-    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (phandle -> pidx, 0L, SEEK_SET) ;
 
     return cond ;
 }
 
 
 /******************************
- *	Change the StudyDescRecord
+ *      Change the StudyDescRecord
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRecord *pStudyDesc)
 {
-    OFCondition	cond = EC_Normal;
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ; 
+    OFCondition cond = EC_Normal;
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
     if (write (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC) cond = DcmQRIndexDatabaseError;
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
     return cond ;
 }
 
 /******************************
- *	Init an Index record loop
+ *      Init an Index record loop
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxInitLoop(int *idx)
 {
-    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ; 
+    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ;
     *idx = -1 ;
     return EC_Normal ;
 }
 
 /******************************
- *	Get next Index record
- *	On return, idx is initialized with the index of the record read
+ *      Get next Index record
+ *      On return, idx is initialized with the index of the record read
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxRecord *idxRec)
 {
 
     (*idx)++ ;
-    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ; 
+    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ;
     while (read (handle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
-	if (idxRec -> filename [0] != '\0') {
-	    DB_IdxInitRecord (idxRec, 1) ;
+        if (idxRec -> filename [0] != '\0') {
+            DB_IdxInitRecord (idxRec, 1) ;
 
-	    return EC_Normal ;
-	}
-	(*idx)++ ;
+            return EC_Normal ;
+        }
+        (*idx)++ ;
     }
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
 
     return DcmQRIndexDatabaseError ;
 }
 
 
 /******************************
- *	Get next Index record
- *	On return, idx is initialized with the index of the record read
+ *      Get next Index record
+ *      On return, idx is initialized with the index of the record read
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_GetStudyDesc (StudyDescRecord *pStudyDesc)
 {
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ; 
-    if ( read (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC ) 
-	return EC_Normal ;
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
+    if ( read (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC )
+        return EC_Normal ;
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
 
     return DcmQRIndexDatabaseError ;
 }
 
 
 /******************************
- *	Remove an Index record
- *	Just put a record with filename == ""
+ *      Remove an Index record
+ *      Just put a record with filename == ""
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
 {
-    IdxRecord 	rec ;
+    IdxRecord   rec ;
     OFCondition cond = EC_Normal;
 
     DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)idx * SIZEOF_IDXRECORD, SEEK_SET) ;
     DB_IdxInitRecord (&rec, 0) ;
 
     rec. filename [0] = '\0' ;
-    if (write (handle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) 
-	cond = EC_Normal ;
+    if (write (handle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD)
+        cond = EC_Normal ;
 
-    else 
-	cond = DcmQRIndexDatabaseError ;
+    else
+        cond = DcmQRIndexDatabaseError ;
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;	
+    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
 
     return cond ;
 }
@@ -953,7 +953,7 @@ static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
  *    Compare two ImagesofStudyArray elements
  */
 
-static int DB_Compare(const void *ve1, const void *ve2) 
+static int DB_Compare(const void *ve1, const void *ve2)
 {
     ImagesofStudyArray *e1 = (ImagesofStudyArray *)ve1;
     ImagesofStudyArray *e2 = (ImagesofStudyArray *)ve2;
@@ -977,9 +977,9 @@ DcmQueryRetrieveDatabaseHandle::~DcmQueryRetrieveDatabaseHandle()
 /* ========================= FIND ========================= */
 
 /************
-**	Try to match Two Dates
-**	The first one is the "model", the second one an element
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Try to match Two Dates
+**      The first one is the "model", the second one an element
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchDate (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1003,39 +1003,39 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchDate (DB_SmallDcmElmt *mod, DB_Sma
     **/
 
     if (strchr (modl, '-') == NULL)
-	return (strcmp (modl, date) == 0) ;
+        return (strcmp (modl, date) == 0) ;
 
     /*** If first char is -
     **/
 
     if (modl [0] == '-') {
-	return DB_DateToLong (date) <= DB_DateToLong (modl+1) ;
+        return DB_DateToLong (date) <= DB_DateToLong (modl+1) ;
     }
 
     /*** If last char is -
     **/
 
     else if (modl [strlen (modl) - 1] == '-') {
-	modl [strlen (modl) - 1] = '\0' ;
-	return DB_DateToLong (date) >= DB_DateToLong (modl) ;
+        modl [strlen (modl) - 1] = '\0' ;
+        return DB_DateToLong (date) >= DB_DateToLong (modl) ;
     }
     else {
-	char *pc ;
-	long d ;
+        char *pc ;
+        long d ;
 
-	d = DB_DateToLong (date) ;
-	pc = strchr (modl, '-') ;
-	*pc = '\0' ;
+        d = DB_DateToLong (date) ;
+        pc = strchr (modl, '-') ;
+        *pc = '\0' ;
 
-	return (d >= DB_DateToLong (modl)) && (d <= DB_DateToLong (pc+1)) ;
+        return (d >= DB_DateToLong (modl)) && (d <= DB_DateToLong (pc+1)) ;
 
     }
 }
 
 /************
-**	Try to match Two Times
-**	The first one is the "model", the second one an element
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Try to match Two Times
+**      The first one is the "model", the second one an element
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchTime (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1059,39 +1059,39 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchTime (DB_SmallDcmElmt *mod, DB_Sma
     **/
 
     if (strchr (modl, '-') == NULL)
-	return (strcmp (modl, aTime) == 0) ;
+        return (strcmp (modl, aTime) == 0) ;
 
     /*** If first char is -
     **/
 
     if (modl [0] == '-') {
-	return DB_TimeToDouble (aTime) <= DB_TimeToDouble (modl+1) ;
+        return DB_TimeToDouble (aTime) <= DB_TimeToDouble (modl+1) ;
     }
 
     /*** If last char is -
     **/
 
     else if (modl [strlen (modl) - 1] == '-') {
-	modl [strlen (modl) - 1] = '\0' ;
-	return DB_TimeToDouble (aTime) >= DB_TimeToDouble (modl) ;
+        modl [strlen (modl) - 1] = '\0' ;
+        return DB_TimeToDouble (aTime) >= DB_TimeToDouble (modl) ;
     }
     else {
-	char *pc ;
-	double t ;
+        char *pc ;
+        double t ;
 
-	t = DB_TimeToDouble (aTime) ;
-	pc = strchr (modl, '-') ;
-	*pc = '\0' ;
+        t = DB_TimeToDouble (aTime) ;
+        pc = strchr (modl, '-') ;
+        *pc = '\0' ;
 
-	return (t >= DB_TimeToDouble (modl)) && (t <= DB_TimeToDouble (pc+1)) ;
+        return (t >= DB_TimeToDouble (modl)) && (t <= DB_TimeToDouble (pc+1)) ;
 
     }
 }
 
 /************
-**	Try to match Two UID
-**	The first one is the "model", the second one an element
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Try to match Two UID
+**      The first one is the "model", the second one an element
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1100,21 +1100,22 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
     char *uid  ;
     char *modl  ;
     char *pc ;
+    unsigned int length ;
 
     /*** Get elt and model data in strings
     **/
 
     uid = (char *) malloc ((size_t)(elt->ValueLength + 1)) ;
     if (uid == NULL) {
-	return 0 ;
+        return 0 ;
     }
     memcpy (uid, elt->PValueField, (size_t)(elt->ValueLength)) ;
     uid [elt->ValueLength] = '\0' ;
 
     modl = (char *) malloc ((size_t)(mod->ValueLength + 1)) ;
     if (modl == NULL) {
-	free (uid) ;
-	return 0 ;
+        free (uid) ;
+        return 0 ;
     }
     memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
     modl [mod->ValueLength] = '\0' ;
@@ -1135,29 +1136,35 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
 #endif
 
     if (strchr (modl, '\\') == NULL) {
-	match = (strcmp (modl, uid) == 0) ;
-	free (uid) ;
-	free (modl) ;
-	return (match) ;
+        match = (strcmp (modl, uid) == 0) ;
+        free (uid) ;
+        free (modl) ;
+        return (match) ;
     }
 
-    /*** UID List comparaison.
+    /*** UID List comparison.
     *** Match is successful if uid is found in model
     **/
 
-    match = OFFalse ; ;
+    match = OFFalse ;
     for (pc = modl ; *pc ; ) {
-	if (strncmp (pc, uid, strlen (uid)) == 0) {
-	    match = OFTrue ;
-	    break ;
-	}
-	else {
-	    pc = strchr (pc, '\\') ;
-	    if (pc == NULL)
-		break ;
-	    else
-		pc++ ;
-	}
+
+        /*** Calculate the length to the next '\' sign (if any).
+        *** Otherwise the length of pc is returned.
+        **/ 
+        length = strcspn(pc, "\\") ;
+
+        if ((length == strlen(uid)) && (strncmp (pc, uid, length) == 0)) {
+            match = OFTrue ;
+            break ;
+        }
+        else {
+            pc = strchr (pc, '\\') ;
+            if (pc == NULL)
+                break ;
+            else
+                pc++ ;
+        }
     }
 
     free (uid) ;
@@ -1167,9 +1174,9 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
 }
 
 /************
-**	Try to match Two Strings
-**	The first one is the "model", the second one an element
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Try to match Two Strings
+**      The first one is the "model", the second one an element
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1183,15 +1190,15 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_
 
     string = (char *) malloc ((size_t)(elt->ValueLength + 1)) ;
     if (string == NULL) {
-	return 0 ;
+        return 0 ;
     }
     memcpy (string, elt->PValueField, (size_t)(elt->ValueLength)) ;
     string [elt->ValueLength] = '\0' ;
 
     modl = (char *) malloc ((size_t)(mod->ValueLength + 1)) ;
     if (modl == NULL) {
-	free (string) ;
-	return 0 ;
+        free (string) ;
+        return 0 ;
     }
     memcpy (modl, mod->PValueField, (size_t)(mod->ValueLength)) ;
     modl [mod->ValueLength] = '\0' ;
@@ -1211,7 +1218,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_
     **/
 
     if ((strchr (modl, '*') == NULL) && (strchr (modl, '?') == NULL))
-	return (strcmp (modl, string) == 0) ;
+        return (strcmp (modl, string) == 0) ;
 
     match = DB_StringUnify (modl, string) ;
 
@@ -1222,24 +1229,24 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchStrings (DB_SmallDcmElmt *mod, DB_
 }
 
 /************
-**	Try to match Two Unknown elements
-**	Strict comparaison is applied
-**	The first one is the "model", the second one an element
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Try to match Two Unknown elements
+**      Strict comparaison is applied
+**      The first one is the "model", the second one an element
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::matchOther (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
 {
     if (mod->ValueLength != elt->ValueLength)
-	return OFFalse ;
+        return OFFalse ;
 
     return (memcmp (mod->PValueField, elt->PValueField, (size_t)(elt->ValueLength)) == 0) ;
 }
 
 /************
-**	Try to match Two DB_SmallDcmElmts
-**	The first one is the "model", the second one an element
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Try to match Two DB_SmallDcmElmts
+**      The first one is the "model", the second one an element
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
@@ -1251,7 +1258,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_Small
     **/
 
     if (mod->ValueLength == 0)
-	return (OFTrue) ;
+        return (OFTrue) ;
 
     /*** Get the key class of the element
     **/
@@ -1261,34 +1268,34 @@ int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_Small
     switch (keyClass) {
 
     case DATE_CLASS :
-	return matchDate (mod, elt)  ;
+        return matchDate (mod, elt)  ;
 
     case TIME_CLASS :
-	return matchTime (mod, elt)  ;
+        return matchTime (mod, elt)  ;
 
     case UID_CLASS :
-	return matchUID  (mod, elt) ;
+        return matchUID  (mod, elt) ;
 
     case STRING_CLASS :
-	return matchStrings (mod, elt) ;
+        return matchStrings (mod, elt) ;
 
     case OTHER_CLASS :
-	return matchOther (mod, elt) ;
+        return matchOther (mod, elt) ;
 
     }
     return OFFalse;
 }
 
 /************
-**	Create the response list in specified handle,
-**	using informations found in an index record.
-**	Old response list is supposed freed
+**      Create the response list in specified handle,
+**      using informations found in an index record.
+**      Old response list is supposed freed
 **/
 
 void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
-		DB_Private_Handle	*phandle,
-		IdxRecord 		*idxRec
-		)
+                DB_Private_Handle       *phandle,
+                IdxRecord               *idxRec
+                )
 {
     int i ;
     DB_ElementList *pRequestList = NULL;
@@ -1302,38 +1309,38 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
     for (pRequestList = phandle->findRequestList ; pRequestList ; pRequestList = pRequestList->next) {
 
-	/*** Find Corresponding Tag in index record
-	**/
+        /*** Find Corresponding Tag in index record
+        **/
 
-	for (i = 0 ; i < NBPARAMETERS ; i++)
-	    if (idxRec->param [i]. XTag == pRequestList->elem. XTag)
-		break ;
+        for (i = 0 ; i < NBPARAMETERS ; i++)
+            if (idxRec->param [i]. XTag == pRequestList->elem. XTag)
+                break ;
 
-	/*** If Tag not found, skip the element
-	**/
+        /*** If Tag not found, skip the element
+        **/
 
-	if (i >= NBPARAMETERS)
-	    continue ;
+        if (i >= NBPARAMETERS)
+            continue ;
 
-	/*** Append index record element to response list
-	**/
+        /*** Append index record element to response list
+        **/
 
-	plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
-	if (plist == NULL) {
-	    CERR << "makeResponseList: out of memory" << endl;
-	    return;
-	}
-	plist->next = NULL ;
+        plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
+        if (plist == NULL) {
+            CERR << "makeResponseList: out of memory" << endl;
+            return;
+        }
+        plist->next = NULL ;
 
-	DB_DuplicateElement(&idxRec->param[i], &plist->elem);
+        DB_DuplicateElement(&idxRec->param[i], &plist->elem);
 
-	if (phandle->findResponseList == NULL) {
-	    phandle->findResponseList = last = plist ;
-	}
-	else {
-	    last->next = plist ;
-	    last = plist ;
-	}
+        if (phandle->findResponseList == NULL) {
+            phandle->findResponseList = last = plist ;
+        }
+        else {
+            last->next = plist ;
+            last = plist ;
+        }
 
     }
 }
@@ -1341,137 +1348,137 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
 
 /************
-**	Test a Find Request List
-**	Returns EC_Normal if ok, else returns DcmQRIndexDatabaseError
+**      Test a Find Request List
+**      Returns EC_Normal if ok, else returns DcmQRIndexDatabaseError
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
-		DB_ElementList 	*findRequestList,
-		DB_LEVEL	queryLevel,
-		DB_LEVEL	infLevel,
-		DB_LEVEL	lowestLevel
-		)
+                DB_ElementList  *findRequestList,
+                DB_LEVEL        queryLevel,
+                DB_LEVEL        infLevel,
+                DB_LEVEL        lowestLevel
+                )
 {
     DB_ElementList *plist ;
-    DB_LEVEL 	XTagLevel ;
-    DB_KEY_TYPE 	XTagType ;
-    int	level ;
+    DB_LEVEL    XTagLevel ;
+    DB_KEY_TYPE         XTagType ;
+    int level ;
 
     /**** Query level must be at least the infLevel
     ***/
 
     if (queryLevel < infLevel) {
-	dbdebug(1,"Level incompatible with Information Model (level %d)\n", queryLevel) ;
-	return DcmQRIndexDatabaseError ;
+        dbdebug(1,"Level incompatible with Information Model (level %d)\n", queryLevel) ;
+        return DcmQRIndexDatabaseError ;
     }
 
     if (queryLevel > lowestLevel) {
-	dbdebug(1,"Level incompatible with Information Model (level %d)\n", queryLevel) ;
-	return DcmQRIndexDatabaseError ;
+        dbdebug(1,"Level incompatible with Information Model (level %d)\n", queryLevel) ;
+        return DcmQRIndexDatabaseError ;
     }
 
     for (level = PATIENT_LEVEL ; level <= IMAGE_LEVEL ; level++) {
 
-	/**** Manage exception due to StudyRoot Information Model :
-	**** In this information model, queries may include Patient attributes
-	**** but only if they are made at the study level
-	***/
+        /**** Manage exception due to StudyRoot Information Model :
+        **** In this information model, queries may include Patient attributes
+        **** but only if they are made at the study level
+        ***/
 
-	if ((level == PATIENT_LEVEL) && (infLevel == STUDY_LEVEL)) {
-	    /** In Study Root Information Model, accept only Patient Tags
-	    ** if the Query Level is the Study level
-	    */
+        if ((level == PATIENT_LEVEL) && (infLevel == STUDY_LEVEL)) {
+            /** In Study Root Information Model, accept only Patient Tags
+            ** if the Query Level is the Study level
+            */
 
-	    int atLeastOneKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		atLeastOneKeyFound = OFTrue ;
-	    }
-	    if (atLeastOneKeyFound && (queryLevel != STUDY_LEVEL)) {
-		dbdebug(1,"Key found in Study Root Information Model (level %d)\n", level) ;
-		return DcmQRIndexDatabaseError ;
-	    }
-	}
+            int atLeastOneKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                atLeastOneKeyFound = OFTrue ;
+            }
+            if (atLeastOneKeyFound && (queryLevel != STUDY_LEVEL)) {
+                dbdebug(1,"Key found in Study Root Information Model (level %d)\n", level) ;
+                return DcmQRIndexDatabaseError ;
+            }
+        }
 
-	/**** If current level is above the QueryLevel
-	***/
+        /**** If current level is above the QueryLevel
+        ***/
 
-	else if (level < queryLevel) {
+        else if (level < queryLevel) {
 
-	    /** For this level, only unique keys are allowed
-	    ** Parse the request list elements reffering to
-	    ** this level.
-	    ** Check that only unique key attr are provided
-	    */
+            /** For this level, only unique keys are allowed
+            ** Parse the request list elements reffering to
+            ** this level.
+            ** Check that only unique key attr are provided
+            */
 
-	    int uniqueKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
-		if (XTagType != UNIQUE_KEY) {
-		    dbdebug(1,"Non Unique Key found (level %d)\n", level) ;
-		    return DcmQRIndexDatabaseError ;
-		}
-		else if (uniqueKeyFound) {
-		    dbdebug(1,"More than one Unique Key found (level %d)\n", level) ;
-		    return DcmQRIndexDatabaseError ;
-		}
-		else
-		    uniqueKeyFound = OFTrue ;
-	    }
-	}
+            int uniqueKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
+                if (XTagType != UNIQUE_KEY) {
+                    dbdebug(1,"Non Unique Key found (level %d)\n", level) ;
+                    return DcmQRIndexDatabaseError ;
+                }
+                else if (uniqueKeyFound) {
+                    dbdebug(1,"More than one Unique Key found (level %d)\n", level) ;
+                    return DcmQRIndexDatabaseError ;
+                }
+                else
+                    uniqueKeyFound = OFTrue ;
+            }
+        }
 
-	/**** If current level is the QueryLevel
-	***/
+        /**** If current level is the QueryLevel
+        ***/
 
-	else if (level == queryLevel) {
+        else if (level == queryLevel) {
 
-	    /** For this level, all keys are allowed
-	    ** Parse the request list elements reffering to
-	    ** this level.
-	    ** Check that at least one key is provided
-	    */
+            /** For this level, all keys are allowed
+            ** Parse the request list elements reffering to
+            ** this level.
+            ** Check that at least one key is provided
+            */
 
-	    int atLeastOneKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		atLeastOneKeyFound = OFTrue ;
-	    }
-	    if (! atLeastOneKeyFound) {
-		dbdebug(1,"No Key found at query level (level %d)\n", level) ;
-		return DcmQRIndexDatabaseError ;
-	    }
-	}
+            int atLeastOneKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                atLeastOneKeyFound = OFTrue ;
+            }
+            if (! atLeastOneKeyFound) {
+                dbdebug(1,"No Key found at query level (level %d)\n", level) ;
+                return DcmQRIndexDatabaseError ;
+            }
+        }
 
-	/**** If current level beyond the QueryLevel
-	***/
+        /**** If current level beyond the QueryLevel
+        ***/
 
-	else if (level > queryLevel) {
+        else if (level > queryLevel) {
 
-	    /** For this level, no key is allowed
-	    ** Parse the request list elements reffering to
-	    ** this level.
-	    ** Check that no key is provided
-	    */
+            /** For this level, no key is allowed
+            ** Parse the request list elements reffering to
+            ** this level.
+            ** Check that no key is provided
+            */
 
-	    int atLeastOneKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		atLeastOneKeyFound = OFTrue ;
-	    }
-	    if (atLeastOneKeyFound) {
-		dbdebug(1,"Key found beyond query level (level %d)\n", level) ;
-		return DcmQRIndexDatabaseError ;
-	    }
-	}
+            int atLeastOneKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                atLeastOneKeyFound = OFTrue ;
+            }
+            if (atLeastOneKeyFound) {
+                dbdebug(1,"Key found beyond query level (level %d)\n", level) ;
+                return DcmQRIndexDatabaseError ;
+            }
+        }
 
     }
     return EC_Normal ;
@@ -1479,69 +1486,69 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testFindRequestList (
 
 
 /************
-**	Hierarchical Search Algorithm
-**	Returns OFTrue if matching is ok, else returns OFFalse
+**      Hierarchical Search Algorithm
+**      Returns OFTrue if matching is ok, else returns OFFalse
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
-		DB_Private_Handle	*phandle,
-		IdxRecord 		*idxRec,
-		DB_LEVEL		level,
-		DB_LEVEL		infLevel,
-		int			*match)
+                DB_Private_Handle       *phandle,
+                IdxRecord               *idxRec,
+                DB_LEVEL                level,
+                DB_LEVEL                infLevel,
+                int                     *match)
 {
-    int 		i ;
-    DcmTagKey 	XTag ;
+    int                 i ;
+    DcmTagKey   XTag ;
     DB_ElementList *plist ;
-    DB_LEVEL 	XTagLevel ;
+    DB_LEVEL    XTagLevel ;
 
     /**** If current level is above the QueryLevel
     ***/
 
     if (level < phandle->queryLevel) {
 
-	/** Get UID Tag for current level
-	 */
+        /** Get UID Tag for current level
+         */
 
-	DB_GetUIDTag (level, &XTag) ;
+        DB_GetUIDTag (level, &XTag) ;
 
-	/** Find Element with this XTag in Identifier list
-	 */
+        /** Find Element with this XTag in Identifier list
+         */
 
-	for (plist = phandle->findRequestList ; plist ; plist = plist->next)
-	    if (plist->elem. XTag == XTag)
-		break ;
+        for (plist = phandle->findRequestList ; plist ; plist = plist->next)
+            if (plist->elem. XTag == XTag)
+                break ;
 
-	/** Element not found
-	 */
+        /** Element not found
+         */
 
-	if (plist == NULL) {
-	    *match = OFFalse ;
-	    CERR << "hierarchicalCompare : No UID Key found at level " << (int) level << endl;
-	    return DcmQRIndexDatabaseError ;
-	}
+        if (plist == NULL) {
+            *match = OFFalse ;
+            CERR << "hierarchicalCompare : No UID Key found at level " << (int) level << endl;
+            return DcmQRIndexDatabaseError ;
+        }
 
-	/** Find element with the same XTag in index record
-	 */
+        /** Find element with the same XTag in index record
+         */
 
-	for (i = 0 ; i < NBPARAMETERS ; i++)
-	    if (idxRec->param [i]. XTag == XTag)
-		break ;
+        for (i = 0 ; i < NBPARAMETERS ; i++)
+            if (idxRec->param [i]. XTag == XTag)
+                break ;
 
-	/** Compare with Single value matching
-	** If Match fails, return OFFalse
-	*/
+        /** Compare with Single value matching
+        ** If Match fails, return OFFalse
+        */
 
-	if (! dbmatch (&(plist->elem), &idxRec->param[i])) {
-	    *match = OFFalse ;
-	    return EC_Normal ;
-	}
+        if (! dbmatch (&(plist->elem), &idxRec->param[i])) {
+            *match = OFFalse ;
+            return EC_Normal ;
+        }
 
-	/** Match succeeded.
-	** Try at next level
-	*/
+        /** Match succeeded.
+        ** Try at next level
+        */
 
-	return hierarchicalCompare (phandle, idxRec, (DB_LEVEL)(level + 1), infLevel, match) ;
+        return hierarchicalCompare (phandle, idxRec, (DB_LEVEL)(level + 1), infLevel, match) ;
     }
 
     /**** If current level is the QueryLevel
@@ -1549,95 +1556,95 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
 
     else if (level == phandle->queryLevel) {
 
-	/*** For each element in Identifier list
-	**/
+        /*** For each element in Identifier list
+        **/
 
-	for (plist = phandle->findRequestList ; plist ; plist = plist->next) {
+        for (plist = phandle->findRequestList ; plist ; plist = plist->next) {
 
-	    /** Get the Tag level of this element
-	     */
+            /** Get the Tag level of this element
+             */
 
-	    DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+            DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
 
-	    /** If we are in the Study Root Information Model exception
-	    ** we must accept patients keys at the study level
-	    */
- 
-	    if (  (XTagLevel == PATIENT_LEVEL)
-		  && (phandle->queryLevel == STUDY_LEVEL)
-		  && (infLevel == STUDY_LEVEL)
-		) ;
+            /** If we are in the Study Root Information Model exception
+            ** we must accept patients keys at the study level
+            */
 
-	    /** In other cases, only keys at the current level are
-	    ** taken into account. So skip this element.
-	    */
+            if (  (XTagLevel == PATIENT_LEVEL)
+                  && (phandle->queryLevel == STUDY_LEVEL)
+                  && (infLevel == STUDY_LEVEL)
+                ) ;
 
-	    else if (XTagLevel != level) 
-		continue ;
+            /** In other cases, only keys at the current level are
+            ** taken into account. So skip this element.
+            */
 
-	    /** Find element with the same XTag in index record
-	     */
+            else if (XTagLevel != level)
+                continue ;
 
-	    for (i = 0 ; i < NBPARAMETERS ; i++)
-		if (idxRec->param [i]. XTag == plist->elem. XTag)
-		    break ;
+            /** Find element with the same XTag in index record
+             */
 
-	    /** Compare with appropriate Matching.
-	    ** If Match fails, return OFFalse
-	    */
+            for (i = 0 ; i < NBPARAMETERS ; i++)
+                if (idxRec->param [i]. XTag == plist->elem. XTag)
+                    break ;
+
+            /** Compare with appropriate Matching.
+            ** If Match fails, return OFFalse
+            */
 
 
-	    if (! dbmatch (&(plist->elem), &idxRec->param[i])) {
-		*match = OFFalse ;
-		return EC_Normal ;
-	    }
-	}
+            if (! dbmatch (&(plist->elem), &idxRec->param[i])) {
+                *match = OFFalse ;
+                return EC_Normal ;
+            }
+        }
 
-	/*** If we are here, all matches succeeded at the current level.
-	*** Perhaps check that we have tried at least one match ??
-	**/
+        /*** If we are here, all matches succeeded at the current level.
+        *** Perhaps check that we have tried at least one match ??
+        **/
 
-	*match = OFTrue ;
-	return EC_Normal ;
+        *match = OFTrue ;
+        return EC_Normal ;
 
     }
     return DcmQRIndexDatabaseError;
 }
 
 /********************
-**	Start find in Database
+**      Start find in Database
 **/
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
-		const char 	*SOPClassUID,
-		DcmDataset 	*findRequestIdentifiers,
-		DcmQueryRetrieveDatabaseStatus 	*status)
+                const char      *SOPClassUID,
+                DcmDataset      *findRequestIdentifiers,
+                DcmQueryRetrieveDatabaseStatus  *status)
 {
-    DB_SmallDcmElmt 	elem ;
-    DB_ElementList 	*plist = NULL;
-    DB_ElementList 	*last = NULL;
-    int 		MatchFound ;
-    IdxRecord 		idxRec ;
-    DB_LEVEL		qLevel = PATIENT_LEVEL; // highest legal level for a query in the current model
+    DB_SmallDcmElmt     elem ;
+    DB_ElementList      *plist = NULL;
+    DB_ElementList      *last = NULL;
+    int                 MatchFound ;
+    IdxRecord           idxRec ;
+    DB_LEVEL            qLevel = PATIENT_LEVEL; // highest legal level for a query in the current model
     DB_LEVEL            lLevel = IMAGE_LEVEL;   // lowest legal level for a query in the current model
-    
-    OFCondition		cond = EC_Normal;
+
+    OFCondition         cond = EC_Normal;
     OFBool qrLevelFound = OFFalse;
 
     /**** Is SOPClassUID supported ?
     ***/
 
     if (strcmp( SOPClassUID, UID_FINDPatientRootQueryRetrieveInformationModel) == 0)
-	handle->rootLevel = PATIENT_ROOT ;
+        handle->rootLevel = PATIENT_ROOT ;
     else if (strcmp( SOPClassUID, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
-	handle->rootLevel = STUDY_ROOT ;
+        handle->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
     else if (strcmp( SOPClassUID, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0)
         handle->rootLevel = PATIENT_STUDY ;
 #endif
     else {
-	status->setStatus(STATUS_FIND_Refused_SOPClassNotSupported);
-	return (DcmQRIndexDatabaseError) ;
+        status->setStatus(STATUS_FIND_Refused_SOPClassNotSupported);
+        return (DcmQRIndexDatabaseError) ;
     }
 
 
@@ -1645,117 +1652,117 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     **** Find Query Level and contruct a list
     **** of query identifiers
     ***/
-	
+
     handle->findRequestList = NULL ;
 
     int elemCount = (int)(findRequestIdentifiers->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
 
-	DcmElement* dcelem = findRequestIdentifiers->getElement(elemIndex);
+        DcmElement* dcelem = findRequestIdentifiers->getElement(elemIndex);
 
-	elem.XTag = dcelem->getTag().getXTag();
-	if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
-	    elem.ValueLength = dcelem->getLength();
-	    if (elem.ValueLength == 0) {
-		elem.PValueField = NULL ;
-	    } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
-		status->setStatus(STATUS_FIND_Refused_OutOfResources);
-		return (DcmQRIndexDatabaseError) ;
-	    } else {
-		/* only char string type tags are supported at the moment */
-		char *s = NULL;
-		dcelem->getString(s);
-		strcpy(elem.PValueField, s);
-	    }
-	    /** If element is the Query Level, store it in handle
-	     */
+        elem.XTag = dcelem->getTag().getXTag();
+        if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
+            elem.ValueLength = dcelem->getLength();
+            if (elem.ValueLength == 0) {
+                elem.PValueField = NULL ;
+            } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
+                status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                return (DcmQRIndexDatabaseError) ;
+            } else {
+                /* only char string type tags are supported at the moment */
+                char *s = NULL;
+                dcelem->getString(s);
+                strcpy(elem.PValueField, s);
+            }
+            /** If element is the Query Level, store it in handle
+             */
 
-	    if (elem. XTag == DCM_QueryRetrieveLevel) {
-		char *pc ;
-		char level [50] ;
+            if (elem. XTag == DCM_QueryRetrieveLevel) {
+                char *pc ;
+                char level [50] ;
 
-		strncpy(level, (char*)elem.PValueField, 
-			(elem.ValueLength<50)? (size_t)(elem.ValueLength) : 49) ;
+                strncpy(level, (char*)elem.PValueField,
+                        (elem.ValueLength<50)? (size_t)(elem.ValueLength) : 49) ;
 
-		/*** Skip this two lines if you want strict comparison
-		**/
+                /*** Skip this two lines if you want strict comparison
+                **/
 
-		for (pc = level ; *pc ; pc++)
-		    *pc = ((*pc >= 'a') && (*pc <= 'z')) ? 'A' - 'a' + *pc : *pc ;
+                for (pc = level ; *pc ; pc++)
+                    *pc = ((*pc >= 'a') && (*pc <= 'z')) ? 'A' - 'a' + *pc : *pc ;
 
-		if (strncmp (level, PATIENT_LEVEL_STRING, 
-			     strlen (PATIENT_LEVEL_STRING)) == 0)
-		    handle->queryLevel = PATIENT_LEVEL ;
-		else if (strncmp (level, STUDY_LEVEL_STRING, 
-				  strlen (STUDY_LEVEL_STRING)) == 0)
-		    handle->queryLevel = STUDY_LEVEL ;
-		else if (strncmp (level, SERIE_LEVEL_STRING, 
-				  strlen (SERIE_LEVEL_STRING)) == 0)
-		    handle->queryLevel = SERIE_LEVEL ;
-		else if (strncmp (level, IMAGE_LEVEL_STRING, 
-				  strlen (IMAGE_LEVEL_STRING)) == 0)
-		    handle->queryLevel = IMAGE_LEVEL ;
-		else {
-		    if (elem. PValueField)
-			free (elem. PValueField) ;
+                if (strncmp (level, PATIENT_LEVEL_STRING,
+                             strlen (PATIENT_LEVEL_STRING)) == 0)
+                    handle->queryLevel = PATIENT_LEVEL ;
+                else if (strncmp (level, STUDY_LEVEL_STRING,
+                                  strlen (STUDY_LEVEL_STRING)) == 0)
+                    handle->queryLevel = STUDY_LEVEL ;
+                else if (strncmp (level, SERIE_LEVEL_STRING,
+                                  strlen (SERIE_LEVEL_STRING)) == 0)
+                    handle->queryLevel = SERIE_LEVEL ;
+                else if (strncmp (level, IMAGE_LEVEL_STRING,
+                                  strlen (IMAGE_LEVEL_STRING)) == 0)
+                    handle->queryLevel = IMAGE_LEVEL ;
+                else {
+                    if (elem. PValueField)
+                        free (elem. PValueField) ;
 #ifdef DEBUG
-		    dbdebug(1, "DB_startFindRequest () : Illegal query level (%s)\n", level) ;
+                    dbdebug(1, "DB_startFindRequest () : Illegal query level (%s)\n", level) ;
 #endif
-		    status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-		    return (DcmQRIndexDatabaseError) ;
-		}
-		qrLevelFound = OFTrue;
-	    } else {
-		/** Else it is a query identifier.
-		** Append it to our RequestList if it is supported
-		*/
-		if (DB_TagSupported (elem. XTag)) {
-			
-		    plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
-		    if (plist == NULL) {
-			status->setStatus(STATUS_FIND_Refused_OutOfResources);
-			return (DcmQRIndexDatabaseError) ;
-		    }
-		    plist->next = NULL ;
-		    DB_DuplicateElement (&elem, &(plist->elem)) ;
-		    if (handle->findRequestList == NULL) {
-			handle->findRequestList = last = plist ;
-		    } else {
-			last->next = plist ;
-			last = plist ;
-		    }
-		}
-	    }
+                    status->setStatus(STATUS_FIND_Failed_UnableToProcess);
+                    return (DcmQRIndexDatabaseError) ;
+                }
+                qrLevelFound = OFTrue;
+            } else {
+                /** Else it is a query identifier.
+                ** Append it to our RequestList if it is supported
+                */
+                if (DB_TagSupported (elem. XTag)) {
 
-	    if ( elem. PValueField ) {
-		free (elem. PValueField) ;
-	    }
-	}
+                    plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
+                    if (plist == NULL) {
+                        status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                        return (DcmQRIndexDatabaseError) ;
+                    }
+                    plist->next = NULL ;
+                    DB_DuplicateElement (&elem, &(plist->elem)) ;
+                    if (handle->findRequestList == NULL) {
+                        handle->findRequestList = last = plist ;
+                    } else {
+                        last->next = plist ;
+                        last = plist ;
+                    }
+                }
+            }
+
+            if ( elem. PValueField ) {
+                free (elem. PValueField) ;
+            }
+        }
     }
 
     if (!qrLevelFound) {
-	/* The Query/Retrieve Level is missing */
-	status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
-	CERR << "DB_startFindRequest(): missing Query/Retrieve Level" << endl;
-	handle->idxCounter = -1 ;
-	DB_FreeElementList (handle->findRequestList) ;
-	handle->findRequestList = NULL ;
-	return (DcmQRIndexDatabaseError) ;
+        /* The Query/Retrieve Level is missing */
+        status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
+        CERR << "DB_startFindRequest(): missing Query/Retrieve Level" << endl;
+        handle->idxCounter = -1 ;
+        DB_FreeElementList (handle->findRequestList) ;
+        handle->findRequestList = NULL ;
+        return (DcmQRIndexDatabaseError) ;
     }
 
     switch (handle->rootLevel)
     {
-      case PATIENT_ROOT :       
-      	qLevel = PATIENT_LEVEL ;        
-      	lLevel = IMAGE_LEVEL ;        
-      	break ;
-      case STUDY_ROOT :   
-      	qLevel = STUDY_LEVEL ;          
-      	lLevel = IMAGE_LEVEL ;        
-      	break ;
-      case PATIENT_STUDY: 
-        qLevel = PATIENT_LEVEL ;        
-      	lLevel = STUDY_LEVEL ;        
+      case PATIENT_ROOT :
+        qLevel = PATIENT_LEVEL ;
+        lLevel = IMAGE_LEVEL ;
+        break ;
+      case STUDY_ROOT :
+        qLevel = STUDY_LEVEL ;
+        lLevel = IMAGE_LEVEL ;
+        break ;
+      case PATIENT_STUDY:
+        qLevel = PATIENT_LEVEL ;
+        lLevel = STUDY_LEVEL ;
         break ;
     }
 
@@ -1763,17 +1770,17 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     if (doCheckFindIdentifier) {
-	cond = testFindRequestList (handle->findRequestList, handle->queryLevel, qLevel, lLevel) ;
-	if (cond != EC_Normal) {
-	    handle->idxCounter = -1 ;
-	    DB_FreeElementList (handle->findRequestList) ;
-	    handle->findRequestList = NULL ;
+        cond = testFindRequestList (handle->findRequestList, handle->queryLevel, qLevel, lLevel) ;
+        if (cond != EC_Normal) {
+            handle->idxCounter = -1 ;
+            DB_FreeElementList (handle->findRequestList) ;
+            handle->findRequestList = NULL ;
 #ifdef DEBUG
-	    dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
+            dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
 #endif
-	    status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
-	    return (cond) ;
-	}
+            status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
+            return (cond) ;
+        }
     }
 
     /**** Goto the beginning of Index File
@@ -1788,20 +1795,20 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
     while (1) {
 
-	/*** Exit loop if read error (or end of file)
-	**/
+        /*** Exit loop if read error (or end of file)
+        **/
 
-	if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
-	    break ;
+        if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
+            break ;
 
-	/*** Exit loop if error or matching OK
-	**/
+        /*** Exit loop if error or matching OK
+        **/
 
-	cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
-	if (cond != EC_Normal)
-	    break ;
-	if (MatchFound)
-	    break ;
+        cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
+        if (cond != EC_Normal)
+            break ;
+        if (MatchFound)
+            break ;
     }
 
     /**** If an error occured in Matching function
@@ -1809,34 +1816,34 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     if (cond != EC_Normal) {
-	handle->idxCounter = -1 ;
-	DB_FreeElementList (handle->findRequestList) ;
-	handle->findRequestList = NULL ;
+        handle->idxCounter = -1 ;
+        DB_FreeElementList (handle->findRequestList) ;
+        handle->findRequestList = NULL ;
 #ifdef DEBUG
-	dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess\n") ;
+        dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess\n") ;
 #endif
-	status->setStatus(STATUS_FIND_Failed_UnableToProcess);
+        status->setStatus(STATUS_FIND_Failed_UnableToProcess);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (cond) ;
+        return (cond) ;
     }
 
 
     /**** If a matching image has been found,
-    ****	 add index record to UID found list
+    ****         add index record to UID found list
     ****    prepare Response List in handle
     ****    return status is pending
     ***/
 
     if (MatchFound) {
-	DB_UIDAddFound (handle, &idxRec) ;
-	makeResponseList (handle, &idxRec) ;
+        DB_UIDAddFound (handle, &idxRec) ;
+        makeResponseList (handle, &idxRec) ;
 #ifdef DEBUG
-	dbdebug(1, "DB_startFindRequest () : STATUS_Pending\n") ;
+        dbdebug(1, "DB_startFindRequest () : STATUS_Pending\n") ;
 #endif
-	status->setStatus(STATUS_Pending);
-	return (EC_Normal) ;
+        status->setStatus(STATUS_Pending);
+        return (EC_Normal) ;
     }
 
     /**** else no matching image has been found,
@@ -1845,48 +1852,48 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     else {
-	handle->idxCounter = -1 ;
-	DB_FreeElementList (handle->findRequestList) ;
-	handle->findRequestList = NULL ;
+        handle->idxCounter = -1 ;
+        DB_FreeElementList (handle->findRequestList) ;
+        handle->findRequestList = NULL ;
 #ifdef DEBUG
-	dbdebug(1, "DB_startFindRequest () : STATUS_Success\n") ;
+        dbdebug(1, "DB_startFindRequest () : STATUS_Success\n") ;
 #endif
-	status->setStatus(STATUS_Success);
+        status->setStatus(STATUS_Success);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (EC_Normal) ;
+        return (EC_Normal) ;
     }
 
 }
 
 /********************
-**	Get next find response in Database
+**      Get next find response in Database
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
-		DcmDataset 	**findResponseIdentifiers,
-		DcmQueryRetrieveDatabaseStatus 	*status)
+                DcmDataset      **findResponseIdentifiers,
+                DcmQueryRetrieveDatabaseStatus  *status)
 {
 
-    DB_ElementList 	*plist = NULL;
-    int 		MatchFound = OFFalse;
-    IdxRecord 		idxRec ;
-    DB_LEVEL 		qLevel = PATIENT_LEVEL;
-    const char		*queryLevelString = NULL;
-    OFCondition		cond = EC_Normal;
+    DB_ElementList      *plist = NULL;
+    int                 MatchFound = OFFalse;
+    IdxRecord           idxRec ;
+    DB_LEVEL            qLevel = PATIENT_LEVEL;
+    const char          *queryLevelString = NULL;
+    OFCondition         cond = EC_Normal;
 
     if (handle->findResponseList == NULL) {
 #ifdef DEBUG
-	dbdebug(1, "DB_nextFindResponse () : STATUS_Success\n") ;
+        dbdebug(1, "DB_nextFindResponse () : STATUS_Success\n") ;
 #endif
-	*findResponseIdentifiers = NULL ;
-	status->setStatus(STATUS_Success);
+        *findResponseIdentifiers = NULL ;
+        status->setStatus(STATUS_Success);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (EC_Normal) ;
-    }	
+        return (EC_Normal) ;
+    }
 
     /***** Create the response (findResponseIdentifiers) using
     ***** the last find done and saved in handle findResponseList
@@ -1895,70 +1902,70 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     *findResponseIdentifiers = new DcmDataset ;
     if ( *findResponseIdentifiers != NULL ) {
 
-	/*** Put responses
-	**/
+        /*** Put responses
+        **/
 
-	for ( plist = handle->findResponseList ; plist != NULL ; plist = plist->next ) {
-	    DcmTag t(plist->elem.XTag);
-	    DcmElement *dce = newDicomElement(t);
-	    if (dce == NULL) {
-		status->setStatus(STATUS_FIND_Refused_OutOfResources);
-		return DcmQRIndexDatabaseError;
-	    }
-	    if (plist->elem.PValueField != NULL && 
-		strlen(plist->elem.PValueField) > 0) {
-		OFCondition ec = dce->putString(plist->elem.PValueField);
-		if (ec != EC_Normal) {
-		    CERR << "dbfind: DB_nextFindResponse: cannot put()" << endl;
-		    status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-		    return DcmQRIndexDatabaseError;
-		}
-	    }
-	    OFCondition ec = (*findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
-	    if (ec != EC_Normal) {
-		CERR << "dbfind: DB_nextFindResponse: cannot insert()" << endl;
-		status->setStatus(STATUS_FIND_Failed_UnableToProcess);
-		return DcmQRIndexDatabaseError;
-	    }
-	}
+        for ( plist = handle->findResponseList ; plist != NULL ; plist = plist->next ) {
+            DcmTag t(plist->elem.XTag);
+            DcmElement *dce = newDicomElement(t);
+            if (dce == NULL) {
+                status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                return DcmQRIndexDatabaseError;
+            }
+            if (plist->elem.PValueField != NULL &&
+                strlen(plist->elem.PValueField) > 0) {
+                OFCondition ec = dce->putString(plist->elem.PValueField);
+                if (ec != EC_Normal) {
+                    CERR << "dbfind: DB_nextFindResponse: cannot put()" << endl;
+                    status->setStatus(STATUS_FIND_Failed_UnableToProcess);
+                    return DcmQRIndexDatabaseError;
+                }
+            }
+            OFCondition ec = (*findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
+            if (ec != EC_Normal) {
+                CERR << "dbfind: DB_nextFindResponse: cannot insert()" << endl;
+                status->setStatus(STATUS_FIND_Failed_UnableToProcess);
+                return DcmQRIndexDatabaseError;
+            }
+        }
 
-	/*** Append the Query level
-	**/
+        /*** Append the Query level
+        **/
 
-	switch (handle->queryLevel) {
-	case PATIENT_LEVEL :
-	    queryLevelString = PATIENT_LEVEL_STRING ;
-	    break ;
-	case STUDY_LEVEL :
-	    queryLevelString = STUDY_LEVEL_STRING ;
-	    break ;
-	case SERIE_LEVEL :
-	    queryLevelString = SERIE_LEVEL_STRING ;
-	    break ;
-	case IMAGE_LEVEL :
-	    queryLevelString = IMAGE_LEVEL_STRING ;
-	    break ;
-	}
-	DU_putStringDOElement(*findResponseIdentifiers,
-			      DCM_QueryRetrieveLevel, queryLevelString);
+        switch (handle->queryLevel) {
+        case PATIENT_LEVEL :
+            queryLevelString = PATIENT_LEVEL_STRING ;
+            break ;
+        case STUDY_LEVEL :
+            queryLevelString = STUDY_LEVEL_STRING ;
+            break ;
+        case SERIE_LEVEL :
+            queryLevelString = SERIE_LEVEL_STRING ;
+            break ;
+        case IMAGE_LEVEL :
+            queryLevelString = IMAGE_LEVEL_STRING ;
+            break ;
+        }
+        DU_putStringDOElement(*findResponseIdentifiers,
+                              DCM_QueryRetrieveLevel, queryLevelString);
 #ifdef DEBUG
-	if (debugLevel > 0) {
-	    COUT << "DB: findResponseIdentifiers:" << endl;
-	    (*findResponseIdentifiers)->print(COUT);
-	}
+        if (debugLevel > 0) {
+            COUT << "DB: findResponseIdentifiers:" << endl;
+            (*findResponseIdentifiers)->print(COUT);
+        }
 #endif
     }
     else {
 
-	DB_unlock();
+        DB_unlock();
 
-	return (DcmQRIndexDatabaseError) ;
+        return (DcmQRIndexDatabaseError) ;
     }
-	
+
     switch (handle->rootLevel) {
-    case PATIENT_ROOT :	qLevel = PATIENT_LEVEL ;	break ;
-    case STUDY_ROOT :	qLevel = STUDY_LEVEL ;		break ;
-    case PATIENT_STUDY: qLevel = PATIENT_LEVEL ;        break ; 
+    case PATIENT_ROOT : qLevel = PATIENT_LEVEL ;        break ;
+    case STUDY_ROOT :   qLevel = STUDY_LEVEL ;          break ;
+    case PATIENT_STUDY: qLevel = PATIENT_LEVEL ;        break ;
     }
 
     /***** Free the last response...
@@ -1975,26 +1982,26 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 
     while (1) {
 
-	/*** Exit loop if read error (or end of file)
-	**/
+        /*** Exit loop if read error (or end of file)
+        **/
 
-	if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
-	    break ;
+        if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
+            break ;
 
-	/*** If Response already found
-	**/
+        /*** If Response already found
+        **/
 
-	if (DB_UIDAlreadyFound (handle, &idxRec))
-	    continue ;
+        if (DB_UIDAlreadyFound (handle, &idxRec))
+            continue ;
 
-	/*** Exit loop if error or matching OK
-	**/
+        /*** Exit loop if error or matching OK
+        **/
 
-	cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
-	if (cond != EC_Normal)
-	    break ;
-	if (MatchFound)
-	    break ;
+        cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
+        if (cond != EC_Normal)
+            break ;
+        if (MatchFound)
+            break ;
 
     }
 
@@ -2003,17 +2010,17 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ***/
 
     if (cond != EC_Normal) {
-	handle->idxCounter = -1 ;
-	DB_FreeElementList (handle->findRequestList) ;
-	handle->findRequestList = NULL ;
+        handle->idxCounter = -1 ;
+        DB_FreeElementList (handle->findRequestList) ;
+        handle->findRequestList = NULL ;
 #ifdef DEBUG
-	dbdebug(1, "DB_nextFindResponse () : STATUS_FIND_Failed_UnableToProcess\n") ;
+        dbdebug(1, "DB_nextFindResponse () : STATUS_FIND_Failed_UnableToProcess\n") ;
 #endif
-	status->setStatus(STATUS_FIND_Failed_UnableToProcess);
+        status->setStatus(STATUS_FIND_Failed_UnableToProcess);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (cond) ;
+        return (cond) ;
     }
 
 
@@ -2023,13 +2030,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ***/
 
     if (MatchFound) {
-	DB_UIDAddFound (handle, &idxRec) ;
-	makeResponseList (handle, &idxRec) ;
+        DB_UIDAddFound (handle, &idxRec) ;
+        makeResponseList (handle, &idxRec) ;
 #ifdef DEBUG
-	dbdebug(1, "DB_nextFindResponse () : STATUS_Pending\n") ;
+        dbdebug(1, "DB_nextFindResponse () : STATUS_Pending\n") ;
 #endif
-	status->setStatus(STATUS_Pending);
-	return (EC_Normal) ;
+        status->setStatus(STATUS_Pending);
+        return (EC_Normal) ;
     }
 
     /**** else no matching image has been found,
@@ -2038,11 +2045,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ***/
 
     else {
-	handle->idxCounter = -1 ;
-	DB_FreeElementList (handle->findRequestList) ;
-	handle->findRequestList = NULL ;
-	DB_FreeUidList (handle->uidList) ;
-	handle->uidList = NULL ;
+        handle->idxCounter = -1 ;
+        DB_FreeElementList (handle->findRequestList) ;
+        handle->findRequestList = NULL ;
+        DB_FreeUidList (handle->uidList) ;
+        handle->uidList = NULL ;
     }
 
 
@@ -2054,10 +2061,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 }
 
 /********************
-**	Cancel find request
+**      Cancel find request
  */
 
-OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetrieveDatabaseStatus *status) 
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetrieveDatabaseStatus *status)
 {
 
     handle->idxCounter = -1 ;
@@ -2078,118 +2085,118 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetr
 /* ========================= MOVE ========================= */
 
 /************
- *	Test a Move Request List
- *	Returns EC_Normal if ok, else returns DcmQRIndexDatabaseError
+ *      Test a Move Request List
+ *      Returns EC_Normal if ok, else returns DcmQRIndexDatabaseError
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
-		DB_ElementList 	*findRequestList,
-		DB_LEVEL	queryLevel,
-		DB_LEVEL	infLevel,
-		DB_LEVEL	lowestLevel
-		)
+                DB_ElementList  *findRequestList,
+                DB_LEVEL        queryLevel,
+                DB_LEVEL        infLevel,
+                DB_LEVEL        lowestLevel
+                )
 {
     DB_ElementList *plist ;
-    DB_LEVEL 	XTagLevel ;
-    DB_KEY_TYPE 	XTagType ;
-    int	level ;
+    DB_LEVEL    XTagLevel ;
+    DB_KEY_TYPE         XTagType ;
+    int level ;
 
     /**** Query level must be at least the infLevel
     ***/
 
     if (queryLevel < infLevel) {
-	dbdebug(1,"Level incompatible with Information Model (level %d)\n", (int)queryLevel) ;
-	return DcmQRIndexDatabaseError ;
+        dbdebug(1,"Level incompatible with Information Model (level %d)\n", (int)queryLevel) ;
+        return DcmQRIndexDatabaseError ;
     }
 
     if (queryLevel > lowestLevel) {
-	dbdebug(1,"Level incompatible with Information Model (level %d)\n", (int)queryLevel) ;
-	return DcmQRIndexDatabaseError ;
+        dbdebug(1,"Level incompatible with Information Model (level %d)\n", (int)queryLevel) ;
+        return DcmQRIndexDatabaseError ;
     }
 
     for (level = PATIENT_LEVEL ; level <= IMAGE_LEVEL ; level++) {
 
-	/**** Manage exception due to StudyRoot Information Model :
-	**** In this information model, move may not include any
-	**** Patient attributes.
-	***/
+        /**** Manage exception due to StudyRoot Information Model :
+        **** In this information model, move may not include any
+        **** Patient attributes.
+        ***/
 
-	if ((level == PATIENT_LEVEL) && (infLevel == STUDY_LEVEL)) {
+        if ((level == PATIENT_LEVEL) && (infLevel == STUDY_LEVEL)) {
 
-	    /** In Study Root Information Model, do not accept any 
-	    ** Patient Tag
-	    */
+            /** In Study Root Information Model, do not accept any
+            ** Patient Tag
+            */
 
-	    int atLeastOneKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		atLeastOneKeyFound = OFTrue ;
-	    }
-	    if (atLeastOneKeyFound) {
-		dbdebug(1,"Key found in Study Root Information Model (level %d)\n", level) ;
-		return DcmQRIndexDatabaseError ;
-	    }
-	}
+            int atLeastOneKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                atLeastOneKeyFound = OFTrue ;
+            }
+            if (atLeastOneKeyFound) {
+                dbdebug(1,"Key found in Study Root Information Model (level %d)\n", level) ;
+                return DcmQRIndexDatabaseError ;
+            }
+        }
 
-	/**** If current level is above or equal to the QueryLevel
-	***/
+        /**** If current level is above or equal to the QueryLevel
+        ***/
 
-	else if (level <= queryLevel) {
+        else if (level <= queryLevel) {
 
-	    /** For these levels, only unique keys are allowed
-	    ** Parse the request list elements reffering to
-	    ** this level.
-	    ** Check that only unique key attr are provided
-	    */
+            /** For these levels, only unique keys are allowed
+            ** Parse the request list elements reffering to
+            ** this level.
+            ** Check that only unique key attr are provided
+            */
 
-	    int uniqueKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
-		if (XTagType != UNIQUE_KEY) {
-		    dbdebug(1,"Non Unique Key found (level %d)\n", level) ;
-		    return DcmQRIndexDatabaseError ;
-		}
-		else if (uniqueKeyFound) {
-		    dbdebug(1,"More than one Unique Key found (level %d)\n", level) ;
-		    return DcmQRIndexDatabaseError ;
-		}
-		else
-		    uniqueKeyFound = OFTrue ;
-	    }
-	    if (! uniqueKeyFound) {
-		dbdebug(1,"No Unique Key found (level %d)\n", level) ;
-		return DcmQRIndexDatabaseError ;
-	    }
-	}
+            int uniqueKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                DB_GetTagKeyAttr (plist->elem. XTag, &XTagType) ;
+                if (XTagType != UNIQUE_KEY) {
+                    dbdebug(1,"Non Unique Key found (level %d)\n", level) ;
+                    return DcmQRIndexDatabaseError ;
+                }
+                else if (uniqueKeyFound) {
+                    dbdebug(1,"More than one Unique Key found (level %d)\n", level) ;
+                    return DcmQRIndexDatabaseError ;
+                }
+                else
+                    uniqueKeyFound = OFTrue ;
+            }
+            if (! uniqueKeyFound) {
+                dbdebug(1,"No Unique Key found (level %d)\n", level) ;
+                return DcmQRIndexDatabaseError ;
+            }
+        }
 
-	/**** If current level beyond the QueryLevel
-	***/
+        /**** If current level beyond the QueryLevel
+        ***/
 
-	else if (level > queryLevel) {
+        else if (level > queryLevel) {
 
-	    /** For this level, no key is allowed
-	    ** Parse the request list elements reffering to
-	    ** this level.
-	    ** Check that no key is provided
-	    */
+            /** For this level, no key is allowed
+            ** Parse the request list elements reffering to
+            ** this level.
+            ** Check that no key is provided
+            */
 
-	    int atLeastOneKeyFound = OFFalse ;
-	    for (plist = findRequestList ; plist ; plist = plist->next) {
-		DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
-		if (XTagLevel != level)
-		    continue ;
-		atLeastOneKeyFound = OFTrue ;
-	    }
-	    if (atLeastOneKeyFound) {
-		dbdebug(1,"Key found beyond query level (level %d)\n", level) ;
-		return DcmQRIndexDatabaseError ;
-	    }
-	}
+            int atLeastOneKeyFound = OFFalse ;
+            for (plist = findRequestList ; plist ; plist = plist->next) {
+                DB_GetTagLevel (plist->elem. XTag, &XTagLevel) ;
+                if (XTagLevel != level)
+                    continue ;
+                atLeastOneKeyFound = OFTrue ;
+            }
+            if (atLeastOneKeyFound) {
+                dbdebug(1,"Key found beyond query level (level %d)\n", level) ;
+                return DcmQRIndexDatabaseError ;
+            }
+        }
 
     }
     return EC_Normal ;
@@ -2198,30 +2205,30 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::testMoveRequestList (
 
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
-	const char 	*SOPClassUID, 
-	DcmDataset 	*moveRequestIdentifiers, 
-	DcmQueryRetrieveDatabaseStatus 	*status) 
+        const char      *SOPClassUID,
+        DcmDataset      *moveRequestIdentifiers,
+        DcmQueryRetrieveDatabaseStatus  *status)
 {
 
-    DB_SmallDcmElmt	elem ;
-    DB_ElementList 	*plist = NULL;
-    DB_ElementList 	*last = NULL;
-    DB_CounterList	*pidxlist = NULL;
-    DB_CounterList	*lastidxlist = NULL;
-    int 		MatchFound = OFFalse;
-    IdxRecord 		idxRec ;
-    DB_LEVEL		qLevel = PATIENT_LEVEL; // highest legal level for a query in the current model
+    DB_SmallDcmElmt     elem ;
+    DB_ElementList      *plist = NULL;
+    DB_ElementList      *last = NULL;
+    DB_CounterList      *pidxlist = NULL;
+    DB_CounterList      *lastidxlist = NULL;
+    int                 MatchFound = OFFalse;
+    IdxRecord           idxRec ;
+    DB_LEVEL            qLevel = PATIENT_LEVEL; // highest legal level for a query in the current model
     DB_LEVEL            lLevel = IMAGE_LEVEL;   // lowest legal level for a query in the current model
-    OFCondition		cond = EC_Normal;
+    OFCondition         cond = EC_Normal;
     OFBool qrLevelFound = OFFalse;
 
     /**** Is SOPClassUID supported ?
     ***/
 
     if (strcmp( SOPClassUID, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0)
-	handle->rootLevel = PATIENT_ROOT ;
+        handle->rootLevel = PATIENT_ROOT ;
     else if (strcmp( SOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
-	handle->rootLevel = STUDY_ROOT ;
+        handle->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
     else if (strcmp( SOPClassUID, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel) == 0)
         handle->rootLevel = PATIENT_STUDY ;
@@ -2229,18 +2236,18 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 #ifndef NO_GET_SUPPORT
     /* experimental support for GET */
     else if (strcmp( SOPClassUID, UID_GETPatientRootQueryRetrieveInformationModel) == 0)
-	handle->rootLevel = PATIENT_ROOT ;
+        handle->rootLevel = PATIENT_ROOT ;
     else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
-	handle->rootLevel = STUDY_ROOT ;
+        handle->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
     else if (strcmp( SOPClassUID, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
         handle->rootLevel = PATIENT_STUDY ;
 #endif
-#endif    
+#endif
 
     else {
-	status->setStatus(STATUS_MOVE_Failed_SOPClassNotSupported);
-	return (DcmQRIndexDatabaseError) ;
+        status->setStatus(STATUS_MOVE_Failed_SOPClassNotSupported);
+        return (DcmQRIndexDatabaseError) ;
     }
 
 
@@ -2248,113 +2255,113 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     **** Find Query Level and contruct a list
     **** of query identifiers
     ***/
-	
+
     int elemCount = (int)(moveRequestIdentifiers->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
 
-	DcmElement* dcelem = moveRequestIdentifiers->getElement(elemIndex);
+        DcmElement* dcelem = moveRequestIdentifiers->getElement(elemIndex);
 
-	elem.XTag = dcelem->getTag().getXTag();
-	if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
-	    elem.ValueLength = dcelem->getLength();
-	    if (elem.ValueLength == 0) {
-		elem.PValueField = NULL ;
-	    } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
-		status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
-		return (DcmQRIndexDatabaseError) ;
-	    } else {
-		/* only char string type tags are supported at the moment */
-		char *s = NULL;
-		dcelem->getString(s);
-		strcpy(elem.PValueField, s);
-	    }
+        elem.XTag = dcelem->getTag().getXTag();
+        if (elem.XTag == DCM_QueryRetrieveLevel || DB_TagSupported(elem.XTag)) {
+            elem.ValueLength = dcelem->getLength();
+            if (elem.ValueLength == 0) {
+                elem.PValueField = NULL ;
+            } else if ((elem.PValueField = (char*)malloc((size_t)(elem.ValueLength+1))) == NULL) {
+                status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
+                return (DcmQRIndexDatabaseError) ;
+            } else {
+                /* only char string type tags are supported at the moment */
+                char *s = NULL;
+                dcelem->getString(s);
+                strcpy(elem.PValueField, s);
+            }
 
-	    /** If element is the Query Level, store it in handle
-	     */
+            /** If element is the Query Level, store it in handle
+             */
 
-	    if (elem. XTag == DCM_QueryRetrieveLevel) {
-		char *pc ;
-		char level [50] ;
+            if (elem. XTag == DCM_QueryRetrieveLevel) {
+                char *pc ;
+                char level [50] ;
 
-		strncpy (level, (char *) elem. PValueField, (size_t)((elem. ValueLength < 50) ? elem. ValueLength : 49)) ;
-		
-		/*** Skip this two lines if you want strict comparison
-		**/
+                strncpy (level, (char *) elem. PValueField, (size_t)((elem. ValueLength < 50) ? elem. ValueLength : 49)) ;
 
-		for (pc = level ; *pc ; pc++)
-		    *pc = ((*pc >= 'a') && (*pc <= 'z')) ? 'A' - 'a' + *pc : *pc ;
+                /*** Skip this two lines if you want strict comparison
+                **/
 
-		if (strncmp (level, PATIENT_LEVEL_STRING, 
-			     strlen (PATIENT_LEVEL_STRING)) == 0)
-		    handle->queryLevel = PATIENT_LEVEL ;
-		else if (strncmp (level, STUDY_LEVEL_STRING, 
-				  strlen (STUDY_LEVEL_STRING)) == 0)
-		    handle->queryLevel = STUDY_LEVEL ;
-		else if (strncmp (level, SERIE_LEVEL_STRING, 
-				  strlen (SERIE_LEVEL_STRING)) == 0)
-		    handle->queryLevel = SERIE_LEVEL ;
-		else if (strncmp (level, IMAGE_LEVEL_STRING, 
-				  strlen (IMAGE_LEVEL_STRING)) == 0)
-		    handle->queryLevel = IMAGE_LEVEL ;
-		else {
+                for (pc = level ; *pc ; pc++)
+                    *pc = ((*pc >= 'a') && (*pc <= 'z')) ? 'A' - 'a' + *pc : *pc ;
+
+                if (strncmp (level, PATIENT_LEVEL_STRING,
+                             strlen (PATIENT_LEVEL_STRING)) == 0)
+                    handle->queryLevel = PATIENT_LEVEL ;
+                else if (strncmp (level, STUDY_LEVEL_STRING,
+                                  strlen (STUDY_LEVEL_STRING)) == 0)
+                    handle->queryLevel = STUDY_LEVEL ;
+                else if (strncmp (level, SERIE_LEVEL_STRING,
+                                  strlen (SERIE_LEVEL_STRING)) == 0)
+                    handle->queryLevel = SERIE_LEVEL ;
+                else if (strncmp (level, IMAGE_LEVEL_STRING,
+                                  strlen (IMAGE_LEVEL_STRING)) == 0)
+                    handle->queryLevel = IMAGE_LEVEL ;
+                else {
 #ifdef DEBUG
-		    dbdebug(1,"DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess\n") ;
+                    dbdebug(1,"DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess\n") ;
 #endif
-		    status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
-		    return (DcmQRIndexDatabaseError) ;
-		}
-		qrLevelFound = OFTrue;
-	    } else {
-		/** Else it is a query identifier
-		** Append it to our RequestList
-		*/
-		if (! DB_TagSupported (elem. XTag))
-		    continue ;
-			
-		plist = (DB_ElementList *) malloc (sizeof( DB_ElementList ) ) ;
-		if (plist == NULL) {
-		    status->setStatus(STATUS_FIND_Refused_OutOfResources);
-		    return (DcmQRIndexDatabaseError) ;
-		}
-		plist->next = NULL ;
-		DB_DuplicateElement (&elem, & (plist->elem)) ;
-		if (handle->findRequestList == NULL) {
-		    handle->findRequestList = last = plist ;
-		} else {
-		    last->next = plist ;
-		    last = plist ;
-		}
-	    }
+                    status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
+                    return (DcmQRIndexDatabaseError) ;
+                }
+                qrLevelFound = OFTrue;
+            } else {
+                /** Else it is a query identifier
+                ** Append it to our RequestList
+                */
+                if (! DB_TagSupported (elem. XTag))
+                    continue ;
 
-	    if ( elem. PValueField ) {
-		free (elem. PValueField) ;
-	    }
-	}
+                plist = (DB_ElementList *) malloc (sizeof( DB_ElementList ) ) ;
+                if (plist == NULL) {
+                    status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                    return (DcmQRIndexDatabaseError) ;
+                }
+                plist->next = NULL ;
+                DB_DuplicateElement (&elem, & (plist->elem)) ;
+                if (handle->findRequestList == NULL) {
+                    handle->findRequestList = last = plist ;
+                } else {
+                    last->next = plist ;
+                    last = plist ;
+                }
+            }
+
+            if ( elem. PValueField ) {
+                free (elem. PValueField) ;
+            }
+        }
     }
 
     if (!qrLevelFound) {
-	/* The Query/Retrieve Level is missing */
-	status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
-	CERR << "DB_startMoveRequest(): missing Query/Retrieve Level" << endl;
-	handle->idxCounter = -1 ;
-	DB_FreeElementList (handle->findRequestList) ;
-	handle->findRequestList = NULL ;
-	return (DcmQRIndexDatabaseError) ;
+        /* The Query/Retrieve Level is missing */
+        status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
+        CERR << "DB_startMoveRequest(): missing Query/Retrieve Level" << endl;
+        handle->idxCounter = -1 ;
+        DB_FreeElementList (handle->findRequestList) ;
+        handle->findRequestList = NULL ;
+        return (DcmQRIndexDatabaseError) ;
     }
 
     switch (handle->rootLevel)
     {
-      case PATIENT_ROOT :       
-      	qLevel = PATIENT_LEVEL ;        
-      	lLevel = IMAGE_LEVEL ;        
-      	break ;
-      case STUDY_ROOT :   
-      	qLevel = STUDY_LEVEL ;          
-      	lLevel = IMAGE_LEVEL ;        
-      	break ;
-      case PATIENT_STUDY: 
-        qLevel = PATIENT_LEVEL ;        
-      	lLevel = STUDY_LEVEL ;        
+      case PATIENT_ROOT :
+        qLevel = PATIENT_LEVEL ;
+        lLevel = IMAGE_LEVEL ;
+        break ;
+      case STUDY_ROOT :
+        qLevel = STUDY_LEVEL ;
+        lLevel = IMAGE_LEVEL ;
+        break ;
+      case PATIENT_STUDY:
+        qLevel = PATIENT_LEVEL ;
+        lLevel = STUDY_LEVEL ;
         break ;
     }
 
@@ -2362,18 +2369,18 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     ***/
 
     if (doCheckMoveIdentifier) {
-	cond = testMoveRequestList (handle->findRequestList, 
-				       handle->queryLevel, qLevel, lLevel) ;
-	if (cond != EC_Normal) {
-	    handle->idxCounter = -1 ;
-	    DB_FreeElementList (handle->findRequestList) ;
-	    handle->findRequestList = NULL ;
+        cond = testMoveRequestList (handle->findRequestList,
+                                       handle->queryLevel, qLevel, lLevel) ;
+        if (cond != EC_Normal) {
+            handle->idxCounter = -1 ;
+            DB_FreeElementList (handle->findRequestList) ;
+            handle->findRequestList = NULL ;
 #ifdef DEBUG
-	    dbdebug(1,"DB_startMoveRequest () : STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
+            dbdebug(1,"DB_startMoveRequest () : STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
 #endif
-	    status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
-	    return (cond) ;
-	}
+            status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
+            return (cond) ;
+        }
     }
 
     /**** Goto the beginning of Index File
@@ -2392,34 +2399,34 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     DB_IdxInitLoop (&(handle->idxCounter)) ;
     while (1) {
 
-	/*** Exit loop if read error (or end of file)
-	**/
+        /*** Exit loop if read error (or end of file)
+        **/
 
-	if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
-	    break ;
+        if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
+            break ;
 
-	/*** If matching found
-	**/
+        /*** If matching found
+        **/
 
-	cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
-	if (MatchFound) {
-	    pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
-	    if (pidxlist == NULL) {
-		status->setStatus(STATUS_FIND_Refused_OutOfResources);
-		return (DcmQRIndexDatabaseError) ;
-	    }
+        cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
+        if (MatchFound) {
+            pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
+            if (pidxlist == NULL) {
+                status->setStatus(STATUS_FIND_Refused_OutOfResources);
+                return (DcmQRIndexDatabaseError) ;
+            }
 
-	    pidxlist->next = NULL ;
-	    pidxlist->idxCounter = handle->idxCounter ;
-	    handle->NumberRemainOperations++ ;
-	    if ( handle->moveCounterList == NULL ) 
-		handle->moveCounterList = lastidxlist = pidxlist ;
-	    else {
-		lastidxlist->next = pidxlist ;
-		lastidxlist = pidxlist ;
-	    }
+            pidxlist->next = NULL ;
+            pidxlist->idxCounter = handle->idxCounter ;
+            handle->NumberRemainOperations++ ;
+            if ( handle->moveCounterList == NULL )
+                handle->moveCounterList = lastidxlist = pidxlist ;
+            else {
+                lastidxlist->next = pidxlist ;
+                lastidxlist = pidxlist ;
+            }
 
-	}
+        }
     }
 
     DB_FreeElementList (handle->findRequestList) ;
@@ -2431,10 +2438,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
     if ( handle->NumberRemainOperations > 0 ) {
 #ifdef DEBUG
-	dbdebug(1,"DB_startMoveRequest : STATUS_Pending\n") ;
+        dbdebug(1,"DB_startMoveRequest : STATUS_Pending\n") ;
 #endif
-	status->setStatus(STATUS_Pending);
-	return (EC_Normal) ;
+        status->setStatus(STATUS_Pending);
+        return (EC_Normal) ;
     }
 
     /**** else no matching image has been found,
@@ -2443,40 +2450,40 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     ***/
 
     else {
-	handle->idxCounter = -1 ;
+        handle->idxCounter = -1 ;
 #ifdef DEBUG
-	dbdebug(1,"DB_startMoveRequest : STATUS_Success\n") ;
+        dbdebug(1,"DB_startMoveRequest : STATUS_Success\n") ;
 #endif
-	status->setStatus(STATUS_Success);
+        status->setStatus(STATUS_Success);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (EC_Normal) ;
+        return (EC_Normal) ;
     }
 
 
 }
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
-		char 		*SOPClassUID, 
-		char 		*SOPInstanceUID, 
-		char 		*imageFileName, 
-		unsigned short 	*numberOfRemainingSubOperations,
-		DcmQueryRetrieveDatabaseStatus 	*status) 
+                char            *SOPClassUID,
+                char            *SOPInstanceUID,
+                char            *imageFileName,
+                unsigned short  *numberOfRemainingSubOperations,
+                DcmQueryRetrieveDatabaseStatus  *status)
 {
-    IdxRecord 		idxRec ;
-    DB_CounterList		*nextlist ;
+    IdxRecord           idxRec ;
+    DB_CounterList              *nextlist ;
 
     /**** If all matching images have been retrieved,
     ****    status is success
     ***/
 
     if ( handle->NumberRemainOperations <= 0 ) {
-	status->setStatus(STATUS_Success);
+        status->setStatus(STATUS_Success);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (EC_Normal) ;
+        return (EC_Normal) ;
     }
 
     /**** Goto the next matching image number of Index File
@@ -2484,22 +2491,22 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
 
     if (DB_IdxRead (handle->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
 #ifdef DEBUG
-	dbdebug(1,"DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess\n") ;
+        dbdebug(1,"DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess\n") ;
 #endif
-	status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
+        status->setStatus(STATUS_MOVE_Failed_UnableToProcess);
 
-	DB_unlock();
+        DB_unlock();
 
-	return (DcmQRIndexDatabaseError) ;
+        return (DcmQRIndexDatabaseError) ;
     }
 
-    strcpy (SOPClassUID, (char *) idxRec. SOPClassUID) ;		
-    strcpy (SOPInstanceUID, (char *) idxRec. SOPInstanceUID) ;		
+    strcpy (SOPClassUID, (char *) idxRec. SOPClassUID) ;
+    strcpy (SOPInstanceUID, (char *) idxRec. SOPInstanceUID) ;
     strcpy (imageFileName, (char *) idxRec. filename) ;
 
     *numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
 
-			
+
     nextlist = handle->moveCounterList->next ;
     free (handle->moveCounterList) ;
     handle->moveCounterList = nextlist ;
@@ -2511,17 +2518,17 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
 }
 
 
- 
-OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelMoveRequest (DcmQueryRetrieveDatabaseStatus *status) 
+
+OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelMoveRequest (DcmQueryRetrieveDatabaseStatus *status)
 {
-    DB_CounterList		*plist ;
+    DB_CounterList              *plist ;
 
     while (handle->moveCounterList) {
-	plist  = handle->moveCounterList ;
-	handle->moveCounterList = handle->moveCounterList->next ;
-	free (plist) ;
+        plist  = handle->moveCounterList ;
+        handle->moveCounterList = handle->moveCounterList->next ;
+        free (plist) ;
     }
-		
+
     status->setStatus(STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication);
 
     DB_unlock();
@@ -2644,7 +2651,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
  */
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRecord *pStudyDesc, int StudyNum, char *StudyUID, long RequiredSize)
-{ 
+{
 
     ImagesofStudyArray *StudyArray ;
     IdxRecord idxRec ;
@@ -3110,9 +3117,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
 #endif
         /* update the study info */
         int studyIdx = matchStudyUIDInStudyDesc(pStudyDesc, idxRec.StudyInstanceUID, (int)(handle->maxStudiesAllowed)) ;
-        if (studyIdx < handle->maxStudiesAllowed) 
+        if (studyIdx < handle->maxStudiesAllowed)
         {
-          if (pStudyDesc[studyIdx].NumberofRegistratedImages > 0) 
+          if (pStudyDesc[studyIdx].NumberofRegistratedImages > 0)
           {
             pStudyDesc[studyIdx].NumberofRegistratedImages--;
           } else {
@@ -3120,7 +3127,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
             pStudyDesc[studyIdx].StudySize = 0;
             pStudyDesc[studyIdx].StudyInstanceUID[0] = '\0';
           }
-          if (pStudyDesc[studyIdx].StudySize > idxRec.ImageSize) 
+          if (pStudyDesc[studyIdx].StudySize > idxRec.ImageSize)
           {
             pStudyDesc[studyIdx].StudySize -= idxRec.ImageSize;
           }
@@ -3143,24 +3150,24 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
 
 
 /************************
- *	Dump an index file
+ *      Dump an index file
  */
 
 void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 {
     int i ;
     int j ;
-    IdxRecord 		idxRec ;
-    StudyDescRecord	*pStudyDesc;
- 
+    IdxRecord           idxRec ;
+    StudyDescRecord     *pStudyDesc;
+
     OFCondition result;
     DcmQueryRetrieveIndexDatabaseHandle handle(storeArea, -1, -1, result);
     if (result.bad()) return;
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-	CERR << "printIndexFile: out of memory" << endl;
-	return;
+        CERR << "printIndexFile: out of memory" << endl;
+        return;
     }
 
     handle.DB_lock(OFFalse);
@@ -3168,44 +3175,44 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
     handle.DB_GetStudyDesc(pStudyDesc);
 
     for (i=0; i<handle.handle->maxStudiesAllowed; i++) {
-	if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {
-	    COUT << "******************************************************" << endl
-	        << "STUDY DESCRIPTOR: " << i << endl
-	        << "  Study UID: " << pStudyDesc[i].StudyInstanceUID << endl
-	        << "  StudySize: " << pStudyDesc[i].StudySize << endl
-	        << "  LastRecDate: " << pStudyDesc[i].LastRecordedDate << endl
-	        << "  NumOfImages: " << pStudyDesc[i].NumberofRegistratedImages << endl;
-	}
+        if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {
+            COUT << "******************************************************" << endl
+                << "STUDY DESCRIPTOR: " << i << endl
+                << "  Study UID: " << pStudyDesc[i].StudyInstanceUID << endl
+                << "  StudySize: " << pStudyDesc[i].StudySize << endl
+                << "  LastRecDate: " << pStudyDesc[i].LastRecordedDate << endl
+                << "  NumOfImages: " << pStudyDesc[i].NumberofRegistratedImages << endl;
+        }
     }
 
     handle.DB_IdxInitLoop (&j) ;
     while (1) {
-    	if (handle.DB_IdxGetNext(&j, &idxRec) != EC_Normal)
-    	    break ;
-    
-    	COUT << "*******************************************************" << endl;
-    	COUT << "RECORD NUMBER: " << j << endl << "  Status: ";
-    	if (idxRec.hstat == DVIF_objectIsNotNew)
-    	    COUT << "is NOT new" << endl;
+        if (handle.DB_IdxGetNext(&j, &idxRec) != EC_Normal)
+            break ;
+
+        COUT << "*******************************************************" << endl;
+        COUT << "RECORD NUMBER: " << j << endl << "  Status: ";
+        if (idxRec.hstat == DVIF_objectIsNotNew)
+            COUT << "is NOT new" << endl;
         else
             COUT << "is new" << endl;
-    	COUT << "  Filename: " << idxRec.filename << endl
-    	     << "  ImageSize: " << idxRec.ImageSize << endl
-    	     << "  RecordedDate: " << idxRec.RecordedDate << endl;
-    	for (i = 0 ; i < NBPARAMETERS ; i++) {	/* new definition */
-    	    DB_SmallDcmElmt *se = idxRec.param + i;
-    	    const char* value = "";
-    	    if (se->PValueField != NULL) value = se->PValueField;
-    	    DcmTag tag(se->XTag);
-    	    COUT << "    " << tag.getTagName() << ": \"" << value << "\"" << endl;
-    	}
-  	    COUT << "  InstanceDescription: \"" << idxRec.InstanceDescription << "\"" << endl;
+        COUT << "  Filename: " << idxRec.filename << endl
+             << "  ImageSize: " << idxRec.ImageSize << endl
+             << "  RecordedDate: " << idxRec.RecordedDate << endl;
+        for (i = 0 ; i < NBPARAMETERS ; i++) {  /* new definition */
+            DB_SmallDcmElmt *se = idxRec.param + i;
+            const char* value = "";
+            if (se->PValueField != NULL) value = se->PValueField;
+            DcmTag tag(se->XTag);
+            COUT << "    " << tag.getTagName() << ": \"" << value << "\"" << endl;
+        }
+            COUT << "  InstanceDescription: \"" << idxRec.InstanceDescription << "\"" << endl;
     }
     COUT << "*******************************************************" << endl
          << "RECORDS IN THIS INDEXFILE: " << j << endl;
 
     handle.DB_unlock();
-	
+
 }
 
 
@@ -3221,7 +3228,7 @@ const char *DcmQueryRetrieveIndexDatabaseHandle::getIndexFilename() const
 {
   return handle->indexFilename;
 }
- 
+
 void DcmQueryRetrieveIndexDatabaseHandle::setDebugLevel(int dLevel)
 {
     debugLevel = dLevel;
@@ -3264,7 +3271,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
     long maxBytesPerStudy,
     OFCondition& result)
 : handle(NULL)
-, quotaSystemEnabled(OFTrue)  
+, quotaSystemEnabled(OFTrue)
 , doCheckFindIdentifier(OFFalse)
 , doCheckMoveIdentifier(OFFalse)
 , fnamecreator()
@@ -3444,13 +3451,13 @@ DcmQueryRetrieveIndexDatabaseHandleFactory::~DcmQueryRetrieveIndexDatabaseHandle
 }
 
 DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::createDBHandle(
-    const char * /* callingAETitle */, 
+    const char * /* callingAETitle */,
     const char *calledAETitle,
     OFCondition& result) const
 {
   return new DcmQueryRetrieveIndexDatabaseHandle(
-    config_->getStorageArea(calledAETitle), 
-    config_->getMaxStudies(calledAETitle), 
+    config_->getStorageArea(calledAETitle),
+    config_->getMaxStudies(calledAETitle),
     config_->getMaxBytesPerStudy(calledAETitle), result);
 }
 
@@ -3458,7 +3465,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.4  2005-04-22 15:36:32  meichel
+ * Revision 1.5  2005-12-01 09:10:06  joergr
+ * Fixed bug in method matchUID (formerly known as DB_MatchUID).
+ *
+ * Revision 1.4  2005/04/22 15:36:32  meichel
  * Passing calling aetitle to DcmQueryRetrieveDatabaseHandleFactory::createDBHandle
  *   to allow configuration retrieval based on calling aetitle.
  *
