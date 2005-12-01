@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-30 16:56:59 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-01 11:13:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -533,9 +533,9 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       if ( result.good() && (planarConfiguration == 1) )
       {
         if (bytesAllocated == 1)
-          result = togglePlanarConfiguration((Uint8*)pixelData, length, samplesPerPixel, 1 /* switch to "by pixel"*/);
+          result = togglePlanarConfiguration8((Uint8*)pixelData, length, samplesPerPixel, (Uint16)1 /* switch to "by pixel"*/);
         else
-          result = togglePlanarConfiguration((Uint16*)pixelData, length/2 /*16 bit*/, samplesPerPixel, 1 /* switch to "by pixel"*/);
+          result = togglePlanarConfiguration16((Uint16*)pixelData, length/2 /*16 bit*/, samplesPerPixel, (Uint16)1 /* switch to "by pixel"*/);
         planConfSwitched = OFTrue;
       }
     }
@@ -646,13 +646,13 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         result = DcmCodec::newInstance((DcmItem *)datsetItem, "DCM", "121320", "Uncompressed predecessor");
       }
     }
-    // switch _original_ pixel data back to color by plane, if required
+    // switch _original_ pixel data back to "color by plane", if required
     if (planConfSwitched)
     {
       if (bytesAllocated == 1)
-        result = togglePlanarConfiguration((Uint8*)pixelData, length, samplesPerPixel, 0 /*switch to "by plane"*/);
+        result = togglePlanarConfiguration8((Uint8*)pixelData, length, samplesPerPixel, (Uint16)0 /*switch to "by plane"*/);
       else
-        result = togglePlanarConfiguration((Uint16*)pixelData, length/2, samplesPerPixel, 0 /*switch to "by plane"*/);
+        result = togglePlanarConfiguration16((Uint16*)pixelData, length/2, samplesPerPixel, (Uint16)0 /*switch to "by plane"*/);
       if (result.good())
       {
         // update Planar Configuration in dataset
@@ -1356,19 +1356,19 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   return result;
 }
 
-OFCondition DJCodecEncoder::togglePlanarConfiguration(
-    Uint8 *&pixelData,
-    const unsigned long length, //number of 8-bit components in arry
+OFCondition DJCodecEncoder::togglePlanarConfiguration8(
+    Uint8 *pixelData,
+    const unsigned long numValues,
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig)
 {
-  if ( (pixelData == NULL) || (length%samplesPerPixel != 0) )
+  if ( (pixelData == NULL) || (numValues%samplesPerPixel != 0) )
     return EC_IllegalParameter;
   // allocate target buffer
-  Uint8* px8 = new Uint8[length];
+  Uint8* px8 = new Uint8[numValues];
   if (!px8)
     return EC_MemoryExhausted;
-  unsigned long numPixels = length / samplesPerPixel;
+  unsigned long numPixels = numValues / samplesPerPixel;
   if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
   {
     for (unsigned long n=0; n < numPixels; n++)
@@ -1386,25 +1386,25 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration(
     }
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px8, length);
+  memcpy(pixelData, px8, numValues);
   delete[] px8;
   return EC_Normal;
 }
 
 
-OFCondition DJCodecEncoder::togglePlanarConfiguration(
-    Uint16 *&pixelData,
-    const unsigned long length, //number of 16-bit components
+OFCondition DJCodecEncoder::togglePlanarConfiguration16(
+    Uint16 *pixelData,
+    const unsigned long numValues, //number of 16-bit components
     const Uint16 samplesPerPixel,
     const Uint16 oldPlanarConfig)
 {
-  if ( (pixelData == NULL) || (length%samplesPerPixel != 0) )
+  if ( (pixelData == NULL) || (numValues%samplesPerPixel != 0) )
     return EC_IllegalParameter;
   // allocate target buffer
-  Uint16* px16 = new Uint16[length];
+  Uint16* px16 = new Uint16[numValues];
   if (!px16)
     return EC_MemoryExhausted;
-  unsigned long numPixels = length / samplesPerPixel;
+  unsigned long numPixels = numValues / samplesPerPixel;
   if (oldPlanarConfig == 1)   // change from "by plane" to "by pixel"
   {
     for (unsigned long n=0; n < numPixels; n++)
@@ -1422,7 +1422,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration(
     }
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px16, length*2);
+  memcpy(pixelData, px16, numValues*2);
   delete[] px16;
   return EC_Normal;
 }
@@ -1440,7 +1440,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.18  2005-11-30 16:56:59  meichel
+ * Revision 1.19  2005-12-01 11:13:06  onken
+ * Minor code modifications for gcc 4
+ *
+ * Revision 1.18  2005/11/30 16:56:59  meichel
  * Fixed bug in dcmjpeg module that caused the new lossless compressor
  *   to be used for lossy processes
  *
