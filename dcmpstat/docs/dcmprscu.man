@@ -110,7 +110,7 @@ filename_in  stored print file(s) to be spooled
         set film destination to [v]
 
       --label  [v]alue: string
-         set film session label to [v]
+        set film session label to [v]
 
       --priority  [v]alue: string
         set print priority to [v]
@@ -165,7 +165,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1999-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
