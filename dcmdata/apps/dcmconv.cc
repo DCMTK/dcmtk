@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 18:33:20 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:00:37 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
-  OFBool opt_iDataset = OFFalse;
   OFBool opt_oDataset = OFFalse;
+  E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
   E_TransferSyntax opt_oxfer = EXS_Unknown;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -101,69 +101,71 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+   cmd.addOption("--help",                   "-h",     "print this help text and exit");
+   cmd.addOption("--version",                          "print version information and exit", OFTrue /* exclusive */);
+   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
+   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
-      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
-      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
-     cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+     cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
+     cmd.addOption("--read-file-only",       "+fo",    "read file format only");
+     cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
+    cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
+     cmd.addOption("--read-xfer-auto",       "-t=",    "use TS recognition (default)");
+     cmd.addOption("--read-xfer-detect",     "-td",    "ignore TS specified in the file meta header");
+     cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
+     cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
+     cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
     cmd.addSubGroup("parsing of odd-length attributes:");
-     cmd.addOption("--accept-odd-length",       "+ao",       "accept odd length attributes (default)");
-     cmd.addOption("--assume-even-length",      "+ae",       "assume real length is one byte larger");
+     cmd.addOption("--accept-odd-length",    "+ao",    "accept odd length attributes (default)");
+     cmd.addOption("--assume-even-length",   "+ae",    "assume real length is one byte larger");
     cmd.addSubGroup("handling of undefined length UN elements:");
-     cmd.addOption("--enable-cp246",            "+ui",       "read undefined len UN as implicit VR (default)");
-     cmd.addOption("--disable-cp246",           "-ui",       "read undefined len UN as explicit VR");
+     cmd.addOption("--enable-cp246",         "+ui",    "read undefined len UN as implicit VR (default)");
+     cmd.addOption("--disable-cp246",        "-ui",    "read undefined len UN as explicit VR");
     cmd.addSubGroup("handling of defined length UN elements:");
-     cmd.addOption("--retain-un",               "-uc",       "retain elements as UN (default)");
-     cmd.addOption("--convert-un",              "+uc",       "convert to real VR if known");
+     cmd.addOption("--retain-un",            "-uc",    "retain elements as UN (default)");
+     cmd.addOption("--convert-un",           "+uc",    "convert to real VR if known");
     cmd.addSubGroup("automatic data correction:");
-     cmd.addOption("--enable-correction",       "+dc",       "enable automatic data correction (default)");
-     cmd.addOption("--disable-correction",      "-dc",       "disable automatic data correction");
+     cmd.addOption("--enable-correction",    "+dc",    "enable automatic data correction (default)");
+     cmd.addOption("--disable-correction",   "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("bitstream format of deflated input:");
-     cmd.addOption("--bitstream-deflated",      "+bd",       "expect deflated bitstream (default)");
-     cmd.addOption("--bitstream-zlib",          "+bz",       "expect deflated zlib bitstream");
+     cmd.addOption("--bitstream-deflated",   "+bd",    "expect deflated bitstream (default)");
+     cmd.addOption("--bitstream-zlib",       "+bz",    "expect deflated zlib bitstream");
 #endif
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+      cmd.addOption("--write-file",          "+F",     "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
-      cmd.addOption("--write-xfer-deflated",    "+td",       "write with deflated expl. VR little endian TS");
+      cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated expl. VR little endian TS");
 #endif
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
-      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                       "align file on multiple of f bytes\nand items on multiple of i bytes");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
-      cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
-                                                             "0=uncompressed, 1=fastest, 9=best compression");
+      cmd.addOption("--compression-level",   "+cl", 1, "compression level: 0-9 (default 6)",
+                                                       "0=uncompressed, 1=fastest, 9=best compression");
 #endif
 
     /* evaluate command line */
@@ -196,29 +198,29 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
-      if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+      if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+      if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+      if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
-      {
-          app.checkDependence("--read-xfer-auto", "--read-dataset", opt_iDataset);
           opt_ixfer = EXS_Unknown;
-      }
+      if (cmd.findOption("--read-xfer-detect"))
+          dcmAutoDetectDatasetXfer.set(OFTrue);
       if (cmd.findOption("--read-xfer-little"))
       {
-          app.checkDependence("--read-xfer-little", "--read-dataset", opt_iDataset);
+          app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-          app.checkDependence("--read-xfer-big", "--read-dataset", opt_iDataset);
+          app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_iDataset);
+          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
@@ -371,7 +373,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "open input file " << opt_ifname << endl;
 
-    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
 
     if (error.bad())
     {
@@ -435,7 +437,14 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.46  2005-11-15 18:33:20  meichel
+** Revision 1.47  2005-12-02 09:00:37  joergr
+** Added new command line option that ignores the transfer syntax specified in
+** the meta header and tries to detect the transfer syntax automatically from
+** the dataset.
+** Added new command line option that checks whether a given file starts with a
+** valid DICOM meta header.
+**
+** Revision 1.46  2005/11/15 18:33:20  meichel
 ** Added new command line option --convert-un that enables the re-conversion of
 **   defined length UN elements.
 **
