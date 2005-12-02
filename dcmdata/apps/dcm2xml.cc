@@ -22,9 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-01 11:25:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2005-12-02 08:58:44 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +84,7 @@ static OFBool checkForNonASCIICharacters(DcmItem& dataset)
 
 static OFCondition writeFile(ostream &out,
                              const char *ifname,
-                             const OFBool isDataset,
+                             const E_FileReadMode readMode,
                              const E_TransferSyntax xfer,
                              const OFBool loadIntoMemory,
                              const Uint32 maxReadLength,
@@ -102,7 +101,7 @@ static OFCondition writeFile(ostream &out,
 
     /* read DICOM file or data set */
     DcmFileFormat dfile;
-    result = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, isDataset);
+    result = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
 
     if (result.bad())
     {
@@ -213,7 +212,7 @@ static OFCondition writeFile(ostream &out,
         if (writeFlags & DCMTypes::XF_addDocumentType)
         {
             out << "<!DOCTYPE ";
-            if (isDataset)
+            if (readMode == ERM_dataset)
                out << "data-set";
             else
                out << "file-format";
@@ -241,7 +240,7 @@ static OFCondition writeFile(ostream &out,
             out << ">" << endl;
         }
         /* write XML document content */
-        if (isDataset)
+        if (readMode == ERM_dataset)
             result = dfile.getDataset()->writeXML(out, writeFlags);
         else
             result = dfile.writeXML(out, writeFlags);
@@ -258,10 +257,10 @@ int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
     size_t opt_writeFlags = 0;
-    OFBool isDataset = OFFalse;
     OFBool loadIntoMemory = OFFalse;
     const char *opt_defaultCharset = NULL;
-    E_TransferSyntax xfer = EXS_Unknown;
+    E_FileReadMode opt_readMode = ERM_autoDetect;
+    E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFCmdUnsignedInt maxReadLength = DCM_MaxReadLength; // default: 4096 bytes
 
     SetDebugLevel(( 0 ));
@@ -282,17 +281,19 @@ int main(int argc, char *argv[])
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
         cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-file-only",      "+fo",    "read file format only");
         cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
-      cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+      cmd.addSubGroup("input transfer syntax:");
         cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
         cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
       cmd.addSubGroup("long tag values:");
         cmd.addOption("--load-all",            "+M",     "load very long tag values (e.g. pixel data)");
         cmd.addOption("--load-short",          "-M",     "do not load very long values (default)");
-        cmd.addOption("--max-read-length",     "+R",  1, "[k]ilo-bytes: integer (64 <= k <= 4194302)",
-                                                         "set threshold for long values to k kilo-bytes");
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer [64..4194302]",
+                                                         "set threshold for long values to k kbytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of extended charset (default)");
@@ -335,39 +336,37 @@ int main(int argc, char *argv[])
             opt_debugMode = 5;
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--read-file"))
-            isDataset = OFFalse;
-        if (cmd.findOption("--read-dataset"))
-            isDataset = OFTrue;
+        if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+        if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+        if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-xfer-auto"))
-        {
-            app.checkDependence("--read-xfer-auto", "--read-dataset", isDataset);
-            xfer = EXS_Unknown;
-        }
+            opt_ixfer = EXS_Unknown;
+        if (cmd.findOption("--read-xfer-detect"))
+            dcmAutoDetectDatasetXfer.set(OFTrue);
         if (cmd.findOption("--read-xfer-little"))
         {
-            app.checkDependence("--read-xfer-little", "--read-dataset", isDataset);
-            xfer = EXS_LittleEndianExplicit;
+            app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_ixfer = EXS_LittleEndianExplicit;
         }
         if (cmd.findOption("--read-xfer-big"))
         {
-            app.checkDependence("--read-xfer-big", "--read-dataset", isDataset);
-            xfer = EXS_BigEndianExplicit;
+            app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_ixfer = EXS_BigEndianExplicit;
         }
         if (cmd.findOption("--read-xfer-implicit"))
         {
-            app.checkDependence("--read-xfer-implicit", "--read-dataset", isDataset);
-            xfer = EXS_LittleEndianImplicit;
+            app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_ixfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
 
         if (cmd.findOption("--max-read-length"))
         {
             app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 64, 4194302));
-            maxReadLength *= 1024; // convert kilo-byte to byte
+            maxReadLength *= 1024; // convert kbytes to bytes
         }
         cmd.beginOptionBlock();
         if (cmd.findOption("--load-all"))
@@ -444,12 +443,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (writeFile(stream, ifname, isDataset, xfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
+            if (writeFile(stream, ifname, opt_readMode, opt_ixfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (writeFile(COUT, ifname, isDataset, xfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
+        if (writeFile(COUT, ifname, opt_readMode, opt_ixfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
             result = 3;
     }
 
@@ -460,7 +459,17 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.19  2005-12-01 11:25:44  joergr
+ * Revision 1.20  2005-12-02 08:58:44  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ * Removed superfluous local variable. Changed type of variable "maxReadLength".
+ * Made description of option --max-read-length more consistent with the other
+ * command line tools.
+ *
+ * Revision 1.19  2005/12/01 11:25:44  joergr
  * Removed superfluous local variable. Changed type of variable "maxReadLength".
  *
  * Revision 1.18  2005/11/28 15:28:54  meichel
