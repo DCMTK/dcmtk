@@ -48,15 +48,18 @@ dcmfile-out  DICOM output filename
 \verbatim
 input file format:
 
-  +f    --read-file            
+  +f    --read-file
           read file format or data set (default)
 
-  -f    --read-dataset         
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
           read data set without file meta information
 
-  # This option allows to decompress RLE compressed DICOM objects that have 
-  # been stored as dataset without meta-header. Such a thing should not exist 
-  # since the transfer syntax cannot be reliably determined without meta-header, 
+  # This option allows to decompress RLE compressed DICOM objects that have
+  # been stored as dataset without meta-header. Such a thing should not exist
+  # since the transfer syntax cannot be reliably determined without meta-header,
   # but unfortunately it does.
 \endverbatim
 
@@ -72,10 +75,10 @@ SOP Instance UID options:
 
 RLE byte segment order options:
 
-  +bd   --byte-order-default   
+  +bd   --byte-order-default
           most significant byte first (default)
 
-  +br   --byte-order-reverse   
+  +br   --byte-order-reverse
           least significant byte first
 
   # This option allows to decompress RLE compressed DICOM files in which the
