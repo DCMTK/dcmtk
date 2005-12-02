@@ -112,14 +112,6 @@ NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
     explicitly handles the IP address case.  The workaround can be
     disabled with this macro
 
-NO_XFER_DETECTION_FOR_DATASETS
-  Affected: dcmdata
-  Type of modification: Disables feature
-  Explanation: Disables automatic detection of the transfer syntax for
-    uncompressed datasets.  The automatic detection has been introduced
-    since there are (incorrectly encoded) DICOM dataset stored with a
-    different transfer syntax than specified in the meta header.
-
 OFCONDITION_IMPLICIT_BOOL_CONVERSION
   Affected: class OFCondition (ofstd/include/ofcond.h)
   Type of modification: Activates experimental or rarely used feature
