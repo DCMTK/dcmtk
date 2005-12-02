@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-07-26 18:29:01 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2005-12-02 09:31:17 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,9 +86,9 @@ int main(int argc, char *argv[])
 
     OFBool opt_debug = OFFalse;
     OFBool opt_verbose = OFFalse;
-    OFBool opt_iDataset = OFFalse;
     OFBool opt_oDataset = OFFalse;
     OFBool opt_uidCreation = OFTrue;
+    E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -139,10 +139,12 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",          "+f",       "read file format or data set (default)");
+      cmd.addOption("--read-file-only",     "+fo",      "read file format only");
       cmd.addOption("--read-dataset",       "-f",       "read data set without file meta information");
 
-     cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+     cmd.addSubGroup("input transfer syntax:");
       cmd.addOption("--read-xfer-auto",     "-t=",      "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",   "-td",      "ignore TS specified in the file meta header");
       cmd.addOption("--read-xfer-little",   "-te",      "read with explicit VR little endian TS");
       cmd.addOption("--read-xfer-big",      "-tb",      "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit", "-ti",      "read with implicit VR little endian TS");
@@ -242,29 +244,29 @@ int main(int argc, char *argv[])
       /* input options */
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
-      if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+      if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+      if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+      if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
-      {
-          app.checkDependence("--read-xfer-auto", "--read-dataset", opt_iDataset);
           opt_ixfer = EXS_Unknown;
-      }
+      if (cmd.findOption("--read-xfer-detect"))
+          dcmAutoDetectDatasetXfer.set(OFTrue);
       if (cmd.findOption("--read-xfer-little"))
       {
-          app.checkDependence("--read-xfer-little", "--read-dataset", opt_iDataset);
+          app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-          app.checkDependence("--read-xfer-big", "--read-dataset", opt_iDataset);
+          app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_iDataset);
+          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
@@ -418,7 +420,7 @@ int main(int argc, char *argv[])
     DcmFileFormat fileformat;
     DcmDataset *dataset = fileformat.getDataset();
 
-    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
         CERR << "Error: " << error.text()
@@ -655,9 +657,16 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.11  2005-07-26 18:29:01  joergr
+ * Revision 1.12  2005-12-02 09:31:17  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ *
+ * Revision 1.11  2005/07/26 18:29:01  joergr
  * Added new command line option that allows to clip a rectangular image region
- * (combination with scaling no yet fully implemented in corresponding classes).
+ * (combination with scaling not yet fully implemented in corresponding classes).
  * Update ImageType, add DerivationDescription and SourceImageSequence.
  * Cleaned up use of CERR and COUT.
  *

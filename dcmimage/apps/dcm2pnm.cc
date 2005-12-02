@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:44:23 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2005-12-02 09:31:17 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, consoleDescription, rcsid);
     OFCommandLine cmd;
 
-    int                 opt_readAsDataset = 0;            /* default: fileformat or dataset */
+    E_FileReadMode      opt_readMode = ERM_autoDetect;    /* default: fileformat or dataset */
     E_TransferSyntax    opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
 
     unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData | CIF_TakeOverExternalDataset;
@@ -234,10 +234,12 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",          "+f",      "read file format or data set (default)");
+      cmd.addOption("--read-file-only",     "+fo",     "read file format only");
       cmd.addOption("--read-dataset",       "-f",      "read data set without file meta information");
 
-     cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+     cmd.addSubGroup("input transfer syntax:");
       cmd.addOption("--read-xfer-auto",     "-t=",     "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",   "-td",     "ignore TS specified in the file meta header");
       cmd.addOption("--read-xfer-little",   "-te",     "read with explicit VR little endian TS");
       cmd.addOption("--read-xfer-big",      "-tb",     "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit", "-ti",     "read with implicit VR little endian TS");
@@ -468,10 +470,9 @@ int main(int argc, char *argv[])
         /* input options: input file format */
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--read-dataset"))
-            opt_readAsDataset = 1;
-        if (cmd.findOption("--read-file"))
-            opt_readAsDataset = 0;
+        if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+        if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+        if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
         cmd.endOptionBlock();
 
         /* input options: input transfer syntax */
@@ -479,12 +480,23 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-xfer-auto"))
             opt_transferSyntax = EXS_Unknown;
-        if (cmd.findOption("--read-xfer-implicit"))
-            opt_transferSyntax = EXS_LittleEndianImplicit;
+        if (cmd.findOption("--read-xfer-detect"))
+            dcmAutoDetectDatasetXfer.set(OFTrue);
         if (cmd.findOption("--read-xfer-little"))
+        {
+            app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
             opt_transferSyntax = EXS_LittleEndianExplicit;
+        }
         if (cmd.findOption("--read-xfer-big"))
+        {
+            app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
             opt_transferSyntax = EXS_BigEndianExplicit;
+        }
+        if (cmd.findOption("--read-xfer-implicit"))
+        {
+            app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_transferSyntax = EXS_LittleEndianImplicit;
+        }
         cmd.endOptionBlock();
 
         /* image processing options: compatibility options */
@@ -878,8 +890,7 @@ int main(int argc, char *argv[])
 #endif
 
     DcmFileFormat *dfile = new DcmFileFormat();
-    OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL,
-        DCM_MaxReadLength, (opt_readAsDataset ? OFTrue : OFFalse));
+    OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL, DCM_MaxReadLength, opt_readMode);
 
     if (cond.bad())
     {
@@ -1499,7 +1510,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.81  2005-03-09 17:44:23  joergr
+ * Revision 1.82  2005-12-02 09:31:17  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ *
+ * Revision 1.81  2005/03/09 17:44:23  joergr
  * Added support for new overlay mode "invert bitmap".
  *
  * Revision 1.80  2004/01/05 14:46:53  joergr

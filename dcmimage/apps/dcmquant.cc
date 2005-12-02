@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2003, OFFIS
+ *  Copyright (C) 2001-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-24 14:55:23 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:31:17 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,8 +86,8 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
 
     OFBool opt_verbose = OFFalse;
-    OFBool opt_iDataset = OFFalse;
     OFBool opt_oDataset = OFFalse;
+    E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -141,10 +141,12 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",          "+f",      "read file format or data set (default)");
+      cmd.addOption("--read-file-only",     "+fo",     "read file format only");
       cmd.addOption("--read-dataset",       "-f",      "read data set without file meta information");
 
-     cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+     cmd.addSubGroup("input transfer syntax:");
       cmd.addOption("--read-xfer-auto",     "-t=",     "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",   "-td",     "ignore TS specified in the file meta header");
       cmd.addOption("--read-xfer-little",   "-te",     "read with explicit VR little endian TS");
       cmd.addOption("--read-xfer-big",      "-tb",     "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit", "-ti",     "read with implicit VR little endian TS");
@@ -248,29 +250,29 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
-      if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+      if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+      if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+      if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
-      {
-          if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
           opt_ixfer = EXS_Unknown;
-      }
+      if (cmd.findOption("--read-xfer-detect"))
+          dcmAutoDetectDatasetXfer.set(OFTrue);
       if (cmd.findOption("--read-xfer-little"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
@@ -395,7 +397,7 @@ int main(int argc, char *argv[])
     DcmFileFormat fileformat;
     DcmDataset *dataset = fileformat.getDataset();
 
-    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
         CERR << "Error: " << error.text()
@@ -465,7 +467,7 @@ int main(int argc, char *argv[])
     if (error.good()) error = DcmQuant::updateDerivationDescription(dataset, derivationDescription.c_str());
 
     // create new SOP instance UID
-    if (error.good() && (opt_secondarycapture || opt_uidcreation)) 
+    if (error.good() && (opt_secondarycapture || opt_uidcreation))
       error = DcmCodec::newInstance(dataset, "DCM", "121320", "Uncompressed predecessor");
 
     // convert to Secondary Capture if requested by user.
@@ -511,7 +513,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.11  2004-08-24 14:55:23  meichel
+ * Revision 1.12  2005-12-02 09:31:17  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ *
+ * Revision 1.11  2004/08/24 14:55:23  meichel
  * Removed duplicate code
  *
  * Revision 1.10  2003/12/05 10:50:52  joergr
