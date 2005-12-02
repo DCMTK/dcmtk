@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-11-05 17:17:24 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:19:26 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,8 +105,8 @@ protected:
     OFBool ignore_errors_option;
     //if false, metaheader UIDs are not updated when related dataset UIDs change
     OFBool update_metaheader_uids_option;
-    ///if true, then file is read without metaheader
-    OFBool input_dataset_option;
+    ///read file with or without metaheader
+    E_FileReadMode read_mode_option;
     ///denotes the expected transfersyntax
     E_TransferSyntax input_xfer_option;
 
@@ -206,7 +205,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.10  2004-11-05 17:17:24  onken
+** Revision 1.11  2005-12-02 09:19:26  joergr
+** Added new command line option that checks whether a given file starts with a
+** valid DICOM meta header.
+**
+** Revision 1.10  2004/11/05 17:17:24  onken
 ** Added input and output options for dcmodify. minor code enhancements.
 **
 ** Revision 1.9  2004/10/22 16:53:26  onken
