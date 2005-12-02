@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:34:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2005-12-02 10:37:30 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +55,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 static OFCondition dumpFile(ostream &out,
                             const char *ifname,
-                            const OFBool isDataset,
+                            const E_FileReadMode readMode,
                             const E_TransferSyntax xfer,
                             const size_t readFlags,
                             const size_t printFlags,
@@ -73,7 +72,7 @@ static OFCondition dumpFile(ostream &out,
     DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile != NULL)
     {
-        if (isDataset)
+        if (readMode == ERM_dataset)
             result = dfile->getDataset()->loadFile(ifname, xfer);
         else
             result = dfile->loadFile(ifname, xfer);
@@ -123,8 +122,8 @@ int main(int argc, char *argv[])
     size_t opt_readFlags = 0;
     size_t opt_printFlags = DSRTypes::PF_shortenLongItemValues;
     OFBool opt_printFilename = OFFalse;
-    OFBool isDataset = OFFalse;
-    E_TransferSyntax xfer = EXS_Unknown;
+    E_FileReadMode opt_readMode = ERM_autoDetect;
+    E_TransferSyntax opt_ixfer = EXS_Unknown;
 
     SetDebugLevel(( 0 ));
 
@@ -144,9 +143,11 @@ int main(int argc, char *argv[])
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
         cmd.addOption("--read-file",            "+f",  "read file format or data set (default)");
+        cmd.addOption("--read-file-only",       "+fo", "read file format only");
         cmd.addOption("--read-dataset",         "-f",  "read data set without file meta information");
-      cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
+      cmd.addSubGroup("input transfer syntax:");
         cmd.addOption("--read-xfer-auto",       "-t=", "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",     "-td", "ignore TS specified in the file meta header");
         cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
@@ -201,32 +202,30 @@ int main(int argc, char *argv[])
         }
 
         cmd.beginOptionBlock();
-        if (cmd.findOption("--read-file"))
-            isDataset = OFFalse;
-        if (cmd.findOption("--read-dataset"))
-            isDataset = OFTrue;
+        if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+        if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+        if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-xfer-auto"))
-        {
-            app.checkDependence("--read-xfer-auto", "--read-dataset", isDataset);
-            xfer = EXS_Unknown;
-        }
+            opt_ixfer = EXS_Unknown;
+        if (cmd.findOption("--read-xfer-detect"))
+            dcmAutoDetectDatasetXfer.set(OFTrue);
         if (cmd.findOption("--read-xfer-little"))
         {
-            app.checkDependence("--read-xfer-little", "--read-dataset", isDataset);
-            xfer = EXS_LittleEndianExplicit;
+            app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_ixfer = EXS_LittleEndianExplicit;
         }
         if (cmd.findOption("--read-xfer-big"))
         {
-            app.checkDependence("--read-xfer-big", "--read-dataset", isDataset);
-            xfer = EXS_BigEndianExplicit;
+            app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_ixfer = EXS_BigEndianExplicit;
         }
         if (cmd.findOption("--read-xfer-implicit"))
         {
-            app.checkDependence("--read-xfer-implicit", "--read-dataset", isDataset);
-            xfer = EXS_LittleEndianImplicit;
+            app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+            opt_ixfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
 
@@ -287,7 +286,7 @@ int main(int argc, char *argv[])
             COUT << OFString(79, '-') << endl;
             COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl << endl;
         }
-        if (dumpFile(COUT, current, isDataset, xfer, opt_readFlags, opt_printFlags, opt_debugMode != 0).bad())
+        if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags, opt_debugMode != 0).bad())
             errorCount++;
     }
 
@@ -301,7 +300,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.21  2004-01-05 14:34:59  joergr
+ * Revision 1.22  2005-12-02 10:37:30  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ *
+ * Revision 1.21  2004/01/05 14:34:59  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.20  2003/10/30 17:44:19  joergr

@@ -58,10 +58,10 @@ xmlfile-out  XML output filename (default: stdout)
 \verbatim
 character set:
 
-  +Cr  --charset-require     
+  +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  charset: string constant 
+  +Ca  --charset-assume  charset: string constant
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
          assume charset if undeclared ext. charset found
 
@@ -74,13 +74,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -112,7 +118,7 @@ encoding:
 
   +Et  --attr-template-id
          encode template id as XML attribute
-         
+
   +Ee  --template-envelope
          template element encloses content items
          (requires +Wt, implies +Et)

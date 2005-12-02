@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-24 12:53:39 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 10:34:26 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -701,7 +701,7 @@ int main(int argc, char *argv[])
   const char *                  opt_certfile = NULL;
   int                           opt_debugMode = 0;
   OFCmdUnsignedInt              opt_filepad = 0;
-  OFBool                        opt_iDataset = OFFalse;
+  E_FileReadMode                opt_readMode = ERM_autoDetect;
   const char *                  opt_ifname = NULL;
   OFCmdUnsignedInt              opt_itempad = 0;
   E_TransferSyntax              opt_ixfer = EXS_Unknown;
@@ -744,9 +744,11 @@ int main(int argc, char *argv[])
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",                 "+f",        "read file format or data set (default)");
+      cmd.addOption("--read-file-only",            "+fo",       "read file format only");
       cmd.addOption("--read-dataset",              "-f",        "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
       cmd.addOption("--read-xfer-auto",            "-t=",       "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",          "-td",       "ignore TS specified in the file meta header");
       cmd.addOption("--read-xfer-little",          "-te",       "read with explicit VR little endian TS");
       cmd.addOption("--read-xfer-big",             "-tb",       "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit",        "-ti",       "read with implicit VR little endian TS");
@@ -832,30 +834,30 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--debug")) opt_debugMode = 5;
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
-    if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+    if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+    if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+    if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
     cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--read-xfer-auto"))
-    {
-      if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
-      opt_ixfer = EXS_Unknown;
-    }
+        opt_ixfer = EXS_Unknown;
+    if (cmd.findOption("--read-xfer-detect"))
+        dcmAutoDetectDatasetXfer.set(OFTrue);
     if (cmd.findOption("--read-xfer-little"))
     {
-      if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
-      opt_ixfer = EXS_LittleEndianExplicit;
+        app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_LittleEndianExplicit;
     }
     if (cmd.findOption("--read-xfer-big"))
     {
-      if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
-      opt_ixfer = EXS_BigEndianExplicit;
+        app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_BigEndianExplicit;
     }
     if (cmd.findOption("--read-xfer-implicit"))
     {
-      if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
-      opt_ixfer = EXS_LittleEndianImplicit;
+        app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_LittleEndianImplicit;
     }
     cmd.endOptionBlock();
 
@@ -1005,7 +1007,7 @@ int main(int argc, char *argv[])
       const char *fileName = NULL;
       app.checkValue(cmd.getValue(fileName));
       opt_dumpFile = fopen(fileName, "wb");
-      if (opt_dumpFile == NULL) 
+      if (opt_dumpFile == NULL)
       {
         CERR << "error: unable to create dump file '" << fileName << "'" << endl;
         return 10;
@@ -1041,7 +1043,7 @@ int main(int argc, char *argv[])
   DcmFileFormat *fileformat = new DcmFileFormat;
   DcmDataset *dataset = dataset = fileformat->getDataset();
 
-  OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+  OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
   if (sicond.bad())
   {
     CERR << "Error: " << sicond.text() << ": reading file: " <<  opt_ifname << endl;
@@ -1110,7 +1112,7 @@ int main(int argc, char *argv[])
       break;
   }
 
-  if (opt_dumpFile) 
+  if (opt_dumpFile)
   {
     if (0 != fclose(opt_dumpFile))
     {
@@ -1162,7 +1164,14 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.19  2005-11-24 12:53:39  meichel
+ *  Revision 1.20  2005-12-02 10:34:26  joergr
+ *  Added new command line option that ignores the transfer syntax specified in
+ *  the meta header and tries to detect the transfer syntax automatically from
+ *  the dataset.
+ *  Added new command line option that checks whether a given file starts with a
+ *  valid DICOM meta header.
+ *
+ *  Revision 1.19  2005/11/24 12:53:39  meichel
  *  Fixed bug in code that prepares a byte stream that is fed into the MAC
  *    algorithm when creating or verifying a digital signature. The previous
  *    implementation was non-conformant when signatures included compressed
