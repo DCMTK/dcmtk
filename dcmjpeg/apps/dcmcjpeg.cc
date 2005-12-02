@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2004, OFFIS
+ *  Copyright (C) 2001-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 15:57:15 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:40:59 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
-  OFBool opt_iDataset = OFFalse;
+  E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -135,9 +135,11 @@ int main(int argc, char *argv[])
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+      cmd.addOption("--read-file-only",         "+fo",       "read file format only");
       cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
      cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
+     cmd.addOption("--read-xfer-detect",        "-td",       "ignore TS specified in the file meta header");
      cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
      cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
      cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
@@ -288,30 +290,30 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
-      if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+      if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+      if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+      if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
-      {
-        if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
-        opt_ixfer = EXS_Unknown;
-      }
+          opt_ixfer = EXS_Unknown;
+      if (cmd.findOption("--read-xfer-detect"))
+          dcmAutoDetectDatasetXfer.set(OFTrue);
       if (cmd.findOption("--read-xfer-little"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
-        opt_ixfer = EXS_LittleEndianExplicit;
+          app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+          opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
-        opt_ixfer = EXS_BigEndianExplicit;
+          app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+          opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-        if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
-        opt_ixfer = EXS_LittleEndianImplicit;
+          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+          opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -637,8 +639,7 @@ int main(int argc, char *argv[])
         COUT << "reading input file " << opt_ifname << endl;
 
     DcmFileFormat fileformat;
-    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer,
-        EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
         CERR << "Error: "
@@ -722,7 +723,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.13  2005-11-29 15:57:15  onken
+ * Revision 1.14  2005-12-02 09:40:59  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ *
+ * Revision 1.13  2005/11/29 15:57:15  onken
  * Added commandline options --accept-acr-nema and --accept-palettes
  * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
  * these options. Thanks to Gilles Mevel for suggestion.

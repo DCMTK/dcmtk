@@ -59,13 +59,19 @@ input file format:
   +f    --read-file
           read file format or data set (default)
 
+  +fo   --read-file-only
+          read file format only
+
   -f    --read-dataset
           read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=   --read-xfer-auto
           use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
   -te   --read-xfer-little
           read with explicit VR little endian TS
@@ -265,7 +271,7 @@ compatibility options:
   +Mv   --ignore-vlut-depth
           ignore 3rd value of the VOI LUT descriptor,
           determine bits per table entry automatically
-          
+
 TIFF options:
 
   +Tl   --compr-lzw
