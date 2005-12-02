@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress RLE-compressed DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-07 17:10:19 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:03:52 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,13 +85,13 @@ int main(int argc, char *argv[])
   E_PaddingEncoding opt_opadenc = EPD_noChange;
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
-  OFBool opt_iDataset = OFFalse;
+  E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
 
   // RLE parameters
   OFBool opt_uidcreation = OFFalse;
   OFBool opt_reversebyteorder = OFFalse;
-  
+
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Decode RLE-compressed DICOM file", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
 
     cmd.addSubGroup("input file format:");
      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+     cmd.addOption("--read-file-only",         "+fo",       "read file format only");
      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
 
   cmd.addGroup("processing options:");
@@ -188,12 +189,17 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
       {
-        opt_iDataset = OFFalse;
+        opt_readMode = ERM_autoDetect;
+        opt_ixfer = EXS_Unknown;
+      }
+      if (cmd.findOption("--read-file-only"))
+      {
+        opt_readMode = ERM_fileOnly;
         opt_ixfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-dataset"))
       {
-        opt_iDataset = OFTrue;
+        opt_readMode = ERM_dataset;
         opt_ixfer = EXS_RLELossless;
       }
       cmd.endOptionBlock();
@@ -277,7 +283,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "open input file " << opt_ifname << endl;
 
-    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
 
     if (error.bad())
     {
@@ -336,7 +342,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
- * Revision 1.10  2005-11-07 17:10:19  meichel
+ * Revision 1.11  2005-12-02 09:03:52  joergr
+ * Added new command line option that ignores the transfer syntax specified in
+ * the meta header and tries to detect the transfer syntax automatically from
+ * the dataset.
+ *
+ * Revision 1.10  2005/11/07 17:10:19  meichel
  * All tools that both read and write a DICOM file now call loadAllDataIntoMemory()
  *   to make sure they do not destroy a file when output = input.
  *
