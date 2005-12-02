@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-01 09:57:26 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2005-12-02 08:51:44 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,36 +206,39 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
         /* if the transfer state is ERW_init, go ahead and check the transfer syntax which was passed */
         if (fTransferState == ERW_init)
         {
-#ifdef NO_XFER_DETECTION_FOR_DATASETS
-            /* If the transfer syntax which was passed equals EXS_Unknown we want to */
-            /* determine the transfer syntax from the information in the stream itself. */
-            /* If the transfer syntax is given, we want to use it. */
-            if (xfer == EXS_Unknown)
-                Xfer = checkTransferSyntax(inStream);
-            else
-                Xfer = xfer;
-#else
-            /* To support incorrectly encoded datasets detect the transfer syntax from the stream.  */
-            /* This is possible for given unknown and plain big or little endian transfer syntaxes. */
-            switch( xfer )
+            if (dcmAutoDetectDatasetXfer.get())
             {
-                case EXS_Unknown:
-                case EXS_LittleEndianImplicit:
-                case EXS_LittleEndianExplicit:
-                case EXS_BigEndianExplicit:
-                case EXS_BigEndianImplicit:
+                /* To support incorrectly encoded datasets detect the transfer syntax from the stream.  */
+                /* This is possible for given unknown and plain big or little endian transfer syntaxes. */
+                switch( xfer )
+                {
+                    case EXS_Unknown:
+                    case EXS_LittleEndianImplicit:
+                    case EXS_LittleEndianExplicit:
+                    case EXS_BigEndianExplicit:
+                    case EXS_BigEndianImplicit:
+                        Xfer = checkTransferSyntax(inStream);
+                        if( xfer != EXS_Unknown && Xfer != xfer )
+                        {
+                            ofConsole.lockCerr() << "Warning: dcdatset: wrong transfer syntax specified, "
+                                                 << "detecting from dataset" << endl;
+                            ofConsole.unlockCerr();
+                        }
+                        break;
+                    default:
+                        Xfer = xfer;
+                }
+            }
+            else /* default behaviour */
+            {
+                /* If the transfer syntax which was passed equals EXS_Unknown we want to */
+                /* determine the transfer syntax from the information in the stream itself. */
+                /* If the transfer syntax is given, we want to use it. */
+                if (xfer == EXS_Unknown)
                     Xfer = checkTransferSyntax(inStream);
-                    if( xfer != EXS_Unknown && Xfer != xfer )
-                    {
-                        ofConsole.lockCerr() << "Warning: dcdatset: wrong transfer syntax specified, "
-                                             << "detecting from dataset" << endl;
-                        ofConsole.unlockCerr();
-                    }
-                    break;
-                default:
+                else
                     Xfer = xfer;
             }
-#endif
             /* Check stream compression for this transfer syntax */
             DcmXfer xf(Xfer);
             E_StreamCompression sc = xf.getStreamCompression();
@@ -592,7 +595,11 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.38  2005-12-01 09:57:26  joergr
+** Revision 1.39  2005-12-02 08:51:44  joergr
+** Changed macro NO_XFER_DETECTION_FOR_DATASETS into a global option that can
+** be enabled and disabled at runtime.
+**
+** Revision 1.38  2005/12/01 09:57:26  joergr
 ** Added support for DICOM objects where the dataset is stored with a different
 ** transfer syntax than specified in the meta header.  The new behaviour can be
 ** disabled by compiling with the macro NO_XFER_DETECTION_FOR_DATASETS defined.

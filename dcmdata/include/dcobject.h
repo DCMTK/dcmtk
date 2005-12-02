@@ -23,10 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-24 12:50:57 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 08:49:17 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,16 +68,16 @@ const Uint32 DCM_OptPrintLineLength = 70;
 const Uint32 DCM_OptPrintValueLength = 40;
 
 
-/** This flags defines whether automatic correction should be applied to input 
+/** This flags defines whether automatic correction should be applied to input
  *  data (e.g. stripping of padding blanks, removal of blanks in UIDs, etc).
  *  Default is enabled.
  */
 extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
-/** This flag defines the handling of illegal odd-length attributes: If flag is 
- *  true, odd lengths are respected (i.e. an odd number of bytes is read from 
- *  the input stream.) After successful reading, padding to even number of bytes 
- *  is enforced by adding a zero pad byte if dcmEnableAutomaticInputDataCorrection 
+/** This flag defines the handling of illegal odd-length attributes: If flag is
+ *  true, odd lengths are respected (i.e. an odd number of bytes is read from
+ *  the input stream.) After successful reading, padding to even number of bytes
+ *  is enforced by adding a zero pad byte if dcmEnableAutomaticInputDataCorrection
  *  is true. Otherwise the odd number of bytes remains as read.
  *
  *  If flag is false, old (pre DCMTK 3.5.2) behaviour applies: The length field
@@ -88,13 +87,13 @@ extern OFGlobal<OFBool> dcmAcceptOddAttributeLength; /* default OFTrue */
 
 /** This flag defines how UN attributes with undefined length are treated
  *  by the parser when reading. The default is to expect the content of the
- *  UN element (up to and including the sequence delimitation item) 
+ *  UN element (up to and including the sequence delimitation item)
  *  to be encoded in Implicit VR Little Endian, as described in CP 246.
  *  DCMTK expects the attribute to be encoded like a DICOM sequence, i.e.
  *  the content of each item is parsed as a DICOM dataset.
  *  If the flag is disabled old (pre DCMTK 3.5.4) behaviour applies: The
  *  attribute is treated as if it was an Explicit VR SQ element.
- *  
+ *
  *  Note that the flag only affects the read behaviour but not the write
  *  behaviour - DCMTK will never write UN elements with undefined length.
  */
@@ -109,6 +108,13 @@ extern OFGlobal<OFBool> dcmEnableCP246Support; /* default OFTrue */
  *  releases. Default is "off" (OFFalse).
  */
 extern OFGlobal<OFBool> dcmEnableOldSignatureFormat; /* default OFFalse */
+
+/** This flag defines whether the transfer syntax for uncompressed datasets
+ *  is detected automatically.  The automatic detection has been introduced
+ *  since there are (incorrectly encoded) DICOM dataset stored with a
+ *  different transfer syntax than specified in the meta header.
+ */
+extern OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
 
 /** base class for all DICOM objects defined in 'dcmdata'
  */
@@ -345,7 +351,11 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.39  2005-11-24 12:50:57  meichel
+ * Revision 1.40  2005-12-02 08:49:17  joergr
+ * Changed macro NO_XFER_DETECTION_FOR_DATASETS into a global option that can
+ * be enabled and disabled at runtime.
+ *
+ * Revision 1.39  2005/11/24 12:50:57  meichel
  * Fixed bug in code that prepares a byte stream that is fed into the MAC
  *   algorithm when creating or verifying a digital signature. The previous
  *   implementation was non-conformant when signatures included compressed

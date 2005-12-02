@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-24 12:50:59 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 08:53:57 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,7 @@ OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection(OFTrue);
 OFGlobal<OFBool> dcmAcceptOddAttributeLength(OFTrue);
 OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
 OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
+OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
 
 // ****** public methods **********************************
 
@@ -471,7 +472,11 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.43  2005-11-24 12:50:59  meichel
+ * Revision 1.44  2005-12-02 08:53:57  joergr
+ * Changed macro NO_XFER_DETECTION_FOR_DATASETS into a global option that can
+ * be enabled and disabled at runtime.
+ *
+ * Revision 1.43  2005/11/24 12:50:59  meichel
  * Fixed bug in code that prepares a byte stream that is fed into the MAC
  *   algorithm when creating or verifying a digital signature. The previous
  *   implementation was non-conformant when signatures included compressed
