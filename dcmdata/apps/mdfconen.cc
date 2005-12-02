@@ -22,9 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:58:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2005-12-02 09:18:15 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +70,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
                                    const char *application_name)
   : app(NULL), cmd(NULL), ds_man(NULL), verbose_option(OFFalse),
     debug_option(OFFalse), ignore_errors_option(OFFalse),
-    update_metaheader_uids_option(OFTrue), input_dataset_option(OFFalse),
+    update_metaheader_uids_option(OFTrue), read_mode_option(ERM_autoDetect),
     input_xfer_option(EXS_Unknown), output_dataset_option(OFFalse),
     output_xfer_option(EXS_Unknown), glenc_option(EGL_recalcGL),
     enctype_option(EET_ExplicitLength), padenc_option(EPD_withoutPadding),
@@ -109,9 +108,11 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     cmd->addGroup("input options:", LONGCOL, SHORTCOL);
         cmd->addSubGroup("input file format:", LONGCOL, SHORTCOL);
             cmd->addOption("--read-file",          "+f",        "read file format or data set (default)");
+            cmd->addOption("--read-file-only",     "+fo",       "read file format only");
             cmd->addOption("--read-dataset",       "-f",        "read data set without file meta information");
-        cmd->addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+        cmd->addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
             cmd->addOption("--read-xfer-auto",     "-t=",       "use TS recognition (default)");
+            cmd->addOption("--read-xfer-detect",   "-td",       "ignore TS specified in the file meta header");
             cmd->addOption("--read-xfer-little",   "-te",       "read with explicit VR little endian TS");
             cmd->addOption("--read-xfer-big",      "-tb",       "read with explicit VR big endian TS");
             cmd->addOption("--read-xfer-implicit", "-ti",       "read with implicit VR little endian TS");
@@ -242,30 +243,31 @@ void MdfConsoleEngine::parseNonJobOptions()
     //input options:
     cmd->beginOptionBlock();
     if (cmd->findOption("--read-file"))
-        input_dataset_option = OFFalse;
+        read_mode_option = ERM_autoDetect;
+    if (cmd->findOption("--read-file-only"))
+        read_mode_option = ERM_fileOnly;
     if (cmd->findOption("--read-dataset"))
-        input_dataset_option = OFTrue;
+        read_mode_option = ERM_dataset;
     cmd->endOptionBlock();
 
     cmd->beginOptionBlock();
     if (cmd->findOption("--read-xfer-auto"))
-    {
-        app->checkDependence("--read-xfer-auto", "--read-dataset", input_dataset_option);
         input_xfer_option = EXS_Unknown;
-    }
+    if (cmd->findOption("--read-xfer-detect"))
+        dcmAutoDetectDatasetXfer.set(OFTrue);
     if (cmd->findOption("--read-xfer-little"))
     {
-        app->checkDependence("--read-xfer-little", "--read-dataset", input_dataset_option);
+        app->checkDependence("--read-xfer-little", "--read-dataset", read_mode_option == ERM_dataset);
         input_xfer_option = EXS_LittleEndianExplicit;
     }
     if (cmd->findOption("--read-xfer-big"))
     {
-        app->checkDependence("--read-xfer-big", "--read-dataset", input_dataset_option);
+        app->checkDependence("--read-xfer-big", "--read-dataset", read_mode_option == ERM_dataset);
         input_xfer_option = EXS_BigEndianExplicit;
     }
     if (cmd->findOption("--read-xfer-implicit"))
     {
-        app->checkDependence("--read-xfer-implicit", "--read-dataset", input_dataset_option);
+        app->checkDependence("--read-xfer-implicit", "--read-dataset", read_mode_option == ERM_dataset);
         input_xfer_option = EXS_LittleEndianImplicit;
     }
     cmd->endOptionBlock();
@@ -590,7 +592,7 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     ds_man = new MdfDatasetManager(debug_option);
     debugMsg(verbose_option,"Processing file: ", filename, "");
     //load file into dataset manager
-    result=ds_man->loadFile(filename, input_dataset_option, input_xfer_option);
+    result=ds_man->loadFile(filename, read_mode_option, input_xfer_option);
     if (result.good())
         result=backupFile(filename);
     return result;
@@ -708,7 +710,14 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.13  2005-03-09 17:58:00  joergr
+** Revision 1.14  2005-12-02 09:18:15  joergr
+** Added new command line option that ignores the transfer syntax specified in
+** the meta header and tries to detect the transfer syntax automatically from
+** the dataset.
+** Added new command line option that checks whether a given file starts with a
+** valid DICOM meta header.
+**
+** Revision 1.13  2005/03/09 17:58:00  joergr
 ** Replaced "," between two delete statements by ";" since this confuses some
 ** compilers.
 **
