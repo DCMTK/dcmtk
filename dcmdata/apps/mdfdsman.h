@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-30 16:41:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:21:47 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,12 +59,12 @@ public:
 
     /** Loads a file into dataset manager
      *  @param file_name file to be loaded
-        @param only_dataset read file without metaheader, if true. Default=false
+        @param readMode read file with or without metaheader
         @param xfer try to read with this transfer syntax. Default=autodetect
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition loadFile(const char *file_name,
-                         const OFBool only_dataset=OFFalse,
+                         const E_FileReadMode readMode=ERM_autoDetect,
                          const E_TransferSyntax xfer=EXS_Unknown);
 
     /** Modifies/Inserts a tag with a specific value
@@ -280,7 +279,12 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.14  2005-11-30 16:41:41  onken
+** Revision 1.15  2005-12-02 09:21:47  joergr
+** Added new file read mode that makes it possible to distinguish between DICOM
+** files, datasets and other non-DICOM files.  For this reason, the last
+** parameter of method loadFile() changed from OFBool to E_FileReadMode.
+**
+** Revision 1.14  2005/11/30 16:41:41  onken
 ** Added standard parameter values for saveFile()
 **
 ** Revision 1.13  2005/11/14 15:00:14  joergr
