@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-22 08:19:09 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2005-12-02 08:50:30 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +96,12 @@ typedef enum {
 } E_TransferState;
 
 
+typedef enum {
+    ERM_autoDetect = 0,     // auto detect: fileformat or dataset
+    ERM_dataset = 1,        // dataset (ignore meta header)
+    ERM_fileOnly = 2        // fileformat only
+} E_FileReadMode;
+
 
 /** General purpose class hiding constants from the global namespace.
  */
@@ -134,7 +139,7 @@ struct DCMTypes
 
     /// encode binary data as Base64 (MIME)
     static const size_t XF_encodeBase64;
-    
+
     /// XML namespace URI for dcmsr module
     static const size_t XF_useDcmtkNamespace;
 
@@ -154,7 +159,11 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.19  2003-04-22 08:19:09  joergr
+ * Revision 1.20  2005-12-02 08:50:30  joergr
+ * Added new file read mode that makes it possible to distinguish between DICOM
+ * files, datasets and other non-DICOM files.
+ *
+ * Revision 1.19  2003/04/22 08:19:09  joergr
  * Added new command line option which allows to embed the content of the DTD
  * instead of referencing the DTD file.
  *
