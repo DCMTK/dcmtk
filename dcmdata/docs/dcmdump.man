@@ -56,13 +56,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -123,8 +129,8 @@ printing:
   -M   --load-short
          do not load very long values (e.g. pixel data)
 
-  +R   --max-read-length  [k]ilo-bytes: integer (64 <= k <= 4194302)
-         set threshold for long values to k kilo-bytes
+  +R   --max-read-length  [k]bytes: integer [64..4194302]
+         set threshold for long values to k kbytes
 
   +L   --print-all
          print long tag values completely
