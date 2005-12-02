@@ -48,18 +48,21 @@ dcmfile-out  DICOM output filename
 \verbatim
 input file format:
 
-  +f    --read-file            
+  +f    --read-file
           read file format or data set (default)
 
-  -f    --read-dataset         
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
           read data set without file meta information
 
-  # This option allows to decompress JPEG compressed DICOM objects that have 
-  # been stored as dataset without meta-header. Such a thing should not exist 
-  # since the transfer syntax cannot be reliably determined without meta-header, 
+  # This option allows to decompress JPEG compressed DICOM objects that have
+  # been stored as dataset without meta-header. Such a thing should not exist
+  # since the transfer syntax cannot be reliably determined without meta-header,
   # but unfortunately it does.
 \endverbatim
-  
+
 \subsection processing_options processing options
 
 \verbatim
@@ -230,7 +233,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2001-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

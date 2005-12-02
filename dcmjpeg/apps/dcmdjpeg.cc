@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-30 14:10:43 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 09:41:40 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   OFBool opt_oDataset = OFFalse;
-  OFBool opt_iDataset = OFFalse;
+  E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -111,6 +111,7 @@ int main(int argc, char *argv[])
    cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+     cmd.addOption("--read-file-only",         "+fo",       "read file format only");
      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
 
   cmd.addGroup("processing options:");
@@ -204,12 +205,17 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
       {
-        opt_iDataset = OFFalse;
+        opt_readMode = ERM_autoDetect;
+        opt_ixfer = EXS_Unknown;
+      }
+      if (cmd.findOption("--read-file-only"))
+      {
+        opt_readMode = ERM_fileOnly;
         opt_ixfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-dataset"))
       {
-        opt_iDataset = OFTrue;
+        opt_readMode = ERM_dataset;
 
         // we don't know the real transfer syntax of the dataset, but this does
         // not matter. As long as the content of encapsulated pixel sequences is
@@ -304,7 +310,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "reading input file " << opt_ifname << endl;
 
-    error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
+    error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
         CERR << "Error: "
@@ -365,7 +371,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.11  2005-11-30 14:10:43  onken
+ * Revision 1.12  2005-12-02 09:41:40  joergr
+ * Added new command line option that checks whether a given file starts with a
+ * valid DICOM meta header.
+ *
+ * Revision 1.11  2005/11/30 14:10:43  onken
  * Added hint concerning --convert-never option when color conversion fails
  *
  * Revision 1.10  2005/11/07 17:10:21  meichel
