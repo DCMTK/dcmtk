@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 08:53:36 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2005-12-02 11:57:44 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,7 +567,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             if (FileReadMode == ERM_fileOnly)
             {
                 // reject file if no meta header present
-                if (errorFlag.good() and (newxfer == EXS_Unknown))
+                if (errorFlag.good() && (newxfer == EXS_Unknown))
                     errorFlag = EC_InvalidStream;
             }
             if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
@@ -876,7 +876,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.40  2005-12-02 08:53:36  joergr
+** Revision 1.41  2005-12-02 11:57:44  joergr
+** Fixed minor bug.
+**
+** Revision 1.40  2005/12/02 08:53:36  joergr
 ** Added new file read mode that makes it possible to distinguish between DICOM
 ** files, datasets and other non-DICOM files.  For this reason, the last
 ** parameter of method loadFile() changed from OFBool to E_FileReadMode.
