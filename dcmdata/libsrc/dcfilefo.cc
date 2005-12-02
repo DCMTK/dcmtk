@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 08:53:36 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,8 @@
 
 
 DcmFileFormat::DcmFileFormat()
-  : DcmSequenceOfItems(InternalUseTag)
+  : DcmSequenceOfItems(InternalUseTag),
+    FileReadMode(ERM_autoDetect)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -74,7 +75,8 @@ DcmFileFormat::DcmFileFormat()
 
 
 DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
-    : DcmSequenceOfItems(InternalUseTag)
+    : DcmSequenceOfItems(InternalUseTag),
+      FileReadMode(ERM_autoDetect)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
     DcmSequenceOfItems::itemList->insert(MetaInfo);
@@ -89,7 +91,8 @@ DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
 
 
 DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
-  : DcmSequenceOfItems(old)
+  : DcmSequenceOfItems(old),
+    FileReadMode(old.FileReadMode)
 {
 }
 
@@ -102,6 +105,7 @@ DcmFileFormat::~DcmFileFormat()
 DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
 {
     DcmSequenceOfItems::operator=(obj);
+    FileReadMode = obj.FileReadMode;
     return *this;
 }
 
@@ -560,6 +564,12 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
 
             // read MetaInfo() from Tag(0002,0010) and determine xfer
             newxfer = lookForXfer(metaInfo);
+            if (FileReadMode == ERM_fileOnly)
+            {
+                // reject file if no meta header present
+                if (errorFlag.good() and (newxfer == EXS_Unknown))
+                    errorFlag = EC_InvalidStream;
+            }
             if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
             {
                 dataset = getDataset();
@@ -697,9 +707,9 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
                                     const E_TransferSyntax readXfer,
                                     const E_GrpLenEncoding groupLength,
                                     const Uint32 maxReadLength,
-                                    OFBool isDataset)
+                                    const E_FileReadMode readMode)
 {
-    if (isDataset)
+    if (readMode == ERM_dataset)
         return getDataset()->loadFile(fileName, readXfer, groupLength, maxReadLength);
 
     OFCondition l_error = EC_IllegalParameter;
@@ -715,11 +725,16 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
             /* clear this object */
             l_error = clear();
             if (l_error.good())
-            {            
+            {
+                /* save old value */
+                const E_FileReadMode oldMode = FileReadMode;
+                FileReadMode = readMode;
                 /* read data from file */
                 transferInit();
                 l_error = read(fileStream, readXfer, groupLength, maxReadLength);
                 transferEnd();
+                /* restore old value */
+                FileReadMode = oldMode;
             }
         }
     }
@@ -734,7 +749,7 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
                                     const E_PaddingEncoding padEncoding,
                                     const Uint32 padLength,
                                     const Uint32 subPadLength,
-                                    OFBool isDataset)
+                                    const OFBool isDataset)
 {
     if (isDataset)
     {
@@ -861,7 +876,12 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.39  2005-11-28 15:53:13  meichel
+** Revision 1.40  2005-12-02 08:53:36  joergr
+** Added new file read mode that makes it possible to distinguish between DICOM
+** files, datasets and other non-DICOM files.  For this reason, the last
+** parameter of method loadFile() changed from OFBool to E_FileReadMode.
+**
+** Revision 1.39  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.38  2005/11/07 17:22:33  meichel
