@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-07-01 12:28:25 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-02 08:48:17 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,22 +152,23 @@ class DcmFileFormat
 
     /** load object from a DICOM file.
      *  This method supports DICOM objects stored as a file (with meta header) or as a
-     *  dataset (without meta header). Presence of a meta header is detected automatically.
+     *  dataset (without meta header).  By default, the presence of a meta header is
+     *  detected automatically.
      *  @param fileName name of the file to load
      *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
      *    (with getXXX()) or loadAllDataElements() is called.
-     *  @param isDataset if true, meta header detection is disabled and loading of a
-     *    dataset without meta header is forced.
+     *  @param readMode read file with or without meta header, i.e. as a fileformat or a
+     *    dataset.  Use ERM_fileOnly in order to force the presence of a meta header.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition loadFile(const char *fileName,
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
                                  const Uint32 maxReadLength = DCM_MaxReadLength,
-                                 OFBool isDataset = OFFalse);
+                                 const E_FileReadMode readMode = ERM_autoDetect);
 
     /** save object to a DICOM file.
      *  @param fileName name of the file to save
@@ -188,7 +188,7 @@ class DcmFileFormat
                                  const E_PaddingEncoding padEncoding = EPD_noChange,
                                  const Uint32 padLength = 0,
                                  const Uint32 subPadLength = 0,
-                                 OFBool isDataset = OFFalse);
+                                 const OFBool isDataset = OFFalse);
 
     // methods for different pixel representations
 
@@ -226,6 +226,25 @@ class DcmFileFormat
         getDataset()->removeAllButCurrentRepresentations();
     }
 
+    /** get current file read mode.  This mode specifies whether a file is read as a
+     *  fileformat or dataset (without meta header).  In addition, the reading can be
+     *  restricted to DICOM files only.
+     *  @return file read mode
+     */
+    E_FileReadMode getReadMode() const
+    {
+        return FileReadMode;
+    }
+
+    /** set current file read mode.  This mode specifies whether a file is read as a
+     *  fileformat or dataset (without meta header).  In addition, the reading can be
+     *  restricted to DICOM files only.
+     *  @param readMode file read mode to be set
+     */
+    void setReadMode(const E_FileReadMode readMode)
+    {
+        FileReadMode = readMode;
+    }
 
 // The following methods have no meaning in DcmFileFormat and shall not be
 // called. Since it is not possible to delete inherited methods from a class
@@ -247,6 +266,9 @@ class DcmFileFormat
                            const E_TransferSyntax oxfer);
 
     E_TransferSyntax lookForXfer(DcmMetaInfo *metainfo);
+
+    /// file read mode, specifies whether to read the meta header or not
+    E_FileReadMode FileReadMode;
 };
 
 
@@ -256,7 +278,12 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.23  2004-07-01 12:28:25  meichel
+** Revision 1.24  2005-12-02 08:48:17  joergr
+** Added new file read mode that makes it possible to distinguish between DICOM
+** files, datasets and other non-DICOM files.  For this reason, the last
+** parameter of method loadFile() changed from OFBool to E_FileReadMode.
+**
+** Revision 1.23  2004/07/01 12:28:25  meichel
 ** Introduced virtual clone method for DcmObject and derived classes.
 **
 ** Revision 1.22  2002/12/06 12:49:10  joergr
