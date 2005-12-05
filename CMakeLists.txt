@@ -11,7 +11,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.0)
 IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.0.6)
   SET(CMAKE_BACKWARDS_COMPATIBILITY 2.0.6 CACHE STRING "Latest version of CMake when this project was released." FORCE)
 ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.0.6)
- 
+
 # specify installation prefix
 SET(CMAKE_INSTALL_PREFIX "${dcmtk_SOURCE_DIR}/dcmtk-3.5.4-win32-i386/")
 
@@ -26,8 +26,9 @@ MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 # define user configurable options and paths to external libraries which might be used
 
-# shared libraries
-OPTION(WITH_SHARED_LIBS "Build with shared libraries." OFF)
+# shared libraries (not yet available)
+#OPTION(WITH_SHARED_LIBS "Build with shared libraries." OFF)
+SET(WITH_SHARED_LIBS OFF)
 SET(BUILD_SHARED_LIBS ${WITH_SHARED_LIBS})
 
 # doxygen support
@@ -119,7 +120,7 @@ ADD_DEFINITIONS(-D_REENTRANT)
 
 # libxml support
 IF(WITH_LIBXML AND WITH_LIBXMLINC)
-  ADD_DEFINITIONS(-DWITH_LIBXML)  
+  ADD_DEFINITIONS(-DWITH_LIBXML)
   SET(LIBXML_INCDIR ${WITH_LIBXMLINC}/include)
   SET(LIBXML_LIBDIR ${WITH_LIBXMLINC}/lib)
   SET(LIBXML_LIBS debug libxml2_d optimized libxml2_o debug iconv_d optimized iconv_o)
