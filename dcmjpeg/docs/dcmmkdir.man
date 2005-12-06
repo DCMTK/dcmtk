@@ -25,7 +25,7 @@ Currently the following profiles are supported (others might be added later):
 \li General Purpose MIME Interchange (STD-GEN-MIME)
 \li General Purpose USB and Flash Memory with Compression Interchange
     (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
-\li DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
+\li DVD Interchange with MPEG2 MP\@ML (STD-DVD-MPEG2-MPML)
 \li Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
 \li 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
 \li 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
