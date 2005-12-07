@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 08:58:44 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-07 16:42:49 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
     const char *opt_defaultCharset = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
-    OFCmdUnsignedInt maxReadLength = DCM_MaxReadLength; // default: 4096 bytes
+    OFCmdUnsignedInt maxReadLength = 4096; // default is 4 KB
 
     SetDebugLevel(( 0 ));
 
@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("long tag values:");
         cmd.addOption("--load-all",            "+M",     "load very long tag values (e.g. pixel data)");
         cmd.addOption("--load-short",          "-M",     "do not load very long values (default)");
-        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer [64..4194302]",
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
                                                          "set threshold for long values to k kbytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--max-read-length"))
         {
-            app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 64, 4194302));
+            app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 4, 4194302));
             maxReadLength *= 1024; // convert kbytes to bytes
         }
         cmd.beginOptionBlock();
@@ -459,7 +459,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.20  2005-12-02 08:58:44  joergr
+ * Revision 1.21  2005-12-07 16:42:49  onken
+ * Changed default and minimum value of --max-read-length to 4 KB
+ *
+ * Revision 1.20  2005/12/02 08:58:44  joergr
  * Added new command line option that ignores the transfer syntax specified in
  * the meta header and tries to detect the transfer syntax automatically from
  * the dataset.
