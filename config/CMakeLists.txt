@@ -2,4 +2,4 @@
 PROJECT(config)
 
 # recurse into subdirectories
-SUBDIRS(include)
+SUBDIRS(include/dcmtk/config)

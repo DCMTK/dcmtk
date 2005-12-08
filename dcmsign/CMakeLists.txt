@@ -5,4 +5,4 @@ PROJECT(dcmsign)
 INCLUDE_DIRECTORIES(${dcmsign_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${ZLIB_INCDIR} ${OPENSSL_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc apps include)
+SUBDIRS(libsrc apps include/dcmtk/dcmsign)

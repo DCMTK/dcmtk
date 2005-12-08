@@ -5,4 +5,4 @@ PROJECT(dcmwlm)
 INCLUDE_DIRECTORIES(${dcmwlm_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${dcmnet_SOURCE_DIR}/include ${ZLIB_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc apps include docs)
+SUBDIRS(libsrc apps include/dcmtk/dcmwlm docs)
