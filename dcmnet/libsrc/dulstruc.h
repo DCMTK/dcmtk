@@ -50,14 +50,14 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
+** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:48:09 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "extneg.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmnet/extneg.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
@@ -310,7 +310,10 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.8  2004-02-25 12:31:17  meichel
+** Revision 1.9  2005-12-08 15:48:09  meichel
+** Updated Makefiles to correctly install header files
+**
+** Revision 1.8  2004/02/25 12:31:17  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.

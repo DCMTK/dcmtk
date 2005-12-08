@@ -50,7 +50,7 @@
 
 #ifdef __cplusplus
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 #else
 #include <stdio.h>
 #endif
@@ -65,13 +65,13 @@
     /* undefined */ vrscan& operator=(const vrscan&); \
     /* undefined */ vrscan(const vrscan&);
 #line 84 "vrscan.l"
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #line 134 "vrscan.l"
 #line 56 "flexskel.xh"
 
 #ifdef YY_USE_CLASS
 #ifdef YY_vrscan_IOSTREAM
-#include "ofstream.h"
+#include "dcmtk/ofstd/ofstream.h"
 #define YY_vrscan_IFILE  istream
 #define YY_vrscan_OFILE ostream 
 #define YY_vrscan_ERRFILE cerr

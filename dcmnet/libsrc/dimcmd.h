@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-10-12 10:18:32 $
+** Update Date:		$Date: 2005-12-08 15:48:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,9 +71,9 @@
  * Required Include Files
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dimse.h"
+#include "dcmtk/dcmnet/dimse.h"
 
 /*
  * Function Prototypes
@@ -96,7 +96,10 @@ DIMSE_countElements(DcmDataset *obj);
 /*
 ** CVS Log
 ** $Log: dimcmd.h,v $
-** Revision 1.3  2001-10-12 10:18:32  meichel
+** Revision 1.4  2005-12-08 15:48:09  meichel
+** Updated Makefiles to correctly install header files
+**
+** Revision 1.3  2001/10/12 10:18:32  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!

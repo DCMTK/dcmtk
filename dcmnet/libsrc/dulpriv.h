@@ -51,16 +51,16 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: meichel $, $Date: 2004-02-25 12:31:17 $
+** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:48:09 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
 #ifndef DULPRIVATE_H
 #define DULPRIVATE_H
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 
 #define	PRV_DEFAULTTIMEOUT	-1
@@ -114,7 +114,10 @@ void parseDebug(OFBool flag);
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.7  2004-02-25 12:31:17  meichel
+** Revision 1.8  2005-12-08 15:48:09  meichel
+** Updated Makefiles to correctly install header files
+**
+** Revision 1.7  2004/02/25 12:31:17  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.

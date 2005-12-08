@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,15 +24,15 @@
  *    the IJG library from the central DCMTK configuration file osconfig.h
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 09:48:54 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2005-12-08 15:47:55 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 /* We assume ANSI C and don't support DOS, 
  * so the following settings need not be tested 
@@ -85,7 +85,10 @@
 
 /*
  *  $Log: jconfig8.h,v $
- *  Revision 1.3  2001-12-18 09:48:54  meichel
+ *  Revision 1.4  2005-12-08 15:47:55  meichel
+ *  Updated Makefiles to correctly install header files
+ *
+ *  Revision 1.3  2001/12/18 09:48:54  meichel
  *  Modified configure test for "const" support of the C compiler
  *    in order to avoid a macro recursion error on Sun CC 2.0.1
  *

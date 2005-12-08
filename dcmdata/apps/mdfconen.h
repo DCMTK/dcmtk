@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:19:26 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:50 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,13 +33,13 @@
 #ifndef MDFCONEN_H
 #define MDFCONEN_H
 
-#include "osconfig.h"   // make sure OS specific configuration is included first
+#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfdsman.h"
-#include "oftypes.h"
-#include "ofconapp.h"
-#include "oflist.h"
-#include "ofcond.h"
-#include "dctagkey.h"
+#include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/dcmdata/dctagkey.h"
 
 /** class reflecting a modify operation (called Job in this context)
  */
@@ -205,7 +205,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.11  2005-12-02 09:19:26  joergr
+** Revision 1.12  2005-12-08 15:46:50  meichel
+** Updated Makefiles to correctly install header files
+**
+** Revision 1.11  2005/12/02 09:19:26  joergr
 ** Added new command line option that checks whether a given file starts with a
 ** valid DICOM meta header.
 **

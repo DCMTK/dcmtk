@@ -16,9 +16,10 @@ include $(configdir)/@common_makefile@
 all: 
 
 install: 
-	$(configdir)/mkinstalldirs $(includedir)/dcmqrdb
-	for file in *.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmqrdb ; \
+	$(configdir)/mkinstalldirs $(includedir)/dcmtk
+	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmqrdb
+	for file in dcmtk/dcmqrdb/*.h ; do \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmqrdb ; \
 	done
 
 clean:

@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:21:47 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:50 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,13 +33,13 @@
 #ifndef MDFDSMAN_H
 #define MDFDSMAN_H
 
-#include "osconfig.h"   // make sure OS specific configuration is included first
-#include "dctagkey.h"
-#include "dcfilefo.h"
-#include "ofcond.h"
-#include "oflist.h"
-#include "ofcmdln.h"
-#include "dcvrat.h"
+#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
+#include "dcmtk/dcmdata/dctagkey.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmdata/dcvrat.h"
 
 /** This class encapsulates data structures and operations for modifying
  *  Dicom files. Therefore it allows the process of load->modify->save to
@@ -279,7 +279,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.15  2005-12-02 09:21:47  joergr
+** Revision 1.16  2005-12-08 15:46:50  meichel
+** Updated Makefiles to correctly install header files
+**
+** Revision 1.15  2005/12/02 09:21:47  joergr
 ** Added new file read mode that makes it possible to distinguish between DICOM
 ** files, datasets and other non-DICOM files.  For this reason, the last
 ** parameter of method loadFile() changed from OFBool to E_FileReadMode.
