@@ -30,8 +30,10 @@ libsrc-all:
 
 include-install:
 	./mkinstalldirs $(includedir)
-	$(INSTALL_DATA) include/osconfig.h $(includedir)
-	$(INSTALL_DATA) include/cfunix.h $(includedir)
+	./mkinstalldirs $(includedir)/dcmtk
+	./mkinstalldirs $(includedir)/dcmtk/config
+	$(INSTALL_DATA) include/dcmtk/config/osconfig.h $(includedir)/dcmtk/config
+	$(INSTALL_DATA) include/dcmtk/config/cfunix.h $(includedir)/dcmtk/config
 
 clean:
 	(cd include; rm -f $(TRASH))
