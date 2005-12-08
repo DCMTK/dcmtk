@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:06 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,15 +31,15 @@
  */
 
 
-#include "osconfig.h"
-#include "ofconsol.h"
-#include "dctypes.h"
-#include "dcdeftag.h"
-#include "dctagkey.h"
-#include "ofbmanip.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dctagkey.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 
-#include "diovpln.h"
-#include "didocu.h"
+#include "dcmtk/dcmimgle/diovpln.h"
+#include "dcmtk/dcmimgle/didocu.h"
 
 
 /*----------------*
@@ -603,7 +603,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.28  2003-12-23 16:03:18  joergr
+ * Revision 1.29  2005-12-08 15:43:06  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.28  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

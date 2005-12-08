@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:05 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
-#include "diovlimg.h"
-#include "dimopxt.h"
-#include "didocu.h"
+#include "dcmtk/dcmimgle/diovlimg.h"
+#include "dcmtk/dcmimgle/dimopxt.h"
+#include "dcmtk/dcmimgle/didocu.h"
 
 
 /*----------------*
@@ -122,7 +122,10 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
- * Revision 1.12  2003-12-23 16:03:18  joergr
+ * Revision 1.13  2005-12-08 15:43:05  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.12  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

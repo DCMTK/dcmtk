@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2005-12-08 15:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,27 +31,27 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofstream.h"
-#include "ofstd.h"
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofcast.h"
 
-#include "dcsequen.h"
-#include "dcitem.h"
-#include "dcdirrec.h"
-#include "dcvr.h"
-#include "dcpxitem.h"
-#include "dcswap.h"
-#include "dcdebug.h"
-#include "dcmetinf.h"
-#include "dcdeftag.h"
-#include "dcistrma.h"    /* for class DcmInputStream */
-#include "dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcdirrec.h"
+#include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dcpxitem.h"
+#include "dcmtk/dcmdata/dcswap.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 
 
 // ********************************
@@ -1244,7 +1244,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.60  2005-11-28 15:53:13  meichel
+** Revision 1.61  2005-12-08 15:41:36  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.60  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.59  2005/11/15 18:28:04  meichel

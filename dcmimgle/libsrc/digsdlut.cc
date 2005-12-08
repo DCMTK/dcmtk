@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2004, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-14 11:58:29 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:50 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,14 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofconsol.h"
-#include "digsdlut.h"
-#include "displint.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmimgle/digsdlut.h"
+#include "dcmtk/dcmimgle/displint.h"
 
 #define INCLUDE_CMATH
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*----------------*
@@ -251,7 +251,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.20  2004-04-14 11:58:29  joergr
+ * Revision 1.21  2005-12-08 15:42:50  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.20  2004/04/14 11:58:29  joergr
  * Changed type of integer variable to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.19  2003/12/23 16:03:18  joergr

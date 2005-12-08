@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 16:59:25 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2005-12-08 15:41:57 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,18 +31,18 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstd.h"
-#include "ofstream.h"
-#include "dcvrobow.h"
-#include "dcdeftag.h"
-#include "dcswap.h"
-#include "dcvm.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcswap.h"
+#include "dcmtk/dcmdata/dcvm.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 // ********************************
@@ -613,7 +613,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.44  2005-11-15 16:59:25  meichel
+** Revision 1.45  2005-12-08 15:41:57  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.44  2005/11/15 16:59:25  meichel
 ** Added new pseudo VR type EVR_lt that is used for LUT Data when read in
 **   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
 **

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRMammographyCadSRConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-07-27 16:55:04 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:58 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrmamcc.h"
+#include "dcmtk/dcmsr/dsrmamcc.h"
 
 
 DSRMammographyCadSRConstraintChecker::DSRMammographyCadSRConstraintChecker()
@@ -139,7 +139,10 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
- *  Revision 1.4  2005-07-27 16:55:04  joergr
+ *  Revision 1.5  2005-12-08 15:47:58  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.4  2005/07/27 16:55:04  joergr
  *  Added workaround to allow by-reference relationships as needed for some
  *  Mammography CAD SR templates.
  *

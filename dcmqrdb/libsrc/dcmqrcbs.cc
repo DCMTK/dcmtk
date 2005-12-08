@@ -22,25 +22,25 @@
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:53 $
+ *  Update Date:      $Date: 2005-12-08 15:47:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrcbs.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrcbs.h"
 
-#include "dcmqrcnf.h"
-#include "dcdeftag.h"
-#include "dcmqropt.h"
-#include "diutil.h"
-#include "dcfilefo.h"
-#include "dcmqrdbs.h"
-#include "dcmqrdbi.h"
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
 
 
 void DcmQueryRetrieveStoreContext::updateDisplay(T_DIMSE_StoreProgress * progress)
@@ -194,7 +194,10 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 /*
  * CVS Log
  * $Log: dcmqrcbs.cc,v $
- * Revision 1.1  2005-03-30 13:34:53  meichel
+ * Revision 1.2  2005-12-08 15:47:07  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2005/03/30 13:34:53  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

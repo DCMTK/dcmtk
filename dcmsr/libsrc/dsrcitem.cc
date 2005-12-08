@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:59:37 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:39 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,24 +32,24 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrcitem.h"
-#include "dsrtextn.h"
-#include "dsrcodtn.h"
-#include "dsrnumtn.h"
-#include "dsrdtitn.h"
-#include "dsrdattn.h"
-#include "dsrtimtn.h"
-#include "dsruidtn.h"
-#include "dsrpnmtn.h"
-#include "dsrscotn.h"
-#include "dsrtcotn.h"
-#include "dsrcomtn.h"
-#include "dsrimgtn.h"
-#include "dsrwavtn.h"
-#include "dsrcontn.h"
-#include "dsrreftn.h"
+#include "dcmtk/dcmsr/dsrcitem.h"
+#include "dcmtk/dcmsr/dsrtextn.h"
+#include "dcmtk/dcmsr/dsrcodtn.h"
+#include "dcmtk/dcmsr/dsrnumtn.h"
+#include "dcmtk/dcmsr/dsrdtitn.h"
+#include "dcmtk/dcmsr/dsrdattn.h"
+#include "dcmtk/dcmsr/dsrtimtn.h"
+#include "dcmtk/dcmsr/dsruidtn.h"
+#include "dcmtk/dcmsr/dsrpnmtn.h"
+#include "dcmtk/dcmsr/dsrscotn.h"
+#include "dcmtk/dcmsr/dsrtcotn.h"
+#include "dcmtk/dcmsr/dsrcomtn.h"
+#include "dcmtk/dcmsr/dsrimgtn.h"
+#include "dcmtk/dcmsr/dsrwavtn.h"
+#include "dcmtk/dcmsr/dsrcontn.h"
+#include "dcmtk/dcmsr/dsrreftn.h"
 
 
 // definition of empty default objects
@@ -648,7 +648,10 @@ OFCondition DSRContentItem::setTemplateIdentification(const OFString &templateId
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.13  2003-10-30 17:59:37  joergr
+ *  Revision 1.14  2005-12-08 15:47:39  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.13  2003/10/30 17:59:37  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *

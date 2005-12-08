@@ -22,20 +22,20 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 11:27:20 $
+ *  Update Date:      $Date: 2005-12-08 15:47:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqropt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqropt.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqropt.h"
 
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 const OFConditionConst APPE_INVALIDPEER(1024, 1, OF_error, "dcmqrdb: invalid peer for move operation");
 const OFCondition APP_INVALIDPEER(APPE_INVALIDPEER);
@@ -106,7 +106,10 @@ void DcmQueryRetrieveOptions::errmsg(const char* msg, ...)
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
- * Revision 1.4  2005-11-29 11:27:20  meichel
+ * Revision 1.5  2005-12-08 15:47:11  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.4  2005/11/29 11:27:20  meichel
  * Added new flag keepDBHandleDuringAssociation_ which allows to determine
  *   whether a DB handle is kept open for a complete association or a single
  *   DIMSE message only. Also improved error handling of file locking.

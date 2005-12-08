@@ -25,17 +25,17 @@
  *           of these classes supports the Solaris, POSIX and Win32
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-07-27 17:07:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 /* if WITH_THREADS is undefined, we don't even attempt to implement a thread interface. */
 #ifdef WITH_THREADS
@@ -43,7 +43,7 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_WINDOWS_H
 #define WINDOWS_INTERFACE
@@ -74,9 +74,9 @@ extern "C" {
 
 #endif /* WITH_THREADS */
 
-#include "ofthread.h"
-#include "ofconsol.h"
-#include "ofstring.h"
+#include "dcmtk/ofstd/ofthread.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstring.h"
 
 // The Posix interfaces are not always correctly declared as volatile,
 // so we need a two-step cast from our internal representation
@@ -939,7 +939,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.15  2005-07-27 17:07:52  joergr
+ * Revision 1.16  2005-12-08 15:49:02  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.15  2005/07/27 17:07:52  joergr
  * Fixed problem with pthread_t type cast and gcc 4.0.
  *
  * Revision 1.14  2004/08/03 16:44:17  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,28 +22,28 @@
  *  Purpose:
  *    classes: DVPSGraphicLayer_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:29 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpsgll.h"
-#include "dvpsgl.h"      /* for DVPSGraphicLayer */
-#include "dvpsdef.h"     /* for DVPS_IDX_NONE */
-#include "dvpsgal.h"     /* for DVPSOverlayCurveActivationLayer_PList */
-#include "dvpsall.h"     /* for DVPSGraphicAnnotation_PList& annotations */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsgll.h"
+#include "dcmtk/dcmpstat/dvpsgl.h"      /* for DVPSGraphicLayer */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for DVPS_IDX_NONE */
+#include "dcmtk/dcmpstat/dvpsgal.h"     /* for DVPSOverlayCurveActivationLayer_PList */
+#include "dcmtk/dcmpstat/dvpsall.h"     /* for DVPSGraphicAnnotation_PList& annotations */
 
-#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
-#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
-#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
-#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
-#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 DVPSGraphicLayer_PList::DVPSGraphicLayer_PList()
 : list_()
@@ -457,7 +457,10 @@ void DVPSGraphicLayer_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool d
 
 /*
  *  $Log: dvpsgll.cc,v $
- *  Revision 1.16  2004-02-04 15:57:49  joergr
+ *  Revision 1.17  2005-12-08 15:46:29  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.16  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.15  2003/09/05 08:37:46  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,20 @@
  *  Purpose: Test code of double/ascii conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:11:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstftoa.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "ofstd.h"
-#include "oftypes.h"
-#include "ofconsol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 
 struct tuple
@@ -189,7 +189,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstftoa.cc,v $
- * Revision 1.3  2002-12-09 13:11:39  joergr
+ * Revision 1.4  2005-12-08 15:49:08  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2002/12/09 13:11:39  joergr
  * Added copy constructor and private undefined assignment operator.
  *
  * Revision 1.2  2002/12/05 11:18:45  meichel

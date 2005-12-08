@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedTimeOffsetList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:07:04 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dsrtcoto.h"
-#include "ofstd.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmsr/dsrtcoto.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /* declared in class DSRListOfItems<T> */
@@ -179,7 +179,10 @@ OFCondition DSRReferencedTimeOffsetList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.13  2003-08-07 14:07:04  joergr
+ *  Revision 1.14  2005-12-08 15:48:13  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.13  2003/08/07 14:07:04  joergr
  *  Added new putString() method.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.

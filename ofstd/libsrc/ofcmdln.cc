@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 13:58:28 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:49 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,11 +31,11 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofcmdln.h"
-#include "ofstd.h"
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
@@ -1462,7 +1462,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.35  2003-12-05 13:58:28  joergr
+ * Revision 1.36  2005-12-08 15:48:49  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.35  2003/12/05 13:58:28  joergr
  * Fixed problem with retrieving option values using the new iteration feature.
  *
  * Revision 1.34  2003/12/05 10:35:24  joergr

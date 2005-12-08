@@ -24,15 +24,15 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 14:25:12 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2005-12-08 15:41:42 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* this includes either winsock.h or winsock2.h */
@@ -52,7 +52,7 @@
 #define INCLUDE_CTIME
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
@@ -79,10 +79,10 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "ofstream.h"
-#include "dcuid.h"
-#include "ofthread.h"
-#include "ofcrc32.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/ofthread.h"
+#include "dcmtk/ofstd/ofcrc32.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -1396,7 +1396,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.61  2005-11-17 14:25:12  meichel
+** Revision 1.62  2005-12-08 15:41:42  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.61  2005/11/17 14:25:12  meichel
 ** Fixed warnings reported by VS2005
 **
 ** Revision 1.60  2005/11/16 18:36:10  joergr

@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-07-27 16:34:26 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:07 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,12 +33,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrsoprf.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrsoprf.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
-#include "dcdeftag.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 
 // --- DSRSOPInstanceReferenceList::InstanceStruct ---
@@ -1418,7 +1418,10 @@ OFBool DSRSOPInstanceReferenceList::containsExtendedCharacters()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.8  2005-07-27 16:34:26  joergr
+ *  Revision 1.9  2005-12-08 15:48:07  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.8  2005/07/27 16:34:26  joergr
  *  Added method that allows to add a DICOM dataset to the list of references.
  *
  *  Revision 1.7  2004/11/22 16:39:12  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 15:13:18 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
-#include "dctk.h"
-#include "ofstring.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/ofstd/ofstring.h"
 
-#include "didocu.h"
-#include "diutils.h"
+#include "dcmtk/dcmimgle/didocu.h"
+#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*----------------*
@@ -374,7 +374,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.15  2003-12-08 15:13:18  joergr
+ * Revision 1.16  2005-12-08 15:42:48  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.15  2003/12/08 15:13:18  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.14  2002/08/21 09:51:47  meichel

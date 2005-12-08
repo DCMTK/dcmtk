@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Create sample structured reports using the dcmsr API
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:38:05 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:27 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofstream.h"
-#include "dsrdoc.h"
-#include "dcuid.h"
-#include "dcfilefo.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
 
 
 // forward declarations
@@ -1273,7 +1273,10 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.24  2004-01-05 14:38:05  joergr
+ *  Revision 1.25  2005-12-08 15:48:27  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.24  2004/01/05 14:38:05  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.23  2003/10/09 17:48:35  joergr

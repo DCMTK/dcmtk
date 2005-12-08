@@ -23,18 +23,18 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:24 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2005-12-08 15:46:41 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpsdef.h"
-#include "dvpspr.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"
+#include "dcmtk/dcmpstat/dvpspr.h"
 
 /* --------------- class DVPSPrintMessageHandler --------------- */
 
@@ -641,7 +641,10 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.19  2005-11-16 14:58:24  meichel
+ *  Revision 1.20  2005-12-08 15:46:41  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.19  2005/11/16 14:58:24  meichel
  *  Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
  *    the responsiveness of the tools if the peer blocks during assoc negotiation.
  *

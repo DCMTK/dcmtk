@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:29:05 $
+ *  Update Date:      $Date: 2005-12-08 15:46:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,30 +35,30 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "ofstream.h"
-#include "dctk.h"
-#include "cmdlnarg.h"
-#include "dcuid.h"    /* for dcmtk version name */
-#include "ofconapp.h"
-#include "ofstring.h"
-#include "dicrvfit.h"
-#include "digsdfn.h"
-#include "diutils.h"
-#include "ofstream.h"
-#include "ofstd.h"
-#include "dcdebug.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmimgle/dicrvfit.h"
+#include "dcmtk/dcmimgle/digsdfn.h"
+#include "dcmtk/dcmimgle/diutils.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CMATH
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -1093,7 +1093,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.38  2005-11-28 15:29:05  meichel
+ * Revision 1.39  2005-12-08 15:46:03  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.38  2005/11/28 15:29:05  meichel
  * File dcdebug.h is not included by any other header file in the toolkit
  *   anymore, to minimize the risk of name clashes of macro debug().
  *

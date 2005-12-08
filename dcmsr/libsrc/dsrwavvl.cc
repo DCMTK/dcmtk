@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:18:30 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:23 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,10 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrwavvl.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrwavvl.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue()
@@ -268,7 +268,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.15  2003-08-07 14:18:30  joergr
+ *  Revision 1.16  2005-12-08 15:48:23  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.15  2003/08/07 14:18:30  joergr
  *  Added readXML functionality.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *

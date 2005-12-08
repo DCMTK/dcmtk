@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2002-11-27 13:04:40 $
+** Update Date:         $Date: 2005-12-08 15:44:42 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:    $Revision: 1.11 $
+** CVS/RCS Revision:    $Revision: 1.12 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -69,21 +69,21 @@
 ** Include Files
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
 
-#include "diutil.h"
-#include "dimse.h"              /* always include the module header */
-#include "cond.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
+#include "dcmtk/dcmnet/cond.h"
 
 
 /*
@@ -458,7 +458,10 @@ DIMSE_findProvider(
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.11  2002-11-27 13:04:40  meichel
+** Revision 1.12  2005-12-08 15:44:42  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.11  2002/11/27 13:04:40  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.10  2001/11/01 13:49:05  wilkens

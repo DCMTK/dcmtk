@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeModality (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:37:08 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:00 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,13 +31,13 @@
  */
 
 
-#include "osconfig.h"
-#include "dcdeftag.h"
-#include "dcuid.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
-#include "dimomod.h"
-#include "didocu.h"
-#include "diinpx.h"
+#include "dcmtk/dcmimgle/dimomod.h"
+#include "dcmtk/dcmimgle/didocu.h"
+#include "dcmtk/dcmimgle/diinpx.h"
 
 
 /*----------------*
@@ -265,7 +265,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.20  2005-03-09 17:37:08  joergr
+ * Revision 1.21  2005-12-08 15:43:00  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.20  2005/03/09 17:37:08  joergr
  * Fixed bug in calculation of bits stored value after modality transformation.
  *
  * Revision 1.19  2003/12/17 16:18:34  joergr

@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:31:17 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:16 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,50 +31,50 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "dctk.h"          /* for various dcmdata headers */
-#include "dcdebug.h"       /* for SetDebugLevel */
-#include "cmdlnarg.h"      /* for prepareCmdLineArgs */
-#include "dcuid.h"         /* for dcmtk version name */
-#include "dcrledrg.h"      /* for DcmRLEDecoderRegistration */
+#include "dcmtk/dcmdata/dctk.h"          /* for various dcmdata headers */
+#include "dcmtk/dcmdata/dcdebug.h"       /* for SetDebugLevel */
+#include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
+#include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcrledrg.h"      /* for DcmRLEDecoderRegistration */
 
-#include "dcmimage.h"      /* for DicomImage */
-#include "digsdfn.h"       /* for DiGSDFunction */
-#include "diciefn.h"       /* for DiCIELABFunction */
+#include "dcmtk/dcmimgle/dcmimage.h"      /* for DicomImage */
+#include "dcmtk/dcmimgle/digsdfn.h"       /* for DiGSDFunction */
+#include "dcmtk/dcmimgle/diciefn.h"       /* for DiCIELABFunction */
 
-#include "ofconapp.h"      /* for OFConsoleApplication */
-#include "ofcmdln.h"       /* for OFCommandLine */
+#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
+#include "dcmtk/ofstd/ofcmdln.h"       /* for OFCommandLine */
 
-#include "diregist.h"      /* include to support color images */
-#include "ofstd.h"         /* for OFStandard */
+#include "dcmtk/dcmimage/diregist.h"      /* include to support color images */
+#include "dcmtk/ofstd/ofstd.h"         /* for OFStandard */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-# include "djdecode.h"     /* for dcmjpeg decoders */
-# include "dipijpeg.h"     /* for dcmimage JPEG plugin */
+#include "dcmtk/dcmjpeg/djdecode.h"     /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/dipijpeg.h"     /* for dcmimage JPEG plugin */
 #endif
 
 #ifdef WITH_LIBTIFF
-# include "dipitiff.h"     /* for dcmimage TIFF plugin */
+#include "dcmtk/dcmimage/dipitiff.h"     /* for dcmimage TIFF plugin */
 #endif
 
 #ifdef WITH_LIBPNG
-# include "dipipng.h"      /* for dcmimage PNG plugin */
+#include "dcmtk/dcmimage/dipipng.h"      /* for dcmimage PNG plugin */
 #endif
 
 #ifdef WITH_ZLIB
-# include <zlib.h>         /* for zlibVersion() */
+#include <zlib.h>         /* for zlibVersion() */
 #endif
 
-#include "ofstream.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
 
@@ -1510,7 +1510,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.82  2005-12-02 09:31:17  joergr
+ * Revision 1.83  2005-12-08 15:42:16  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.82  2005/12/02 09:31:17  joergr
  * Added new command line option that ignores the transfer syntax specified in
  * the meta header and tries to detect the transfer syntax automatically from
  * the dataset.

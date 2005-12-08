@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,20 +23,20 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:10 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2005-12-08 15:46:28 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsgl.h"
-#include "dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsgl.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 /* --------------- class DVPSGraphicLayer --------------- */
 
@@ -306,7 +306,10 @@ void DVPSGraphicLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.12  2002-11-27 15:48:10  meichel
+ *  Revision 1.13  2005-12-08 15:46:28  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.12  2002/11/27 15:48:10  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.11  2002/08/20 12:41:00  meichel

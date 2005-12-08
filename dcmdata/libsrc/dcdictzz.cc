@@ -12,8 +12,8 @@
 **
 */
 
-#include "dcdict.h"
-#include "dcdicent.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcdicent.h"
 
 const char* dcmBuiltinDictBuildDate = "2005-11-1517:54:43";
 

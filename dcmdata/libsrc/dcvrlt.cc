@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmLongText
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:48:20 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:56 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,9 +31,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcvrlt.h"
+#include "dcmtk/dcmdata/dcvrlt.h"
 
 
 // ********************************
@@ -107,7 +107,10 @@ OFCondition DcmLongText::getOFStringArray(OFString &stringVal,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
-** Revision 1.14  2004-01-16 13:48:20  joergr
+** Revision 1.15  2005-12-08 15:41:56  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.14  2004/01/16 13:48:20  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.13  2002/12/06 13:05:51  joergr

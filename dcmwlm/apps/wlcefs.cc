@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:45:34 $
+ *  Update Date:      $Date: 2005-12-08 15:48:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,23 +34,23 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"
-#include "dicom.h"
-#include "ofcmdln.h"
-#include "wltypdef.h"
-#include "dcxfer.h"
-#include "ofconapp.h"
-#include "assoc.h"
-#include "cmdlnarg.h"
-#include "dimse.h"
-#include "dcdebug.h"
-#include "dcvrat.h"
-#include "dcvrlo.h"
-#include "wlds.h"
-#include "dcsequen.h"
-#include "wldsfs.h"
-#include "wlmactmg.h"
-#include "dimse.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmwlm/wlds.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/dcmwlm/wldsfs.h"
+#include "dcmtk/dcmwlm/wlmactmg.h"
+#include "dcmtk/dcmnet/dimse.h"
 
 #include "wlcefs.h"
 
@@ -398,7 +398,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.9  2005-11-17 13:45:34  meichel
+** Revision 1.10  2005-12-08 15:48:30  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.9  2005/11/17 13:45:34  meichel
 ** Added command line options for DIMSE and ACSE timeouts
 **
 ** Revision 1.8  2005/05/04 11:33:47  wilkens

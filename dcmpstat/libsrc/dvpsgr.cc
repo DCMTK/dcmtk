@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,18 +23,18 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:27 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-12-08 15:46:30 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsgr.h"
-#include "ofstring.h"
-#include "dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsgr.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
 /* --------------- class DVPSGraphicObject --------------- */
 
@@ -329,7 +329,10 @@ void DVPSGraphicObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.10  2001-09-26 15:36:27  meichel
+ *  Revision 1.11  2005-12-08 15:46:30  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.10  2001/09/26 15:36:27  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.9  2001/06/01 15:50:31  meichel

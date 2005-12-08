@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,35 +22,35 @@
  *  Purpose: Worklist Database Test Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:43:39 $
+ *  Update Date:      $Date: 2005-12-08 15:48:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dicom.h"
-#include "wltypdef.h"
-#include "dcvrlo.h"
-#include "dcvrat.h"
-#include "wldsfs.h"
-#include "dcfilefo.h"
-#include "dcdebug.h"
-#include "dcdict.h"
-#include "cmdlnarg.h"
-#include "ofstd.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmwlm/wldsfs.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 
 static char rcsid[] = "$dcmtk: wltest v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -374,7 +374,10 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
-** Revision 1.3  2004-08-03 11:43:39  meichel
+** Revision 1.4  2005-12-08 15:48:36  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.3  2004/08/03 11:43:39  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.2  2004/02/11 09:49:06  joergr

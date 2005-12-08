@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,22 +23,22 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:51 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2005-12-08 15:47:24 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_OPENSSL
 
-#include "simaccon.h"
-#include "simac.h"
-#include "dcitem.h"
-#include "dcvrat.h"
+#include "dcmtk/dcmsign/simaccon.h"
+#include "dcmtk/dcmsign/simac.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrat.h"
 
 // block size used for the memory buffer
 #define SiMACConstructor_BlockSize 16384
@@ -204,7 +204,10 @@ int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.7  2002-12-16 12:57:51  meichel
+ *  Revision 1.8  2005-12-08 15:47:24  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.7  2002/12/16 12:57:51  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *

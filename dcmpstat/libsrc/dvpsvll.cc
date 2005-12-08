@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,18 +22,18 @@
  *  Purpose:
  *    classes: DVPSVOILUT_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:56 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsvll.h"
-#include "dvpsvl.h"      /* for DVPSVOILUT */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsvll.h"
+#include "dcmtk/dcmpstat/dvpsvl.h"      /* for DVPSVOILUT */
 
 
 DVPSVOILUT_PList::DVPSVOILUT_PList()
@@ -136,7 +136,10 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.9  2004-02-04 15:57:49  joergr
+ *  Revision 1.10  2005-12-08 15:46:56  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.9  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.8  2003/09/05 08:37:46  meichel

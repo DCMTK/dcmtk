@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 12:44:20 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:56 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,11 +31,11 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CTIME
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -43,7 +43,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "ofdatime.h"
+#include "dcmtk/ofstd/ofdatime.h"
 
 
 /*------------------*
@@ -265,7 +265,10 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime)
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.7  2004-04-16 12:44:20  joergr
+ * Revision 1.8  2005-12-08 15:48:56  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2004/04/16 12:44:20  joergr
  * Restructured code to avoid default parameter values for "complex types" like
  * OFString. Required for Sun CC 2.0.1.
  *

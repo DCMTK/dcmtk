@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:44:11 $
+ *  Update Date:      $Date: 2005-12-08 15:44:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/lst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "lst.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmnet/lst.h"
 
 LST_HEAD::LST_HEAD()
 : theList()
@@ -164,7 +164,10 @@ void *LST_Position(LST_HEAD ** lst, void *node)
 /*
  * CVS Log
  * $Log: lst.cc,v $
- * Revision 1.5  2003-06-02 16:44:11  meichel
+ * Revision 1.6  2005-12-08 15:44:55  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2003/06/02 16:44:11  meichel
  * Renamed local variables to avoid name clashes with STL
  *
  * Revision 1.4  2001/10/12 10:17:36  meichel

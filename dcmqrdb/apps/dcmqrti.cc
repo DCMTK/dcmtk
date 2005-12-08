@@ -22,16 +22,16 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:44:59 $
+ *  Update Date:      $Date: 2005-12-08 15:47:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -40,22 +40,22 @@
 #define INCLUDE_CERRNO
 #define INCLUDE_CTIME
 #define INCLUDE_CSIGNAL
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
 END_EXTERN_C
-#include "dcmqrtis.h"
-#include "assoc.h"
-#include "dimse.h"
-#include "ofcmdln.h"
-#include "dcmqrcnf.h"
-#include "dcdict.h"
-#include "cmdlnarg.h"
-#include "dcdebug.h"
-#include "dcuid.h"
-#include "ofconapp.h"
+#include "dcmtk/dcmqrdb/dcmqrtis.h"
+#include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/ofconapp.h"
 #ifdef WITH_ZLIB
 #include <zlib.h>          /* for zlibVersion() */
 #endif
@@ -412,7 +412,10 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.4  2005-11-17 13:44:59  meichel
+ * Revision 1.5  2005-12-08 15:47:03  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.4  2005/11/17 13:44:59  meichel
  * Added command line options for DIMSE and ACSE timeouts
  *
  * Revision 1.3  2005/11/16 14:59:00  meichel

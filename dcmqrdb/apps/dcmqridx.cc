@@ -22,33 +22,33 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:44 $
+ *  Update Date:      $Date: 2005-12-08 15:47:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dicom.h"
-#include "dcmqrdbs.h"
-#include "dcmqrdbi.h"
-#include "diutil.h"
-#include "dcdebug.h"
-#include "dcompat.h"
-#include "dcdict.h"
-#include "cmdlnarg.h"
-#include "dcuid.h"       /* for dcmtk version name */
-#include "ofconapp.h"
-#include "ofcmdln.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmnet/dcompat.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofcmdln.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -195,7 +195,10 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.1  2005-03-30 13:34:44  meichel
+ * Revision 1.2  2005-12-08 15:47:01  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2005/03/30 13:34:44  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal

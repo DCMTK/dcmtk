@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:11:57 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:18 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtree.h"
+#include "dcmtk/dcmsr/dsrtree.h"
 
 
 // initialize tree node counter (ID)
@@ -255,7 +255,10 @@ size_t DSRTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.cc,v $
- *  Revision 1.6  2003-08-07 14:11:57  joergr
+ *  Revision 1.7  2005-12-08 15:48:18  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.6  2003/08/07 14:11:57  joergr
  *  Added comment.
  *
  *  Revision 1.5  2001/03/28 09:07:42  joergr

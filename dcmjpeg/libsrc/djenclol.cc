@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,22 +22,22 @@
  *  Purpose: Codec class for encoding JPEG Lossless (8/12/16-bit)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:32 $
+ *  Update Date:      $Date: 2005-12-08 15:43:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djenclol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djenclol.h"
-#include "djcparam.h"
-#include "djrplol.h"
-#include "djeijg8.h"
-#include "djeijg12.h"
-#include "djeijg16.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djenclol.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/dcmjpeg/djrplol.h"
+#include "dcmtk/dcmjpeg/djeijg8.h"
+#include "dcmtk/dcmjpeg/djeijg12.h"
+#include "dcmtk/dcmjpeg/djeijg16.h"
 
 
 DJEncoderLossless::DJEncoderLossless()
@@ -106,7 +106,10 @@ DJEncoder *DJEncoderLossless::createEncoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djenclol.cc,v $
- * Revision 1.1  2001-11-13 15:58:32  meichel
+ * Revision 1.2  2005-12-08 15:43:44  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2001/11/13 15:58:32  meichel
  * Initial release of module dcmjpeg
  *
  *

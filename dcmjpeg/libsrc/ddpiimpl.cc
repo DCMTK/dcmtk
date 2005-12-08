@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of DICOMDIR image support (plugin)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-12 13:14:54 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:24 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,13 +31,13 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ddpiimpl.h"
-#include "dcmimage.h"    /* for class DicomImage */
-#include "discalet.h"    /* for direct image scaling */
+#include "dcmtk/dcmjpeg/ddpiimpl.h"
+#include "dcmtk/dcmimgle/dcmimage.h"    /* for class DicomImage */
+#include "dcmtk/dcmimgle/discalet.h"    /* for direct image scaling */
 
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 
 /*------------------*
@@ -129,7 +129,10 @@ OFBool DicomDirImageImplementation::scaleImage(DcmItem *dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: ddpiimpl.cc,v $
- *  Revision 1.1  2003-08-12 13:14:54  joergr
+ *  Revision 1.2  2005-12-08 15:43:24  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.1  2003/08/12 13:14:54  joergr
  *  Added plugable image support for the new DICOMDIR class.
  *
  *

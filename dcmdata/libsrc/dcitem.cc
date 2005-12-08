@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2005-12-08 15:41:16 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,55 +31,55 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcitem.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcitem.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcdebug.h"
-#include "dcdefine.h"    /* for memzero() */
-#include "dcdeftag.h"    /* for name constants */
-#include "dcistrma.h"    /* for class DcmInputStream */
-#include "dcobject.h"
-#include "dcostrma.h"    /* for class DcmOutputStream */
-#include "dcovlay.h"
-#include "dcpixel.h"
-#include "dcsequen.h"
-#include "dcswap.h"
-#include "dcvr.h"
-#include "dcvrae.h"
-#include "dcvras.h"
-#include "dcvrat.h"
-#include "dcvrcs.h"
-#include "dcvrda.h"
-#include "dcvrds.h"
-#include "dcvrdt.h"
-#include "dcvrfd.h"
-#include "dcvrfl.h"
-#include "dcvris.h"
-#include "dcvrlo.h"
-#include "dcvrlt.h"
-#include "dcvrobow.h"
-#include "dcvrof.h"
-#include "dcvrpn.h"
-#include "dcvrsh.h"
-#include "dcvrsl.h"
-#include "dcvrss.h"
-#include "dcvrst.h"
-#include "dcvrtm.h"
-#include "dcvrui.h"
-#include "dcvrul.h"
-#include "dcvrulup.h"
-#include "dcvrus.h"
-#include "dcvrut.h"
-#include "dcxfer.h"
-#include "ofstream.h"
-#include "ofstring.h"
-#include "ofcast.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcdefine.h"    /* for memzero() */
+#include "dcmtk/dcmdata/dcdeftag.h"    /* for name constants */
+#include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcobject.h"
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcovlay.h"
+#include "dcmtk/dcmdata/dcpixel.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/dcmdata/dcswap.h"
+#include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dcvrae.h"
+#include "dcmtk/dcmdata/dcvras.h"
+#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrds.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/dcmdata/dcvrfd.h"
+#include "dcmtk/dcmdata/dcvrfl.h"
+#include "dcmtk/dcmdata/dcvris.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmdata/dcvrlt.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
+#include "dcmtk/dcmdata/dcvrof.h"
+#include "dcmtk/dcmdata/dcvrpn.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcvrsl.h"
+#include "dcmtk/dcmdata/dcvrss.h"
+#include "dcmtk/dcmdata/dcvrst.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcvrul.h"
+#include "dcmtk/dcmdata/dcvrulup.h"
+#include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcvrut.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 
 // ********************************
@@ -3278,7 +3278,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.96  2005-11-28 15:53:13  meichel
+** Revision 1.97  2005-12-08 15:41:16  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.96  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.95  2005/11/15 18:28:04  meichel

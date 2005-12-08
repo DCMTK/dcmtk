@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2005-12-08 15:40:56 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,19 +31,19 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstream.h"
-#include "ofstring.h"
-#include "ofstd.h"
-#include "dcbytstr.h"
-#include "dcvr.h"
-#include "dcdebug.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcbytstr.h"
+#include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_NEW
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 // ********************************
@@ -583,7 +583,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.39  2005-11-28 15:53:13  meichel
+** Revision 1.40  2005-12-08 15:40:56  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.39  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.38  2004/02/04 16:10:49  joergr

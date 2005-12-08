@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-11-22 16:44:47 $
+** Update Date:         $Date: 2005-12-08 15:44:44 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:    $Revision: 1.11 $
+** CVS/RCS Revision:    $Revision: 1.12 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -69,21 +69,21 @@
 ** Include Files
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
 
-#include "diutil.h"
-#include "dimse.h"              /* always include the module header */
-#include "cond.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
+#include "dcmtk/dcmnet/cond.h"
 
 /*
 **
@@ -447,7 +447,10 @@ DIMSE_moveProvider(
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.11  2005-11-22 16:44:47  meichel
+** Revision 1.12  2005-12-08 15:44:44  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.11  2005/11/22 16:44:47  meichel
 ** Added option to movescu that allows graceful handling of Move SCPs
 **   that send illegal datasets following pending C-MOVE-RSP messages.
 **

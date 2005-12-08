@@ -23,9 +23,9 @@
  *           SOP class in order to shutdown server applications)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-16 14:58:07 $
+ *  Update Date:      $Date: 2005-12-08 15:44:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,21 +34,21 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofcmdln.h"
-#include "assoc.h"
-#include "ofconapp.h"
-#include "cmdlnarg.h"
-#include "dimse.h"
-#include "dcdebug.h"
-#include "dcdict.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>
@@ -343,7 +343,10 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.3  2005-11-16 14:58:07  meichel
+** Revision 1.4  2005-12-08 15:44:23  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.3  2005/11/16 14:58:07  meichel
 ** Set association timeout in ASC_initializeNetwork to 30 seconds. This improves
 **   the responsiveness of the tools if the peer blocks during assoc negotiation.
 **

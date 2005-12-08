@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 17:50:37 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:19 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,14 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
-#include "dcdeftag.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
-#include "diargimg.h"
-#include "diargpxt.h"
-#include "diluptab.h"
-#include "diinpx.h"
+#include "dcmtk/dcmimage/diargimg.h"
+#include "dcmtk/dcmimage/diargpxt.h"
+#include "dcmtk/dcmimgle/diluptab.h"
+#include "dcmtk/dcmimgle/diinpx.h"
 
 
 /*----------------*
@@ -145,7 +145,10 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
- * Revision 1.16  2003-12-17 17:50:37  joergr
+ * Revision 1.17  2005-12-08 15:42:19  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.16  2003/12/17 17:50:37  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *

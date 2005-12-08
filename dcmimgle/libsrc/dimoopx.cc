@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonoOutputPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 14:55:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:01 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,10 +31,10 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "dimoopx.h"
-#include "dimopx.h"
+#include "dcmtk/dcmimgle/dimoopx.h"
+#include "dcmtk/dcmimgle/dimopx.h"
 
 
 /*----------------*
@@ -91,7 +91,10 @@ int DiMonoOutputPixel::isUnused(const unsigned long value)
  *
  * CVS/RCS Log:
  * $Log: dimoopx.cc,v $
- * Revision 1.7  2003-12-08 14:55:04  joergr
+ * Revision 1.8  2005-12-08 15:43:01  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2003/12/08 14:55:04  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.6  2001/06/01 15:49:58  meichel

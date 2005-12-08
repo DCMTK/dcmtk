@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose: representation parameter for lossless JPEG
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:34 $
+ *  Update Date:      $Date: 2005-12-08 15:43:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djrplol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djrplol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djrplol.h"
 
 
 DJ_RPLossless::DJ_RPLossless(int aPrediction, int aPt)
@@ -82,7 +82,10 @@ OFBool DJ_RPLossless::operator==(const DcmRepresentationParameter &arg) const
 /*
  * CVS/RCS Log
  * $Log: djrplol.cc,v $
- * Revision 1.1  2001-11-13 15:58:34  meichel
+ * Revision 1.2  2005-12-08 15:43:49  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2001/11/13 15:58:34  meichel
  * Initial release of module dcmjpeg
  *
  *

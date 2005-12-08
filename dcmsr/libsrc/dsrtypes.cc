@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-11-30 12:01:15 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:19 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,38 +32,38 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtypes.h"
-#include "dsrtextn.h"
-#include "dsrcodtn.h"
-#include "dsrnumtn.h"
-#include "dsrdtitn.h"
-#include "dsrdattn.h"
-#include "dsrtimtn.h"
-#include "dsruidtn.h"
-#include "dsrpnmtn.h"
-#include "dsrscotn.h"
-#include "dsrtcotn.h"
-#include "dsrcomtn.h"
-#include "dsrimgtn.h"
-#include "dsrwavtn.h"
-#include "dsrcontn.h"
-#include "dsrreftn.h"
-#include "dsrbascc.h"
-#include "dsrenhcc.h"
-#include "dsrcomcc.h"
-#include "dsrkeycc.h"
-#include "dsrmamcc.h"
-#include "dsrchecc.h"
-#include "dsrprocc.h"
-#include "dsrxrdcc.h"
+#include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrtextn.h"
+#include "dcmtk/dcmsr/dsrcodtn.h"
+#include "dcmtk/dcmsr/dsrnumtn.h"
+#include "dcmtk/dcmsr/dsrdtitn.h"
+#include "dcmtk/dcmsr/dsrdattn.h"
+#include "dcmtk/dcmsr/dsrtimtn.h"
+#include "dcmtk/dcmsr/dsruidtn.h"
+#include "dcmtk/dcmsr/dsrpnmtn.h"
+#include "dcmtk/dcmsr/dsrscotn.h"
+#include "dcmtk/dcmsr/dsrtcotn.h"
+#include "dcmtk/dcmsr/dsrcomtn.h"
+#include "dcmtk/dcmsr/dsrimgtn.h"
+#include "dcmtk/dcmsr/dsrwavtn.h"
+#include "dcmtk/dcmsr/dsrcontn.h"
+#include "dcmtk/dcmsr/dsrreftn.h"
+#include "dcmtk/dcmsr/dsrbascc.h"
+#include "dcmtk/dcmsr/dsrenhcc.h"
+#include "dcmtk/dcmsr/dsrcomcc.h"
+#include "dcmtk/dcmsr/dsrkeycc.h"
+#include "dcmtk/dcmsr/dsrmamcc.h"
+#include "dcmtk/dcmsr/dsrchecc.h"
+#include "dcmtk/dcmsr/dsrprocc.h"
+#include "dcmtk/dcmsr/dsrxrdcc.h"
 
-#include "ofstd.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*---------------------------------*
@@ -1516,7 +1516,10 @@ OFBool DSRTypes::elementContainsExtendedCharacters(DcmElement &elem)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.47  2005-11-30 12:01:15  joergr
+ *  Revision 1.48  2005-12-08 15:48:19  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.47  2005/11/30 12:01:15  joergr
  *  Added support for X-Ray Radiation Dose SR documents.
  *
  *  Revision 1.46  2004/11/29 17:11:37  joergr

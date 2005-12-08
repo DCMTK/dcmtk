@@ -22,16 +22,16 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:29:05 $
+ *  Update Date:      $Date: 2005-12-08 15:46:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -49,27 +49,27 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "dvpsdef.h"     /* for constants */
-#include "dvpscf.h"      /* for class DVConfiguration */
-#include "ofbmanip.h"    /* for OFBitmanipTemplate */
-#include "dcuid.h"       /* for dcmtk version name */
-#include "diutil.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
-#include "dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
-#include "dvpsmsg.h"     /* for class DVPSIPCClient */
-#include "dcmlayer.h"
-#include "dcfilefo.h"
-#include "dcmpstat.h"
-#include "dcdebug.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
+#include "dcmtk/dcmpstat/dvpscf.h"      /* for class DVConfiguration */
+#include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"    /* for LOCK_IMAGE_FILES */
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
+#include "dcmtk/dcmpstat/dvpsmsg.h"     /* for class DVPSIPCClient */
+#include "dcmtk/dcmnet/dcmlayer.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmpstat/dcmpstat.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_OPENSSL
-#include "tlstrans.h"
-#include "tlslayer.h"
+#include "dcmtk/dcmtls/tlstrans.h"
+#include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
-#include "ofstream.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -1494,7 +1494,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.50  2005-11-28 15:29:05  meichel
+ * Revision 1.51  2005-12-08 15:46:10  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.50  2005/11/28 15:29:05  meichel
  * File dcdebug.h is not included by any other header file in the toolkit
  *   anymore, to minimize the risk of name clashes of macro debug().
  *

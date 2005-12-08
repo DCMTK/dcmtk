@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:12 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2005-12-08 15:47:41 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +32,11 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtypes.h"
-#include "dsrcodvl.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrcodvl.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 
 DSRCodedEntryValue::DSRCodedEntryValue()
@@ -399,7 +399,10 @@ OFBool DSRCodedEntryValue::valueContainsExtendedCharacters() const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.19  2004-11-22 16:39:12  meichel
+ *  Revision 1.20  2005-12-08 15:47:41  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.19  2004/11/22 16:39:12  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *

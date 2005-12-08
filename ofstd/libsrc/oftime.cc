@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:35:18 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,11 +31,11 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CTIME
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
@@ -54,8 +54,8 @@ END_EXTERN_C
 #include <windows.h>      /* for Windows time functions */
 #endif
 
-#include "oftime.h"
-#include "ofstd.h"
+#include "dcmtk/ofstd/oftime.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 /*------------------*
@@ -607,7 +607,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.13  2004-01-16 10:35:18  joergr
+ * Revision 1.14  2005-12-08 15:49:03  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.13  2004/01/16 10:35:18  joergr
  * Added setISOFormattedXXX() methods for Date, Time and DateTime.
  *
  * Revision 1.12  2003/12/18 16:28:22  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: test program for classes OFDate, OFTime and OFDateTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:37:09 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:05 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofdate.h"
-#include "oftime.h"
-#include "ofdatime.h"
-#include "ofconsol.h"
+#include "dcmtk/ofstd/ofdate.h"
+#include "dcmtk/ofstd/oftime.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 
 int main()
@@ -149,7 +149,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofdatim.cc,v $
- * Revision 1.7  2004-01-16 10:37:09  joergr
+ * Revision 1.8  2005-12-08 15:49:05  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2004/01/16 10:37:09  joergr
  * Added setISOFormattedXXX() methods for Date, Time and DateTime.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *

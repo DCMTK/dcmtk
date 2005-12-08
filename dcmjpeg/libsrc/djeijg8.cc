@@ -22,23 +22,23 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-14 17:09:39 $
+ *  Update Date:      $Date: 2005-12-08 15:43:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djeijg8.h"
-#include "djcparam.h"
-#include "ofconsol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djeijg8.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
 // We undefine them here and hope that IJG's configure has
@@ -550,7 +550,10 @@ void DJCompressIJG8Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg8.cc,v $
- * Revision 1.6  2005-11-14 17:09:39  meichel
+ * Revision 1.7  2005-12-08 15:43:41  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.6  2005/11/14 17:09:39  meichel
  * Changed some function return types from int to ijg_boolean, to avoid
  *   compilation errors if the ijg_boolean type is ever changed.
  *

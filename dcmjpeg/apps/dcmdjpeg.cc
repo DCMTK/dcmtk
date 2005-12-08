@@ -21,33 +21,33 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:41:40 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:21 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "dctk.h"
-#include "dcdebug.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dcuid.h"       /* for dcmtk version name */
-#include "djdecode.h"    /* for dcmjpeg decoders */
-#include "dipijpeg.h"    /* for dcmimage JPEG plugin */
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmjpeg/djdecode.h"    /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/dipijpeg.h"    /* for dcmimage JPEG plugin */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>      /* for zlibVersion() */
@@ -371,7 +371,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.12  2005-12-02 09:41:40  joergr
+ * Revision 1.13  2005-12-08 15:43:21  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.12  2005/12/02 09:41:40  joergr
  * Added new command line option that checks whether a given file starts with a
  * valid DICOM meta header.
  *

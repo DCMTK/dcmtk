@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *    classes: OFConfigFileNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2005-12-08 15:48:52 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofconfig.h"
-#include "ofcast.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofconfig.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 OFConfigFileNode::OFConfigFileNode(const char *keyword)
@@ -469,7 +469,10 @@ OFConfigFile::~OFConfigFile()
 
 /*
  *  $Log: ofconfig.cc,v $
- *  Revision 1.3  2003-07-09 13:58:04  meichel
+ *  Revision 1.4  2005-12-08 15:48:52  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.3  2003/07/09 13:58:04  meichel
  *  Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  *  Revision 1.2  2003/05/12 12:54:55  meichel

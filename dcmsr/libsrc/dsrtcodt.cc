@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:54:02 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtcodt.h"
+#include "dcmtk/dcmsr/dsrtcodt.h"
 
 
 /* declared in class DSRListOfItems<T> */
@@ -171,7 +171,10 @@ OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.10  2003-08-07 13:54:02  joergr
+ *  Revision 1.11  2005-12-08 15:48:10  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.10  2003/08/07 13:54:02  joergr
  *  Added new putString() method.
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *

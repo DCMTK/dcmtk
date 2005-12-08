@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DcmQuant
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-24 14:55:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2005-12-08 15:42:33 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,23 +31,23 @@
  */
 
 
-#include "osconfig.h"
-#include "diquant.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimage/diquant.h"
 
-#include "ofconsol.h"  /* for ofConsole */
-#include "diqtid.h"    /* for DcmQuantIdent */
-#include "diqtcmap.h"  /* for DcmQuantColorMapping */
-#include "diqtpix.h"   /* for DcmQuantPixel */
-#include "diqthash.h"  /* for DcmQuantColorHashTable */
-#include "diqtctab.h"  /* for DcmQuantColorTable */
-#include "diqtfs.h"    /* for DcmQuantFloydSteinberg */
-#include "dcswap.h"    /* for swapIfNecessary() */
-#include "dcitem.h"    /* for DcmItem */
-#include "dcmimage.h"  /* for DicomImage */
-#include "dcdeftag.h"  /* for tag constants */
-#include "dcpixel.h"   /* for DcmPixelData */
-#include "dcsequen.h"  /* for DcmSequenceOfItems */
-#include "dcuid.h"     /* for dcmGenerateUniqueIdentifier() */
+#include "dcmtk/ofstd/ofconsol.h"  /* for ofConsole */
+#include "dcmtk/dcmimage/diqtid.h"    /* for DcmQuantIdent */
+#include "dcmtk/dcmimage/diqtcmap.h"  /* for DcmQuantColorMapping */
+#include "dcmtk/dcmimage/diqtpix.h"   /* for DcmQuantPixel */
+#include "dcmtk/dcmimage/diqthash.h"  /* for DcmQuantColorHashTable */
+#include "dcmtk/dcmimage/diqtctab.h"  /* for DcmQuantColorTable */
+#include "dcmtk/dcmimage/diqtfs.h"    /* for DcmQuantFloydSteinberg */
+#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary() */
+#include "dcmtk/dcmdata/dcitem.h"    /* for DcmItem */
+#include "dcmtk/dcmimgle/dcmimage.h"  /* for DicomImage */
+#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
+#include "dcmtk/dcmdata/dcpixel.h"   /* for DcmPixelData */
+#include "dcmtk/dcmdata/dcsequen.h"  /* for DcmSequenceOfItems */
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifier() */
 
 
 OFCondition DcmQuant::createPaletteColorImage(
@@ -256,7 +256,10 @@ OFCondition DcmQuant::updateDerivationDescription(DcmItem *dataset, const char *
  *
  * CVS/RCS Log:
  * $Log: diquant.cc,v $
- * Revision 1.3  2004-08-24 14:55:28  meichel
+ * Revision 1.4  2005-12-08 15:42:33  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2004/08/24 14:55:28  meichel
  * Removed duplicate code
  *
  * Revision 1.2  2003/12/17 16:34:57  joergr

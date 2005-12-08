@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-06-03 09:08:01 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:23 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,14 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
-#include "dcdeftag.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
-#include "dicopx.h"
-#include "dimopx.h"
-#include "diinpx.h"
-#include "didocu.h"
+#include "dcmtk/dcmimage/dicopx.h"
+#include "dcmtk/dcmimgle/dimopx.h"
+#include "dcmtk/dcmimgle/diinpx.h"
+#include "dcmtk/dcmimgle/didocu.h"
 
 
 /*----------------*
@@ -140,7 +140,10 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.14  2004-06-03 09:08:01  joergr
+ * Revision 1.15  2005-12-08 15:42:23  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.14  2004/06/03 09:08:01  joergr
  * Changed error message on unexpected attribute PlanarConfiguration into a
  * warning message.
  *

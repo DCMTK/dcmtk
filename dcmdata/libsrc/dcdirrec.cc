@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2005-12-08 15:41:07 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,7 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -40,17 +40,17 @@
 #define INCLUDE_CCTYPE
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofstream.h"
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofcast.h"
 
-#include "dcdirrec.h"
-#include "dctk.h"
-#include "dcxfer.h"
-#include "dcvr.h"
-#include "dcvrus.h"
-#include "dcdebug.h"
+#include "dcmtk/dcmdata/dcdirrec.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
@@ -1430,7 +1430,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.53  2005-11-28 15:53:13  meichel
+ * Revision 1.54  2005-12-08 15:41:07  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.53  2005/11/28 15:53:13  meichel
  * Renamed macros in dcdebug.h
  *
  * Revision 1.52  2005/11/07 16:59:26  meichel

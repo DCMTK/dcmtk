@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-10-25 08:55:46 $
+** Update Date:         $Date: 2005-12-08 15:44:45 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.42 $
+** CVS/RCS Revision:    $Revision: 1.43 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -69,7 +69,7 @@
 ** Include Files
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -77,7 +77,7 @@
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
@@ -91,21 +91,21 @@
 #include <fcntl.h>
 #endif
 
-#include "diutil.h"
-#include "dimse.h"              /* always include the module header */
-#include "cond.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dimse.h"              /* always include the module header */
+#include "dcmtk/dcmnet/cond.h"
 #include "dimcmd.h"
-#include "dcdeftag.h"    /* for tag names */
-#include "dcdict.h"      /* for dcmDataDict */
-#include "dcfilefo.h"    /* for class DcmFileFormat */
-#include "dcmetinf.h"    /* for class DcmMetaInfo */
-#include "dcistrmb.h"    /* for class DcmInputBufferStream */
-#include "dcostrmb.h"    /* for class DcmOutputBufferStream */
-#include "dcostrmf.h"    /* for class DcmOutputFileStream */
-#include "dcvrul.h"      /* for class DcmUnsignedLong */
-#include "dcvrobow.h"    /* for class DcmOtherByteOtherWord */
-#include "dcvrsh.h"      /* for class DcmShortString */
-#include "dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
+#include "dcmtk/dcmdata/dcdeftag.h"    /* for tag names */
+#include "dcmtk/dcmdata/dcdict.h"      /* for dcmDataDict */
+#include "dcmtk/dcmdata/dcfilefo.h"    /* for class DcmFileFormat */
+#include "dcmtk/dcmdata/dcmetinf.h"    /* for class DcmMetaInfo */
+#include "dcmtk/dcmdata/dcistrmb.h"    /* for class DcmInputBufferStream */
+#include "dcmtk/dcmdata/dcostrmb.h"    /* for class DcmOutputBufferStream */
+#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcmtk/dcmdata/dcvrul.h"      /* for class DcmUnsignedLong */
+#include "dcmtk/dcmdata/dcvrobow.h"    /* for class DcmOtherByteOtherWord */
+#include "dcmtk/dcmdata/dcvrsh.h"      /* for class DcmShortString */
+#include "dcmtk/dcmdata/dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
 /*
  * Type definitions
  */
@@ -1768,7 +1768,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.42  2005-10-25 08:55:46  meichel
+** Revision 1.43  2005-12-08 15:44:45  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.42  2005/10/25 08:55:46  meichel
 ** Updated list of UIDs and added support for new transfer syntaxes
 **   and storage SOP classes.
 **

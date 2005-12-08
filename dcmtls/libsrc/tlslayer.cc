@@ -23,20 +23,20 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-23 16:10:28 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-12-08 15:48:28 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef WITH_OPENSSL
 
 #define INCLUDE_CSTDLIB
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_WINDOWS_H
@@ -47,10 +47,10 @@ BEGIN_EXTERN_C
 #include <openssl/err.h>
 END_EXTERN_C
 
-#include "tlslayer.h"
-#include "tlstrans.h"
-#include "dicom.h"
-#include "ofconsol.h"    /* for ofConsole */
+#include "dcmtk/dcmtls/tlslayer.h"
+#include "dcmtk/dcmtls/tlstrans.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/ofstd/ofconsol.h"    /* for ofConsole */
 
 extern "C" int DcmTLSTransportLayer_certificateValidationCallback(int ok, X509_STORE_CTX *storeContext);
 
@@ -487,7 +487,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.10  2005-11-23 16:10:28  meichel
+ *  Revision 1.11  2005-12-08 15:48:28  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.10  2005/11/23 16:10:28  meichel
  *  Added support for AES ciphersuites in TLS module. All TLS-enabled
  *    tools now support the "AES TLS Secure Transport Connection Profile".
  *

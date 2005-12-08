@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,16 +21,16 @@
  *
  *  Purpose: 
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 12:45:53 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:05 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcdict.h"
+#include "dcmtk/dcmdata/dcdict.h"
 
 /* There is no builtin data dictionary */
 const char* dcmBuiltinDictBuildDate = NULL;
@@ -51,7 +51,10 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.12  2004-02-13 12:45:53  joergr
+ * Revision 1.13  2005-12-08 15:41:05  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.12  2004/02/13 12:45:53  joergr
  * Updated copyright header.
  *
  * Revision 1.5  2001/06/01 15:49:02  meichel

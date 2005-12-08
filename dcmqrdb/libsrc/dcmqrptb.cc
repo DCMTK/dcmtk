@@ -22,17 +22,17 @@
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 10:54:52 $
+ *  Update Date:      $Date: 2005-12-08 15:47:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrptb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrptb.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrptb.h"
 
 /** helper class that describes entries in the process slot table. Internal use only.
  */
@@ -245,7 +245,10 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
- * Revision 1.3  2005-11-29 10:54:52  meichel
+ * Revision 1.4  2005-12-08 15:47:12  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2005/11/29 10:54:52  meichel
  * Added minimal support for compressed transfer syntaxes to dcmqrscp.
  *   No on-the-fly decompression is performed, but compressed images can
  *   be stored and retrieved.

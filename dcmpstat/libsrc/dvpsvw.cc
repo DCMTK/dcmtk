@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *    classes: DVPSVOIWindow
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:39 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2005-12-08 15:46:57 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsvw.h"
-#include "dctk.h"
-#include "ofstd.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsvw.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 /* --------------- class DVPSVOIWindow --------------- */
 
@@ -115,7 +115,10 @@ void DVPSVOIWindow::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsvw.cc,v $
- *  Revision 1.8  2002-12-04 10:41:39  meichel
+ *  Revision 1.9  2005-12-08 15:46:57  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.8  2002/12/04 10:41:39  meichel
  *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *    double to string conversions that are supposed to be locale independent
  *

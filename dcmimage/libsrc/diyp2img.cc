@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomYBRPart422Image (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 10:54:28 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
-#include "diyp2img.h"
-#include "diyp2pxt.h"
-#include "diinpx.h"
+#include "dcmtk/dcmimage/diyp2img.h"
+#include "dcmtk/dcmimage/diyp2pxt.h"
+#include "dcmtk/dcmimgle/diinpx.h"
 
 
 /*----------------*
@@ -89,7 +89,10 @@ DiYBRPart422Image::~DiYBRPart422Image()
  *
  * CVS/RCS Log:
  * $Log: diyp2img.cc,v $
- * Revision 1.7  2003-12-23 10:54:28  joergr
+ * Revision 1.8  2005-12-08 15:42:38  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2003/12/23 10:54:28  joergr
  * Updated copyright header.
  *
  * Revision 1.6  2001/06/01 15:49:37  meichel

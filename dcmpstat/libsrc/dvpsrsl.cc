@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,20 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:46 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpsrsl.h"
-#include "dvpsrs.h"      /* for DVPSReferencedSeries */
-#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsrsl.h"
+#include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries */
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 DVPSReferencedSeries_PList::DVPSReferencedSeries_PList()
 : list_()
@@ -307,7 +307,10 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.16  2004-02-04 15:57:49  joergr
+ *  Revision 1.17  2005-12-08 15:46:46  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.16  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.15  2003/10/15 16:57:14  meichel

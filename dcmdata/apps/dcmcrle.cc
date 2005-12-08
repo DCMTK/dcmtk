@@ -21,32 +21,32 @@
  *
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:01:30 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:44 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "dctk.h"
-#include "dcdebug.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dcuid.h"     /* for dcmtk version name */
-#include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>      /* for zlibVersion() */
@@ -375,7 +375,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.10  2005-12-02 09:01:30  joergr
+ * Revision 1.11  2005-12-08 15:40:44  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.10  2005/12/02 09:01:30  joergr
  * Added new command line option that ignores the transfer syntax specified in
  * the meta header and tries to detect the transfer syntax automatically from
  * the dataset.

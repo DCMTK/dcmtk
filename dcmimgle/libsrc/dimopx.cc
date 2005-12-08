@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromePixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:10:39 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:02 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "dimopx.h"
-#include "dimomod.h"
-#include "diinpx.h"
-#include "dimoopx.h"
+#include "dcmtk/dcmimgle/dimopx.h"
+#include "dcmtk/dcmimgle/dimomod.h"
+#include "dcmtk/dcmimgle/diinpx.h"
+#include "dcmtk/dcmimgle/dimoopx.h"
 
 
 /*----------------*
@@ -100,7 +100,10 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.11  2004-02-06 11:10:39  joergr
+ * Revision 1.12  2005-12-08 15:43:02  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.11  2004/02/06 11:10:39  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.10  2003/12/08 17:43:04  joergr

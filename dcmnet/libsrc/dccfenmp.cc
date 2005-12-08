@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *    class DcmExtendedNegotiationItem
  *    class DcmExtendedNegotiationMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-06 16:36:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:44:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfenmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dccfenmp.h" /* for class DcmExtendedNegotiationMap */
-#include "dccfpcmp.h" /* for class DcmPresentationContextMap */
-#include "dcerror.h"  /* for EC_IllegalCall */
-#include "dcdefine.h" /* for memcmp() */
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmnet/dccfenmp.h" /* for class DcmExtendedNegotiationMap */
+#include "dcmtk/dcmnet/dccfpcmp.h" /* for class DcmPresentationContextMap */
+#include "dcmtk/dcmdata/dcerror.h"  /* for EC_IllegalCall */
+#include "dcmtk/dcmdata/dcdefine.h" /* for memcmp() */
 
 DcmExtendedNegotiationItem::DcmExtendedNegotiationItem(
   const DcmUIDHandler& abstractSyntax,
@@ -212,7 +212,10 @@ const DcmExtendedNegotiationList *DcmExtendedNegotiationMap::getExtendedNegotiat
 /*
  * CVS/RCS Log
  * $Log: dccfenmp.cc,v $
- * Revision 1.5  2004-05-06 16:36:30  joergr
+ * Revision 1.6  2005-12-08 15:44:28  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2004/05/06 16:36:30  joergr
  * Added typecasts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.4  2004/05/05 12:57:58  meichel

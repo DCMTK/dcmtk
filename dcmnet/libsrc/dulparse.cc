@@ -45,28 +45,28 @@
 ** Intent:              This file contains functions for parsing Dicom
 **                      Upper Layer (DUL) Protocol Data Units (PDUs)
 **                      into logical in-memory structures.
-** Last Update:         $Author: joergr $, $Date: 2004-02-04 15:33:48 $
+** Last Update:         $Author: meichel $, $Date: 2005-12-08 15:44:52 $
 ** Source File:         $RCSfile: dulparse.cc,v $
-** Revision:            $Revision: 1.23 $
+** Revision:            $Revision: 1.24 $
 ** Status:              $State: Exp $
 */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofstream.h"
-#include "dicom.h"
-#include "cond.h"
-#include "lst.h"
-#include "dul.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmnet/lst.h"
+#include "dcmtk/dcmnet/dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
-#include "ofconsol.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
@@ -767,7 +767,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.23  2004-02-04 15:33:48  joergr
+** Revision 1.24  2005-12-08 15:44:52  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.23  2004/02/04 15:33:48  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.22  2002/12/09 13:20:29  joergr

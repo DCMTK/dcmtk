@@ -22,16 +22,16 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 10:55:07 $
+ *  Update Date:      $Date: 2005-12-08 15:47:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -40,7 +40,7 @@
 #define INCLUDE_CERRNO
 #define INCLUDE_CTIME
 #define INCLUDE_LIBC
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
@@ -75,21 +75,21 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "dicom.h"
-#include "dcmqropt.h"
-#include "dimse.h"
-#include "dcmqrcnf.h"
-#include "dcmqrscp.h"
-#include "dcdict.h"
-#include "dcdebug.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
+#include "dcmtk/dcmqrdb/dcmqrscp.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 
 #ifdef WITH_SQL_DATABASE
-#include "dcmqrdbq.h"
+#include "dcmtk/dcmqrdbx/dcmqrdbq.h"
 #else
-#include "dcmqrdbi.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
 #endif
 
 #ifdef WITH_ZLIB
@@ -671,7 +671,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.5  2005-11-29 10:55:07  meichel
+ * Revision 1.6  2005-12-08 15:47:02  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2005/11/29 10:55:07  meichel
  * Added minimal support for compressed transfer syntaxes to dcmqrscp.
  *   No on-the-fly decompression is performed, but compressed images can
  *   be stored and retrieved.

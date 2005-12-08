@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2004, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,23 +22,23 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:40 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpspll.h"
-#include "dvpspl.h"      /* for DVPSImageBoxContent */
-#include "dvpshlp.h"     /* for class DVPSHelper */
-#include "dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
-#include "diluptab.h"    /* for class DiLookupTable */
-#include "dvpsdef.h"
-#include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpspll.h"
+#include "dcmtk/dcmpstat/dvpspl.h"      /* for DVPSImageBoxContent */
+#include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
+#include "dcmtk/dcmpstat/dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
+#include "dcmtk/dcmimgle/diluptab.h"    /* for class DiLookupTable */
+#include "dcmtk/dcmpstat/dvpsdef.h"
+#include "dcmtk/dcmpstat/dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
 
 /* --------------- class DVPSImageBoxContent_PList --------------- */
 
@@ -287,7 +287,10 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.16  2004-02-04 15:57:49  joergr
+ *  Revision 1.17  2005-12-08 15:46:40  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.16  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.15  2003/06/12 18:23:11  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,16 +22,16 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-14 18:07:38 $
+ *  Update Date:      $Date: 2005-12-08 15:47:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -41,7 +41,7 @@
 #define INCLUDE_CSTDIO
 #define INCLUDE_CERRNO
 #define INCLUDE_CTIME
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
@@ -64,13 +64,13 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "dvpsmsg.h"     /* for class DVPSIPCMessage */
-#include "cmdlnarg.h"    /* for prepareCmdLineArgs */
-#include "ofconapp.h"    /* for class OFConsoleApplication */
-#include "dcdebug.h"     /* for SetDebugLevel */
-#include "dcmtrans.h"    /* for class DcmTCPConnection */
-#include "dcuid.h"
-#include "dcompat.h"     /* compatability routines */
+#include "dcmtk/dcmpstat/dvpsmsg.h"     /* for class DVPSIPCMessage */
+#include "dcmtk/dcmdata/cmdlnarg.h"    /* for prepareCmdLineArgs */
+#include "dcmtk/ofstd/ofconapp.h"    /* for class OFConsoleApplication */
+#include "dcmtk/dcmdata/dcdebug.h"     /* for SetDebugLevel */
+#include "dcmtk/dcmnet/dcmtrans.h"    /* for class DcmTCPConnection */
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmnet/dcompat.h"     /* compatability routines */
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
 
@@ -369,7 +369,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.8  2005-11-14 18:07:38  meichel
+ * Revision 1.9  2005-12-08 15:47:00  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.8  2005/11/14 18:07:38  meichel
  * Included cstdlib, needed on HP/UX 10.
  *
  * Revision 1.7  2004/04/21 17:15:45  joergr

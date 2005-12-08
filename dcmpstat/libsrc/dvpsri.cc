@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:57:14 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2005-12-08 15:46:43 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpsri.h"
-#include "dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsri.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /* --------------- class DVPSReferencedImage --------------- */
@@ -303,7 +303,10 @@ void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.15  2003-10-15 16:57:14  meichel
+ *  Revision 1.16  2005-12-08 15:46:43  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.15  2003/10/15 16:57:14  meichel
  *  Updated error messages generated while parsing presentation states
  *
  *  Revision 1.14  2002/11/27 15:48:12  meichel

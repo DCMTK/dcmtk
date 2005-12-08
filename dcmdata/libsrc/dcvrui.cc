@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:46:03 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,16 +32,16 @@
  */
 
 
-#include "osconfig.h"
-#include "ofstream.h"
-#include "ofstring.h"
-#include "ofstd.h"
-#include "dcvrui.h"
-#include "dcuid.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcvrui.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 // ********************************
@@ -175,7 +175,10 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.22  2004-01-16 13:46:03  joergr
+** Revision 1.23  2005-12-08 15:42:06  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.22  2004/01/16 13:46:03  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
 ** Revision 1.21  2002/12/06 13:19:26  joergr

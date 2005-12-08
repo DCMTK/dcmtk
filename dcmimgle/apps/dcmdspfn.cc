@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 15:40:13 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:39 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,20 +31,20 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "dctk.h"
-#include "cmdlnarg.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
 
-#include "ofconapp.h"
-#include "ofcmdln.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofcmdln.h"
 
-#include "digsdfn.h"
-#include "diciefn.h"
+#include "dcmtk/dcmimgle/digsdfn.h"
+#include "dcmtk/dcmimgle/diciefn.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdspfn"
 
@@ -341,7 +341,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.18  2003-12-23 15:40:13  joergr
+ * Revision 1.19  2005-12-08 15:42:39  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.18  2003/12/23 15:40:13  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

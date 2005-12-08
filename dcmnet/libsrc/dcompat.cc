@@ -64,27 +64,27 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2004-08-03 11:42:47 $
+** Update Date:		$Date: 2005-12-08 15:44:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.27 $
+** CVS/RCS Revision:	$Revision: 1.28 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcompat.h"
-#include "dicom.h"
-#include "ofbmanip.h"
-#include "ofconsol.h"
+#include "dcmtk/dcmnet/dcompat.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/ofstd/ofbmanip.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_UNIX_H
 #if defined(macintosh) && defined (HAVE_WINSOCK_H)
@@ -462,7 +462,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.27  2004-08-03 11:42:47  meichel
+** Revision 1.28  2005-12-08 15:44:36  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.27  2004/08/03 11:42:47  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.26  2002/11/27 13:04:38  meichel

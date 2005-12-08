@@ -22,23 +22,23 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
+ *  Update Date:      $Date: 2005-12-08 15:41:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcdebug.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDARG
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcdebug.h"
-#include "ofconsol.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 OFGlobal<int> DcmDebugLevel(0);
 
@@ -65,7 +65,10 @@ void DCM_dcmdata_debug_print(const char* text, ... )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdebug.cc,v $
-** Revision 1.11  2005-11-28 15:53:13  meichel
+** Revision 1.12  2005-12-08 15:41:01  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.11  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.10  2002/11/27 12:06:43  meichel

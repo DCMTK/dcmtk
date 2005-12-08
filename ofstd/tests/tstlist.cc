@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,21 +21,21 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:37:23 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:09 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofstream.h"
-#include "ofalgo.h"
-#include "oflist.h"
-#include "ofconsol.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofalgo.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 
 void print(OFList<int> & l)
@@ -133,7 +133,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
-** Revision 1.7  2004-01-16 10:37:23  joergr
+** Revision 1.8  2005-12-08 15:49:09  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.7  2004/01/16 10:37:23  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.6  2002/04/16 13:37:01  joergr

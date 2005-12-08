@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,19 +23,19 @@
  *    class DcmPresentationContextItem
  *    class DcmPresentationContextMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-06 16:36:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:44:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfpcmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dccfpcmp.h" /* for class DcmPresentationContextMap */
-#include "dcerror.h"  /* for EC_IllegalCall */
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmnet/dccfpcmp.h" /* for class DcmPresentationContextMap */
+#include "dcmtk/dcmdata/dcerror.h"  /* for EC_IllegalCall */
 
 
 DcmPresentationContextItem::DcmPresentationContextItem(
@@ -158,7 +158,10 @@ const DcmPresentationContextList *DcmPresentationContextMap::getPresentationCont
 /*
  * CVS/RCS Log
  * $Log: dccfpcmp.cc,v $
- * Revision 1.3  2004-05-06 16:36:30  joergr
+ * Revision 1.4  2005-12-08 15:44:29  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2004/05/06 16:36:30  joergr
  * Added typecasts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.2  2004/05/05 12:57:58  meichel

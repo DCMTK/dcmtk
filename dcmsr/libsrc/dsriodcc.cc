@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRIODConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 13:00:41 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:56 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsriodcc.h"
+#include "dcmtk/dcmsr/dsriodcc.h"
 
 
 DSRIODConstraintChecker::DSRIODConstraintChecker()
@@ -50,7 +50,10 @@ DSRIODConstraintChecker::~DSRIODConstraintChecker()
 /*
  *  CVS/RCS Log:
  *  $Log: dsriodcc.cc,v $
- *  Revision 1.2  2003-10-09 13:00:41  joergr
+ *  Revision 1.3  2005-12-08 15:47:56  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.2  2003/10/09 13:00:41  joergr
  *  Added check for root template identifier when reading an SR document.
  *
  *  Revision 1.1  2003/09/15 14:16:50  joergr

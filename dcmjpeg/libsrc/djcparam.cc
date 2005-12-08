@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,18 +21,18 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 15:56:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djcparam.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
 
 DJCodecParameter::DJCodecParameter(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
@@ -139,7 +139,10 @@ const char *DJCodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: djcparam.cc,v $
- * Revision 1.6  2005-11-29 15:56:55  onken
+ * Revision 1.7  2005-12-08 15:43:28  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.6  2005/11/29 15:56:55  onken
  * Added commandline options --accept-acr-nema and --accept-palettes
  * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
  * these options. Thanks to Gilles Mevel for suggestion.

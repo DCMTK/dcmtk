@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,23 +24,23 @@
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout). 
  *   Used to display an "overview" of available worklist files.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-03 12:17:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/readoviw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dctk.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 
 static char rcsid[] = "$dcmtk: readoviw v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -145,7 +145,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: readoviw.cc,v $
- *   Revision 1.1  2002-12-03 12:17:35  wilkens
+ *   Revision 1.2  2005-12-08 15:48:38  meichel
+ *   Changed include path schema for all DCMTK header files
+ *
+ *   Revision 1.1  2002/12/03 12:17:35  wilkens
  *   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
  *   so that dcmwlm can now completely replace wlistctn in the public domain part
  *   of dcmtk. Pertaining to this replacement requirement, another optional return

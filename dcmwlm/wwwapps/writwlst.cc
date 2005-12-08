@@ -23,27 +23,27 @@
  *   Program to create a worklist file from a WWW CGI perl script generated 
  *   hexedecimal encoded string.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 18:04:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofstream.h"
-#include "dctk.h"
-#include "dcdebug.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 
 static char rcsid[] = "$dcmtk: writwlst v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -590,7 +590,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
- *   Revision 1.3  2005-03-09 18:04:14  joergr
+ *   Revision 1.4  2005-12-08 15:48:40  meichel
+ *   Changed include path schema for all DCMTK header files
+ *
+ *   Revision 1.3  2005/03/09 18:04:14  joergr
  *   Fixed spelling error.
  *
  *   Revision 1.2  2002/12/13 13:43:26  meichel

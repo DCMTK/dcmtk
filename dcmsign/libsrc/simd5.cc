@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,23 +23,23 @@
  *    classes: SiMD5
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:51 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2005-12-08 15:47:25 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_OPENSSL
 
-#include "simd5.h"
-#include "dcerror.h"
+#include "dcmtk/dcmsign/simd5.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 #define INCLUDE_CSTDLIB
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #include <openssl/md5.h>
@@ -102,7 +102,10 @@ int simd5_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simd5.cc,v $
- *  Revision 1.5  2002-12-16 12:57:51  meichel
+ *  Revision 1.6  2005-12-08 15:47:25  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.5  2002/12/16 12:57:51  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *

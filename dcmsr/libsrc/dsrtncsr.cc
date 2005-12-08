@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTreeNodeCursor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-07-27 16:38:57 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:17 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,10 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtncsr.h"
-#include "dsrtree.h"
+#include "dcmtk/dcmsr/dsrtncsr.h"
+#include "dcmtk/dcmsr/dsrtree.h"
 
 
 DSRTreeNodeCursor::DSRTreeNodeCursor()
@@ -389,7 +389,10 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.8  2005-07-27 16:38:57  joergr
+ *  Revision 1.9  2005-12-08 15:48:17  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.8  2005/07/27 16:38:57  joergr
  *  Added flag to iterate() method indicating whether to perform a "deep search".
  *
  *  Revision 1.7  2003/08/07 14:11:20  joergr

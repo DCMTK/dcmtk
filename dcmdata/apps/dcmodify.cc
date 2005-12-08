@@ -21,17 +21,17 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-10-22 16:53:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmodify.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"   // make sure OS specific configuration is included first
+#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfconen.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmodify"
@@ -49,7 +49,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.5  2004-10-22 16:53:26  onken
+** Revision 1.6  2005-12-08 15:40:49  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.5  2004/10/22 16:53:26  onken
 ** - fixed ignore-errors-option
 ** - major enhancements for supporting private tags
 ** - removed '0 Errors' output

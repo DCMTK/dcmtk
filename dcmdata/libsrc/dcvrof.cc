@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmOtherFloat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:07:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,10 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcvrof.h"
-#include "dcvrfl.h"
+#include "dcmtk/dcmdata/dcvrof.h"
+#include "dcmtk/dcmdata/dcvrfl.h"
 
 
 // ********************************
@@ -85,7 +85,10 @@ unsigned long DcmOtherFloat::getVM()
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
- * Revision 1.1  2002-12-06 12:07:02  joergr
+ * Revision 1.2  2005-12-08 15:41:58  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2002/12/06 12:07:02  joergr
  * Added support for new value representation Other Float String (OF).
  *
  *

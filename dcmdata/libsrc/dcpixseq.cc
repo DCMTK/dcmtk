@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2005-12-08 15:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,20 +31,20 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofstream.h"
-#include "dcpixseq.h"
-#include "dcpxitem.h"
-#include "dcitem.h"
-#include "dcvr.h"
-#include "dcdebug.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcpixseq.h"
+#include "dcmtk/dcmdata/dcpxitem.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
-#include "dcdeftag.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 
 // ********************************
@@ -375,7 +375,10 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.35  2005-11-28 15:53:13  meichel
+** Revision 1.36  2005-12-08 15:41:26  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.35  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.34  2005/05/27 09:45:38  meichel

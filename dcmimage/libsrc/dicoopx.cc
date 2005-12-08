@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorOutputPixel (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 10:54:28 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:22 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,10 +31,10 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "dicoopx.h"
-#include "dipixel.h"
+#include "dcmtk/dcmimage/dicoopx.h"
+#include "dcmtk/dcmimgle/dipixel.h"
 
 
 /*----------------*
@@ -70,7 +70,10 @@ DiColorOutputPixel::~DiColorOutputPixel()
  *
  * CVS/RCS Log:
  * $Log: dicoopx.cc,v $
- * Revision 1.11  2003-12-23 10:54:28  joergr
+ * Revision 1.12  2005-12-08 15:42:22  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.11  2003/12/23 10:54:28  joergr
  * Updated copyright header.
  *
  * Revision 1.10  2001/06/01 15:49:35  meichel

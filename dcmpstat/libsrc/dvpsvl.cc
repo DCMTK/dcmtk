@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,19 +23,19 @@
  *    classes: DVPSVOILUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:29 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2005-12-08 15:46:55 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsvl.h"
-#include "dvpssv.h"      /* for DVPSSoftcopyVOI */
-#include "dvpsdef.h"     /* for constants and macros */
-#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsvl.h"
+#include "dcmtk/dcmpstat/dvpssv.h"      /* for DVPSSoftcopyVOI */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 
 /* --------------- class DVPSVOILUT --------------- */
@@ -118,7 +118,10 @@ void DVPSVOILUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsvl.cc,v $
- *  Revision 1.8  2003-06-04 12:30:29  meichel
+ *  Revision 1.9  2005-12-08 15:46:55  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.8  2003/06/04 12:30:29  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.7  2001/09/26 15:36:35  meichel

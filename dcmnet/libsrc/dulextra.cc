@@ -54,22 +54,22 @@
 **      Supplementary DUL functions.
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-07-03 14:21:10 $
+** Update Date:         $Date: 2005-12-08 15:44:50 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:    $Revision: 1.14 $
+** CVS/RCS Revision:    $Revision: 1.15 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -81,13 +81,13 @@
 #include <sys/select.h>
 #endif
 
-#include "dicom.h"
-#include "lst.h"
-#include "cond.h"
-#include "dul.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/lst.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmnet/dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
-#include "dcmtrans.h"
+#include "dcmtk/dcmnet/dcmtrans.h"
 
 OFBool 
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout)
@@ -158,7 +158,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.14  2003-07-03 14:21:10  meichel
+** Revision 1.15  2005-12-08 15:44:50  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.14  2003/07/03 14:21:10  meichel
 ** Added special handling for FD_SET() on MinGW, which expects an
 **   unsigned first argument.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,46 +21,46 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-01 11:13:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djcodece.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djcodece.h"
 
 // ofstd includes
-#include "oflist.h"
-#include "ofstd.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // dcmdata includes
-#include "dcdatset.h"  /* for class DcmDataset */
-#include "dcdeftag.h"  /* for tag constants */
-#include "dcovlay.h"   /* for class DcmOverlayData */
-#include "dcpixseq.h"  /* for class DcmPixelSequence */
-#include "dcpxitem.h"  /* for class DcmPixelItem */
-#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
-#include "dcvrcs.h"    /* for class DcmCodeString */
-#include "dcvrds.h"    /* for class DcmDecimalString */
-#include "dcvrlt.h"    /* for class DcmLongText */
-#include "dcvrst.h"    /* for class DcmShortText */
-#include "dcvrus.h"    /* for class DcmUnsignedShort */
-#include "dcswap.h"    /* for swapIfNecessary */
+#include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */
+#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
+#include "dcmtk/dcmdata/dcovlay.h"   /* for class DcmOverlayData */
+#include "dcmtk/dcmdata/dcpixseq.h"  /* for class DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpxitem.h"  /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
+#include "dcmtk/dcmdata/dcvrcs.h"    /* for class DcmCodeString */
+#include "dcmtk/dcmdata/dcvrds.h"    /* for class DcmDecimalString */
+#include "dcmtk/dcmdata/dcvrlt.h"    /* for class DcmLongText */
+#include "dcmtk/dcmdata/dcvrst.h"    /* for class DcmShortText */
+#include "dcmtk/dcmdata/dcvrus.h"    /* for class DcmUnsignedShort */
+#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
 
 // dcmjpeg includes
-#include "djcparam.h"  /* for class DJCodecParameter */
-#include "djencabs.h"  /* for class DJEncoder */
+#include "dcmtk/dcmjpeg/djcparam.h"  /* for class DJCodecParameter */
+#include "dcmtk/dcmjpeg/djencabs.h"  /* for class DJEncoder */
 
 // dcmimgle includes
-#include "dcmimage.h"  /* for class DicomImage */
+#include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
 
 #define INCLUDE_CMATH
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 DJCodecEncoder::DJCodecEncoder()
@@ -1440,7 +1440,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.19  2005-12-01 11:13:06  onken
+ * Revision 1.20  2005-12-08 15:43:27  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.19  2005/12/01 11:13:06  onken
  * Minor code modifications for gcc 4
  *
  * Revision 1.18  2005/11/30 16:56:59  meichel

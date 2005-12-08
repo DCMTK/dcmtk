@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:12 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2005-12-08 15:47:46 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,10 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrcsidl.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrcsidl.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 
 DSRCodingSchemeIdentificationList::DSRCodingSchemeIdentificationList()
@@ -599,7 +599,10 @@ OFBool DSRCodingSchemeIdentificationList::containsExtendedCharacters()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.6  2004-11-22 16:39:12  meichel
+ *  Revision 1.7  2005-12-08 15:47:46  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.6  2004/11/22 16:39:12  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *

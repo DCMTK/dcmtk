@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,21 +22,21 @@
  *  Purpose: singleton class that registers RLE encoder.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:42 $
+ *  Update Date:      $Date: 2005-12-08 15:41:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleerg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcrleerg.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcrleerg.h"
 
-#include "dccodec.h"  /* for DcmCodecStruct */
-#include "dcrlecce.h" /* for class DcmRLECodecEncoder */
-#include "dcrlecp.h"  /* for class DcmRLECodecParameter */
+#include "dcmtk/dcmdata/dccodec.h"  /* for DcmCodecStruct */
+#include "dcmtk/dcmdata/dcrlecce.h" /* for class DcmRLECodecEncoder */
+#include "dcmtk/dcmdata/dcrlecp.h"  /* for class DcmRLECodecParameter */
 
 // initialization of static members
 OFBool DcmRLEEncoderRegistration::registered                  = OFFalse;
@@ -89,7 +89,10 @@ void DcmRLEEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: dcrleerg.cc,v $
- * Revision 1.1  2002-06-06 14:52:42  meichel
+ * Revision 1.2  2005-12-08 15:41:34  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2002/06/06 14:52:42  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

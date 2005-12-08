@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQuantColorHashTable
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:34:57 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:30 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,10 +31,10 @@
  */
 
 
-#include "osconfig.h"
-#include "diqthash.h"
-#include "dcxfer.h"      /* for E_TransferSyntax */
-#include "dcmimage.h"    /* for DicomImage */
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmimage/diqthash.h"
+#include "dcmtk/dcmdata/dcxfer.h"      /* for E_TransferSyntax */
+#include "dcmtk/dcmimgle/dcmimage.h"    /* for DicomImage */
 
 
 DcmQuantColorHashTable::DcmQuantColorHashTable()
@@ -144,7 +144,10 @@ unsigned long DcmQuantColorHashTable::addToHashTable(
  *
  * CVS/RCS Log:
  * $Log: diqthash.cc,v $
- * Revision 1.2  2003-12-17 16:34:57  joergr
+ * Revision 1.3  2005-12-08 15:42:30  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.2  2003/12/17 16:34:57  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.1  2002/01/25 13:32:11  meichel

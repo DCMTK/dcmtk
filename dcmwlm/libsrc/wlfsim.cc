@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2002, OFFIS
+*  Copyright (C) 1996-2005, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2005-09-23 12:57:02 $
+*  Last Update:      $Author: meichel $
+*  Update Date:      $Date: 2005-12-08 15:48:34 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.15 $
+*  CVS/RCS Revision: $Revision: 1.16 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -33,10 +33,10 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #define INCLUDE_CLIMITS
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -50,25 +50,25 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "diutil.h"
-#include "ofconsol.h"
-#include "ofstd.h"
-#include "ofoset.h"
-#include "ofsetit.h"
-#include "ofdate.h"
-#include "oftime.h"
-#include "oftypes.h"
-#include "dicom.h"
-#include "dcdatset.h"
-#include "dcitem.h"
-#include "dcvrda.h"
-#include "dcvrtm.h"
-#include "wltypdef.h"
-#include "dctk.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofoset.h"
+#include "dcmtk/ofstd/ofsetit.h"
+#include "dcmtk/ofstd/ofdate.h"
+#include "dcmtk/ofstd/oftime.h"
+#include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/dcmdata/dctk.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "wlfsim.h"
+#include "dcmtk/dcmwlm/wlfsim.h"
 
 // ----------------------------------------------------------------------------
 
@@ -2213,7 +2213,10 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.15  2005-09-23 12:57:02  wilkens
+** Revision 1.16  2005-12-08 15:48:34  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.15  2005/09/23 12:57:02  wilkens
 ** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
 ** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
 **

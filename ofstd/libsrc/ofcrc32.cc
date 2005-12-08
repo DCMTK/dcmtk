@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  Update Date:      $Date: 2005-12-08 15:48:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcrc32.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,10 +33,10 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofcrc32.h"
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofcrc32.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 void OFCRC32::addBlock(const void *ptr, unsigned long size)
 {
@@ -114,7 +114,10 @@ const unsigned int OFCRC32::crctab[256] =
 /*
  * CVS/RCS Log:
  * $Log: ofcrc32.cc,v $
- * Revision 1.2  2003-07-09 13:58:04  meichel
+ * Revision 1.3  2005-12-08 15:48:54  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.2  2003/07/09 13:58:04  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.1  2002/01/08 10:18:57  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,18 +22,18 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:31 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsgrl.h"
-#include "dvpsgr.h"      /* for DVPSGraphicObject */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsgrl.h"
+#include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject */
 
 
 DVPSGraphicObject_PList::DVPSGraphicObject_PList()
@@ -190,7 +190,10 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.11  2004-02-04 15:57:49  joergr
+ *  Revision 1.12  2005-12-08 15:46:31  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.11  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.10  2003/09/05 08:37:46  meichel

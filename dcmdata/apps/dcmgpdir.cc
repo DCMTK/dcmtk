@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:28:54 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2005-12-08 15:40:48 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,22 +55,22 @@
  */
 
 
-#include "osconfig.h"     /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
 
-#include "dctk.h"
-#include "dcuid.h"        /* for dcmtk version name */
-#include "dcddirif.h"     /* for class DicomDirInterface */
-#include "ofstd.h"        /* for class OFStandard */
-#include "ofconapp.h"     /* for class OFConsoleApplication */
-#include "ofcond.h"       /* for class OFCondition */
-#include "dcdebug.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcddirif.h"     /* for class DicomDirInterface */
+#include "dcmtk/ofstd/ofstd.h"        /* for class OFStandard */
+#include "dcmtk/ofstd/ofconapp.h"     /* for class OFConsoleApplication */
+#include "dcmtk/ofstd/ofcond.h"       /* for class OFCondition */
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-#include "diregist.h"     /* include to support color images */
-#include "dcrledrg.h"     /* for DcmRLEDecoderRegistration */
-#include "djdecode.h"     /* for dcmjpeg decoders */
-#include "dipijpeg.h"     /* for dcmimage JPEG plugin */
-#include "ddpiimpl.h"     /* for class DicomDirImageImplementation */
+#include "dcmtk/dcmimage/diregist.h"     /* include to support color images */
+#include "dcmtk/dcmdata/dcrledrg.h"     /* for DcmRLEDecoderRegistration */
+#include "dcmtk/dcmjpeg/djdecode.h"     /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/dipijpeg.h"     /* for dcmimage JPEG plugin */
+#include "dcmtk/dcmjpeg/ddpiimpl.h"     /* for class DicomDirImageImplementation */
 #endif
 
 #ifdef WITH_ZLIB
@@ -581,7 +581,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.80  2005-11-28 15:28:54  meichel
+ * Revision 1.81  2005-12-08 15:40:48  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.80  2005/11/28 15:28:54  meichel
  * File dcdebug.h is not included by any other header file in the toolkit
  *   anymore, to minimize the risk of name clashes of macro debug().
  *

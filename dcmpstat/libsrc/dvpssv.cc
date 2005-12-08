@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,22 +23,22 @@
  *    classes: DVPSSoftcopyVOI
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:29 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2005-12-08 15:46:49 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpssv.h"
-#include "dvpsri.h"      /* for DVPSReferencedImage */
-#include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
-#include "dvpsdef.h"     /* for constants and macros */
-#include "ofstd.h"
-#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpssv.h"
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
+#include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
 
 /* --------------- class DVPSSoftcopyVOI --------------- */
 
@@ -392,7 +392,10 @@ void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.11  2003-06-04 12:30:29  meichel
+ *  Revision 1.12  2005-12-08 15:46:49  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.11  2003/06/04 12:30:29  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.10  2002/12/04 10:41:37  meichel

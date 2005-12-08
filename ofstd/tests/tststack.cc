@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,20 +21,20 @@
  *
  *  Purpose: test programm for class OFStack
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:37:23 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:11 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofstream.h"
-#include "ofstack.h"
-#include "ofconsol.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstack.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 
 int main()
@@ -69,7 +69,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tststack.cc,v $
-** Revision 1.8  2004-01-16 10:37:23  joergr
+** Revision 1.9  2005-12-08 15:49:11  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.8  2004/01/16 10:37:23  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.7  2002/04/16 13:37:01  joergr

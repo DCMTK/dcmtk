@@ -22,22 +22,22 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 16:28:53 $
+ *  Update Date:      $Date: 2005-12-08 15:44:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef _WIN32
 #include <process.h>     /* needed for declaration of getpid() */
@@ -58,26 +58,26 @@ END_EXTERN_C
 #endif
 
 
-#include "dimse.h"
-#include "diutil.h"
-#include "dcfilefo.h"
-#include "dcdebug.h"
-#include "dcuid.h"
-#include "dcdict.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "ofstd.h"
-#include "ofdatime.h"
-#include "dcuid.h"         /* for dcmtk version name */
-#include "dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
-#include "dcdeftag.h"      /* for DCM_StudyInstanceUID */
-#include "dcostrmz.h"      /* for dcmZlibCompressionLevel */
-#include "dcasccfg.h"      /* for class DcmAssociationConfiguration */
-#include "dcasccff.h"      /* for class DcmAssociationConfigurationFile */
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
+#include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
+#include "dcmtk/dcmdata/dcdeftag.h"      /* for DCM_StudyInstanceUID */
+#include "dcmtk/dcmdata/dcostrmz.h"      /* for dcmZlibCompressionLevel */
+#include "dcmtk/dcmnet/dcasccfg.h"      /* for class DcmAssociationConfiguration */
+#include "dcmtk/dcmnet/dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 
 #ifdef WITH_OPENSSL
-#include "tlstrans.h"
-#include "tlslayer.h"
+#include "dcmtk/dcmtls/tlstrans.h"
+#include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
 #ifdef WITH_ZLIB
@@ -2548,7 +2548,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.84  2005-11-28 16:28:53  meichel
+** Revision 1.85  2005-12-08 15:44:21  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.84  2005/11/28 16:28:53  meichel
 ** Fixed resource leak in Win32 command execution.
 **   Added option --exec-sync that causes synchronous command execution on Windows.
 **

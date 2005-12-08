@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,20 +23,20 @@
  *    classes: SiAuthorizationProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:49 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2005-12-08 15:47:18 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_OPENSSL
 
-#include "siautopr.h"
-#include "dcdeftag.h"
+#include "dcmtk/dcmsign/siautopr.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
 {
@@ -91,7 +91,10 @@ int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siautopr.cc,v $
- *  Revision 1.5  2002-12-16 12:57:49  meichel
+ *  Revision 1.6  2005-12-08 15:47:18  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.5  2002/12/16 12:57:49  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *

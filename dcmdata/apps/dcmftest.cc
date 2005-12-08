@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,27 +22,27 @@
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:41:04 $
+ *  Update Date:      $Date: 2005-12-08 15:40:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcmetinf.h"
-#include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcmetinf.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 
 #define OFFIS_CONSOLE_APPLICATION "dcmftest"
 
@@ -102,7 +102,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.17  2004-08-03 11:41:04  meichel
+** Revision 1.18  2005-12-08 15:40:47  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.17  2004/08/03 11:41:04  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.16  2003/11/13 10:53:26  joergr

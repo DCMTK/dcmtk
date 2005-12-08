@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmCodeString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 15:07:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
 
 
 #define MAX_CS_LENGTH 16
@@ -125,7 +125,10 @@ OFBool DcmCodeString::checkVR(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
-** Revision 1.14  2003-06-12 15:07:13  joergr
+** Revision 1.15  2005-12-08 15:41:48  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.14  2003/06/12 15:07:13  joergr
 ** Added static function checkVR().
 **
 ** Revision 1.13  2002/12/06 13:20:49  joergr

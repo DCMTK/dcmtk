@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  Update Date:      $Date: 2005-12-08 15:49:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,15 +40,15 @@
 ** - it is known to be slow but is it reliable
 */
 
-#include "osconfig.h"     /* include OS specific configuration first */
+#include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
 
 #ifndef HAVE_STD_STRING
 
-#include "ofstring.h"
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 /*
 ** Constructors
@@ -1031,7 +1031,10 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.20  2003-07-09 13:58:04  meichel
+** Revision 1.21  2005-12-08 15:49:01  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.20  2003/07/09 13:58:04  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.19  2003/07/04 13:31:52  meichel

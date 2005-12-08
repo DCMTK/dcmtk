@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmPersonName
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:15:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
  */
 
 
-#include "dcvrpn.h"
+#include "dcmtk/dcmdata/dcvrpn.h"
 
 
 // ********************************
@@ -315,7 +315,10 @@ OFCondition DcmPersonName::putNameComponents(const OFString &lastName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.17  2003-05-20 09:15:14  joergr
+** Revision 1.18  2005-12-08 15:41:59  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.17  2003/05/20 09:15:14  joergr
 ** Added methods and static functions to compose a DICOM Person Name from five
 ** name components.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,27 +21,27 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-29 15:56:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djencode.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djencode.h"
 
-#include "dccodec.h"  /* for DcmCodecStruct */
-#include "djencbas.h"
-#include "djencext.h"
-#include "djencsps.h"
-#include "djencpro.h"
-#include "djencsv1.h"
-#include "djenclol.h"
-#include "djcparam.h"
+#include "dcmtk/dcmdata/dccodec.h"  /* for DcmCodecStruct */
+#include "dcmtk/dcmjpeg/djencbas.h"
+#include "dcmtk/dcmjpeg/djencext.h"
+#include "dcmtk/dcmjpeg/djencsps.h"
+#include "dcmtk/dcmjpeg/djencpro.h"
+#include "dcmtk/dcmjpeg/djencsv1.h"
+#include "dcmtk/dcmjpeg/djenclol.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
 
 // initialization of static members
 OFBool DJEncoderRegistration::registered                  = OFFalse;
@@ -175,7 +175,10 @@ void DJEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djencode.cc,v $
- * Revision 1.6  2005-11-29 15:56:55  onken
+ * Revision 1.7  2005-12-08 15:43:45  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.6  2005/11/29 15:56:55  onken
  * Added commandline options --accept-acr-nema and --accept-palettes
  * (same as in dcm2pnm) to dcmcjpeg and extended dcmjpeg to support
  * these options. Thanks to Gilles Mevel for suggestion.

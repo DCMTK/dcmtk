@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:58:42 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:44 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,13 +31,13 @@
  */
 
 
-#include "osconfig.h"
-#include "ofconsol.h"
-#include "diciefn.h"
-#include "ofstream.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmimgle/diciefn.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CMATH
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*----------------*
@@ -271,7 +271,10 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.20  2004-01-05 14:58:42  joergr
+ * Revision 1.21  2005-12-08 15:42:44  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.20  2004/01/05 14:58:42  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.19  2003/12/08 17:40:54  joergr

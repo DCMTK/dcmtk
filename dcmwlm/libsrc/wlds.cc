@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-09-23 12:57:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,25 +33,25 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"  // specific configuration for operating system
+#include "dcmtk/config/osconfig.h"  // specific configuration for operating system
 
-#include "dicom.h"     // for DIC_NODENAME etc. used in "wltypdef.h"
-#include "wltypdef.h"  // for type definitions
-#include "oftypes.h"   // for OFBool
-#include "dcdatset.h"  // for DcmDataset
-#include "dcvrat.h"    // for DcmAttributTag
-#include "dcvrlo.h"    // for DcmLongString
-#include "dcvrae.h"
-#include "dcvrda.h"
-#include "dcvrcs.h"
-#include "dcvrpn.h"
-#include "dcvrtm.h"
-#include "dcvrsh.h"
-#include "dcdict.h"    // for global variable dcmDataDict
-#include "dcdeftag.h"  // for DCM_OffendingElement, ...
-#include "dcsequen.h"  // for DcmSequenceOfItems
-#include "dcdicent.h"  // needed by MSVC5 with STL
-#include "wlds.h"
+#include "dcmtk/dcmnet/dicom.h"     // for DIC_NODENAME etc. used in "wltypdef.h"
+#include "dcmtk/dcmwlm/wltypdef.h"  // for type definitions
+#include "dcmtk/ofstd/oftypes.h"   // for OFBool
+#include "dcmtk/dcmdata/dcdatset.h"  // for DcmDataset
+#include "dcmtk/dcmdata/dcvrat.h"    // for DcmAttributTag
+#include "dcmtk/dcmdata/dcvrlo.h"    // for DcmLongString
+#include "dcmtk/dcmdata/dcvrae.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrpn.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/dcmdata/dcvrsh.h"
+#include "dcmtk/dcmdata/dcdict.h"    // for global variable dcmDataDict
+#include "dcmtk/dcmdata/dcdeftag.h"  // for DCM_OffendingElement, ...
+#include "dcmtk/dcmdata/dcsequen.h"  // for DcmSequenceOfItems
+#include "dcmtk/dcmdata/dcdicent.h"  // needed by MSVC5 with STL
+#include "dcmtk/dcmwlm/wlds.h"
 
 // ----------------------------------------------------------------------------
 
@@ -1617,7 +1617,10 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.18  2005-09-23 12:57:02  wilkens
+** Revision 1.19  2005-12-08 15:48:32  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.18  2005/09/23 12:57:02  wilkens
 ** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
 ** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
 **

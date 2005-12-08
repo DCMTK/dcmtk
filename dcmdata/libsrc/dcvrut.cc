@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmUnlimitedText
  *           Value Representation UT is defined in Correction Proposal 101
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:45:06 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:10 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcvrut.h"
+#include "dcmtk/dcmdata/dcvrut.h"
 
 
 // ********************************
@@ -109,7 +109,10 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.9  2004-01-16 13:45:06  joergr
+** Revision 1.10  2005-12-08 15:42:10  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.9  2004/01/16 13:45:06  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.8  2002/12/06 13:01:52  joergr

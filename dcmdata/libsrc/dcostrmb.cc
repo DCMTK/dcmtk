@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,19 +22,19 @@
  *  Purpose: DcmOutputBufferStream and related classes,
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:36:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:21 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcostrmb.h"
-#include "ofconsol.h"
-#include "dcerror.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcostrmb.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 
 DcmBufferConsumer::DcmBufferConsumer(void *buf, Uint32 bufLen)
@@ -124,7 +124,10 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, Uint32& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
- * Revision 1.3  2004-02-04 16:36:47  joergr
+ * Revision 1.4  2005-12-08 15:41:21  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2004/02/04 16:36:47  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.2  2002/09/19 08:32:28  joergr

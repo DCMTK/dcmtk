@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,17 +22,17 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 11:52:54 $
+ *  Update Date:      $Date: 2005-12-08 15:48:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "ofcond.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofcond.h"
 
 
 /* ---------- global condition constants ---------- */
@@ -111,7 +111,10 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
- * Revision 1.3  2002-07-10 11:52:54  meichel
+ * Revision 1.4  2005-12-08 15:48:51  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2002/07/10 11:52:54  meichel
  * Added comment about reserved range of error codes
  *
  * Revision 1.2  2001/09/25 17:07:27  meichel

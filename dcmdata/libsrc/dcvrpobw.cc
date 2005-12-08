@@ -25,16 +25,16 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 16:59:25 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2005-12-08 15:42:00 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcvrpobw.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcvrpobw.h"
 
 
 DcmPolymorphOBOW::DcmPolymorphOBOW(
@@ -310,7 +310,10 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.16  2005-11-15 16:59:25  meichel
+** Revision 1.17  2005-12-08 15:42:00  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.16  2005/11/15 16:59:25  meichel
 ** Added new pseudo VR type EVR_lt that is used for LUT Data when read in
 **   implicit VR, which may be US, SS or OW. DCMTK always treats EVR_lt like OW.
 **

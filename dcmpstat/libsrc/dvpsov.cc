@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,18 +23,18 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-27 14:59:42 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2005-12-08 15:46:36 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsov.h"
-#include "ofstring.h"
-#include "dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsov.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
 
 /* --------------- class DVPSOverlay --------------- */
@@ -331,7 +331,10 @@ void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.15  2003-08-27 14:59:42  meichel
+ *  Revision 1.16  2005-12-08 15:46:36  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.15  2003/08/27 14:59:42  meichel
  *  Changed API of class DVPSOverlay to avoid dependency on module dcmimgle
  *
  *  Revision 1.14  2002/12/09 13:28:16  joergr

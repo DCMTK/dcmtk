@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,20 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:44 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsril.h"
-#include "dvpsri.h"      /* for DVPSReferencedImage */
-#include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
-#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsril.h"
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
+#include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
+#include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
 
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
@@ -369,7 +369,10 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.18  2004-02-04 15:57:49  joergr
+ *  Revision 1.19  2005-12-08 15:46:44  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.18  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.17  2003/10/15 16:57:14  meichel

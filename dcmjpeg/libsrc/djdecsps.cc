@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,21 +22,21 @@
  *  Purpose: Codec class for decoding JPEG Spectral Selection (lossy, 8/12-bit)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:27 $
+ *  Update Date:      $Date: 2005-12-08 15:43:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdecsps.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djdecsps.h"
-#include "djcparam.h"
-#include "djrploss.h"
-#include "djdijg8.h"
-#include "djdijg12.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djdecsps.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/dcmjpeg/djrploss.h"
+#include "dcmtk/dcmjpeg/djdijg8.h"
+#include "dcmtk/dcmjpeg/djdijg12.h"
 
 
 DJDecoderSpectralSelection::DJDecoderSpectralSelection()
@@ -70,7 +70,10 @@ DJDecoder *DJDecoderSpectralSelection::createDecoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djdecsps.cc,v $
- * Revision 1.1  2001-11-13 15:58:27  meichel
+ * Revision 1.2  2005-12-08 15:43:34  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2001/11/13 15:58:27  meichel
  * Initial release of module dcmjpeg
  *
  *

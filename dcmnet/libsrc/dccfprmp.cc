@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,19 +23,19 @@
  *    class DcmProfileEntry
  *    class DcmProfileMap
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-06 16:36:30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:44:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dccfprmp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dccfprmp.h" /* for class DcmProfileMap */
-#include "dcerror.h"  /* for EC_IllegalCall */
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmnet/dccfprmp.h" /* for class DcmProfileMap */
+#include "dcmtk/dcmdata/dcerror.h"  /* for EC_IllegalCall */
 
 
 DcmProfileEntry::DcmProfileEntry(
@@ -177,7 +177,10 @@ const char *DcmProfileMap::getExtendedNegotiationKey(const char *key) const
 /*
  * CVS/RCS Log
  * $Log: dccfprmp.cc,v $
- * Revision 1.3  2004-05-06 16:36:30  joergr
+ * Revision 1.4  2005-12-08 15:44:30  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2004/05/06 16:36:30  joergr
  * Added typecasts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.2  2004/05/05 12:57:58  meichel

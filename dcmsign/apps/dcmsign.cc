@@ -21,30 +21,30 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 10:34:26 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:16 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dcuid.h"         /* for dcmtk version name */
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>         /* for zlibVersion() */
@@ -60,19 +60,19 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #ifdef WITH_OPENSSL
 
-#include "dcsignat.h"
-#include "sinullpr.h"
-#include "sibrsapr.h"
-#include "siautopr.h"
-#include "sicreapr.h"
-#include "simac.h"
-#include "simd5.h"
-#include "sisha1.h"
-#include "siripemd.h"
-#include "siprivat.h"
-#include "sicert.h"
-#include "dctk.h"
-#include "dcdebug.h"
+#include "dcmtk/dcmsign/dcsignat.h"
+#include "dcmtk/dcmsign/sinullpr.h"
+#include "dcmtk/dcmsign/sibrsapr.h"
+#include "dcmtk/dcmsign/siautopr.h"
+#include "dcmtk/dcmsign/sicreapr.h"
+#include "dcmtk/dcmsign/simac.h"
+#include "dcmtk/dcmsign/simd5.h"
+#include "dcmtk/dcmsign/sisha1.h"
+#include "dcmtk/dcmsign/siripemd.h"
+#include "dcmtk/dcmsign/siprivat.h"
+#include "dcmtk/dcmsign/sicert.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 
 BEGIN_EXTERN_C
@@ -1164,7 +1164,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.20  2005-12-02 10:34:26  joergr
+ *  Revision 1.21  2005-12-08 15:47:16  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.20  2005/12/02 10:34:26  joergr
  *  Added new command line option that ignores the transfer syntax specified in
  *  the meta header and tries to detect the transfer syntax automatically from
  *  the dataset.

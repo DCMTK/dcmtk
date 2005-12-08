@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRChestCadSRConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 13:00:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrchecc.h"
+#include "dcmtk/dcmsr/dsrchecc.h"
 
 
 DSRChestCadSRConstraintChecker::DSRChestCadSRConstraintChecker()
@@ -142,7 +142,10 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrchecc.cc,v $
- *  Revision 1.3  2003-10-09 13:00:41  joergr
+ *  Revision 1.4  2005-12-08 15:47:38  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.3  2003/10/09 13:00:41  joergr
  *  Added check for root template identifier when reading an SR document.
  *
  *  Revision 1.2  2003/10/06 09:55:13  joergr

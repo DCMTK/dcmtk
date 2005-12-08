@@ -21,27 +21,27 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-07 16:42:49 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:46 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstream.h"
-#include "dctk.h"
-#include "dcdebug.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dcuid.h"       /* for dcmtk version name */
-#include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -543,7 +543,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.54  2005-12-07 16:42:49  onken
+ * Revision 1.55  2005-12-08 15:40:46  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.54  2005/12/07 16:42:49  onken
  * Changed default and minimum value of --max-read-length to 4 KB
  *
  * Revision 1.53  2005/12/02 09:16:17  joergr

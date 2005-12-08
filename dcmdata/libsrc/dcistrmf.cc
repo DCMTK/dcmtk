@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,22 +22,22 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:34:09 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:14 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcistrmf.h"
-#include "dcerror.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcistrmf.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CERRNO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 DcmFileProducer::DcmFileProducer(const char *filename, Uint32 offset)
@@ -197,7 +197,10 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
- * Revision 1.4  2004-02-04 16:34:09  joergr
+ * Revision 1.5  2005-12-08 15:41:14  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.4  2004/02/04 16:34:09  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.3  2002/11/27 12:06:48  meichel

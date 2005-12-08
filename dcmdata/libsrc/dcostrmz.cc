@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,22 +21,22 @@
  *
  *  Purpose: zlib compression filter for output streams
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-07 12:19:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_ZLIB
 
-#include "dcostrmz.h"
-#include "dcerror.h"
+#include "dcmtk/dcmdata/dcostrmz.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 #define DCMZLIBOUTPUTFILTER_BUFSIZE 4096
 
@@ -369,7 +369,10 @@ void dcostrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmz.cc,v $
- * Revision 1.4  2004-04-07 12:19:14  joergr
+ * Revision 1.5  2005-12-08 15:41:23  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.4  2004/04/07 12:19:14  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.3  2002/12/20 14:55:34  wilkens

@@ -49,27 +49,27 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2004-06-16 12:51:34 $
+** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:44:49 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.15 $
+** Revision:		$Revision: 1.16 $
 ** Status:		$State: Exp $
 */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "dicom.h"
-#include "cond.h"
-#include "lst.h"
-#include "dul.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmnet/lst.h"
+#include "dcmtk/dcmnet/dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
-#include "ofconsol.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 static OFCondition
 constructSubItem(char *name, unsigned char type,
@@ -1495,7 +1495,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.15  2004-06-16 12:51:34  meichel
+** Revision 1.16  2005-12-08 15:44:49  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.15  2004/06/16 12:51:34  meichel
 ** Fixed minor bug in DUL backward compatibility code
 **
 ** Revision 1.14  2004/02/25 12:31:17  meichel

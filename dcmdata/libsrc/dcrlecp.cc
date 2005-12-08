@@ -22,17 +22,17 @@
  *  Purpose: codec parameter for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-07-26 17:08:35 $
+ *  Update Date:      $Date: 2005-12-08 15:41:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcrlecp.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcrlecp.h"
 
 DcmRLECodecParameter::DcmRLECodecParameter(
     OFBool pVerbose,
@@ -81,7 +81,10 @@ const char *DcmRLECodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: dcrlecp.cc,v $
- * Revision 1.2  2005-07-26 17:08:35  meichel
+ * Revision 1.3  2005-12-08 15:41:31  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.2  2005/07/26 17:08:35  meichel
  * Added option to RLE decoder that allows to correctly decode images with
  *   incorrect byte order of byte segments (LSB instead of MSB).
  *

@@ -22,16 +22,16 @@
  *  Purpose: Presentation State Viewer - Print Server
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:29:05 $
+ *  Update Date:      $Date: 2005-12-08 15:46:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -43,22 +43,22 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "ofstream.h"
-#include "dvpsdef.h"     /* for constants and macros */
-#include "dviface.h"
-#include "ofbmanip.h"    /* for OFBitmanipTemplate */
-#include "ofdatime.h"    /* for OFDateTime */
-#include "dcuid.h"       /* for dcmtk version name */
-#include "diutil.h"
-#include "cmdlnarg.h"
-#include "ofconapp.h"
-#include "dvpsprt.h"
-#include "dvpshlp.h"
-#include "dcdebug.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/dcmpstat/dviface.h"
+#include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "dcmtk/ofstd/ofdatime.h"    /* for OFDateTime */
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmpstat/dvpsprt.h"
+#include "dcmtk/dcmpstat/dvpshlp.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_OPENSSL
-#include "tlstrans.h"
-#include "tlslayer.h"
+#include "dcmtk/dcmtls/tlstrans.h"
+#include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
 #ifdef WITH_ZLIB
@@ -587,7 +587,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.19  2005-11-28 15:29:05  meichel
+ * Revision 1.20  2005-12-08 15:46:05  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.19  2005/11/28 15:29:05  meichel
  * File dcdebug.h is not included by any other header file in the toolkit
  *   anymore, to minimize the risk of name clashes of macro debug().
  *

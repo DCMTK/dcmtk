@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for date functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:35:18 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:55 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
-#include "ofdate.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofdate.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CTIME
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*------------------*
@@ -321,7 +321,10 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal)
  *
  * CVS/RCS Log:
  * $Log: ofdate.cc,v $
- * Revision 1.6  2004-01-16 10:35:18  joergr
+ * Revision 1.7  2005-12-08 15:48:55  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.6  2004/01/16 10:35:18  joergr
  * Added setISOFormattedXXX() methods for Date, Time and DateTime.
  *
  * Revision 1.5  2003/09/15 12:15:07  joergr

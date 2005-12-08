@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 08:53:57 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:19 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,20 +33,20 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstd.h"
-#include "ofstream.h"
-#include "dcobject.h"
-#include "dcvr.h"
-#include "dcxfer.h"
-#include "dcswap.h"
-#include "dcdebug.h"
-#include "dcistrma.h"    /* for class DcmInputStream */
-#include "dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcobject.h"
+#include "dcmtk/dcmdata/dcvr.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcswap.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_IOMANIP
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 // global flags
@@ -472,7 +472,10 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.44  2005-12-02 08:53:57  joergr
+ * Revision 1.45  2005-12-08 15:41:19  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.44  2005/12/02 08:53:57  joergr
  * Changed macro NO_XFER_DETECTION_FOR_DATASETS into a global option that can
  * be enabled and disabled at runtime.
  *

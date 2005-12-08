@@ -22,24 +22,24 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:29:05 $
+ *  Update Date:      $Date: 2005-12-08 15:46:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcompat.h"     /* compatibility code, needs to be included before dirent.h */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmnet/dcompat.h"     /* compatibility code, needs to be included before dirent.h */
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 /* This #if code is suggested by the gnu autoconf documentation */
@@ -67,25 +67,25 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "ofstream.h"
-#include "dvpsdef.h"    /* for constants */
-#include "dviface.h"    /* for DVInterface */
-#include "ofstring.h"   /* for OFString */
-#include "ofbmanip.h"   /* for OFBitmanipTemplate */
-#include "ofdatime.h"   /* for OFDateTime */
-#include "dcuid.h"      /* for dcmtk version name */
-#include "cmdlnarg.h"   /* for prepareCmdLineArgs */
-#include "ofconapp.h"   /* for OFConsoleApplication */
-#include "dcmimage.h"
-#include "dvpspr.h"
-#include "dvpssp.h"
-#include "dvpshlp.h"     /* for class DVPSHelper */
-#include "ofstd.h"
-#include "dcdebug.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"    /* for constants */
+#include "dcmtk/dcmpstat/dviface.h"    /* for DVInterface */
+#include "dcmtk/ofstd/ofstring.h"   /* for OFString */
+#include "dcmtk/ofstd/ofbmanip.h"   /* for OFBitmanipTemplate */
+#include "dcmtk/ofstd/ofdatime.h"   /* for OFDateTime */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
+#include "dcmtk/dcmdata/cmdlnarg.h"   /* for prepareCmdLineArgs */
+#include "dcmtk/ofstd/ofconapp.h"   /* for OFConsoleApplication */
+#include "dcmtk/dcmimgle/dcmimage.h"
+#include "dcmtk/dcmpstat/dvpspr.h"
+#include "dcmtk/dcmpstat/dvpssp.h"
+#include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_OPENSSL
-#include "tlstrans.h"
-#include "tlslayer.h"
+#include "dcmtk/dcmtls/tlstrans.h"
+#include "dcmtk/dcmtls/tlslayer.h"
 #endif
 
 #ifdef WITH_ZLIB
@@ -1233,7 +1233,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.21  2005-11-28 15:29:05  meichel
+ * Revision 1.22  2005-12-08 15:46:06  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.21  2005/11/28 15:29:05  meichel
  * File dcdebug.h is not included by any other header file in the toolkit
  *   anymore, to minimize the risk of name clashes of macro debug().
  *

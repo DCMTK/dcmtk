@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,22 +21,22 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:35:17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:44:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "cond.h"
-#include "ofstream.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID(OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID, OF_error, "ASC Bad presentation context ID");
 const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,    OF_error, "ASC Missing transfer syntax");
@@ -162,7 +162,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.13  2004-02-04 15:35:17  joergr
+ * Revision 1.14  2005-12-08 15:44:25  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.13  2004/02/04 15:35:17  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.12  2002/12/10 11:00:59  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,26 +22,26 @@
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-04 17:10:20 $
+ *  Update Date:      $Date: 2005-12-08 15:43:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdecode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djdecode.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djdecode.h"
 
-#include "dccodec.h"  /* for DcmCodecStruct */
-#include "djdecbas.h" 
-#include "djdecext.h"
-#include "djdecsps.h"
-#include "djdecpro.h"
-#include "djdecsv1.h"
-#include "djdeclol.h"
-#include "djcparam.h"
+#include "dcmtk/dcmdata/dccodec.h"  /* for DcmCodecStruct */
+#include "dcmtk/dcmjpeg/djdecbas.h" 
+#include "dcmtk/dcmjpeg/djdecext.h"
+#include "dcmtk/dcmjpeg/djdecsps.h"
+#include "dcmtk/dcmjpeg/djdecpro.h"
+#include "dcmtk/dcmjpeg/djdecsv1.h"
+#include "dcmtk/dcmjpeg/djdeclol.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
 
 // initialization of static members
 OFBool DJDecoderRegistration::registered                  = OFFalse;
@@ -134,7 +134,10 @@ void DJDecoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djdecode.cc,v $
- * Revision 1.3  2001-12-04 17:10:20  meichel
+ * Revision 1.4  2005-12-08 15:43:32  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2001/12/04 17:10:20  meichel
  * Fixed codec registration: flag registered was never set to true
  *
  * Revision 1.2  2001/11/19 15:13:30  meichel

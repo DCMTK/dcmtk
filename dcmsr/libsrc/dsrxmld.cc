@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2004, OFFIS
+ *  Copyright (C) 2003-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-03 08:50:48 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:25 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_LIBXML
 #include <libxml/xmlschemas.h>
@@ -747,7 +747,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.9  2004-09-03 08:50:48  joergr
+ *  Revision 1.10  2005-12-08 15:48:25  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.9  2004/09/03 08:50:48  joergr
  *  Replaced tabs by spaces.
  *
  *  Revision 1.8  2004/08/04 12:12:18  joergr

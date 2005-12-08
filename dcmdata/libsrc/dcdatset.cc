@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 08:51:44 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:59 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,27 +31,27 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
-#include "ofstream.h"
-#include "ofstack.h"
-#include "ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofstack.h"
+#include "dcmtk/ofstd/ofstd.h"
 
-#include "dcdatset.h"
-#include "dcxfer.h"
-#include "dcvrus.h"
-#include "dcdebug.h"
-#include "dcpixel.h"
-#include "dcdeftag.h"
-#include "dcostrma.h"    /* for class DcmOutputStream */
-#include "dcostrmf.h"    /* for class DcmOutputFileStream */
-#include "dcistrma.h"    /* for class DcmInputStream */
-#include "dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcpixel.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
 
 
 // ********************************
@@ -595,7 +595,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.39  2005-12-02 08:51:44  joergr
+** Revision 1.40  2005-12-08 15:40:59  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.39  2005/12/02 08:51:44  joergr
 ** Changed macro NO_XFER_DETECTION_FOR_DATASETS into a global option that can
 ** be enabled and disabled at runtime.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,18 +21,18 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:45:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcswap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcswap.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcswap.h"
 
 OFCondition swapIfNecessary(const E_ByteOrder newByteOrder,
 			    const E_ByteOrder oldByteOrder,
@@ -150,7 +150,10 @@ Uint16 swapShort(const Uint16 toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.cc,v $
- * Revision 1.14  2004-02-04 16:45:00  joergr
+ * Revision 1.15  2005-12-08 15:41:38  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.14  2004/02/04 16:45:00  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.13  2001/11/01 14:55:43  wilkens

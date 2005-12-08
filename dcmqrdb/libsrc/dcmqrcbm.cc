@@ -22,25 +22,25 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 10:54:52 $
+ *  Update Date:      $Date: 2005-12-08 15:47:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrcbm.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrcbm.h"
 
-#include "dcmqrcnf.h"
-#include "dcdeftag.h"
-#include "dcmqropt.h"
-#include "diutil.h"
-#include "dcfilefo.h"
-#include "dcmqrdbs.h"
-#include "dcmqrdbi.h"
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
@@ -699,7 +699,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.7  2005-11-29 10:54:52  meichel
+ * Revision 1.8  2005-12-08 15:47:06  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2005/11/29 10:54:52  meichel
  * Added minimal support for compressed transfer syntaxes to dcmqrscp.
  *   No on-the-fly decompression is performed, but compressed images can
  *   be stored and retrieved.

@@ -22,24 +22,24 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-29 11:27:20 $
+ *  Update Date:      $Date: 2005-12-08 15:47:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrscp.h"
-#include "dcmqropt.h"
-#include "dcfilefo.h"
-#include "dcmqrdba.h"
-#include "dcmqrcbf.h"    /* for class DcmQueryRetrieveFindContext */
-#include "dcmqrcbm.h"    /* for class DcmQueryRetrieveMoveContext */
-#include "dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
-#include "dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrscp.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmqrdb/dcmqrdba.h"
+#include "dcmtk/dcmqrdb/dcmqrcbf.h"    /* for class DcmQueryRetrieveFindContext */
+#include "dcmtk/dcmqrdb/dcmqrcbm.h"    /* for class DcmQueryRetrieveMoveContext */
+#include "dcmtk/dcmqrdb/dcmqrcbg.h"    /* for class DcmQueryRetrieveGetContext */
+#include "dcmtk/dcmqrdb/dcmqrcbs.h"    /* for class DcmQueryRetrieveStoreContext */
 
 
 static void findCallback(
@@ -1116,7 +1116,10 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.6  2005-11-29 11:27:20  meichel
+ * Revision 1.7  2005-12-08 15:47:13  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.6  2005/11/29 11:27:20  meichel
  * Added new flag keepDBHandleDuringAssociation_ which allows to determine
  *   whether a DB handle is kept open for a complete association or a single
  *   DIMSE message only. Also improved error handling of file locking.

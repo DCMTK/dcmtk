@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-29 10:13:56 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2005-12-08 15:46:20 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,17 +31,17 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpscf.h"      /* for DVConfiguration */
-#include "ofconfig.h"    /* for class OFConfigFile */
-#include "ofconsol.h"    /* for OFConsole */
-#include "dvpsdef.h"     /* for constants */
-#include "ofstd.h"       /* for class OFStandard */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpscf.h"      /* for DVConfiguration */
+#include "dcmtk/ofstd/ofconfig.h"    /* for class OFConfigFile */
+#include "dcmtk/ofstd/ofconsol.h"    /* for OFConsole */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
+#include "dcmtk/ofstd/ofstd.h"       /* for class OFStandard */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifndef HAVE_WINDOWS_H
 /* some Unix operating systems do not define a prototype for strncasecmp
@@ -1508,7 +1508,10 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.42  2003-04-29 10:13:56  meichel
+ *  Revision 1.43  2005-12-08 15:46:20  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.42  2003/04/29 10:13:56  meichel
  *  Moved configuration file parser from module dcmpstat to ofstd and renamed
  *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
  *

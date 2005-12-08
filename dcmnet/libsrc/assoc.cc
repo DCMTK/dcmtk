@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-11-25 11:31:14 $
+** Update Date:         $Date: 2005-12-08 15:44:24 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.45 $
+** CVS/RCS Revision:    $Revision: 1.46 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,15 +81,15 @@
 ** Include Files
 */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "assoc.h"      /* always include the module header */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmnet/assoc.h"      /* always include the module header */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CERRNO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -101,12 +101,12 @@
 #include <sys/select.h>
 #endif
 
-#include "dicom.h"
-#include "cond.h"
-#include "dcuid.h"
-#include "ofconsol.h"
-#include "ofstd.h"
-#include "dcmtrans.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmnet/dcmtrans.h"
 
 /*
 ** Constant Definitions
@@ -1980,7 +1980,10 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.45  2005-11-25 11:31:14  meichel
+** Revision 1.46  2005-12-08 15:44:24  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.45  2005/11/25 11:31:14  meichel
 ** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
 **   where a separate client process is forked for each incoming association.
 **

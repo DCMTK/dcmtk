@@ -21,24 +21,24 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-30 14:08:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djdijg8.h"
-#include "djcparam.h"
-#include "ofconsol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djdijg8.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
 // We undefine them here and hope that IJG's configure has
@@ -444,7 +444,10 @@ void DJDecompressIJG8Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg8.cc,v $
- * Revision 1.11  2005-11-30 14:08:50  onken
+ * Revision 1.12  2005-12-08 15:43:38  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.11  2005/11/30 14:08:50  onken
  * Added check to decline automatic IJG color space conversion of signed pixel
  * data, because IJG lib only handles unsigned input for conversions.
  *

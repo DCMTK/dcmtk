@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-22 08:19:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctypes.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "dctypes.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
 
 /* print flags */
@@ -53,7 +53,10 @@ const size_t DCMTypes::XF_embedDocumentType = 1 << 4;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
- * Revision 1.5  2003-04-22 08:19:24  joergr
+ * Revision 1.6  2005-12-08 15:41:41  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2003/04/22 08:19:24  joergr
  * Added new command line option which allows to embed the content of the DTD
  * instead of referencing the DTD file.
  *

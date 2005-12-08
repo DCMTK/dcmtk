@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,40 +23,40 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:59:50 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2005-12-08 15:47:17 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_OPENSSL
 
-#include "dcsignat.h"
-#include "dcstack.h"
-#include "dcitem.h"
-#include "dcvrat.h"
-#include "dcvrcs.h"
-#include "dcvrdt.h"
-#include "dcvrobow.h"
-#include "dcvrus.h"
-#include "dcuid.h"
-#include "dcsequen.h"
-#include "dcdeftag.h"
+#include "dcmtk/dcmsign/dcsignat.h"
+#include "dcmtk/dcmdata/dcstack.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
+#include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
-#include "sialgo.h"
-#include "sicert.h"
-#include "simac.h"
-#include "simaccon.h"
-#include "simd5.h"
-#include "siprivat.h"
-#include "siripemd.h"
-#include "sisha1.h"
-#include "sisprof.h"
-#include "sitstamp.h"
+#include "dcmtk/dcmsign/sialgo.h"
+#include "dcmtk/dcmsign/sicert.h"
+#include "dcmtk/dcmsign/simac.h"
+#include "dcmtk/dcmsign/simaccon.h"
+#include "dcmtk/dcmsign/simd5.h"
+#include "dcmtk/dcmsign/siprivat.h"
+#include "dcmtk/dcmsign/siripemd.h"
+#include "dcmtk/dcmsign/sisha1.h"
+#include "dcmtk/dcmsign/sisprof.h"
+#include "dcmtk/dcmsign/sitstamp.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -827,7 +827,10 @@ int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: dcsignat.cc,v $
- *  Revision 1.2  2003-07-09 13:59:50  meichel
+ *  Revision 1.3  2005-12-08 15:47:17  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.2  2003/07/09 13:59:50  meichel
  *  Removed unused variable
  *
  *  Revision 1.1  2002/12/20 14:53:35  wilkens

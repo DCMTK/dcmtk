@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,22 +23,22 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:13 $
+ *  Update Date:      $Date: 2005-12-08 15:49:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstatof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "ofstd.h"
-#include "oftypes.h"
-#include "ofconsol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CMATH
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 struct ValuePair
@@ -151,7 +151,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstatof.cc,v $
- * Revision 1.3  2002-11-27 11:23:13  meichel
+ * Revision 1.4  2005-12-08 15:49:07  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2002/11/27 11:23:13  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.2  2002/07/18 12:13:25  joergr

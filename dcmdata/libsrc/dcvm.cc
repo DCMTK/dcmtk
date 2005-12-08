@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,20 @@
  *  Purpose: functions to derive VM from string
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:54 $
+ *  Update Date:      $Date: 2005-12-08 15:41:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcvm.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcvm.h"
 
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // get the number of values stored in string
 unsigned long getVMFromString(const char * val)
@@ -84,7 +84,10 @@ char * getFirstValueFromString(const char * & s)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvm.cc,v $
-** Revision 1.7  2002-11-27 12:06:54  meichel
+** Revision 1.8  2005-12-08 15:41:43  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.7  2002/11/27 12:06:54  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.6  2001/06/01 15:49:13  meichel

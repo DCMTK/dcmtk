@@ -22,18 +22,18 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-05-26 09:06:55 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2005-12-08 15:41:25 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcpixel.h"
-#include "dccodec.h"
-#include "dcpixseq.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcpixel.h"
+#include "dcmtk/dcmdata/dccodec.h"
+#include "dcmtk/dcmdata/dcpixseq.h"
 
 //
 // class DcmRepresentationEntry
@@ -1037,7 +1037,10 @@ void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.36  2005-05-26 09:06:55  meichel
+** Revision 1.37  2005-12-08 15:41:25  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.36  2005/05/26 09:06:55  meichel
 ** Renamed isIconImage flag to alwaysUnencapsulated to clarify meaning.
 **   Added public method DcmPixelData::setNonEncapsulationFlag() that allows
 **   DcmCodec instances to enable the flag. Improved documentation.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,31 +21,31 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-11-30 14:15:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djcodecd.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djcodecd.h"
 
 // dcmdata includes
-#include "dcdatset.h"  /* for class DcmDataset */
-#include "dcdeftag.h"  /* for tag constants */
-#include "dcpixseq.h"  /* for class DcmPixelSequence */
-#include "dcpxitem.h"  /* for class DcmPixelItem */
-#include "dcvrpobw.h"  /* for class DcmPolymorphOBOW */
-#include "dcswap.h"    /* for swapIfNecessary() */
-#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
+#include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */
+#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
+#include "dcmtk/dcmdata/dcpixseq.h"  /* for class DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpxitem.h"  /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/dcvrpobw.h"  /* for class DcmPolymorphOBOW */
+#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary() */
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
 
 // dcmjpeg includes
-#include "djcparam.h"  /* for class DJCodecParameter */
-#include "djdecabs.h"  /* for class DJDecoder */
+#include "dcmtk/dcmjpeg/djcparam.h"  /* for class DJCodecParameter */
+#include "dcmtk/dcmjpeg/djdecabs.h"  /* for class DJDecoder */
 
 DJCodecDecoder::DJCodecDecoder()
 : DcmCodec()
@@ -581,7 +581,10 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.7  2005-11-30 14:15:50  onken
+ * Revision 1.8  2005-12-08 15:43:26  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2005/11/30 14:15:50  onken
  * Added support for decoder modifications concerning color space conversions
  * of signed pixel data
  *

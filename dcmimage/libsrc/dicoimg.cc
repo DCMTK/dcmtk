@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:45:36 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:21 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,20 +31,20 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
-#include "dcdeftag.h"
-#include "dcpixel.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcpixel.h"
 
-#include "dicoimg.h"
-#include "dimo2img.h"
-#include "dicopxt.h"
-#include "dicocpt.h"
-#include "dicosct.h"
-#include "dicoflt.h"
-#include "dicorot.h"
-#include "dicoopxt.h"
-#include "diutils.h"
+#include "dcmtk/dcmimage/dicoimg.h"
+#include "dcmtk/dcmimgle/dimo2img.h"
+#include "dcmtk/dcmimage/dicopxt.h"
+#include "dcmtk/dcmimage/dicocpt.h"
+#include "dcmtk/dcmimage/dicosct.h"
+#include "dcmtk/dcmimage/dicoflt.h"
+#include "dcmtk/dcmimage/dicorot.h"
+#include "dcmtk/dcmimage/dicoopxt.h"
+#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*----------------*
@@ -742,7 +742,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.34  2005-03-09 17:45:36  joergr
+ * Revision 1.35  2005-12-08 15:42:21  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.34  2005/03/09 17:45:36  joergr
  * Added mode to writeImageToDataset() - only used for monochrome images.
  *
  * Revision 1.33  2004/10/19 12:56:17  joergr

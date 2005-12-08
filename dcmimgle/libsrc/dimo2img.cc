@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochrome2Image (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:10:39 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:55 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,11 +31,11 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
-#include "dimo2img.h"
-#include "diutils.h"
+#include "dcmtk/dcmimgle/dimo2img.h"
+#include "dcmtk/dcmimgle/diutils.h"
 
 
 /*----------------*
@@ -215,7 +215,10 @@ DiImage *DiMono2Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo2img.cc,v $
- * Revision 1.13  2004-02-06 11:10:39  joergr
+ * Revision 1.14  2005-12-08 15:42:55  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.13  2004/02/06 11:10:39  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.12  2003/12/08 17:38:27  joergr

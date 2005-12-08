@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2004, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,22 +22,22 @@
  *  Purpose:
  *    classes: DVPSGraphicAnnotation_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:27 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsgal.h"
-#include "dvpsga.h"      /* for DVPSGraphicAnnotation */
-#include "ofstring.h"    /* for OFString */
-#include "dvpstx.h"      /* for DVPSTextObject */
-#include "dvpsgr.h"      /* for DVPSGraphicObject */
-#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpsgal.h"
+#include "dcmtk/dcmpstat/dvpsga.h"      /* for DVPSGraphicAnnotation */
+#include "dcmtk/ofstd/ofstring.h"    /* for OFString */
+#include "dcmtk/dcmpstat/dvpstx.h"      /* for DVPSTextObject */
+#include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject */
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 DVPSGraphicAnnotation_PList::DVPSGraphicAnnotation_PList()
 : list_()
@@ -537,7 +537,10 @@ void DVPSGraphicAnnotation_PList::setLog(OFConsole *stream, OFBool verbMode, OFB
 
 /*
  *  $Log: dvpsgal.cc,v $
- *  Revision 1.14  2004-02-04 15:57:49  joergr
+ *  Revision 1.15  2005-12-08 15:46:27  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.14  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.13  2003/09/05 08:37:46  meichel

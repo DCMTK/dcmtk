@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:17 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2005-12-08 15:46:53 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpstx.h"
-#include "ofstring.h"
-#include "dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpstx.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /* --------------- class DVPSTextObject --------------- */
@@ -512,7 +512,10 @@ void DVPSTextObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.12  2002-11-27 15:48:17  meichel
+ *  Revision 1.13  2005-12-08 15:46:53  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.12  2002/11/27 15:48:17  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.11  2001/09/26 15:36:35  meichel

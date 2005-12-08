@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,20 +21,20 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:50:22 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:17 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofstream.h"
-#include "dclist.h"
-#include "dcdebug.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dclist.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 
 // *****************************************
@@ -277,7 +277,10 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
- * Revision 1.13  2004-01-16 13:50:22  joergr
+ * Revision 1.14  2005-12-08 15:41:17  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.13  2004/01/16 13:50:22  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.12  2003/08/08 12:55:12  joergr

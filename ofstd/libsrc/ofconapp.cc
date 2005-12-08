@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2003, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:22:43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,10 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofconapp.h"
-#include "ofstring.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstring.h"
 
 
 
@@ -254,7 +254,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.20  2003-06-12 13:22:43  joergr
+ * Revision 1.21  2005-12-08 15:48:50  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.20  2003/06/12 13:22:43  joergr
  * Enhanced method printWarning(). Added method quietMode().
  *
  * Revision 1.19  2002/11/26 12:57:07  joergr

@@ -22,24 +22,24 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:44:40 $
+ *  Update Date:      $Date: 2005-12-08 15:47:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrtis.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrtis.h"
 
-#include "diutil.h"
-#include "dcdeftag.h"
-#include "dcmqrdbi.h"
-#include "dcmqrdbs.h"
-#include "dcfilefo.h"
-#include "dcmqropt.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmqrdb/dcmqropt.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -2240,7 +2240,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
- * Revision 1.5  2005-11-17 13:44:40  meichel
+ * Revision 1.6  2005-12-08 15:47:14  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2005/11/17 13:44:40  meichel
  * Added command line options for DIMSE and ACSE timeouts
  *
  * Revision 1.4  2005/10/25 08:56:18  meichel

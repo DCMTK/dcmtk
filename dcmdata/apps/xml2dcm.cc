@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-11-30 12:51:45 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:54 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,17 +31,17 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctk.h"
-#include "dcpxitem.h"    /* for class DcmPixelItem */
-#include "cmdlnarg.h"
-#include "dcdebug.h"
-#include "ofstd.h"
-#include "ofconapp.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcpxitem.h"    /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconapp.h"
 
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -877,7 +877,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.13  2005-11-30 12:51:45  joergr
+ * Revision 1.14  2005-12-08 15:40:54  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.13  2005/11/30 12:51:45  joergr
  * Added missing header file "dcdebug.h".
  *
  * Revision 1.12  2005/03/22 13:55:50  joergr

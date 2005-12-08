@@ -22,28 +22,28 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-07-26 17:08:35 $
+ *  Update Date:      $Date: 2005-12-08 15:41:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcrleccd.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcrleccd.h"
 
 // dcmdata includes
-#include "dcrlecp.h"   /* for class DcmRLECodecParameter */
-#include "dcrledec.h"  /* for class DcmRLEDecoder */
-#include "dcdatset.h"  /* for class DcmDataset */
-#include "dcdeftag.h"  /* for tag constants */
-#include "dcpixseq.h"  /* for class DcmPixelSequence */
-#include "dcpxitem.h"  /* for class DcmPixelItem */
-#include "dcvrpobw.h"  /* for class DcmPolymorphOBOW */
-#include "dcswap.h"    /* for swapIfNecessary() */
-#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
+#include "dcmtk/dcmdata/dcrlecp.h"   /* for class DcmRLECodecParameter */
+#include "dcmtk/dcmdata/dcrledec.h"  /* for class DcmRLEDecoder */
+#include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */
+#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
+#include "dcmtk/dcmdata/dcpixseq.h"  /* for class DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpxitem.h"  /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/dcvrpobw.h"  /* for class DcmPolymorphOBOW */
+#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary() */
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
 
 
 DcmRLECodecDecoder::DcmRLECodecDecoder()
@@ -415,7 +415,10 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
- * Revision 1.6  2005-07-26 17:08:35  meichel
+ * Revision 1.7  2005-12-08 15:41:29  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.6  2005/07/26 17:08:35  meichel
  * Added option to RLE decoder that allows to correctly decode images with
  *   incorrect byte order of byte segments (LSB instead of MSB).
  *

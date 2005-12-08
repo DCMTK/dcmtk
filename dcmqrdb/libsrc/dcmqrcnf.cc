@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-04-07 14:38:22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcnf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,14 +32,14 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrcnf.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
 
 /* includes */
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
-#include "ofcmdln.h"
+#include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofcmdln.h"
 
 int DcmQueryRetrieveConfig::aeTitlesForPeer(const char *hostName, const char *** aeTitleList) const
 {
@@ -1032,7 +1032,10 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
- * Revision 1.3  2005-04-07 14:38:22  joergr
+ * Revision 1.4  2005-12-08 15:47:08  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.3  2005/04/07 14:38:22  joergr
  * Initialize member variables for user and group name.
  *
  * Revision 1.2  2005/04/04 13:15:13  meichel

@@ -21,28 +21,28 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-01 09:10:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmqrdbs.h"
-#include "dcmqrdbi.h"
-#include "dcmqrcnf.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
 
-#include "dcmqridx.h"
-#include "diutil.h"
-#include "dcfilefo.h"
-#include "ofstd.h"
+#include "dcmtk/dcmqrdb/dcmqridx.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDARG
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -3465,7 +3465,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.5  2005-12-01 09:10:06  joergr
+ * Revision 1.6  2005-12-08 15:47:09  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2005/12/01 09:10:06  joergr
  * Fixed bug in method matchUID (formerly known as DB_MatchUID).
  *
  * Revision 1.4  2005/04/22 15:36:32  meichel

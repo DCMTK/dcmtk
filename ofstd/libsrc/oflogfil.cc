@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2003, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,23 +22,23 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
+ *  Update Date:      $Date: 2005-12-08 15:48:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "oflogfil.h"
-#include "ofstring.h"
-#include "ofdatime.h"
-#include "ofcast.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/oflogfil.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 OFLogFile::OFLogFile(const char *filename, int flags)
@@ -107,7 +107,10 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.9  2003-07-09 13:58:04  meichel
+ * Revision 1.10  2005-12-08 15:48:59  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.9  2003/07/09 13:58:04  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.8  2003/06/11 12:21:37  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *           as used by most multithread implementations
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:37:23 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:12 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofconsol.h"
-#include "ofthread.h"
-#include "ofstring.h"
-#include "ofstd.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/ofstd/ofthread.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 static void bailout(const char *message, int line)
@@ -461,7 +461,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.9  2004-01-16 10:37:23  joergr
+ * Revision 1.10  2005-12-08 15:49:12  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.9  2004/01/16 10:37:23  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.8  2003/08/14 09:01:20  meichel

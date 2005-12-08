@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2003, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,23 +23,23 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:58:04 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-12-08 15:48:57 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "offname.h"
-#include "ofcast.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/offname.h"
+#include "dcmtk/ofstd/ofcast.h"
 
 #define INCLUDE_CERRNO
 #define INCLUDE_CSTRING
 #define INCLUDE_CTIME
 #define INCLUDE_CSTDLIB
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
                   
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -158,7 +158,10 @@ int OFFilenameCreator::myrand_r(unsigned int *seed)
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.10  2003-07-09 13:58:04  meichel
+ *  Revision 1.11  2005-12-08 15:48:57  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.10  2003/07/09 13:58:04  meichel
  *  Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  *  Revision 1.9  2002/11/27 11:23:10  meichel

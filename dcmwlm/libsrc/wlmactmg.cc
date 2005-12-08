@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-17 13:45:41 $
+ *  Update Date:      $Date: 2005-12-08 15:48:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,25 +34,25 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "ofcond.h"
-#include "dicom.h"
-#include "wltypdef.h"
-#include "oftypes.h"
-#include "dcdatset.h"
-#include "dcvrat.h"
-#include "dcvrlo.h"
-#include "dcdict.h"
-#include "dcdeftag.h"
-#include "wlds.h"
-#include "ofcmdln.h"
-#include "assoc.h"
-#include "dimse.h"
-#include "diutil.h"
-#include "ofstd.h"
-#include "dcdicent.h"  // needed by MSVC5 with STL
-#include "wlmactmg.h"
+#include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmwlm/wlds.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmnet/assoc.h"
+#include "dcmtk/dcmnet/dimse.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcdicent.h"  // needed by MSVC5 with STL
+#include "dcmtk/dcmwlm/wlmactmg.h"
 
 // ----------------------------------------------------------------------------
 
@@ -1279,7 +1279,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.19  2005-11-17 13:45:41  meichel
+** Revision 1.20  2005-12-08 15:48:35  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.19  2005/11/17 13:45:41  meichel
 ** Added command line options for DIMSE and ACSE timeouts
 **
 ** Revision 1.18  2005/11/16 14:59:09  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-11-30 12:06:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:26 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrxrdcc.h"
+#include "dcmtk/dcmsr/dsrxrdcc.h"
 
 
 DSRXRayRadiationDoseSRConstraintChecker::DSRXRayRadiationDoseSRConstraintChecker()
@@ -134,7 +134,10 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxrdcc.cc,v $
- *  Revision 1.1  2005-11-30 12:06:26  joergr
+ *  Revision 1.2  2005-12-08 15:48:26  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.1  2005/11/30 12:06:26  joergr
  *  Added support for X-Ray Radiation Dose SR documents.
  *
  *

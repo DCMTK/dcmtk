@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,25 +22,25 @@
  *  Purpose: Basic work list management service class provider based on a
  *           set of files as data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-05 09:09:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlmscpfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dicom.h"
-#include "ofcmdln.h"
-#include "wltypdef.h"
-#include "dcxfer.h"
-#include "ofconapp.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/ofstd/ofconapp.h"
 #include "wlcefs.h"
-#include "wlds.h"
-#include "wldsfs.h"
+#include "dcmtk/dcmwlm/wlds.h"
+#include "dcmtk/dcmwlm/wldsfs.h"
 
 #define OFFIS_CONSOLE_APPLICATION "wlmscpfs"
 
@@ -63,7 +63,10 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: wlmscpfs.cc,v $
-** Revision 1.4  2002-08-05 09:09:29  wilkens
+** Revision 1.5  2005-12-08 15:48:31  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.4  2002/08/05 09:09:29  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **

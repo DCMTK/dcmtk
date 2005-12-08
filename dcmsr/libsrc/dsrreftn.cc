@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2004, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:37:00 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +32,11 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtypes.h"
-#include "dsrreftn.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrtypes.h"
+#include "dcmtk/dcmsr/dsrreftn.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType)
@@ -218,7 +218,10 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.14  2004-01-05 14:37:00  joergr
+ *  Revision 1.15  2005-12-08 15:48:03  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.14  2004/01/05 14:37:00  joergr
  *  Renamed XML attribute "ref_id" to "ref".
  *
  *  Revision 1.13  2003/12/01 15:47:28  joergr

@@ -22,22 +22,22 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 15:53:13 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2005-12-08 15:41:02 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CERRNO
 #define INCLUDE_LIBC
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
 extern "C" {
@@ -61,21 +61,21 @@ int mkstemp(char *);
 #undef timeval
 #endif
 
-#include "ofstream.h"
-#include "dcdefine.h"
-#include "dcdicdir.h"
-#include "dcuid.h"
-#include "dcdirrec.h"
-#include "dcxfer.h"
-#include "dcdebug.h"
-#include "dcdeftag.h"
-#include "dcostrma.h"    /* for class DcmOutputStream */
-#include "dcostrmf.h"    /* for class DcmOutputFileStream */
-#include "dcistrmf.h"    /* for class DcmInputFileStream */
-#include "dcvrcs.h"
-#include "dcvrus.h"
-#include "dcmetinf.h"
-#include "ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/dcmdata/dcdicdir.h"
+#include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcdirrec.h"
+#include "dcmtk/dcmdata/dcxfer.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
+#include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrus.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 // ********************************
 
@@ -1325,7 +1325,10 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.47  2005-11-28 15:53:13  meichel
+** Revision 1.48  2005-12-08 15:41:02  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.47  2005/11/28 15:53:13  meichel
 ** Renamed macros in dcdebug.h
 **
 ** Revision 1.46  2005/11/07 16:59:26  meichel

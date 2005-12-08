@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,22 +22,22 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-24 14:54:20 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2005-12-08 15:40:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dccodec.h"
-#include "oflist.h"
-#include "ofthread.h"
-#include "dcdeftag.h"  /* for tag constants */
-#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
-#include "dcitem.h"    /* for class DcmItem */
-#include "dcsequen.h"  /* for DcmSequenceOfItems */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dccodec.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofthread.h"
+#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
+#include "dcmtk/dcmdata/dcitem.h"    /* for class DcmItem */
+#include "dcmtk/dcmdata/dcsequen.h"  /* for DcmSequenceOfItems */
 
 // static member variables
 OFList<DcmCodecList *> DcmCodecList::registeredCodecs;
@@ -493,7 +493,10 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.13  2004-08-24 14:54:20  meichel
+** Revision 1.14  2005-12-08 15:40:58  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.13  2004/08/24 14:54:20  meichel
 **  Updated compression helper methods. Image type is not set to SECONDARY
 **   any more, support for the purpose of reference code sequence added.
 **

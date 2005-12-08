@@ -23,26 +23,26 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-14 16:42:21 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2005-12-08 15:47:20 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_OPENSSL
 
-#include "sicert.h"
-#include "sirsa.h"   /* for class SiRSA */
-#include "sidsa.h"   /* for class SiDSA */
-#include "dcstack.h"
-#include "dcitem.h"
-#include "dcvrcs.h"
-#include "dcvrobow.h"
-#include "dcdeftag.h"
+#include "dcmtk/dcmsign/sicert.h"
+#include "dcmtk/dcmsign/sirsa.h"   /* for class SiRSA */
+#include "dcmtk/dcmsign/sidsa.h"   /* for class SiDSA */
+#include "dcmtk/dcmdata/dcstack.h"
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmdata/dcvrobow.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -316,7 +316,10 @@ int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.9  2005-11-14 16:42:21  meichel
+ *  Revision 1.10  2005-12-08 15:47:20  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.9  2005/11/14 16:42:21  meichel
  *  Now checking OpenSSL version number to allow compilation both with
  *    old and new versions due to incompatible API change in OpenSSL 0.9.8.
  *

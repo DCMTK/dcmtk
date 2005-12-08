@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-17 16:10:43 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:06 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,10 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrscovl.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrscovl.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 
 DSRSpatialCoordinatesValue::DSRSpatialCoordinatesValue()
@@ -305,7 +305,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.15  2003-10-17 16:10:43  joergr
+ *  Revision 1.16  2005-12-08 15:48:06  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.15  2003/10/17 16:10:43  joergr
  *  Fixed wrong wording in a warning message ("too less" -> "too few").
  *
  *  Revision 1.14  2003/08/07 15:21:53  joergr

@@ -22,23 +22,23 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-28 17:09:52 $
+ *  Update Date:      $Date: 2005-12-08 15:43:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djeijg12.h"
-#include "djcparam.h"
-#include "ofconsol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djeijg12.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSETJMP
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 // These two macros are re-defined in the IJG header files.
 // We undefine them here and hope that IJG's configure has
@@ -548,7 +548,10 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
- * Revision 1.7  2005-11-28 17:09:52  meichel
+ * Revision 1.8  2005-12-08 15:43:39  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2005/11/28 17:09:52  meichel
  * Fixed bug affecting JPEG compression with 12 or 16 bits/pixel,
  *   where Huffman table optimization is required but was not always enabled.
  *

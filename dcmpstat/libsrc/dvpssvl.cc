@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2004, OFFIS
+ *  Copyright (C) 1999-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,21 +22,21 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 15:57:49 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:50 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpssvl.h"
-#include "dvpssv.h"      /* for DVPSSoftcopyVOI */
-#include "dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dvpssvl.h"
+#include "dcmtk/dcmpstat/dvpssv.h"      /* for DVPSSoftcopyVOI */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
-#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 /* --------------- class DVPSSoftcopyVOI_PList --------------- */
 
@@ -344,7 +344,10 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpssvl.cc,v $
- *  Revision 1.12  2004-02-04 15:57:49  joergr
+ *  Revision 1.13  2005-12-08 15:46:50  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.12  2004/02/04 15:57:49  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.11  2003/06/12 18:23:11  joergr

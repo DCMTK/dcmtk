@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,20 +23,20 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2005-12-08 15:47:32 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef WITH_OPENSSL
 
-#include "sitypes.h"
-#include "dcerror.h" /* for OFM_dcmsign */
+#include "dcmtk/dcmsign/sitypes.h"
+#include "dcmtk/dcmdata/dcerror.h" /* for OFM_dcmsign */
 
 const OFConditionConst SI_ECC_InitializationFailed(                       OFM_dcmsign,  1, OF_error, "object initialization failed");
 const OFConditionConst SI_ECC_OpenSSLFailure(                             OFM_dcmsign,  2, OF_error, "an OpenSSL call has failed");
@@ -80,7 +80,10 @@ int sitypes_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sitypes.cc,v $
- *  Revision 1.5  2002-12-16 12:57:54  meichel
+ *  Revision 1.6  2005-12-08 15:47:32  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.5  2002/12/16 12:57:54  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *

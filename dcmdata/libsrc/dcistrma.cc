@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,19 +22,19 @@
  *  Purpose: base classes for input streams
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:48 $
+ *  Update Date:      $Date: 2005-12-08 15:41:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrma.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcistrma.h"
-#include "dcistrmz.h" /* for DcmZLibInputFilter */
-#include "dcerror.h"  /* for EC_IllegalCall */
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcistrma.h"
+#include "dcmtk/dcmdata/dcistrmz.h" /* for DcmZLibInputFilter */
+#include "dcmtk/dcmdata/dcerror.h"  /* for EC_IllegalCall */
 
 DcmInputStream::DcmInputStream(DcmProducer *initial)
 : current_(initial)
@@ -141,7 +141,10 @@ OFCondition DcmInputStream::installCompressionFilter(E_StreamCompression filterT
 /*
  * CVS/RCS Log:
  * $Log: dcistrma.cc,v $
- * Revision 1.1  2002-08-27 16:55:48  meichel
+ * Revision 1.2  2005-12-08 15:41:12  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2002/08/27 16:55:48  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

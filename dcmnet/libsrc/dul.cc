@@ -54,14 +54,14 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2005-11-25 11:31:14 $
+** Last Update:         $Author: meichel $, $Date: 2005-12-08 15:44:48 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.67 $
+** Revision:            $Revision: 1.68 $
 ** Status:              $State: Exp $
 */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -69,7 +69,7 @@
 #define INCLUDE_CERRNO
 #define INCLUDE_CSIGNAL
 #define INCLUDE_CTIME
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_ERRNO_H
@@ -125,20 +125,20 @@ END_EXTERN_C
 #include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
-#include "ofstream.h"
-#include "dcompat.h"
-#include "dicom.h"
-#include "cond.h"
-#include "lst.h"
-#include "ofconsol.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmnet/dcompat.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmnet/lst.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
-#include "dul.h"
+#include "dcmtk/dcmnet/dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dulfsm.h"
-#include "dcmtrans.h"
-#include "dcmlayer.h"
-#include "ofstd.h"
+#include "dcmtk/dcmnet/dcmtrans.h"
+#include "dcmtk/dcmnet/dcmlayer.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
@@ -2591,7 +2591,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.67  2005-11-25 11:31:14  meichel
+** Revision 1.68  2005-12-08 15:44:48  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.67  2005/11/25 11:31:14  meichel
 ** StoreSCP now supports multi-process mode both on Posix and Win32 platforms
 **   where a separate client process is forked for each incoming association.
 **

@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-07 16:42:49 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:42 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,14 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dctk.h"
-#include "cmdlnarg.h"
-#include "ofstd.h"
-#include "ofstream.h"
-#include "ofconapp.h"
-#include "dcdebug.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -459,7 +459,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.21  2005-12-07 16:42:49  onken
+ * Revision 1.22  2005-12-08 15:40:42  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.21  2005/12/07 16:42:49  onken
  * Changed default and minimum value of --max-read-length to 4 KB
  *
  * Revision 1.20  2005/12/02 08:58:44  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,20 +23,20 @@
  *    classes: DVPSPresentationLUT 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-18 17:14:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2005-12-08 15:46:39 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpspl.h"
-#include "dcmimage.h"    /* for class DiLookupTable, DicomImage */
-#include "dvpsdef.h"     /* for constants and macros */
-#include "dimse.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpspl.h"
+#include "dcmtk/dcmimgle/dcmimage.h"    /* for class DiLookupTable, DicomImage */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/dcmnet/dimse.h"
 
 /* --------------- class DVPSPresentationLUT --------------- */
 
@@ -177,7 +177,10 @@ OFBool DVPSPresentationLUT::isInverse()
 
 /*
  *  $Log: dvpspl2.cc,v $
- *  Revision 1.2  2003-12-18 17:14:47  meichel
+ *  Revision 1.3  2005-12-08 15:46:39  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.2  2003/12/18 17:14:47  meichel
  *  Fixed print preview for MONOCHROME1 images with IDENTITY P-LUT shape
  *
  *  Revision 1.1  2003/08/27 14:59:08  meichel

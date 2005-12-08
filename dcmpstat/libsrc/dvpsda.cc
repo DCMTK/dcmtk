@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,25 +23,25 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:30:08 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2005-12-08 15:46:23 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
-#include "dvpsda.h"
-#include "dvpsri.h"      /* for DVPSReferencedImage */
-#include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
-#include "dvpsdef.h"     /* for constants and macros */
-#include "ofstd.h"
-#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmpstat/dvpsda.h"
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage */
+#include "dcmtk/dcmpstat/dvpsrsl.h"     /* DVPSReferencedSeries_PList */
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
 
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 /* --------------- class DVPSDisplayedArea --------------- */
 
@@ -520,7 +520,10 @@ void DVPSDisplayedArea::rotateAndFlip(
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.12  2003-09-05 14:30:08  meichel
+ *  Revision 1.13  2005-12-08 15:46:23  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.12  2003/09/05 14:30:08  meichel
  *  Introduced new API methods that allow Displayed Areas to be queried
  *    and set either relative to the image (ignoring rotation and flip) or
  *    in absolute values as defined in the standard.  Rotate and flip methods

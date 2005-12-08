@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLCursor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:49:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:24 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,9 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrxmlc.h"
+#include "dcmtk/dcmsr/dsrxmlc.h"
 
 
 DSRXMLCursor::DSRXMLCursor()
@@ -126,7 +126,10 @@ DSRXMLCursor DSRXMLCursor::getChild() const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmlc.cc,v $
- *  Revision 1.1  2003-08-07 14:49:36  joergr
+ *  Revision 1.2  2005-12-08 15:48:24  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.1  2003/08/07 14:49:36  joergr
  *  Added interface classes hiding the access to libxml (document and cursor
  *  class).
  *

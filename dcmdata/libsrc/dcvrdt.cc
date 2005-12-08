@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,24 +21,24 @@
  *
  *  Purpose: Implementation of class DcmDateTime
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 12:50:45 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcvrdt.h"
-#include "dcvrda.h"
-#include "dcvrtm.h"
-#include "ofstring.h"
-#include "ofstd.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcvrdt.h"
+#include "dcmtk/dcmdata/dcvrda.h"
+#include "dcmtk/dcmdata/dcvrtm.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 // ********************************
@@ -329,7 +329,10 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.25  2004-04-16 12:50:45  joergr
+** Revision 1.26  2005-12-08 15:41:51  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.25  2004/04/16 12:50:45  joergr
 ** Restructured code to avoid default parameter values for "complex types" like
 ** OFString. Required for Sun CC 2.0.1.
 **

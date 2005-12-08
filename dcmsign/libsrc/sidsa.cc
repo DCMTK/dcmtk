@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,21 +23,21 @@
  *    classes: SiDSA
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-16 12:57:50 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2005-12-08 15:47:23 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_OPENSSL
 
-#include "sidsa.h"
-#include "sicert.h"
-#include "siprivat.h"
+#include "dcmtk/dcmsign/sidsa.h"
+#include "dcmtk/dcmsign/sicert.h"
+#include "dcmtk/dcmsign/siprivat.h"
 
 BEGIN_EXTERN_C
 #include <openssl/err.h>
@@ -137,7 +137,10 @@ int sidsa_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sidsa.cc,v $
- *  Revision 1.5  2002-12-16 12:57:50  meichel
+ *  Revision 1.6  2005-12-08 15:47:23  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.5  2002/12/16 12:57:50  meichel
  *  Minor modification to shut up linker on MacOS X when compiling
  *    without OpenSSL support
  *

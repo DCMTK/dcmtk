@@ -21,9 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:31:17 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:18 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,31 +31,31 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
 #endif
 
-#include "dctk.h"          /* for various dcmdata headers */
-#include "dcdebug.h"       /* for SetDebugLevel */
-#include "cmdlnarg.h"      /* for prepareCmdLineArgs */
-#include "dcuid.h"         /* for dcmtk version name */
+#include "dcmtk/dcmdata/dctk.h"          /* for various dcmdata headers */
+#include "dcmtk/dcmdata/dcdebug.h"       /* for SetDebugLevel */
+#include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
+#include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 
-#include "ofconapp.h"      /* for OFConsoleApplication */
-#include "ofcmdln.h"       /* for OFCommandLine */
+#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
+#include "dcmtk/ofstd/ofcmdln.h"       /* for OFCommandLine */
 
-#include "dcmimage.h"      /* for DicomImage */
-#include "diregist.h"      /* include to support color images */
-#include "dcrledrg.h"      /* for DcmRLEDecoderRegistration */
+#include "dcmtk/dcmimgle/dcmimage.h"      /* for DicomImage */
+#include "dcmtk/dcmimage/diregist.h"      /* include to support color images */
+#include "dcmtk/dcmdata/dcrledrg.h"      /* for DcmRLEDecoderRegistration */
 
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
-#include "djdecode.h"      /* for dcmjpeg decoders */
-#include "dipijpeg.h"      /* for dcmimage JPEG plugin */
+#include "dcmtk/dcmjpeg/djdecode.h"      /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/dipijpeg.h"      /* for dcmimage JPEG plugin */
 #endif
 
 #ifdef WITH_ZLIB
@@ -657,7 +657,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.12  2005-12-02 09:31:17  joergr
+ * Revision 1.13  2005-12-08 15:42:18  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.12  2005/12/02 09:31:17  joergr
  * Added new command line option that ignores the transfer syntax specified in
  * the meta header and tries to detect the transfer syntax automatically from
  * the dataset.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:20:08 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:40:52 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,16 +31,16 @@
  */
 
 
-#include "osconfig.h"   // make sure OS specific configuration is included first
+#include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfdsman.h"
-#include "dcvrsl.h"
-#include "ofcast.h"
-#include "ofstd.h"
-#include "dctk.h"
-#include "dcuid.h"
+#include "dcmtk/dcmdata/dcvrsl.h"
+#include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/dcmdata/dcuid.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 MdfDatasetManager::MdfDatasetManager(const OFBool debug)
@@ -973,7 +973,10 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.17  2005-12-02 09:20:08  joergr
+** Revision 1.18  2005-12-08 15:40:52  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.17  2005/12/02 09:20:08  joergr
 ** Added new file read mode that makes it possible to distinguish between DICOM
 ** files, datasets and other non-DICOM files.  For this reason, the last
 ** parameter of method loadFile() changed from OFBool to E_FileReadMode.

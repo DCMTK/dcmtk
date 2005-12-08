@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,20 @@
  *  Purpose: Codec class for encoding JPEG Baseline (lossy, 8-bit)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:58:31 $
+ *  Update Date:      $Date: 2005-12-08 15:43:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencbas.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "djencbas.h"
-#include "djcparam.h"
-#include "djrploss.h"
-#include "djeijg8.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmjpeg/djencbas.h"
+#include "dcmtk/dcmjpeg/djcparam.h"
+#include "dcmtk/dcmjpeg/djrploss.h"
+#include "dcmtk/dcmjpeg/djeijg8.h"
 
 
 DJEncoderBaseline::DJEncoderBaseline()
@@ -96,7 +96,10 @@ DJEncoder *DJEncoderBaseline::createEncoderInstance(
 /*
  * CVS/RCS Log
  * $Log: djencbas.cc,v $
- * Revision 1.1  2001-11-13 15:58:31  meichel
+ * Revision 1.2  2005-12-08 15:43:42  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.1  2001/11/13 15:58:31  meichel
  * Initial release of module dcmjpeg
  *
  *

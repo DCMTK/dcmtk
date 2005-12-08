@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-11 18:32:26 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,12 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrtcosp.h"
+#include "dcmtk/dcmsr/dsrtcosp.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /* declared in class DSRListOfItems<T> */
@@ -173,7 +173,10 @@ OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.11  2003-08-11 18:32:26  joergr
+ *  Revision 1.12  2005-12-08 15:48:11  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.11  2003/08/11 18:32:26  joergr
  *  Included "stdio" header file required for gcc 3.2.3 on Debian Linux.
  *
  *  Revision 1.10  2003/08/07 13:54:49  joergr

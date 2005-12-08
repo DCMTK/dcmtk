@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source, getData 16 bit)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:43:04 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:58 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "dimoimg.h"
-#include "dimoipxt.h"
-#include "dimoopxt.h"
-#include "diutils.h"
+#include "dcmtk/dcmimgle/dimoimg.h"
+#include "dcmtk/dcmimgle/dimoipxt.h"
+#include "dcmtk/dcmimgle/dimoopxt.h"
+#include "dcmtk/dcmimgle/diutils.h"
 
 
 void DiMonoImage::getDataUint16(void *buffer,
@@ -99,7 +99,10 @@ void DiMonoImage::getDataSint16(void *buffer,
  *
  * CVS/RCS Log:
  * $Log: dimoimg4.cc,v $
- * Revision 1.4  2003-12-08 17:43:04  joergr
+ * Revision 1.5  2005-12-08 15:42:58  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.4  2003/12/08 17:43:04  joergr
  * Updated copyright header.
  *
  * Revision 1.3  2001/06/01 15:49:57  meichel

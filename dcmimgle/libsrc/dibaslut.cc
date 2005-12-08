@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomBaseLUT (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:43 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,9 +31,9 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
-#include "dibaslut.h"
+#include "dcmtk/dcmimgle/dibaslut.h"
 
 
 /*----------------*
@@ -117,7 +117,10 @@ int DiBaseLUT::compare(const DiBaseLUT *lut)
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.11  2003-12-23 16:03:18  joergr
+ * Revision 1.12  2005-12-08 15:42:43  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.11  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

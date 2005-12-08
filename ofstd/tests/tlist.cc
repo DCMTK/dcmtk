@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2004, OFFIS
+ *  Copyright (C) 1997-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:37:23 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:49:04 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,14 +31,14 @@
  */
 
 
-#include "osconfig.h"
-#include "ofstream.h"
-#include "oflist.h"
-#include "ofalgo.h"
-#include "ofconsol.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofalgo.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define INCLUDE_CASSERT
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #define tassert(ex) {if ((ex)) CERR << #ex << "\n"; \
                        else _assert(#ex, __FILE__,__LINE__); }
@@ -181,7 +181,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.9  2004-01-16 10:37:23  joergr
+** Revision 1.10  2005-12-08 15:49:04  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.9  2004/01/16 10:37:23  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.8  2003/08/14 09:01:20  meichel

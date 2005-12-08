@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomLookupTable (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:53 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,16 +31,16 @@
  */
 
 
-#include "osconfig.h"
-#include "dcdeftag.h"
-#include "dcsequen.h"
-#include "dcitem.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/dcmdata/dcitem.h"
 
-#include "ofbmanip.h"
-#include "ofcast.h"
+#include "dcmtk/ofstd/ofbmanip.h"
+#include "dcmtk/ofstd/ofcast.h"
 
-#include "diluptab.h"
-#include "didocu.h"
+#include "dcmtk/dcmimgle/diluptab.h"
+#include "dcmtk/dcmimgle/didocu.h"
 
 
 /*----------------*
@@ -617,7 +617,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.30  2003-12-23 16:03:18  joergr
+ * Revision 1.31  2005-12-08 15:42:53  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.30  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *

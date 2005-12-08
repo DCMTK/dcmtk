@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-09 17:43:41 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:56 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,25 +31,25 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
-#include "dcdeftag.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
-#include "dimoimg.h"
-#include "dimo2img.h"
-#include "dimoipxt.h"
-#include "dimocpt.h"
-#include "dimosct.h"
-#include "dimoflt.h"
-#include "dimorot.h"
-#include "dimoopxt.h"
-#include "digsdfn.h"
-#include "didocu.h"
-#include "diutils.h"
-#include "diregbas.h"
+#include "dcmtk/dcmimgle/dimoimg.h"
+#include "dcmtk/dcmimgle/dimo2img.h"
+#include "dcmtk/dcmimgle/dimoipxt.h"
+#include "dcmtk/dcmimgle/dimocpt.h"
+#include "dcmtk/dcmimgle/dimosct.h"
+#include "dcmtk/dcmimgle/dimoflt.h"
+#include "dcmtk/dcmimgle/dimorot.h"
+#include "dcmtk/dcmimgle/dimoopxt.h"
+#include "dcmtk/dcmimgle/digsdfn.h"
+#include "dcmtk/dcmimgle/didocu.h"
+#include "dcmtk/dcmimgle/diutils.h"
+#include "dcmtk/dcmimgle/diregbas.h"
 
 #define INCLUDE_CMATH
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 /*---------------------*
@@ -2124,7 +2124,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.61  2005-03-09 17:43:41  joergr
+ * Revision 1.62  2005-12-08 15:42:56  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.61  2005/03/09 17:43:41  joergr
  * Added mode to writeImageToDataset() which allows the value of BitsStored to
  * be determined either from 'used' or from 'possible' pixel values.
  * Fixed problem with wrong value for BitsStored in writeImageToDataset().

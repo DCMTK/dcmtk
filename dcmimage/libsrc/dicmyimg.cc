@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCMYKImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:34:57 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:20 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,12 +31,12 @@
  */
 
 
-#include "osconfig.h"
-#include "dctypes.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
-#include "dicmyimg.h"
-#include "dicmypxt.h"
-#include "diinpx.h"
+#include "dcmtk/dcmimage/dicmyimg.h"
+#include "dcmtk/dcmimage/dicmypxt.h"
+#include "dcmtk/dcmimgle/diinpx.h"
 
 
 /*----------------*
@@ -91,7 +91,10 @@ DiCMYKImage::~DiCMYKImage()
  *
  * CVS/RCS Log:
  * $Log: dicmyimg.cc,v $
- * Revision 1.9  2003-12-17 16:34:57  joergr
+ * Revision 1.10  2005-12-08 15:42:20  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.9  2003/12/17 16:34:57  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.8  2002/06/26 16:23:24  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2004, OFFIS
+ *  Copyright (C) 2001-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements TIFF interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:20:00 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:42:27 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,13 +31,13 @@
  */
 
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_LIBTIFF
 
-#include "dctypes.h"
-#include "diimage.h"
-#include "dipitiff.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmimgle/diimage.h"
+#include "dcmtk/dcmimage/dipitiff.h"
 
 BEGIN_EXTERN_C
 #include <tiffio.h>
@@ -210,7 +210,10 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.7  2004-02-06 11:20:00  joergr
+ * Revision 1.8  2005-12-08 15:42:27  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.7  2004/02/06 11:20:00  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.6  2003/12/17 16:34:57  joergr

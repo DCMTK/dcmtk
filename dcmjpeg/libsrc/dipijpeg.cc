@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2004, OFFIS
+ *  Copyright (C) 2001-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:20:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:43:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,15 +32,15 @@
  */
 
 
-#include "osconfig.h"
-#include "ofconsol.h"
-#include "dctypes.h"
-#include "diimage.h"
-#include "dipijpeg.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dctypes.h"
+#include "dcmtk/dcmimgle/diimage.h"
+#include "dcmtk/dcmjpeg/dipijpeg.h"
 
 #define INCLUDE_CSETJMP
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #define boolean ijg_boolean
@@ -257,7 +257,10 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.8  2004-02-06 11:20:59  joergr
+ * Revision 1.9  2005-12-08 15:43:25  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.8  2004/02/06 11:20:59  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.7  2003/10/13 13:25:49  meichel

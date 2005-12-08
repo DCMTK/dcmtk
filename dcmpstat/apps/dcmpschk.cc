@@ -23,19 +23,19 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-02 09:46:27 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:46:07 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>     /* this includes either winsock.h or winsock2.h */
@@ -47,13 +47,13 @@
 #include <SIOUX.h>
 #endif
 
-#include "ofstream.h"
-#include "dctk.h"        /* for class DcmDataset */
-#include "ofstring.h"    /* for class OFString */
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmdata/dctk.h"        /* for class DcmDataset */
+#include "dcmtk/ofstd/ofstring.h"    /* for class OFString */
 #include "vrscan.h"
-#include "ofconapp.h"    /* for OFConsoleApplication */
-#include "dcmpstat.h"    /* for DcmPresentationState */
-#include "dcdebug.h"
+#include "dcmtk/ofstd/ofconapp.h"    /* for OFConsoleApplication */
+#include "dcmtk/dcmpstat/dcmpstat.h"    /* for DcmPresentationState */
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -1087,7 +1087,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.19  2005-12-02 09:46:27  joergr
+ * Revision 1.20  2005-12-08 15:46:07  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.19  2005/12/02 09:46:27  joergr
  * Added new file read mode that makes it possible to distinguish between DICOM
  * files, datasets and other non-DICOM files.  For this reason, the last
  * parameter of method loadFile() changed from OFBool to E_FileReadMode.

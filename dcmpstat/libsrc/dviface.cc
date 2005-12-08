@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-23 16:10:34 $
- *  CVS/RCS Revision: $Revision: 1.153 $
+ *  Update Date:      $Date: 2005-12-08 15:46:15 $
+ *  CVS/RCS Revision: $Revision: 1.154 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,52 +31,52 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dviface.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmpstat/dviface.h"
 
-#include "dvpsdef.h"     /* for constants */
-#include "ofstring.h"    /* for class OFString */
-#include "ofbmanip.h"    /* for OFBitmanipTemplate */
-#include "ofdatime.h"    /* for OFDateTime */
-#include "oflist.h"      /* for class OFList */
-#include "oflogfil.h"    /* for class OFLogFile */
-#include "ofstream.h"
-#include "ofcast.h"
+#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants */
+#include "dcmtk/ofstd/ofstring.h"    /* for class OFString */
+#include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "dcmtk/ofstd/ofdatime.h"    /* for OFDateTime */
+#include "dcmtk/ofstd/oflist.h"      /* for class OFList */
+#include "dcmtk/ofstd/oflogfil.h"    /* for class OFLogFile */
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofcast.h"
 
-#include "digsdfn.h"     /* for DiGSDFunction */
-#include "diciefn.h"     /* for DiCIELABFunction */
-#include "diutil.h"      /* for DU_getStringDOElement */
-#include "dvpssp.h"      /* for class DVPSStoredPrint */
-#include "dvpshlp.h"     /* for class DVPSHelper */
-#include "dcmimage.h"    /* for class DicomImage */
-#include "dvsighdl.h"    /* for class DVSignatureHandler */
-#include "dcsignat.h"    /* for class DcmSignature */
-#include "dsrdoc.h"      /* for class DSRDocument */
-#include "dsrcodvl.h"    /* for class DSRCodedEntryValue */
+#include "dcmtk/dcmimgle/digsdfn.h"     /* for DiGSDFunction */
+#include "dcmtk/dcmimgle/diciefn.h"     /* for DiCIELABFunction */
+#include "dcmtk/dcmnet/diutil.h"      /* for DU_getStringDOElement */
+#include "dcmtk/dcmpstat/dvpssp.h"      /* for class DVPSStoredPrint */
+#include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
+#include "dcmtk/dcmimgle/dcmimage.h"    /* for class DicomImage */
+#include "dcmtk/dcmpstat/dvsighdl.h"    /* for class DVSignatureHandler */
+#include "dcmtk/dcmsign/dcsignat.h"    /* for class DcmSignature */
+#include "dcmtk/dcmsr/dsrdoc.h"      /* for class DSRDocument */
+#include "dcmtk/dcmsr/dsrcodvl.h"    /* for class DSRCodedEntryValue */
 
-#include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
-#include "dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
-#include "dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
-#include "dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
-#include "dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
-#include "dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
-#include "dvpscu.h"      /* for DVPSCurve, needed by MSVC5 with STL */
-#include "dvpsvl.h"      /* for DVPSVOILUT, needed by MSVC5 with STL */
-#include "dvpsvw.h"      /* for DVPSVOIWindow, needed by MSVC5 with STL */
-#include "dvpsda.h"      /* for DVPSDisplayedArea, needed by MSVC5 with STL */
-#include "dvpssv.h"      /* for DVPSSoftcopyVOI, needed by MSVC5 with STL */
-#include "dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
-#include "dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
-#include "dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
-#include "dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
-#include "dcmqrdbi.h"    /* for DB_UpperMaxBytesPerStudy */
-#include "dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
+#include "dcmtk/dcmpstat/dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsov.h"      /* for DVPSOverlay, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsgl.h"      /* for DVPSGraphicLayer, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsal.h"      /* for DVPSOverlayCurveActivationLayer, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsga.h"      /* for DVPSGraphicAnnotation, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpscu.h"      /* for DVPSCurve, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsvl.h"      /* for DVPSVOILUT, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsvw.h"      /* for DVPSVOIWindow, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsda.h"      /* for DVPSDisplayedArea, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpssv.h"      /* for DVPSSoftcopyVOI, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpstx.h"      /* for DVPSTextObject, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsgr.h"      /* for DVPSGraphicObject, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"    /* for DB_UpperMaxBytesPerStudy */
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"    /* for DcmQueryRetrieveDatabaseStatus */
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
 #define INCLUDE_CMATH
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -108,8 +108,8 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_OPENSSL
-#include "tlstrans.h"
-#include "tlslayer.h"
+#include "dcmtk/dcmtls/tlstrans.h"
+#include "dcmtk/dcmtls/tlslayer.h"
 
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
@@ -4388,7 +4388,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.153  2005-11-23 16:10:34  meichel
+ *  Revision 1.154  2005-12-08 15:46:15  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.153  2005/11/23 16:10:34  meichel
  *  Added support for AES ciphersuites in TLS module. All TLS-enabled
  *    tools now support the "AES TLS Secure Transport Connection Profile".
  *

@@ -22,8 +22,8 @@
  *  Purpose: class DcmVR: Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-11-15 18:28:04 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2005-12-08 15:41:44 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,13 +31,13 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofconsol.h"
-#include "dcvr.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dcvr.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 /*
  * global flags
@@ -146,7 +146,7 @@ static const int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
 
 #ifdef DEBUG
 
-#include "ofstream.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 class DcmVRDict_checker {
 private:
@@ -370,7 +370,10 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.32  2005-11-15 18:28:04  meichel
+ * Revision 1.33  2005-12-08 15:41:44  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.32  2005/11/15 18:28:04  meichel
  * Added new global flag dcmEnableUnknownVRConversion that enables the automatic
  *   re-conversion of defined length UN elements read in an explicit VR transfer
  *   syntax, if the real VR is defined in the data dictionary. Default is OFFalse,

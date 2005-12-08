@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2005-11-08 12:59:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,26 +33,26 @@
 
 // ----------------------------------------------------------------------------
 
-#include "osconfig.h"  // specific configuration for operating system
+#include "dcmtk/config/osconfig.h"  // specific configuration for operating system
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>     // for O_RDWR
 #endif
 END_EXTERN_C
-#include "dicom.h"
-#include "wltypdef.h"
-#include "oftypes.h"
-#include "dcdatset.h"
-#include "dcsequen.h"
-#include "dcvrat.h"
-#include "dcvrlo.h"
-#include "dcdeftag.h"
-#include "dcvrcs.h"
-#include "wlds.h"
-#include "wlfsim.h"
-#include "ofstd.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmwlm/wltypdef.h"
+#include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+#include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcvrlo.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcvrcs.h"
+#include "dcmtk/dcmwlm/wlds.h"
+#include "dcmtk/dcmwlm/wlfsim.h"
+#include "dcmtk/ofstd/ofstd.h"
 
-#include "wldsfs.h"
+#include "dcmtk/dcmwlm/wldsfs.h"
 
 // ----------------------------------------------------------------------------
 
@@ -849,7 +849,10 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.18  2005-11-08 12:59:25  wilkens
+** Revision 1.19  2005-12-08 15:48:33  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.18  2005/11/08 12:59:25  wilkens
 ** Updated class WlmDataSourceFileSystem: function StartFindRequest will return
 ** an error in case SetReadlock returns an error.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-02 19:36:47 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:48:21 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,13 +32,13 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrwavch.h"
-#include "dsrxmld.h"
+#include "dcmtk/dcmsr/dsrwavch.h"
+#include "dcmtk/dcmsr/dsrxmld.h"
 
 #define INCLUDE_CSTDIO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
 #define EXPLICIT_SPECIALIZATION template<>
@@ -210,7 +210,10 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.20  2003-12-02 19:36:47  joergr
+ *  Revision 1.21  2005-12-08 15:48:21  meichel
+ *  Changed include path schema for all DCMTK header files
+ *
+ *  Revision 1.20  2003/12/02 19:36:47  joergr
  *  Replaced wrong newline character sequence.
  *
  *  Revision 1.19  2003/10/14 10:23:33  meichel

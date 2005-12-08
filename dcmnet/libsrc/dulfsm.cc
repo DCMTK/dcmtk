@@ -46,14 +46,14 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2005-11-16 16:19:16 $
+** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:44:51 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.58 $
+** Revision:		$Revision: 1.59 $
 ** Status:		$State: Exp $
 */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -62,7 +62,7 @@
 #define INCLUDE_CSIGNAL
 #define INCLUDE_CTIME
 #define INCLUDE_UNISTD
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -93,19 +93,19 @@ END_EXTERN_C
 #include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
-#include "ofstream.h"
-#include "dicom.h"
-#include "lst.h"
-#include "cond.h"
-#include "dul.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/lst.h"
+#include "dcmtk/dcmnet/cond.h"
+#include "dcmtk/dcmnet/dul.h"
 #include "dulstruc.h"
 #include "dulpriv.h"
 #include "dulfsm.h"
-#include "ofbmanip.h"
-#include "ofconsol.h"
-#include "assoc.h"    /* for ASC_MAXIMUMPDUSIZE */
-#include "dcmtrans.h"
-#include "dcmlayer.h"
+#include "dcmtk/ofstd/ofbmanip.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmnet/assoc.h"    /* for ASC_MAXIMUMPDUSIZE */
+#include "dcmtk/dcmnet/dcmtrans.h"
+#include "dcmtk/dcmnet/dcmlayer.h"
 
 static OFBool debug = OFFalse;
 
@@ -3939,7 +3939,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.58  2005-11-16 16:19:16  meichel
+** Revision 1.59  2005-12-08 15:44:51  meichel
+** Changed include path schema for all DCMTK header files
+**
+** Revision 1.58  2005/11/16 16:19:16  meichel
 ** Fixed bug in defragmentTCP that could cause the read function to hang
 **   in non-blocking mode (DUL_NOBLOCK) if only a partial PDU is available
 **   for read on the socket.

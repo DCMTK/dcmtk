@@ -22,10 +22,10 @@
  *  Purpose: Convert the contents of an XML document to a DICOM structured
  *            reporting file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-03-22 13:56:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:47:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,14 +33,14 @@
  */
 
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dsrdoc.h"
-#include "dcdebug.h"
-#include "cmdlnarg.h"
-#include "ofstream.h"
-#include "ofconapp.h"
-#include "dcuid.h"      /* for dcmtk version name */
+#include "dcmtk/dcmsr/dsrdoc.h"
+#include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>       /* for zlibVersion() */
@@ -336,7 +336,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
- * Revision 1.4  2005-03-22 13:56:14  joergr
+ * Revision 1.5  2005-12-08 15:47:36  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.4  2005/03/22 13:56:14  joergr
  * Added call of macro LIBXML_TEST_VERSION.
  *
  * Revision 1.3  2004/09/09 13:58:36  joergr

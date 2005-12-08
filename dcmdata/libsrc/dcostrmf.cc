@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,23 +22,23 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:36:47 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:22 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
-#include "dcostrmf.h"
-#include "ofconsol.h"
-#include "dcerror.h"
+#include "dcmtk/config/osconfig.h"
+#include "dcmtk/dcmdata/dcostrmf.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CERRNO
-#include "ofstdinc.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 
 DcmFileConsumer::DcmFileConsumer(const char *filename)
@@ -133,7 +133,10 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.5  2004-02-04 16:36:47  joergr
+ * Revision 1.6  2005-12-08 15:41:22  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2004/02/04 16:36:47  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.4  2003/11/07 13:49:09  meichel

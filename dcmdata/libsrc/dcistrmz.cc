@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,23 +21,23 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-07 12:19:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-08 15:41:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "osconfig.h"
+#include "dcmtk/config/osconfig.h"
 
 #ifdef WITH_ZLIB
 
-#include "dcistrmz.h"
-#include "dcerror.h"
-#include "ofconsol.h"
+#include "dcmtk/dcmdata/dcistrmz.h"
+#include "dcmtk/dcmdata/dcerror.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 #define DCMZLIBINPUTFILTER_BUFSIZE 4096
 #define DCMZLIBINPUTFILTER_PUTBACKSIZE 1024
@@ -436,7 +436,10 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
- * Revision 1.5  2004-04-07 12:19:14  joergr
+ * Revision 1.6  2005-12-08 15:41:15  meichel
+ * Changed include path schema for all DCMTK header files
+ *
+ * Revision 1.5  2004/04/07 12:19:14  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.4  2002/12/20 14:55:34  wilkens
