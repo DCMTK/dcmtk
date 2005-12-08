@@ -1,45 +1,62 @@
-tlist.o: tlist.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstream.h ../include/oflist.h \
-  ../include/oftypes.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofalgo.h ../include/ofconsol.h ../include/ofthread.h \
-  ../include/ofstring.h
-tofdatim.o: tofdatim.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofdate.h ../include/ofstring.h \
-  ../include/oftypes.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofstream.h ../include/oftime.h ../include/ofdatime.h \
-  ../include/ofconsol.h ../include/ofthread.h
-tofstd.o: tofstd.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstd.h ../include/oflist.h \
-  ../include/oftypes.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofstring.h ../include/ofstream.h ../include/ofconsol.h \
-  ../include/ofthread.h
-tstatof.o: tstatof.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstd.h ../include/oflist.h \
-  ../include/oftypes.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofstring.h ../include/ofstream.h ../include/ofconsol.h \
-  ../include/ofthread.h
-tstftoa.o: tstftoa.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstd.h ../include/oflist.h \
-  ../include/oftypes.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofstring.h ../include/ofstream.h ../include/ofconsol.h \
-  ../include/ofthread.h
-tstlist.o: tstlist.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstream.h ../include/ofalgo.h \
-  ../include/oftypes.h ../include/oflist.h ../include/ofcast.h \
-  ../include/ofstdinc.h ../include/ofconsol.h ../include/ofthread.h \
-  ../include/ofstring.h
-tstring.o: tstring.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstring.h \
-  ../include/oftypes.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofstream.h ../include/ofconsol.h ../include/ofthread.h \
-  ../include/ofstd.h ../include/oflist.h
-tststack.o: tststack.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofstream.h \
-  ../include/ofstack.h ../include/oftypes.h ../include/ofcast.h \
-  ../include/ofstdinc.h ../include/ofconsol.h ../include/ofthread.h \
-  ../include/ofstring.h
-tstthred.o: tstthred.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ofconsol.h \
-  ../include/ofstream.h ../include/ofthread.h ../include/oftypes.h \
-  ../include/ofstring.h ../include/ofcast.h ../include/ofstdinc.h \
-  ../include/ofstd.h ../include/oflist.h
+tlist.o: tlist.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofalgo.h \
+  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/ofstd/ofstring.h
+tofdatim.o: tofdatim.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofdate.h ../include/dcmtk/ofstd/ofstring.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/ofstd/oftime.h ../include/dcmtk/ofstd/ofdatime.h \
+  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h
+tofstd.o: tofstd.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstring.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofconsol.h \
+  ../include/dcmtk/ofstd/ofthread.h
+tstatof.o: tstatof.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstring.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofconsol.h \
+  ../include/dcmtk/ofstd/ofthread.h
+tstftoa.o: tstftoa.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstd.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstring.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofconsol.h \
+  ../include/dcmtk/ofstd/ofthread.h
+tstlist.o: tstlist.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofalgo.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/ofstd/ofstring.h
+tstring.o: tstring.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/ofstd/ofcast.h ../include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofconsol.h \
+  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/ofstd/oflist.h
+tststack.o: tststack.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofstream.h ../include/dcmtk/ofstd/ofstack.h \
+  ../include/dcmtk/ofstd/oftypes.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofconsol.h \
+  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/ofstring.h
+tstthred.o: tstthred.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/ofstd/ofconsol.h ../include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/ofstd/ofthread.h ../include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/ofstd/ofstring.h ../include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/ofstd/ofstdinc.h ../include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/ofstd/oflist.h

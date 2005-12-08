@@ -1,121 +1,235 @@
-wlds.o: wlds.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../dcmnet/include/dicom.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmnet/include/cond.h \
-  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
-  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
-  ../include/wltypdef.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
-  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrtm.h ../../ofstd/include/oftime.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcdict.h \
-  ../../dcmdata/include/dchashdi.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdicent.h \
-  ../include/wlds.h
-wldsfs.o: wldsfs.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../dcmnet/include/dicom.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmnet/include/cond.h \
-  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
-  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
-  ../include/wltypdef.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcchrstr.h \
-  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcvrcs.h \
-  ../include/wlds.h ../include/wlfsim.h ../../ofstd/include/ofstd.h \
-  ../include/wldsfs.h
-wlfsim.o: wlfsim.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmnet/include/diutil.h ../../dcmnet/include/dicom.h \
-  ../../dcmnet/include/cond.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../dcmnet/include/dcompat.h \
-  ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
-  ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcdatset.h \
-  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
-  ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../../dcmnet/include/dimse.h ../../dcmnet/include/lst.h \
-  ../../dcmnet/include/dul.h ../../dcmnet/include/extneg.h \
-  ../../dcmnet/include/assoc.h ../../ofstd/include/ofstd.h \
-  ../../ofstd/include/ofoset.h ../../ofstd/include/ofset.h \
-  ../../ofstd/include/ofsetit.h ../../ofstd/include/ofdate.h \
-  ../../ofstd/include/oftime.h ../../dcmdata/include/dcvrda.h \
-  ../../dcmdata/include/dcvrtm.h ../include/wltypdef.h \
-  ../../dcmdata/include/dctk.h ../../dcmdata/include/dcswap.h \
-  ../../dcmdata/include/dcistrma.h ../../dcmdata/include/dcostrma.h \
-  ../../dcmdata/include/dcvm.h ../../dcmdata/include/dcdefine.h \
-  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
-  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
-  ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
-  ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
-  ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
-  ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../../dcmdata/include/dcvris.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
-  ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
-  ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
-  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
-  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/dcvrof.h \
-  ../../dcmdata/include/cmdlnarg.h ../include/wlfsim.h
-wlmactmg.o: wlmactmg.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../../ofstd/include/ofstream.h ../../dcmnet/include/dicom.h \
-  ../../dcmnet/include/cond.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofthread.h ../../dcmdata/include/dcerror.h \
-  ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
-  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
-  ../include/wltypdef.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrlo.h \
-  ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcdict.h \
-  ../../dcmdata/include/dchashdi.h ../../dcmdata/include/dcdeftag.h \
-  ../include/wlds.h ../../ofstd/include/ofcmdln.h \
-  ../../dcmnet/include/assoc.h ../../dcmnet/include/lst.h \
-  ../../dcmnet/include/dul.h ../../dcmnet/include/extneg.h \
-  ../../dcmnet/include/dimse.h ../../dcmnet/include/diutil.h \
-  ../../ofstd/include/ofstd.h ../../dcmdata/include/dcdicent.h \
-  ../include/wlmactmg.h
+wlds.o: wlds.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../include/dcmtk/dcmwlm/wltypdef.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+  ../include/dcmtk/dcmwlm/wlds.h
+wldsfs.o: wldsfs.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../include/dcmtk/dcmwlm/wltypdef.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+  ../include/dcmtk/dcmwlm/wlds.h ../include/dcmtk/dcmwlm/wlfsim.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+  ../include/dcmtk/dcmwlm/wldsfs.h
+wlfsim.o: wlfsim.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmnet/include/dcmtk/dcmnet/diutil.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
+  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
+  ../../dcmnet/include/dcmtk/dcmnet/lst.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
+  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
+  ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+  ../../ofstd/include/dcmtk/ofstd/ofoset.h \
+  ../../ofstd/include/dcmtk/ofstd/ofset.h \
+  ../../ofstd/include/dcmtk/ofstd/ofsetit.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+  ../include/dcmtk/dcmwlm/wltypdef.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvm.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdefine.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../include/dcmtk/dcmwlm/wlfsim.h
+wlmactmg.o: wlmactmg.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
+  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../include/dcmtk/dcmwlm/wltypdef.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../include/dcmtk/dcmwlm/wlds.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
+  ../../dcmnet/include/dcmtk/dcmnet/lst.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dul.h \
+  ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
+  ../../dcmnet/include/dcmtk/dcmnet/diutil.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+  ../include/dcmtk/dcmwlm/wlmactmg.h

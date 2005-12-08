@@ -1,483 +1,870 @@
-ddpiimpl.o: ddpiimpl.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/ddpiimpl.h \
-  ../../dcmdata/include/dcddirif.h ../../dcmdata/include/dcdicdir.h \
-  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dctypes.h \
-  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
-  ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
-  ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcdirrec.h \
-  ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
-  ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
-  ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
-  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
-  ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
-  ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
-  ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
-  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
-  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
-  ../../dcmimgle/include/discalet.h ../../dcmimgle/include/ditranst.h \
-  ../../ofstd/include/ofbmanip.h ../../dcmimgle/include/dipxrept.h
-dipijpeg.o: dipijpeg.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dctypes.h ../../dcmimgle/include/diimage.h \
-  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
-  ../../ofstd/include/ofglobal.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
-  ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
-  ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
-  ../../dcmimgle/include/diutils.h ../include/dipijpeg.h \
-  ../../dcmimgle/include/diplugin.h ../include/djutils.h \
+ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/ddpiimpl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcddirif.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dcmimage.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoimg.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diimage.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovlay.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diobjcou.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovdat.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovpln.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/discalet.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/ditranst.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dipxrept.h
+dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diimage.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovlay.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diobjcou.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovdat.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovpln.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/dipijpeg.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
+  ../include/dcmtk/dcmjpeg/djutils.h ../../dcmjpeg/libijg8/jpeglib8.h \
+  ../../dcmjpeg/libijg8/jconfig8.h ../../dcmjpeg/libijg8/jmorecfg8.h \
+  ../../dcmjpeg/libijg8/jerror8.h ../../dcmjpeg/libijg8/jpegint8.h \
+  ../../dcmjpeg/libijg8/jversion8.h
+djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpxitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djdecabs.h
+djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpxitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dcmimage.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoimg.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diimage.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovlay.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diobjcou.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovdat.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diovpln.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h
+djcparam.o: djcparam.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h
+djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdecbas.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h
+djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdecext.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../include/dcmtk/dcmjpeg/djdijg12.h
+djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdeclol.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../include/dcmtk/dcmjpeg/djdijg12.h ../include/dcmtk/dcmjpeg/djdijg16.h
+djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdecode.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djdecbas.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../include/dcmtk/dcmjpeg/djdecext.h ../include/dcmtk/dcmjpeg/djdecsps.h \
+  ../include/dcmtk/dcmjpeg/djdecpro.h ../include/dcmtk/dcmjpeg/djdecsv1.h \
+  ../include/dcmtk/dcmjpeg/djdeclol.h ../include/dcmtk/dcmjpeg/djcparam.h
+djdecpro.o: djdecpro.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdecpro.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../include/dcmtk/dcmjpeg/djdijg12.h
+djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdecsps.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../include/dcmtk/dcmjpeg/djdijg12.h
+djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdecsv1.h ../include/dcmtk/dcmjpeg/djcodecd.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../include/dcmtk/dcmjpeg/djdijg12.h ../include/dcmtk/dcmjpeg/djdijg16.h
+djdijg12.o: djdijg12.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdijg12.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmjpeg/libijg12/jpeglib12.h ../../dcmjpeg/libijg12/jconfig12.h \
+  ../../dcmjpeg/libijg12/jmorecfg12.h ../../dcmjpeg/libijg12/jerror12.h
+djdijg16.o: djdijg16.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdijg16.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmjpeg/libijg16/jpeglib16.h ../../dcmjpeg/libijg16/jconfig16.h \
+  ../../dcmjpeg/libijg16/jmorecfg16.h ../../dcmjpeg/libijg16/jerror16.h
+djdijg8.o: djdijg8.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmjpeg/libijg8/jpeglib8.h ../../dcmjpeg/libijg8/jconfig8.h \
+  ../../dcmjpeg/libijg8/jmorecfg8.h ../../dcmjpeg/libijg8/jerror8.h
+djeijg12.o: djeijg12.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djeijg12.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmjpeg/libijg12/jpeglib12.h ../../dcmjpeg/libijg12/jconfig12.h \
+  ../../dcmjpeg/libijg12/jmorecfg12.h ../../dcmjpeg/libijg12/jerror12.h \
+  ../../dcmjpeg/libijg12/jpegint12.h
+djeijg16.o: djeijg16.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djeijg16.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmjpeg/libijg16/jpeglib16.h ../../dcmjpeg/libijg16/jconfig16.h \
+  ../../dcmjpeg/libijg16/jmorecfg16.h ../../dcmjpeg/libijg16/jerror16.h \
+  ../../dcmjpeg/libijg16/jpegint16.h
+djeijg8.o: djeijg8.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../dcmjpeg/libijg8/jpeglib8.h ../../dcmjpeg/libijg8/jconfig8.h \
   ../../dcmjpeg/libijg8/jmorecfg8.h ../../dcmjpeg/libijg8/jerror8.h \
-  ../../dcmjpeg/libijg8/jpegint8.h ../../dcmjpeg/libijg8/jversion8.h
-djcodecd.o: djcodecd.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djcodecd.h \
-  ../../ofstd/include/oftypes.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dctypes.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/oflist.h \
-  ../include/djutils.h ../../dcmimgle/include/diutils.h \
-  ../../dcmdata/include/dcdatset.h ../../ofstd/include/ofconsol.h \
-  ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcpcache.h \
-  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcofsetl.h \
-  ../../dcmdata/include/dcpxitem.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcswap.h \
-  ../../dcmdata/include/dcuid.h ../include/djcparam.h \
-  ../include/djdecabs.h
-djcodece.o: djcodece.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djcodece.h \
-  ../../ofstd/include/oftypes.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dctypes.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/oflist.h \
-  ../include/djutils.h ../../dcmimgle/include/diutils.h \
-  ../../ofstd/include/ofstd.h ../../dcmdata/include/dcdatset.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcitem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcdeftag.h \
-  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixseq.h \
-  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcofsetl.h \
-  ../../dcmdata/include/dcpxitem.h ../../dcmdata/include/dcuid.h \
-  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrds.h \
-  ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcchrstr.h \
-  ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrus.h \
-  ../../dcmdata/include/dcswap.h ../include/djcparam.h \
-  ../include/djencabs.h ../../dcmimgle/include/dcmimage.h \
-  ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/diimage.h \
-  ../../dcmimgle/include/diovlay.h ../../dcmimgle/include/diobjcou.h \
-  ../../dcmimgle/include/diovdat.h ../../dcmimgle/include/diovpln.h \
-  ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
-  ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
-  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
-  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h
-djcparam.o: djcparam.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djcparam.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/oflist.h \
-  ../include/djutils.h ../../dcmimgle/include/diutils.h
-djdecbas.o: djdecbas.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdecbas.h \
-  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djdijg8.h \
-  ../include/djdecabs.h
-djdecext.o: djdecext.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdecext.h \
-  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djdijg8.h \
-  ../include/djdecabs.h ../include/djdijg12.h
-djdeclol.o: djdeclol.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdeclol.h \
-  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrplol.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djdijg8.h \
-  ../include/djdecabs.h ../include/djdijg12.h ../include/djdijg16.h
-djdecode.o: djdecode.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdecode.h \
-  ../../ofstd/include/oftypes.h ../include/djutils.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../../ofstd/include/ofstream.h ../../dcmimgle/include/diutils.h \
-  ../../dcmdata/include/dctypes.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/oflist.h \
-  ../include/djdecbas.h ../include/djcodecd.h ../include/djdecext.h \
-  ../include/djdecsps.h ../include/djdecpro.h ../include/djdecsv1.h \
-  ../include/djdeclol.h ../include/djcparam.h
-djdecpro.o: djdecpro.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdecpro.h \
-  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djdijg8.h \
-  ../include/djdecabs.h ../include/djdijg12.h
-djdecsps.o: djdecsps.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdecsps.h \
-  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djdijg8.h \
-  ../include/djdecabs.h ../include/djdijg12.h
-djdecsv1.o: djdecsv1.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdecsv1.h \
-  ../include/djcodecd.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrplol.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djdijg8.h \
-  ../include/djdecabs.h ../include/djdijg12.h ../include/djdijg16.h
-djdijg12.o: djdijg12.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdijg12.h \
-  ../include/djdecabs.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
-  ../include/djutils.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmimgle/include/diutils.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../include/djcparam.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/oflist.h \
-  ../../ofstd/include/ofconsol.h ../../dcmjpeg/libijg12/jpeglib12.h \
-  ../../dcmjpeg/libijg12/jconfig12.h ../../dcmjpeg/libijg12/jmorecfg12.h \
-  ../../dcmjpeg/libijg12/jerror12.h
-djdijg16.o: djdijg16.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdijg16.h \
-  ../include/djdecabs.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
-  ../include/djutils.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmimgle/include/diutils.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../include/djcparam.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/oflist.h \
-  ../../ofstd/include/ofconsol.h ../../dcmjpeg/libijg16/jpeglib16.h \
-  ../../dcmjpeg/libijg16/jconfig16.h ../../dcmjpeg/libijg16/jmorecfg16.h \
-  ../../dcmjpeg/libijg16/jerror16.h
-djdijg8.o: djdijg8.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djdijg8.h \
-  ../include/djdecabs.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
-  ../include/djutils.h ../../ofstd/include/ofcond.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstream.h ../../dcmimgle/include/diutils.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../include/djcparam.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/oflist.h \
-  ../../ofstd/include/ofconsol.h ../../dcmjpeg/libijg8/jpeglib8.h \
-  ../../dcmjpeg/libijg8/jconfig8.h ../../dcmjpeg/libijg8/jmorecfg8.h \
-  ../../dcmjpeg/libijg8/jerror8.h
-djeijg12.o: djeijg12.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djeijg12.h \
-  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../include/djencabs.h ../../dcmdata/include/dctypes.h \
-  ../../dcmimgle/include/diutils.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofstream.h ../include/djutils.h \
-  ../../ofstd/include/ofcond.h ../include/djcparam.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dcerror.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofconsol.h ../../dcmjpeg/libijg12/jpeglib12.h \
-  ../../dcmjpeg/libijg12/jconfig12.h ../../dcmjpeg/libijg12/jmorecfg12.h \
-  ../../dcmjpeg/libijg12/jerror12.h ../../dcmjpeg/libijg12/jpegint12.h
-djeijg16.o: djeijg16.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djeijg16.h \
-  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../include/djencabs.h ../../dcmdata/include/dctypes.h \
-  ../../dcmimgle/include/diutils.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofstream.h ../include/djutils.h \
-  ../../ofstd/include/ofcond.h ../include/djcparam.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dcerror.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofconsol.h ../../dcmjpeg/libijg16/jpeglib16.h \
-  ../../dcmjpeg/libijg16/jconfig16.h ../../dcmjpeg/libijg16/jmorecfg16.h \
-  ../../dcmjpeg/libijg16/jerror16.h ../../dcmjpeg/libijg16/jpegint16.h
-djeijg8.o: djeijg8.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djeijg8.h \
-  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../include/djencabs.h ../../dcmdata/include/dctypes.h \
-  ../../dcmimgle/include/diutils.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofstream.h ../include/djutils.h \
-  ../../ofstd/include/ofcond.h ../include/djcparam.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dcerror.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofconsol.h ../../dcmjpeg/libijg8/jpeglib8.h \
-  ../../dcmjpeg/libijg8/jconfig8.h ../../dcmjpeg/libijg8/jmorecfg8.h \
-  ../../dcmjpeg/libijg8/jerror8.h ../../dcmjpeg/libijg8/jpegint8.h
-djencbas.o: djencbas.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djencbas.h \
-  ../include/djcodece.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djeijg8.h \
-  ../include/djencabs.h
-djencext.o: djencext.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djencext.h \
-  ../include/djcodece.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djeijg8.h \
-  ../include/djencabs.h ../include/djeijg12.h
-djenclol.o: djenclol.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djenclol.h \
-  ../include/djcodece.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrplol.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djeijg8.h \
-  ../include/djencabs.h ../include/djeijg12.h ../include/djeijg16.h
-djencode.o: djencode.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djencode.h \
-  ../../ofstd/include/oftypes.h ../include/djutils.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../../ofstd/include/ofstream.h ../../dcmimgle/include/diutils.h \
-  ../../dcmdata/include/dctypes.h ../../ofstd/include/ofglobal.h \
-  ../../ofstd/include/ofthread.h ../../dcmdata/include/dccodec.h \
-  ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
-  ../../dcmdata/include/dcvr.h ../../ofstd/include/oflist.h \
-  ../include/djencbas.h ../include/djcodece.h ../include/djencext.h \
-  ../include/djencsps.h ../include/djencpro.h ../include/djencsv1.h \
-  ../include/djenclol.h ../include/djcparam.h
-djencpro.o: djencpro.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djencpro.h \
-  ../include/djcodece.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djeijg8.h \
-  ../include/djencabs.h ../include/djeijg12.h
-djencsps.o: djencsps.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djencsps.h \
-  ../include/djcodece.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrploss.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djeijg8.h \
-  ../include/djencabs.h ../include/djeijg12.h
-djencsv1.o: djencsv1.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djencsv1.h \
-  ../include/djcodece.h ../../ofstd/include/oftypes.h \
-  ../../dcmdata/include/dccodec.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofstdinc.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oflist.h ../include/djutils.h \
-  ../../dcmimgle/include/diutils.h ../include/djcparam.h \
-  ../include/djrplol.h ../../dcmdata/include/dcpixel.h \
-  ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcvrpobw.h \
-  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dctag.h \
-  ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../include/djeijg8.h \
-  ../include/djencabs.h ../include/djeijg12.h ../include/djeijg16.h
-djrplol.o: djrplol.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djrplol.h \
-  ../../dcmdata/include/dcpixel.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../dcmdata/include/dctypes.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../ofstd/include/oflist.h
-djrploss.o: djrploss.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djrploss.h \
-  ../../dcmdata/include/dcpixel.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstdinc.h \
-  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcvrobow.h \
-  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcerror.h \
-  ../../ofstd/include/ofcond.h ../../dcmdata/include/dctypes.h \
-  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
-  ../../ofstd/include/oflist.h
-djutils.o: djutils.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/djutils.h \
-  ../../ofstd/include/ofcond.h ../../ofstd/include/oftypes.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../../ofstd/include/ofstdinc.h ../../ofstd/include/ofstream.h \
-  ../../dcmimgle/include/diutils.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
-  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
-  ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
-  ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcerror.h \
-  ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
-  ../../dcmdata/include/dctag.h ../../dcmdata/include/dclist.h \
-  ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
-  ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
-  ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h
+  ../../dcmjpeg/libijg8/jpegint8.h
+djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djencbas.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h
+djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djencext.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../include/dcmtk/dcmjpeg/djeijg12.h
+djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djenclol.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../include/dcmtk/dcmjpeg/djeijg12.h ../include/dcmtk/dcmjpeg/djeijg16.h
+djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djencode.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djencbas.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../include/dcmtk/dcmjpeg/djencext.h ../include/dcmtk/dcmjpeg/djencsps.h \
+  ../include/dcmtk/dcmjpeg/djencpro.h ../include/dcmtk/dcmjpeg/djencsv1.h \
+  ../include/dcmtk/dcmjpeg/djenclol.h ../include/dcmtk/dcmjpeg/djcparam.h
+djencpro.o: djencpro.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djencpro.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../include/dcmtk/dcmjpeg/djeijg12.h
+djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djencsps.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../include/dcmtk/dcmjpeg/djeijg12.h
+djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djencsv1.h ../include/dcmtk/dcmjpeg/djcodece.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../include/dcmtk/dcmjpeg/djcparam.h ../include/dcmtk/dcmjpeg/djrplol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
+  ../include/dcmtk/dcmjpeg/djeijg12.h ../include/dcmtk/dcmjpeg/djeijg16.h
+djrplol.o: djrplol.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djrplol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h
+djrploss.o: djrploss.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djrploss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h
+djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmjpeg/djutils.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h

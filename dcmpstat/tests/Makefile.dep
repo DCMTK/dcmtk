@@ -1,12 +1,22 @@
-msgserv.o: msgserv.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
-  ../include/dvpsmsg.h ../../dcmdata/include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
-  ../../ofstd/include/ofcmdln.h ../../ofstd/include/oflist.h \
-  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
-  ../../dcmdata/include/dcdebug.h ../../ofstd/include/ofglobal.h \
-  ../../dcmnet/include/dcmtrans.h ../../dcmnet/include/dcmlayer.h \
-  ../../dcmdata/include/dcuid.h ../../dcmnet/include/dcompat.h \
-  ../../ofstd/include/ofbmanip.h
+msgserv.o: msgserv.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmpstat/dvpsmsg.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h

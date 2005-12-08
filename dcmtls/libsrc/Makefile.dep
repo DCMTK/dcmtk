@@ -1,19 +1,36 @@
-tlslayer.o: tlslayer.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
-  ../include/tlslayer.h ../../dcmnet/include/dcmlayer.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
-  ../../ofstd/include/ofcast.h ../../ofstd/include/ofstream.h \
-  ../include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
-  ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
-  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
-  ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
-  ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
-  ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h
-tlstrans.o: tlstrans.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
-  ../../ofstd/include/ofbmanip.h ../../ofstd/include/ofcast.h \
-  ../include/tlstrans.h ../../dcmnet/include/dcmtrans.h \
-  ../../ofstd/include/oftypes.h ../../dcmnet/include/dcmlayer.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
-  ../include/tlslayer.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofthread.h ../../dcmnet/include/dcompat.h
+tlslayer.o: tlslayer.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmtls/tlslayer.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/dcmtls/tlstrans.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
+  ../../dcmnet/include/dcmtk/dcmnet/cond.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h
+tlstrans.o: tlstrans.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofbmanip.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/dcmtls/tlstrans.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/dcmtls/tlslayer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcompat.h

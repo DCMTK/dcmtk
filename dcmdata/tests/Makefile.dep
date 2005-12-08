@@ -1,13 +1,24 @@
-tvrdatim.o: tvrdatim.cc ../../config/include/osconfig.h \
-  ../../config/include/cfunix.h ../include/dcvrda.h ../include/dctypes.h \
-  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstdinc.h \
-  ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
-  ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
-  ../../ofstd/include/ofstring.h ../../ofstd/include/ofcast.h \
-  ../include/dcerror.h ../../ofstd/include/ofcond.h ../include/dcelem.h \
-  ../include/dcobject.h ../../ofstd/include/ofglobal.h \
-  ../include/dcxfer.h ../include/dcvr.h ../include/dctag.h \
-  ../include/dctagkey.h ../include/dclist.h ../include/dcstack.h \
-  ../../ofstd/include/ofdate.h ../include/dcvrtm.h \
-  ../../ofstd/include/oftime.h ../include/dcvrdt.h \
-  ../../ofstd/include/ofdatime.h ../include/dcdeftag.h
+tvrdatim.o: tvrdatim.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmdata/dcvrda.h ../include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../include/dcmtk/dcmdata/dcbytstr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/dcmdata/dcelem.h ../include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../include/dcmtk/dcmdata/dcxfer.h ../include/dcmtk/dcmdata/dcvr.h \
+  ../include/dcmtk/dcmdata/dctag.h ../include/dcmtk/dcmdata/dctagkey.h \
+  ../include/dcmtk/dcmdata/dclist.h ../include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../include/dcmtk/dcmdata/dcvrtm.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../include/dcmtk/dcmdata/dcvrdt.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+  ../include/dcmtk/dcmdata/dcdeftag.h
