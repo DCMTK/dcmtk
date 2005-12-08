@@ -1247,7 +1247,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
-ac_config_headers="$ac_config_headers include/cfunix.h"
+ac_config_headers="$ac_config_headers include/dcmtk/config/cfunix.h"
 
 
 
@@ -24696,7 +24696,7 @@ do
   # Handling of arguments.
   "Makefile.def" ) CONFIG_FILES="$CONFIG_FILES Makefile.def" ;;
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-  "include/cfunix.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/cfunix.h" ;;
+  "include/dcmtk/config/cfunix.h" ) CONFIG_HEADERS="$CONFIG_HEADERS include/dcmtk/config/cfunix.h" ;;
   *) { { echo "$as_me:$LINENO: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
