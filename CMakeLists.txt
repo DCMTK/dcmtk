@@ -12,21 +12,20 @@ IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.0.6)
   SET(CMAKE_BACKWARDS_COMPATIBILITY 2.0.6 CACHE STRING "Latest version of CMake when this project was released." FORCE)
 ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.0.6)
 
-# specify installation prefix
-SET(CMAKE_INSTALL_PREFIX "${dcmtk_SOURCE_DIR}/dcmtk-3.5.4-win32-i386/")
-
 # default build type
 SET(CMAKE_BUILD_TYPE RELEASE)
 
 # various CMake-specific settings
 SET(CMAKE_USE_RELATIVE_PATHS ON)
 SET(CMAKE_SUPPRESS_REGENERATION ON)
-MARK_AS_ADVANCED(CLEAR CMAKE_INSTALL_PREFIX)
 MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 
 # define user configurable options and paths to external libraries which might be used
 
-# shared libraries (not yet available)
+# installation path prefix
+SET(INSTALL_PREFIX "${dcmtk_SOURCE_DIR}/../dcmtk-3.5.4-win32-i386/" CACHE PATH "Installation path prefix.")
+
+# shared libraries (option not yet available)
 #OPTION(WITH_SHARED_LIBS "Build with shared libraries." OFF)
 SET(WITH_SHARED_LIBS OFF)
 SET(BUILD_SHARED_LIBS ${WITH_SHARED_LIBS})
@@ -154,6 +153,9 @@ IF(WITH_ZLIB AND WITH_ZLIBINC)
   SET(ZLIB_LIBDIR ${WITH_ZLIBINC}/lib)
   SET(ZLIB_LIBS debug zlib_d optimized zlib_o)
 ENDIF(WITH_ZLIB AND WITH_ZLIBINC)
+
+# specify installation prefix
+SET(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
 
 # specify installation sub-directories
 SET(INSTALL_BINDIR "/bin")
