@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:57 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2005-12-09 14:48:35 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,10 @@
 class DVPSPrintEventHandler
 {
 public:
+
+  /// destructor
+  virtual ~DVPSPrintEventHandler() {}
+	
   /** handles an N-EVENT-REPORT-RQ message. This method is called
    *  from DVPSPrintMessageHandler whenever an event report is received.
    *  The event message, information and status detail elements must be copied
@@ -330,7 +334,10 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.11  2005-12-08 16:03:57  meichel
+ *  Revision 1.12  2005-12-09 14:48:35  meichel
+ *  Added missing virtual destructors
+ *
+ *  Revision 1.11  2005/12/08 16:03:57  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.10  2003/09/05 14:31:33  meichel

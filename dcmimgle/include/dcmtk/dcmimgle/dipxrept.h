@@ -22,8 +22,8 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:06 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2005-12-09 14:48:35 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,12 +58,14 @@ class DiPixelRepresentationTemplate
 
  public:
 
+    /// destructor
+    virtual ~DiPixelRepresentationTemplate() {}
+
     /** check whether template type T is signed or not
      *
      ** @return true if signed, false otherwise
      */
     inline int isSigned() const;
-
 
  protected:
 
@@ -169,7 +171,10 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.14  2005-12-08 16:48:06  meichel
+ * Revision 1.15  2005-12-09 14:48:35  meichel
+ * Added missing virtual destructors
+ *
+ * Revision 1.14  2005/12/08 16:48:06  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2003/12/08 19:26:45  joergr

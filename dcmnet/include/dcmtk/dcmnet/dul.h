@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2005-12-08 16:02:23 $
+** Last Update:		$Author: meichel $, $Date: 2005-12-09 14:48:35 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.21 $
+** Revision:		$Revision: 1.22 $
 ** Status:		$State: Exp $
 */
 
@@ -133,6 +133,10 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
 class DUL_ModeCallback
 {
 public:
+
+  /// destructor
+  virtual ~DUL_ModeCallback() {}
+
   /** callback method
    *  @param mode DUL compatibility mode passed in callback
    */
@@ -477,7 +481,10 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.21  2005-12-08 16:02:23  meichel
+** Revision 1.22  2005-12-09 14:48:35  meichel
+** Added missing virtual destructors
+**
+** Revision 1.21  2005/12/08 16:02:23  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.20  2005/11/25 11:31:11  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:01 $
+ *  Update Date:      $Date: 2005-12-09 14:48:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,9 @@ class DcmCodec
 public:
   /// default constructor
   DcmCodec() {}
+
+  /// destructor
+  virtual ~DcmCodec() {}
 
   /** decompresses the given pixel sequence and
    *  stores the result in the given uncompressedPixelData element.
@@ -405,7 +408,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.17  2005-12-08 16:28:01  meichel
+** Revision 1.18  2005-12-09 14:48:14  meichel
+** Added missing virtual destructors
+**
+** Revision 1.17  2005/12/08 16:28:01  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.16  2004/08/24 14:54:18  meichel
