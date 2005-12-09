@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:12 $
+ *  Update Date:      $Date: 2005-12-09 15:04:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -285,7 +285,7 @@ int main(int argc, char* argv[])
     fputs("*/\n\n", fout);
     fputs("#ifndef DCDEFTAG_H\n", fout);
     fputs("#define DCDEFTAG_H\n\n", fout);
-    fputs("#include \"dctagkey.h\"\n\n", fout);
+    fputs("#include \"dcmtk/dcmdata/dctagkey.h\"\n\n", fout);
 #ifndef SUPRESS_CREATE_STAMP
     fprintf(fout, "#define DCM_DICT_DEFTAG_BUILD_DATE \"%s\"\n", dateString.c_str());
     fputs("\n", fout);
@@ -355,7 +355,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.23  2005-12-08 15:42:12  meichel
+** Revision 1.24  2005-12-09 15:04:37  meichel
+** Updated build system for dcdeftag/dcdictzz to reflect new directory structure
+**
+** Revision 1.23  2005/12/08 15:42:12  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.22  2004/08/03 11:41:10  meichel

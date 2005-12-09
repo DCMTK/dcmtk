@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:13 $
+ *  Update Date:      $Date: 2005-12-09 15:04:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,8 +268,8 @@ main(int argc, char* argv[])
     fputs("**\n", fout);
     fprintf(fout, "*/\n");
     fprintf(fout, "\n");
-    fprintf(fout, "#include \"dcdict.h\"\n");
-    fprintf(fout, "#include \"dcdicent.h\"\n");
+    fprintf(fout, "#include \"dcmtk/dcmdata/dcdict.h\"\n");
+    fprintf(fout, "#include \"dcmtk/dcmdata/dcdicent.h\"\n");
     fprintf(fout, "\n");
     fprintf(fout, "const char* dcmBuiltinDictBuildDate = \"%s\";\n", dateString.c_str());
     fprintf(fout, "\n");
@@ -360,7 +360,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.26  2005-12-08 15:42:13  meichel
+** Revision 1.27  2005-12-09 15:04:37  meichel
+** Updated build system for dcdeftag/dcdictzz to reflect new directory structure
+**
+** Revision 1.26  2005/12/08 15:42:13  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.25  2004/08/03 11:41:10  meichel

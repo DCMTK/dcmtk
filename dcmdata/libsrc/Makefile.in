@@ -87,7 +87,7 @@ mkdictbi: mkdictbi.o $(dictobjs) cmdlnarg.o
 # Generate a new include file of defined tags
 
 gendeftag: mkdeftag $(DICTFILE) $(PRIVDICTFILE)
-	`pwd`/mkdeftag `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > $(top_srcdir)/include/dcdeftag.h
+	`pwd`/mkdeftag `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > $(top_srcdir)/include/dcmtk/dcmdata/dcdeftag.h
 
 # Generate a file which can be used as a builtin dictionary
 
