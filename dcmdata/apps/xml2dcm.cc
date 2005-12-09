@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:54 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2005-12-09 12:38:51 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -877,7 +878,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.14  2005-12-08 15:40:54  meichel
+ * Revision 1.15  2005-12-09 12:38:51  meichel
+ * Added missing include for dcdebug.h
+ *
+ * Revision 1.14  2005/12/08 15:40:54  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2005/11/30 12:51:45  joergr
