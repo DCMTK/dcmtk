@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:00 $
+ *  Update Date:      $Date: 2005-12-12 15:14:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,7 @@ END_EXTERN_C
 #include "dcmtk/dcmnet/dcmtrans.h"    /* for class DcmTCPConnection */
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmnet/dcompat.h"     /* compatability routines */
+#include "dcmtk/dcmnet/dul.h"
 
 #define OFFIS_CONSOLE_APPLICATION "msgserv"
 
@@ -106,6 +107,13 @@ int main(int argc, char *argv[])
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef WITH_TCPWRAPPER
+    // this code makes sure that the linker cannot optimize away
+    // the DUL part of the network module where the external flags
+    // for libwrap are defined. Needed on OpenBSD.
+    if (dcmDisableGethostbyaddr.get()) { /* nothing */ }
 #endif
 
 #ifdef HAVE_WINSOCK_H
@@ -369,7 +377,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.9  2005-12-08 15:47:00  meichel
+ * Revision 1.10  2005-12-12 15:14:34  meichel
+ * Added code needed for compilation with TCP wrappers on OpenBSD
+ *
+ * Revision 1.9  2005/12/08 15:47:00  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.8  2005/11/14 18:07:38  meichel

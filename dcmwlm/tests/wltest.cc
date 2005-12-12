@@ -22,9 +22,9 @@
  *  Purpose: Worklist Database Test Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:36 $
+ *  Update Date:      $Date: 2005-12-12 15:14:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/dul.h"
 #include "dcmtk/dcmwlm/wltypdef.h"
 #include "dcmtk/dcmdata/dcvrlo.h"
 #include "dcmtk/dcmdata/dcvrat.h"
@@ -157,6 +158,13 @@ int main(int argc, char* argv[])
     /* needed for Macintosh */
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef WITH_TCPWRAPPER
+    // this code makes sure that the linker cannot optimize away
+    // the DUL part of the network module where the external flags
+    // for libwrap are defined. Needed on OpenBSD.
+    if (dcmDisableGethostbyaddr.get()) { /* nothing */ }
 #endif
 
     prepareCmdLineArgs(argc, argv, "wltest");
@@ -374,7 +382,10 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
-** Revision 1.4  2005-12-08 15:48:36  meichel
+** Revision 1.5  2005-12-12 15:14:34  meichel
+** Added code needed for compilation with TCP wrappers on OpenBSD
+**
+** Revision 1.4  2005/12/08 15:48:36  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.3  2004/08/03 11:43:39  meichel

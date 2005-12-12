@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:08 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2005-12-12 15:14:34 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmnet/dul.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -72,6 +73,13 @@ int main(int argc, char *argv[])
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef WITH_TCPWRAPPER
+    // this code makes sure that the linker cannot optimize away
+    // the DUL part of the network module where the external flags
+    // for libwrap are defined. Needed on OpenBSD.
+    if (dcmDisableGethostbyaddr.get()) { /* nothing */ }
 #endif
 
     int opt_debugMode = 0;
@@ -421,7 +429,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.20  2005-12-08 15:46:08  meichel
+** Revision 1.21  2005-12-12 15:14:34  meichel
+** Added code needed for compilation with TCP wrappers on OpenBSD
+**
+** Revision 1.20  2005/12/08 15:46:08  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.19  2005/12/02 09:47:30  joergr
