@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2005-12-09 14:48:35 $
+** Last Update:		$Author: meichel $, $Date: 2005-12-12 15:15:08 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.22 $
+** Revision:		$Revision: 1.23 $
 ** Status:		$State: Exp $
 */
 
@@ -59,9 +59,11 @@
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/dcmnet/extneg.h"
+#include "dcmtk/dcmnet/dicom.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
+class LST_HEAD;
 
 /** Global flag to enable/disable reverse DNS lookup when accepting
  *  associations.  If disabled, the numerical IP address instead of the symbolic hostname
@@ -481,7 +483,10 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.22  2005-12-09 14:48:35  meichel
+** Revision 1.23  2005-12-12 15:15:08  meichel
+** Added missing include dependency
+**
+** Revision 1.22  2005/12/09 14:48:35  meichel
 ** Added missing virtual destructors
 **
 ** Revision 1.21  2005/12/08 16:02:23  meichel
