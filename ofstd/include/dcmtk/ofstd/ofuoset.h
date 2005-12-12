@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:12 $
+ *  Update Date:      $Date: 2005-12-12 09:24:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofuoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       {
         // check if both sets contain the same
         // amount of items; if not, return OFFalse
-        if( num != other.num )
+        if( OFSet<T>::num != other.num )
           return( OFFalse );
 
         // initialize result with OFTrue
@@ -151,17 +151,17 @@ template <class T> class OFUnorderedSet : public OFSet<T>
     virtual void Insert( const T &item )
       {
         // if size equals num, we need more space
-        if( size == num )
-          Resize( size * 2 );
+        if( OFSet<T>::size == OFSet<T>::num )
+          Resize( OFSet<T>::size * 2 );
 
         // copy item
         T *newItem = new T( item );
 
         // insert copy into array
-        items[num] = newItem;
+        OFSet<T>::items[OFSet<T>::num] = newItem;
 
         // increase counter
-        num++;
+        OFSet<T>::num++;
       }
 
 
@@ -185,27 +185,27 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         OFBool itemDeleted = OFFalse;
 
         // go through all items
-        for( unsigned int i=0 ; i<num && !itemDeleted ; i++ )
+        for( unsigned int i=0 ; i<OFSet<T>::num && !itemDeleted ; i++ )
         {
           // if current item is the one which shall be deleted
-          if( *items[i] == item )
+          if( *OFSet<T>::items[i] == item )
           {
             // delete item
-            delete items[i];
+            delete OFSet<T>::items[i];
 
             // and - so that there are no holes in the array - move the last
             // item to the array field from which the item was deleted;
             // only do so in case we did _not_ delete the last item
-            if( i != num - 1 )
+            if( i != OFSet<T>::num - 1 )
             {
-              items[i] = items[num-1];
-              items[num-1] = NULL;
+              OFSet<T>::items[i] = OFSet<T>::items[OFSet<T>::num-1];
+              OFSet<T>::items[OFSet<T>::num-1] = NULL;
             }
             else
-              items[i] = NULL;
+              OFSet<T>::items[i] = NULL;
 
             // reduce counter
-            num--;
+            OFSet<T>::num--;
 
             // remember that an item was deleted (so that always only one item will be deleted)
             itemDeleted = OFTrue;
@@ -220,24 +220,24 @@ template <class T> class OFUnorderedSet : public OFSet<T>
     virtual void RemoveByIndex( unsigned int index )
       {
         // do something only if the given index is not out of range
-        if( index < num )
+        if( index < OFSet<T>::num )
         {
           // delete item with given index
-          delete items[index];
+          delete OFSet<T>::items[index];
 
           // and - so that there are no holes in the array - move the last
           // item to the array field from which the item was deleted;
           // only do so in case we did _not_ delete the last item
-          if( index != num - 1 )
+          if( index != OFSet<T>::num - 1 )
           {
-            items[index] = items[num-1];
-            items[num-1] = NULL;
+            OFSet<T>::items[index] = OFSet<T>::items[OFSet<T>::num-1];
+            OFSet<T>::items[OFSet<T>::num-1] = NULL;
           }
           else
-            items[index] = NULL;
+            OFSet<T>::items[index] = NULL;
 
           // reduce counter
-          num--;
+          OFSet<T>::num--;
         }
       }
 
@@ -253,14 +253,14 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         unsigned int i;
         OFBool itemFound = OFFalse;
 
-        for( i=0 ; i<num && !itemFound ; i++ )
+        for( i=0 ; i<OFSet<T>::num && !itemFound ; i++ )
         {
-          if( *items[i] == item )
+          if( *OFSet<T>::items[i] == item )
             itemFound = OFTrue;
         }
 
         if( itemFound )
-          return( items[i-1] );
+          return( OFSet<T>::items[i-1] );
         else
           return( NULL );
       }
@@ -274,9 +274,9 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       {
         OFBool itemFound = OFFalse;
 
-        for( unsigned int i=0 ; i<num && !itemFound ; i++ )
+        for( unsigned int i=0 ; i<OFSet<T>::num && !itemFound ; i++ )
         {
-          if( *items[i] == item )
+          if( *OFSet<T>::items[i] == item )
             itemFound = OFTrue;
         }
 
@@ -293,7 +293,7 @@ template <class T> class OFUnorderedSet : public OFSet<T>
     virtual OFBool IsSupersetOf( const OFUnorderedSet<T> &other ) const
       {
         // if this contains less or the same amount of items than other, return OFFalse
-        if( num <= other.num )
+        if( OFSet<T>::num <= other.num )
           return( OFFalse );
 
         // initialize result with OFTrue
@@ -368,17 +368,17 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         OFUnorderedSet<T> s = other;
 
         // go through all items in this
-        for( unsigned int i=0 ; i<num ; i++ )
+        for( unsigned int i=0 ; i< OFSet<T>::num ; i++ )
         {
           // if s contains the current item
-          if( s.Contains( *items[i] ) )
+          if( s.Contains( *OFSet<T>::items[i] ) )
           {
             // insert the item into the result set
-            resultSet.Insert( *items[i] );
+            resultSet.Insert( *OFSet<T>::items[i] );
 
             // and remove the item from s so that it will not be
             // considered again in a later call to s.Contains()
-            s.Remove( *items[i] );
+            s.Remove( *OFSet<T>::items[i] );
           }
         }
 
@@ -402,19 +402,19 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         OFUnorderedSet<T> s = other;
 
         // go through all items in this
-        for( unsigned int i=0 ; i<num ; i++ )
+        for( unsigned int i=0 ; i< OFSet<T>::num ; i++ )
         {
           // if s does not contain the current item
-          if( !s.Contains( *items[i] ) )
+          if( !s.Contains( *OFSet<T>::items[i] ) )
           {
             // insert the item into the result set
-            resultSet.Insert( *items[i] );
+            resultSet.Insert( *OFSet<T>::items[i] );
           }
           else
           {
             // else remove the item from s so that it will not be
             // considered again in a later call to s.Contains()
-            s.Remove( *items[i] );
+            s.Remove( *OFSet<T>::items[i] );
           }
         }
 
@@ -451,7 +451,11 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofuoset.h,v $
-** Revision 1.5  2005-12-08 16:06:12  meichel
+** Revision 1.6  2005-12-12 09:24:27  meichel
+** Added explicit references to parent template class, needed for
+**   gcc 3.4.2 (MinGW port)
+**
+** Revision 1.5  2005/12/08 16:06:12  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.4  2002/12/16 10:40:25  wilkens
