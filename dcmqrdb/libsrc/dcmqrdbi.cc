@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:09 $
+ *  Update Date:      $Date: 2005-12-14 13:46:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,17 +32,6 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmqrdb/dcmqrdbs.h"
-#include "dcmtk/dcmqrdb/dcmqrdbi.h"
-#include "dcmtk/dcmqrdb/dcmqrcnf.h"
-
-#include "dcmtk/dcmqrdb/dcmqridx.h"
-#include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/ofstd/ofstd.h"
-
-#define INCLUDE_CSTDARG
-#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
@@ -51,7 +40,22 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
 END_EXTERN_C
+
+#define INCLUDE_CSTDARG
+#include "dcmtk/ofstd/ofstdinc.h"
+
+#include "dcmtk/dcmqrdb/dcmqrdbs.h"
+#include "dcmtk/dcmqrdb/dcmqrdbi.h"
+#include "dcmtk/dcmqrdb/dcmqrcnf.h"
+
+#include "dcmtk/dcmqrdb/dcmqridx.h"
+#include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 const OFConditionConst DcmQRIndexDatabaseErrorC(OFM_imagectn, 0x001, OF_error, "DcmQR Index Database Error");
 const OFCondition DcmQRIndexDatabaseError(DcmQRIndexDatabaseErrorC);
@@ -3465,7 +3469,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.6  2005-12-08 15:47:09  meichel
+ * Revision 1.7  2005-12-14 13:46:54  meichel
+ * Changed order of include files to avoid warning on FreeBSD
+ *
+ * Revision 1.6  2005/12/08 15:47:09  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2005/12/01 09:10:06  joergr
