@@ -490,6 +490,8 @@ if test $THREADSUPPORT = posix ; then
 	  ;;
         *-*-freebsd6*)
 	  ;;
+        *-*-netbsdelf2*)
+	  ;;
 	*-*-darwin8.*)
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE $CFLAGS"
