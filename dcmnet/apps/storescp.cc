@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:21 $
+ *  Update Date:      $Date: 2005-12-14 10:45:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
 #define INCLUDE_CCTYPE
+#define INCLUDE_CSIGNAL
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef _WIN32
@@ -2548,7 +2549,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.85  2005-12-08 15:44:21  meichel
+** Revision 1.86  2005-12-14 10:45:55  meichel
+** Including csignal if present, needed on Solaris.
+**
+** Revision 1.85  2005/12/08 15:44:21  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.84  2005/11/28 16:28:53  meichel
