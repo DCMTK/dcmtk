@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 10:45:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-14 14:27:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,9 @@
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
+#endif
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>       /* needed on Solaris for O_RDONLY */
 #endif
 END_EXTERN_C
 
@@ -1219,7 +1222,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #if defined(HAVE_FORK) || defined(_WIN32)
       if (opt_forkMode)
       {
-        printf("Association Received in %s process (pid: %i)\n", (DUL_processIsForkedChild() ? "child" : "parent") , getpid());
+        printf("Association Received in %s process (pid: %d)\n", (DUL_processIsForkedChild() ? "child" : "parent") , getpid());
       }
       else printf("Association Received\n");
 #else
@@ -2194,7 +2197,7 @@ static void renameOnEndOfStudy()
     {
       // modality prefix are the first 2 characters after serial number (if present)
       uint serialPos = (*first).find("_");
-      if (serialPos != string::npos)
+      if (serialPos != OFString_npos)
       {
         //serial present: copy modality prefix (skip serial: 1 digit "_" + 4 digits serial + 1 digit ".")
         OFStandard::strlcpy( modalityId, (*first).substr(serialPos+1+4+1, 2).c_str(), 3 );
@@ -2549,7 +2552,12 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.86  2005-12-14 10:45:55  meichel
+** Revision 1.87  2005-12-14 14:27:36  joergr
+** Added missing header file "fcntl.h", needed for Solaris.
+** Replaced "string::npos" by "OFString_npos".
+** Changed printf() type for return value of getpid() to "%d".
+**
+** Revision 1.86  2005/12/14 10:45:55  meichel
 ** Including csignal if present, needed on Solaris.
 **
 ** Revision 1.85  2005/12/08 15:44:21  meichel
