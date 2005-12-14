@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:14 $
+ *  Update Date:      $Date: 2005-12-14 17:36:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -633,16 +633,16 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     DIC_NODENAME presentationAddress;
     T_ASC_Parameters *params;
     DIC_NODENAME localHost;
-    DIC_AE myAETitle;
+    DIC_AE currentAETitle;
 
     if (assoc != NULL) {
         TI_detachAssociation(OFFalse);
     }
 
     if (dbEntries[currentdb]->isRemoteDB) {
-        strcpy(myAETitle, myAETitle);
+        strcpy(currentAETitle, myAETitle);
     } else {
-        strcpy(myAETitle, dbEntries[currentdb]->title);
+        strcpy(currentAETitle, dbEntries[currentdb]->title);
     }
 
     cond = ASC_createAssociationParameters(&params, maxReceivePDULength);
@@ -651,7 +651,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         DimseCondition::dump(cond);
         return OFFalse;
     }
-    ASC_setAPTitles(params, myAETitle, currentPeerTitle, NULL);
+    ASC_setAPTitles(params, currentAETitle, currentPeerTitle, NULL);
 
     gethostname(localHost, sizeof(localHost) - 1);
     if (!config.peerForAETitle(currentPeerTitle, &peer, &port)) {
@@ -2240,7 +2240,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
- * Revision 1.6  2005-12-08 15:47:14  meichel
+ * Revision 1.7  2005-12-14 17:36:28  meichel
+ * Removed naming conflict
+ *
+ * Revision 1.6  2005/12/08 15:47:14  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2005/11/17 13:44:40  meichel
