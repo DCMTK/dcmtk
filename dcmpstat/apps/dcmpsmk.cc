@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-12 15:14:34 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2005-12-14 17:43:42 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     // this code makes sure that the linker cannot optimize away
     // the DUL part of the network module where the external flags
     // for libwrap are defined. Needed on OpenBSD.
-    if (dcmDisableGethostbyaddr.get()) { /* nothing */ }
+    dcmTCPWrapperDaemonName.set(NULL);
 #endif
 
     int opt_debugMode = 0;
@@ -429,7 +429,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.21  2005-12-12 15:14:34  meichel
+** Revision 1.22  2005-12-14 17:43:42  meichel
+** Adapted code for compilation with TCP wrappers to NetBSD
+**
+** Revision 1.21  2005/12/12 15:14:34  meichel
 ** Added code needed for compilation with TCP wrappers on OpenBSD
 **
 ** Revision 1.20  2005/12/08 15:46:08  meichel

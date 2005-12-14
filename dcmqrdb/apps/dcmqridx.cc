@@ -22,9 +22,9 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 13:01:01 $
+ *  Update Date:      $Date: 2005-12-14 17:43:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ int main (int argc, char *argv[])
     // this code makes sure that the linker cannot optimize away
     // the DUL part of the network module where the external flags
     // for libwrap are defined. Needed on OpenBSD.
-    if (dcmDisableGethostbyaddr.get()) { /* nothing */ }
+    dcmTCPWrapperDaemonName.set(NULL);
 #endif
 
     OFCommandLine cmd;
@@ -203,7 +203,10 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.3  2005-12-14 13:01:01  meichel
+ * Revision 1.4  2005-12-14 17:43:42  meichel
+ * Adapted code for compilation with TCP wrappers to NetBSD
+ *
+ * Revision 1.3  2005/12/14 13:01:01  meichel
  * Added code needed for compilation with TCP wrappers on OpenBSD
  *
  * Revision 1.2  2005/12/08 15:47:01  meichel
