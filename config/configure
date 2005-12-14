@@ -858,12 +858,12 @@ Optional Packages:
   --with-openssl          include OpenSSL support (default: auto)
   --without-openssl       don't include OpenSSL support
   --with-opensslinc=DIR   location of OpenSSL includes and libraries
-  --with-libtiff          include libtiff support (default: auto)
-  --without-libtiff       don't include libtiff support
-  --with-libtiffinc=DIR   location of libtiff includes and libraries
   --with-zlib             include zlib support (default: auto)
   --without-zlib          don't include zlib support
   --with-zlibinc=DIR      location of zlib includes and libraries
+  --with-libtiff          include libtiff support (default: auto)
+  --without-libtiff       don't include libtiff support
+  --with-libtiffinc=DIR   location of libtiff includes and libraries
   --with-libpng           include libpng support (default: auto)
   --without-libpng        don't include libpng support
   --with-libpnginc=DIR    location of libpng includes and libraries
@@ -23415,6 +23415,226 @@ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 fi;
 
 
+JPEGLIBS=""
+echo "$as_me:$LINENO: checking for jpeg_set_defaults in -ljpeg" >&5
+echo $ECHO_N "checking for jpeg_set_defaults in -ljpeg... $ECHO_C" >&6
+if test "${ac_cv_lib_jpeg_jpeg_set_defaults+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ljpeg  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char jpeg_set_defaults ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+jpeg_set_defaults ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_jpeg_jpeg_set_defaults=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_jpeg_jpeg_set_defaults=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_jpeg_jpeg_set_defaults" >&5
+echo "${ECHO_T}$ac_cv_lib_jpeg_jpeg_set_defaults" >&6
+if test $ac_cv_lib_jpeg_jpeg_set_defaults = yes; then
+
+JPEGLIBS="-ljpeg"
+
+fi
+
+if test $ac_cv_lib_jpeg_jpeg_set_defaults = no ; then
+echo "$as_me:$LINENO: checking for jSetDefaults in -ljpeg" >&5
+echo $ECHO_N "checking for jSetDefaults in -ljpeg... $ECHO_C" >&6
+if test "${ac_cv_lib_jpeg_jSetDefaults+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ljpeg  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char jSetDefaults ();
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+jSetDefaults ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_jpeg_jSetDefaults=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_jpeg_jSetDefaults=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_jpeg_jSetDefaults" >&5
+echo "${ECHO_T}$ac_cv_lib_jpeg_jSetDefaults" >&6
+if test $ac_cv_lib_jpeg_jSetDefaults = yes; then
+
+JPEGLIBS="-ljpeg"
+
+fi
+
+fi
+
+
+if test "${with_zlibinc+set}" = set; then
+
+    case "$with_zlibinc" in
+    yes|no)
+      echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_zlibinc}; then
+        echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CPPFLAGS="-I${with_zlibinc}/include $CPPFLAGS"
+      LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
+ZLIBLIBS=""
+echo "$as_me:$LINENO: checking whether to include zlib support" >&5
+echo $ECHO_N "checking whether to include zlib support... $ECHO_C" >&6
+
+# Check whether --with-zlib or --without-zlib was given.
+if test "${with_zlib+set}" = set; then
+  withval="$with_zlib"
+   case "$withval" in
+  yes)
+    echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define WITH_ZLIB
+_ACEOF
+
+    ZLIBLIBS="-lz"
+    ;;
+  *)
+    echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+    ;;
+  esac
+else
+   SAVELIBS="$LIBS"
+  LIBS="$LIBS -lz"
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <zlib.h>
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+(void) zlibVersion()
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+   echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+
+cat >>confdefs.h <<\_ACEOF
+#define WITH_ZLIB
+_ACEOF
+
+      ZLIBLIBS="-lz"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+  LIBS="$SAVELIBS"
+fi;
+
+
 if test "${with_libtiffinc+set}" = set; then
 
     case "$with_libtiffinc" in
@@ -23449,9 +23669,9 @@ cat >>confdefs.h <<\_ACEOF
 #define WITH_LIBTIFF
 _ACEOF
 
-    TIFFLIBS="-ltiff"
+    TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
     SAVELIBS="$LIBS"
-    LIBS="$LIBS -ltiff"
+    LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
 
 
 echo "$as_me:$LINENO: checking whether libtiff supports LZW compression" >&5
@@ -23547,7 +23767,7 @@ echo "${ECHO_T}no" >&6
   esac
 else
    SAVELIBS="$LIBS"
-  LIBS="$LIBS -ltiff"
+  LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 #include "confdefs.h"
@@ -23585,7 +23805,7 @@ cat >>confdefs.h <<\_ACEOF
 #define WITH_LIBTIFF
 _ACEOF
 
-      TIFFLIBS="-ltiff"
+      TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
 
 
 echo "$as_me:$LINENO: checking whether libtiff supports LZW compression" >&5
@@ -23683,98 +23903,6 @@ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
   LIBS="$SAVELIBS"
 fi;
 
-
-if test "${with_zlibinc+set}" = set; then
-
-    case "$with_zlibinc" in
-    yes|no)
-      echo "configure: warning: --with-zlibinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_zlibinc}; then
-        echo "configure: warning: called with --with-zlibinc, but zlib base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_zlibinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_zlibinc}/lib $LDFLAGS"
-    ;;
-    esac
-
-fi
-
-ZLIBLIBS=""
-echo "$as_me:$LINENO: checking whether to include zlib support" >&5
-echo $ECHO_N "checking whether to include zlib support... $ECHO_C" >&6
-
-# Check whether --with-zlib or --without-zlib was given.
-if test "${with_zlib+set}" = set; then
-  withval="$with_zlib"
-   case "$withval" in
-  yes)
-    echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-
-cat >>confdefs.h <<\_ACEOF
-#define WITH_ZLIB
-_ACEOF
-
-    ZLIBLIBS="-lz"
-    ;;
-  *)
-    echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-    ;;
-  esac
-else
-   SAVELIBS="$LIBS"
-  LIBS="$LIBS -lz"
-  cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <zlib.h>
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-(void) zlibVersion()
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
-  (eval $ac_link) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-   echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
-
-cat >>confdefs.h <<\_ACEOF
-#define WITH_ZLIB
-_ACEOF
-
-      ZLIBLIBS="-lz"
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-echo "$as_me:$LINENO: result: no" >&5
-echo "${ECHO_T}no" >&6
-fi
-rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-  LIBS="$SAVELIBS"
-fi;
 
 
 if test "${with_libpnginc+set}" = set; then

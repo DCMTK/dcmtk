@@ -768,57 +768,18 @@ AC_ARG_WITH(openssl,
   LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
-dnl Check for libtiff support
+dnl Check for libjpeg, which is needed by libtiff on some platforms
 dnl -------------------------------------------------------
 
-if test "${with_libtiffinc+set}" = set; then
-
-    case "$with_libtiffinc" in
-    yes|no)
-      echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
-    ;;
-    * )
-      if test ! -d ${with_libtiffinc}; then
-        echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
-        exit 1
-      fi
-      CPPFLAGS="-I${with_libtiffinc}/include $CPPFLAGS"
-      LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
-    ;;
-    esac
-
+JPEGLIBS=""
+AC_CHECK_LIB(jpeg, jpeg_set_defaults,[
+JPEGLIBS="-ljpeg"
+])
+if test $ac_cv_lib_jpeg_jpeg_set_defaults = no ; then
+AC_CHECK_LIB(jpeg, jSetDefaults,[
+JPEGLIBS="-ljpeg"
+])
 fi
-
-TIFFLIBS=""
-AC_MSG_CHECKING(whether to include libtiff support)
-AC_ARG_WITH(libtiff,
-[  --with-libtiff          include libtiff support (default: auto)
-  --without-libtiff       don't include libtiff support
-  --with-libtiffinc=DIR   location of libtiff includes and libraries],
-[ case "$withval" in
-  yes)
-    AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
-    TIFFLIBS="-ltiff"
-    SAVELIBS="$LIBS"
-    LIBS="$LIBS -ltiff"
-    AC_LIBTIFF_LZW_COMPRESSION
-    LIBS="$SAVELIBS"
-    ;;
-  *)
-    AC_MSG_RESULT(no)
-    ;;
-  esac ],
-[ SAVELIBS="$LIBS"
-  LIBS="$LIBS -ltiff"
-  AC_TRY_LINK([#include <tiffio.h>], [(void) TIFFGetVersion()], 
-    [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
-      TIFFLIBS="-ltiff" 
-      AC_LIBTIFF_LZW_COMPRESSION
-    ], 
-    [AC_MSG_RESULT(no)])
-  LIBS="$SAVELIBS"] )
 
 dnl -------------------------------------------------------
 dnl Check for zlib support
@@ -866,6 +827,60 @@ AC_ARG_WITH(zlib,
       ZLIBLIBS="-lz" ], 
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
+
+dnl -------------------------------------------------------
+dnl Check for libtiff support
+dnl -------------------------------------------------------
+
+if test "${with_libtiffinc+set}" = set; then
+
+    case "$with_libtiffinc" in
+    yes|no)
+      echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libtiffinc}; then
+        echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CPPFLAGS="-I${with_libtiffinc}/include $CPPFLAGS"
+      LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
+    ;;
+    esac
+
+fi
+
+TIFFLIBS=""
+AC_MSG_CHECKING(whether to include libtiff support)
+AC_ARG_WITH(libtiff,
+[  --with-libtiff          include libtiff support (default: auto)
+  --without-libtiff       don't include libtiff support
+  --with-libtiffinc=DIR   location of libtiff includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
+    TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
+    SAVELIBS="$LIBS"
+    LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
+    AC_LIBTIFF_LZW_COMPRESSION
+    LIBS="$SAVELIBS"
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+[ SAVELIBS="$LIBS"
+  LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
+  AC_TRY_LINK([#include <tiffio.h>], [(void) TIFFGetVersion()], 
+    [ AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
+      TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS" 
+      AC_LIBTIFF_LZW_COMPRESSION
+    ], 
+    [AC_MSG_RESULT(no)])
+  LIBS="$SAVELIBS"] )
+
 
 dnl -------------------------------------------------------
 dnl Check for libpng support
