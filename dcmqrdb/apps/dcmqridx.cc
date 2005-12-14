@@ -22,9 +22,9 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:01 $
+ *  Update Date:      $Date: 2005-12-14 13:01:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofcmdln.h"
+#include "dcmtk/dcmnet/dul.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -83,6 +84,13 @@ int main (int argc, char *argv[])
     OFBool opt_isNewFlag = OFTrue;
 
     SetDebugLevel(( 0 ));
+
+#ifdef WITH_TCPWRAPPER
+    // this code makes sure that the linker cannot optimize away
+    // the DUL part of the network module where the external flags
+    // for libwrap are defined. Needed on OpenBSD.
+    if (dcmDisableGethostbyaddr.get()) { /* nothing */ }
+#endif
 
     OFCommandLine cmd;
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Register a DICOM image file in an image database index file", rcsid);
@@ -195,7 +203,10 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.2  2005-12-08 15:47:01  meichel
+ * Revision 1.3  2005-12-14 13:01:01  meichel
+ * Added code needed for compilation with TCP wrappers on OpenBSD
+ *
+ * Revision 1.2  2005/12/08 15:47:01  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:44  meichel
