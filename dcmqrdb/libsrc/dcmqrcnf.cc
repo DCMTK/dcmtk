@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-14 14:29:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcnf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 /* includes */
 #define INCLUDE_CSTDIO
+#define INCLUDE_CCTYPE
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
 #include "dcmtk/ofstd/ofcmdln.h"
@@ -1032,7 +1033,10 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
- * Revision 1.4  2005-12-08 15:47:08  meichel
+ * Revision 1.5  2005-12-14 14:29:42  joergr
+ * Including ctype if present, needed for Solaris.
+ *
+ * Revision 1.4  2005/12/08 15:47:08  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2005/04/07 14:38:22  joergr

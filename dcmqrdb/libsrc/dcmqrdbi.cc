@@ -21,10 +21,10 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 13:46:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-14 14:29:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#define INCLUDE_CCTYPE
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
 
@@ -3469,7 +3470,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.7  2005-12-14 13:46:54  meichel
+ * Revision 1.8  2005-12-14 14:29:43  joergr
+ * Including ctype if present, needed for Solaris.
+ *
+ * Revision 1.7  2005/12/14 13:46:54  meichel
  * Changed order of include files to avoid warning on FreeBSD
  *
  * Revision 1.6  2005/12/08 15:47:09  meichel
