@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: joergr $, $Date: 2005-12-15 11:01:17 $
+** Last Update:         $Author: joergr $, $Date: 2005-12-15 17:44:16 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.69 $
+** Revision:            $Revision: 1.70 $
 ** Status:              $State: Exp $
 */
 
@@ -192,8 +192,11 @@ static void clearPresentationContext(LST_HEAD ** l);
 
 static OFBool processIsForkedChild = OFFalse;
 static OFBool shouldFork = OFFalse;
+
+#ifdef _WIN32
 static char **command_argv = NULL;
 static int command_argc = 0;
+#endif
 
 OFBool DUL_processIsForkedChild() 
 {
@@ -208,8 +211,10 @@ void DUL_markProcessAsForkedChild()
 void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[])
 {
   shouldFork = OFTrue;
+#ifdef _WIN32
   command_argc = argc;
   command_argv = argv;
+#endif
 }
 
 void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
@@ -2591,7 +2596,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.69  2005-12-15 11:01:17  joergr
+** Revision 1.70  2005-12-15 17:44:16  joergr
+** Removed unused variables on non-Windows systems, reported by Sun CC 2.0.1.
+**
+** Revision 1.69  2005/12/15 11:01:17  joergr
 ** Added explicit typecast, required for Sun CC 4.2 on Solaris.
 **
 ** Revision 1.68  2005/12/08 15:44:48  meichel
