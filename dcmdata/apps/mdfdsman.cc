@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:52 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 10:23:41 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -910,11 +910,11 @@ OFBool MdfDatasetManager::hasPrivateReservationContext(const DcmTagKey &tag_key,
         item->findAndGetElement(reservator, reservation_elem, OFFalse);
     //return if there is no reservation for this private tag
     if (cond.bad())
-        return false;
+        return OFFalse;
 
     //we have a reservation for this private tag, get private creator name
     reservation_elem->getOFString(priv_creator,0);
-    return true;
+    return OFTrue;
 }
 
 
@@ -973,7 +973,10 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.18  2005-12-08 15:40:52  meichel
+** Revision 1.19  2005-12-15 10:23:41  joergr
+** Replaced "true" by "OFTrue" and "false" by "OFFalse".
+**
+** Revision 1.18  2005/12/08 15:40:52  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.17  2005/12/02 09:20:08  joergr
