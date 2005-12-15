@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:00 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 15:40:18 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1701,7 +1701,6 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
 
 // check whether dataset conforms to dental radiograph application profile
 OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
-                                                               const OFString &sopClass,
                                                                const char *filename)
 {
     OFCondition result = EC_Normal;
@@ -1991,7 +1990,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID);
         E_DirRecType recordType = sopClassToRecordType(mediaSOPClassUID);
         /* hanging protocol files are checked separately */
-        if (recordType == ERT_HangingProtocol)        
+        if (recordType == ERT_HangingProtocol)
         {
             /* nothing to check since all type 1 and 2 attributes are identical */
         } else {
@@ -2254,7 +2253,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     else if ((ApplicationProfile == AP_XrayAngiographic) || (ApplicationProfile == AP_XrayAngiographicDVD))
                         result = checkXrayAngiographicAttributes(dataset, mediaSOPClassUID, filename);
                     else if (ApplicationProfile == AP_DentalRadiograph)
-                        result = checkDentalRadiographAttributes(dataset, mediaSOPClassUID, filename);
+                        result = checkDentalRadiographAttributes(dataset, filename);
                     else if (ApplicationProfile == AP_CTandMR)
                         result = checkCTandMRAttributes(dataset, mediaSOPClassUID, filename);
                     else if ((ApplicationProfile == AP_UltrasoundIDSF) ||
@@ -4785,7 +4784,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.15  2005-12-08 15:41:00  meichel
+ *  Revision 1.16  2005-12-15 15:40:18  joergr
+ *  Removed unsused parameter.
+ *
+ *  Revision 1.15  2005/12/08 15:41:00  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.14  2005/10/27 13:40:06  joergr

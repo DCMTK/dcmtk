@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:03 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 15:40:48 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -583,12 +583,10 @@ class DicomDirInterface
 
     /** check attributes for compliance with dental radiograph application profile
      *  @param dataset object where the DICOM dataset is stored
-     *  @param sopClass SOP class of the DICOM data to be checked
      *  @param filename name of the DICOM file to be checked
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition checkDentalRadiographAttributes(DcmItem *dataset,
-                                                const OFString &sopClass,
                                                 const char *filename);
 
     /** check attributes for compliance with CT and MR application profile
@@ -1306,7 +1304,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.7  2005-12-08 16:28:03  meichel
+ * Revision 1.8  2005-12-15 15:40:48  joergr
+ * Removed unsused parameter.
+ *
+ * Revision 1.7  2005/12/08 16:28:03  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2005/10/27 13:31:21  joergr
