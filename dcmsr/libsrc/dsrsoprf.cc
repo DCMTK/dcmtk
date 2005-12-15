@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 16:53:48 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -763,7 +763,7 @@ OFBool DSRSOPInstanceReferenceList::StudyStruct::containsExtendedCharacters()
     OFListIterator(SeriesStruct *) last = SeriesList.end();
     while (iter != last)
     {
-      if (*iter && (*iter)->containsExtendedCharacters()) return OFTrue;
+      if (*iter && OFstatic_cast(SeriesStruct *, *iter)->containsExtendedCharacters()) return OFTrue;
       ++iter;
     }
     return OFFalse;
@@ -1408,7 +1408,7 @@ OFBool DSRSOPInstanceReferenceList::containsExtendedCharacters()
     OFListIterator(StudyStruct *) last = StudyList.end();
     while (iter != last)
     {
-      if (*iter && (*iter)->containsExtendedCharacters()) return OFTrue;
+      if (*iter && OFstatic_cast(StudyStruct *, *iter)->containsExtendedCharacters()) return OFTrue;
       ++iter;
     }
     return OFFalse;
@@ -1418,7 +1418,10 @@ OFBool DSRSOPInstanceReferenceList::containsExtendedCharacters()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.9  2005-12-08 15:48:07  meichel
+ *  Revision 1.10  2005-12-15 16:53:48  joergr
+ *  Added explicit type cast, required for Sun CC 2.0.1 on Solaris.
+ *
+ *  Revision 1.9  2005/12/08 15:48:07  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.8  2005/07/27 16:34:26  joergr
