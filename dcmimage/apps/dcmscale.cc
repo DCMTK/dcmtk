@@ -21,9 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:18 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 17:42:10 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -467,7 +467,7 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "preparing pixel data" << endl;
 
-    const int flags = (opt_scaleType > 0) ? CIF_MayDetachPixelData : 0;
+    const unsigned long flags = (opt_scaleType > 0) ? CIF_MayDetachPixelData : 0;
     // create DicomImage object
     DicomImage *di = new DicomImage(dataset, opt_oxfer, flags);
     if (di == NULL)
@@ -657,7 +657,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.13  2005-12-08 15:42:18  meichel
+ * Revision 1.14  2005-12-15 17:42:10  joergr
+ * Changed type of local variable, reported by Sun CC 2.0.1 on Solaris.
+ *
+ * Revision 1.13  2005/12/08 15:42:18  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2005/12/02 09:31:17  joergr
