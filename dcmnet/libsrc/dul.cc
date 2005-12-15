@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2005-12-08 15:44:48 $
+** Last Update:         $Author: joergr $, $Date: 2005-12-15 11:01:17 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.68 $
+** Revision:            $Revision: 1.69 $
 ** Status:              $State: Exp $
 */
 
@@ -143,7 +143,7 @@ END_EXTERN_C
 OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 OFGlobal<Sint32> dcmConnectionTimeout(-1);
 OFGlobal<int>    dcmExternalSocketHandle(-1);
-OFGlobal<const char *> dcmTCPWrapperDaemonName(NULL);
+OFGlobal<const char *> dcmTCPWrapperDaemonName((const char *)NULL);
 OFGlobal<unsigned long> dcmEnableBackwardCompatibility(0);
 
 static int networkInitialized = 0;
@@ -2591,7 +2591,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.68  2005-12-08 15:44:48  meichel
+** Revision 1.69  2005-12-15 11:01:17  joergr
+** Added explicit typecast, required for Sun CC 4.2 on Solaris.
+**
+** Revision 1.68  2005/12/08 15:44:48  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.67  2005/11/25 11:31:14  meichel
