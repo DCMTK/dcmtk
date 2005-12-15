@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 12:38:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbs.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ private:
 
     void writeToFile(
         DcmFileFormat *ff,
-        const char* fileName,
+        const char* fname,
         T_DIMSE_C_StoreRSP *rsp);
 
     void checkRequestAgainstDataset(
@@ -119,7 +119,7 @@ private:
         const char* fname,          /* filename of dataset */
         DcmDataset *dataSet,        /* dataset to check */
         T_DIMSE_C_StoreRSP *rsp,    /* final store response */
-        OFBool correctUIDPadding);  
+        OFBool uidPadding);         /* correct UID padding */
 
     /// reference to database handle
     DcmQueryRetrieveDatabaseHandle& dbHandle;
@@ -146,7 +146,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbs.h,v $
- * Revision 1.2  2005-12-08 16:04:19  meichel
+ * Revision 1.3  2005-12-15 12:38:00  joergr
+ * Removed naming conflicts.
+ *
+ * Revision 1.2  2005/12/08 16:04:19  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:50  meichel

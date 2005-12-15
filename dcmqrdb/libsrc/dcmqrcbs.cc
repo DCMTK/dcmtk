@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 12:38:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,19 +101,19 @@ void DcmQueryRetrieveStoreContext::saveImageToDB(
 
 void DcmQueryRetrieveStoreContext::writeToFile(
     DcmFileFormat *ff,
-    const char* fileName,
+    const char* fname,
     T_DIMSE_C_StoreRSP *rsp)
 {
     E_TransferSyntax xfer = options_.writeTransferSyntax_;
     if (xfer == EXS_Unknown) xfer = ff->getDataset()->getOriginalXfer();
 
-    OFCondition cond = ff->saveFile(fileName, xfer, options_.sequenceType_, 
+    OFCondition cond = ff->saveFile(fname, xfer, options_.sequenceType_, 
         options_.groupLength_, options_.paddingType_, (Uint32)options_.filepad_, 
         (Uint32)options_.itempad_, (!options_.useMetaheader_));
 
     if (cond.bad())
     {
-      fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
+      fprintf(stderr, "storescp: Cannot write image file: %s\n", fname);
       rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
     }
 }
@@ -123,7 +123,7 @@ void DcmQueryRetrieveStoreContext::checkRequestAgainstDataset(
     const char* fname,          /* filename of dataset */
     DcmDataset *dataSet,        /* dataset to check */
     T_DIMSE_C_StoreRSP *rsp,    /* final store response */
-    OFBool correctUIDPadding)    
+    OFBool uidPadding)          /* correct UID passing */
 {
     DcmFileFormat ff;
 
@@ -137,7 +137,7 @@ void DcmQueryRetrieveStoreContext::checkRequestAgainstDataset(
     DIC_UI sopClass;
     DIC_UI sopInstance;
     
-    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, correctUIDPadding)) 
+    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, uidPadding)) 
     {
         DcmQueryRetrieveOptions::errmsg("Bad image file: %s", fname);
         rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -194,7 +194,10 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 /*
  * CVS Log
  * $Log: dcmqrcbs.cc,v $
- * Revision 1.2  2005-12-08 15:47:07  meichel
+ * Revision 1.3  2005-12-15 12:38:06  joergr
+ * Removed naming conflicts.
+ *
+ * Revision 1.2  2005/12/08 15:47:07  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:53  meichel
