@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 08:32:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,20 +73,21 @@ public:
     , config(cfg)
     , assocStarted(OFFalse)
     , origMsgId(msgid)
-    , origAETitle()
-    , origHostName()
+//    , origAETitle()
+//    , origHostName()
     , priority(pr)
-    , ourAETitle()
-    , dstAETitle()
+//    , ourAETitle()
+//    , dstAETitle()
     , failedUIDs(NULL)
     , nRemaining(0)
     , nCompleted(0)
     , nFailed(0)
     , nWarning(0)
     {
-      origAETitle[0] = '0';
+      origAETitle[0] = '\0';
       origHostName[0] = '\0';
       dstAETitle[0] = '\0';
+      ourAETitle[0] = '\0';
     }
 
     /** callback handler called by the DIMSE_storeProvider callback function.
@@ -193,7 +194,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbm.h,v $
- * Revision 1.2  2005-12-08 16:04:18  meichel
+ * Revision 1.3  2005-12-15 08:32:49  joergr
+ * Fixed issue with initialization of array member variables, reported by egcs
+ * on Solaris. Fixed missing/wrong initialization of member variables.
+ *
+ * Revision 1.2  2005/12/08 16:04:18  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:50  meichel
