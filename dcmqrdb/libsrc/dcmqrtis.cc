@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 17:36:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 16:13:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,7 +507,7 @@ DcmQueryRetrieveTelnetInitiator::DcmQueryRetrieveTelnetInitiator(
 , blockMode_(DIMSE_BLOCKING)
 , dimse_timeout_(0)
 {
-  bzero(peerNames, sizeof(peerNames));
+  bzero((char*)peerNames, sizeof(peerNames));
 }
 
 OFBool DcmQueryRetrieveTelnetInitiator::TI_detachAssociation(OFBool abortFlag)
@@ -2240,7 +2240,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
- * Revision 1.7  2005-12-14 17:36:28  meichel
+ * Revision 1.8  2005-12-15 16:13:38  joergr
+ * Added char* parameter casts to bzero() calls.
+ *
+ * Revision 1.7  2005/12/14 17:36:28  meichel
  * Removed naming conflict
  *
  * Revision 1.6  2005/12/08 15:47:14  meichel
