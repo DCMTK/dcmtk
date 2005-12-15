@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-15 17:47:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1386,7 +1386,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
     }
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px8, numValues);
+  memcpy(pixelData, px8, OFstatic_cast(size_t, numValues));
   delete[] px8;
   return EC_Normal;
 }
@@ -1422,7 +1422,7 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
     }
   }
   // copy filled buffer to pixel data and free memory
-  memcpy(pixelData, px16, numValues*2);
+  memcpy(pixelData, px16, OFstatic_cast(size_t, numValues*2));
   delete[] px16;
   return EC_Normal;
 }
@@ -1440,7 +1440,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.20  2005-12-08 15:43:27  meichel
+ * Revision 1.21  2005-12-15 17:47:26  joergr
+ * Added explicit type cast, required for Sun CC 2.0.1 on Solaris.
+ *
+ * Revision 1.20  2005/12/08 15:43:27  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.19  2005/12/01 11:13:06  onken
