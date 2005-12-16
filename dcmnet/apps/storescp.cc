@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-14 14:27:36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-16 13:07:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2196,16 +2196,16 @@ static void renameOnEndOfStudy()
     if (opt_timeNames)
     {
       // modality prefix are the first 2 characters after serial number (if present)
-      uint serialPos = (*first).find("_");
+      size_t serialPos = (*first).find("_");
       if (serialPos != OFString_npos)
       {
         //serial present: copy modality prefix (skip serial: 1 digit "_" + 4 digits serial + 1 digit ".")
-        OFStandard::strlcpy( modalityId, (*first).substr(serialPos+1+4+1, 2).c_str(), 3 );
+        OFStandard::strlcpy( modalityId, (*first).substr(serialPos+6, 2).c_str(), 3 );
       }
       else
       {
         //serial not present, copy starts directly after first "." (skip 17 for timestamp, one for ".")
-        OFStandard::strlcpy( modalityId, (*first).substr(17+1, 2).c_str(), 3 );
+        OFStandard::strlcpy( modalityId, (*first).substr(18, 2).c_str(), 3 );
       }
     }
     else
@@ -2552,7 +2552,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.87  2005-12-14 14:27:36  joergr
+** Revision 1.88  2005-12-16 13:07:03  meichel
+** Changed type to size_t to make code safe on 64bit platforms
+**
+** Revision 1.87  2005/12/14 14:27:36  joergr
 ** Added missing header file "fcntl.h", needed for Solaris.
 ** Replaced "string::npos" by "OFString_npos".
 ** Changed printf() type for return value of getpid() to "%d".

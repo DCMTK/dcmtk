@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:51 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2005-12-16 13:04:01 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,8 +440,8 @@ void MdfConsoleEngine::splitPathAndValue(const OFString &whole,
 //                value - [out] returns part containing the value(if theres one)
 // Return Value : none
 {
-    unsigned int pos=whole.find("=");
-    if (pos!=OFString_npos)
+    size_t pos = whole.find("=");
+    if (pos != OFString_npos)
     {
         path=whole.substr(0,pos);
         value=whole.substr(pos+1,value.length()-1);
@@ -710,7 +710,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.15  2005-12-08 15:40:51  meichel
+** Revision 1.16  2005-12-16 13:04:01  meichel
+** Changed type to size_t to make code safe on 64bit platforms
+**
+** Revision 1.15  2005/12/08 15:40:51  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.14  2005/12/02 09:18:15  joergr
