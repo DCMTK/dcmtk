@@ -21,10 +21,10 @@
  *
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-16 12:39:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_IO_H
 #include <io.h>
-#endif     
+#endif
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -79,7 +79,7 @@ END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmqrdb/dcmqrcnf.h"
-#include "dcmtk/dcmqrdb/dcmqrscp.h"
+#include "dcmtk/dcmqrdb/dcmqrsrv.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
@@ -550,7 +550,7 @@ main(int argc, char *argv[])
     }
 
     DcmQueryRetrieveConfig config;
-    
+
     if (!config.init(opt_configFileName)) {
     errmsg("bad config file: %s", opt_configFileName);
     return 10;
@@ -608,7 +608,7 @@ main(int argc, char *argv[])
      const char *opt_GroupName = NULL;
 
      if (((opt_GroupName = config.getGroupName()) != NULL) && strlen(opt_GroupName) > 0)
-     {     
+     {
        if (!(grp = getgrnam(opt_GroupName)))
        {
          errmsg("Bad group name %s", opt_GroupName);
@@ -645,7 +645,7 @@ main(int argc, char *argv[])
 
     DcmQueryRetrieveSCP scp(config, options, factory);
     scp.setDatabaseFlags(opt_checkFindIdentifier, opt_checkMoveIdentifier, options.debug_);
-    
+
     /* loop waiting for associations */
     while (cond.good())
     {
@@ -671,7 +671,11 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.6  2005-12-08 15:47:02  meichel
+ * Revision 1.7  2005-12-16 12:39:13  joergr
+ * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
+ * Sun CC 2.0.1.
+ *
+ * Revision 1.6  2005/12/08 15:47:02  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2005/11/29 10:55:07  meichel

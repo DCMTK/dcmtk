@@ -21,18 +21,18 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:27 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/Attic/dcmqrscp.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-16 12:42:50 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrsrv.h,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DCMQRSCP_H
-#define DCMQRSCP_H
+#ifndef DCMQRSRV_H
+#define DCMQRSRV_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
@@ -46,7 +46,7 @@ class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveDatabaseHandleFactory;
 
 /// enumeration describing reasons for refusing an association request
-enum CTN_RefuseReason 
+enum CTN_RefuseReason
 {
     /// too many concurrent associations
     CTN_TooManyAssociations,
@@ -72,7 +72,7 @@ public:
    *  @param config SCP configuration facility
    *  @param options SCP configuration options
    *  @param factory factory object used to create database handles
-   */   
+   */
   DcmQueryRetrieveSCP(
     const DcmQueryRetrieveConfig& config,
     const DcmQueryRetrieveOptions& options,
@@ -80,7 +80,7 @@ public:
 
   /// destructor
   virtual ~DcmQueryRetrieveSCP() { }
-  
+
   /** wait for incoming A-ASSOCIATE requests, perform association negotiation
    *  and serve the requests. May fork child processes depending on availability
    *  of the fork() system function and configuration options.
@@ -103,7 +103,7 @@ public:
    *  @param verbose verbose mode flag
    */
   void cleanChildren(OFBool verbose = OFFalse);
-    
+
 private:
 
   /** perform association negotiation for an incoming A-ASSOCIATE request based
@@ -117,51 +117,51 @@ private:
   OFCondition refuseAssociation(T_ASC_Association ** assoc, CTN_RefuseReason reason);
 
   OFCondition handleAssociation(
-    T_ASC_Association * assoc, 
+    T_ASC_Association * assoc,
     OFBool correctUIDPadding);
 
   OFCondition echoSCP(
-    T_ASC_Association * assoc, 
+    T_ASC_Association * assoc,
     T_DIMSE_C_EchoRQ * req,
     T_ASC_PresentationContextID presId);
 
   OFCondition findSCP(
-    T_ASC_Association * assoc, 
+    T_ASC_Association * assoc,
     T_DIMSE_C_FindRQ * request,
     T_ASC_PresentationContextID presID,
     DcmQueryRetrieveDatabaseHandle& dbHandle);
 
   OFCondition getSCP(
-    T_ASC_Association * assoc, 
+    T_ASC_Association * assoc,
     T_DIMSE_C_GetRQ * request,
-    T_ASC_PresentationContextID presID, 
+    T_ASC_PresentationContextID presID,
     DcmQueryRetrieveDatabaseHandle& dbHandle);
 
   OFCondition moveSCP(
-    T_ASC_Association * assoc, 
+    T_ASC_Association * assoc,
     T_DIMSE_C_MoveRQ * request,
-    T_ASC_PresentationContextID presID, 
+    T_ASC_PresentationContextID presID,
     DcmQueryRetrieveDatabaseHandle& dbHandle);
 
   OFCondition storeSCP(
-    T_ASC_Association * assoc, 
+    T_ASC_Association * assoc,
     T_DIMSE_C_StoreRQ * req,
     T_ASC_PresentationContextID presId,
     DcmQueryRetrieveDatabaseHandle& dbHandle,
     OFBool correctUIDPadding);
 
   OFCondition dispatch(
-    T_ASC_Association *assoc, 
+    T_ASC_Association *assoc,
     OFBool correctUIDPadding);
 
   static void refuseAnyStorageContexts(T_ASC_Association *assoc);
 
   /// configuration facility
   const DcmQueryRetrieveConfig *config_;
-  
+
   /// child process table, only used in multi-processing mode
   DcmQueryRetrieveProcessTable processtable_;
-  
+
   /// flag for database interface: check C-FIND identifier
   OFBool dbCheckFindIdentifier_;
 
@@ -182,8 +182,12 @@ private:
 
 /*
  * CVS Log
- * $Log: dcmqrscp.h,v $
- * Revision 1.2  2005-12-08 16:04:27  meichel
+ * $Log: dcmqrsrv.h,v $
+ * Revision 1.1  2005-12-16 12:42:50  joergr
+ * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
+ * Sun CC 2.0.1.
+ *
+ * Revision 1.2  2005/12/08 16:04:27  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:50  meichel

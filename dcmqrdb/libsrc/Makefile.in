@@ -21,7 +21,7 @@ LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include -I$(ofstddir)/inc
 LOCALDEFS =
 
 objs = dcmqrcbf.o dcmqrcbg.o dcmqrcbm.o dcmqrcbs.o dcmqrcnf.o dcmqrdbi.o  \
-       dcmqrdbs.o dcmqropt.o dcmqrptb.o dcmqrscp.o dcmqrtis.o
+       dcmqrdbs.o dcmqropt.o dcmqrptb.o dcmqrsrv.o dcmqrtis.o
 
 library = libdcmqrdb.$(LIBEXT)
 

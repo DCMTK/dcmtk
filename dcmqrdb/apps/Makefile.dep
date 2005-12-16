@@ -86,7 +86,7 @@ dcmqrscp.o: dcmqrscp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
-  ../include/dcmtk/dcmqrdb/dcmqrscp.h ../include/dcmtk/dcmqrdb/dcmqrptb.h \
+  ../include/dcmtk/dcmqrdb/dcmqrsrv.h ../include/dcmtk/dcmqrdb/dcmqrptb.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
   ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \

@@ -347,9 +347,9 @@ dcmqrptb.o: dcmqrptb.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/dul.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h
-dcmqrscp.o: dcmqrscp.cc ../../config/include/dcmtk/config/osconfig.h \
+dcmqrsrv.o: dcmqrsrv.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
-  ../include/dcmtk/dcmqrdb/dcmqrscp.h \
+  ../include/dcmtk/dcmqrdb/dcmqrsrv.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \

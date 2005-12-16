@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:13 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/Attic/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-16 12:41:35 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrsrv.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmqrdb/dcmqrscp.h"
+#include "dcmtk/dcmqrdb/dcmqrsrv.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmqrdb/dcmqrdba.h"
@@ -43,9 +43,9 @@
 
 
 static void findCallback(
-        /* in */ 
-        void *callbackData,  
-        OFBool cancelled, T_DIMSE_C_FindRQ *request, 
+        /* in */
+        void *callbackData,
+        OFBool cancelled, T_DIMSE_C_FindRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
         T_DIMSE_C_FindRSP *response,
@@ -58,12 +58,12 @@ static void findCallback(
 
 
 static void getCallback(
-        /* in */ 
-        void *callbackData,  
-        OFBool cancelled, T_DIMSE_C_GetRQ *request, 
+        /* in */
+        void *callbackData,
+        OFBool cancelled, T_DIMSE_C_GetRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
-        T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,      
+        T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,
         DcmDataset **responseIdentifiers)
 {
   DcmQueryRetrieveGetContext *context = OFstatic_cast(DcmQueryRetrieveGetContext *, callbackData);
@@ -72,12 +72,12 @@ static void getCallback(
 
 
 static void moveCallback(
-        /* in */ 
-        void *callbackData,  
-        OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
+        /* in */
+        void *callbackData,
+        OFBool cancelled, T_DIMSE_C_MoveRQ *request,
         DcmDataset *requestIdentifiers, int responseCount,
         /* out */
-        T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,     
+        T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
         DcmDataset **responseIdentifiers)
 {
   DcmQueryRetrieveMoveContext *context = OFstatic_cast(DcmQueryRetrieveMoveContext *, callbackData);
@@ -87,10 +87,10 @@ static void moveCallback(
 
 static void storeCallback(
     /* in */
-    void *callbackData, 
+    void *callbackData,
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName,       /* being received into */ 
+    char *imageFileName,       /* being received into */
     DcmDataset **imageDataSet, /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
@@ -137,24 +137,24 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         DcmQueryRetrieveDatabaseHandle *dbHandle = factory_.createDBHandle(
               assoc->params->DULparams.callingAPTitle,
           assoc->params->DULparams.calledAPTitle, cond);
-        
+
         if (cond.bad())
         {
           DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
           return cond;
         }
-        
+
         if (dbHandle == NULL)
         {
           // this should not happen, but we check it anyway
           DcmQueryRetrieveOptions::errmsg("dispatch: cannot create DB Handle");
           return EC_IllegalCall;
         }
-        
+
         dbHandle->setDebugLevel(dbDebug_ ? 1 : 0);
         dbHandle->setIdentifierChecking(dbCheckFindIdentifier_, dbCheckMoveIdentifier_);
         firstLoop = OFTrue;
-                
+
         // this while loop is executed exactly once unless the "keepDBHandleDuringAssociation_"
         // flag is set, in which case the DB handle remains open until something goes wrong
         // or the remote peer closes the association
@@ -162,7 +162,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
         {
             firstLoop = OFFalse;
             cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID, &msg, NULL);
-        
+
             /* did peer release, abort, or do we have a valid message ? */
             if (cond.good())
             {
@@ -192,7 +192,7 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
                 default:
                     /* we cannot handle this kind of message */
                     cond = DIMSE_BADCOMMANDTYPE;
-                    DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n", 
+                    DcmQueryRetrieveOptions::errmsg("Cannot handle command: 0x%x\n",
                             (unsigned)msg.CommandField);
                     /* the condition will be returned, the caller will abort the association. */
                 }
@@ -204,14 +204,14 @@ OFCondition DcmQueryRetrieveSCP::dispatch(T_ASC_Association *assoc, OFBool corre
             else
             {
                 // the condition will be returned, the caller will abort the assosiation.
-            }        
+            }
         }
 
-        // release DB handle        
+        // release DB handle
         delete dbHandle;
     }
 
-    // Association done 
+    // Association done
     return cond;
 }
 
@@ -225,7 +225,7 @@ OFCondition DcmQueryRetrieveSCP::handleAssociation(T_ASC_Association * assoc, OF
 
     ASC_getPresentationAddresses(assoc->params, peerHostName, NULL);
     ASC_getAPTitles(assoc->params, peerAETitle, myAETitle, NULL);
-    
+
  /* now do the real work */
     cond = dispatch(assoc, correctUIDPadding);
 
@@ -266,13 +266,13 @@ OFCondition DcmQueryRetrieveSCP::echoSCP(T_ASC_Association * assoc, T_DIMSE_C_Ec
     OFCondition cond = EC_Normal;
 
     if (options_.verbose_) {
-        printf("Received Echo SCP RQ: MsgID %d\n", 
+        printf("Received Echo SCP RQ: MsgID %d\n",
                 req->MessageID);
     }
     /* we send an echo response back */
-    cond = DIMSE_sendEchoResponse(assoc, presId, 
+    cond = DIMSE_sendEchoResponse(assoc, presId,
         req, STATUS_Success, NULL);
-    
+
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("echoSCP: Echo Response Failed:");
         DimseCondition::dump(cond);
@@ -293,19 +293,19 @@ OFCondition DcmQueryRetrieveSCP::findSCP(T_ASC_Association * assoc, T_DIMSE_C_Fi
     aeTitle[0] = '\0';
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
     context.setOurAETitle(aeTitle);
-    
+
     if (options_.verbose_) {
         printf("Received Find SCP: ");
         DIMSE_printCFindRQ(stdout, request);
     }
 
-    cond = DIMSE_findProvider(assoc, presID, request, 
+    cond = DIMSE_findProvider(assoc, presID, request,
         findCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Find SCP Failed:");
         DimseCondition::dump(cond);
     }
-    return cond; 
+    return cond;
 }
 
 
@@ -325,13 +325,13 @@ OFCondition DcmQueryRetrieveSCP::getSCP(T_ASC_Association * assoc, T_DIMSE_C_Get
         DIMSE_printCGetRQ(stdout, request);
     }
 
-    cond = DIMSE_getProvider(assoc, presID, request, 
+    cond = DIMSE_getProvider(assoc, presID, request,
         getCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Get SCP Failed:");
         DimseCondition::dump(cond);
     }
-    return cond; 
+    return cond;
 }
 
 
@@ -345,19 +345,19 @@ OFCondition DcmQueryRetrieveSCP::moveSCP(T_ASC_Association * assoc, T_DIMSE_C_Mo
     aeTitle[0] = '\0';
     ASC_getAPTitles(assoc->params, NULL, aeTitle, NULL);
     context.setOurAETitle(aeTitle);
-    
+
     if (options_.verbose_) {
         printf("Received Move SCP: ");
         DIMSE_printCMoveRQ(stdout, request);
     }
 
-    cond = DIMSE_moveProvider(assoc, presID, request, 
+    cond = DIMSE_moveProvider(assoc, presID, request,
         moveCallback, &context, options_.blockMode_, options_.dimse_timeout_);
     if (cond.bad()) {
         DcmQueryRetrieveOptions::errmsg("Move SCP Failed:");
         DimseCondition::dump(cond);
     }
-    return cond; 
+    return cond;
 }
 
 
@@ -379,7 +379,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
     }
 
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID)) {
-        /* callback will send back sop class not supported status */ 
+        /* callback will send back sop class not supported status */
         context.setStatus(STATUS_STORE_Refused_SOPClassNotSupported);
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
@@ -393,8 +393,8 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         if (dbcond.bad()) {
             DcmQueryRetrieveOptions::errmsg("storeSCP: Database: makeNewStoreFileName Failed");
             /* must still receive data */
-            strcpy(imageFileName, NULL_DEVICE_NAME); 
-            /* callback will send back out of resources status */ 
+            strcpy(imageFileName, NULL_DEVICE_NAME);
+            /* callback will send back out of resources status */
             context.setStatus(STATUS_STORE_Refused_OutOfResources);
         }
     }
@@ -411,12 +411,12 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         DcmQueryRetrieveOptions::errmsg("storeSCP: file locking failed, cannot create file");
 
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME); 
+        strcpy(imageFileName, NULL_DEVICE_NAME);
 
-        /* callback will send back out of resources status */ 
+        /* callback will send back out of resources status */
         context.setStatus(STATUS_STORE_Refused_OutOfResources);
     }
-    else 
+    else
       dcmtk_flock(lockfd, LOCK_EX);
 #endif
 
@@ -428,11 +428,11 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 
     if (options_.bitPreserving_) { /* the bypass option can be set on the command line */
         cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, (int)options_.useMetaheader_,
-                                   NULL, storeCallback, 
+                                   NULL, storeCallback,
                                    (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     } else {
         cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, (int)options_.useMetaheader_,
-                                   &dset, storeCallback, 
+                                   &dset, storeCallback,
                                    (void*)&context, options_.blockMode_, options_.dimse_timeout_);
     }
 
@@ -440,13 +440,13 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
         DcmQueryRetrieveOptions::errmsg("Store SCP Failed:");
         DimseCondition::dump(cond);
     }
-    if (!options_.ignoreStoreData_ && (cond.bad() || (context.getStatus() != STATUS_Success))) 
+    if (!options_.ignoreStoreData_ && (cond.bad() || (context.getStatus() != STATUS_Success)))
     {
       /* remove file */
       if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) // don't try to delete /dev/null
       {
         if (options_.verbose_) fprintf(stderr, "Store SCP: Deleting Image File: %s\n", imageFileName);
-        unlink(imageFileName);      
+        unlink(imageFileName);
       }
       dbHandle.pruneInvalidRecords();
     }
@@ -459,7 +459,7 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
       close(lockfd);
     }
 #endif
-    
+
     return cond;
 }
 
@@ -841,7 +841,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
      * Refuse any "Storage" presentation contexts to non-writable
      * storage areas.
      */
-    if (!config_->writableStorageArea(calledAETitle)) 
+    if (!config_->writableStorageArea(calledAETitle))
     {
       refuseAnyStorageContexts(assoc);
     }
@@ -1115,8 +1115,12 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 
 /*
  * CVS Log
- * $Log: dcmqrscp.cc,v $
- * Revision 1.7  2005-12-08 15:47:13  meichel
+ * $Log: dcmqrsrv.cc,v $
+ * Revision 1.1  2005-12-16 12:41:35  joergr
+ * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
+ * Sun CC 2.0.1.
+ *
+ * Revision 1.7  2005/12/08 15:47:13  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2005/11/29 11:27:20  meichel
