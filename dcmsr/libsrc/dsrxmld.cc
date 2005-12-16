@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2005-12-16 15:46:43 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 #ifdef LIBXML_SCHEMAS_ENABLED
 #ifdef HAVE_VPRINTF
 // function required to avoid issue with 'std' namespace
-static void errorFunction(void *ctx, const char *msg, ...)
+extern "C" void errorFunction(void *ctx, const char *msg, ...)
 {
     va_list ap;
     va_start(ap, msg);
@@ -60,7 +60,7 @@ static void errorFunction(void *ctx, const char *msg, ...)
 #endif /* LIBXML_SCHEMAS_ENABLED */
 
 // 'libxml' shall be quiet in non-debug mode
-static void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
+extern "C" void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
 {
     /* do nothing */
 }
@@ -747,7 +747,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.10  2005-12-08 15:48:25  meichel
+ *  Revision 1.11  2005-12-16 15:46:43  meichel
+ *  Declared libxml2 callback functions as extern "C"
+ *
+ *  Revision 1.10  2005/12/08 15:48:25  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.9  2004/09/03 08:50:48  joergr

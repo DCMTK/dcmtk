@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-09 12:38:51 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2005-12-16 15:46:41 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
 
 #ifdef HAVE_VPRINTF
 // function required to avoid issue with 'std' namespace
-static void errorFunction(void *ctx, const char *msg, ...)
+extern "C" void errorFunction(void *ctx, const char *msg, ...)
 {
     va_list ap;
     va_start(ap, msg);
@@ -83,7 +83,7 @@ static void errorFunction(void *ctx, const char *msg, ...)
 #endif
 
 // libxml shall be quiet in non-debug mode
-static void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
+extern "C" void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
 {
     /* do nothing */
 }
@@ -878,7 +878,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.15  2005-12-09 12:38:51  meichel
+ * Revision 1.16  2005-12-16 15:46:41  meichel
+ * Declared libxml2 callback functions as extern "C"
+ *
+ * Revision 1.15  2005/12/09 12:38:51  meichel
  * Added missing include for dcdebug.h
  *
  * Revision 1.14  2005/12/08 15:40:54  meichel
