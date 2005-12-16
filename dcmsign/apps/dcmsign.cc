@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-16 09:19:17 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-16 13:16:37 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1041,7 +1041,6 @@ int main(int argc, char *argv[])
   if (opt_verbose) COUT << "open input file " << opt_ifname << endl;
 
   DcmFileFormat *fileformat = new DcmFileFormat;
-  DcmDataset *dataset = fileformat->getDataset();
 
   OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
   if (sicond.bad())
@@ -1049,6 +1048,8 @@ int main(int argc, char *argv[])
     CERR << "Error: " << sicond.text() << ": reading file: " <<  opt_ifname << endl;
     return 1;
   }
+
+  DcmDataset *dataset = fileformat->getDataset();
 
   SiCertificate cert;
   SiPrivateKey key;
@@ -1164,7 +1165,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.22  2005-12-16 09:19:17  onken
+ *  Revision 1.23  2005-12-16 13:16:37  meichel
+ *  Simplified code to avoid warning on Fedora Core 4
+ *
+ *  Revision 1.22  2005/12/16 09:19:17  onken
  *  - Removed doubled assignment (typo?) to avoid compiler warning
  *
  *  Revision 1.21  2005/12/08 15:47:16  meichel
