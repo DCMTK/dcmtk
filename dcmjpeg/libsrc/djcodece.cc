@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 17:47:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-16 13:04:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -582,7 +582,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     unsigned long compressedSize = 0;
 
     // create encoder corresponding to bit depth (8 or 16 bit)
-    DJEncoder *jpeg = createEncoderInstance(toRepParam, djcp, bitsAllocated);
+    DJEncoder *jpeg = createEncoderInstance(toRepParam, djcp, OFstatic_cast(Uint8, bitsAllocated));
     if (jpeg)
     {
       // main loop for compression: compress each frame
@@ -630,7 +630,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     // changes if we're on the main level of the datsetItem,
     // which should always identify itself as datsetItem, not as item.
     if (result.good())
-      result = updateDerivationDescription(datsetItem, toRepParam, djcp, bitsAllocated, compressionRatio);
+      result = updateDerivationDescription(datsetItem, toRepParam, djcp, OFstatic_cast(Uint8, bitsAllocated), compressionRatio);
 
     if ( (datsetItem->ident() == EVR_item) && result.good() )
     {
@@ -1440,7 +1440,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.21  2005-12-15 17:47:26  joergr
+ * Revision 1.22  2005-12-16 13:04:30  meichel
+ * Added typecasts to avoid warnings on VS2005
+ *
+ * Revision 1.21  2005/12/15 17:47:26  joergr
  * Added explicit type cast, required for Sun CC 2.0.1 on Solaris.
  *
  * Revision 1.20  2005/12/08 15:43:27  meichel
