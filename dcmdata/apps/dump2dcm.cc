@@ -21,9 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:50 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-16 09:07:03 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -633,7 +633,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     OFBool errorOnThisLine = OFFalse;
     char * parse = NULL;
     char * value = NULL;
-    DcmEVR vr;
+    DcmEVR vr = EVR_UNKNOWN;
     int errorsEncountered = 0;
     DcmTagKey tagkey;
     DcmStack metaheaderStack;
@@ -727,7 +727,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
     if (errorsEncountered)
     {
-        CERR << errorsEncountered << " Errors found in " <<  ifname << endl;        
+        CERR << errorsEncountered << " Errors found in " <<  ifname << endl;
         return !stopOnErrors;
     }
     else
@@ -955,7 +955,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.50  2005-12-08 15:40:50  meichel
+** Revision 1.51  2005-12-16 09:07:03  onken
+** - Added variable initialization to avoid compiler warning
+**
+** Revision 1.50  2005/12/08 15:40:50  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.49  2004/07/13 09:43:10  meichel

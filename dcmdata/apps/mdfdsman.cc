@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 10:23:41 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-16 09:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
 // Return Value : pointer to the item searched if found, NULL otherwise
 {
   DcmTagKey key;
-  Uint32 idx;
+  Uint32 idx = 0;
   int pos = 0;
   int token = 0;
   int expected = 1; //first expected is a tagkey
@@ -318,7 +318,7 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
         //parse target_tag into DcmTagKey
         if (2 != sscanf(target_tag.c_str(),"(%x,%x)", &group, &elem))
             return makeOFCondition(OFM_dcmdata,22,OF_error,
-            					   "Invalid target tag!");
+                         "Invalid target tag!");
         key = DcmTagKey(group,elem);
     }
     else
@@ -382,7 +382,7 @@ OFCondition MdfDatasetManager::modifyOrInsertTag(OFString tag_path,
         item=getItemFromPath(*dset, tag_path.c_str(), error);
         //specified item not found -> return error
         if (item==NULL) return makeOFCondition(OFM_dcmdata,22,OF_error,
-			                                   error.c_str());
+                                         error.c_str());
     }
 
     //if tag is already present, start modify operation
@@ -973,7 +973,10 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.19  2005-12-15 10:23:41  joergr
+** Revision 1.20  2005-12-16 09:08:33  onken
+** - Added variable initialization to avoid compiler warning
+**
+** Revision 1.19  2005/12/15 10:23:41  joergr
 ** Replaced "true" by "OFTrue" and "false" by "OFFalse".
 **
 ** Revision 1.18  2005/12/08 15:40:52  meichel
