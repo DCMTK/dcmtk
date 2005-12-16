@@ -21,9 +21,9 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:38 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-16 09:04:47 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,11 @@ public:
    *  @param bufsize number of bytes in buffer
    */
   virtual void write(const unsigned char *buf, size_t bufsize) =0;
+
+  /** Virtual Desctructor
+   */
+  virtual ~DcmEncoderOutputStream() {}
+
 };
 
 
@@ -179,10 +184,10 @@ public:
    */
   inline void add(const unsigned char *buf, size_t bufcount)
   {
-  	if (buf)
-  	{
-  	  while (bufcount--) add(*buf++);
-  	}
+    if (buf)
+    {
+      while (bufcount--) add(*buf++);
+    }
   }
 
   /** this method finalizes the compressed RLE stream, i.e. flushes all
@@ -423,7 +428,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.11  2005-12-08 16:28:38  meichel
+ * Revision 1.12  2005-12-16 09:04:47  onken
+ * - Added virtual (dummy) destructor to avoid compiler warnings
+ *
+ * Revision 1.11  2005/12/08 16:28:38  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.10  2004/01/16 14:06:20  joergr
