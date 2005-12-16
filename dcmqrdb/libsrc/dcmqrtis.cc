@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 16:13:38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-16 13:14:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,12 +304,10 @@ TI_addSeriesEntry(TI_StudyEntry *study, DcmDataset *reply)
     bzero((char*)series, sizeof(TI_SeriesEntry)); /* make sure its clean */
 
     /* extract info from reply */
-    ok = DU_getStringDOElement(reply, DCM_SeriesInstanceUID,
-        series->seriesInstanceUID);
-    ok = ok && (ok = DU_getStringDOElement(reply, DCM_SeriesNumber,
-        series->seriesNumber));
-    ok = ok && (ok = DU_getStringDOElement(reply, DCM_Modality,
-        series->modality));
+    ok = DU_getStringDOElement(reply, DCM_SeriesInstanceUID, series->seriesInstanceUID);
+    if (ok) ok = DU_getStringDOElement(reply, DCM_SeriesNumber, series->seriesNumber);
+    if (ok) ok = DU_getStringDOElement(reply, DCM_Modality, series->modality);
+
     if (!ok) {
         DcmQueryRetrieveOptions::errmsg("TI_addSeriesEntry: missing data in DB reply");
         return OFFalse;
@@ -385,8 +383,8 @@ TI_addImageEntry(TI_SeriesEntry *series, DcmDataset *reply)
     /* extract info from reply */
     ok = DU_getStringDOElement(reply, DCM_SOPInstanceUID,
         image->sopInstanceUID);
-    ok = ok && (ok = DU_getStringDOElement(reply, DCM_InstanceNumber,
-        image->imageNumber));
+    if (ok) ok = DU_getStringDOElement(reply, DCM_InstanceNumber, image->imageNumber);
+
     if (!ok) {
         DcmQueryRetrieveOptions::errmsg("TI_addImageEntry: missing data in DB reply");
         return OFFalse;
@@ -461,14 +459,11 @@ TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply)
     bzero((char*)se, sizeof(TI_StudyEntry));  /* make sure its clean */
 
     /* extract info from reply */
-    ok = DU_getStringDOElement(reply, DCM_StudyInstanceUID,
-        se->studyInstanceUID);
-    ok = ok && (ok = DU_getStringDOElement(reply, DCM_StudyID,
-        se->studyID));
-    ok = ok && (ok = DU_getStringDOElement(reply, DCM_PatientsName,
-        se->patientsName));
-    ok = ok && (ok = DU_getStringDOElement(reply, DCM_PatientID,
-        se->patientID));
+    ok = DU_getStringDOElement(reply, DCM_StudyInstanceUID, se->studyInstanceUID);
+    if (ok) ok = DU_getStringDOElement(reply, DCM_StudyID, se->studyID);
+    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientsName, se->patientsName);
+    if (ok) ok = DU_getStringDOElement(reply, DCM_PatientID, se->patientID);
+
     if (!ok) {
         DcmQueryRetrieveOptions::errmsg("TI_addStudyEntry: missing data in DB reply");
         return OFFalse;
@@ -2240,7 +2235,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
- * Revision 1.8  2005-12-15 16:13:38  joergr
+ * Revision 1.9  2005-12-16 13:14:28  meichel
+ * Simplified overly clever code producing undefined behaviour
+ *
+ * Revision 1.8  2005/12/15 16:13:38  joergr
  * Added char* parameter casts to bzero() calls.
  *
  * Revision 1.7  2005/12/14 17:36:28  meichel
