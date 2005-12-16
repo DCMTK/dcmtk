@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-14 14:29:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-16 13:10:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcnf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -276,7 +276,9 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
          sscanf(valueptr, "%d", &networkTCPPort_);
       }
       else if (!strcmp("MaxPDUSize", mnemonic)) {
-         sscanf(valueptr, "%lu", &maxPDUSize_);
+      	 unsigned long ul = 0;
+         sscanf(valueptr, "%lu", &ul);
+         maxPDUSize_ = OFstatic_cast(Uint32, ul);
       }
       else if (!strcmp("MaxAssociations", mnemonic)) {
          sscanf(valueptr, "%d", &maxAssociations_);
@@ -790,7 +792,7 @@ void DcmQueryRetrieveConfig::printConfig()
    }
    printf("\nGlobal Parameters:\n%s\n%s\n%s\n%s\n%s\n%d\n%lu\n%d\n",
       applicationTitle_.c_str(), applicationContext_.c_str(), implementationClass_.c_str(),
-      implementationVersion_.c_str(), networkType_.c_str(), networkTCPPort_, maxPDUSize_,
+      implementationVersion_.c_str(), networkType_.c_str(), networkTCPPort_, OFstatic_cast(unsigned long, maxPDUSize_),
       maxAssociations_);
    printf("\nAEEntries: %d\n", CNF_Config.noOfAEEntries);
    for(i = 0; i < CNF_Config.noOfAEEntries; i++) {
@@ -1033,7 +1035,10 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
- * Revision 1.5  2005-12-14 14:29:42  joergr
+ * Revision 1.6  2005-12-16 13:10:24  meichel
+ * Added type safety code for 64bit platforms
+ *
+ * Revision 1.5  2005/12/14 14:29:42  joergr
  * Including ctype if present, needed for Solaris.
  *
  * Revision 1.4  2005/12/08 15:47:08  meichel
