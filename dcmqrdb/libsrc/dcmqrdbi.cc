@@ -21,10 +21,10 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-14 14:29:43 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-16 09:16:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1156,7 +1156,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchUID (DB_SmallDcmElmt *mod, DB_Smal
 
         /*** Calculate the length to the next '\' sign (if any).
         *** Otherwise the length of pc is returned.
-        **/ 
+        **/
         length = strcspn(pc, "\\") ;
 
         if ((length == strlen(uid)) && (strncmp (pc, uid, length) == 0)) {
@@ -1256,7 +1256,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::matchOther (DB_SmallDcmElmt *mod, DB_Sm
 
 int DcmQueryRetrieveIndexDatabaseHandle::dbmatch (DB_SmallDcmElmt *mod, DB_SmallDcmElmt *elt)
 {
-    DB_KEY_CLASS keyClass ;
+    DB_KEY_CLASS keyClass = OTHER_CLASS;
 
     /*** If model length is 0
     *** Universal matching is applied : return always OFTrue
@@ -3470,7 +3470,10 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.8  2005-12-14 14:29:43  joergr
+ * Revision 1.9  2005-12-16 09:16:08  onken
+ * - Added variable initialization to avoid compiler warning
+ *
+ * Revision 1.8  2005/12/14 14:29:43  joergr
  * Including ctype if present, needed for Solaris.
  *
  * Revision 1.7  2005/12/14 13:46:54  meichel
