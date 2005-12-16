@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:16 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2005-12-16 09:19:17 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -283,8 +283,8 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
     {
       if (! finished)
       {
-      	CERR << "error: item location string '" << location << "' incomplete." << endl;
-      	return NULL;
+        CERR << "error: item location string '" << location << "' incomplete." << endl;
+        return NULL;
       }
       return result;
     }
@@ -294,7 +294,7 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
       stack.clear();
       if (EC_Normal != result->search(key, stack, ESM_fromHere, OFFalse))
       {
-      	CERR << "error: attribute " << key << " not found in dataset (item location string is '" << location << "')" << endl;
+        CERR << "error: attribute " << key << " not found in dataset (item location string is '" << location << "')" << endl;
         return NULL;
       }
       if (stack.top()->ident() == EVR_SQ)
@@ -525,10 +525,10 @@ static int do_verify(
             {
               if (EC_Normal == at.getTagVal(tagkey, n))
               {
-              	COUT << "      " << tagkey << " ";
-              	tag = tagkey;
-              	tagName = tag.getTagName();
-              	if (tagName) COUT << tagName << endl; else COUT << endl;
+                COUT << "      " << tagkey << " ";
+                tag = tagkey;
+                tagName = tag.getTagName();
+                if (tagName) COUT << tagName << endl; else COUT << endl;
               }
             }
           } else COUT << "all elements" << endl;
@@ -577,7 +577,7 @@ static int do_verify(
         } else {
           corrupt_counter++;
           COUT << sicond.text() << endl << endl;
-	}
+  }
       }
     }
     signer.detach();
@@ -969,8 +969,8 @@ int main(int argc, char *argv[])
       result = parseTextFile(opt_tagFile, *opt_tagList);
       if (result > 0)
       {
-      	CERR << "error while reading tag file '" << opt_tagFile << "', giving up." << endl;
-      	return result;
+        CERR << "error while reading tag file '" << opt_tagFile << "', giving up." << endl;
+        return result;
       }
     }
 
@@ -1041,7 +1041,7 @@ int main(int argc, char *argv[])
   if (opt_verbose) COUT << "open input file " << opt_ifname << endl;
 
   DcmFileFormat *fileformat = new DcmFileFormat;
-  DcmDataset *dataset = dataset = fileformat->getDataset();
+  DcmDataset *dataset = fileformat->getDataset();
 
   OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
   if (sicond.bad())
@@ -1164,7 +1164,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.21  2005-12-08 15:47:16  meichel
+ *  Revision 1.22  2005-12-16 09:19:17  onken
+ *  - Removed doubled assignment (typo?) to avoid compiler warning
+ *
+ *  Revision 1.21  2005/12/08 15:47:16  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.20  2005/12/02 10:34:26  joergr
