@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 13:07:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-12-19 10:31:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,7 +191,7 @@ OFBool             opt_forkMode = OFFalse;
 
 #ifdef _WIN32
 OFBool             opt_forkedChild = OFFalse;
-OFBool             opt_execSync = OFFalse;            // default: execute in background 
+OFBool             opt_execSync = OFFalse;            // default: execute in background
 #endif
 
 #ifdef WITH_OPENSSL
@@ -807,7 +807,7 @@ int main(int argc, char *argv[])
     }
 
 #ifdef _WIN32
-    if (cmd.findOption("--exec-sync")) opt_execSync = OFTrue; 
+    if (cmd.findOption("--exec-sync")) opt_execSync = OFTrue;
 #endif
 
   }
@@ -952,7 +952,7 @@ int main(int argc, char *argv[])
     if (opt_forkMode)
       DUL_requestForkOnTransportConnectionReceipt(argc, argv);
 #elif defined(_WIN32)
-  if (opt_forkedChild) 
+  if (opt_forkedChild)
   {
     // child process
     DUL_markProcessAsForkedChild();
@@ -963,13 +963,13 @@ int main(int argc, char *argv[])
 
     // read socket handle number from stdin, i.e. the anonymous pipe
 	// to which our parent process has written the handle number.
-    if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL)) 
+    if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL))
 	{
         // make sure buffer is zero terminated
 		buf[bytesRead] = '\0';
         dcmExternalSocketHandle.set(atoi(buf));
     }
-    else 
+    else
 	{
       CERR << "Error while reading socket handle: " << GetLastError() << endl;
       return 1;
@@ -1057,7 +1057,7 @@ int main(int argc, char *argv[])
       CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
       return 1;
     }
-    
+
     if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
     {
       CERR << "unable to set selected cipher suites" << endl;
@@ -1144,6 +1144,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   char buf[BUFSIZ];
   T_ASC_Association *assoc;
   OFCondition cond;
+  OFString sprofile;
 
 #ifdef PRIVATE_STORESCP_VARIABLES
   PRIVATE_STORESCP_VARIABLES
@@ -1217,12 +1218,12 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     goto cleanup;
   }
 
-  if (opt_verbose) 
+  if (opt_verbose)
   {
 #if defined(HAVE_FORK) || defined(_WIN32)
       if (opt_forkMode)
       {
-        printf("Association Received in %s process (pid: %d)\n", (DUL_processIsForkedChild() ? "child" : "parent") , getpid());
+        printf("Association Received in %s process (pid: %ld)\n", (DUL_processIsForkedChild() ? "child" : "parent") , OFstatic_cast(long, getpid()));
       }
       else printf("Association Received\n");
 #else
@@ -1364,7 +1365,6 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   if (opt_profileName)
   {
     /* perform name mangling for config file key */
-    OFString sprofile;
     const char *c = opt_profileName;
     while (*c)
     {
@@ -2345,7 +2345,7 @@ static void executeCommand( const OFString &cmd )
   if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
     fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
 
-  if (opt_execSync) 
+  if (opt_execSync)
   {
       // Wait until child process exits (makes execution synchronous).
       WaitForSingleObject(procinfo.hProcess, INFINITE);
@@ -2552,7 +2552,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.88  2005-12-16 13:07:03  meichel
+** Revision 1.89  2005-12-19 10:31:12  joergr
+** Changed printf() type for return value of getpid() to "%ld" and added
+** explicit typecast, needed for Solaris.
+**
+** Revision 1.88  2005/12/16 13:07:03  meichel
 ** Changed type to size_t to make code safe on 64bit platforms
 **
 ** Revision 1.87  2005/12/14 14:27:36  joergr
