@@ -121,21 +121,12 @@ Platform Notes
      available.
 (*6) Might require -O0 in order to compile "dcmsr/libsrc/dsrdoctr.cc".
 (*7) The libz.so included in QNX 6.2.1 is missing the zlibVersion()
-<<<<<<< INSTALL
      function. This will cause the DCMTK compile to fail if configured with 
      --with-zlib. It has already been corrected in QNX's internal cvs 
      repository. Earlier QNX versions (6.2.0) and future versions (6.3.x) should 
      work fine. As a temporary measure it is possible to link against 
      /usr/lib/libz.so.1 which does include that function, or to disable zlib 
      support in DCMTK by calling configure --without-zlib.
-=======
-     function. This will cause the DCMTK compile to fail. It has already been
-     corrected in QNX's internal cvs repository. Earlier QNX versions (6.2.0)
-     and future versions (6.3.x) should work fine. As a temporary measure
-     it is possible to link against /usr/lib/libz.so.1 which does include
-     that function, or to disable zlib support in DCMTK by calling configure
-     --without-zlib.
->>>>>>> 1.55
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
@@ -396,7 +387,6 @@ BUILDING (Win32)
 Starting with DCMTK 3.5.4, no project files for Visual Studio are provided 
 anymore. Project files for all supported compilers can be generated with CMake.
 
-<<<<<<< INSTALL
 CMake is a cross-platform, open-source make system which can be used to control 
 the software compilation process using simple configuration files.  CMake can be 
 obtained free of charge from http://www.cmake.org/.  For configuring the support 
@@ -406,68 +396,6 @@ these "CMakeLists.txt" files will serve as an input to CMake which will generate
 new ".dsp" and ".dsw" files (or ".sln" for Visual C++ .NET 2003/2005) for all of 
 DCMTK's projects from these files, depending on a configuration which can be 
 adjusted manually by the user.
-=======
-- Windows 9x/Me/NT/2000/XP with WINSOCK using the Microsoft Visual C++ Compiler
-  Version 6.0.
-
-Compile instructions:
-
-1. Rename the extensions of all ".cc" files to ".cxx" if not already done (e.g.
-   "ren *.cc *.cxx" with the COMMAND shell or if you have a Unix workstation
-   available use "config/changext cxx").  You must rename files in the libsrc,
-   apps and tests directories of all modules.
-2. Start the Microsoft Developer Studio (IDE).
-3. Choose "Open Workspace..." and select "dcmtk.dsw".
-4. Select the appropriate target in the IDE, i.e. Release or Debug.
-5. Choose one of the subprojects and build it. If you want to build all
-   libraries and applications, mark the "ALL_BUILD" subproject and build it.
-
-Known problems:
-
-1. The project files shipped with the toolkit cannot be used with Microsoft
-   Visual C++ .NET (aka Visual Studio 7.x).  You need to create new files with
-   CMake as described below.  We recommend to delete all ".dsp" and ".dsw"
-   files before starting CMake.
-2. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every
-   association must be handled completely before a new association is
-   possible.
-3. On Windows 95, dcmqrscp always uses exclusive file locking (the LockFileEx
-   API call is available on Windows NT only).  This is no problem if only one
-   single process exists.
-4. Most applications will only work if the computer has configured TCP/IP, a
-   network name and a TCP/IP address.  If SLIP or PPP is used the applications
-   can only work if a connection to a provider exists (since the internet
-   addresses and names are given dynamically).
-5. Visual C++ contains two different implementations of iostreams which should
-   never be mixed within one application because this may cause nasal daemons,
-   i.e. application errors that are hard to find.  The old, now deprecated
-   implementation uses the traditional cfront header files <iostream.h> etc.
-   The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
-   DCMTK can be configured to use either of the two interfaces.  This behaviour
-   can be changed in "config/include/cfwin32.h" where the symbol
-   USE_STD_CXX_INCLUDES is declared.
-
-   NOTE: Previous releases of DCMTK (3.5.1 and older) used the old interface
-         when compiled with Visual C++ 6.0.  When updating software that uses
-         DCMTK as a library, make sure that the use of the iostream library is
-         consistent throughout the complete application!
-
-Use of CMake on Windows platforms for configuring the support of external
-libraries and support for Microsoft Visual C++ .NET:
-
-On Windows platforms (and only on Windows platforms!), the CMake utility can be
-used to turn the support for the above mentioned external libraries (OpenSSL,
-zlib, libtiff, libpng and libxml2) on or off manually (libwrap is currently not
-supported on Windows platforms).  CMake is a cross-platform, open-source make
-system which can be used to control the software compilation process using
-simple configuration files.  CMake can be obtained free of charge from
-http://www.cmake.org/.  For configuring the support of external libraries in
-DCMTK on Windows platforms, the toolkit contains corresponding "CMakeLists.txt"
-files in all necessary directories.  In detail, these "CMakeLists.txt" files
-will serve as an input to CMake which will generate new ".dsp" and ".dsw" files
-(or ".sln" for Visual C++ .NET) for all of DCMTK's projects from these files,
-depending on a configuration which can be adjusted manually by the user.
->>>>>>> 1.55
 
 In order to be able to use CMake for configuration purposes in DCMTK, perform
 the following steps to install CMake on your machine:
@@ -577,7 +505,7 @@ applications, mark the "ALL_BUILD" subproject and build it.
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
 
-Known limiations of DCMTK on the Windows platform.
+Known limitations of DCMTK on the Windows platform.
 
 1. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every 
    association must be handled completely before a new association is 
@@ -649,8 +577,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens, Michael Onken
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-<<<<<<< INSTALL
 Last revised: 2005-12-20 (Eichelberg).
-=======
-Last revised: 2005-12-20 (Onken).
->>>>>>> 1.55
