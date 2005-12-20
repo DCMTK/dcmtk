@@ -7,11 +7,11 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 PRE-REQUISITES
 ==============
 
-The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
-recommend using the GNU C++ compiler in versions higher than 2.95 (most of the
-development was done using GNU C++ 3.2 on Linux 2.4).  The software is also
-known to compile using the SUNPro C++ compiler, the DEC/Compaq C++ compiler and
-the Microsoft Visual C++ compiler.
+The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We 
+recommend using the GNU C++ compiler in versions higher than 2.95 (most of the 
+development was done using GNU C++ 3.2 on Linux 2.4).  The software is also 
+known to compile using the SUNPro C++ compiler and the Microsoft Visual C++ 
+compiler.
 
 Compatibility with other C++ compilers is unknown, however, we have tried to
 keep language demands to a minimum (newer C++ features such as ANSI C++
@@ -31,9 +31,9 @@ environment (see section "BUILDING (Win32)" below for more information).
 The current release successfully compiles on the following systems:
 
     Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 6)
-    Windows 2000   / Intel x86 / Microsoft Visual C++ .NET (Visual Studio 7)
-    Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 4)
+    Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 6)
     Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2003 (VS 7.1)
+    Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2005 (Visual Studio 8)
 
 The dcmqrscp and wlmscpfs tools have been ported to Windows, but do not support
 multi-processing (i.e. multiple clients concurrently) under Windows.  The
@@ -48,44 +48,47 @@ The current DCMTK software release successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
-    FreeBSD 4.8    / Intel x86    / GNU gcc 2.95.4
-    FreeBSD 4.9    / Intel x86    / GNU gcc 2.95.4
-    IRIX 5.3       / SGI Indy     / GNU gcc 2.95.3   (see note *2)
-    Linux 2.2.16   / Intel x86    / GNU gcc 2.95.2
-    Linux 2.4.19   / Intel x86    / GNU gcc 3.2, 3.3 and 3.4.0
-    Linux 2.4.20   / Intel x86    / GNU gcc 2.95.4, 3.2.3 and 3.3.3
-    Linux 2.4.21   / Intel x86    / GNU gcc 3.3.1
-    Linux 2.6.4    / Intel x86    / GNU gcc 3.3.3
-    MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
-    MacOS X 10.3.3 / Power Mac G4 / Apple gcc-1640   (gcc 3.3)
-    NetBSD 1.6.1   / Intel x86    / GNU gcc 2.95.3
-    OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002 (see note *6)
-    OSF/1 4.0      / DEC Alpha    / GNU gcc 2.95.3
-    OpenBSD 3.4    / Intel x86    / GNU gcc 2.95.3
+    FreeBSD 4.11   / Intel x86    / GNU gcc 2.95.4
+    FreeBSD 6.0    / Intel x86    / GNU gcc 3.4.4 
+    HP-UX 10.20    / HP PA-RISC   / GNU gcc 2.95.3
+    IRIX 5.3       / SGI Indy     / GNU gcc 2.95.2   (see note *2)
+    Linux 2.4.20   / Intel x86    / GNU gcc 2.95.4, 3.2.3, 3.3.6, 3.4.5 and 4.0.3 (Debian)
+    Linux 2.6.1    / x86_64       / GNU gcc 4.0 (Fedora Core 4)
+    MacOS X 10.4.3 / Power Mac G4 / Apple gcc 4.0.1
+    NetBSD 1.6.2   / Intel x86    / GNU gcc 2.95.3
+    NetBSD 2.1     / Intel x86    / GNU gcc 3.3.3
+    OpenBSD 3.8    / Intel x86    / GNU gcc 3.3.5 propolice
+    QNX 6.2.1      / Intel x86    / GNU gcc 2.95.3   (see note *7)
     Solaris 2.5.1  / Sun Sparc    / GNU egcs 1.1.2   (egcs-2.91.66)
     Solaris 2.5.1  / Sun Sparc    / Sun SC 2.0.1     (SunPro C++ 3.0.1)
-    Solaris 8      / Sun Sparc    / GNU gcc 3.2.3, 3.4
-    Windows XP     / Intel x86    / Cygwin 1.5.9     (gcc 3.3.1)
-    Windows XP     / Intel x86    / MinGW 3.1.0/MSys 1.0.10 (gcc 3.2.3)
-    QNX 6.2.1      / Intel x86    / GNU gcc 2.95.3   (see note *7)
+    Solaris 2.5.1  / Sun Sparc    / SunPro CC 4.2
+    Solaris 9      / Sun Sparc    / SunPro CC 5.2  (Sun WorkShop 6 update 1)
+    Solaris 10     / Intel x86    / SunPro CC 5.8  (Sun Studio 11)
+    Windows XP     / Intel x86    / CygWin 1.5.18    (gcc 3.4.4)
+    Windows XP     / Intel x86    / MinGW/MSys 1.0.10 (gcc 3.4.2)
 
 Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes any more:
 
-    HP-UX 9.05     / HP PA 1.1       / GNU gcc 2.7.2.1
-    HP-UX 10.20    / HP PA-RISC      / GNU gcc 2.95.2
-    IBM AIX 3.2    / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
-    IRIX 6.5       / SGI Onyx        / GNU gcc 2.95.2   (see note *4)
-    IRIX 6.5       / SGI Onyx        / MIPSpro 7.3.1.1m (see note *4)
-    Linux 2.0.33   / Intel x86       / GNU gcc 2.7.2.1
-    Linux 2.2.16   / IBM S/390       / GNU gcc 2.95.2
-    NeXTStep 3.3   / Intel x86       / NeXT/GNU gcc 2.5.8 (see note *1)
-    Solaris 7      / Sun Sparc       / GNU gcc 2.95.3
-    Solaris 7      / Sun Sparc       / SunPro CC 4.2
-    Solaris 8      / Sun Sparc       / SunPro CC 5.2  (Sun WorkShop 6 update 1)
-    SunOS 4.1.3    / Sun Sparc       / GNU gcc 2.7.2
-    Ultrix 4.4     / DECstation MIPS / GNU gcc 2.95.2 (see notes *2,*3)
-    Windows 9x     / Intel x86       / Microsoft Visual C++ 5.0
+    HP-UX 9.05     / HP PA 1.1    / GNU gcc 2.7.2.1
+    IBM AIX 3.2    / RS 6000      / IBM AIX XL C++ Compiler/6000 V1.0
+    IRIX 6.5       / SGI Onyx     / GNU gcc 2.95.2   (see note *4)
+    IRIX 6.5       / SGI Onyx     / MIPSpro 7.3.1.1m (see note *4)
+    Linux 2.0.33   / Intel x86    / GNU gcc 2.7.2.1
+    Linux 2.2.16   / IBM S/390    / GNU gcc 2.95.2
+    Linux 2.2.16   / Intel x86    / GNU gcc 2.95.2
+    MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
+    MacOS X 10.3.3 / Power Mac G4 / Apple gcc-1640   (gcc 3.3)
+    NeXTStep 3.3   / Intel x86    / NeXT/GNU gcc 2.5.8 (see note *1)
+    OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002 (see note *6)
+    OSF/1 4.0      / DEC Alpha    / GNU gcc 2.95.3
+    Solaris 7      / Sun Sparc    / GNU gcc 2.95.3
+    Solaris 7      / Sun Sparc    / SunPro CC 4.2
+    Solaris 8      / Sun Sparc    / GNU gcc 3.2.3, 3.4
+    Solaris 8      / Sun Sparc    / SunPro CC 5.2  (Sun WorkShop 6 update 1)
+    SunOS 4.1.3    / Sun Sparc    / GNU gcc 2.7.2
+    Ultrix 4.4     / DEC MIPS     / GNU gcc 2.95.2 (see notes *2,*3)
+    Windows 9x     / Intel x86    / Microsoft Visual C++ 5.0
 
 Platform Notes
 --------------
@@ -118,12 +121,21 @@ Platform Notes
      available.
 (*6) Might require -O0 in order to compile "dcmsr/libsrc/dsrdoctr.cc".
 (*7) The libz.so included in QNX 6.2.1 is missing the zlibVersion()
+<<<<<<< INSTALL
+     function. This will cause the DCMTK compile to fail if configured with 
+     --with-zlib. It has already been corrected in QNX's internal cvs 
+     repository. Earlier QNX versions (6.2.0) and future versions (6.3.x) should 
+     work fine. As a temporary measure it is possible to link against 
+     /usr/lib/libz.so.1 which does include that function, or to disable zlib 
+     support in DCMTK by calling configure --without-zlib.
+=======
      function. This will cause the DCMTK compile to fail. It has already been
      corrected in QNX's internal cvs repository. Earlier QNX versions (6.2.0)
      and future versions (6.3.x) should work fine. As a temporary measure
      it is possible to link against /usr/lib/libz.so.1 which does include
      that function, or to disable zlib support in DCMTK by calling configure
      --without-zlib.
+>>>>>>> 1.55
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
@@ -138,9 +150,9 @@ Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
 One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
 for the underlying cryptographic routines and the TLS protocol implementation.
-This release of DCMTK is known to compile with all 0.9.6x and 0.9.7x OpenSSL
+This release of DCMTK is known to compile with all 0.9.6, 0.9.7 and 0.9.8 OpenSSL
 releases. Due to security considerations we recommend that DCMTK should be
-compiled with OpenSSL 0.9.6m or OpenSSL 0.9.7d or newer.
+compiled with OpenSSL 0.9.8a or newer.
 
 On Unix platforms, if support for security enhancements is desired, a compiled
 version of the OpenSSL libraries and include files must be available during
@@ -162,16 +174,15 @@ Endian" Transfer Syntax, i.e. ZIP-compressed network transmission and media
 storage.  DCMTK relies on the zlib toolkit (www.zlib.org) for the underlying
 compression routines.  Due to security considerations, we recommend that DCMTK
 should only be used with zlib 1.1.4 or newer.  This release also compiles with
-zlib 1.2.1.
+zlib 1.2.3.
 
 On Unix platforms, if support for zlib compression is desired, a compiled
 version of the zlib library and include files must be available during
 compilation of DCMTK.  By default, DCMTK checks whether zlib is installed
 in the standard path and enables support automatically if present.
 
-On Windows platforms, the Visual C++ project files which are provided as part
-of the toolkit expect a directory named "zlib-1.2.1" to be present in the same
-directory where the DCMTK root directory (dcmtk-3.5.3) also resides.
+On Windows platforms, a compiled version of the zlib libraries and include files 
+must be available during compilation of DCMTK. See discussion on CMake below.
 
 
 LIBTIFF SUPPORT
@@ -180,7 +191,7 @@ LIBTIFF SUPPORT
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images
 to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
 purpose.  This release of DCMTK is known to compile with the libtiff releases
-3.5.7 and 3.6.1, although older releases may work as well.
+3.5.7 to 3.7.4, although older releases may work as well.
 
 On Unix platforms, if support for TIFF export is desired, a compiled version
 of the libtiff libraries and include files must be available during compilation
@@ -188,12 +199,9 @@ of DCMTK, and the libtiff support must be switched on explicitly.  By default,
 DCMTK checks whether libtiff is installed in the standard path and enables
 support automatically if present.
 
-See FAQ for details on compiling DCMTK with libtiff support when the libtiff
-library has been compiled with the non-standard JPEG option.
-
-On Windows platforms, the Visual C++ project files which are provided as part
-of the toolkit expect a directory named "tiff-3.6.1" to be present in the same
-directory where the DCMTK root directory (dcmtk-3.5.3) also resides.
+On Windows platforms, a compiled version of the libtiff libraries and include 
+files must be available during compilation of DCMTK. See discussion on CMake 
+below.
 
 
 LIBPNG SUPPORT
@@ -202,7 +210,7 @@ LIBPNG SUPPORT
 Starting with release 3.5.3, DCMTK supports the conversion of DICOM images to
 PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.
 This release of DCMTK is known to compile with the current libpng release
-1.2.5, although older releases may work as well.
+1.2.8, although older releases may work as well.
 
 On Unix platforms, if support for PNG export is desired, a compiled version of
 the libpng libraries and include files must be available during compilation of
@@ -211,9 +219,9 @@ DCMTK checks whether libpng is installed in the standard path and enables
 support automatically if present.  It should be noted that libpng requires
 zlib.
 
-On Windows platforms, the Visual C++ project files which are provided as part
-of the toolkit expect a directory named "libpng-1.2.5" to be present in the
-same directory where the DCMTK root directory (dcmtk-3.5.3) also resides.
+On Windows platforms, a compiled version of the libpng libraries and include 
+files must be available during compilation of DCMTK. See discussion on CMake 
+below.
 
 
 LIBXML2 SUPPORT
@@ -222,7 +230,7 @@ LIBXML2 SUPPORT
 Starting with release 3.5.3, DCMTK supports the conversion of XML documents to
 DICOM files.  DCMTK relies on the libxml2 toolkit (www.xmlsoft.org) for this
 purpose.  This release of DCMTK is known to compile with the libxml2 releases
-2.5.7 and 2.6.9, although older releases may work as well.
+2.5.7 to 2.6.26, although older or newer releases may work as well.
 
 On Unix platforms, if support for XML import is desired, a compiled version of
 the libxml2 (and possibly iconv) libraries and include files must be available
@@ -292,23 +300,23 @@ OpenSSL support.  The --with-opensslinc option allows to specify the directory
 in which OpenSSL is installed.  This is usually the directory that has been
 used as --prefix when compiling OpenSSL.
 For example, if you wish to enable the security enhancements, and OpenSSL is
-installed in "/usr/local/apps/openssl-0.9.7d", then you should start configure
+installed in "/usr/local/apps/openssl-0.9.8a", then you should start configure
 as:
 
-    ./configure --with-opensslinc=/usr/local/apps/openssl-0.9.7d
+    ./configure --with-opensslinc=/usr/local/apps/openssl-0.9.8a
 
 Configure will assume that the OpenSSL include files are installed in
-"/usr/local/apps/openssl-0.9.7d/include" and will expect the library in
-"/usr/local/apps/openssl-0.9.7d/lib".  Appropriate options will be passed to
+"/usr/local/apps/openssl-0.9.8a/include" and will expect the library in
+"/usr/local/apps/openssl-0.9.8a/lib".  Appropriate options will be passed to
 the compiler and the linker.
 
 Support for zlib, libtiff, libpng, libxml2 and libwrap can be enabled in a
 similar way (in case these libraries are not installed in the standard path):
 
-    ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.1
-                --with-libtiffinc=/usr/local/apps/libtiff-3.6.1
-                --with-libpnginc=/usr/local/apps/libpng-1.2.5
-                --with-libxmlinc=/usr/local/apps/libxml-2.6.9
+    ./configure --with-libzlibinc=/usr/local/apps/zlib-1.2.3
+                --with-libtiffinc=/usr/local/apps/libtiff-3.7.4
+                --with-libpnginc=/usr/local/apps/libpng-1.2.8
+                --with-libxmlinc=/usr/local/apps/libxml-2.6.26
                 --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
 
 Different configure options can be combined in any order.  configure --help
@@ -385,9 +393,20 @@ See also the FAQ at http://forum.dcmtk.org/faq for more hints.
 BUILDING (Win32)
 ================
 
-The toolkit also contains makefiles / project files for Microsoft Windows
-systems.  Currently, only one configuration is supported:
+Starting with DCMTK 3.5.4, no project files for Visual Studio are provided 
+anymore. Project files for all supported compilers can be generated with CMake.
 
+<<<<<<< INSTALL
+CMake is a cross-platform, open-source make system which can be used to control 
+the software compilation process using simple configuration files.  CMake can be 
+obtained free of charge from http://www.cmake.org/.  For configuring the support 
+of external libraries in DCMTK on Windows platforms, the toolkit contains 
+corresponding "CMakeLists.txt" files in all necessary directories.  In detail, 
+these "CMakeLists.txt" files will serve as an input to CMake which will generate 
+new ".dsp" and ".dsw" files (or ".sln" for Visual C++ .NET 2003/2005) for all of 
+DCMTK's projects from these files, depending on a configuration which can be 
+adjusted manually by the user.
+=======
 - Windows 9x/Me/NT/2000/XP with WINSOCK using the Microsoft Visual C++ Compiler
   Version 6.0.
 
@@ -448,14 +467,15 @@ files in all necessary directories.  In detail, these "CMakeLists.txt" files
 will serve as an input to CMake which will generate new ".dsp" and ".dsw" files
 (or ".sln" for Visual C++ .NET) for all of DCMTK's projects from these files,
 depending on a configuration which can be adjusted manually by the user.
+>>>>>>> 1.55
 
 In order to be able to use CMake for configuration purposes in DCMTK, perform
 the following steps to install CMake on your machine:
 
 1. Go to http://www.cmake.org/HTML/Download.html to download the latest release
    version of CMake for Windows.  With regard to a certain CMake version, note
-   that CMake 1.8.3 (download file "CMSetup183.exe") or later can be used in
-   conjunction with DCMTK.
+   that CMake 2.x or later can be used in conjunction with DCMTK. If you want to 
+   generate project files for Visual Studio 2005, you need CMake 2.2.x or newer.
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
@@ -484,19 +504,19 @@ the following steps:
 
      libpng support:
        set "WITH_LIBPNG" to "ON" and
-       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.2.5"
+       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.2.8"
 
      libtiff support:
        set "WITH_LIBTIFF" to "ON" and
-       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.6.1"
+       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.7.4"
 
      OpenSSL support:
        set "WITH_OPENSSL" to "ON" and
-       set "WITH_OPENSSLINC" e.g. to "C:\openssl-0.9.7d"
+       set "WITH_OPENSSLINC" e.g. to "C:\openssl-0.9.8a"
 
      zlib support:
        set "WITH_ZLIB" to "ON" and
-       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.2.1"
+       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.2.3"
 
    In order to turn the support of a certain external library off, set the
    value of the corresponding variable ("WITH_LIBXML", "WITH_LIBPNG",
@@ -557,6 +577,32 @@ applications, mark the "ALL_BUILD" subproject and build it.
 Please note that other Windows compilers, e.g. Borland C++ Builder, are
 currently not actively supported.  However, they may work.
 
+Known limiations of DCMTK on the Windows platform.
+
+1. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every 
+   association must be handled completely before a new association is 
+   possible.
+2. On Windows 95, dcmqrscp always uses exclusive file locking (the LockFileEx
+   API call is available on Windows NT only).  This is no problem if only one
+   single process exists.
+3. Most applications will only work if the computer has configured TCP/IP, a
+   network name and a TCP/IP address.  If SLIP or PPP is used the applications
+   can only work if a connection to a provider exists (since the internet
+   addresses and names are given dynamically).
+4. Visual C++ contains two different implementations of iostreams which should
+   never be mixed within one application because this may cause nasal daemons,
+   i.e. application errors that are hard to find.  The old, now deprecated
+   implementation uses the traditional cfront header files <iostream.h> etc.
+   The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
+   DCMTK can be configured to use either of the two interfaces.  This behaviour
+   can be changed in "config/include/cfwin32.h" where the symbol
+   USE_STD_CXX_INCLUDES is declared.
+
+   NOTE: Previous releases of DCMTK (3.5.1 and older) used the old interface
+         when compiled with Visual C++ 6.0.  When updating software that uses
+         DCMTK as a library, make sure that the use of the iostream library is
+         consistent throughout the complete application!
+
 
 HTML DOCUMENTATION AND MAN PAGES
 ================================
@@ -603,4 +649,8 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens, Michael Onken
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
+<<<<<<< INSTALL
+Last revised: 2005-12-20 (Eichelberg).
+=======
 Last revised: 2005-12-20 (Onken).
+>>>>>>> 1.55
