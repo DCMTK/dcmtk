@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:48 $
+ *  Update Date:      $Date: 2005-12-20 16:24:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,13 +168,13 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *       The second name is used to identify files written without dcmdata
  *       (i.e. using the --bit-preserving switch in various tools)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_353"
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_353"
-#define OFFIS_DCMTK_RELEASEDATE                 "2004-05-27"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_354"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_354"
+#define OFFIS_DCMTK_RELEASEDATE                 "2005-12-20"
 
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION_NUMBER              353
-#define OFFIS_DCMTK_VERSION_STRING              "3.5.3"
+#define OFFIS_DCMTK_VERSION_NUMBER              354
+#define OFFIS_DCMTK_VERSION_STRING              "3.5.4"
 #define OFFIS_DCMTK_VERSION_SUFFIX              ""
 #define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION_STRING
@@ -574,7 +574,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.71  2005-12-08 16:28:48  meichel
+** Revision 1.72  2005-12-20 16:24:59  meichel
+** Updated version name and implementation name to reflect release 3.5.4.
+**
+** Revision 1.71  2005/12/08 16:28:48  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.70  2005/11/16 18:31:42  joergr
