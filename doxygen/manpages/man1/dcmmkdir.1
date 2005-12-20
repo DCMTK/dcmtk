@@ -1,4 +1,4 @@
-.TH "dcmmkdir" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkdir" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkdir \- Create a DICOMDIR file
@@ -8,6 +8,7 @@ dcmmkdir \- Create a DICOMDIR file
 .nf
 
 dcmmkdir [options] dcmfile-in...
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -21,13 +22,23 @@ General Purpose CD-R Interchange (STD-GEN-CD)
 .IP "\(bu" 2
 General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM) 
 .IP "\(bu" 2
-No profile (NONE), like STD-GEN-xxxx without restricting the transfer syntax 
+General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K) 
+.IP "\(bu" 2
+General Purpose MIME Interchange (STD-GEN-MIME) 
+.IP "\(bu" 2
+General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K) 
+.IP "\(bu" 2
+DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML) 
 .IP "\(bu" 2
 Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD) 
 .IP "\(bu" 2
 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD) 
 .IP "\(bu" 2
-CT/MR Studies on xxxx Media (STD-CTMR-xxxx) 
+1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD) 
+.IP "\(bu" 2
+Dental Radiograph Interchange (STD-DEN-CD) 
+.IP "\(bu" 2
+CT/MR Studies on various Media (STD-CTMR-xxxx) 
 .IP "\(bu" 2
 Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx) 
 .IP "\(bu" 2
@@ -45,13 +56,14 @@ Ultrasound Single & Multi-Frame with Combined Calibration (STD-US-CC-MF-xxxx)
 .IP "\(bu" 2
 Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 .PP
-This tool extends \fBdcmgpdir\fP which can only create General Purpose DICOMDIR files. The default behaviour of dcmmkdir (with \fI--general-purpose\fP) is equivalent to that of \fBdcmgpdir\fP.
+This tool extends \fBdcmgpdir\fP which can only create General Purpose DICOMDIR files. The default behaviour of \fBdcmmkdir\fP (with \fI--general-purpose\fP) is equivalent to that of \fBdcmgpdir\fP.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 
 dcmfile-in  referenced DICOM file
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -73,6 +85,7 @@ dcmfile-in  referenced DICOM file
 
   -d    --debug
           debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -84,7 +97,7 @@ DICOMDIR identifiers:
           generate specific DICOMDIR file
           (default: DICOMDIR in current directory)
 
-  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
+  +F    --fileset-id  [i]d : string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
   +R    --descriptor  [f]ilename : string
@@ -109,7 +122,7 @@ reading:
 
   +id   --input-directory  [d]irectory : string
           read referenced DICOM files from directory d
-          (default for --recurse: ".")
+          (default for --recurse: current directory)
 
   -m    --keep-filenames
           expect filenames to be in DICOM format (default)
@@ -135,18 +148,26 @@ checking:
           do not check files for consistency
 
   +W    --warn-inconsist-files
-          warn about inconsistant files (default)
+          warn about inconsistent files (default)
 
   -a    --abort-inconsist-file
-          abort on first inconsistant file
+          abort on first inconsistent file
 
   +Ipi  --invent-patient-id
-          invent new PatientID in case of inconsistant
+          invent new PatientID in case of inconsistent
           PatientsName attributes
+
+  -Nec  --no-encoding-check
+          do not reject images with non-standard
+          pixel encoding (just warn)
 
   -Nrc  --no-resolution-check
           do not reject images with non-standard
           spatial resolution (just warn)
+
+  -Nxc  --no-xfer-check
+          do not reject images with non-standard
+          transfer syntax (just warn)
 
 icon images:
 
@@ -155,7 +176,7 @@ icon images:
           (default for cardiac profiles)
 
   -Xs   --icon-image-size  [s]ize : integer (1..128)
-          width and height of the icon image (in pixels)
+          width and height of the icon image (in pixel)
           (fixed: 128 for XA, 64 for CT/MR profile)
 
   -Xi   --icon-file-prefix  [p]refix : string
@@ -165,6 +186,7 @@ icon images:
   -Xd   --default-icon  [f]ilename : string
           use specified PGM image if icon cannot be
           created automatically (default: black image)
+.fi
 .PP
 .SS "output options"
 .PP
@@ -176,9 +198,20 @@ profiles:
           General Purpose Interchange on CD-R or
           DVD-RAM Media (STD-GEN-CD/DVD-RAM, default)
 
-  -Pno  --no-profile
-          like --general-purpose without restricting
-          the transfer syntax (also compressed files)
+  -Pdv  --general-purpose-dvd
+          General Purpose DVD with Compression Interchange
+          (STD-GEN-DVD-JPEG/J2K)
+
+  -Pmi  --general-purpose-mime
+          General Purpose MIME Interchange (STD-GEN-MIME)
+
+  -Pfl  --usb-and-flash
+          General Purpose USB/Flash Memory with Compression
+          Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+
+  -Pmp  --mpeg2-mpml-dvd
+          DVD Interchange with MPEG2 Main Profile @ Main
+          Level (STD-DVD-MPEG2-MPML)
 
   -Pbc  --basic-cardiac
           Basic Cardiac X-Ray Angiographic Studies on
@@ -187,6 +220,13 @@ profiles:
   -Pxa  --xray-angiographic
           1024 X-Ray Angiographic Studies on CD-R Media
           (STD-XA1K-CD)
+
+  -Pxd  --xray-angiographic-dvd
+          1024 X-Ray Angiographic Studies on DVD Media
+          (STD-XA1K-DVD)
+
+  -Pde  --dental-radiograph
+          Dental Radiograph Interchange (STD-DEN-CD)
 
   -Pcm  --ct-and-mr
           CT/MR Studies (STD-CTMR-xxxx)
@@ -260,6 +300,7 @@ length encoding in sequences and items:
 
   -e    --length-undefined
           write with undefined lengths
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -285,4 +326,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

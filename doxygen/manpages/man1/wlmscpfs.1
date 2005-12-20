@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -8,6 +8,7 @@ wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
 .nf
 
 wlmscpfs [options] port
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -18,6 +19,7 @@ The \fBwlmscpfs\fP application implements a Service Class Provider (SCP) for the
 .nf
 
 port  tcp/ip port number to listen on
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -46,6 +48,14 @@ port  tcp/ip port number to listen on
 
   -dfp  --data-files-path  [p]ath: string
           path to worklist data files (default: /home/www/wlist)
+
+  -efr    --enable-file-reject
+          enable rejection of incomplete worklist-files
+          (default)
+
+  -dfr    --disable-file-reject
+          disable rejection of incomplete worklist-files
+.fi
 .PP
 .SS "returned character set options"
 .PP
@@ -56,6 +66,7 @@ port  tcp/ip port number to listen on
 
   -cs1  --return-iso-ir-100
           return specific character set ISO IR 100
+.fi
 .PP
 .SS "network options"
 .PP
@@ -84,6 +95,12 @@ network host access control (tcp wrapper) options:
           enforce host access control rules
 
 other network options:
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
 
         --max-associations  [a]ssocs: integer (default: 50)
           limit maximum number of parallel associations
@@ -128,6 +145,7 @@ length encoding in sequences and items
 
   -e    --length-undefined
           write with undefined lengths
+.fi
 .PP
 .SS "encapsulated pixel data encoding options"
 .PP
@@ -140,6 +158,7 @@ post-1993 value representations:
 
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -148,6 +167,8 @@ The semantic impacts of the above mentioned options is clear for the majority of
 The returned character set options are intended for situations in which the wlmscpfs application will return attribute values which are not composed of characters from the DICOM default character repertoire. In such cases, for example option \fI--return-iso-ir-100\fP can be used to specify that a response to a modality's worklist management C-FIND request shall always contain DICOM's Specific Character Set attribute (0008,0005) with a corresponding value, indicating the character repertoire from which the characters of returned attribute values were taken (in this example the repertoire ISO IR 100). Please note that the \fBwlmscpfs\fP application will not make sure that all returned values are actually made up of this character repertoire; the application expects this to be the case. Option \fI--return-iso-ir-100\fP will only lead to the inclusion of the Specific Character Set attribute (0008,0005) with a corresponding value in a worklist management C-FIND response.
 .PP
 Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started.
+.PP
+The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-Find response message. Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type').
 .SS "DICOM Conformance"
 The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -156,9 +177,8 @@ The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
 
 VerificationSOPClass                  1.2.840.10008.1.1
 FINDModalityWorklistInformationModel  1.2.840.10008.5.1.4.31
-.PP
-.PP
 .fi
+.PP
 .PP
 The \fBwlmscpfs\fP application will accept presentation contexts for all of the abovementioned supported SOP Classes using any of the transfer syntaxes:
 .PP
@@ -168,9 +188,8 @@ The \fBwlmscpfs\fP application will accept presentation contexts for all of the 
 LittleEndianImplicitTransferSyntax    1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax    1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
-.PP
-.PP
 .fi
+.PP
 .PP
 The default behaviour of the wlmscpfs application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicitTransferSyntax over LittleEndianExplicitTransferSyntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
 .PP
@@ -185,6 +204,7 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
 (0008,0090) ReferringPhysiciansName
 (0010,0010) PatientsName
 (0010,0020) PatientID
+(0010,0030) PatientsBirthDate
 (0010,0040) PatientsSex
 (0032,1032) RequestingPhysician
 (0038,0010) AdmissionID
@@ -196,11 +216,10 @@ Currently, the \fBwlmscpfs\fP application supports the following attributes as m
   (0040,0006) > ScheduledPerformingPhysiciansName
 (0040,1001) RequestedProcedureID
 (0040,1003) RequestedProcedurePriority
-.PP
-.PP
 .fi
 .PP
-As return keys the following attributes are currently supported by \fBwlmscpfs\fP:
+.PP
+As return keys the following attributes are currently supported by \fBwlmscpfs:\fP 
 .PP
 .PP
 .nf
@@ -289,6 +308,7 @@ As return keys the following attributes are currently supported by \fBwlmscpfs\f
 (0040,2017) FillerOrderNumberImagingServiceRequest
 (0040,2400) ImagingServiceRequestComments
 (0040,3001) ConfidentialityConstraintOnPatientDataDescription
+.fi
 .PP
 .SS "Access Control"
 When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBwlmscpfs\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
@@ -306,4 +326,4 @@ The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

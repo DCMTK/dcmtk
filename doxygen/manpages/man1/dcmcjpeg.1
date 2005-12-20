@@ -1,4 +1,4 @@
-.TH "dcmcjpeg" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpeg" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
@@ -8,6 +8,7 @@ dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
 .nf
 
 dcmcjpeg [options] dcmfile-in dcmfile-out
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmcjpeg\fP utility reads an uncompressed DICOM image (\fIdicomfile-in\fP
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ dcmfile-out  DICOM output filename
 
   -d    --debug
           debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -48,13 +51,19 @@ input file format:
   +f    --read-file
           read file format or data set (default)
 
+  +fo   --read-file-only
+          read file format only
+
   -f    --read-dataset
           read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=   --read-xfer-auto
           use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
   -te   --read-xfer-little
           read with explicit VR little endian TS
@@ -64,6 +73,21 @@ input transfer syntax (only with --read-dataset):
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
+
+compatibility options (ignored by +tl):
+
+  +Ma   --accept-acr-nema
+          accept ACR-NEMA images without photometric interpretation
+
+  # Enables compatibility for old ACR-NEMA images without photometric
+  # information (only pseudo lossless encoder)
+
+  +Mp   --accept-palettes
+          accept incorrect palette attribute tags (0028,111x) and (0028,121x)
+
+  # If enabled, incorrect palette attribute tags are accepted
+  # (only pseudo lossless encoder)
+.fi
 .PP
 .SS "JPEG enconding options"
 .PP
@@ -108,6 +132,21 @@ JPEG process options:
   # This option selects the JPEG Full Progression, Non-Hierarchical
   # (Process 10 & 12) Transfer Syntax for Lossy JPEG Image Compression.
 
+lossless JPEG codec selection:
+
+  +tl   --true-lossless
+          true lossless codec (default)
+
+  # This option selects an encoder, that guarantees truely lossless
+  # image compression. See NOTES for further information.
+
+  +pl   --pseudo-lossless
+          old pseudo-lossless codec
+
+  # Old encoder, that uses lossless compression algorithms, but can
+  # cause lossy images because of internal color space transformations
+  # etc. Higher compression ratio than --true-lossless in most cases.
+
 lossless JPEG representation options:
 
   +sv   --selection-value  [sv]: integer (1..7, default: 6)
@@ -132,6 +171,13 @@ lossy JPEG representation options:
   # compression ratio and image quality in lossy JPEG.  See documentation
   # of the Independent JPEG Group for details.
 
+  +sm   --smooth  [s]: integer (0..100, default: 0)
+          use smoothing factor s
+
+  # This option enables a smoothing (low-pass filter) of the image data
+  # prior to compression. Increases the compression ratio at the expense
+  # of image quality.
+
 other JPEG options:
 
   +ho   --huffman-optimize
@@ -147,14 +193,7 @@ other JPEG options:
   # This option disables an optimization of the huffman tables during
   # image compression.
 
-  +sm   --smooth  [s]: integer (0..100, default: 0)
-          use smoothing factor s
-
-  # This option enables a smoothing (low-pass filter) of the image data
-  # prior to compression. Increases the compression ratio at the expense
-  # of image quality.
-
-compressed bits per sample options:
+compressed bits per sample options (always +ba with +tl):
 
   +ba   --bits-auto
           choose bits/sample automatically (default)
@@ -168,7 +207,7 @@ compressed bits per sample options:
   +bs   --bits-force-16
           force 16 bits/sample (lossless only)
 
-compression color space conversion options:
+compression color space conversion options (overriden by +tl):
 
   +cy   --color-ybr
           use YCbCr for color images if lossy (default)
@@ -190,7 +229,7 @@ compression color space conversion options:
   # This option forces a conversion of color images to monochrome
   # prior to compression.
 
-decompression color space conversion (if input is compressed):
+decompr. color space conversion (if input is compressed; always +cn with +tl):
 
   +cp   --conv-photometric
           convert if YCbCr photom. interpr. (default)
@@ -217,7 +256,7 @@ decompression color space conversion (if input is compressed):
 
   # Never convert color space during decompression.
 
-standard YCbCr component subsampling options:
+standard YCbCr component subsampling options (not with +tl):
 
   +s4   --sample-444
           4:4:4 sampling with YBR_FULL (default)
@@ -233,7 +272,7 @@ standard YCbCr component subsampling options:
   # compression in the YCbCr color space. The DICOM photometric
   # interpretation is encoded as YBR_FULL.
 
-non-standard YCbCr component subsampling options:
+non-standard YCbCr component subsampling options (not with +tl):
 
   +n2   --nonstd-422-full
           4:2:2 subsampling with YBR_FULL
@@ -255,6 +294,7 @@ non-standard YCbCr component subsampling options:
   # This option enables a 4:1:1 color component subsampling for
   # compression in the YCbCr color space. The DICOM photometric
   # interpretation is encoded as YBR_FULL_422 which violates DICOM rules.
+.fi
 .PP
 .SS "encapsulated pixel data fragmentation options"
 .PP
@@ -286,7 +326,7 @@ basic offset table encoding options:
   # This option causes the creation of an empty offset table
   # for the compressed JPEG fragments.
 
-VOI windowing options for monochrome images:
+VOI windowing options for monochrome images (not with +tl):
 
   -W    --no-windowing
           no VOI windowing (default)
@@ -344,7 +384,7 @@ VOI windowing options for monochrome images:
 
   # Apply the given window center/width prior to compression.
 
-pixel scaling for monochrome images (--no-windowing):
+pixel scaling for monochrome images (--no-windowing; ignored by +tl):
 
   +sp   --scaling-pixel
           scale using min/max pixel value (default)
@@ -366,7 +406,7 @@ pixel scaling for monochrome images (--no-windowing):
   # without consideration of the minimum and maximum value really
   # used within the image.
 
-rescale slope/intercept encoding for monochrome (--no-windowing):
+rescale slope/intercept encoding for monochrome (-W; ignored by +tl):
 
   +ri   --rescale-identity
           encode identity modality rescale (default)
@@ -417,6 +457,7 @@ SOP Instance UID options:
           never assign new UID
 
   # Never assigns a new SOP instance UID.
+.fi
 .PP
 .SS "output options"
 .PP
@@ -460,6 +501,7 @@ data set trailing padding:
   +p    --padding-create  [f]ile-pad [i]tem-pad: integer
           align file on multiple of f bytes
           and items on multiple of i bytes
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -476,6 +518,22 @@ NM Images can only be encoded with MONOCHROME2 or PALETTE COLOR photometric inte
 Hardcopy Color images must have RGB color model which is a problem if lossy compression is to be performed.
 .PP
 The user is responsible for making sure that the compressed images he creates are compliant with the DICOM standard. If in question, the \fBdcmcjpeg\fP utility allows to convert an image to secondary capture - this SOP class does not pose restrictions as the ones mentioned above.
+.PP
+With version DCMTK 3.5.4 a new encoder for truely lossless JPEG compression was added (--true-lossless). Compared to the old (--pseudo-lossless) encoder, that creates sligtly lossy images caused from internal color space conversions, windowing etc., there are a some issues to consider:
+.PP
+.PD 0
+.IP "\(bu" 2
+Only source images with Bits Allocated 8 or 16 are supported 
+.IP "\(bu" 2
+Options for color space conversions, windowing or pixel scaling are ignored or overriden 
+.IP "\(bu" 2
+Photometric Interpretations YBR_FULL_422, YBR_PARTIAL_422, YBR_PARTIAL_420, YBR_ICT, YBR_RCT are not supported 
+.IP "\(bu" 2
+The encoder changes automatically Planar Configuration from 1 to 0 if necessary 
+.IP "\(bu" 2
+The compression ratio can be lower than in --pseudo-lossless mode
+.PP
+However, when using the new encoder (default), you can be sure, that compression does not affect image quality.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -493,4 +551,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

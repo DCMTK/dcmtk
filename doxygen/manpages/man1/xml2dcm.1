@@ -1,4 +1,4 @@
-.TH "xml2dcm" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dcm" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 xml2dcm \- Convert XML document to DICOM file or data set
@@ -8,6 +8,7 @@ xml2dcm \- Convert XML document to DICOM file or data set
 .nf
 
 xml2dcm [options] xmlfile-in dcmfile-out
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBxml2dcm\fP utility converts the contents of an XML (Extensible Markup Lan
 xmlfile-in   XML input filename to be converted (stdin: "-")
 
 dcmfile-out  DICOM output filename
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,20 @@ dcmfile-out  DICOM output filename
 
   -d   --debug
          debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-meta-info
+         read meta information if present (default)
+
+  -f   --ignore-meta-info
+         ignore file meta information
+.fi
 .PP
 .SS "processing options"
 .PP
@@ -50,6 +66,7 @@ validation:
 
   +Vn  --check-namespace
          check XML namespace in document root
+.fi
 .PP
 .SS "output options"
 .PP
@@ -115,6 +132,7 @@ data set trailing padding (not with --write-dataset):
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
          align file on multiple of f bytes and items on
          multiple of i bytes
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -159,9 +177,8 @@ The basic structure of the XML input expected looks like the following:
     </element>
   </data-set>
 </file-format>
-.PP
-.PP
 .fi
+.PP
 .PP
 The 'file-format' and 'meta-header' tags maybe absent for DICOM data sets.
 .SS "Character Encoding"
@@ -171,6 +188,7 @@ The DICOM character encoding is determined automatically from the element with t
 .nf
 
 ASCII         "ISO_IR 6"    (UTF-8)
+UTF-8         "ISO_IR 192"  (UTF-8)
 ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
 ISO Latin 2   "ISO_IR 101"  (ISO-8859-2)
 ISO Latin 3   "ISO_IR 109"  (ISO-8859-3)
@@ -180,9 +198,8 @@ Cyrillic      "ISO_IR 144"  (ISO-8859-5)
 Arabic        "ISO_IR 127"  (ISO-8859-6)
 Greek         "ISO_IR 126"  (ISO-8859-7)
 Hebrew        "ISO_IR 138"  (ISO-8859-8)
-.PP
-.PP
 .fi
+.PP
 .PP
 Multiple character sets are not supported (only the first value of the 'Specific Character Set' is used for the character encoding in case of value multiplicity).
 .PP

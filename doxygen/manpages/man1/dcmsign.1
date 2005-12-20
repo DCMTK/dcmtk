@@ -1,4 +1,4 @@
-.TH "dcmsign" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
@@ -8,6 +8,7 @@ dcmsign \- Sign and Verify DICOM Files
 .nf
 
 dcmsign [options] dcmfile-in [dcmfile-out]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -35,6 +36,7 @@ removal of all digital signatures from the DICOM file.
 dcmfile-in   DICOM input filename to be processed
 
 dcmfile-out  DICOM output filename
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -53,6 +55,12 @@ dcmfile-out  DICOM output filename
 
   -d    --debug
           debug mode, print debug information
+
+  +d    --dump  [f]ilename: string
+          dump byte stream fed into the MAC codec to file
+          (only with --sign or --sign-item)
+
+.fi
 .PP
 .SS "input options"
 .PP
@@ -63,13 +71,19 @@ input file format:
   +f    --read-file
           read file format or data set (default)
 
+  +fo   --read-file-only
+          read file format only
+
   -f    --read-dataset
           read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=   --read-xfer-auto
           use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
   -te   --read-xfer-little
           read with explicit VR little endian TS
@@ -79,6 +93,7 @@ input transfer syntax (only with --read-dataset):
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
+.fi
 .PP
 .SS "signature commands"
 .PP
@@ -98,6 +113,7 @@ input transfer syntax (only with --read-dataset):
 
   +ra   --remove-all
           remove all signatures from data set
+.fi
 .PP
 .SS "signature creation options (only with --sign or --sign-item):"
 .PP
@@ -156,6 +172,17 @@ tag selection options:
 
   -tf   --tag-file  filename: string
           read list of tags from text file
+
+signature format options:
+
+  -fn   --format-new
+          use correct DICOM signature format (default)
+
+  -fo   --format-old
+          use old (pre-3.5.4) DCMTK signature format, non-conformant
+          if signature includes compressed pixel data
+
+.fi
 .PP
 .SS "output options"
 .PP
@@ -182,6 +209,7 @@ length encoding in sequences and items:
 
   -e    --length-undefined
           write with undefined lengths
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -203,9 +231,8 @@ On the command line, attribute keys are specified as
                    and element numbers
 --tag "Name"       where 'Name' is a symbolic attribute name from
                    the DICOM dictionary (see below).
-.PP
-.PP
 .fi
+.PP
 .PP
 When attribute tags are read from file with the \fI--tag-file\fP option, a plain text file of max. 64 kbyte is expected. Tags within the file are either symbolic names from the data dictionary or have the format (gggg,eeee) (with braces). Tags are separated by one or more whitespace characters.
 .PP
@@ -215,9 +242,8 @@ The \fI--sign-item\fP operation requires a location string that describes in whi
 .nf
 
 SequenceName[index].SequenceName[index].SequenceName[index](...)
-.PP
-.PP
 .fi
+.PP
 .PP
 where SequenceName is either a symbolic attribute name from the data dictionary or a numeric tag in the format (gggg,eeee) and index is an unsigned decimal integer for the item number, starting with zero for the first item in a sequence. As an example, the following location string
 .PP
@@ -225,9 +251,8 @@ where SequenceName is either a symbolic attribute name from the data dictionary 
 .nf
 
 ReferencedSeriesSequence[0].ReferencedImageSequence[1]
-.PP
-.PP
 .fi
+.PP
 .PP
 would cause a digital signature to be created in the second item of the ReferencedImageSequence (0008,1140) which is located in the first item of the ReferencedSeriesSequence (0008,1115) which is located in the main DICOM dataset.
 .SH "COMMAND LINE"
@@ -244,4 +269,4 @@ The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2000-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

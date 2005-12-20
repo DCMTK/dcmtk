@@ -1,4 +1,4 @@
-.TH "dcmcrle" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcrle" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcrle \- Encode DICOM file to RLE transfer syntax
@@ -8,6 +8,7 @@ dcmcrle \- Encode DICOM file to RLE transfer syntax
 .nf
 
 dcmcrle [options] dcmfile-in dcmfile-out
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmcrle\fP utility reads an uncompressed DICOM image (\fIdicomfile-in\fP)
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ dcmfile-out  DICOM output filename
 
   -d   --debug
          debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -48,13 +51,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -64,6 +73,7 @@ input transfer syntax (only with --read-dataset):
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+.fi
 .PP
 .SS "encapsulated pixel data encoding options"
 .PP
@@ -99,6 +109,7 @@ SOP Instance UID options:
 
   +ua  --uid-always
          always assign new UID
+.fi
 .PP
 .SS "output options"
 .PP
@@ -142,6 +153,7 @@ data set trailing padding:
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
          align file on multiple of f bytes
          and items on multiple of i bytes
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -160,4 +172,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdrle\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2002-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

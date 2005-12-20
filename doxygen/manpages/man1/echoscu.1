@@ -1,4 +1,4 @@
-.TH "echoscu" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "echoscu" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 echoscu \- DICOM verification (C-ECHO) SCU
@@ -8,6 +8,7 @@ echoscu \- DICOM verification (C-ECHO) SCU
 .nf
 
 echoscu [options] peer port
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBechoscu\fP application implements a Service Class User (SCU) for the Veri
 peer  hostname of DICOM peer
 
 port  tcp/ip port number of peer
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ port  tcp/ip port number of peer
 
   -d    --debug
           debug mode, print debug information
+.fi
 .PP
 .SS "network options"
 .PP
@@ -64,6 +67,12 @@ other network options:
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
 
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
   -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
           set max receive pdu to n bytes (default: 16384)
 
@@ -72,6 +81,7 @@ other network options:
 
         --abort
           abort association instead of releasing it
+.fi
 .PP
 .SS "transport layer security (TLS) options"
 .PP
@@ -143,6 +153,7 @@ peer authentication options:
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -153,9 +164,8 @@ The \fBechoscu\fP application supports the following SOP Classes as an SCU:
 .nf
 
 VerificationSOPClass                1.2.840.10008.1.1
-.PP
-.PP
 .fi
+.PP
 .PP
 Unless the \fI--propose-ts\fP option is used, the echoscu application will only propose the transfer syntax
 .PP
@@ -163,6 +173,7 @@ Unless the \fI--propose-ts\fP option is used, the echoscu application will only 
 .nf
 
 LittleEndianImplicitTransferSyntax  1.2.840.10008.1.2
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -178,4 +189,4 @@ The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

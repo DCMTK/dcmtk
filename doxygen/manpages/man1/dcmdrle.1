@@ -1,4 +1,4 @@
-.TH "dcmdrle" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdrle" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdrle \- Decode RLE-compressed DICOM file
@@ -8,6 +8,7 @@ dcmdrle \- Decode RLE-compressed DICOM file
 .nf
 
 dcmdrle [options] dcmfile-in dcmfile-out
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmdrle\fP utility reads a RLE-compressed DICOM image (\fIdicomfile-in\fP
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,28 @@ dcmfile-out  DICOM output filename
 
   -d   --debug
          debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+  # This option allows to decompress RLE compressed DICOM objects that have
+  # been stored as dataset without meta-header. Such a thing should not exist
+  # since the transfer syntax cannot be reliably determined without meta-header,
+  # but unfortunately it does.
+.fi
 .PP
 .SS "processing options"
 .PP
@@ -50,6 +74,20 @@ SOP Instance UID options:
 
   +ua  --uid-always
          always assign new UID
+
+RLE byte segment order options:
+
+  +bd   --byte-order-default
+          most significant byte first (default)
+
+  +br   --byte-order-reverse
+          least significant byte first
+
+  # This option allows to decompress RLE compressed DICOM files in which the
+  # order of byte segments is encoded in incorrect order. This only affects
+  # images with more than one byte per sample.
+
+.fi
 .PP
 .SS "output options"
 .PP
@@ -112,6 +150,7 @@ data set trailing padding (not with --write-dataset):
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
          align file on multiple of f bytes
          and items on multiple of i bytes
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -130,4 +169,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmcrle\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany 
+Copyright (C) 2002-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany 

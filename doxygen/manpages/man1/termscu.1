@@ -1,24 +1,26 @@
-.TH "dcmpsrcv" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "termscu" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmpsrcv \- Network receive for presentation state viewer
+termscu \- DICOM termination SCU
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
 
-dcmpsrcv [options] config-file
+termscu [options] peer port
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmpsrcv\fP application is invoked by the Grayscale Softcopy Presentation State Viewer and is not intended to be invoked manually. The application reads the common configuration file which is shared between the different components of the viewer and opens a TCP/IP socket on which incoming association requests are accepted. The application sparks a separate process for each DICOM connection. It supports the same storage SOP classes as the \fBstorescp\fP utility as SCP, but does not support encapsulated transfer syntaxes. Incoming images are stored in the common viewer database. See the full conformance statement for further details.
+The \fBtermscu\fP application implements a Service Class User (SCU) for DCMTK's private Shutdown SOP Class. It tries to negotiate this private Shutdown SOP Class with a Service Class Provider (SCP) which (if this feature is implemen- nted) will immediately shutdown after refusing the association. The appli- cation can be used to shutdown some of DCMTK's server applications.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 
-config-file  configuration file to be read
+peer  hostname of DICOM peer
+
+port  tcp/ip port number of peer
 .fi
 .PP
 .SH "OPTIONS"
@@ -27,20 +29,46 @@ config-file  configuration file to be read
 .PP
 .nf
 
-  -h  --help
-        print this help text and exit
+  -h    --help
+          print this help text and exit
 
-      --version
-        print version information and exit
+        --version
+          print version information and exit
 
-  -v  --verbose
-        verbose mode, print processing details
+  -v    --verbose
+          verbose mode, print processing details
 
-  -d  --debug
-        debug mode, print debug information
+  -d    --debug
+          debug mode, print debug information
+.fi
+.PP
+.SS "network options"
+.PP
+.nf
 
-  -t  --terminate
-        terminate all running receivers
+application entity titles:
+
+  -aet  --aetitle  aetitle: string
+          set my calling AE title (default: ECHOSCU)
+
+  -aec  --call  aetitle: string
+          set called AE title of peer (default: ANY-SCP)
+
+other network options:
+
+  -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
+          set max receive pdu to n bytes (default: 16384)
+.fi
+.PP
+.SH "NOTES"
+.PP
+.SS "DICOM Conformance"
+The \fBtermscu\fP application supports the following SOP Classes as an SCU:
+.PP
+.PP
+.nf
+
+PrivateShutdownSOPClass  1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
 .fi
 .PP
 .SH "COMMAND LINE"
@@ -52,15 +80,9 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmpsrcv\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBtermscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
-.SH "FILES"
-.PP
-\fIetc/dcmpstat.cfg\fP - sample configuration file
-.SH "SEE ALSO"
-.PP
-\fBdcmpssnd\fP(1), \fBstorescp\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

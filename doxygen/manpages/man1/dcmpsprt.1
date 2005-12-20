@@ -1,4 +1,4 @@
-.TH "dcmpsprt" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmpsprt" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmpsprt \- Read DICOM images and presentation states and render print job
@@ -8,16 +8,18 @@ dcmpsprt \- Read DICOM images and presentation states and render print job
 .nf
 
 dcmpsprt [options] [imagefile_in...]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmpsprt\fP utility reads one or more DICOM images and presentation states and creates a print job. The print job consists of one Stored Print object and one or more Hardcopy Grayscale images and is written to the database specified in the configuration file. The print job can optionally be spooled to the printer. In this case, \fBdcmpsprt\fP calls the \fBdcmprtsv\fP application which performs communication with the printer.
+The \fBdcmpsprt\fP utility reads one or more DICOM images and presentation states and creates a print job. The print job consists of one Stored Print object and one or more Hardcopy Grayscale images and is written to the database specified in the configuration file. The print job can optionally be spooled to the printer. In this case, \fBdcmpsprt\fP calls the \fBdcmprscu\fP application which performs communication with the printer.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 
 imagefile_in  DICOM image file(s) to be printed
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -36,6 +38,7 @@ imagefile_in  DICOM image file(s) to be printed
 
   -d   --debug
          debug mode, print debug information
+.fi
 .PP
 .SS "processing options"
 .PP
@@ -49,6 +52,7 @@ imagefile_in  DICOM image file(s) to be printed
 
   -p   --printer  [n]ame: string (default: 1st printer in cfg file)
          select printer with identifier n from cfg file
+.fi
 .PP
 .SS "spooling options"
 .PP
@@ -59,6 +63,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --nospool
          do not spool print job to DICOM printer (default)
+.fi
 .PP
 .SS "film orientation options"
 .PP
@@ -72,6 +77,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --default-orientation
          use printer default (default)
+.fi
 .PP
 .SS "trim (border) options"
 .PP
@@ -85,6 +91,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --default-trim
          use printer default (default)
+.fi
 .PP
 .SS "requested decimate/crop behaviour options"
 .PP
@@ -101,6 +108,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --default-request
          use printer default (default)
+.fi
 .PP
 .SS "print presentation LUT options"
 .PP
@@ -124,6 +132,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --reflection  [v]alue: integer (0..65535)
          set reflected ambient light to v (in cd/m^2)
+.fi
 .PP
 .SS "basic film session options (only with --spool)"
 .PP
@@ -146,6 +155,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --owner  [v]alue: string
          set film session owner ID to v
+.fi
 .PP
 .SS "annotation options"
 .PP
@@ -174,6 +184,7 @@ imagefile_in  DICOM image file(s) to be printed
 
   -pl  --print-no-lighting
          do not prepend illumination to annotation
+.fi
 .PP
 .SS "overlay options"
 .PP
@@ -184,6 +195,7 @@ imagefile_in  DICOM image file(s) to be printed
 
   +Og  --ovl-graylevel  [v]alue: integer (0..4095)
          use overlay gray level v (default: 4095 = white)
+.fi
 .PP
 .SS "other_print_options"
 .PP
@@ -233,6 +245,7 @@ imagefile_in  DICOM image file(s) to be printed
 
        --img-configinfo  [v]alue: string
          set image box configuration information to v
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -251,7 +264,7 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fIetc/dcmpstat.cfg\fP, \fIetc/printers.cfg\fP - sample configuration files
 .SH "SEE ALSO"
 .PP
-\fBdcmprtsv\fP(1)
+\fBdcmprscu\fP(1)
 .SH "COPYRIGHT"
 .PP
 Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

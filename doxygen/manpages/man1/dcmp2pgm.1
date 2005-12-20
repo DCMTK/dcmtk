@@ -1,4 +1,4 @@
-.TH "dcmp2pgm" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmp2pgm" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmp2pgm \- Read DICOM image and presentation state and render bitmap
@@ -8,6 +8,7 @@ dcmp2pgm \- Read DICOM image and presentation state and render bitmap
 .nf
 
 dcmp2pgm [options] dcmimage_in [bitmap_out]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmp2pgm\fP utility renders a monochrome DICOM image under the control of
 dcmimage_in  input DICOM image
 
 bitmap_out   output DICOM image or PGM bitmap
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ bitmap_out   output DICOM image or PGM bitmap
 
   -d  --debug
         debug mode, print debug information
+.fi
 .PP
 .SS "processing options"
 .PP
@@ -51,6 +54,7 @@ bitmap_out   output DICOM image or PGM bitmap
 
   -f  --frame  [f]rame: integer
         process using image frame f (default: 1)
+.fi
 .PP
 .SS "output format"
 .PP
@@ -61,6 +65,7 @@ bitmap_out   output DICOM image or PGM bitmap
 
   +D  --dicom
         save image as DICOM secondary capture
+.fi
 .PP
 .SS "output options"
 .PP
@@ -68,6 +73,7 @@ bitmap_out   output DICOM image or PGM bitmap
 
   +S  --save-pstate  [f]ilename: string
         save presentation state to file
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP

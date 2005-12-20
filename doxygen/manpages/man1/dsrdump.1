@@ -1,4 +1,4 @@
-.TH "dsrdump" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsrdump" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsrdump \- Dump DICOM SR file and data set
@@ -8,6 +8,7 @@ dsrdump \- Dump DICOM SR file and data set
 .nf
 
 dsrdump [options] dsrfile-in...
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ If \fBdsrdump\fP reads a raw data set (DICOM data without a file format meta-hea
 .nf
 
 dsrfile-in  DICOM SR input filename to be dumped
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ dsrfile-in  DICOM SR input filename to be dumped
 
   -dd  --verbose-debug
          verbose debug mode, print more details
+.fi
 .PP
 .SS "input options"
 .PP
@@ -48,13 +51,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -64,6 +73,7 @@ input transfer syntax (only with --read-dataset):
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+.fi
 .PP
 .SS "parsing options"
 .PP
@@ -85,6 +95,7 @@ error handling:
 
   -Ei  --skip-invalid-items
          skip invalid content items (incl. sub-tree)
+.fi
 .PP
 .SS "output options"
 .PP
@@ -118,11 +129,12 @@ printing:
 
   +Pt  --print-template-id
          print template identification information
+.fi
 .PP
 .SH "NOTES"
 .PP
 .SS "DICOM Conformance"
-The \fBdsrdump\fP utility supports the following SOP Classes (according to DICOM 2003 and Supplement 66):
+The \fBdsrdump\fP utility supports the following SOP Classes (according to DICOM 2004 and Supplement 94):
 .PP
 .PP
 .nf
@@ -134,6 +146,8 @@ ProcedureLog                1.2.840.10008.5.1.4.1.1.88.40
 MammographyCADSR            1.2.840.10008.5.1.4.1.1.88.50
 KeyObjectSelectionDocument  1.2.840.10008.5.1.4.1.1.88.59
 ChestCADSR                  1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSR         1.2.840.10008.5.1.4.1.1.88.67
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -152,4 +166,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2000-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

@@ -1,0 +1,118 @@
+.TH "pdf2dcm" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+pdf2dcm \- Convert PDF file to DICOM
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+pdf2dcm [options] pdffile-in dcmfile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBpdf2dcm\fP utility reads a PDF file (\fIpdffile-in\fP), converts it to a DICOM Encapsulated PDF Storage SOP instance and stores the converted data to an output file (\fIdcmfile-out\fP).
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+pdffile-in   PDF input filename to be converted
+
+dcmfile-out  DICOM output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+.fi
+.PP
+.SS "DICOM document options"
+.PP
+.nf
+
+burned-in annotation:
+
+  +an   --annotation-yes
+          PDF contains patient identifying data (default)
+
+  -an   --annotation-no
+          PDF does not contain patient identifying data
+
+document title:
+
+  +t    --title  [t]itle : string (default: empty)
+          document title
+
+  +cn   --concept-name  [CSD], [CV], [CM]: string (default: empty)
+          document title as concept name code sequence
+          with coding scheme designator CSD, code value CV
+          and code meaning CM
+
+patient data:
+
+  +pn   --patient-name  [n]ame : string
+          patient's name in DICOM PN syntax
+
+  +pi   --patient-id  [i]d : string
+          patient identifier
+
+  +pb   --patient-birthdate  [d]ate : string (YYYYMMDD)
+          patient's birth date
+
+  +ps   --patient-sex  [s]ex : string (M, F or O)
+          patient's sex
+
+study and series:
+
+  +sg   --generate
+          generate new study and series UIDs (default)
+
+  +st   --study-from   [f]ilename : string
+          read patient/study data from DICOM file
+
+  +se   --series-from  [f]ilename : string
+          read patient/study/series data from DICOM file
+
+instance number:
+
+  +i1   --instance-one
+          use instance number 1 (default, not with +se)
+
+  +ii   --instance-inc
+          increment instance number (only with +se)
+
+  +is   --instance-set [i]nstance number : int
+          use instance number i
+.fi
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBpdf2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

@@ -1,4 +1,4 @@
-.TH "dcm2xml" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2xml \- Convert DICOM file and data set to XML
@@ -8,6 +8,7 @@ dcm2xml \- Convert DICOM file and data set to XML
 .nf
 
 dcm2xml [options] dcmfile-in [xmlfile-out]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -22,6 +23,7 @@ If \fBdcm2xml\fP reads a raw data set (DICOM data without a file format meta-hea
 dcmfile-in   DICOM input filename to be converted
 
 xmlfile-out  XML output filename (default: stdout)
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -37,6 +39,7 @@ xmlfile-out  XML output filename (default: stdout)
 
   -d   --debug
          debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -47,13 +50,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -71,6 +80,24 @@ long tag values:
 
   -M   --load-short
          do not load very long values (default)
+
+  +R   --max-read-length  [k]bytes: integer [4..4194302] (default: 4)
+         set threshold for long values to k kbytes
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+character set:
+
+  +Cr  --charset-require
+         require declaration of extended charset (default)
+
+  +Ca  --charset-assume  charset: string constant
+         (latin-1 to -5, cyrillic, arabic, greek, hebrew)
+         assume charset if undeclared ext. charset found
+.fi
 .PP
 .SS "output options"
 .PP
@@ -95,6 +122,7 @@ DICOM elements:
 
   +Eb  --encode-base64
          encode binary data as Base64 (RFC 2045, MIME)
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -139,9 +167,8 @@ The basic structure of the XML output created from a DICOM image file looks like
     </element>
   </data-set>
 </file-format>
-.PP
-.PP
 .fi
+.PP
 .PP
 The 'file-format' and 'meta-header' tags are absent for DICOM data sets.
 .SS "Character Encoding"
@@ -151,6 +178,7 @@ The XML encoding is determined automatically from the DICOM attribute (0008,0005
 .nf
 
 ASCII         "ISO_IR 6"    =>  "UTF-8"
+UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
 ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
 ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"
@@ -160,9 +188,8 @@ Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
 Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
 Greek         "ISO_IR 126"  =>  "ISO-8859-7"
 Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
-.PP
-.PP
 .fi
+.PP
 .PP
 Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity).
 .SS "XML Encoding"
@@ -191,4 +218,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBxml2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2002-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

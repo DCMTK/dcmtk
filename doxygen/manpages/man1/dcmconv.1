@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -8,6 +8,7 @@ dcmconv \- Convert DICOM file encoding
 .nf
 
 dcmconv [options] dcmfile-in dcmfile-out
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmconv\fP utility reads a DICOM file (\fIdicomfile-in\fP), performs an e
 dcmfile-in   DICOM input filename to be converted
 
 dcmfile-out  DICOM output filename to write to
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ dcmfile-out  DICOM output filename to write to
 
   -d   --debug
          debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -48,13 +51,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -73,6 +82,21 @@ parsing of odd-length attributes:
   +ae  --assume-even-length
          assume real length is one byte larger
 
+handling of undefined length UN elements:
+
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
+
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
+
+handling of defined length UN elements:
+  -uc   --retain-un
+          retain elements as UN (default)
+
+  +uc   --convert-un
+          convert to real VR if known
+
 automatic data correction:
 
   +dc  --enable-correction
@@ -84,10 +108,11 @@ automatic data correction:
 bitstream format of deflated input:
 
   +bd  --bitstream-deflated
-          expect deflated bitstream (default)
+         expect deflated bitstream (default)
 
   +bz  --bitstream-zlib
          expect deflated zlib bitstream
+.fi
 .PP
 .SS "output options"
 .PP
@@ -161,6 +186,7 @@ deflate compression level (only with --write-xfer-deflated):
 
   +cl  --compression-level  level: 0-9 (default 6)
          0=uncompressed, 1=fastest, 9=best compression
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -179,4 +205,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

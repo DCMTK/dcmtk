@@ -1,17 +1,18 @@
-.TH "dbregimg" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqridx" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dbregimg \- Register a DICOM image file in an image database index file
+dcmqridx \- Register a DICOM image file in an image database index file
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
 
-dbregimg [options] index-out [dcmimg-in...]
+dcmqridx [options] index-out [dcmimg-in...]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdbregimg\fP ulility registers DICOM image files in the database index file used by the \fBimagectn\fP and \fBti\fP applications. No image files are copied. \fBdbregimg\fP can also list the contents of the database index file.
+The \fBdcmqridx\fP ulility registers DICOM image files in the database index file used by the \fBdcmqrscp\fP and \fBdcmqrti\fP applications. No image files are copied. \fBdcmqridx\fP can also list the contents of the database index file.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -20,6 +21,7 @@ The \fBdbregimg\fP ulility registers DICOM image files in the database index fil
 index-out  storage area for the index file (directory)
 
 dcmimg-in  DICOM image file to be registered in the index file
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -43,12 +45,13 @@ dcmimg-in  DICOM image file to be registered in the index file
 
   -n  --not-new
         set instance reviewed status to 'not new'
+.fi
 .PP
 .SH "NOTES"
 .PP
-\fBdbregimg\fP attempts to add a reference to the database index file for each image-file provided on the command line.
+\fBdcmqridx\fP attempts to add a reference to the database index file for each image-file provided on the command line.
 .PP
-\fBdbregimg\fP disables the database back-end quota system so that no image files will be deleted.
+\fBdcmqridx\fP disables the database back-end quota system so that no image files will be deleted.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -58,12 +61,12 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBdbregimg\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmqridx\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "SEE ALSO"
 .PP
-\fBimagectn\fP(1), \fBti\fP(1)
+\fBdcmqrscp\fP(1), \fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1993-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

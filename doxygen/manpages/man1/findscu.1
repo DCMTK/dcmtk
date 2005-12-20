@@ -1,4 +1,4 @@
-.TH "findscu" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -8,6 +8,7 @@ findscu \- DICOM query (C-FIND) SCU
 .nf
 
 findscu [options] peer port [dcmfile_in...]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -22,6 +23,7 @@ peer        hostname of DICOM peer
 port        tcp/ip port number of peer
 
 dcmfile_in  DICOM query file(s)
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -40,6 +42,7 @@ dcmfile_in  DICOM query file(s)
 
   -d    --debug
           debug mode, print debug information
+.fi
 .PP
 .SS "network options"
 .PP
@@ -47,7 +50,7 @@ dcmfile_in  DICOM query file(s)
 
 override matching keys:
 
-  -k    --key  key: gggg,eeee="string"
+  -k    --key  key: gggg,eeee="str" or data dictionary name="str"
           override matching key
 
 query information model:
@@ -80,10 +83,33 @@ post-1993 value representations:
   -u    --disable-new-vr
           disable support for new VRs, convert to OB
 
+proposed transmission transfer syntaxes:
+
+  -x=   --propose-uncompr
+          propose all uncompressed TS, explicit VR
+          with local byte ordering first (default)
+
+  -xe   --propose-little
+          propose all uncompressed TS, explicit VR
+          little endian first
+
+  -xb   --propose-big
+          propose all uncompressed TS, explicit VR
+          big endian first
+
+  -xi   --propose-implicit
+          propose implicit VR little endian TS only
+
 other network options:
 
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
 
   -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
           set max receive pdu to n bytes (default: 16384)
@@ -99,6 +125,7 @@ other network options:
 
   -X    --extract
           extract responses to file (rsp0001.dcm, ...)
+.fi
 .PP
 .SS "transport layer security (TLS) options"
 .PP
@@ -171,6 +198,7 @@ peer authentication options:
 
   -ic   --ignore-peer-cert
           don't verify peer certificate
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -183,9 +211,8 @@ Each file supplied on the command line will be sent to the SCP as part of a C-FI
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
 (0010,0010) PN []            # PatientsName
 (0010,0020) LO []            # PatientID
-.PP
-.PP
 .fi
+.PP
 .PP
 Individual attributes of each file sent can be modified or supplemented using the '-k key' option. For example the command:
 .PP
@@ -193,9 +220,8 @@ Individual attributes of each file sent can be modified or supplemented using th
 .nf
 
 findscu -P -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
-.PP
-.PP
 .fi
+.PP
 .PP
 will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length. It is not possible to replace or insert attributes within sequences using the \fI-k\fP option.
 .PP
@@ -212,9 +238,8 @@ FINDPatientRootQueryRetrieveInformationModel       1.2.840.10008.5.1.4.1.2.1.1
 FINDStudyRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.2.1
 FINDPatientStudyOnlyQueryRetrieveInformationModel  1.2.840.10008.5.1.4.1.2.3.1
 FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
-.PP
-.PP
 .fi
+.PP
 .PP
 The \fBfindscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, \fI-O\fP or \fI-W\fP). Each proposed presentation context will propose the transfer syntaxes:
 .PP
@@ -224,9 +249,8 @@ The \fBfindscu\fP application will propose presentation contexts for one of the 
 LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
-.PP
-.PP
 .fi
+.PP
 .PP
 The \fBfindscu\fP application does not support extended negotiation.
 .SH "COMMAND LINE"
@@ -246,4 +270,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBmovescu\fP(1), \fBdump2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

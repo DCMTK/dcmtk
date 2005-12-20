@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -8,18 +8,20 @@ dcmdump \- Dump DICOM file and data set
 .nf
 
 dcmdump [options] dcmfile-in...
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
 The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square brackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage'). Empty value fields are described as '(no value available)'.
 .PP
-If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta- header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcmdump\fP to read a dataset with a particular transfer syntax.
+If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcmdump\fP to read a dataset with a particular transfer syntax.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 
 dcmfile-in  DICOM input filename to be dumped
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -35,6 +37,7 @@ dcmfile-in  DICOM input filename to be dumped
 
   -d   --debug
          debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -45,13 +48,19 @@ input file format:
   +f   --read-file
          read file format or data set (default)
 
+  +fo  --read-file-only
+         read file format only
+
   -f   --read-dataset
          read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=  --read-xfer-auto
          use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
 
   -te  --read-xfer-little
          read with explicit VR little endian TS
@@ -61,6 +70,46 @@ input transfer syntax (only with --read-dataset):
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+
+parsing of odd-length attributes:
+
+  +ao  --accept-odd-length
+         accept odd length attributes (default)
+
+  +ae  --assume-even-length
+         assume real length is one byte larger
+
+handling of undefined length UN elements:
+
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
+
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
+
+handling of defined length UN elements:
+  -uc   --retain-un
+          retain elements as UN (default)
+
+  +uc   --convert-un
+          convert to real VR if known
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
+
+bitstream format of deflated input:
+
+  +bd  --bitstream-deflated
+         expect deflated bitstream (default)
+
+  +bz  --bitstream-zlib
+         expect deflated zlib bitstream
+.fi
 .PP
 .SS "output options"
 .PP
@@ -73,6 +122,9 @@ printing:
 
   -M   --load-short
          do not load very long values (e.g. pixel data)
+
+  +R   --max-read-length  [k]bytes: integer [4..4194302] (default: 4)
+         set threshold for long values to k kbytes
 
   +L   --print-all
          print long tag values completely
@@ -116,6 +168,7 @@ writing:
   +W   --write-pixel  [d]irectory : string
          write pixel data to a .raw file stored in d
          (little endian, filename created automatically)
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -134,4 +187,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

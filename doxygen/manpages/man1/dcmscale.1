@@ -1,4 +1,4 @@
-.TH "dcmscale" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmscale" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmscale \- Scale DICOM images
@@ -8,6 +8,7 @@ dcmscale \- Scale DICOM images
 .nf
 
 dcmscale [options] dcmfile-in dcmfile-out
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmscale\fP utility reads a DICOM image, scales it according to the comma
 dcmfile-in   DICOM input filename to be scaled
 
 dcmfile-out  DICOM output filename to be written
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -38,6 +40,7 @@ dcmfile-out  DICOM output filename to be written
 
   -d    --debug
           debug mode, print debug information
+.fi
 .PP
 .SS "input options"
 .PP
@@ -48,13 +51,19 @@ input file format:
   +f    --read-file
           read file format or data set (default)
 
+  +fo   --read-file-only
+          read file format only
+
   -f    --read-dataset
           read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=   --read-xfer-auto
           use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
   -te   --read-xfer-little
           read with explicit VR little endian TS
@@ -64,6 +73,7 @@ input transfer syntax (only with --read-dataset):
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
+.fi
 .PP
 .SS "processing options"
 .PP
@@ -98,6 +108,10 @@ scaling:
   +Syv  --scale-y-size  [n]umber : integer
           scale y axis to n pixels, auto-compute x axis
 
+other transformations:
+  +C    --clip-region  [l]eft [t]op [w]idth [h]eight : integer
+          clip rectangular image region (l, t, w, h)
+
 SOP Instance UID options:
 
   +ua   --uid-always
@@ -105,6 +119,7 @@ SOP Instance UID options:
 
   +un   --uid-never
           never assign new SOP Instance UID
+.fi
 .PP
 .SS "output options"
 .PP
@@ -168,9 +183,10 @@ data set trailing padding (not with --write-dataset):
   -p    --padding-off
           no padding (implicit if --write-dataset)
 
-  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+  +p    --padding-create  [f]ile-pad [i]tem-pad : integer
           align file on multiple of f bytes and items on
           multiple of i bytes
+.fi
 .PP
 .SH "COMMAND LINE"
 .PP
@@ -186,4 +202,4 @@ The \fBdcmscale\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2002-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2002-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

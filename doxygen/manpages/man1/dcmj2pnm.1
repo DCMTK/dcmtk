@@ -1,4 +1,4 @@
-.TH "dcmj2pnm" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmj2pnm" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmj2pnm \- Convert DICOM images to PGM, PPM, BMP, TIFF or JPEG
@@ -8,6 +8,7 @@ dcmj2pnm \- Convert DICOM images to PGM, PPM, BMP, TIFF or JPEG
 .nf
 
 dcmj2pnm [options] dcmfile-in [pnmfile-out]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
@@ -20,6 +21,7 @@ The \fBdcmj2pnm\fP utility reads a DICOM image, converts the pixel data accordin
 dcmfile-in   DICOM input filename to be converted
 
 pnmfile-out  output filename to be written (default: stdout)
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -44,6 +46,7 @@ pnmfile-out  output filename to be written (default: stdout)
 
   -im   --image-info
           info mode, print image details
+.fi
 .PP
 .SS "input options"
 .PP
@@ -54,13 +57,19 @@ input file format:
   +f    --read-file
           read file format or data set (default)
 
+  +fo   --read-file-only
+          read file format only
+
   -f    --read-dataset
           read data set without file meta information
 
-input transfer syntax (only with --read-dataset):
+input transfer syntax:
 
   -t=   --read-xfer-auto
           use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
   -te   --read-xfer-little
           read with explicit VR little endian TS
@@ -70,6 +79,7 @@ input transfer syntax (only with --read-dataset):
 
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
+.fi
 .PP
 .SS "image processing options"
 .PP
@@ -198,10 +208,13 @@ overlay:
           (default for Graphic overlays)
 
   +Omt  --ovl-threshold
-          use overlay mode "Threshold-Replace"
+          use overlay mode "Threshold Replace"
 
   +Omc  --ovl-complement
           use overlay mode "Complement"
+
+  +Omv  --ovl-invert
+          use overlay mode "Invert Bitmap"
 
   +Omi  --ovl-roi
           use overlay mode "Region of Interest"
@@ -258,7 +271,7 @@ compatibility options:
   +Mv   --ignore-vlut-depth
           ignore 3rd value of the VOI LUT descriptor,
           determine bits per table entry automatically
-          
+
 TIFF options:
 
   +Tl   --compr-lzw
@@ -322,6 +335,7 @@ other transformations:
 
   +C    --clip-region  [l]eft [t]op [w]idth [h]eight : integer
           clip image region (l, t, w, h)
+.fi
 .PP
 .SS "output options"
 .PP
@@ -359,6 +373,7 @@ other transformations:
 
   +oj   --write-jpeg
           write 8-bit lossy JPEG (baseline)
+.fi
 .PP
 .SH "NOTES"
 .PP
@@ -393,4 +408,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcm2pnm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

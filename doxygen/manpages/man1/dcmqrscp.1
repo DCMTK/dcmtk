@@ -1,25 +1,27 @@
-.TH "imagectn" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmqrscp" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-imagectn \- DICOM image archive (central test node)
+dcmqrscp \- DICOM image archive (central test node)
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
 
-imagectn [options] [port]
+dcmqrscp [options] [port]
+.fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The Image Central Test Node (\fBimagectn\fP) Application implements a simple image archive. It manages a number of storage areas and allows images to be stored in these storage areas using the DICOM Storage Service Class. It also allows image attributes to be queried and images to be retrieved using the DICOM Query/Retrieve Service Class. The \fBimagectn\fP application also implements access restriction rules to limit operations to specific peer application entities.
+The Image Central Test Node (\fBdcmqrscp\fP) Application implements a simple image archive. It manages a number of storage areas and allows images to be stored in these storage areas using the DICOM Storage Service Class. It also allows image attributes to be queried and images to be retrieved using the DICOM Query/Retrieve Service Class. The \fBdcmqrscp\fP application also implements access restriction rules to limit operations to specific peer application entities.
 .PP
-The \fBimagectn\fP application is intended to be used in DICOM demonstrations and as a compatibilitiy test tool. In particular, imagectn will delete images if its quota restrictions have been exceeded.
+The \fBdcmqrscp\fP application is intended to be used in DICOM demonstrations and as a compatibilitiy test tool. In particular, \fBdcmqrscp\fP will delete images if its quota restrictions have been exceeded.
 .SH "PARAMETERS"
 .PP
 .PP
 .nf
 
 port  tcp/ip port number to listen on (default: in config file)
+.fi
 .PP
 .SH "OPTIONS"
 .PP
@@ -42,25 +44,26 @@ port  tcp/ip port number to listen on (default: in config file)
   -d    --debug
           debug mode, print debug information
 
-  -c    --config  [f]ilename: string (default: imagectn.cfg)
+  -c    --config  [f]ilename: string (default: dcmqrscp.cfg)
           use specific configuration file
 
   # This option allows a specific configuration file to be
   # specified.  By default, the configuration file in the current
-  # working directory with the name "imagectn.cfg" will be used
-  # (i.e. the file ./imagectn.cfg).  It is an error if a valid
+  # working directory with the name "dcmqrscp.cfg" will be used
+  # (i.e. the file ./dcmqrscp.cfg).  It is an error if a valid
   # configuration file is not available.  See the documentation
   # on configuration for more information (ctnconf.txt and the
-  # example configuration file imagectn.cfg).
+  # example configuration file dcmqrscp.cfg).
 
   -s    --single-process
           single process mode
 
-  # This option instructs imagectn to run in single process mode.
-  # Normally, imagectn will spawn a new copy of itself to handle
+  # This option instructs dcmqrscp to run in single process mode.
+  # Normally, dcmqrscp will spawn a new copy of itself to handle
   # each association.  This option will prevent such copies being
   # spawned and is particularly useful when running within a
   # debugger.
+.fi
 .PP
 .SS "database options"
 .PP
@@ -72,7 +75,7 @@ association negotiation:
           reject all MOVE/GET presentation contexts for
           which no corresponding FIND context is proposed
 
-  # This option causes imagectn to enforce a restriction about
+  # This option causes dcmqrscp to enforce a restriction about
   # FIND and MOVE presentation contexts.  The RSNA'93 demonstration
   # required that a CTN refuse to accept a presentation context for
   # a MOVE if a FIND presentation context is not also requested.
@@ -82,11 +85,11 @@ association negotiation:
           reject multiple simultaneous STORE presentation
           contexts for one application entity title
 
-  # This option causes imagectn to refuse storage presentations
+  # This option causes dcmqrscp to refuse storage presentations
   # contexts for AE Titles if another association has already
   # sucessfully negotiated storage presentation contexts for the
   # AE Title.  This option should only be needed for debugging
-  # since the imagectn database back-end sequentialises access via
+  # since the dcmqrscp database back-end sequentialises access via
   # file-locking.
 
         --disable-get
@@ -100,9 +103,9 @@ checking identifier validity:
   -XF   --check-find
           check C-FIND identifier validity
 
-  # This option causes imagectn database back-end to perform checks
+  # This option causes dcmqrscp database back-end to perform checks
   # on the Query Identifiers for a C-FIND command.  With this option,
-  # imagectn will reject any queries which do not conform to the very
+  # dcmqrscp will reject any queries which do not conform to the very
   # strict DICOM rules for Query Identifiers.
 
         --no-check-find
@@ -112,9 +115,9 @@ checking identifier validity:
           check C-MOVE identifier validity
 
 
-  # This option causes imagectn database back-end to perform checks
+  # This option causes dcmqrscp database back-end to perform checks
   # on the Query Identifiers for a C-MOVE command.  With this option,
-  # imagectn will reject any queries which do not conform to the very
+  # dcmqrscp will reject any queries which do not conform to the very
   # strict DICOM rules for Query Identifiers.
 
         --no-check-move
@@ -144,24 +147,84 @@ restriction of query/retrieve models:
 
   -QO   --no-patient-study
           do not support Patient/Study Only Q/R models
+.fi
 .PP
 .SS "network options"
 .PP
 .nf
 
-preferred network transfer syntaxes for uncompressed transfer:
+preferred network transfer syntaxes (incoming associations):
 
-  +x=   --prefer-uncompr
+  +x=   --prefer-uncompr       
           prefer explicit VR local byte order (default)
 
-  +xe   --prefer-little
+  +xe   --prefer-little        
           prefer explicit VR little endian TS
 
-  +xb   --prefer-big
+  +xb   --prefer-big           
           prefer explicit VR big endian TS
 
-  +xi   --implicit
+  +xs   --prefer-lossless      
+          prefer default JPEG lossless TS
+
+  +xy   --prefer-jpeg8         
+          prefer default JPEG lossy TS for 8 bit data
+
+  +xx   --prefer-jpeg12        
+          prefer default JPEG lossy TS for 12 bit data
+
+  +xr   --prefer-rle           
+          prefer RLE lossless TS
+
+  +xv   --prefer-j2k-lossless  
+          prefer JPEG 2000 lossless TS
+
+  +xw   --prefer-j2k-lossy     
+          prefer JPEG 2000 lossy TS
+
+  +xd   --prefer-deflated      
+          prefer deflated expl. VR little endian TS
+
+  +xi   --implicit             
           accept implicit VR little endian TS only
+
+proposed transmission transfer syntaxes (outgoing associations):
+
+  -x=   --propose-uncompr       
+          propose all uncompressed TS, explicit VR
+          with local byte ordering first (default)
+
+  -xe   --propose-little        
+          propose all uncompressed TS, explicit VR
+          little endian first
+
+  -xb   --propose-big           
+          propose all uncompressed TS, explicit VR
+          big endian first
+
+  -xs   --propose-lossless      
+          propose default JPEG lossless TS
+
+  -xy   --propose-jpeg8         
+          propose default JPEG lossy TS for 8 bit data
+
+  -xx   --propose-jpeg12        
+          propose default JPEG lossy TS for 12 bit data
+
+  -xv   --propose-j2k-lossless  
+          propose default JPEG 2000 lossless TS
+
+  -xw   --propose-j2k-lossy     
+          propose default JPEG 2000 lossy TS
+
+  -xr   --propose-rle           
+          propose RLE lossless TS
+
+  -xd   --propose-deflated      
+          propose deflated expl. VR little endian TS
+
+  -xi   --propose-implicit      
+          propose implicit VR little endian TS only
 
 network host access control (tcp wrapper) options:
 
@@ -175,6 +238,12 @@ other network options:
 
   -to   --timeout  [s]econds: integer (default: unlimited)
           timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
 
   -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
           set max receive pdu to n bytes (default: 16384)
@@ -191,13 +260,14 @@ other network options:
         --ignore
           ignore store data, receive but do not store
 
-  # This option causes imagectn database back-end to ignore
+  # This option causes dcmqrscp database back-end to ignore
   # all images received by the Storage Service Class.  All images
   # will be received from the network but not stored to disk nor
   # recorded in database.
 
   -up   --uid-padding
           silently correct space-padded UIDs
+.fi
 .PP
 .SS "encapsulated pixel data encoding options"
 .PP
@@ -215,6 +285,7 @@ post-1993 value representations:
   # DICOM encoded data to a file to the network.  This option can be
   # used to force compatibility with applications which do not support
   # these value representations.
+.fi
 .PP
 .SS "output options"
 .PP
@@ -278,18 +349,19 @@ data set trailing padding (not with --write-dataset or --bit-preserving):
   +p    --padding-create  [f]ile-pad [i]tem-pad: integer
           align file on multiple of f bytes
           and items on multiple of i bytes
+.fi
 .PP
 .SH "NOTES"
 .PP
 .SS "Operation"
-\fBimagectn\fP waits for another application to connect at the presentation address (port number) specified in its configuration file (or overridden by a command line option). When another application connects, \fBimagectn\fP expects it to be a DICOM application and to use calling and called AE Titles specified in \fBimagectn's\fP configuration file. imagectn will accept associations with Presentation Contexts for SOP Classes of the Verification Service Class, Storage Service Class and Query/Retreive Service Class. Associations will be rejected or Presentation Contexts will be refused if the peer application does not have appropriate access rights as specified by \fBimagectn\fP configuration file.
+\fBdcmqrscp\fP waits for another application to connect at the presentation address (port number) specified in its configuration file (or overridden by a command line option). When another application connects, \fBdcmqrscp\fP expects it to be a DICOM application and to use calling and called AE Titles specified in \fBdcmqrscp's\fP configuration file. \fBdcmqrscp\fP will accept associations with Presentation Contexts for SOP Classes of the Verification Service Class, Storage Service Class and Query/Retreive Service Class. Associations will be rejected or Presentation Contexts will be refused if the peer application does not have appropriate access rights as specified by \fBdcmqrscp\fP configuration file.
 .PP
-\fBimagectn\fP will receive images on Presentation Contexts of the Storage Service Class, write them to a configurable storage area associated with the class AE title, extract attributes from these images and store them in a database. \fBimagectn\fP will receive query requests and generate query responses on Presentation Contexts of the Query/Retrieve Service class. \fBimagectn\fP will receive retrieve requests and generate retrieve responses on Presentation Contexts of the Query/Retrieve Service class. \fBimagectn\fP will also process C-CANCEL messages to interrupt query/retrieve operations.
+\fBdcmqrscp\fP will receive images on Presentation Contexts of the Storage Service Class, write them to a configurable storage area associated with the class AE title, extract attributes from these images and store them in a database. \fBdcmqrscp\fP will receive query requests and generate query responses on Presentation Contexts of the Query/Retrieve Service class. \fBdcmqrscp\fP will receive retrieve requests and generate retrieve responses on Presentation Contexts of the Query/Retrieve Service class. \fBdcmqrscp\fP will also process C-CANCEL messages to interrupt query/retrieve operations.
 .PP
-Under normal operations \fBimagectn\fP will never exit, it keeps on waiting for new associations until killed.
+Under normal operations \fBdcmqrscp\fP will never exit, it keeps on waiting for new associations until killed.
 .SS "DICOM Conformance"
 .SS "SCU Conformance"
-The \fBimagectn\fP application supports the following SOP Classes as an SCU:
+The \fBdcmqrscp\fP application supports the following SOP Classes as an SCU:
 .PP
 .PP
 .nf
@@ -306,55 +378,28 @@ DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
 DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
 DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
+StandaloneModalityLUTStorage                         1.2.840.10008.5.1.4.1.1.10
+EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
+StandaloneVOILUTStorage                              1.2.840.10008.5.1.4.1.1.11
+GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
+ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.2
+PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
+BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
+XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
+EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
+XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
+EnhancedXRFImageStorage                              1.2.840.10008.5.1.4.1.1.12.2.1
+RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
+PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
+PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
-RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
-RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
-UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
-SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
-MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
-MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
-MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
-MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
-StandaloneOverlayStorage                             1.2.840.10008.5.1.4.1.1.8
-StandaloneCurveStorage                               1.2.840.10008.5.1.4.1.1.9
-TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
-GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
-AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
-HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
-CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
-BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
-StandaloneModalityLUTStorage                         1.2.840.10008.5.1.4.1.1.10
-StandaloneVOILUTStorage                              1.2.840.10008.5.1.4.1.1.11
-GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
-XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
-XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
-RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
-NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
-RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
-SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
-SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
-VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
-VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
-VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
-MicroscopicImageStorage                              1.2.840.10008.5.1.4.1.1.77.1.2.1
-VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
-VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
-VideoPhotographicImageStorage                        1.2.840.10008.5.1.4.1.1.77.1.4.1
-BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
-ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
-PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
-PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
 RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
 RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
 RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
@@ -362,11 +407,55 @@ RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481
 RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
 RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
-.PP
-.PP
+RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
+RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
+UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
+SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
+SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
+RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
+RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
+VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
+VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
+VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
+VideoMicroscopicImageStorage                         1.2.840.10008.5.1.4.1.1.77.1.2.1
+VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
+VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
+VideoPhotographicImageStorage                        1.2.840.10008.5.1.4.1.1.77.1.4.1
+OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.1.5.1
+OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
+StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
+RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
+StandaloneOverlayStorage                             1.2.840.10008.5.1.4.1.1.8
+DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
+DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
+DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
+DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4
+BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSR                                  1.2.840.10008.5.1.4.1.1.88.67
+StandaloneCurveStorage                               1.2.840.10008.5.1.4.1.1.9
+DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
+TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
+GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
+AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
+CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
+BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
 .fi
 .PP
-The \fBimagectn\fP application will propose presentation contexts for all of the abovementioned supported SOP Classes using the transfer syntaxes:
+.PP
+The \fBdcmqrscp\fP application will propose presentation contexts for all of the abovementioned supported SOP Classes using the transfer syntaxes:
 .PP
 .PP
 .nf
@@ -374,13 +463,12 @@ The \fBimagectn\fP application will propose presentation contexts for all of the
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
-.PP
-.PP
 .fi
 .PP
-The \fBimagectn\fP application does not support extended negotiation.
+.PP
+The \fBdcmqrscp\fP application does not support extended negotiation.
 .SS "SCP Conformance"
-The \fBimagectn\fP application supports the following SOP Classes as an SCP:
+The \fBdcmqrscp\fP application supports the following SOP Classes as an SCP:
 .PP
 .PP
 .nf
@@ -407,55 +495,19 @@ DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
 DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
 DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
 DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
+GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
+XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
+XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
+PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
+PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
 CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
 EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
 RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
 UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
 MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
 EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
 MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
-RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
-RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
-UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
-SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
-MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
-MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
-MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
-MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
-StandaloneOverlayStorage                             1.2.840.10008.5.1.4.1.1.8
-StandaloneCurveStorage                               1.2.840.10008.5.1.4.1.1.9
-TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
-GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
-AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
-HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
-CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
-BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
-StandaloneModalityLUTStorage                         1.2.840.10008.5.1.4.1.1.10
-StandaloneVOILUTStorage                              1.2.840.10008.5.1.4.1.1.11
-GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
-XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
-XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
-RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
-NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
-RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
-SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
-SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
-VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
-VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
-VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
-MicroscopicImageStorage                              1.2.840.10008.5.1.4.1.1.77.1.2.1
-VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
-VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
-VideoPhotographicImageStorage                        1.2.840.10008.5.1.4.1.1.77.1.4.1
-BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
-EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
-ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
-ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
-MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
-KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
-ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
-PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
-PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
 RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
 RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
 RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
@@ -463,13 +515,45 @@ RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481
 RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
 RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
+RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
+UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
+SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
+SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
+SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
+VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
+VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
+VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
+VideoMicroscopicImageStorage                         1.2.840.10008.5.1.4.1.1.77.1.2.1
+VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
+VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
+VideoPhotographicImageStorage                        1.2.840.10008.5.1.4.1.1.77.1.4.1
+Ophthalmic8BitPhotographyImageStorage                1.2.840.10008.5.1.4.1.1.77.1.5.1
+Ophthalmic16BitPhotographyImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
+StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
+BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
+TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
+GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
+AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
+CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
+BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
 
 PrivateShutdownSOPClass                              1.2.276.0.7230010.3.4.1915765545.18030.917282194.0
-.PP
-.PP
 .fi
 .PP
-The \fBimagectn\fP application will accept presentation contexts for all of the above mentioned supported SOP Classes using any of the transfer syntaxes:
+.PP
+The \fBdcmqrscp\fP application will accept presentation contexts for all of the above mentioned supported SOP Classes using any of the transfer syntaxes:
 .PP
 .PP
 .nf
@@ -477,17 +561,16 @@ The \fBimagectn\fP application will accept presentation contexts for all of the 
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
-.PP
-.PP
 .fi
 .PP
-The \fBimagectn\fP application will prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBimagectn\fP is running on big-endian hardware it will prefer BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and vice versa).
 .PP
-The \fBimagectn\fP application does not support extended negotiation.
+The \fBdcmqrscp\fP application will prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBdcmqrscp\fP is running on big-endian hardware it will prefer BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and vice versa).
+.PP
+The \fBdcmqrscp\fP application does not support extended negotiation.
 .SS "Configuration"
-The \fBimagectn\fP program uses the same configuration file as the \fBti\fP program. See the documentation on configuration for more information.
+The \fBdcmqrscp\fP program uses the same configuration file as the \fBti\fP program. See the documentation on configuration for more information.
 .SS "Access Control"
-When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBimagectn\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
+When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBdcmqrscp\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -497,19 +580,19 @@ Command line options are distinguished from parameters by a leading '+' or '-' s
 In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBimagectn\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmqrscp\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "FILES"
 .PP
-\fIshare/doc/ctnconf.txt\fP - configuration information 
+\fIshare/doc/dcmqrcnf.txt\fP - configuration information 
 .br
-\fIshare/doc/ctnsetup.txt\fP - setup information 
+\fIshare/doc/dcmqrset.txt\fP - setup information 
 .br
-\fIetc/imagectn.cfg\fP - example configuration file
+\fIetc/dcmqrscp.cfg\fP - example configuration file
 .SH "SEE ALSO"
 .PP
-\fBti\fP(1)
+\fBdcmqrti\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1993-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1993-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
