@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: joergr $, $Date: 2005-12-15 17:44:16 $
+** Last Update:         $Author: meichel $, $Date: 2005-12-20 11:20:37 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.70 $
+** Revision:            $Revision: 1.71 $
 ** Status:              $State: Exp $
 */
 
@@ -1656,7 +1656,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0)) 
         {
             char buf4[256];
-            sprintf(buf4, "Error %i while creating anonymous pipe",GetLastError());
+            sprintf(buf4, "Error %i while creating anonymous pipe",OFstatic_cast(int, GetLastError()));
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
         }
 
@@ -1710,7 +1710,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 				// send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
                 char buf5[20];
-                sprintf(buf5,"%i",childSocketHandle);
+                sprintf(buf5,"%i",(int)childSocketHandle);
                 if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5)+1, &bytesWritten, NULL)) 
 				{
                     CloseHandle(hChildStdInWriteDup);
@@ -1719,7 +1719,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
 				// return OF_ok status code DULC_FORKEDCHILD with descriptive text
                 char buf4[256];
-                sprintf(buf4, "new child process started with pid %i, socketHandle %i", pi.dwProcessId, childSocketHandle);
+                sprintf(buf4, "new child process started with pid %i, socketHandle %i", 
+                  OFstatic_cast(int, pi.dwProcessId), 
+                  (int)childSocketHandle);
                 return makeDcmnetCondition (DULC_FORKEDCHILD, OF_ok, buf4);
             }
             else 
@@ -2596,7 +2598,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.70  2005-12-15 17:44:16  joergr
+** Revision 1.71  2005-12-20 11:20:37  meichel
+** Added various typecasts needed to avoid warnings on MinGW.
+**
+** Revision 1.70  2005/12/15 17:44:16  joergr
 ** Removed unused variables on non-Windows systems, reported by Sun CC 2.0.1.
 **
 ** Revision 1.69  2005/12/15 11:01:17  joergr
