@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:06 $
+ *  Update Date:      $Date: 2005-12-20 11:21:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -331,7 +331,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 
     ASC_getPresentationAddresses(origAssoc->params, origHostName, NULL);
 
-    if (!mapMoveDestination(config, origHostName, origAETitle,
+    if (!mapMoveDestination(origHostName, origAETitle,
 	request->MoveDestination, dstHostName, &dstPortNumber)) {
 	return APP_INVALIDPEER;
     }
@@ -500,7 +500,6 @@ void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
 }
 
 OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
-  const DcmQueryRetrieveConfig *config,
   const char *origPeer, const char *origAE,
   const char *dstAE, char *dstPeer, int *dstPort)
 {
@@ -699,7 +698,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.8  2005-12-08 15:47:06  meichel
+ * Revision 1.9  2005-12-20 11:21:30  meichel
+ * Removed duplicate parameter
+ *
+ * Revision 1.8  2005/12/08 15:47:06  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2005/11/29 10:54:52  meichel

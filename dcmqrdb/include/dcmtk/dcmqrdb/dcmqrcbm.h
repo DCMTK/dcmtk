@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 08:32:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-12-20 11:21:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,6 @@ private:
     void failAllSubOperations(DcmQueryRetrieveDatabaseStatus * dbStatus);
     void buildFailedInstanceList(DcmDataset ** rspIds);
     OFBool mapMoveDestination(
-      const DcmQueryRetrieveConfig *config,
       const char *origPeer, const char *origAE,
       const char *dstAE, char *dstPeer, int *dstPort);
     OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params);
@@ -194,7 +193,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbm.h,v $
- * Revision 1.3  2005-12-15 08:32:49  joergr
+ * Revision 1.4  2005-12-20 11:21:30  meichel
+ * Removed duplicate parameter
+ *
+ * Revision 1.3  2005/12/15 08:32:49  joergr
  * Fixed issue with initialization of array member variables, reported by egcs
  * on Solaris. Fixed missing/wrong initialization of member variables.
  *
