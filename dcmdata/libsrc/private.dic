@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2005, OFFIS
+#  Copyright (C) 1994-2006, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -21,9 +21,9 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2005-10-24 16:56:22 $
-#  CVS/RCS Revision: $Revision: 1.11 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2006-01-17 15:52:05 $
+#  CVS/RCS Revision: $Revision: 1.12 $
 #  Status:           $State: Exp $
 #
 #
@@ -1011,11 +1011,26 @@
 (0043,"GE_GENESIS_REV3.0",1e)	DS	DeltaStartTime	1
 (0043,"GE_GENESIS_REV3.0",27)	SH	ScanPitchRatio	1
 
+(0029,"INTELERAD MEDICAL SYSTEMS",01)	FD	ImageCompressionFraction	1
+(0029,"INTELERAD MEDICAL SYSTEMS",02)	FD	ImageQuality	1
+(0029,"INTELERAD MEDICAL SYSTEMS",03)	FD	ImageBytesTransferred	1
+(0029,"INTELERAD MEDICAL SYSTEMS",10)	SH	J2cParameterType	1
+(0029,"INTELERAD MEDICAL SYSTEMS",11)	US	J2cPixelRepresentation	1
+(0029,"INTELERAD MEDICAL SYSTEMS",12)	US	J2cBitsAllocated	1
+(0029,"INTELERAD MEDICAL SYSTEMS",13)	US	J2cPixelShiftValue	1
+(0029,"INTELERAD MEDICAL SYSTEMS",14)	US	J2cPlanarConfiguration	1
+(0029,"INTELERAD MEDICAL SYSTEMS",15)	DS	J2cRescaleIntercept	1
+(0029,"INTELERAD MEDICAL SYSTEMS",20)	LO	PixelDataMD5SumPerFrame	1
+(0029,"INTELERAD MEDICAL SYSTEMS",21)	US	HistogramPercentileLabels	1
+(0029,"INTELERAD MEDICAL SYSTEMS",22)	FD	HistogramPercentileValues	1
 (3f01,"INTELERAD MEDICAL SYSTEMS",01)	LO	InstitutionCode	1
 (3f01,"INTELERAD MEDICAL SYSTEMS",02)	LO	RoutedTransferAE	1
 (3f01,"INTELERAD MEDICAL SYSTEMS",03)	LO	SourceAE	1
-(3f01,"INTELERAD MEDICAL SYSTEMS",04)	LO	DeferredValidation	1
+(3f01,"INTELERAD MEDICAL SYSTEMS",04)	SH	DeferredValidation	1
 (3f01,"INTELERAD MEDICAL SYSTEMS",05)	LO	SeriesOwner	1
+(3f01,"INTELERAD MEDICAL SYSTEMS",06)	LO	OrderGroupNumber	1
+(3f01,"INTELERAD MEDICAL SYSTEMS",07)	SH	StrippedPixelData	1
+(3f01,"INTELERAD MEDICAL SYSTEMS",08)	SH	PendingMoveRequest	1
 
 (0041,"INTEGRIS 1.0",20)	FL	AccumulatedFluoroscopyDose	1
 (0041,"INTEGRIS 1.0",30)	FL	AccumulatedExposureDose	1
