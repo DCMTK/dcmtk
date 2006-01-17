@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:44 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-01-17 18:35:42 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
             {
-                ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << isSigned() << endl;
+                ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << this->isSigned() << endl;
                 ofConsole.unlockCerr();
             }
 #endif
@@ -599,7 +599,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.30  2005-12-08 16:47:44  meichel
+ * Revision 1.31  2006-01-17 18:35:42  joergr
+ * Fixed compilation problem with gcc 4.0 on Linux x86_64.
+ *
+ * Revision 1.30  2005/12/08 16:47:44  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.29  2004/04/21 10:00:36  meichel
