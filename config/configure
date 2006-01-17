@@ -261,7 +261,7 @@ PACKAGE_STRING='DCMTK 3.5.4a'
 PACKAGE_BUGREPORT='dicom-bugs@offis.de'
 
 ac_unique_file="Makefile.in"
-ac_default_prefix=/usr/local
+ac_default_prefix=/usr/local/dicom
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -1420,6 +1420,7 @@ fi
 
 
 common_makefile=Makefile.def
+
 
 
 ac_aux_dir=
@@ -22291,7 +22292,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22294 "configure"
+#line 22295 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -22820,7 +22821,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22823 "configure"
+#line 22824 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -22893,7 +22894,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22896 "configure"
+#line 22897 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -22966,7 +22967,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22969 "configure"
+#line 22970 "configure"
 #include "confdefs.h"
 
 template <class T>
