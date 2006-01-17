@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(DCMTK, 3.5.3, [dicom-bugs@offis.de], [dcmtk-3.5.3])
+AC_INIT(DCMTK, 3.5.4, [dicom-bugs@offis.de], [dcmtk-3.5.4])
 AC_PREREQ(2.50)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/dcmtk/config/cfunix.h)
@@ -30,13 +30,10 @@ dnl -------------------------------------------------------
 
 if test "x$prefix" = xNONE ; then
 AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}", [Define the DCMTK default path])
-eval dcm_dict="${ac_default_prefix}/lib/dicom.dic"
 else
 AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}", [Define the DCMTK default path])
-eval dcm_dict="${datadir}/dcmtk/dicom.dic"
 fi
-
-AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${dcm_dict}", [Define the default data dictionary path for the dcmdata library package])
+AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, DCMTK_PREFIX "/lib/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
 
 AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator */
 #define PATH_SEPARATOR '/'])
@@ -52,7 +49,7 @@ AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass comman
 AH_TOP([#ifndef CFUNIX_H
 #define CFUNIX_H
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix. 
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
@@ -495,7 +492,7 @@ if test $THREADSUPPORT = posix ; then
 	*-*-darwin8.*)
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE $CFLAGS"
-	  ;; 
+	  ;;
 	*)
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
@@ -531,7 +528,7 @@ if test $THREADSUPPORT = posix ; then
 	*-*-darwin8.*)
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE $CFLAGS"
-	  ;; 
+	  ;;
 	*)
 	  CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
 	  CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
@@ -766,10 +763,10 @@ AC_ARG_WITH(openssl,
   esac ],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS -lssl -lcrypto"
-  AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()], 
+  AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support])
-      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ], 
+      OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
@@ -827,10 +824,10 @@ AC_ARG_WITH(zlib,
   esac ],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS -lz"
-  AC_TRY_LINK([#include <zlib.h>], [(void) zlibVersion()], 
+  AC_TRY_LINK([#include <zlib.h>], [(void) zlibVersion()],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support])
-      ZLIBLIBS="-lz" ], 
+      ZLIBLIBS="-lz" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
@@ -878,12 +875,12 @@ AC_ARG_WITH(libtiff,
   esac ],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
-  AC_TRY_LINK([#include <tiffio.h>], [(void) TIFFGetVersion()], 
+  AC_TRY_LINK([#include <tiffio.h>], [(void) TIFFGetVersion()],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
-      TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS" 
+      TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
       AC_LIBTIFF_LZW_COMPRESSION
-    ], 
+    ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
@@ -906,7 +903,7 @@ if test "${with_libpnginc+set}" = set; then
       CPPFLAGS="-I${with_libpnginc}/include $CPPFLAGS"
       LDFLAGS="-L${with_libpnginc}/lib $LDFLAGS"
     ;;
-    esac        
+    esac
 fi
 
 dnl perform check for <libpng/png.h> only after we have evaluated --with-libpnginc
@@ -940,10 +937,10 @@ AC_ARG_WITH(libpng,
 #include <libpng/png.h>
 #else
 #include <png.h>
-#endif], [(void) png_access_version_number()], 
+#endif], [(void) png_access_version_number()],
         [ AC_MSG_RESULT(yes)
           AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support])
-          PNGLIBS="-lpng" ], 
+          PNGLIBS="-lpng" ],
         [AC_MSG_RESULT(no)])
 
       LIBS="$SAVELIBS"
@@ -998,10 +995,10 @@ AC_ARG_WITH(libxml,
   esac ],
 [ SAVELIBS="$LIBS"
   LIBS="$LIBS -lxml2 $ZLIBLIBS"
-  AC_TRY_LINK([#include <libxml/parser.h>], [(void) xmlInitParser()], 
+  AC_TRY_LINK([#include <libxml/parser.h>], [(void) xmlInitParser()],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support])
-      XMLLIBS="-lxml2" ], 
+      XMLLIBS="-lxml2" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
@@ -1062,10 +1059,10 @@ AC_ARG_WITH(libwrap,
     }
     #endif
     int deny_severity = 0;
-    int allow_severity = 0;], [struct request_info r; (void) hosts_access(&r)], 
+    int allow_severity = 0;], [struct request_info r; (void) hosts_access(&r)],
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support])
-    TCPWRAPPERLIBS="-lwrap" ], 
+    TCPWRAPPERLIBS="-lwrap" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
