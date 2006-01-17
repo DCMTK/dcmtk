@@ -59,9 +59,10 @@ install-support: $(DICTFILE) $(PRIVDICTFILE)
 	$(configdir)/mkinstalldirs $(libdir)
 	if [ "x$(INSTALL_PRIVATE_DICTIONARY)" = "xYES" ] ; then \
 		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ; \
-		$(INSTALL_DATA) dicom.tmp $(libdir)/dicom.dic ; \
+		$(INSTALL_DATA) dicom.tmp $(libdir)/$(DICTFILE) ; \
 	else \
-		$(INSTALL_DATA) $(DICTFILE) $(libdir)/dicom.dic ; \
+		$(INSTALL_DATA) $(DICTFILE) $(libdir)/$(DICTFILE) ; \
+		$(INSTALL_DATA) $(PRIVDICTFILE) $(libdir)/$(PRIVDICTFILE) ; \
 	fi
 
 
