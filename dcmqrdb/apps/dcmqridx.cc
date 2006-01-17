@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: This test program registers image files in the image database.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 17:43:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-01-17 18:36:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,10 +176,10 @@ int main (int argc, char *argv[])
                 if (DU_findSOPClassAndInstanceInFile(opt_imageFile, sclass, sinst))
                 {
 #ifdef DEBUG
-                    if (DB_getDebugLevel() > 0)
+                    if (hdl.getDebugLevel() > 0)
                     {
                         /*** Test what filename is recommended by DB_Module **/
-                        DB_makeNewStoreFileName (hdl, sclass, sinst, fname) ;
+                        hdl.makeNewStoreFileName (sclass, sinst, fname) ;
                         printf("DB_Module recommends %s for filename\n", fname) ;
                     }
 #endif
@@ -203,7 +203,10 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.4  2005-12-14 17:43:42  meichel
+ * Revision 1.5  2006-01-17 18:36:35  joergr
+ * Fixed syntax errors in debug code.
+ *
+ * Revision 1.4  2005/12/14 17:43:42  meichel
  * Adapted code for compilation with TCP wrappers to NetBSD
  *
  * Revision 1.3  2005/12/14 13:01:01  meichel
