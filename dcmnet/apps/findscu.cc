@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:19 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-01-17 15:38:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,6 @@ errmsg(const char *msg,...)
     fprintf(stderr, "\n");
 }
 
-
 static void
 addOverrideKey(OFConsoleApplication& app, const char* s)
 {
@@ -119,18 +118,28 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     unsigned int e = 0xffff;
     int n = 0;
     char val[1024];
+    OFString dicName, valStr;
     OFString msg;
     char msg2[200];
-
     val[0] = '\0';
+
     // try to parse group and element number
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
-
-    if (n != 2) {
-      // not a group-element pair, try to lookup in dictionary
+    if (n < 2) {
+      // try to parse dictionary name and value instead
+      OFString toParse = s;
+      size_t eqPos = toParse.find('=');
+      if (eqPos != string::npos)
+      {
+        dicName = toParse.substr(0,eqPos).c_str();
+        valStr = toParse.substr(eqPos+1,toParse.length());
+      }
+      else
+        dicName = s; // only dictionary name given (without value)
+      // try to lookup in dictionary
       DcmTagKey key(0xffff,0xffff);
       const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-      const DcmDictEntry *dicent = globalDataDict.findEntry(s);
+      const DcmDictEntry *dicent = globalDataDict.findEntry(dicName.c_str());
       dcmDataDict.unlock();
       if (dicent!=NULL) {
         // found dictionary name, copy group and element number
@@ -141,24 +150,12 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
       else {
         // not found in dictionary
         msg = "bad key format or dictionary name not found in dictionary: ";
-        msg += s;
+        msg += dicName;
         app.printError(msg.c_str());
       }
     }
-    const char* spos = s;
-    char ccc;
-    do
-    {
-      ccc = *spos;
-      if (ccc == '=') break;
-      if (ccc == 0) { spos = NULL; break; }
-      spos++;
-    } while(1);
-
-    if (spos && *(spos+1)) {
-        strcpy(val, spos+1);
-    }
-
+    else
+      valStr = val;
     DcmTag tag(g,e);
     if (tag.error() != EC_Normal) {
         sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
@@ -169,13 +166,13 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
         sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
-    if (strlen(val) > 0) {
-        elem->putString(val);
+    if (valStr.length() > 0) {
+        elem->putString(valStr.c_str());
         if (elem->error() != EC_Normal)
         {
             sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
             msg = msg2;
-            msg += val;
+            msg += valStr;
             msg += "\"";
             app.printError(msg.c_str());
         }
@@ -188,6 +185,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
         app.printError(msg2);
     }
 }
+
 
 static OFCondition addPresentationContext(T_ASC_Parameters *params);
 
@@ -1164,7 +1162,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.47  2005-12-08 15:44:19  meichel
+** Revision 1.48  2006-01-17 15:38:50  onken
+** Fixed "--key" option, which was broken when using the optional assignment ("=")
+** operation inside the option value
+**
+** Revision 1.47  2005/12/08 15:44:19  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.46  2005/11/23 16:10:23  meichel
