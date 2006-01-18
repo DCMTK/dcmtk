@@ -23,6 +23,7 @@ This module contains the following command line tools:
 \li \ref dcmgpdir
 \li \ref dcmodify
 \li \ref dump2dcm
+\li \ref pdf2dcm
 \li \ref xml2dcm
 
 \section Examples
