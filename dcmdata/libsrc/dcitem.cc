@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:16 $
- *  CVS/RCS Revision: $Revision: 1.97 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-01-18 13:44:03 $
+ *  CVS/RCS Revision: $Revision: 1.98 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ DcmItem::DcmItem(const DcmItem &old)
     {
         elementList->seek(ELP_first);
         old.elementList->seek(ELP_first);
-        do 
+        do
         {
             elementList->insert(old.elementList->get()->clone(), ELP_next);
         } while (old.elementList->seek(ELP_next));
@@ -1297,7 +1297,7 @@ DcmElement *DcmItem::getElement(const unsigned long num)
     errorFlag = EC_Normal;
     DcmElement *elem;
     elem = OFstatic_cast(DcmElement *, elementList->seek_to(num));
-    // liest Element aus Liste
+    /* reads element from list */
     if (elem == NULL)
         errorFlag = EC_IllegalCall;
     return elem;
@@ -1684,7 +1684,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
     OFBool readAsUN = OFFalse;
     return newDicomElement(newElement, newTag, length, NULL, readAsUN);
 }
-                            
+
 DcmElement *newDicomElement(const DcmTag &tag,
                             const Uint32 length)
 {
@@ -1707,7 +1707,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
     newElement = NULL;
     DcmEVR evr = tag.getEVR();
     readAsUN = OFFalse;
-    
+
     /* revert UN elements with finite length back to known VR if possible */
     if ((evr == EVR_UN) && (length != DCM_UndefinedLength) && dcmEnableUnknownVRConversion.get())
     {
@@ -1839,7 +1839,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 l_error = EC_InvalidTag;
             break;
 
-        // pixel sequences (EVR_pixelSQ) are handled through class DcmPixelData 
+        // pixel sequences (EVR_pixelSQ) are handled through class DcmPixelData
         // and should never appear here.
 
         // unclear 8 or 16 bit:
@@ -1884,7 +1884,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
         default :
             if (length == DCM_UndefinedLength)
             {
-              // The attribute VR is UN with undefined length. Assume it is 
+              // The attribute VR is UN with undefined length. Assume it is
               // really a sequence so that we can catch the sequence delimitation item.
               DcmVR sqVR(EVR_SQ); // on writing we will handle this element as SQ, not UN
               DcmTag newTag(tag.getXTag(), sqVR);
@@ -3278,7 +3278,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.97  2005-12-08 15:41:16  meichel
+** Revision 1.98  2006-01-18 13:44:03  joergr
+** Translated remaining German comment.
+**
+** Revision 1.97  2005/12/08 15:41:16  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.96  2005/11/28 15:53:13  meichel
