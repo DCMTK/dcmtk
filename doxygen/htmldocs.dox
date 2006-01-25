@@ -12,8 +12,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmdata
 \li \ref mod_dcmimage
 \li \ref mod_dcmimgle
-\if MODULE_DCMJP2K \li \ref mod_dcmjp2k
-\endif \li \ref mod_dcmjpeg
+\li \ref mod_dcmjpeg
 \li \ref mod_dcmnet
 \li \ref mod_dcmpstat
 \li \ref mod_dcmsign
@@ -22,6 +21,10 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmwlm
 \li \ref mod_dcmqrdb
 \li \ref mod_ofstd
+
+\if MODULE_DCMJP2K
+\li \ref mod_dcmjp2k
+\endif
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library
