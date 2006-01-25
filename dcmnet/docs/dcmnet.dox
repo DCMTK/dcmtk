@@ -2,7 +2,7 @@
 
 \page mod_dcmnet dcmnet: a networking library and utility apps
 
-This module contains a collection of functions that implement DICOM network 
+This module contains a collection of functions that implement DICOM network
 communication, i.e. the DICOM Upper Layer Finite State Machine, the Association
 Control Service Element (ACSE) and the DICOM Message Service Element (DIMSE).
 
@@ -19,10 +19,16 @@ This module contains the following command line tools:
 \li \ref storescu
 \li \ref termscu
 
+\section Files
+
+The following files provide further documentation:
+\li \ref file_asconfig
+\li \ref file_testing
+
 \section Examples
 
-The following example shows a very simple Echo SCU (Verification Service Class 
-SCU). Most error handling code has been omitted for brevity, also OS specific 
+The following example shows a very simple Echo SCU (Verification Service Class
+SCU). Most error handling code has been omitted for brevity, also OS specific
 code such as WinSock initialization on Win32 is not shown.
 
 \code
@@ -64,4 +70,14 @@ ASC_destroyAssociation(&assoc); // delete assoc structure
 ASC_dropNetwork(&net); // delete net structure
 \endcode
 
+*/
+
+/*!
+    \page file_asconfig asconfig.txt file
+    \verbinclude asconfig.txt
+*/
+
+/*!
+    \page file_testing testing.txt file
+    \verbinclude testing.txt
 */

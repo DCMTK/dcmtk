@@ -2,18 +2,24 @@
 
 \page mod_dcmtls dcmtls: security extensions for the network library
 
-This module contains classes that implement DICOM network communication tunneled 
-through a Transport Layer Security (TLS) connection, conforming to the DICOM 
-"Security Enhancements One" extension (formerly Supplement 31). This module 
+This module contains classes that implement DICOM network communication tunneled
+through a Transport Layer Security (TLS) connection, conforming to the DICOM
+"Security Enhancements One" extension (formerly Supplement 31). This module
 requires the external OpenSSL library.
 
 The main interface classes are:
 \li \b DcmTLSTransportLayer
 \li \b DcmTLSConnection
 
+\section Files
+
+The following files provide further documentation:
+\li \ref file_ciphers
+\li \ref file_randseed
+
 \section Examples
 
-The following example shows a code fragment that enables TLS for an association 
+The following example shows a code fragment that enables TLS for an association
 requestor application. The complete network initialization code is not shown
 here and most error checking code is omitted for brevity.
 
@@ -37,7 +43,7 @@ if (TCS_ok != tLayer->setCertificateFile("certificate.pem", SSL_FILETYPE_PEM))
   return;
 }
 
-// enable the TLS_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite 
+// enable the TLS_RSA_WITH_3DES_EDE_CBC_SHA ciphersuite
 tLayer->setCipherSuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 
 // accept any certificate from the remote site (not recommended)
@@ -48,4 +54,14 @@ ASC_setTransportLayer(net, tLayer, 1);
 ASC_setTransportLayerType(params, 1);
 \endcode
 
+*/
+
+/*!
+    \page file_ciphers ciphers.txt file
+    \verbinclude ciphers.txt
+*/
+
+/*!
+    \page file_randseed randseed.txt file
+    \verbinclude randseed.txt
 */

@@ -26,6 +26,11 @@ This module contains the following command line tools:
 \li \ref pdf2dcm
 \li \ref xml2dcm
 
+\section Files
+
+The following file provides further documentation:
+\li \ref file_datadict
+
 \section Examples
 
 The following example shows how to load a DICOM file and output the patient's name:
@@ -77,4 +82,9 @@ if (status.good())
   cerr << "Error: cannot create DICOMDIR (" << status.text() << ")" << endl;
 \endcode
 
+*/
+
+/*!
+    \page file_datadict datadict.txt file
+    \verbinclude datadict.txt
 */
