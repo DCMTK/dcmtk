@@ -14,7 +14,7 @@ Makefile.x      X-Window definitions for modules Makefiles, generated
 templates/configure.mod
                 configure for the modules directories, must be copied
                 to the main module directory (see dirstruc.txt).
-include/cfunix.h
+include/dcmtk/config/cfunix.h
                 Definition that must be includes into the modules
                 source files, generated with the config configure.
 

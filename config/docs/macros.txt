@@ -36,7 +36,7 @@ DCMTK_GUI
     output and error streams maintained by ofConsole to string streams.
     This will allow a GUI based application to extract the messages and
     either present them to the user or store them in a log file.  See
-    comments in ofstd/include/ofconsol.h
+    comments in ofstd/include/dcmtk/ofstd/ofconsol.h
 
 DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS
   Affected: dcmjpeg
@@ -113,7 +113,7 @@ NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
     disabled with this macro
 
 OFCONDITION_IMPLICIT_BOOL_CONVERSION
-  Affected: class OFCondition (ofstd/include/ofcond.h)
+  Affected: class OFCondition (ofstd/include/dcmtk/ofstd/ofcond.h)
   Type of modification: Activates experimental or rarely used feature
   Explanation: Activates an implicit conversion from OFCondition to
     OFBool, i.e. operator OFBool().  Implicit conversion might not always
@@ -121,7 +121,8 @@ OFCONDITION_IMPLICIT_BOOL_CONVERSION
     this operator is disabled by default.
 
 OFCONDITION_STRICT_MODE
-  Affected: class OFCondition (ofstd/include/ofcond.h) and related
+  Affected: class OFCondition (ofstd/include/dcmtk/ofstd/ofcond.h) and
+    related
   Type of modification: Disables feature
   Explanation: Disables the compatibility options related to the
     transition to OFCondition: No OFCondition default constructor, no

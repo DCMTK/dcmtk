@@ -20,7 +20,7 @@ dcmtk parts. The file "cfunix.h.in" is created from "configure.in" by using
 
 Your sources (.h, .c, .cc) must contain as first #include statement (before
 everything else is defined):
-    #include "osconfig.h"
+    #include "dcmtk/config/osconfig.h"
 
 osconfig.h contains several #includes that depend on the compiler. On systems
 using the GNU configure facilities, cfunix.h is included.
