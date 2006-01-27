@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2005, OFFIS
+*  Copyright (C) 1996-2006, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: meichel $
-*  Update Date:      $Date: 2005-12-08 16:05:42 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2006-01-27 15:06:32 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.11 $
+*  CVS/RCS Revision: $Revision: 1.12 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -136,7 +136,8 @@ class WlmFileSystemInteractionManager
        *  and incomplete in the given dataset.
        *  @param sequenceTagKey The sequence attribute which shall be checked.
        *  @param dset The dataset in which the attribute is contained.
-       *  @return OFTrue in case the sequence attribute is absent or existent but non-empty and incomplete, OFFalse otherwise.
+       *  @return OFTrue in case the sequence attribute is absent (and cannot be added to the dataset)
+       *          or existent but non-empty and incomplete, OFFalse otherwise.
        */
     OFBool ReferencedStudyOrPatientSequenceIsAbsentOrExistentButNonEmptyAndIncomplete( DcmTagKey sequenceTagKey, DcmItem *dset );
 
@@ -479,12 +480,16 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.11  2005-12-08 16:05:42  meichel
+** Revision 1.12  2006-01-27 15:06:32  joergr
+** Fixed issue with missing type 2 attributes in worklist files being reported
+** as incomplete.  Now, the attributes are inserted automatically if required.
+** Removed email address from CVS log.
+**
+** Revision 1.11  2005/12/08 16:05:42  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.10  2005/09/23 12:56:40  wilkens
 ** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
-** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
 **
 ** Revision 1.9  2005/06/16 08:06:51  meichel
 ** Removed redundant class name, needed for gcc 3.4
@@ -530,7 +535,6 @@ class WlmFileSystemInteractionManager
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants
 ** of wlmscps.
-**
 **
 **
 */

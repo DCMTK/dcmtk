@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2005, OFFIS
+*  Copyright (C) 1996-2006, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: meichel $
-*  Update Date:      $Date: 2005-12-08 15:48:34 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2006-01-27 15:07:33 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.16 $
+*  CVS/RCS Revision: $Revision: 1.17 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -747,14 +747,29 @@ OFBool WlmFileSystemInteractionManager::ReferencedStudyOrPatientSequenceIsAbsent
 //                and incomplete in the given dataset.
 // Parameters   : sequenceTagKey - [in] The sequence attribute which shall be checked.
 //                dset           - [in] The dataset in which the attribute is contained.
-// Return Value : OFTrue in case the sequence attribute is absent or existent but non-empty and incomplete, OFFalse otherwise.
+// Return Value : OFTrue in case the sequence attribute is absent (and cannot be added to the dataset)
+//                or existent but non-empty and incomplete, OFFalse otherwise.
 {
   DcmElement *sequence = NULL;
   OFBool result;
 
-  // if the sequence attribute is absent, we want to return OFTrue
+  // check whether the type 2 sequence attribute is absent
   if( dset->findAndGetElement( sequenceTagKey, sequence ).bad() )
-    result = OFTrue;
+  {
+    // try to add it to the dataset and return OFFalse if successful
+    if (dset->insertEmptyElement(sequenceTagKey).good())
+    {
+      if( verboseMode )
+      {
+        char msg[500];
+        sprintf( msg, "Added missing type 2 sequence attribute (%4.4x,%4.4x) to the current record.", sequenceTagKey.getGroup(), sequenceTagKey.getElement() );
+        DumpMessage( msg );
+      }
+      result = OFFalse;
+    }
+    else
+      result = OFTrue;
+  }
   else
   {
     // if the sequence attribute is existent but empty, we want to return OFFalse
@@ -2213,12 +2228,16 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.16  2005-12-08 15:48:34  meichel
+** Revision 1.17  2006-01-27 15:07:33  joergr
+** Fixed issue with missing type 2 attributes in worklist files being reported
+** as incomplete.  Now, the attributes are inserted automatically if required.
+** Removed email address from CVS log.
+**
+** Revision 1.16  2005/12/08 15:48:34  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.15  2005/09/23 12:57:02  wilkens
 ** Added attribute PatientsBirthDate as a matching key attribute to wlmscpfs.
-** Thanks to Andre M. Descombes <andre@descombes.info> for the code template.
 **
 ** Revision 1.14  2005/07/01 10:01:31  wilkens
 ** Modified a couple of "delete" statements to "delete[]" in order to get rid of
@@ -2286,7 +2305,6 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants
 ** of wlmscps.
-**
 **
 **
 */
