@@ -16,9 +16,9 @@ termscu [options] peer port
 
 The \b termscu application implements a Service Class User (SCU) for DCMTK's
 private Shutdown SOP Class.  It tries to negotiate this private Shutdown SOP
-Class with a Service Class Provider (SCP) which (if this feature is implemen-
-nted) will immediately shutdown after refusing the association.  The appli-
-cation can be used to shutdown some of DCMTK's server applications.
+Class with a Service Class Provider (SCP) which (if this feature is
+implemented) will immediately shutdown after refusing the association.
+The application can be used to shutdown some of DCMTK's server applications.
 
 \section parameters PARAMETERS
 
@@ -109,7 +109,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2005-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
