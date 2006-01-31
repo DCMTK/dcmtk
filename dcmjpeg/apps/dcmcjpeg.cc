@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:20 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-01-31 11:33:52 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,16 +267,16 @@ int main(int argc, char *argv[])
 
       if (cmd.getParamCount() == 0)
       {
-          if (cmd.findOption("--version"))
-          {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:" << endl;
+        if (cmd.findOption("--version"))
+        {
+          app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+          CERR << endl << "External libraries used:" << endl;
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+          CERR << "- ZLIB, Version " << zlibVersion() << endl;
 #endif
-              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
-              return 0;
-          }
+          CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+          return 0;
+        }
       }
 
       /* command line parameters */
@@ -302,18 +302,18 @@ int main(int argc, char *argv[])
           dcmAutoDetectDatasetXfer.set(OFTrue);
       if (cmd.findOption("--read-xfer-little"))
       {
-          app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
-          opt_ixfer = EXS_LittleEndianExplicit;
+        app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-          app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
-          opt_ixfer = EXS_BigEndianExplicit;
+        app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
-          opt_ixfer = EXS_LittleEndianImplicit;
+        app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -331,32 +331,52 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--encode-extended")) opt_oxfer = EXS_JPEGProcess2_4TransferSyntax;
       if (cmd.findOption("--encode-spectral")) opt_oxfer = EXS_JPEGProcess6_8TransferSyntax;
       if (cmd.findOption("--encode-progressive")) opt_oxfer = EXS_JPEGProcess10_12TransferSyntax;
+      if ( ( opt_oxfer == EXS_JPEGProcess1TransferSyntax) || ( opt_oxfer == EXS_JPEGProcess2_4TransferSyntax)
+        || ( opt_oxfer == EXS_JPEGProcess6_8TransferSyntax) || ( opt_oxfer == EXS_JPEGProcess10_12TransferSyntax) )
+        opt_trueLossless = OFFalse;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--true-lossless")) opt_trueLossless = OFTrue;
-      if (cmd.findOption("--pseudo-lossless")) opt_trueLossless = OFFalse;
+
+      // since here, opt_trueLossless contains indicator, if lossless TS is selected
+      if (cmd.findOption("--true-lossless"))
+      {
+        // true lossless explicitely requested but selected TS denotes lossy process
+        if (!opt_trueLossless)
+          app.printError("--true-lossless switch only allowed with --encode-lossless-sv1 or --encode-lossless");
+        // else opt_trueLossless keeps value OFTrue
+      }
+      if (cmd.findOption("--pseudo-lossless") )
+      {
+        // pseudo lossless explicitely requested but selected TS denotes lossy process
+        if (!opt_trueLossless)
+          app.printError("--pseudo-lossless switch only allowed with --encode-lossless-sv1 or --encode-lossless");
+        // choose pseudo lossless encoder
+        else
+          opt_trueLossless = OFFalse;
+      }
+      // now opt_trueLossless defines, that true lossless encoder should be used and harmonization with TS is lossless, too
       cmd.endOptionBlock();
 
       if (cmd.findOption("--selection-value"))
       {
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_selection_value, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)7));
-          if (opt_oxfer != EXS_JPEGProcess14TransferSyntax)
-            app.printError("--selection-value only allowed with --encode-lossless");
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_selection_value, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)7));
+        if (opt_oxfer != EXS_JPEGProcess14TransferSyntax)
+          app.printError("--selection-value only allowed with --encode-lossless");
       }
 
       if (cmd.findOption("--point-transform"))
       {
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_point_transform, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)15));
-          if ((opt_oxfer != EXS_JPEGProcess14SV1TransferSyntax) && (opt_oxfer != EXS_JPEGProcess14TransferSyntax))
-            app.printError("--point-transform only allowed with lossless JPEG");
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_point_transform, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)15));
+        if ((opt_oxfer != EXS_JPEGProcess14SV1TransferSyntax) && (opt_oxfer != EXS_JPEGProcess14TransferSyntax))
+          app.printError("--point-transform only allowed with lossless JPEG");
       }
 
       if (cmd.findOption("--quality"))
       {
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
-          if ((opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax))
-            app.printError("--quality only allowed with lossy JPEG");
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
+        if ((opt_oxfer == EXS_JPEGProcess14SV1TransferSyntax) || (opt_oxfer == EXS_JPEGProcess14TransferSyntax))
+          app.printError("--quality only allowed with lossy JPEG");
       }
 
       cmd.beginOptionBlock();
@@ -366,8 +386,8 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--smooth"))
       {
-          app.checkConflict("--smooth", "--true-lossless", opt_trueLossless);
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_smoothing, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
+        app.checkConflict("--smooth", "--true-lossless", opt_trueLossless);
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_smoothing, (OFCmdUnsignedInt)0, (OFCmdUnsignedInt)100));
       }
 
       cmd.beginOptionBlock();
@@ -482,15 +502,15 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--no-windowing")) opt_windowType = 0;
       if (cmd.findOption("--use-window"))
       {
-          app.checkConflict("--use-window", "--true-lossless", opt_trueLossless);
-          opt_windowType = 1;
-          app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
+        app.checkConflict("--use-window", "--true-lossless", opt_trueLossless);
+        opt_windowType = 1;
+        app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
       }
       if (cmd.findOption("--use-voi-lut"))
       {
-          app.checkConflict("--use-voi-lut", "--true-lossless", opt_trueLossless);
-          opt_windowType = 2;
-          app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
+        app.checkConflict("--use-voi-lut", "--true-lossless", opt_trueLossless);
+        opt_windowType = 2;
+        app.checkValue(cmd.getValueAndCheckMin(opt_windowParameter, 1));
       }
       if (cmd.findOption("--min-max-window"))
       {
@@ -504,25 +524,25 @@ int main(int argc, char *argv[])
       }
       if (cmd.findOption("--roi-min-max-window"))
       {
-          app.checkConflict("--roi-min-max-window", "--true-lossless", opt_trueLossless);
-          opt_windowType = 7;
-          app.checkValue(cmd.getValue(opt_roiLeft));
-          app.checkValue(cmd.getValue(opt_roiTop));
-          app.checkValue(cmd.getValueAndCheckMin(opt_roiWidth, 1));
-          app.checkValue(cmd.getValueAndCheckMin(opt_roiHeight, 1));
+        app.checkConflict("--roi-min-max-window", "--true-lossless", opt_trueLossless);
+        opt_windowType = 7;
+        app.checkValue(cmd.getValue(opt_roiLeft));
+        app.checkValue(cmd.getValue(opt_roiTop));
+        app.checkValue(cmd.getValueAndCheckMin(opt_roiWidth, 1));
+        app.checkValue(cmd.getValueAndCheckMin(opt_roiHeight, 1));
       }
       if (cmd.findOption("--histogram-window"))
       {
-          app.checkConflict("--histogram-window", "--true-lossless", opt_trueLossless);
-          opt_windowType = 4;
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_windowParameter, 0, 100));
+        app.checkConflict("--histogram-window", "--true-lossless", opt_trueLossless);
+        opt_windowType = 4;
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_windowParameter, 0, 100));
       }
       if (cmd.findOption("--set-window"))
       {
-          app.checkConflict("--set-window", "--true-lossless", opt_trueLossless);
-          opt_windowType = 5;
-          app.checkValue(cmd.getValue(opt_windowCenter));
-          app.checkValue(cmd.getValueAndCheckMin(opt_windowWidth, 1.0));
+        app.checkConflict("--set-window", "--true-lossless", opt_trueLossless);
+        opt_windowType = 5;
+        app.checkValue(cmd.getValue(opt_windowCenter));
+        app.checkValue(cmd.getValueAndCheckMin(opt_windowWidth, 1.0));
       }
       cmd.endOptionBlock();
 
@@ -576,9 +596,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-          app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
-          app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
-          opt_opadenc = EPD_withPadding;
+        app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
+        opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
 
@@ -623,29 +643,29 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+      CERR << "Warning: no data dictionary loaded, "
+           << "check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "invalid filename: <empty string>" << endl;
-        return 1;
+      CERR << "invalid filename: <empty string>" << endl;
+      return 1;
     }
 
     if (opt_verbose)
-        COUT << "reading input file " << opt_ifname << endl;
+      COUT << "reading input file " << opt_ifname << endl;
 
     DcmFileFormat fileformat;
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": reading file: " <<  opt_ifname << endl;
-        return 1;
+      CERR << "Error: "
+           << error.text()
+           << ": reading file: " <<  opt_ifname << endl;
+      return 1;
     }
     DcmDataset *dataset = fileformat.getDataset();
 
@@ -662,7 +682,7 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verbose)
-        COUT << "Convert DICOM file to compressed transfer syntax\n";
+      COUT << "Convert DICOM file to compressed transfer syntax\n";
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
@@ -678,13 +698,13 @@ int main(int argc, char *argv[])
     dataset->chooseRepresentation(opt_oxfer, rp);
     if (dataset->canWriteXfer(opt_oxfer))
     {
-        if (opt_verbose)
-            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written\n";
+      if (opt_verbose)
+          COUT << "Output transfer syntax " << opt_oxferSyn.getXferName()
+               << " can be written\n";
     } else {
-        CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!\n";
-        return 1;
+      CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
+           << " possible!\n";
+      return 1;
     }
 
     // force meta-header to refresh SOP Class/Instance UIDs.
@@ -696,7 +716,7 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verbose)
-        COUT << "creating output file " << opt_ofname << endl;
+      COUT << "creating output file " << opt_ofname << endl;
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
@@ -704,14 +724,14 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": writing file: " <<  opt_ofname << endl;
-        return 1;
+      CERR << "Error: "
+           << error.text()
+           << ": writing file: " <<  opt_ofname << endl;
+      return 1;
     }
 
     if (opt_verbose)
-        COUT << "conversion successful\n";
+      COUT << "conversion successful\n";
 
     // deregister global codecs
     DJDecoderRegistration::cleanup();
@@ -723,7 +743,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.15  2005-12-08 15:43:20  meichel
+ * Revision 1.16  2006-01-31 11:33:52  onken
+ * Fixed some commandline option checks in connection with true lossless switches.
+ *
+ * Revision 1.15  2005/12/08 15:43:20  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.14  2005/12/02 09:40:59  joergr
