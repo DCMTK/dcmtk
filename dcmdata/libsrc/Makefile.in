@@ -54,29 +54,22 @@ install: install-lib install-support
 install-lib: $(library)
 	$(configdir)/mkinstalldirs $(libdir)
 	$(INSTALL_DATA) $(library) $(libdir)/$(library)
+	$(RANLIB) $(libdir)/$(library)
 
 install-support: $(DICTFILE) $(PRIVDICTFILE)
 	$(configdir)/mkinstalldirs $(libdir)
 	if [ "x$(INSTALL_PRIVATE_DICTIONARY)" = "xYES" ] ; then \
-		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ; \
-		$(INSTALL_DATA) dicom.tmp $(libdir)/$(DICTFILE) ; \
+		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ;\
+		$(INSTALL_DATA) dicom.tmp $(libdir)/$(DICTFILE) ;\
 	else \
-		$(INSTALL_DATA) $(DICTFILE) $(libdir)/$(DICTFILE) ; \
-		$(INSTALL_DATA) $(PRIVDICTFILE) $(libdir)/$(PRIVDICTFILE) ; \
+		$(INSTALL_DATA) $(DICTFILE) $(libdir)/$(DICTFILE) ;\
+		$(INSTALL_DATA) $(PRIVDICTFILE) $(libdir)/$(PRIVDICTFILE) ;\
 	fi
-
-
-clean:
-	rm -f $(support_progs) $(support_objs) $(objs) $(library) $(TRASH)
-
-distclean: nobuiltindict clean
-	rm -f $(DISTTRASH)
 
 
 $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
-
 
 mkdeftag: mkdeftag.o $(dictobjs) cmdlnarg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
@@ -104,6 +97,15 @@ builtindict: nobuiltindict mkdictbi $(DICTFILE) $(PRIVDICTFILE)
 
 nobuiltindict:
 	cp dcdictbi.nul dcdictbi.cc
+
+
+# Clean-up
+
+clean:
+	rm -f $(support_progs) $(support_objs) $(objs) $(library) $(TRASH)
+
+distclean: nobuiltindict clean
+	rm -f $(DISTTRASH)
 
 
 # Dependencies
