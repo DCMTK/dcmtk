@@ -19,7 +19,7 @@ install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/ofstd
 	for file in dcmtk/ofstd/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/ofstd ; \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/ofstd ;\
 	done
 
 clean:

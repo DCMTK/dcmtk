@@ -20,13 +20,14 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
 
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
-	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
-	pdf2dcm.o
+	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o pdf2dcm.o
+
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
 	dcmdrle dcmodify pdf2dcm
 
 support_lib = dcm2xml.dtd
 support_data = dumppat.txt
+
 
 all: $(progs)
 
@@ -64,12 +65,13 @@ dcmodify: dcmodify.o mdfconen.o mdfdsman.o
 pdf2dcm: pdf2dcm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+
 install: install-bin install-support
 
 install-bin: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir) && strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 install-support:
@@ -81,6 +83,7 @@ install-support:
 	for file in $(support_data); do \
 		$(INSTALL_DATA) $$file $(datadir) ;\
 	done
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

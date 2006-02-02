@@ -2,6 +2,7 @@
 #	Makefile for config
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -25,8 +26,8 @@ install-lib: include-install
 
 install-support:
 
-libsrc-all:
 
+libsrc-all:
 
 include-install:
 	./mkinstalldirs $(includedir)
@@ -35,12 +36,13 @@ include-install:
 	$(INSTALL_DATA) include/dcmtk/config/osconfig.h $(includedir)/dcmtk/config
 	$(INSTALL_DATA) include/dcmtk/config/cfunix.h $(includedir)/dcmtk/config
 
+
 clean:
-	(cd include/dcmtk/config; rm -f $(TRASH))
+	(cd include/dcmtk/config && rm -f $(TRASH))
 	rm -rf $(TRASH)
 
 distclean:
-	(cd include/dcmtk/config; rm -f $(DISTTRASH) cfunix.h)
+	(cd include/dcmtk/config && rm -f $(DISTTRASH) cfunix.h)
 	rm -rf $(DISTTRASH) Makefile.def
 
 dependencies:
