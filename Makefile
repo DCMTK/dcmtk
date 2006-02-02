@@ -2,8 +2,8 @@
 #	Makefile for dcmtk (DICOM Toolkit)
 #
 
-SHELL= /bin/sh
-configdir= config
+SHELL = /bin/sh
+configdir = config
 
 include $(configdir)/Makefile.def
 
@@ -29,7 +29,7 @@ install-support:  config-install-support ofstd-install-support dcmdata-install-s
 
 dcmtk-install-doc:
 	$(configdir)/mkinstalldirs $(docdir)
-	for file in COPYRIGHT FAQ HISTORY; do \
+	for file in ANNOUNCE.* CHANGES.* COPYRIGHT FAQ HISTORY; do \
 		$(INSTALL_DATA) $$file $(docdir) ;\
 	done
 
