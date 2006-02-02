@@ -26,7 +26,7 @@ install-etc: etc-install
 
 install-include: include-install
 
-install-lib: libsrc-install-lib install-include
+install-lib: libsrc-install install-include
 
 install-support: tests-install-support install-etc
 
@@ -47,7 +47,7 @@ tests-all:
 include-install:
 	(cd include && $(MAKE) ARCH="$(ARCH)" install)
 
-libsrc-install-lib: libsrc-all
+libsrc-install: libsrc-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install)
 
 apps-install: apps-all

@@ -26,7 +26,7 @@ install-etc: etc-install
 
 install-include: include-install
 
-install-lib: libsrc-install-lib install-include
+install-lib: libsrc-install install-include
 
 install-support: install-etc
 
@@ -50,7 +50,7 @@ tests-all:
 include-install:
 	(cd include && $(MAKE) ARCH="$(ARCH)" install)
 
-libsrc-install-lib: libsrc-all
+libsrc-install: libsrc-all
 	(cd libijg8 && $(MAKE) ARCH="$(ARCH)" install)
 	(cd libijg12 && $(MAKE) ARCH="$(ARCH)" install)
 	(cd libijg16 && $(MAKE) ARCH="$(ARCH)" install)
