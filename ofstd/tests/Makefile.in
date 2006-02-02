@@ -76,6 +76,7 @@ test-string: tstring
 
 install: all
 
+
 clean:
 	rm -f $(objs) $(progs) $(LOCALTRASH) $(TRASH)
 

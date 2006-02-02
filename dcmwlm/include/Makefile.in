@@ -19,7 +19,7 @@ install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmwlm
 	for file in dcmtk/dcmwlm/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmwlm ; \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmwlm ;\
 	done
 
 clean:

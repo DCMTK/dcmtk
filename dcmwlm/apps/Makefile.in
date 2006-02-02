@@ -41,10 +41,11 @@ all: $(progs)
 wlmscpfs: $(objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir)$(BINEXT); strip $(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog $(bindir)$(BINEXT) && strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 
