@@ -40,13 +40,15 @@ library = libdcmpstat.$(LIBEXT)
 
 all: $(library)
 
+install: $(library)
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) $(library) $(libdir)/$(library)
+	$(RANLIB) $(libdir)/$(library)
+
+
 $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
-
-install: all
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) $(library) $(libdir)/$(library)
 
 
 clean:

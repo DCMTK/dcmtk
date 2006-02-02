@@ -22,14 +22,16 @@ LOCALDEFS =
 
 objs = dcmqrcbf.o dcmqrcbg.o dcmqrcbm.o dcmqrcbs.o dcmqrcnf.o dcmqrdbi.o  \
        dcmqrdbs.o dcmqropt.o dcmqrptb.o dcmqrsrv.o dcmqrtis.o
-
 library = libdcmqrdb.$(LIBEXT)
+
 
 all: $(library)
 
-install: all
+install: $(library)
 	$(configdir)/mkinstalldirs $(libdir)
 	$(INSTALL_DATA) $(library) $(libdir)/$(library)
+	$(RANLIB) $(libdir)/$(library)
+
 
 $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
