@@ -16,12 +16,15 @@ include $(configdir)/@common_makefile@
 
 all: 
 
+
 install:
+
 
 clean:
 	rm -f $(TRASH)
 
 distclean: 
 	rm -f $(DISTTRASH)
+
 
 dependencies:

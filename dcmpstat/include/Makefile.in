@@ -19,7 +19,7 @@ install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmpstat
 	for file in dcmtk/dcmpstat/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmpstat ; \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmpstat ;\
 	done
 
 clean:

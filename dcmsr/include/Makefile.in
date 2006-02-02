@@ -19,7 +19,7 @@ install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmsr
 	for file in dcmtk/dcmsr/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmsr ; \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmsr ;\
 	done
 
 clean:

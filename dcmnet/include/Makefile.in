@@ -18,8 +18,8 @@ all:
 install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmnet
-	for file in dcmtk/dcmnet/*.h ; \
-		do $(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmnet ; \
+	for file in dcmtk/dcmnet/*.h ; do \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmnet ;\
 	done
 
 clean:

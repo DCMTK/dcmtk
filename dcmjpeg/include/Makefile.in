@@ -19,7 +19,7 @@ install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmjpeg
 	for file in dcmtk/dcmjpeg/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmjpeg ; \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmjpeg ;\
 	done
 
 clean:

@@ -65,7 +65,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibd
 	$(dcmimglelibdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(dcmqrdblib) $(dcmnetlib) \
 	$(dcmtlslib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
-DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) 
+DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 DCMMKCRV_LIBS = $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 
 objs = dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dcmprscu.o \
@@ -109,8 +109,9 @@ dcmpschk: dcmpschk.o vrscan.o
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir) && strip $(bindir)/$$prog$(BINEXT) ;\
 	done
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

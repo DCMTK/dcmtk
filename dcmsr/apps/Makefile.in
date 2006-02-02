@@ -45,7 +45,7 @@ install: install-bin install-support
 install-bin: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir) && strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 install-support:
@@ -53,6 +53,7 @@ install-support:
 	for file in $(support); do \
 		$(INSTALL_DATA) $$file $(libdir) ;\
 	done
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)

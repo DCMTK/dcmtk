@@ -19,7 +19,7 @@ install:
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmsign
 	for file in dcmtk/dcmsign/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmsign ; \
+		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmsign  ;\
 	done
 
 clean:
