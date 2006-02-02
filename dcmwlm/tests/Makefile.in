@@ -31,11 +31,9 @@ all: $(progs)
 wltest: $(objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+
 install: all
-	$(configdir)/mkinstalldirs $(bindir)
-	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
-	done
+
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
