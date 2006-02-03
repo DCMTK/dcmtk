@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-16 12:39:13 $
+ *  Update Date:      $Date: 2006-02-03 10:15:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ END_EXTERN_C
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
-#define APPLICATIONTITLE    "DCMQRSCP"
+#define APPLICATIONTITLE "DCMQRSCP"
 
 const char *opt_configFileName = "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
@@ -112,13 +112,13 @@ OFCmdUnsignedInt opt_port = 0;
 
 void errmsg(const char* msg, ...)
 {
-    va_list args;
+  va_list args;
 
-    fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
-    va_start(args, msg);
-    vfprintf(stderr, msg, args);
-    va_end(args);
-    fprintf(stderr, "\n");
+  fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
+  va_start(args, msg);
+  vfprintf(stderr, msg, args);
+  va_end(args);
+  fprintf(stderr, "\n");
 }
 
 #define SHORTCOL 4
@@ -127,29 +127,29 @@ void errmsg(const char* msg, ...)
 int
 main(int argc, char *argv[])
 {
-    OFCondition cond = EC_Normal;
-    OFCmdUnsignedInt overridePort = 0;
-    OFCmdUnsignedInt overrideMaxPDU = 0;
-    DcmQueryRetrieveOptions options;
+  OFCondition cond = EC_Normal;
+  OFCmdUnsignedInt overridePort = 0;
+  OFCmdUnsignedInt overrideMaxPDU = 0;
+  DcmQueryRetrieveOptions options;
 
 #ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
+  /* needed for Macintosh */
+  GUSISetup(GUSIwithSIOUXSockets);
+  GUSISetup(GUSIwithInternetSockets);
 #endif
 
 #ifdef HAVE_WINSOCK_H
-    WSAData winSockData;
-    /* we need at least version 1.1 */
-    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
-    WSAStartup(winSockVersionNeeded, &winSockData);
+  WSAData winSockData;
+  /* we need at least version 1.1 */
+  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+  WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
   char tempstr[20];
 #ifdef HAVE_FORK
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM image archive (central test node)", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)", rcsid);
 #else
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM image archive (central test node)\nThis version of dcmqrscp supports only single process mode.", rcsid);
 #endif
 
   OFCommandLine cmd;
@@ -159,17 +159,17 @@ main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--very-verbose",              "-vv",       "print more processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
-   OFString opt5 = "[f]ilename: string (default: ";
-   opt5 += opt_configFileName;
-   opt5 += ")";
-   cmd.addOption("--config",                    "-c",     1, opt5.c_str(), "use specific configuration file");
+    cmd.addOption("--help",                     "-h",        "print this help text and exit");
+    cmd.addOption("--version",                               "print version information and exit", OFTrue /* exclusive */);
+    cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
+    cmd.addOption("--very-verbose",             "-vv",       "print more processing details");
+    cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
+    OFString opt5 = "[f]ilename: string (default: ";
+    opt5 += opt_configFileName;
+    opt5 += ")";
+    cmd.addOption("--config",                   "-c",     1, opt5.c_str(), "use specific configuration file");
 #ifdef HAVE_FORK
-   cmd.addOption("--single-process",            "-s",        "single process mode");
+    cmd.addOption("--single-process",           "-s",        "single process mode");
 #endif
 
   cmd.addGroup("database options:");
@@ -238,8 +238,8 @@ main(int argc, char *argv[])
 
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",                "-to",    1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout",          "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--acse-timeout",           "-ta",    1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",          "-td",    1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -251,7 +251,7 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-pdu",                "-pdu",   1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--refuse",                              "refuse association");
       cmd.addOption("--reject",                              "reject association if no implement. class UID");
@@ -295,15 +295,15 @@ main(int argc, char *argv[])
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+          app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+          CERR << endl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+          CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
 #else
-            CERR << " none" << endl;
+          CERR << " none" << endl;
 #endif
-            return 0;
-         }
+          return 0;
+        }
       }
 
       /* command line parameters and options */
@@ -338,9 +338,9 @@ main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--move-unrestricted"))
       {
-    options.restrictMoveToSameAE_ = OFFalse;
-    options.restrictMoveToSameHost_ = OFFalse;
-    options.restrictMoveToSameVendor_ = OFFalse;
+        options.restrictMoveToSameAE_ = OFFalse;
+        options.restrictMoveToSameHost_ = OFFalse;
+        options.restrictMoveToSameVendor_ = OFFalse;
       }
       if (cmd.findOption("--move-aetitle")) options.restrictMoveToSameAE_ = OFTrue;
       if (cmd.findOption("--move-host")) options.restrictMoveToSameHost_ = OFTrue;
@@ -358,17 +358,17 @@ main(int argc, char *argv[])
       }
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--prefer-uncompr"))  options.networkTransferSyntax_     = EXS_Unknown;
-      if (cmd.findOption("--prefer-little"))   options.networkTransferSyntax_     = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--prefer-big"))      options.networkTransferSyntax_     = EXS_BigEndianExplicit;
-      if (cmd.findOption("--implicit"))        options.networkTransferSyntax_     = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--prefer-uncompr"))      options.networkTransferSyntax_ = EXS_Unknown;
+      if (cmd.findOption("--prefer-little"))       options.networkTransferSyntax_ = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--prefer-big"))          options.networkTransferSyntax_ = EXS_BigEndianExplicit;
+      if (cmd.findOption("--implicit"))            options.networkTransferSyntax_ = EXS_LittleEndianImplicit;
 #ifndef DISABLE_COMPRESSION_EXTENSION
-      if (cmd.findOption("--prefer-lossless")) options.networkTransferSyntax_     = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg8"))    options.networkTransferSyntax_     = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg12"))   options.networkTransferSyntax_     = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--prefer-lossless"))     options.networkTransferSyntax_ = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg8"))        options.networkTransferSyntax_ = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg12"))       options.networkTransferSyntax_ = EXS_JPEGProcess2_4TransferSyntax;
       if (cmd.findOption("--prefer-j2k-lossless")) options.networkTransferSyntax_ = EXS_JPEG2000LosslessOnly;
       if (cmd.findOption("--prefer-j2k-lossy"))    options.networkTransferSyntax_ = EXS_JPEG2000;
-      if (cmd.findOption("--prefer-rle"))      options.networkTransferSyntax_     = EXS_RLELossless;
+      if (cmd.findOption("--prefer-rle"))          options.networkTransferSyntax_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
       if (cmd.findOption("--prefer-deflated"))     options.networkTransferSyntax_ = EXS_DeflatedLittleEndianExplicit;
 #endif
@@ -377,19 +377,19 @@ main(int argc, char *argv[])
 
 #ifndef DISABLE_COMPRESSION_EXTENSION
       cmd.beginOptionBlock();
-      if (cmd.findOption("--propose-uncompr"))  options.networkTransferSyntaxOut_ = EXS_Unknown;
-      if (cmd.findOption("--propose-little"))   options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--propose-big"))      options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
-      if (cmd.findOption("--propose-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--propose-jpeg8"))    options.networkTransferSyntaxOut_ = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--propose-jpeg12"))   options.networkTransferSyntaxOut_ = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--propose-uncompr"))      options.networkTransferSyntaxOut_ = EXS_Unknown;
+      if (cmd.findOption("--propose-little"))       options.networkTransferSyntaxOut_ = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big"))          options.networkTransferSyntaxOut_ = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-lossless"))     options.networkTransferSyntaxOut_ = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg8"))        options.networkTransferSyntaxOut_ = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg12"))       options.networkTransferSyntaxOut_ = EXS_JPEGProcess2_4TransferSyntax;
       if (cmd.findOption("--propose-j2k-lossless")) options.networkTransferSyntaxOut_ = EXS_JPEG2000LosslessOnly;
-      if (cmd.findOption("--propose-j2k-lossy")) options.networkTransferSyntaxOut_ = EXS_JPEG2000;
-      if (cmd.findOption("--propose-rle"))      options.networkTransferSyntaxOut_ = EXS_RLELossless;
+      if (cmd.findOption("--propose-j2k-lossy"))    options.networkTransferSyntaxOut_ = EXS_JPEG2000;
+      if (cmd.findOption("--propose-rle"))          options.networkTransferSyntaxOut_ = EXS_RLELossless;
 #ifdef WITH_ZLIB
-      if (cmd.findOption("--propose-deflated")) options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
+      if (cmd.findOption("--propose-deflated"))     options.networkTransferSyntaxOut_ = EXS_DeflatedLittleEndianExplicit;
 #endif
-      if (cmd.findOption("--propose-implicit")) options.networkTransferSyntaxOut_ = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--propose-implicit"))     options.networkTransferSyntaxOut_ = EXS_LittleEndianImplicit;
       cmd.endOptionBlock();
 #endif
 
@@ -458,12 +458,12 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-little", "--bit-preserving", options.bitPreserving_);
 #ifndef DISABLE_COMPRESSION_EXTENSION
-	app.checkConflict("--write-xfer-little", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
-	app.checkConflict("--write-xfer-little", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
-	app.checkConflict("--write-xfer-little", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
-	app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
-	app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
-	app.checkConflict("--write-xfer-little", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
+        app.checkConflict("--write-xfer-little", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-little", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
         options.writeTransferSyntax_ = EXS_LittleEndianExplicit;
@@ -472,12 +472,12 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-big", "--bit-preserving", options.bitPreserving_);
 #ifndef DISABLE_COMPRESSION_EXTENSION
-	app.checkConflict("--write-xfer-big", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
-	app.checkConflict("--write-xfer-big", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
-	app.checkConflict("--write-xfer-big", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
-	app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
-	app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
-	app.checkConflict("--write-xfer-big", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
+        app.checkConflict("--write-xfer-big", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-big", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
         options.writeTransferSyntax_ = EXS_BigEndianExplicit;
@@ -486,12 +486,12 @@ main(int argc, char *argv[])
       {
         app.checkConflict("--write-xfer-implicit", "--bit-preserving", options.bitPreserving_);
 #ifndef DISABLE_COMPRESSION_EXTENSION
-	app.checkConflict("--write-xfer-implicit", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
-	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
-	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
-	app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
-	app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
-	app.checkConflict("--write-xfer-implicit", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
+        app.checkConflict("--write-xfer-implicit", "--prefer-lossless", options.networkTransferSyntax_==EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", options.networkTransferSyntax_==EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", options.networkTransferSyntax_==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", options.networkTransferSyntax_==EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", options.networkTransferSyntax_==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-implicit", "--prefer-rle", options.networkTransferSyntax_==EXS_RLELossless);
         // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
 #endif
         options.writeTransferSyntax_ = EXS_LittleEndianImplicit;
@@ -545,15 +545,15 @@ main(int argc, char *argv[])
 
     /* read config file */
     if (access(opt_configFileName, R_OK) < 0) {
-    errmsg("cannot access %s: %s", opt_configFileName, strerror(errno));
-    return 10;
+      errmsg("cannot access %s: %s", opt_configFileName, strerror(errno));
+      return 10;
     }
 
     DcmQueryRetrieveConfig config;
 
     if (!config.init(opt_configFileName)) {
-    errmsg("bad config file: %s", opt_configFileName);
-    return 10;
+      errmsg("bad config file: %s", opt_configFileName);
+      return 10;
     }
     options.maxAssociations_ = config.getMaxAssociations();
 
@@ -571,25 +571,25 @@ main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-    fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+      fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
         DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
 #ifdef HAVE_GETEUID
     /* if port is privileged we must be as well */
     if (opt_port < 1024) {
-        if (geteuid() != 0) {
+      if (geteuid() != 0) {
         errmsg("cannot listen on port %d, insufficient privileges", (int)opt_port);
-            return 10;
-    }
+        return 10;
+      }
     }
 #endif
 
     cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_port, options.acse_timeout_, &options.net_);
     if (cond.bad()) {
-    errmsg("Error initialising network:");
-    DimseCondition::dump(cond);
-        return 10;
+      errmsg("Error initialising network:");
+      DimseCondition::dump(cond);
+      return 10;
     }
 
 #if defined(HAVE_SETUID) && defined(HAVE_GETUID)
@@ -655,9 +655,9 @@ main(int argc, char *argv[])
 
     cond = ASC_dropNetwork(&options.net_);
     if (cond.bad()) {
-        errmsg("Error dropping network:");
-        DimseCondition::dump(cond);
-        return 10;
+      errmsg("Error dropping network:");
+      DimseCondition::dump(cond);
+      return 10;
     }
 
 #ifdef HAVE_WINSOCK_H
@@ -671,7 +671,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.7  2005-12-16 12:39:13  joergr
+ * Revision 1.8  2006-02-03 10:15:45  joergr
+ * Fixed inconsistent source code layout.
+ *
+ * Revision 1.7  2005/12/16 12:39:13  joergr
  * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
  * Sun CC 2.0.1.
  *
