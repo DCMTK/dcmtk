@@ -50,6 +50,7 @@ install-support:
 		$(INSTALL_DATA) $$file $(datadir) ;\
 	done
 
+
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 

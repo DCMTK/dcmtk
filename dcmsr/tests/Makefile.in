@@ -32,6 +32,7 @@ mkreport: mkreport.o
 
 install: all
 
+
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
