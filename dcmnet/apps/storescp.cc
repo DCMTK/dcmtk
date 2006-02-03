@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-19 10:31:12 $
+ *  Update Date:      $Date: 2006-02-03 10:21:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,6 @@ END_EXTERN_C
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>        /* for _mkdir() */
 #endif
-
 
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
@@ -250,7 +249,7 @@ int main(int argc, char *argv[])
 #endif
 
   char tempstr[20];
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCP", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
   OFCommandLine cmd;
 
   cmd.setParamColumn(LONGCOL+SHORTCOL+4);
@@ -258,62 +257,62 @@ int main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption("--help",                      "-h",       "print this help text and exit");
-    cmd.addOption("--version",                               "print version information and exit", OFTrue /* exclusive */);
-    cmd.addOption("--verbose",                   "-v",       "verbose mode, print processing details");
-    cmd.addOption("--debug",                     "-d",       "debug mode, print debug information");
+    cmd.addOption("--help",                     "-h",      "print this help text and exit");
+    cmd.addOption("--version",                             "print version information and exit", OFTrue /* exclusive */);
+    cmd.addOption("--verbose",                  "-v",      "verbose mode, print processing details");
+    cmd.addOption("--debug",                    "-d",      "debug mode, print debug information");
     OFString opt0 = "write output-files to (existing) directory p\n(default: ";
     opt0 += opt_outputDirectory;
     opt0 += ")";
-    cmd.addOption("--output-directory",          "-od",   1, "[p]ath: string", opt0.c_str());
+    cmd.addOption("--output-directory",         "-od",  1, "[p]ath: string", opt0.c_str());
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption("--fork",                                  "fork child process for each association");
+    cmd.addOption("--fork",                                "fork child process for each association");
 #ifdef _WIN32
-    cmd.addOption("--forked-child",                          "process is forked child, internal use only");
+    cmd.addOption("--forked-child",                        "process is forked child, internal use only");
 #endif
 #endif
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("association negotiation profile from configuration file:");
-      cmd.addOption("--config-file",            "-xf",    2, "[f]ilename, [p]rofile: string",
-                                                             "use profile p from config file f");
+      cmd.addOption("--config-file",            "-xf",  2, "[f]ilename, [p]rofile: string",
+                                                           "use profile p from config file f");
     cmd.addSubGroup("preferred network transfer syntaxes (not with --config-file):");
-      cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
-      cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
-      cmd.addOption("--prefer-big",             "+xb",       "prefer explicit VR big endian TS");
-      cmd.addOption("--prefer-lossless",        "+xs",       "prefer default JPEG lossless TS");
-      cmd.addOption("--prefer-jpeg8",           "+xy",       "prefer default JPEG lossy TS for 8 bit data");
-      cmd.addOption("--prefer-jpeg12",          "+xx",       "prefer default JPEG lossy TS for 12 bit data");
-      cmd.addOption("--prefer-j2k-lossless",    "+xv",       "prefer JPEG 2000 lossless TS");
-      cmd.addOption("--prefer-j2k-lossy",       "+xw",       "prefer JPEG 2000 lossy TS");
-      cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
+      cmd.addOption("--prefer-uncompr",         "+x=",     "prefer explicit VR local byte order (default)");
+      cmd.addOption("--prefer-little",          "+xe",     "prefer explicit VR little endian TS");
+      cmd.addOption("--prefer-big",             "+xb",     "prefer explicit VR big endian TS");
+      cmd.addOption("--prefer-lossless",        "+xs",     "prefer default JPEG lossless TS");
+      cmd.addOption("--prefer-jpeg8",           "+xy",     "prefer default JPEG lossy TS for 8 bit data");
+      cmd.addOption("--prefer-jpeg12",          "+xx",     "prefer default JPEG lossy TS for 12 bit data");
+      cmd.addOption("--prefer-j2k-lossless",    "+xv",     "prefer JPEG 2000 lossless TS");
+      cmd.addOption("--prefer-j2k-lossy",       "+xw",     "prefer JPEG 2000 lossy TS");
+      cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
-      cmd.addOption("--prefer-deflated",        "+xd",       "prefer deflated expl. VR little endian TS");
+      cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
 #endif
 
-      cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
+      cmd.addOption("--implicit",               "+xi",     "accept implicit VR little endian TS only");
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper) options:");
-      cmd.addOption("--access-full",            "-ac",       "accept connections from any host (default)");
-      cmd.addOption("--access-control",         "+ac",       "enforce host access control rules");
+      cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
+      cmd.addOption("--access-control",         "+ac",     "enforce host access control rules");
 #endif
 
     cmd.addSubGroup("other network options:");
 #ifdef HAVE_CONFIG_H
       // this option is only offered on Posix platforms
-      cmd.addOption("--inetd",                  "-id",       "run from inetd super server (not with --fork)");
+      cmd.addOption("--inetd",                  "-id",     "run from inetd super server (not with --fork)");
 #endif
 
-      cmd.addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout",          "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--acse-timeout",           "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",          "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt1 = "set my AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet",  1,  "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",                "-aet", 1, "aetitle: string", opt1.c_str());
       OFString opt3 = "set max receive pdu to n bytes (def.: ";
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
@@ -325,211 +324,211 @@ int main(int argc, char *argv[])
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
-      cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
-      cmd.addOption("--refuse",                              "refuse association");
-      cmd.addOption("--reject",                              "reject association if no implement. class UID");
-      cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
-      cmd.addOption("--sleep-after",                     1,  "[s]econds: integer",
-                                                             "sleep s seconds after store (default: 0)");
-      cmd.addOption("--sleep-during",                    1,  "[s]econds: integer",
-                                                             "sleep s seconds during store (default: 0)");
-      cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
-      cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
-      cmd.addOption("--promiscuous",            "-pm",       "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
-      cmd.addOption("--uid-padding",            "-up",       "silently correct space-padded UIDs");
+      cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
+      cmd.addOption("--refuse",                            "refuse association");
+      cmd.addOption("--reject",                            "reject association if no implement. class UID");
+      cmd.addOption("--ignore",                            "ignore store data, receive but do not store");
+      cmd.addOption("--sleep-after",                    1, "[s]econds: integer",
+                                                           "sleep s seconds after store (default: 0)");
+      cmd.addOption("--sleep-during",                   1, "[s]econds: integer",
+                                                           "sleep s seconds during store (default: 0)");
+      cmd.addOption("--abort-after",                       "abort association after receipt of C-STORE-RQ\n(but before sending response)");
+      cmd.addOption("--abort-during",                      "abort association during receipt of C-STORE-RQ");
+      cmd.addOption("--promiscuous",            "-pm",     "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
+      cmd.addOption("--uid-padding",            "-up",     "silently correct space-padded UIDs");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
-      cmd.addOption("--normal",                 "-B",        "allow implicit format conversions (default)");
-      cmd.addOption("--bit-preserving",         "+B",        "write data exactly as read (not with -ss)");
+      cmd.addOption("--normal",                 "-B",      "allow implicit format conversions (default)");
+      cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read (not with -ss)");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+      cmd.addOption("--write-file",             "+F",      "write file format (default)");
+      cmd.addOption("--write-dataset",          "-F",      "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax (not with --bit-preserving or compr. transmission):");
-      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addOption("--write-xfer-same",        "+t=",     "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",      "+te",     "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",         "+tb",     "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit",    "+ti",     "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
-      cmd.addOption("--write-xfer-deflated",    "+td",       "write with deflated expl. VR little endian TS");
+      cmd.addOption("--write-xfer-deflated",    "+td",     "write with deflated expl. VR little endian TS");
 #endif
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",          "+u",      "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",      "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding (not with --bit-preserving):");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd.addOption("--group-length-recalc",    "+g=",     "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create",    "+g",      "always write with group length elements");
+      cmd.addOption("--group-length-remove",    "-g",      "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items (not with --bit-preserving):");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd.addOption("--length-explicit",        "+e",      "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",       "-e",      "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset or --bit-preserving):");
-      cmd.addOption("--padding-off",            "-p",        "no padding (default)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes and items\non multiple of i bytes");
+      cmd.addOption("--padding-off",            "-p",      "no padding (default)");
+      cmd.addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
+                                                           "align file on multiple of f bytes and items\non multiple of i bytes");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (not with --write-xfer-little/big/implicit):");
-      cmd.addOption("--compression-level",      "+cl",   1,  "compression level: 0-9 (default 6)",
-                                                             "0=uncompressed, 1=fastest, 9=best compression");
+      cmd.addOption("--compression-level",      "+cl",  1, "compression level: 0-9 (default 6)",
+                                                           "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
-      cmd.addOption("--sort-conc-studies",      "-ss",   1,  "[p]refix: string",
-                                                             "sort concerning studies into subdirectories\nthat start with prefix p" );
+      cmd.addOption("--sort-conc-studies",      "-ss",  1, "[p]refix: string",
+                                                           "sort concerning studies into subdirectories\nthat start with prefix p" );
     cmd.addSubGroup("filename generation:");
-      cmd.addOption("--default-filenames",      "-uf",       "generate filename from instance UID (default)");
-      cmd.addOption("--unique-filenames",       "+uf",       "generate unique filenames");
-      cmd.addOption("--timenames",              "-tn",       "generate filename from creation time");
-      cmd.addOption("--filename-extension",     "-fe",   1,  "[e]xtension: string",
-                                                             "append e to all filenames");
+      cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
+      cmd.addOption("--unique-filenames",       "+uf",     "generate unique filenames");
+      cmd.addOption("--timenames",              "-tn",     "generate filename from creation time");
+      cmd.addOption("--filename-extension",     "-fe",  1, "[e]xtension: string",
+                                                           "append e to all filenames");
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption(  "--exec-on-reception",      "-xcr",  1,  "[c]ommand: string",
-                                                             "execute command c after having received and\nprocessed one C-STORE-Request message" );
-    cmd.addOption(  "--exec-on-eostudy",        "-xcs",  1,  "[c]ommand: string (only w/ -ss)",
-                                                             "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
-    cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
-    cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer (only w/ -ss, -xcs or -rns)",
-                                                             "specifies a timeout of t seconds for\nend-of-study determination" );
+    cmd.addOption(  "--exec-on-reception",      "-xcr", 1, "[c]ommand: string",
+                                                           "execute command c after having received and\nprocessed one C-STORE-Request message" );
+    cmd.addOption(  "--exec-on-eostudy",        "-xcs", 1, "[c]ommand: string (only w/ -ss)",
+                                                           "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
+    cmd.addOption(  "--rename-on-eostudy",      "-rns",    "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
+    cmd.addOption(  "--eostudy-timeout",        "-tos", 1, "[t]imeout: integer (only w/ -ss, -xcs or -rns)",
+                                                           "specifies a timeout of t seconds for\nend-of-study determination" );
 #ifdef _WIN32
-    cmd.addOption(  "--exec-sync",              "-xs",       "execute command synchronously in foreground" );
+    cmd.addOption(  "--exec-sync",              "-xs",     "execute command synchronously in foreground" );
 #endif
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
     cmd.addSubGroup("transport protocol stack options:");
-      cmd.addOption("--disable-tls",            "-tls",      "use normal TCP/IP connection (default)");
-      cmd.addOption("--enable-tls",             "+tls",  2,  "[p]rivate key file, [c]ertificate file: string",
-                                                             "use authenticated secure TLS connection");
+      cmd.addOption("--disable-tls",            "-tls",    "use normal TCP/IP connection (default)");
+      cmd.addOption("--enable-tls",             "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
+                                                           "use authenticated secure TLS connection");
     cmd.addSubGroup("private key password options (only with --enable-tls):");
-      cmd.addOption("--std-passwd",             "+ps",       "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",             "+pw",   1,  "[p]assword: string ",
-                                                             "use specified password");
-      cmd.addOption("--null-passwd",            "-pw",       "use empty string as password");
+      cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
+      cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string ",
+                                                           "use specified password");
+      cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
     cmd.addSubGroup("key and certificate file format options:");
-      cmd.addOption("--pem-keys",               "-pem",      "read keys and certificates as PEM file (def.)");
-      cmd.addOption("--der-keys",               "-der",      "read keys and certificates as DER file");
+      cmd.addOption("--pem-keys",               "-pem",    "read keys and certificates as PEM file (def.)");
+      cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority options:");
-      cmd.addOption("--add-cert-file",         "+cf",    1,  "[c]ertificate filename: string",
-                                                             "add certificate file to list of certificates");
-      cmd.addOption("--add-cert-dir",          "+cd",    1,  "[c]ertificate directory: string",
-                                                             "add certificates in d to list of certificates");
+      cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
+                                                           "add certificate file to list of certificates");
+      cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
+                                                           "add certificates in d to list of certificates");
     cmd.addSubGroup("ciphersuite options:");
-      cmd.addOption("--cipher",                "+cs",    1,  "[c]iphersuite name: string",
-                                                             "add ciphersuite to list of negotiated suites");
-      cmd.addOption("--dhparam",               "+dp",    1,  "[f]ilename: string",
-                                                             "read DH parameters for DH/DSS ciphersuites");
+      cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
+                                                           "add ciphersuite to list of negotiated suites");
+      cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
+                                                           "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator options:");
-      cmd.addOption("--seed",                  "+rs",    1,  "[f]ilename: string",
-                                                             "seed random generator with contents of f");
-      cmd.addOption("--write-seed",            "+ws",        "write back modified seed (only with --seed)");
-      cmd.addOption("--write-seed-file",       "+wf",    1,  "[f]ilename: string (only with --seed)",
-                                                             "write modified seed to file f");
+      cmd.addOption("--seed",                   "+rs",  1, "[f]ilename: string",
+                                                           "seed random generator with contents of f");
+      cmd.addOption("--write-seed",             "+ws",     "write back modified seed (only with --seed)");
+      cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
+                                                           "write modified seed to file f");
     cmd.addSubGroup("peer authentication options:");
-      cmd.addOption("--require-peer-cert",     "-rc",        "verify peer certificate, fail if absent (def.)");
-      cmd.addOption("--verify-peer-cert",      "-vc",        "verify peer certificate if present");
-      cmd.addOption("--ignore-peer-cert",      "-ic",        "don't verify peer certificate");
+      cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
+      cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
+      cmd.addOption("--ignore-peer-cert",       "-ic",     "don't verify peer certificate");
 #endif
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
   {
-    /* check exclusive options first */
+    /* print help text and exit */
+    if (cmd.getArgCount() == 0)
+      app.printUsage();
 
+    /* check exclusive options first */
     if (cmd.getParamCount() == 0)
     {
-        if (cmd.findOption("--version"))
-        {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+      if (cmd.findOption("--version"))
+      {
+        app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+        CERR << endl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << endl;
+        CERR << " none" << endl;
 #else
-            CERR << endl;
+        CERR << endl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+        CERR << "- ZLIB, Version " << zlibVersion() << endl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+        CERR << "- " << OPENSSL_VERSION_TEXT << endl;
 #endif
-            return 0;
-        }
+        return 0;
+      }
     }
 
     /* command line parameters */
-
     if (cmd.getParamCount() == 1)
       app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
 
 #ifdef HAVE_CONFIG_H
-     if (cmd.findOption("--inetd"))
-     {
-       opt_inetd_mode = OFTrue;
+    if (cmd.findOption("--inetd"))
+    {
+      opt_inetd_mode = OFTrue;
 
-       // duplicate stdin, which is the socket passed by inetd
-       int inetd_fd = dup(0);
-       if (inetd_fd < 0) exit(99);
+      // duplicate stdin, which is the socket passed by inetd
+      int inetd_fd = dup(0);
+      if (inetd_fd < 0) exit(99);
 
-       close(0); // close stdin
-       close(1); // close stdout
-       close(2); // close stderr
+      close(0); // close stdin
+      close(1); // close stdout
+      close(2); // close stderr
 
-       // open new file descriptor for stdin
-       int fd = open("/dev/null",O_RDONLY);
-       if (fd != 0) exit(99);
+      // open new file descriptor for stdin
+      int fd = open("/dev/null",O_RDONLY);
+      if (fd != 0) exit(99);
 
-       // create new file descriptor for stdout
-       fd = makeTempFile();
-       if (fd != 1) exit(99);
+      // create new file descriptor for stdout
+      fd = makeTempFile();
+      if (fd != 1) exit(99);
 
-       // create new file descriptor for stderr
-       fd = makeTempFile();
-       if (fd != 2) exit(99);
+      // create new file descriptor for stderr
+      fd = makeTempFile();
+      if (fd != 2) exit(99);
 
-       dcmExternalSocketHandle.set(inetd_fd);
+      dcmExternalSocketHandle.set(inetd_fd);
 
-       // the port number is not really used. Set to non-privileged port number
-       // to avoid failing the privilege test.
-       opt_port = 1024;
-     }
+      // the port number is not really used. Set to non-privileged port number
+      // to avoid failing the privilege test.
+      opt_port = 1024;
+    }
 #endif
 
 #if defined(HAVE_FORK) || defined(_WIN32)
-      if (cmd.findOption("--fork"))
-      {
-        app.checkConflict("--inetd", "--fork", opt_inetd_mode);
-        opt_forkMode = OFTrue;
-      }
+    if (cmd.findOption("--fork"))
+    {
+      app.checkConflict("--inetd", "--fork", opt_inetd_mode);
+      opt_forkMode = OFTrue;
+    }
 #ifdef _WIN32
-      if (cmd.findOption("--forked-child"))
-      {
-        opt_forkedChild = OFTrue;
-      }
+    if (cmd.findOption("--forked-child"))
+    {
+      opt_forkedChild = OFTrue;
+    }
 #endif
 #endif
 
-      if (cmd.findOption("--acse-timeout"))
-      {
-        OFCmdSignedInt opt_timeout = 0;
-        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-        opt_acse_timeout = OFstatic_cast(int, opt_timeout);
-      }
+    if (cmd.findOption("--acse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+      opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+    }
 
-      if (cmd.findOption("--dimse-timeout"))
-      {
-        OFCmdSignedInt opt_timeout = 0;
-        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-        opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
-        opt_blockMode = DIMSE_NONBLOCKING;
-      }
+    if (cmd.findOption("--dimse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+      opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+      opt_blockMode = DIMSE_NONBLOCKING;
+    }
 
     // omitting the port number is only allowed in inetd mode
-    if ((! opt_inetd_mode) && (cmd.getParamCount() == 0))
-    {
-          app.printError("Missing parameter port");
-    }
+    if ((!opt_inetd_mode) && (cmd.getParamCount() == 0))
+      app.printError("Missing parameter port");
 
     if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
     if (cmd.findOption("--debug"))
@@ -576,16 +575,16 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(opt_profileName));
 
       // check conflicts with other command line options
-      app.checkConflict("--config-file", "--prefer-little", (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
-      app.checkConflict("--config-file", "--prefer-big", (opt_networkTransferSyntax == EXS_BigEndianExplicit));
+      app.checkConflict("--config-file", "--prefer-little",   (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
+      app.checkConflict("--config-file", "--prefer-big",      (opt_networkTransferSyntax == EXS_BigEndianExplicit));
       app.checkConflict("--config-file", "--prefer-lossless", (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
-      app.checkConflict("--config-file", "--prefer-jpeg8", (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
-      app.checkConflict("--config-file", "--prefer-jpeg12", (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
-      app.checkConflict("--config-file", "--prefer-rle", (opt_networkTransferSyntax == EXS_RLELossless));
+      app.checkConflict("--config-file", "--prefer-jpeg8",    (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
+      app.checkConflict("--config-file", "--prefer-jpeg12",   (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
+      app.checkConflict("--config-file", "--prefer-rle",      (opt_networkTransferSyntax == EXS_RLELossless));
 #ifdef WITH_ZLIB
       app.checkConflict("--config-file", "--prefer-deflated", (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
 #endif
-      app.checkConflict("--config-file", "--implicit", (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
+      app.checkConflict("--config-file", "--implicit",        (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
       app.checkConflict("--config-file", "--promiscuous", opt_promiscuous);
 
       // read configuration file
@@ -949,8 +948,8 @@ int main(int argc, char *argv[])
   }
 
 #ifdef HAVE_FORK
-    if (opt_forkMode)
-      DUL_requestForkOnTransportConnectionReceipt(argc, argv);
+  if (opt_forkMode)
+    DUL_requestForkOnTransportConnectionReceipt(argc, argv);
 #elif defined(_WIN32)
   if (opt_forkedChild)
   {
@@ -1070,8 +1069,8 @@ int main(int argc, char *argv[])
     cond = ASC_setTransportLayer(net, tLayer, 0);
     if (cond.bad())
     {
-        DimseCondition::dump(cond);
-        return 1;
+      DimseCondition::dump(cond);
+      return 1;
     }
   }
 
@@ -1138,7 +1137,6 @@ int main(int argc, char *argv[])
 }
 
 
-
 static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg)
 {
   char buf[BUFSIZ];
@@ -1167,8 +1165,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond.code() == DULC_FORKEDCHILD)
   {
-      // if (opt_verbose) DimseCondition::dump(cond);
-      goto cleanup;
+    // if (opt_verbose) DimseCondition::dump(cond);
+    goto cleanup;
   }
 
   // if some kind of error occured, take care of it
@@ -1221,13 +1219,13 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   if (opt_verbose)
   {
 #if defined(HAVE_FORK) || defined(_WIN32)
-      if (opt_forkMode)
-      {
-        printf("Association Received in %s process (pid: %ld)\n", (DUL_processIsForkedChild() ? "child" : "parent") , OFstatic_cast(long, getpid()));
-      }
-      else printf("Association Received\n");
+    if (opt_forkMode)
+    {
+      printf("Association Received in %s process (pid: %ld)\n", (DUL_processIsForkedChild() ? "child" : "parent") , OFstatic_cast(long, getpid()));
+    }
+    else printf("Association Received\n");
 #else
-      printf("Association Received\n");
+    printf("Association Received\n");
 #endif
   }
 
@@ -1550,7 +1548,6 @@ cleanup:
 }
 
 
-
 static OFCondition
 processCommands(T_ASC_Association * assoc)
     /*
@@ -1647,7 +1644,6 @@ processCommands(T_ASC_Association * assoc)
 }
 
 
-
 static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID)
 {
   if (opt_verbose)
@@ -1667,14 +1663,12 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
 }
 
 
-
 struct StoreCallbackData
 {
   char* imageFileName;
   DcmFileFormat* dcmff;
   T_ASC_Association* assoc;
 };
-
 
 
 static void
@@ -2085,7 +2079,6 @@ static OFCondition storeSCP(
 }
 
 
-
 static void executeEndOfStudyEvents()
     /*
      * This function deals with the execution of end-of-study-events. In detail,
@@ -2155,7 +2148,6 @@ static void executeOnReception()
   // Execute command in a new process
   executeCommand( cmd );
 }
-
 
 
 static void renameOnEndOfStudy()
@@ -2239,7 +2231,6 @@ static void renameOnEndOfStudy()
 }
 
 
-
 static void executeOnEndOfStudy()
     /*
      * This function deals with the execution of the command line which was passed
@@ -2269,7 +2260,6 @@ static void executeOnEndOfStudy()
 }
 
 
-
 static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute )
     /*
      * This function replaces all occurrences of pattern in srcstr with substitute and returns
@@ -2297,7 +2287,6 @@ static OFString replaceChars( const OFString &srcstr, const OFString &pattern, c
 
   return( result );
 }
-
 
 
 static void executeCommand( const OFString &cmd )
@@ -2357,72 +2346,75 @@ static void executeCommand( const OFString &cmd )
 #endif
 }
 
+
 static void cleanChildren(pid_t pid, OFBool synch)
-    /*
-     * This function removes child processes that have terminated,
-     * i.e. converted to zombies. Should be called now and then.
-     */
+  /*
+   * This function removes child processes that have terminated,
+   * i.e. converted to zombies. Should be called now and then.
+   */
 {
 #ifdef HAVE_WAITPID
-    int stat_loc;
+  int stat_loc;
 #elif HAVE_WAIT3
-    struct rusage rusage;
+  struct rusage rusage;
 #if defined(__NeXT__)
-    /* some systems need a union wait as argument to wait3 */
-    union wait status;
+  /* some systems need a union wait as argument to wait3 */
+  union wait status;
 #else
-    int        status;
+  int        status;
 #endif
 #endif
 
 #if defined(HAVE_WAITPID) || defined(HAVE_WAIT3)
-    int child = 1;
-    int options = synch ? 0 : WNOHANG;
-    while (child > 0)
-    {
+  int child = 1;
+  int options = synch ? 0 : WNOHANG;
+  while (child > 0)
+  {
 #ifdef HAVE_WAITPID
-        child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
+    child = OFstatic_cast(int, waitpid(pid, &stat_loc, options));
 #elif defined(HAVE_WAIT3)
-        child = wait3(&status, options, &rusage);
+    child = wait3(&status, options, &rusage);
 #endif
-        if (child < 0)
-        {
-           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
-        }
-
-        if (synch) child = -1; // break out of loop
+    if (child < 0)
+    {
+      if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
     }
+
+    if (synch) child = -1; // break out of loop
+  }
 #endif
 }
+
 
 static
 DUL_PRESENTATIONCONTEXT *
 findPresentationContextID(LST_HEAD * head,
                           T_ASC_PresentationContextID presentationContextID)
 {
-    DUL_PRESENTATIONCONTEXT *pc;
-    LST_HEAD **l;
-    OFBool found = OFFalse;
+  DUL_PRESENTATIONCONTEXT *pc;
+  LST_HEAD **l;
+  OFBool found = OFFalse;
 
-    if (head == NULL)
-        return NULL;
+  if (head == NULL)
+    return NULL;
 
-    l = &head;
-    if (*l == NULL)
-        return NULL;
+  l = &head;
+  if (*l == NULL)
+    return NULL;
 
-    pc = OFstatic_cast(DUL_PRESENTATIONCONTEXT *, LST_Head(l));
-    (void)LST_Position(l, OFstatic_cast(LST_NODE *, pc));
+  pc = OFstatic_cast(DUL_PRESENTATIONCONTEXT *, LST_Head(l));
+  (void)LST_Position(l, OFstatic_cast(LST_NODE *, pc));
 
-    while (pc && !found) {
-        if (pc->presentationContextID == presentationContextID) {
-            found = OFTrue;
-        } else {
-            pc = OFstatic_cast(DUL_PRESENTATIONCONTEXT *, LST_Next(l));
-        }
+  while (pc && !found) {
+    if (pc->presentationContextID == presentationContextID) {
+      found = OFTrue;
+    } else {
+      pc = OFstatic_cast(DUL_PRESENTATIONCONTEXT *, LST_Next(l));
     }
-    return pc;
+  }
+  return pc;
 }
+
 
 /** accept all presenstation contexts for unknown SOP classes,
  *  i.e. UIDs appearing in the list of abstract syntaxes
@@ -2432,77 +2424,73 @@ findPresentationContextID(LST_HEAD * head,
  *  @param acceptedRole SCU/SCP role to accept
  */
 static OFCondition acceptUnknownContextsWithTransferSyntax(
-    T_ASC_Parameters * params,
-    const char* transferSyntax,
-    T_ASC_SC_ROLE acceptedRole)
+  T_ASC_Parameters * params,
+  const char* transferSyntax,
+  T_ASC_SC_ROLE acceptedRole)
 {
-    OFCondition cond = EC_Normal;
-    int n, i, k;
-    DUL_PRESENTATIONCONTEXT *dpc;
-    T_ASC_PresentationContext pc;
-    OFBool accepted = OFFalse;
-    OFBool abstractOK = OFFalse;
+  OFCondition cond = EC_Normal;
+  int n, i, k;
+  DUL_PRESENTATIONCONTEXT *dpc;
+  T_ASC_PresentationContext pc;
+  OFBool accepted = OFFalse;
+  OFBool abstractOK = OFFalse;
 
-    n = ASC_countPresentationContexts(params);
-    for (i = 0; i < n; i++)
+  n = ASC_countPresentationContexts(params);
+  for (i = 0; i < n; i++)
+  {
+    cond = ASC_getPresentationContext(params, i, &pc);
+    if (cond.bad()) return cond;
+    abstractOK = OFFalse;
+    accepted = OFFalse;
+
+    if (dcmFindNameOfUID(pc.abstractSyntax) == NULL)
     {
-        cond = ASC_getPresentationContext(params, i, &pc);
-        if (cond.bad()) return cond;
-        abstractOK = OFFalse;
-        accepted = OFFalse;
+      abstractOK = OFTrue;
 
-        if (dcmFindNameOfUID(pc.abstractSyntax) == NULL)
+      /* check the transfer syntax */
+      for (k = 0; (k < OFstatic_cast(int, pc.transferSyntaxCount)) && !accepted; k++)
+      {
+        if (strcmp(pc.proposedTransferSyntaxes[k], transferSyntax) == 0)
         {
-            abstractOK = OFTrue;
-
-            /* check the transfer syntax */
-            for (k = 0; (k < OFstatic_cast(int, pc.transferSyntaxCount)) && !accepted; k++)
-            {
-                if (strcmp(pc.proposedTransferSyntaxes[k], transferSyntax) == 0)
-                {
-                    accepted = OFTrue;
-                }
-            }
+          accepted = OFTrue;
         }
-
-        if (accepted)
-        {
-            cond = ASC_acceptPresentationContext(
-                params, pc.presentationContextID,
-                transferSyntax, acceptedRole);
-            if (cond.bad()) return cond;
-        } else {
-            T_ASC_P_ResultReason reason;
-
-            /* do not refuse if already accepted */
-            dpc = findPresentationContextID(
-                              params->DULparams.acceptedPresentationContext,
-                                            pc.presentationContextID);
-            if ((dpc == NULL) ||
-                ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
-            {
-
-                if (abstractOK) {
-                    reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
-                } else {
-                    reason = ASC_P_ABSTRACTSYNTAXNOTSUPPORTED;
-                }
-                /*
-                 * If previously this presentation context was refused
-                 * because of bad transfer syntax let it stay that way.
-                 */
-                if ((dpc != NULL) &&
-                    (dpc->result == ASC_P_TRANSFERSYNTAXESNOTSUPPORTED))
-                    reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
-
-                cond = ASC_refusePresentationContext(params,
-                                              pc.presentationContextID,
-                                              reason);
-                if (cond.bad()) return cond;
-            }
-        }
+      }
     }
-    return EC_Normal;
+
+    if (accepted)
+    {
+      cond = ASC_acceptPresentationContext(
+        params, pc.presentationContextID,
+        transferSyntax, acceptedRole);
+      if (cond.bad()) return cond;
+    } else {
+      T_ASC_P_ResultReason reason;
+
+      /* do not refuse if already accepted */
+      dpc = findPresentationContextID(params->DULparams.acceptedPresentationContext,
+                                      pc.presentationContextID);
+      if ((dpc == NULL) ||
+        ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
+      {
+
+        if (abstractOK) {
+          reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
+        } else {
+          reason = ASC_P_ABSTRACTSYNTAXNOTSUPPORTED;
+        }
+        /*
+         * If previously this presentation context was refused
+         * because of bad transfer syntax let it stay that way.
+         */
+        if ((dpc != NULL) && (dpc->result == ASC_P_TRANSFERSYNTAXESNOTSUPPORTED))
+          reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
+
+        cond = ASC_refusePresentationContext(params, pc.presentationContextID, reason);
+        if (cond.bad()) return cond;
+      }
+    }
+  }
+  return EC_Normal;
 }
 
 
@@ -2515,44 +2503,51 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
  *  @param acceptedRole SCU/SCP role to accept
  */
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
-    T_ASC_Parameters * params,
-    const char* transferSyntaxes[], int transferSyntaxCount,
-    T_ASC_SC_ROLE acceptedRole)
+  T_ASC_Parameters * params,
+  const char* transferSyntaxes[], int transferSyntaxCount,
+  T_ASC_SC_ROLE acceptedRole)
 {
-    OFCondition cond = EC_Normal;
-    /*
-    ** Accept in the order "least wanted" to "most wanted" transfer
-    ** syntax.  Accepting a transfer syntax will override previously
-    ** accepted transfer syntaxes.
-    */
-    for (int i=transferSyntaxCount-1; i>=0; i--)
-    {
-        cond = acceptUnknownContextsWithTransferSyntax(params, transferSyntaxes[i], acceptedRole);
-        if (cond.bad()) return cond;
-    }
-    return cond;
+  OFCondition cond = EC_Normal;
+  /*
+  ** Accept in the order "least wanted" to "most wanted" transfer
+  ** syntax.  Accepting a transfer syntax will override previously
+  ** accepted transfer syntaxes.
+  */
+  for (int i=transferSyntaxCount-1; i>=0; i--)
+  {
+    cond = acceptUnknownContextsWithTransferSyntax(params, transferSyntaxes[i], acceptedRole);
+    if (cond.bad()) return cond;
+  }
+  return cond;
 }
+
 
 #ifdef HAVE_CONFIG_H
 
 static int makeTempFile()
 {
-    char tempfile[30];
-    OFStandard::strlcpy(tempfile, "/tmp/storescp_XXXXXX", 30);
+  char tempfile[30];
+  OFStandard::strlcpy(tempfile, "/tmp/storescp_XXXXXX", 30);
 #ifdef HAVE_MKSTEMP
-    return mkstemp(tempfile);
+  return mkstemp(tempfile);
 #else /* ! HAVE_MKSTEMP */
-    mktemp(tempfile);
-    return open(tempfile, O_WRONLY|O_CREAT|O_APPEND,0644);
+  mktemp(tempfile);
+  return open(tempfile, O_WRONLY|O_CREAT|O_APPEND,0644);
 #endif
 }
 
 #endif
 
+
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.89  2005-12-19 10:31:12  joergr
+** Revision 1.90  2006-02-03 10:21:59  joergr
+** Print help text if no command line argument is specified. This is the default
+** behaviour of most DCMTK tools.
+** Fixed inconsistent source code layout.
+**
+** Revision 1.89  2005/12/19 10:31:12  joergr
 ** Changed printf() type for return value of getpid() to "%ld" and added
 ** explicit typecast, needed for Solaris.
 **
