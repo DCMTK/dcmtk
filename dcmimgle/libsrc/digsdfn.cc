@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:49 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-03 16:53:14 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -460,7 +460,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.30  2005-12-08 15:42:49  meichel
+ * Revision 1.31  2006-02-03 16:53:14  joergr
+ * Fixed inconsistent source code layout.
+ *
+ * Revision 1.30  2005/12/08 15:42:49  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.29  2004/01/05 14:58:42  joergr
@@ -562,4 +565,3 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  *
  */
-

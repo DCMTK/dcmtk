@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:48 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-03 16:53:14 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,8 +108,6 @@ DiDocument::DiDocument(DcmObject *object,
         }
     }
 }
-
-
 
 
 void DiDocument::convertPixelData()
@@ -320,7 +318,7 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        OFconst_cast(DcmElement *, elem)->getUint16(returnVal, pos);   // remove 'const' to use non-const methods
+        OFconst_cast(DcmElement *, elem)->getUint16(returnVal, pos);  // remove 'const' to use non-const methods
         return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
@@ -333,7 +331,7 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
     if (elem != NULL)
     {
         Uint16 *val;                                            // parameter has no 'const' qualifier
-        OFconst_cast(DcmElement *, elem)->getUint16Array(val); // remove 'const' to use non-const methods
+        OFconst_cast(DcmElement *, elem)->getUint16Array(val);  // remove 'const' to use non-const methods
         returnVal = val;
         if (OFconst_cast(DcmElement *, elem)->getVR() == EVR_OW)
             return OFconst_cast(DcmElement *, elem)->getLength(/*Xfer*/) / sizeof(Uint16);
@@ -349,7 +347,7 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
     if (elem != NULL)
     {
         char *val;                                         // parameter has no 'const' qualifier
-        OFconst_cast(DcmElement *, elem)->getString(val); // remove 'const' to use non-const methods
+        OFconst_cast(DcmElement *, elem)->getString(val);  // remove 'const' to use non-const methods
         returnVal = val;
         return OFconst_cast(DcmElement *, elem)->getVM();
     }
@@ -363,7 +361,7 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        OFconst_cast(DcmElement *, elem)->getOFString(returnVal, pos); // remove 'const' to use non-const methods
+        OFconst_cast(DcmElement *, elem)->getOFString(returnVal, pos);  // remove 'const' to use non-const methods
         return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
@@ -374,7 +372,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.16  2005-12-08 15:42:48  meichel
+ * Revision 1.17  2006-02-03 16:53:14  joergr
+ * Fixed inconsistent source code layout.
+ *
+ * Revision 1.16  2005/12/08 15:42:48  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.15  2003/12/08 15:13:18  joergr
