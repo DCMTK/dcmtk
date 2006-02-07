@@ -163,7 +163,7 @@ lines (an example is provided in file <em>share/data/dumppat.txt</em>).
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1999-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
