@@ -15,17 +15,18 @@ the execution of the configure script).
 
 The default behaviour can be overridden by defining an environment
 variable DCMDICTPATH to contain the file system path to an alternative
-data dictionary.  Thus the csh command:
+data dictionary.  Thus the Unix csh command:
 	setenv DCMDICTPATH $HOME/dicom.dic
 would cause all applications using the dcmdata library to load the data
 dictionary dicom.dic from the users home directory.
 
 The DCMDICTPATH environment variable can contain several data dictionaries
-separated by colons (":").  Thus the csh command:
+separated by colons (":") on Unix systems.  Thus the csh command:
 	setenv DCMDICTPATH /usr/local/dicom/lib/dicom.dic:$HOME/dicom.dic
 would cause all applications using the dcmdata library to first load the
 default data dictionary and subsequently load the data dictionary dicom.dic
-from the users home directory.
+from the users home directory.  On Windows systems, a semicolon (";") is
+used as a separator.
 
 Data dictionary entries loaded later in the load sequence override entries
 loaded earlier.

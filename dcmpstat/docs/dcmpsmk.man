@@ -199,13 +199,14 @@ into the application (default for Windows).
 The default behaviour should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
 \e DCMDICTPATH environment variable has the same format as the Unix shell
-\e PATH variable in that a colon (":") separates entries.  The data dictionary
-code will attempt to load each file specified in the \e DCMDICTPATH
-environment variable.  It is an error if no data dictionary can be loaded.
+\e PATH variable in that a colon (":") separates entries.  On Windows systems,
+a semicolon (";") is used as a separator.  The data dictionary code will
+attempt to load each file specified in the \e DCMDICTPATH environment variable.
+It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1998-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
