@@ -29,8 +29,8 @@ note that \b dcmodify does not check whether a given value matches its
 value representation (VR).  Usually, an error message is printed but generally
 the user should take care of the right VR usage.
 
-If \b dcmodify doesn't know the tag it should insert, then the tags VR is set to
-UN and an empty value. Please insert these tags into the dictionary to
+If \b dcmodify doesn't know the tag it should insert, then the tags VR is set
+to UN and an empty value. Please insert these tags into the dictionary to
 avoid this.
 
 \b dcmodify is able to work with so-called tag paths to describe tags in
@@ -63,75 +63,75 @@ dcmfile-in  DICOM input filename(s) to be modified
 
 \subsection general_options general options
 \verbatim
-  -h   --help
-         print this help text and exit
+  -h    --help
+          print this help text and exit
 
-       --version
-         print version information and exit
+        --version
+          print version information and exit
 
-  -d   --debug
-         debug mode, print debug information
+  -d    --debug
+          debug mode, print debug information
 
-  -v   --verbose
-         verbose mode, print verbose output
+  -v    --verbose
+          verbose mode, print verbose output
 
-  -ie  --ignore-errors
-         continue with file, if modify error occurs
+  -ie   --ignore-errors
+          continue with file, if modify error occurs
 \endverbatim
 
 \subsection input_options input options
 \verbatim
 input file format:
 
-  +f   --read-file
-         read file format or data set (default)
+  +f    --read-file
+          read file format or data set (default)
 
-  +fo  --read-file-only
-         read file format only
+  +fo   --read-file-only
+          read file format only
 
-  -f   --read-dataset
-         read data set without file meta information
+  -f    --read-dataset
+          read data set without file meta information
 
 input transfer syntax:
 
-  -t=  --read-xfer-auto
-         use TS recognition (default)
+  -t=   --read-xfer-auto
+          use TS recognition (default)
 
-  -td  --read-xfer-detect
-         ignore TS specified in the file meta header
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
-  -te  --read-xfer-little
-         read with explicit VR little endian TS
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
 
-  -tb  --read-xfer-big
-         read with explicit VR big endian TS
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
 
-  -ti  --read-xfer-implicit
-         read with implicit VR little endian TS
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
 
 parsing of odd-length attributes:
 
-  +ao  --accept-odd-length
-         accept odd length attributes (default)
+  +ao   --accept-odd-length
+          accept odd length attributes (default)
 
-  +ae  --assume-even-length
-         assume real length is one byte larger
+  +ae   --assume-even-length
+          assume real length is one byte larger
 
 automatic data correction:
 
-  +dc  --enable-correction
-         enable automatic data correction (default)
+  +dc   --enable-correction
+          enable automatic data correction (default)
 
-  -dc  --disable-correction
-         disable automatic data correction
+  -dc   --disable-correction
+          disable automatic data correction
 
 bitstream format of deflated input:
 
-  +bd  --bitstream-deflated
-         expect deflated bitstream (default)
+  +bd   --bitstream-deflated
+          expect deflated bitstream (default)
 
-  +bz  --bitstream-zlib
-         expect deflated zlib bitstream
+  +bz   --bitstream-zlib
+          expect deflated zlib bitstream
 \endverbatim
 
 
@@ -139,25 +139,24 @@ bitstream format of deflated input:
 \verbatim
 insert mode options:
 
-  -i   --insert-tag  "tag-path=value"
-         insert (or overwrite) tag at position t
-         with value v
+  -i    --insert-tag  "tag-path=value"
+          insert (or overwrite) tag at position t with value v
 
 modify mode options:
 
-  -m   --modify-tag  "[t]ag-path=[v]alue"
-         modify tag at position t to value v
+  -m    --modify-tag  "[t]ag-path=[v]alue"
+          modify tag at position t to value v
 
-  -ma  --modify-all-tags  "[t]ag=[v]value"
-         modify ALL matching tags t in file to value v
+  -ma   --modify-all-tags  "[t]ag=[v]value"
+          modify ALL matching tags t in file to value v
 
 erase mode options:
 
-  -e   --erase-tag  "[t]ag-path"
-         erase tag at position t
+  -e    --erase-tag  "[t]ag-path"
+          erase tag at position t
 
-  -ea  --erase-all-tags  "[t]ag"
-         erase ALL matching tags t in file
+  -ea   --erase-all-tags  "[t]ag"
+          erase ALL matching tags t in file
 
 uid options:
 
@@ -171,74 +170,73 @@ uid options:
           generate new SOP Instance UID
 
   -nmu  --no-meta-uid
-          don't update metaheader UIDs
-          UIDs in the metaheader won't be changed,
-          if related UIDs in dataset are modified
-          via options -m, -i or -ma
+          don't update metaheader UIDs;
+          UIDs in the metaheader won't be changed, if related UIDs in
+          the dataset are modified via options -m, -i or -ma
 \endverbatim
 
 \subsection output_options output options
 \verbatim
 output file format:
 
-  +F   --write-file
-         write file format (default)
+  +F    --write-file
+          write file format (default)
 
-  -F   --write-dataset
-         write data set without file meta information
+  -F    --write-dataset
+          write data set without file meta information
 
 output transfer syntax:
 
-  +t=  --write-xfer-same
-         write with same TS as input (default)
+  +t=   --write-xfer-same
+          write with same TS as input (default)
 
-  +te  --write-xfer-little
-         write with explicit VR little endian TS
+  +te   --write-xfer-little
+          write with explicit VR little endian TS
 
-  +tb  --write-xfer-big
-         write with explicit VR big endian TS
+  +tb   --write-xfer-big
+          write with explicit VR big endian TS
 
-  +ti  --write-xfer-implicit
-         write with implicit VR little endian TS
+  +ti   --write-xfer-implicit
+          write with implicit VR little endian TS
 
 post-1993 value representations:
 
-  +u   --enable-new-vr
-         enable support for new VRs (UN/UT) (default)
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
 
-  -u   --disable-new-vr
-         disable support for new VRs, convert to OB
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
 
 group length encoding:
 
-  +g=  --group-length-recalc
-         recalculate group lengths if present (default)
+  +g=   --group-length-recalc
+          recalculate group lengths if present (default)
 
-  +g   --group-length-create
-         always write with group length elements
+  +g    --group-length-create
+          always write with group length elements
 
-  -g   --group-length-remove
-         always write without group length elements
+  -g    --group-length-remove
+          always write without group length elements
 
 length encoding in sequences and items:
 
-  +le  --length-explicit
-         write with explicit lengths (default)
+  +le   --length-explicit
+          write with explicit lengths (default)
 
-  -le  --length-undefined
-         write with undefined lengths
+  -le   --length-undefined
+          write with undefined lengths
 
 data set trailing padding (not with --write-dataset):
 
-  -p=  --padding-retain
-         do not change padding (default if not --write-dataset)
+  -p=   --padding-retain
+          do not change padding (default if not --write-dataset)
 
-  -p   --padding-off
-         no padding (implicit if --write-dataset)
+  -p    --padding-off
+          no padding (implicit if --write-dataset)
 
-  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
-         align file on multiple of f bytes and items on
-         multiple of i bytes
+  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+          align file on multiple of f bytes and items on
+          multiple of i bytes
 \endverbatim
 
 \section private_tags PRIVATE TAGS
@@ -250,10 +248,10 @@ work.
 \subsection insertions_subsection insertions
 
 If you wish to insert a private tag (not a reservation with gggg,00xx), be sure,
-that you've listed it in your dictionary (see dcmdata/docs/datadict.txt for
-details). If it's not listed, \b dcmodify will insert it with VR=UN and empty
-value. Please note, that the usage of option '-u' will change the VR from UN
-to OB when saving.
+that you've listed it in your dictionary (see <em>share/docs/datadict.txt</em>
+for details). If it's not listed, \b dcmodify will insert it with VR=UN and
+empty value. Please note, that the usage of option '-u' will change the VR from
+UN to OB when saving.
 
 If you've got your private tag in the dictionary, \b dcmodify acts as follows:
 When it finds a reservation in the tags enclosing dataset, whose private
@@ -288,7 +286,7 @@ For deletion of private non-reservation tags there are no special issues.
 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the
 related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via
 insert or modify mode options. You can disable this behaviour by using the
-'-nmu option.
+'-nmu' option.
 
 If you generate new UID's with '-gst', '-gse' or '-gin', this will only affect
 the UID you choosed to generate. So if you use '-gst' to generate a new
@@ -299,9 +297,8 @@ disadvantage of this flexibility, the user has to assure, that when creating
 'new' dicom files with new UIDs with \b dcmodify, other UIDs have to be updated
 by the user as necessary.
 
-When choosing the '-gin' option, the related metaheader tag
-('Media Storage SOP Instance UID') is updated automatically. This behaviour
-can not be disabled.
+When choosing the '-gin' option, the related metaheader tag ('Media Storage SOP
+Instance UID') is updated automatically. This behaviour can not be disabled.
 
 \section examples EXAMPLES
 
