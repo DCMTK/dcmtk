@@ -580,9 +580,9 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 
 The \b dcmqrscp application will prefer transfer syntaxes having an explicit
 encoding over the default implicit transfer syntax.  If \b dcmqrscp is running
-on big-endian hardware it will prefer BigEndianExplicitTransferSyntax to
-LittleEndianExplicitTransferSyntax (and vice versa).  This behaviour can be
-changed with the \e --prefer options (see above).
+on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit
+transfer syntax (and vice versa).  This behaviour can be changed with the
+\e --prefer options (see above).
 
 The \b dcmqrscp application does not support extended negotiation.
 

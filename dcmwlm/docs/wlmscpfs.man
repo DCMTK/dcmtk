@@ -13,15 +13,15 @@ wlmscpfs [options] port
 
 \section description DESCRIPTION
 
-The \b wlmscpfs application implements a Service Class Provider (SCP) for the 
-Basic Worklist Management Service.  The application will listen on a specified 
-TCP/IP port for incoming association requests from a Worklist Management SCU. 
-In case an association was acknowledged and a worklist query was received, the 
-\b wlmscpfs application will query particular files in a certain directory 
-(which can be specified through corresponding program options) on the file 
-system for corresponding worklist information, and it will send this 
-information back to the calling Worklist Management SCU.  Aside from dealing 
-with Worklist Management queries, the \b wlmscpfs application also supports 
+The \b wlmscpfs application implements a Service Class Provider (SCP) for the
+Basic Worklist Management Service.  The application will listen on a specified
+TCP/IP port for incoming association requests from a Worklist Management SCU.
+In case an association was acknowledged and a worklist query was received, the
+\b wlmscpfs application will query particular files in a certain directory
+(which can be specified through corresponding program options) on the file
+system for corresponding worklist information, and it will send this
+information back to the calling Worklist Management SCU.  Aside from dealing
+with Worklist Management queries, the \b wlmscpfs application also supports
 the Verification Service Class as an SCP.
 
 \section parameters PARAMETERS
@@ -192,7 +192,7 @@ The options --enable-file-reject and --disable-file-reject can be used to
 enable or disable a file rejection mechanism which makes sure only complete
 worklist files will be used during the matching process. A worklist file is
 considered to be complete if it contains all necessary type 1 information which
-the SCP might have to return to an SCU in a C-Find response message. Table K.6-1
+the SCP might have to return to an SCU in a C-FIND response message. Table K.6-1
 in part 4 annex K of the DICOM standard lists all corresponding type 1
 attributes (see column "Return Key Type").
 
@@ -217,9 +217,8 @@ BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 The default behaviour of the wlmscpfs application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer
 syntax.  If \b wlmscpfs is running on big-endian hardware it will prefer
-BigEndianExplicitTransferSyntax over LittleEndianExplicitTransferSyntax (and
-vice versa).  This behaviour can be changed with the \e --prefer options
-(see above).
+BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa).
+This behaviour can be changed with the \e --prefer options (see above).
 
 The \b wlmscpfs application does not support extended negotiation.
 

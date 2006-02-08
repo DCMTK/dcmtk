@@ -551,9 +551,8 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 The default behaviour of the \b storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.
 If \b storescp is running on big-endian hardware it will prefer
-BigEndianExplicit transfer syntax to LittleEndianExplicitTransferSyntax (and
-vice versa).  This behaviour can be changed with the \e --prefer options (see
-above).
+BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa).
+This behaviour can be changed with the \e --prefer options (see above).
 
 The \b storescp application does not support extended negotiation.
 
