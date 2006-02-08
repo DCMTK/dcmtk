@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:47 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-08 15:21:15 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,14 +47,6 @@
 
 // XML namespace URI for the dcmtk
 #define DCMTK_XML_NAMESPACE_URI "http://dicom.offis.de/dcmtk"
-
-
-/*
-** Type Definitions
-*/
-
-typedef Uint8		    BYTE;
-typedef Sint8		    SBYTE;
 
 
 /*
@@ -159,7 +151,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.21  2005-12-08 16:28:47  meichel
+ * Revision 1.22  2006-02-08 15:21:15  joergr
+ * Removed unused type definitions.
+ *
+ * Revision 1.21  2005/12/08 16:28:47  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.20  2005/12/02 08:50:30  joergr
