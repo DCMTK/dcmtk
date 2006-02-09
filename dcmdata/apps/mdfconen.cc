@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-09 15:20:28 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-02-09 15:41:41 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -710,8 +710,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.17  2006-02-09 15:20:28  joergr
-** Replaced OFIterator<> by OFListIterator() in order to compile if WITH_STL
+** Revision 1.18  2006-02-09 15:41:41  joergr
+** Fixed typo in CVS log.
+**
+** Revision 1.17  2006/02/09 15:20:28  joergr
+** Replaced OFIterator<> by OFListIterator() in order to compile if HAVE_STL
 ** is defined.
 **
 ** Revision 1.16  2005/12/16 13:04:01  meichel

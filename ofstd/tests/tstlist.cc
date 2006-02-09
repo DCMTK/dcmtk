@@ -22,8 +22,8 @@
  *  Purpose: test programm for classes OFList and OFListIterator
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-09 15:19:53 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2006-02-09 15:41:25 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,8 +132,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
-** Revision 1.9  2006-02-09 15:19:53  joergr
-** Replaced OFIterator<> by OFListIterator() in order to compile if WITH_STL
+** Revision 1.10  2006-02-09 15:41:25  joergr
+** Fixed typo in CVS log.
+**
+** Revision 1.9  2006/02/09 15:19:53  joergr
+** Replaced OFIterator<> by OFListIterator() in order to compile if HAVE_STL
 ** is defined.
 **
 ** Revision 1.8  2005/12/08 15:49:09  meichel
