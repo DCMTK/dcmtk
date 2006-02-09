@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 13:04:01 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-09 15:20:28 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -513,8 +513,8 @@ int MdfConsoleEngine::startProvidingService()
     //parse command line into file and job list
     parseCommandLine();
     //iterators for job and file loops
-    OFIterator<MdfJob> job_it;
-    OFIterator<OFString> file_it;
+    OFListIterator(MdfJob) job_it;
+    OFListIterator(OFString) file_it;
     file_it=files->begin();
     //outer loop: iterate over all files
     for (unsigned int i=0; i<files->size(); i++)
@@ -710,7 +710,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.16  2005-12-16 13:04:01  meichel
+** Revision 1.17  2006-02-09 15:20:28  joergr
+** Replaced OFIterator<> by OFListIterator() in order to compile if WITH_STL
+** is defined.
+**
+** Revision 1.16  2005/12/16 13:04:01  meichel
 ** Changed type to size_t to make code safe on 64bit platforms
 **
 ** Revision 1.15  2005/12/08 15:40:51  meichel

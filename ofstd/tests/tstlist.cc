@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:09 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-09 15:19:53 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ void print(OFList<int> & l)
     OFListIterator(int) e(l.end());
     COUT << "Werte der List: ";
     for (OFListIterator(int) i(l.begin()); i != e; ++i)
-	COUT << *i << " ";
+        COUT << *i << " ";
     COUT << endl;
 }
 
@@ -69,9 +69,9 @@ int main()
 
     COUT << "Finde 50: ";
     if (OFFind(OFListIterator(int), int, l.begin(), e, 50) != e)
-	COUT << "gefunden, wie erwartet\n";
+        COUT << "gefunden, wie erwartet\n";
     else
-	COUT << "nicht gefunden, Fehler\n";
+        COUT << "nicht gefunden, Fehler\n";
 
     COUT << "Ausgabe der Liste l\n";
     print(l);
@@ -87,36 +87,35 @@ int main()
     a = l.begin();
     while(a != e)
     {
-	del = a++;
-	if (*del == 100)
-	{
-	    l.erase(del);
-	    COUT << "Ein 100er Element geloescht\n";
-	    print(l);
-	}
+        del = a++;
+        if (*del == 100)
+        {
+            l.erase(del);
+            COUT << "Ein 100er Element geloescht\n";
+            print(l);
+        }
     }
-
 
     COUT << "Anzahl Elemente in l: " << l.size() << endl;
     COUT << "Loesche Werte mit pop_front aus l: ";
     while(!l.empty())
     {
-	COUT << l.front() << " ";
-	l.pop_front();
+        COUT << l.front() << " ";
+        l.pop_front();
     }
     COUT << endl;
 
     COUT << "Loesche letztes Element aus l1: " << l1.back()
-	 << " und gebe l aus:\n";
+         << " und gebe l aus:\n";
     l1.pop_back();
     print(l1);
 
     COUT << "Suche 1 in l1: " << endl;
-    a = OFFind(OFIterator<int>, int, l1.begin(), l1.end(), 1);
+    a = OFFind(OFListIterator(int), int, l1.begin(), l1.end(), 1);
     if ( a == l1.end())
-	COUT << "Fehler, 1 nicht gefunden\n";
+        COUT << "Fehler, 1 nicht gefunden\n";
     else
-	COUT << "1 gefunden (wie erwartet)\n";
+        COUT << "1 gefunden (wie erwartet)\n";
 
     COUT << "Loesche alle Elemente hinter ab der  1 und gebe Ergebnis aus.\n";
     l1.erase(a, l1.end());
@@ -133,7 +132,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
-** Revision 1.8  2005-12-08 15:49:09  meichel
+** Revision 1.9  2006-02-09 15:19:53  joergr
+** Replaced OFIterator<> by OFListIterator() in order to compile if WITH_STL
+** is defined.
+**
+** Revision 1.8  2005/12/08 15:49:09  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.7  2004/01/16 10:37:23  joergr
