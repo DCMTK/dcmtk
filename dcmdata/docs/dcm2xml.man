@@ -97,9 +97,9 @@ character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  charset: string constant
+  +Ca  --charset-assume  [c]harset: string constant
          (latin-1 to -5, cyrillic, arabic, greek, hebrew)
-         assume charset if undeclared ext. charset found
+         assume charset c if no extended charset declared
 \endverbatim
 
 \subsection output_options output options
@@ -120,6 +120,9 @@ DICOM elements:
   +Wb  --write-binary-data
          write binary data of OB and OW elements
          (default: off, be careful with --load-all)
+
+  +Eh  --encode-hex
+         encode binary data as hex numbers (default)
 
   +Eb  --encode-base64
          encode binary data as Base64 (RFC 2045, MIME)
