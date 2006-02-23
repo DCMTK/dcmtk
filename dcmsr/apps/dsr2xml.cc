@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:34 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-23 12:49:43 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,27 +102,37 @@ static OFCondition writeFile(ostream &out,
                 const char *charset = dsrdoc->getSpecificCharacterSet();
                 if ((charset == NULL || strlen(charset) == 0) && dsrdoc->containsExtendedCharacters())
                 {
-                  // we have an unspecified extended character set
-                  if (defaultCharset == NULL)
-                  {
-                    /* the dataset contains non-ASCII characters that really should not be there */
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                         << "but extended characters used in file: " << ifname << endl;
-                    result = EC_IllegalCall;
-                  } else  {
-                    OFString charset(defaultCharset);
-                    if (charset == "latin-1") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
-                    else if (charset == "latin-2") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
-                    else if (charset == "latin-3") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
-                    else if (charset == "latin-4") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
-                    else if (charset == "latin-5") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
-                    else if (charset == "cyrillic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
-                    else if (charset == "arabic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
-                    else if (charset == "greek") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
-                    else if (charset == "hebrew") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
-                  }
+                    // we have an unspecified extended character set
+                    if (defaultCharset == NULL)
+                    {
+                      /* the dataset contains non-ASCII characters that really should not be there */
+                      CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                           << "but extended characters used in file: " << ifname << endl;
+                      result = EC_IllegalCall;
+                    } else {
+                        OFString charset(defaultCharset);
+                        if (charset == "latin-1")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+                        else if (charset == "latin-2")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
+                        else if (charset == "latin-3")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
+                        else if (charset == "latin-4")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
+                        else if (charset == "latin-5")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
+                        else if (charset == "cyrillic")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
+                        else if (charset == "arabic")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
+                        else if (charset == "greek")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
+                        else if (charset == "hebrew")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
+                    }
                 }
-                if (result.good()) result = dsrdoc->writeXML(out, writeFlags);
+                if (result.good())
+                    result = dsrdoc->writeXML(out, writeFlags);
             } else {
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                      << ") parsing file: "<< ifname << endl;
@@ -156,48 +166,48 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dsrfile-in",   "DICOM SR input filename to be converted", OFCmdParam::PM_Mandatory);
-    cmd.addParam("xmlfile-out",  "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
+    cmd.addParam("dsrfile-in",  "DICOM SR input filename to be converted", OFCmdParam::PM_Mandatory);
+    cmd.addParam("xmlfile-out", "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",  "print this help text and exit");
-      cmd.addOption("--version",                      "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--debug",                 "-d",  "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",         "-dd", "verbose debug mode, print more details");
+      cmd.addOption("--help",                   "-h",    "print this help text and exit");
+      cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--debug",                  "-d",    "debug mode, print debug information");
+      cmd.addOption("--verbose-debug",          "-dd",   "verbose debug mode, print more details");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",            "+f",  "read file format or data set (default)");
-        cmd.addOption("--read-file-only",       "+fo", "read file format only");
-        cmd.addOption("--read-dataset",         "-f",  "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",    "read file format or data set (default)");
+        cmd.addOption("--read-file-only",       "+fo",   "read file format only");
+        cmd.addOption("--read-dataset",         "-f",    "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",       "-t=", "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",     "-td", "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",       "-t=",   "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",     "-td",   "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",     "-te",   "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb",   "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti",   "read with implicit VR little endian TS");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5,",
+        cmd.addOption("--charset-assume",      "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
                                                          "greek, cyrillic, arabic, hebrew)\n"
-                                                         "assume charset if undeclared ext. charset found");
+                                                         "assume charset c if no extended charset found");
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
-        cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
-        cmd.addOption("--attr-code",            "+Ec", "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
-        cmd.addOption("--attr-relationship",    "+Er", "encode relationship type as XML attribute");
-        cmd.addOption("--attr-value-type",      "+Ev", "encode value type as XML attribute");
-        cmd.addOption("--attr-template-id",     "+Et", "encode template id as XML attribute");
-        cmd.addOption("--template-envelope",    "+Ee", "template element encloses content items\n(requires +Wt, implies +Et)");
+        cmd.addOption("--attr-all",             "+Ea",   "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
+        cmd.addOption("--attr-code",            "+Ec",   "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
+        cmd.addOption("--attr-relationship",    "+Er",   "encode relationship type as XML attribute");
+        cmd.addOption("--attr-value-type",      "+Ev",   "encode value type as XML attribute");
+        cmd.addOption("--attr-template-id",     "+Et",   "encode template id as XML attribute");
+        cmd.addOption("--template-envelope",    "+Ee",   "template element encloses content items\n(requires +Wt, implies +Et)");
       cmd.addSubGroup("XML structure:");
-        cmd.addOption("--add-schema-reference", "+Xs", "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)");
-        cmd.addOption("--use-xml-namespace",    "+Xn", "add XML namespace declaration to root element");
+        cmd.addOption("--add-schema-reference", "+Xs",   "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)");
+        cmd.addOption("--use-xml-namespace",    "+Xn",   "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
-        cmd.addOption("--write-empty-tags",     "+We", "write all tags even if their value is empty");
-        cmd.addOption("--write-item-id",        "+Wi", "always write item identifier");
-        cmd.addOption("--write-template-id",    "+Wt", "write template identification information");
+        cmd.addOption("--write-empty-tags",     "+We",   "write all tags even if their value is empty");
+        cmd.addOption("--write-item-id",        "+Wi",   "always write item identifier");
+        cmd.addOption("--write-template-id",    "+Wt",   "write template identification information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -259,19 +269,17 @@ int main(int argc, char *argv[])
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--charset-require"))
-        {
-           opt_defaultCharset = NULL;
-        }
+            opt_defaultCharset = NULL;
         if (cmd.findOption("--charset-assume"))
         {
-          app.checkValue(cmd.getValue(opt_defaultCharset));
-          OFString charset(opt_defaultCharset);
-          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
-              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
-              charset != "arabic" && charset != "greek" && charset != "hebrew")
-          {
-            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
-          }
+            app.checkValue(cmd.getValue(opt_defaultCharset));
+            OFString charset(opt_defaultCharset);
+            if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
+                charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
+                charset != "arabic" && charset != "greek" && charset != "hebrew")
+            {
+                app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
+            }
         }
         cmd.endOptionBlock();
 
@@ -352,7 +360,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.28  2005-12-08 15:47:34  meichel
+ * Revision 1.29  2006-02-23 12:49:43  joergr
+ * Fixed layout and formatting issues.
+ *
+ * Revision 1.28  2005/12/08 15:47:34  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.27  2005/12/02 10:37:30  joergr

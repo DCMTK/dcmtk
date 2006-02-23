@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-23 12:50:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,52 +108,52 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   cmd->setOptionColumns(LONGCOL, SHORTCOL);
   cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--help",                      "-h",        "print this help text and exit");
-    cmd->addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-    cmd->addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-    cmd->addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd->addOption("--help",                  "-h",      "print this help text and exit");
+    cmd->addOption("--version",                          "print version information and exit", OFTrue /* exclusive */);
+    cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
+    cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
 #ifdef HAVE_FORK
-    cmd->addOption("--single-process",            "-s",        "single process mode");
+    cmd->addOption("--single-process",        "-s",      "single process mode");
 #endif
-    cmd->addOption("--no-sq-expansion",           "-nse",        "disable expansion of empty sequences\nin C-FIND request messages");
-    OFString opt5 = "path to worklist data files\n(default: ";
+    cmd->addOption("--no-sq-expansion",       "-nse",    "disable expansion of empty sequences\nin C-FIND request messages");
+    OFString opt5 = "[p]ath: string (default: ";
     opt5 += opt_dfPath;
     opt5 += ")";
-    cmd->addOption("--data-files-path",           "-dfp",    1, "[p]ath: string", opt5.c_str() );
-    cmd->addOption("--enable-file-reject",        "-efr",       "enable rejection of incomplete worklist-files\n(default)");
-    cmd->addOption("--disable-file-reject",       "-dfr",       "disable rejection of incomplete worklist-files");
+    cmd->addOption("--data-files-path",       "-dfp", 1, opt5.c_str(), "path to worklist data files" );
+    cmd->addOption("--enable-file-reject",    "-efr",    "enable rejection of incomplete worklist-files\n(default)");
+    cmd->addOption("--disable-file-reject",   "-dfr",    "disable rejection of incomplete worklist-files");
 
   cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--return-no-char-set",        "-cs0",       "return no specific character set (default)");
-    cmd->addOption("--return-iso-ir-100",         "-cs1",       "return specific character set ISO IR 100");
+    cmd->addOption("--return-no-char-set",    "-cs0",    "return no specific character set (default)");
+    cmd->addOption("--return-iso-ir-100",     "-cs1",    "return specific character set ISO IR 100");
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
-      cmd->addOption("--prefer-uncompr",        "+x=",       "prefer explicit VR local byte order (default)");
-      cmd->addOption("--prefer-little",         "+xe",       "prefer explicit VR little endian TS");
-      cmd->addOption("--prefer-big",            "+xb",       "prefer explicit VR big endian TS");
-      cmd->addOption("--implicit",              "+xi",       "accept implicit VR little endian TS only");
+      cmd->addOption("--prefer-uncompr",      "+x=",     "prefer explicit VR local byte order (default)");
+      cmd->addOption("--prefer-little",       "+xe",     "prefer explicit VR little endian TS");
+      cmd->addOption("--prefer-big",          "+xb",     "prefer explicit VR big endian TS");
+      cmd->addOption("--implicit",            "+xi",     "accept implicit VR little endian TS only");
 
 #ifdef WITH_TCPWRAPPER
     cmd->addSubGroup("network host access control (tcp wrapper) options:");
-      cmd->addOption("--access-full",            "-ac",       "accept connections from any host (default)");
-      cmd->addOption("--access-control",         "+ac",       "enforce host access control rules");
+      cmd->addOption("--access-full",         "-ac",     "accept connections from any host (default)");
+      cmd->addOption("--access-control",      "+ac",     "enforce host access control rules");
 #endif
 
     cmd->addSubGroup("other network options:");
-      cmd->addOption("--acse-timeout",           "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd->addOption("--dimse-timeout",          "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd->addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd->addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt6 = "[a]ssocs: integer (default: ";
       sprintf(tempstr, "%ld", (long)opt_maxAssociations);
       opt6 += tempstr;
       opt6 += ")";
-      cmd->addOption("--max-associations",                1, opt6.c_str(), "limit maximum number of parallel associations");
-      cmd->addOption("--refuse",                             "refuse association");
-      cmd->addOption("--reject",                             "reject association if no implement. class UID");
-      cmd->addOption("--no-fail",                            "don't fail on an invalid query");
-      cmd->addOption("--sleep-after",                     1, "[s]econds: integer", "sleep s seconds after find (default: 0)");
-      cmd->addOption("--sleep-during",                    1, "[s]econds: integer", "sleep s seconds during find (default: 0)");
+      cmd->addOption("--max-associations",            1, opt6.c_str(), "limit maximum number of parallel associations");
+      cmd->addOption("--refuse",                         "refuse association");
+      cmd->addOption("--reject",                         "reject association if no implement. class UID");
+      cmd->addOption("--no-fail",                        "don't fail on an invalid query");
+      cmd->addOption("--sleep-after",                 1, "[s]econds: integer", "sleep s seconds after find (default: 0)");
+      cmd->addOption("--sleep-during",                1, "[s]econds: integer", "sleep s seconds during find (default: 0)");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -165,20 +165,20 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd->addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
-      cmd->addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
+      cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd->addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
     cmd->addSubGroup("group length encoding (when sending C-FIND response data):");
-      cmd->addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd->addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd->addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd->addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
+      cmd->addOption("--group-length-create", "+g",      "always write with group length elements");
+      cmd->addOption("--group-length-remove", "-g",      "always write without group length elements");
     cmd->addSubGroup("length encoding in sequences and items (when sending C-FIND response data):");
-      cmd->addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd->addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd->addOption("--length-explicit",     "+e",      "write with explicit lengths (default)");
+      cmd->addOption("--length-undefined",    "-e",      "write with undefined lengths");
 
   cmd->addGroup("encoding options:");
     cmd->addSubGroup("post-1993 value representations:");
-      cmd->addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd->addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd->addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
+      cmd->addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
 
   // Evaluate command line.
   prepareCmdLineArgs( argc, argv, applicationName );
@@ -215,18 +215,18 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
     cmd->beginOptionBlock();
-    if( cmd->findOption("--enable-file-reject") )  opt_enableRejectionOfIncompleteWlFiles = OFTrue;
-    if( cmd->findOption("--disable-file-reject") )  opt_enableRejectionOfIncompleteWlFiles = OFFalse;
+    if( cmd->findOption("--enable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFTrue;
+    if( cmd->findOption("--disable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFFalse;
     cmd->endOptionBlock();
     cmd->beginOptionBlock();
-    if( cmd->findOption("--return-no-char-set") )  opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
-    if( cmd->findOption("--return-iso-ir-100") )  opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
+    if( cmd->findOption("--return-no-char-set") ) opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
+    if( cmd->findOption("--return-iso-ir-100") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
     cmd->endOptionBlock();
     cmd->beginOptionBlock();
-    if( cmd->findOption("--prefer-uncompr") )  opt_networkTransferSyntax = EXS_Unknown;
-    if( cmd->findOption("--prefer-little") )   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-    if( cmd->findOption("--prefer-big") )      opt_networkTransferSyntax = EXS_BigEndianExplicit;
-    if( cmd->findOption("--implicit") )        opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+    if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
+    if( cmd->findOption("--prefer-little") )  opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+    if( cmd->findOption("--prefer-big") )     opt_networkTransferSyntax = EXS_BigEndianExplicit;
+    if( cmd->findOption("--implicit") )       opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     cmd->endOptionBlock();
 #ifdef WITH_TCPWRAPPER
     cmd->beginOptionBlock();
@@ -250,7 +250,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       opt_blockMode = DIMSE_NONBLOCKING;
     }
 
-    if( cmd->findOption("--max-associations") ) 
+    if( cmd->findOption("--max-associations") )
     {
         OFCmdSignedInt maxAssoc = 1;
         app->checkValue(cmd->getValueAndCheckMin(maxAssoc, 1));
@@ -331,7 +331,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   }
 
   // start providing the basic worklist management service
-  WlmActivityManager *activityManager = new WlmActivityManager( 
+  WlmActivityManager *activityManager = new WlmActivityManager(
       dataSource, opt_port,
       opt_refuseAssociation,
       opt_rejectWithoutImplementationUID,
@@ -398,7 +398,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.10  2005-12-08 15:48:30  meichel
+** Revision 1.11  2006-02-23 12:50:30  joergr
+** Fixed layout and formatting issues.
+**
+** Revision 1.10  2005/12/08 15:48:30  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.9  2005/11/17 13:45:34  meichel

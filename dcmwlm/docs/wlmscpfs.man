@@ -52,14 +52,13 @@ port  tcp/ip port number to listen on
           disable expansion of empty sequences
           in C-FIND request messages
 
-  -dfp  --data-files-path  [p]ath: string
-          path to worklist data files (default: /home/www/wlist)
+  -dfp  --data-files-path  [p]ath: string (default: /home/www/wlist)
+          path to worklist data files
 
-  -efr    --enable-file-reject
-          enable rejection of incomplete worklist-files
-          (default)
+  -efr  --enable-file-reject
+          enable rejection of incomplete worklist-files (default)
 
-  -dfr    --disable-file-reject
+  -dfr  --disable-file-reject
           disable rejection of incomplete worklist-files
 \endverbatim
 

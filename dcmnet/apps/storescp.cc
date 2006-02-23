@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-03 10:21:59 $
+ *  Update Date:      $Date: 2006-02-23 12:51:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ static int makeTempFile();
 OFBool             opt_uniqueFilenames = OFFalse;
 OFString           opt_fileNameExtension;
 OFBool             opt_timeNames = OFFalse;
-int            timeNameCounter = -1; // "serial number" to differentiate between files with same timestamp
+int                timeNameCounter = -1; // "serial number" to differentiate between files with same timestamp
 OFCmdUnsignedInt   opt_port = 0;
 OFBool             opt_refuseAssociation = OFFalse;
 OFBool             opt_rejectWithoutImplementationUID = OFFalse;
@@ -261,10 +261,10 @@ int main(int argc, char *argv[])
     cmd.addOption("--version",                             "print version information and exit", OFTrue /* exclusive */);
     cmd.addOption("--verbose",                  "-v",      "verbose mode, print processing details");
     cmd.addOption("--debug",                    "-d",      "debug mode, print debug information");
-    OFString opt0 = "write output-files to (existing) directory p\n(default: ";
+    OFString opt0 = "[p]ath: string (default: ";
     opt0 += opt_outputDirectory;
     opt0 += ")";
-    cmd.addOption("--output-directory",         "-od",  1, "[p]ath: string", opt0.c_str());
+    cmd.addOption("--output-directory",         "-od",  1, opt0.c_str(), "write output-files to (existing) directory p");
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
@@ -2542,7 +2542,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.90  2006-02-03 10:21:59  joergr
+** Revision 1.91  2006-02-23 12:51:32  joergr
+** Fixed layout and formatting issues.
+**
+** Revision 1.90  2006/02/03 10:21:59  joergr
 ** Print help text if no command line argument is specified. This is the default
 ** behaviour of most DCMTK tools.
 ** Fixed inconsistent source code layout.

@@ -44,8 +44,8 @@ port  tcp/ip port number to listen on.
   -d    --debug
           debug mode, print debug information
 
-  -od   --output-directory  [p]ath: string
-          write output-files to (existing) directory p (default: .)
+  -od   --output-directory  [p]ath: string (default: .)
+          write output-files to (existing) directory p
 \endverbatim
 
 \subsection network_options network options
