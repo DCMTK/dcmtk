@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:42 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-02-23 12:46:51 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,30 +56,31 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 static OFBool checkForNonASCIICharacters(DcmElement& elem)
 {
-  char *c = NULL;
-  if (elem.getString(c).good() && c)
-  {
-    while (*c)
+    char *c = NULL;
+    if (elem.getString(c).good() && c)
     {
-      if (OFstatic_cast(unsigned char, *c) > 127) return OFTrue;
-      ++c;
+        while (*c)
+        {
+            if (OFstatic_cast(unsigned char, *c) > 127)
+                return OFTrue;
+            ++c;
+        }
     }
-  }
-  return OFFalse;
+    return OFFalse;
 }
 
 static OFBool checkForNonASCIICharacters(DcmItem& dataset)
 {
-  DcmStack stack;
-  while (dataset.nextObject(stack, OFTrue).good())
-  {
-    if (stack.top()->isaString())
+    DcmStack stack;
+    while (dataset.nextObject(stack, OFTrue).good())
     {
-      if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top())))
-        return OFTrue;
+        if (stack.top()->isaString())
+        {
+            if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top())))
+                return OFTrue;
+        }
     }
-  }
-  return OFFalse;
+    return OFFalse;
 }
 
 static OFCondition writeFile(ostream &out,
@@ -141,65 +142,65 @@ static OFCondition writeFile(ostream &out,
             else if (!csetString.empty())
                 CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << endl;
         } else {
-          /* SpecificCharacterSet is not present in the dataset */
-          if (checkForNonASCIICharacters(*dfile.getDataset()))
-          {
-            if (defaultCharset == NULL)
+            /* SpecificCharacterSet is not present in the dataset */
+            if (checkForNonASCIICharacters(*dfile.getDataset()))
             {
-              /* the dataset contains non-ASCII characters that really should not be there */
-              CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                   << "but extended characters used in file: " << ifname << endl;
-              return EC_IllegalCall;
-            } else {
-              OFString charset(defaultCharset);
-              if (charset == "latin-1")
-              {
-                csetString = "ISO_IR 100";
-                encString = "ISO-8859-1";
-              }
-              else if (charset == "latin-2")
-              {
-                csetString = "ISO_IR 101";
-                encString = "ISO-8859-2";
-              }
-              else if (charset == "latin-3")
-              {
-                csetString = "ISO_IR 109";
-                encString = "ISO-8859-3";
-              }
-              else if (charset == "latin-4")
-              {
-                csetString = "ISO_IR 110";
-                encString = "ISO-8859-4";
-              }
-              else if (charset == "latin-5")
-              {
-                csetString = "ISO_IR 148";
-                encString = "ISO-8859-9";
-              }
-              else if (charset == "cyrillic")
-              {
-                csetString = "ISO_IR 144";
-                encString = "ISO-8859-5";
-              }
-              else if (charset == "arabic")
-              {
-                csetString = "ISO_IR 127";
-                encString = "ISO-8859-6";
-              }
-              else if (charset == "greek")
-              {
-                csetString = "ISO_IR 126";
-                encString = "ISO-8859-7";
-              }
-              else if (charset == "hebrew")
-              {
-                csetString = "ISO_IR 138";
-                encString = "ISO-8859-8";
-              }
-              dfile.getDataset()->putAndInsertString(DCM_SpecificCharacterSet, csetString.c_str());
+                if (defaultCharset == NULL)
+                {
+                    /* the dataset contains non-ASCII characters that really should not be there */
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                         << "but extended characters used in file: " << ifname << endl;
+                    return EC_IllegalCall;
+                } else {
+                    OFString charset(defaultCharset);
+                    if (charset == "latin-1")
+                    {
+                        csetString = "ISO_IR 100";
+                        encString = "ISO-8859-1";
+                    }
+                    else if (charset == "latin-2")
+                    {
+                        csetString = "ISO_IR 101";
+                        encString = "ISO-8859-2";
+                    }
+                    else if (charset == "latin-3")
+                    {
+                        csetString = "ISO_IR 109";
+                        encString = "ISO-8859-3";
+                    }
+                    else if (charset == "latin-4")
+                    {
+                      csetString = "ISO_IR 110";
+                      encString = "ISO-8859-4";
+                    }
+                    else if (charset == "latin-5")
+                    {
+                        csetString = "ISO_IR 148";
+                        encString = "ISO-8859-9";
+                    }
+                    else if (charset == "cyrillic")
+                    {
+                        csetString = "ISO_IR 144";
+                        encString = "ISO-8859-5";
+                    }
+                    else if (charset == "arabic")
+                    {
+                        csetString = "ISO_IR 127";
+                        encString = "ISO-8859-6";
+                    }
+                    else if (charset == "greek")
+                    {
+                        csetString = "ISO_IR 126";
+                        encString = "ISO-8859-7";
+                    }
+                    else if (charset == "hebrew")
+                    {
+                        csetString = "ISO_IR 138";
+                        encString = "ISO-8859-8";
+                    }
+                    dfile.getDataset()->putAndInsertString(DCM_SpecificCharacterSet, csetString.c_str());
+                }
             }
-          }
         }
 
         /* write XML document header */
@@ -297,9 +298,9 @@ int main(int argc, char *argv[])
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of extended charset (default)");
-        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant",
+        cmd.addOption("--charset-assume",      "+Ca", 1, "[c]harset: string constant",
                                                          "(latin-1 to -5, cyrillic, arabic, greek, hebrew)\n"
-                                                         "assume charset if undeclared ext. charset found");
+                                                         "assume charset c if no extended charset declared");
     cmd.addGroup("output options:");
       cmd.addSubGroup("XML structure:");
         cmd.addOption("--add-dtd-reference",   "+Xd",    "add reference to document type definition (DTD)");
@@ -307,6 +308,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--use-xml-namespace",   "+Xn",    "add XML namespace declaration to root element");
       cmd.addSubGroup("DICOM elements:");
         cmd.addOption("--write-binary-data",   "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
+        cmd.addOption("--encode-hex",          "+Eh",    "encode binary data as hex numbers (default)");
         cmd.addOption("--encode-base64",       "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
 
     /* evaluate command line */
@@ -405,11 +407,19 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--write-binary-data"))
             opt_writeFlags |= DCMTypes::XF_writeBinaryData;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--encode-hex"))
+        {
+            app.checkDependence("--encode-hex", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
+            opt_writeFlags &= ~DCMTypes::XF_encodeBase64;
+        }
         if (cmd.findOption("--encode-base64"))
         {
             app.checkDependence("--encode-base64", "--write-binary-data", (opt_writeFlags & DCMTypes::XF_writeBinaryData) > 0);
             opt_writeFlags |= DCMTypes::XF_encodeBase64;
         }
+        cmd.endOptionBlock();
     }
 
     SetDebugLevel((opt_debugMode));
@@ -459,7 +469,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.22  2005-12-08 15:40:42  meichel
+ * Revision 1.23  2006-02-23 12:46:51  joergr
+ * Added new default option --encode-hex. Fixed layout and formatting issues.
+ *
+ * Revision 1.22  2005/12/08 15:40:42  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.21  2005/12/07 16:42:49  onken
