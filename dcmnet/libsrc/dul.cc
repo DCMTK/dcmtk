@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2005-12-20 11:20:37 $
+** Last Update:         $Author: meichel $, $Date: 2006-03-23 11:22:45 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.71 $
+** Revision:            $Revision: 1.72 $
 ** Status:              $State: Exp $
 */
 
@@ -1652,7 +1652,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             cmdLine += command_argv[i];
         }
 
-		// create anonymous pipe
+                // create anonymous pipe
         if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0)) 
         {
             char buf4[256];
@@ -1660,7 +1660,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
         }
 
-		// create duplicate of write end handle of pipe
+                // create duplicate of write end handle of pipe
         if (!DuplicateHandle(GetCurrentProcess(),hChildStdInWrite,
                            GetCurrentProcess(),&hChildStdInWriteDup,0,
                            FALSE,DUPLICATE_SAME_ACCESS)) 
@@ -1668,25 +1668,25 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Error while duplicating handle");
         }
 
-		// destroy original write end handle of pipe
+                // destroy original write end handle of pipe
         CloseHandle(hChildStdInWrite);
 
-		// we need a STARTUPINFO and a PROCESS_INFORMATION structure for CreateProcess.
+                // we need a STARTUPINFO and a PROCESS_INFORMATION structure for CreateProcess.
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
         memset(&pi,0,sizeof(pi));
         memset(&si,0,sizeof(si));
 
-		// prepare startup info for child process:
-		// the child uses the same stdout and stderr as the parent, but
-		// stdin is the read end of our anonymous pipe.
+                // prepare startup info for child process:
+                // the child uses the same stdout and stderr as the parent, but
+                // stdin is the read end of our anonymous pipe.
         si.cb = sizeof(si);
         si.dwFlags |= STARTF_USESTDHANDLES;
         si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
         si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
         si.hStdInput = hChildStdInRead;
 
-		// create child process. 
+                // create child process. 
         if (!CreateProcess(NULL,OFconst_cast(char *,cmdLine.c_str()),NULL,NULL,TRUE,0,NULL,NULL,&si,&pi))
         {
             char buf4[256];
@@ -1695,29 +1695,45 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         }
         else 
         {
+            // call OpenProcess to retrieve the REAL process handle.  using
+            // GetCurrentProcess() only returns a psuedo handle which may not
+            // allow DuplicateHandle to create the child process socket with
+            // sufficient permissions on certain versions of Windows.
+            HANDLE hParentProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
+            if (hParentProcessHandle == NULL) 
+            {
+                // unable to get process handle...
+                // ...this should really never happen as we are opening the current process.
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+                CloseHandle((HANDLE)sock);
+                return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error getting real process handle");
+            }
+
             // PROCESS_INFORMATION pi now contains various handles for the new process.
-			// Now that we have a handle to the new process, we can duplicate the
-			// socket handle into the new child process.
-			if (DuplicateHandle(GetCurrentProcess(), (HANDLE)sock, pi.hProcess, 
-                &childSocketHandle, 0, TRUE, DUPLICATE_CLOSE_SOURCE)) 
+            // Now that we have a handle to the new process, we can duplicate the
+            // socket handle into the new child process.
+            if (DuplicateHandle(hParentProcessHandle, (HANDLE)sock, pi.hProcess,
+                &childSocketHandle, 0, TRUE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS)) 
             {
                 // close handles in PROCESS_INFORMATION structure
-				// and our local copy of the socket handle.
+                // and our local copy of the socket handle.
+                CloseHandle(hParentProcessHandle);
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
                 CloseHandle((HANDLE)sock);
 
-				// send number of socket handle in child process over anonymous pipe
+                // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
                 char buf5[20];
                 sprintf(buf5,"%i",(int)childSocketHandle);
                 if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5)+1, &bytesWritten, NULL)) 
-				{
+                                {
                     CloseHandle(hChildStdInWriteDup);
                     return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while writing to anonymous pipe");
                 }
 
-				// return OF_ok status code DULC_FORKEDCHILD with descriptive text
+                // return OF_ok status code DULC_FORKEDCHILD with descriptive text
                 char buf4[256];
                 sprintf(buf4, "new child process started with pid %i, socketHandle %i", 
                   OFstatic_cast(int, pi.dwProcessId), 
@@ -1727,7 +1743,8 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             else 
             {
                 // unable to duplicate handle. Close handles nevertheless
-				// to avoid resource leak.
+                // to avoid resource leak.
+                CloseHandle(hParentProcessHandle);
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
                 CloseHandle((HANDLE)sock);
@@ -1976,8 +1993,8 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     // we are a forked child of an application acceptor, in which
     // case the socket also already exists.
     if ((dcmExternalSocketHandle.get() < 0) && 
-    	((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) &&
-    	(! processIsForkedChild))
+        ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) &&
+        (! processIsForkedChild))
     {
 
 #ifdef HAVE_DECLARATION_SOCKLEN_T
@@ -2598,7 +2615,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.71  2005-12-20 11:20:37  meichel
+** Revision 1.72  2006-03-23 11:22:45  meichel
+** Fixed Win32 multi-process SCP code to also work correctly on Windows 2000.
+**
+** Revision 1.71  2005/12/20 11:20:37  meichel
 ** Added various typecasts needed to avoid warnings on MinGW.
 **
 ** Revision 1.70  2005/12/15 17:44:16  joergr
