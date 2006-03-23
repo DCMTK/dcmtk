@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-16 09:07:03 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-03-23 17:16:21 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -894,7 +894,6 @@ int main(int argc, char *argv[])
           opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
-
     }
 
     DcmFileFormat fileformat;
@@ -926,6 +925,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    int status = 0;
     // read dump file into metaheader and dataset
     if (readDumpFile(metaheader, dataset, dumpfile, ifname, stopOnErrors,
         OFstatic_cast(unsigned long, opt_linelength)))
@@ -943,11 +943,12 @@ int main(int argc, char *argv[])
         {
             CERR << "Error: " << l_error.text()
                  << ": writing file: "  << ofname << endl;
-            return 1;
+            status = 1;
         }
     }
+    fclose(dumpfile);
 
-    return 0;
+    return status;
 }
 
 //*******************************
@@ -955,8 +956,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.51  2005-12-16 09:07:03  onken
-** - Added variable initialization to avoid compiler warning
+** Revision 1.52  2006-03-23 17:16:21  joergr
+** Added missing fclose() statement at the end of main().
+**
+** Revision 1.51  2005/12/16 09:07:03  onken
+** Added variable initialization to avoid compiler warning
 **
 ** Revision 1.50  2005/12/08 15:40:50  meichel
 ** Changed include path schema for all DCMTK header files
