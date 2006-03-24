@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRMammographyCadSRConstraintChecker
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:58 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-03-24 11:11:45 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,18 +106,11 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
     /* row 5 the table */
-    else if ((relationshipType == RT_hasProperties) && !byReference &&
-        ((sourceValueType == VT_Text) || (sourceValueType == VT_Code)))
+    else if ((relationshipType == RT_hasProperties) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code)))
     {
+        /* by-reference allowed (see CP 545) */
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code)  || (targetValueType == VT_Num) ||
                  (targetValueType == VT_Date) || (targetValueType == VT_Image) || (targetValueType == VT_SCoord);
-    }
-    else if ((relationshipType == RT_hasProperties) && byReference && (sourceValueType == VT_Code))
-    {
-        /* WORKAROUND: allow by-reference relationship since it is needed for some Mammography CAD
-         * SR templates (PS 3.16); however, this conflicts with the definitions in PS 3.3-2004.
-         */
-        result = (targetValueType == VT_Image);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
@@ -139,7 +132,11 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
- *  Revision 1.5  2005-12-08 15:47:58  meichel
+ *  Revision 1.6  2006-03-24 11:11:45  joergr
+ *  Added full support for CP 545, i.e. allow by-reference HAS PROPERTIES
+ *  relationships.
+ *
+ *  Revision 1.5  2005/12/08 15:47:58  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.4  2005/07/27 16:55:04  joergr
