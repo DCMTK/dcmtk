@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:45 $
+ *  Update Date:      $Date: 2006-03-29 15:58:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,6 +87,7 @@ void DJEncoderRegistration::registerCodecs(
       pCreateSOPInstanceUID,
       EPC_default, // not relevant, used for decompression only
       pVerbose,
+      OFFalse, // not relevant, used for decompression only
       pOptimizeHuffman,
       pSmoothingFactor,
       pForcedBitDepth,
@@ -175,7 +176,11 @@ void DJEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djencode.cc,v $
- * Revision 1.7  2005-12-08 15:43:45  meichel
+ * Revision 1.8  2006-03-29 15:58:52  meichel
+ * Added support for decompressing images with 16 bits/pixel compressed with
+ *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
+ *
+ * Revision 1.7  2005/12/08 15:43:45  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2005/11/29 15:56:55  onken

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:13 $
+ *  Update Date:      $Date: 2006-03-29 15:58:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,8 @@ public:
    *  @param pPlanarConfiguration flag describing how planar configuration of
    *    decompressed color images should be handled
    *  @param pVerbose verbose mode flag
+   *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
+   *           overflow in predictor 6 for images with 16 bits/pixel
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
    *  @param pSmoothingFactor smoothing factor for image compression, 0..100
    *  @param pForcedBitDepth forced bit depth for image compression, 0 (auto) or 8/12/16
@@ -82,6 +84,7 @@ public:
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
     OFBool pVerbose = OFFalse,
+    OFBool predictor6WorkaroundEnable = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
     int pForcedBitDepth = 0,
@@ -312,6 +315,14 @@ public:
     return verboseMode;
   }
 
+  /** returns flag indicating whether the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
+   *  @return flag indicating whether the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
+   */
+  OFBool predictor6WorkaroundEnabled() const
+  {
+    return predictor6WorkaroundEnabled_;
+  }
+  
 private:
 
   /// private undefined copy assignment operator
@@ -396,6 +407,10 @@ private:
 
   /// verbose mode flag. If true, warning messages are printed to console
   OFBool verboseMode;
+
+  /// flag indicating that the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
+  OFBool predictor6WorkaroundEnabled_;
+
 };
 
 
@@ -404,7 +419,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
- * Revision 1.7  2005-12-08 16:59:13  meichel
+ * Revision 1.8  2006-03-29 15:58:52  meichel
+ * Added support for decompressing images with 16 bits/pixel compressed with
+ *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
+ *
+ * Revision 1.7  2005/12/08 16:59:13  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2005/11/29 15:57:05  onken

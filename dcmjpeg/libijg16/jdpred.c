@@ -146,6 +146,15 @@ jpeg_undifference6(j_decompress_ptr cinfo, int comp_index,
 }
 
 METHODDEF(void)
+jpeg_undifference6a(j_decompress_ptr cinfo, int comp_index,
+		   JDIFFROW diff_buf, JDIFFROW prev_row,
+		   JDIFFROW undiff_buf, JDIMENSION width)
+{
+  SHIFT_TEMPS
+  UNDIFFERENCE_2D(PREDICTOR6A);
+}
+
+METHODDEF(void)
 jpeg_undifference7(j_decompress_ptr cinfo, int comp_index,
 		   JDIFFROW diff_buf, JDIFFROW prev_row,
 		   JDIFFROW undiff_buf, JDIMENSION width)
@@ -193,7 +202,12 @@ jpeg_undifference_first_row(j_decompress_ptr cinfo, int comp_index,
     losslsd->predict_undifference[comp_index] = jpeg_undifference5;
     break;
   case 6:
-    losslsd->predict_undifference[comp_index] = jpeg_undifference6;
+    /* DCMTK specific code that is only needed in the 16-bit library.
+     * Enables workaround for faulty images with integer overflow in predictor 6.
+     */
+    if (cinfo->workaround_options & WORKAROUND_PREDICTOR6OVERFLOW)
+      losslsd->predict_undifference[comp_index] = jpeg_undifference6a;
+      else losslsd->predict_undifference[comp_index] = jpeg_undifference6;
     break;
   case 7:
     losslsd->predict_undifference[comp_index] = jpeg_undifference7;

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:18 $
+ *  Update Date:      $Date: 2006-03-29 15:58:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djdecode.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,12 +59,15 @@ public:
    *  @param pPlanarConfiguration flag indicating how planar configuration
    *    of color images should be encoded upon decompression.
    *  @param pVerbose verbose mode flag
+   *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
+   *           overflow in predictor 6 for images with 16 bits/pixel
    */   
   static void registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion = EDC_photometricInterpretation,
     E_UIDCreation pCreateSOPInstanceUID = EUC_default,
     E_PlanarConfiguration pPlanarConfiguration = EPC_default,
-    OFBool pVerbose = OFFalse);
+    OFBool pVerbose = OFFalse,
+    OFBool predictor6WorkaroundEnable = OFFalse);
 
   /** deregisters decoders.
    *  Attention: Must not be called while other threads might still use
@@ -106,7 +109,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djdecode.h,v $
- * Revision 1.3  2005-12-08 16:59:18  meichel
+ * Revision 1.4  2006-03-29 15:58:52  meichel
+ * Added support for decompressing images with 16 bits/pixel compressed with
+ *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
+ *
+ * Revision 1.3  2005/12/08 16:59:18  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2001/11/19 15:13:27  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:32 $
+ *  Update Date:      $Date: 2006-03-29 15:58:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdecode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,8 @@ void DJDecoderRegistration::registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
-    OFBool pVerbose)
+    OFBool pVerbose,
+    OFBool predictor6WorkaroundEnable)
 {
   if (! registered)
   {
@@ -66,7 +67,8 @@ void DJDecoderRegistration::registerCodecs(
       pDecompressionCSConversion, 
       pCreateSOPInstanceUID, 
       pPlanarConfiguration,
-      pVerbose);
+      pVerbose,
+      predictor6WorkaroundEnable);
     if (cp)
     {
       // baseline JPEG
@@ -134,7 +136,11 @@ void DJDecoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djdecode.cc,v $
- * Revision 1.4  2005-12-08 15:43:32  meichel
+ * Revision 1.5  2006-03-29 15:58:52  meichel
+ * Added support for decompressing images with 16 bits/pixel compressed with
+ *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
+ *
+ * Revision 1.4  2005/12/08 15:43:32  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2001/12/04 17:10:20  meichel

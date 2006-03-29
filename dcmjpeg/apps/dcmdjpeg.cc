@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:21 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-03-29 15:58:52 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
   E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
   E_UIDCreation opt_uidcreation = EUC_default;
   E_PlanarConfiguration opt_planarconfig = EPC_default;
+  OFBool opt_predictor6WorkaroundEnable = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Decode JPEG-compressed DICOM file", rcsid);
   OFCommandLine cmd;
@@ -127,8 +128,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--color-by-plane",         "+pl",       "always store color-by-plane");
 
     cmd.addSubGroup("SOP Instance UID options:");
-     cmd.addOption("--uid-default",        "+ud",     "keep same SOP Instance UID (default)");
-     cmd.addOption("--uid-always",         "+ua",     "always assign new UID");
+     cmd.addOption("--uid-default",        "+ud",            "keep same SOP Instance UID (default)");
+     cmd.addOption("--uid-always",         "+ua",            "always assign new UID");
+
+    cmd.addSubGroup("Workaround options for incorrect JPEG encodings:");
+     cmd.addOption("--workaround-pred6",        "+w6",      "enable workaround for JPEG lossless images\nwith overflow in predictor 6.");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -201,6 +205,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--uid-default")) opt_uidcreation = EUC_default;
       if (cmd.findOption("--uid-always")) opt_uidcreation = EUC_always;
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--workaround-pred6")) opt_predictor6WorkaroundEnable = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
@@ -286,7 +292,8 @@ int main(int argc, char *argv[])
       opt_decompCSconversion,
       opt_uidcreation,
       opt_planarconfig,
-      opt_verbose);
+      opt_verbose,
+      opt_predictor6WorkaroundEnable);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -371,7 +378,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.13  2005-12-08 15:43:21  meichel
+ * Revision 1.14  2006-03-29 15:58:52  meichel
+ * Added support for decompressing images with 16 bits/pixel compressed with
+ *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
+ *
+ * Revision 1.13  2005/12/08 15:43:21  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2005/12/02 09:41:40  joergr

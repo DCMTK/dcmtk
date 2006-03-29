@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:37 $
+ *  Update Date:      $Date: 2006-03-29 15:58:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,6 +258,8 @@ OFCondition DJDecompressIJG16Bit::init()
     }
     jpeg_create_decompress(cinfo);
     cinfo->src = &OFconst_cast(DJDIJG16SourceManagerStruct *, src)->pub;
+    cinfo->workaround_options = 0;
+    if (cparam->predictor6WorkaroundEnabled()) cinfo->workaround_options |= WORKAROUND_PREDICTOR6OVERFLOW;
   } else return EC_MemoryExhausted;
 
   // everything OK
@@ -443,7 +445,11 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.13  2005-12-08 15:43:37  meichel
+ * Revision 1.14  2006-03-29 15:58:52  meichel
+ * Added support for decompressing images with 16 bits/pixel compressed with
+ *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
+ *
+ * Revision 1.13  2005/12/08 15:43:37  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2005/11/30 14:08:50  onken

@@ -127,6 +127,18 @@ SOP Instance UID options:
           always assign new UID
 
   # Always assigns a new SOP instance UID
+
+  +w6   --workaround-pred6     
+          enable workaround for JPEG lossless images
+          with overflow in predictor 6.
+
+  # DICOM images with 16 bits/pixel have been observed "in the wild" that are 
+  # compressed with lossless JPEG and need special handling because the encoder
+  # produced an 16-bit integer overflow in predictor 6, which needs to be 
+  # compensated (reproduced) during decompression. This flag enables a correct
+  # decompression of such faulty images, but at the same time will cause an
+  # incorrect decompression of correctly compressed images. Use with care.
+
 \endverbatim
 
 \subsection output_options output options
