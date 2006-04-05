@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-20 11:21:30 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-04-05 08:22:24 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +75,7 @@ public:
 //    , origAETitle()
 //    , origHostName()
     , priority(pr)
-//    , ourAETitle()
+    , ourAETitle()
 //    , dstAETitle()
     , failedUIDs(NULL)
     , nRemaining(0)
@@ -87,7 +86,6 @@ public:
       origAETitle[0] = '\0';
       origHostName[0] = '\0';
       dstAETitle[0] = '\0';
-      ourAETitle[0] = '\0';
     }
 
     /** callback handler called by the DIMSE_storeProvider callback function.
@@ -193,7 +191,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbm.h,v $
- * Revision 1.4  2005-12-20 11:21:30  meichel
+ * Revision 1.5  2006-04-05 08:22:24  joergr
+ * Fixed issue with initialization of OFString member variables.
+ *
+ * Revision 1.4  2005/12/20 11:21:30  meichel
  * Removed duplicate parameter
  *
  * Revision 1.3  2005/12/15 08:32:49  joergr
