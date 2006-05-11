@@ -115,7 +115,13 @@ XML structure:
   +Xn  --use-xml-namespace
          add XML namespace declaration to root element
 
-DICOM elements:
+DICOM data elements:
+
+  +Wn  --write-element-name
+         write name of the DICOM data elements (default)
+
+  -Wn  --no-element-name
+         do not write name of the DICOM data elements
 
   +Wb  --write-binary-data
          write binary data of OB and OW elements

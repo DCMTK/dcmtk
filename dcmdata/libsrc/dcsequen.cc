@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:36 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:51:05 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems &old)
     {
         itemList->seek(ELP_first);
         old.itemList->seek(ELP_first);
-        do 
+        do
         {
             itemList->insert(old.itemList->get()->clone(), ELP_next);
         } while (old.itemList->seek(ELP_next));
@@ -117,7 +117,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
     lastItemComplete = obj.lastItemComplete;
     fStartPosition = obj.fStartPosition;
     readAsUN_ = obj.readAsUN_;
-    
+
     DcmList *newList = new DcmList; // DcmList has no copy constructor. Need to copy ourselves.
     if (newList)
     {
@@ -253,8 +253,9 @@ OFCondition DcmSequenceOfItems::writeXML(ostream &out,
     /* value length in bytes = 0..max (if not undefined) */
     if (Length != DCM_UndefinedLength)
         out << " len=\"" << Length << "\"";
-    /* tag name (if known) */
-    out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
+    /* tag name (if known and not suppressed) */
+    if (!(flags & DCMTypes::XF_omitDataElementName))
+        out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
     out << ">" << endl;
     /* write sequence content */
     if (!itemList->empty())
@@ -514,7 +515,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
             }
 
             E_TransferSyntax readxfer = readAsUN_ ? EXS_LittleEndianImplicit : xfer;
-            
+
             itemList->seek(ELP_last); // append data at end
             while (inStream.good() && ((fTransferredBytes < Length) || !lastItemComplete))
             {
@@ -576,7 +577,7 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
         {
             if (fTransferState == ERW_init)
             {
-                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
                  */
@@ -697,7 +698,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
         {
             if (fTransferState == ERW_init)
             {
-                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
                  * of this element, which may need only 8 instead of 12 bytes.
                  */
@@ -1244,7 +1245,10 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.61  2005-12-08 15:41:36  meichel
+** Revision 1.62  2006-05-11 08:51:05  joergr
+** Added new option that allows to omit the element name in the XML output.
+**
+** Revision 1.61  2005/12/08 15:41:36  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.60  2005/11/28 15:53:13  meichel

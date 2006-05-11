@@ -22,8 +22,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-08 15:21:15 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2006-05-11 08:55:22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,6 +137,9 @@ struct DCMTypes
 
     /// embed content of document type definition
     static const size_t XF_embedDocumentType;
+
+    /// don't write name of the DICOM data elements
+    static const size_t XF_omitDataElementName;
     //@}
 };
 
@@ -151,7 +154,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.22  2006-02-08 15:21:15  joergr
+ * Revision 1.23  2006-05-11 08:55:22  joergr
+ * Added new option that allows to omit the element name in the XML output.
+ *
+ * Revision 1.22  2006/02/08 15:21:15  joergr
  * Removed unused type definitions.
  *
  * Revision 1.21  2005/12/08 16:28:47  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:10 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:53:36 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,6 +173,14 @@ public:
                              const E_GrpLenEncoding glenc = EGL_noChange,
                              const Uint32 maxReadLength = DCM_MaxReadLength);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
+
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
     virtual OFCondition search(const DcmTagKey &xtag,               // in
                                DcmStack &resultStack,               // inout
@@ -230,7 +238,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.29  2005-12-08 16:28:10  meichel
+** Revision 1.30  2006-05-11 08:53:36  joergr
+** Added new option that allows to omit the element name in the XML output.
+**
+** Revision 1.29  2005/12/08 16:28:10  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.28  2005/10/27 13:30:20  joergr
