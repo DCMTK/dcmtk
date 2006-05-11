@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmCharString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcchrstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:52:09 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +90,11 @@ class DcmCharString
     {
       return new DcmCharString(*this);
     }
-    
+
+    /** check if this element contains non-ASCII characters
+     *  @return true if element contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters();
 };
 
 
@@ -101,7 +104,10 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
- * Revision 1.10  2005-12-08 16:28:00  meichel
+ * Revision 1.11  2006-05-11 08:52:09  joergr
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
+ * Revision 1.10  2005/12/08 16:28:00  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.9  2004/07/01 12:28:25  meichel

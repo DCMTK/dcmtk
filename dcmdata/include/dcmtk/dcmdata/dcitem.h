@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:19 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:54:00 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,6 +175,12 @@ class DcmItem
      *  @return true if the object contains an element with Unknown VR, false otherwise
      */
     virtual OFBool containsUnknownVR() const;
+
+    /** check if this object contains non-ASCII characters in one of the
+     *  strings affected by SpecificCharacterSet in DICOM (LO, LT, PN, SH, ST, UT)
+     *  @return true if object contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters();
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -911,7 +917,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.53  2005-12-08 16:28:19  meichel
+** Revision 1.54  2006-05-11 08:54:00  joergr
+** Moved checkForNonASCIICharacters() from application to library.
+**
+** Revision 1.53  2005/12/08 16:28:19  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.52  2005/11/15 18:28:02  meichel

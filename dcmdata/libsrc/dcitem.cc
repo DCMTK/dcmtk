@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-01-18 13:44:03 $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  Update Date:      $Date: 2006-05-11 08:49:18 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3275,10 +3275,27 @@ OFBool DcmItem::containsUnknownVR() const
 }
 
 
+OFBool DcmItem::containsExtendedCharacters()
+{
+    if (!elementList->empty())
+    {
+        elementList->seek(ELP_first);
+        do {
+            if (elementList->get()->containsExtendedCharacters())
+                return OFTrue;
+        } while (elementList->seek(ELP_next));
+    }
+    return OFFalse;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.98  2006-01-18 13:44:03  joergr
+** Revision 1.99  2006-05-11 08:49:18  joergr
+** Moved checkForNonASCIICharacters() from application to library.
+**
+** Revision 1.98  2006/01/18 13:44:03  joergr
 ** Translated remaining German comment.
 **
 ** Revision 1.97  2005/12/08 15:41:16  meichel

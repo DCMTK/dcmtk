@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:22 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:54:23 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -247,6 +247,11 @@ class DcmObject
      */
     virtual OFBool containsUnknownVR() const;
 
+    /** check if this object contains non-ASCII characters
+     *  @return always returns false, i.e. no extended characters used
+     */
+    virtual OFBool containsExtendedCharacters();
+
     virtual OFCondition clear() = 0;
     virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
 
@@ -351,7 +356,10 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.41  2005-12-08 16:28:22  meichel
+ * Revision 1.42  2006-05-11 08:54:23  joergr
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
+ * Revision 1.41  2005/12/08 16:28:22  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.40  2005/12/02 08:49:17  joergr

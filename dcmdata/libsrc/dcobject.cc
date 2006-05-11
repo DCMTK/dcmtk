@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:19 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:50:19 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -338,7 +338,7 @@ Uint32 DcmObject::getTagAndLengthSize(const E_TransferSyntax oxfer) const
 
     if (oxferSyn.isExplicitVR())
     {
-       /* map "UN" to "OB" if generation of "UN" is disabled */  
+       /* map "UN" to "OB" if generation of "UN" is disabled */
        DcmVR outvr(getTag().getVR().getValidEVR());
 
        if (outvr.usesExtendedLengthEncoding())
@@ -469,10 +469,19 @@ OFBool DcmObject::containsUnknownVR() const
 }
 
 
+OFBool DcmObject::containsExtendedCharacters()
+{
+    return OFFalse;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.45  2005-12-08 15:41:19  meichel
+ * Revision 1.46  2006-05-11 08:50:19  joergr
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
+ * Revision 1.45  2005/12/08 15:41:19  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.44  2005/12/02 08:53:57  joergr
