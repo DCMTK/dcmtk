@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:07 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:47:56 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1089,6 +1089,42 @@ void DcmDirectoryRecord::print(ostream &out,
 // ********************************
 
 
+OFCondition DcmDirectoryRecord::writeXML(ostream &out,
+                                         const size_t flags)
+{
+    /* XML start tag for "item" */
+    out << "<item";
+    /* cardinality (number of attributes) = 1..n */
+    out << " card=\"" << card() << "\"";
+    /* value length in bytes = 0..max (if not undefined) */
+    if (Length != DCM_UndefinedLength)
+        out << " len=\"" << Length << "\"";
+    /* byte offset of the record */
+    out << " offset=\"" << getFileOffset() << "\"";
+    out << ">" << endl;
+    /* write item content */
+    if (!elementList->empty())
+    {
+        /* write content of all children */
+        DcmObject *dO;
+        elementList->seek(ELP_first);
+        do {
+            dO = elementList->get();
+            dO->writeXML(out, flags);
+        } while (elementList->seek(ELP_next));
+    }
+    if (lowerLevelList->card() > 0)
+        lowerLevelList->writeXML(out, flags);
+    /* XML end tag for "item" */
+    out << "</item>" << endl;
+    /* always report success */
+    return EC_Normal;
+}
+
+
+// ********************************
+
+
 OFCondition DcmDirectoryRecord::read(DcmInputStream &inStream,
                                      const E_TransferSyntax xfer,
                                      const E_GrpLenEncoding glenc,
@@ -1430,7 +1466,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.54  2005-12-08 15:41:07  meichel
+ * Revision 1.55  2006-05-11 08:47:56  joergr
+ * Added new option that allows to omit the element name in the XML output.
+ *
+ * Revision 1.54  2005/12/08 15:41:07  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.53  2005/11/28 15:53:13  meichel

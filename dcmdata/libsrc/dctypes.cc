@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctypes.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:45:45 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,17 +42,21 @@ const size_t DCMTypes::PF_showTreeStructure    = 1 << 1;
 const size_t DCMTypes::PF_lastEntry            = 1 << 2;
 
 /* writeXML flags */
-const size_t DCMTypes::XF_addDocumentType   = 1 << 0;
-const size_t DCMTypes::XF_writeBinaryData   = 1 << 1;
-const size_t DCMTypes::XF_encodeBase64      = 1 << 2;
-const size_t DCMTypes::XF_useDcmtkNamespace = 1 << 3;
-const size_t DCMTypes::XF_embedDocumentType = 1 << 4;
+const size_t DCMTypes::XF_addDocumentType      = 1 << 0;
+const size_t DCMTypes::XF_writeBinaryData      = 1 << 1;
+const size_t DCMTypes::XF_encodeBase64         = 1 << 2;
+const size_t DCMTypes::XF_useDcmtkNamespace    = 1 << 3;
+const size_t DCMTypes::XF_embedDocumentType    = 1 << 4;
+const size_t DCMTypes::XF_omitDataElementName  = 1 << 5;
 
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
- * Revision 1.6  2005-12-08 15:41:41  meichel
+ * Revision 1.7  2006-05-11 08:45:45  joergr
+ * Added new option that allows to omit the element name in the XML output.
+ *
+ * Revision 1.6  2005/12/08 15:41:41  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2003/04/22 08:19:24  joergr

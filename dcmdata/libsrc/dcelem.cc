@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:08 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:48:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1008,7 +1008,7 @@ OFCondition DcmElement::writeSignatureFormat(DcmOutputStream &outStream,
 
 
 void DcmElement::writeXMLStartTag(ostream &out,
-                                  const size_t /*flags*/,
+                                  const size_t flags,
                                   const char *attrText)
 {
     OFString xmlString;
@@ -1027,8 +1027,9 @@ void DcmElement::writeXMLStartTag(ostream &out,
     out << " vm=\"" << getVM() << "\"";
     /* value length in bytes = 0..max */
     out << " len=\"" << Length << "\"";
-    /* tag name (if known) */
-    out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
+    /* tag name (if known and not suppressed) */
+    if (!(flags & DCMTypes::XF_omitDataElementName))
+        out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
     /* value loaded = no (or absent)*/
     if (!valueLoaded())
         out << " loaded=\"no\"";
@@ -1069,7 +1070,10 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.51  2005-12-08 15:41:08  meichel
+** Revision 1.52  2006-05-11 08:48:35  joergr
+** Added new option that allows to omit the element name in the XML output.
+**
+** Revision 1.51  2005/12/08 15:41:08  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.50  2005/07/27 09:31:45  joergr
