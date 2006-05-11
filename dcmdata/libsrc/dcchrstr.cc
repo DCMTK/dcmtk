@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmCharString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:57 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcchrstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 08:47:05 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,10 +73,29 @@ DcmCharString &DcmCharString::operator=(const DcmCharString &obj)
 }
 
 
+OFBool DcmCharString::containsExtendedCharacters()
+{
+    char *c = NULL;
+    if (getString(c).good() && c)
+    {
+        while (*c)
+        {
+            if (OFstatic_cast(unsigned char, *c) > 127)
+                return OFTrue;
+            ++c;
+        }
+    }
+    return OFFalse;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
- * Revision 1.9  2005-12-08 15:40:57  meichel
+ * Revision 1.10  2006-05-11 08:47:05  joergr
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
+ * Revision 1.9  2005/12/08 15:40:57  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.8  2002/12/06 13:08:18  joergr
