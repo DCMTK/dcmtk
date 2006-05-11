@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:53:36 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2006-05-11 17:48:53 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -238,8 +238,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.30  2006-05-11 08:53:36  joergr
-** Added new option that allows to omit the element name in the XML output.
+** Revision 1.31  2006-05-11 17:48:53  joergr
+** Fixed wrong CVS log entry.
+**
+** Revision 1.30  2006/05/11 08:53:36  joergr
+** Added "offset" attribute to DICOMDIR record items.
 **
 ** Revision 1.29  2005/12/08 16:28:10  meichel
 ** Changed include path schema for all DCMTK header files
