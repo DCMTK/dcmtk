@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:59 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,16 +131,13 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
-OFBool DSRNumTreeNode::containsExtendedCharacters() const
-{
-  return DSRDocumentTreeNode::containsExtendedCharacters() || valueContainsExtendedCharacters();
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.18  2005-12-08 15:47:59  meichel
+ *  Revision 1.19  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.18  2005/12/08 15:47:59  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.17  2004/11/22 16:39:12  meichel

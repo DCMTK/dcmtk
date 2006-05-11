@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:19 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1463,60 +1463,14 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
     return result;
 }
 
-static OFBool checkForNonASCIICharacters(DcmElement& elem)
-{
-  char *c = NULL;
-  if (elem.getString(c).good() && c)
-  {
-    while (*c)
-    {
-      if (OFstatic_cast(unsigned char, *c) > 127) return OFTrue;
-      ++c;
-    }
-  }
-  return OFFalse;
-}
-
-OFBool DSRTypes::stringContainsExtendedCharacters(const OFString &s)
-{
-  const char *c = s.c_str();
-  if (c)
-  {
-    while (*c)
-    {
-      if (OFstatic_cast(unsigned char, *c) > 127) return OFTrue;
-      ++c;
-    }
-  }
-  return OFFalse;  
-}
-
-OFBool DSRTypes::elementContainsExtendedCharacters(DcmElement &elem)
-{
-  if (elem.isaString())
-  {
-    return checkForNonASCIICharacters(elem);
-  }
-  else if (! elem.isLeaf()) // element is a sequence
-  {  
-    DcmStack stack;
-    while (elem.nextObject(stack, OFTrue).good())
-    {
-      if (stack.top()->isaString())
-      {
-        if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top()))) 
-          return OFTrue;
-      }
-    }  
-    return OFFalse;
-  }
-  return OFFalse;
-}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.48  2005-12-08 15:48:19  meichel
+ *  Revision 1.49  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.48  2005/12/08 15:48:19  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.47  2005/11/30 12:01:15  joergr

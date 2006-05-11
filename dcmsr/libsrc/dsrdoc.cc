@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:48 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2281,35 +2281,14 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     }
 }
 
-OFBool DSRDocument::containsExtendedCharacters()
-{
-    OFBool result = DocumentTree.containsExtendedCharacters();
-    result = result || CodingSchemeIdentification.containsExtendedCharacters();
-    result = result || DSRTypes::elementContainsExtendedCharacters(ReferringPhysiciansName);
-    result = result || DSRTypes::elementContainsExtendedCharacters(StudyID);
-    result = result || DSRTypes::elementContainsExtendedCharacters(AccessionNumber);
-    result = result || DSRTypes::elementContainsExtendedCharacters(StudyDescription);
-    result = result || DSRTypes::elementContainsExtendedCharacters(SeriesDescription);
-    result = result || DSRTypes::elementContainsExtendedCharacters(PatientsName);
-    result = result || DSRTypes::elementContainsExtendedCharacters(PatientID);
-    result = result || DSRTypes::elementContainsExtendedCharacters(Manufacturer);
-    result = result || DSRTypes::elementContainsExtendedCharacters(ReferencedPerformedProcedureStepSequence);
-    result = result || DSRTypes::elementContainsExtendedCharacters(CompletionFlagDescription);
-    result = result || DSRTypes::elementContainsExtendedCharacters(PatientsName);
-    result = result || DSRTypes::elementContainsExtendedCharacters(VerifyingObserver);
-    result = result || PredecessorDocuments.containsExtendedCharacters();
-    result = result || IdenticalDocuments.containsExtendedCharacters();
-    result = result || DSRTypes::elementContainsExtendedCharacters(PerformedProcedureCode);
-    result = result || CurrentRequestedProcedureEvidence.containsExtendedCharacters();
-    result = result || PertinentOtherEvidence.containsExtendedCharacters();
-
-    return result;
-}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.55  2005-12-08 15:47:48  meichel
+ *  Revision 1.56  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.55  2005/12/08 15:47:48  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.54  2004/11/29 17:15:29  joergr

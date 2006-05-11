@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 16:53:48 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -381,12 +381,6 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::removeItem()
         result = EC_Normal;
     }
     return result;
-}
-
-
-OFBool DSRSOPInstanceReferenceList::SeriesStruct::containsExtendedCharacters()
-{
-  return DSRTypes::stringContainsExtendedCharacters(StorageMediaFileSetID);
 }
 
 
@@ -754,19 +748,6 @@ void DSRSOPInstanceReferenceList::StudyStruct::removeIncompleteItems()
         } else
           ++Iterator;
     }
-}
-
-
-OFBool DSRSOPInstanceReferenceList::StudyStruct::containsExtendedCharacters()
-{
-    OFListIterator(SeriesStruct *) iter = SeriesList.begin();
-    OFListIterator(SeriesStruct *) last = SeriesList.end();
-    while (iter != last)
-    {
-      if (*iter && OFstatic_cast(SeriesStruct *, *iter)->containsExtendedCharacters()) return OFTrue;
-      ++iter;
-    }
-    return OFFalse;
 }
 
 
@@ -1402,23 +1383,13 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 }
 
 
-OFBool DSRSOPInstanceReferenceList::containsExtendedCharacters()
-{
-    OFListIterator(StudyStruct *) iter = StudyList.begin();
-    OFListIterator(StudyStruct *) last = StudyList.end();
-    while (iter != last)
-    {
-      if (*iter && OFstatic_cast(StudyStruct *, *iter)->containsExtendedCharacters()) return OFTrue;
-      ++iter;
-    }
-    return OFFalse;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.10  2005-12-15 16:53:48  joergr
+ *  Revision 1.11  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.10  2005/12/15 16:53:48  joergr
  *  Added explicit type cast, required for Sun CC 2.0.1 on Solaris.
  *
  *  Revision 1.9  2005/12/08 15:48:07  meichel

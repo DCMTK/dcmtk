@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:18 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:18:21 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,12 +161,6 @@ class DSRSOPInstanceReferenceList
          */
         OFCondition removeItem();
 
-        /** check if this object contains non-ASCII characters in one of the
-         *  strings affected by SpecificCharacterSet in DICOM
-         *  @return true if node contains non-ASCII characters, false otherwise
-         */
-        OFBool containsExtendedCharacters();
-
         /// series instance UID (VR=UI, VM=1)
         const OFString SeriesUID;
         /// optional: retrieve application entity title (VR=AE, VM=1-n)
@@ -279,12 +273,6 @@ class DSRSOPInstanceReferenceList
          *  Please note that this function modifies the value of 'Iterator'.
          */
         void removeIncompleteItems();
-
-        /** check if this object contains non-ASCII characters in one of the
-         *  strings affected by SpecificCharacterSet in DICOM
-         *  @return true if node contains non-ASCII characters, false otherwise
-         */
-        OFBool containsExtendedCharacters();
 
         /// study instance UID (VR=UI, VM=1)
         const OFString StudyUID;
@@ -510,11 +498,6 @@ class DSRSOPInstanceReferenceList
      */
     OFCondition setStorageMediaFileSetUID(const OFString &value);
 
-    /** check if this object contains non-ASCII characters in one of the
-     *  strings affected by SpecificCharacterSet in DICOM
-     *  @return true if node contains non-ASCII characters, false otherwise
-     */
-    OFBool containsExtendedCharacters();
 
   protected:
 
@@ -571,7 +554,10 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.9  2005-12-08 16:05:18  meichel
+ *  Revision 1.10  2006-05-11 09:18:21  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.9  2005/12/08 16:05:18  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.8  2005/07/27 16:33:39  joergr

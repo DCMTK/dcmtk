@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:46 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -572,34 +572,13 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 }
 
 
-OFBool DSRCodingSchemeIdentificationList::ItemStruct::containsExtendedCharacters()
-{
-  return DSRTypes::stringContainsExtendedCharacters(CodingSchemeDesignator) 
-    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeRegistry) 
-    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeExternalID) 
-    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeName) 
-    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeVersion) 
-    || DSRTypes::stringContainsExtendedCharacters(ResponsibleOrganization);
-}
-
-
-OFBool DSRCodingSchemeIdentificationList::containsExtendedCharacters()
-{
-    OFListIterator(ItemStruct *) iter = ItemList.begin();
-    OFListIterator(ItemStruct *) last = ItemList.end();
-    while (iter != last)
-    {
-      if (*iter && (*iter)->containsExtendedCharacters()) return OFTrue;
-      ++iter;
-    }
-    return OFFalse;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.7  2005-12-08 15:47:46  meichel
+ *  Revision 1.8  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.7  2005/12/08 15:47:46  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.6  2004/11/22 16:39:12  meichel

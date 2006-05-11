@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-23 12:49:43 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2006-05-11 09:13:45 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,18 +89,19 @@ static OFCondition writeFile(ostream &out,
     if (result.good())
     {
         result = EC_CorruptedData;
+        DcmDataset *dset = dfile->getDataset();
         DSRDocument *dsrdoc = new DSRDocument();
         if (dsrdoc != NULL)
         {
             if (debugMode)
                 dsrdoc->setLogStream(&ofConsole);
-            result = dsrdoc->read(*dfile->getDataset(), readFlags);
+            result = dsrdoc->read(*dset, readFlags);
             if (result.good())
             {
                 // check extended character set
 
                 const char *charset = dsrdoc->getSpecificCharacterSet();
-                if ((charset == NULL || strlen(charset) == 0) && dsrdoc->containsExtendedCharacters())
+                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters())
                 {
                     // we have an unspecified extended character set
                     if (defaultCharset == NULL)
@@ -360,7 +361,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.29  2006-02-23 12:49:43  joergr
+ * Revision 1.30  2006-05-11 09:13:45  joergr
+ * Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ * Revision 1.29  2006/02/23 12:49:43  joergr
  * Fixed layout and formatting issues.
  *
  * Revision 1.28  2005/12/08 15:47:34  meichel

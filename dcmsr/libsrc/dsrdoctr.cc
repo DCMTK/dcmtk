@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:50 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -639,27 +639,13 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 }
 
 
-OFBool DSRDocumentTree::containsExtendedCharacters()
-{
-  DSRTreeNodeCursor cursor(getRoot());
-  if (cursor.isValid())
-  {
-      const DSRDocumentTreeNode *node = NULL;
-      /* iterate over all nodes */
-      do
-      {
-          node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
-          if (node && node->containsExtendedCharacters()) return OFTrue;
-      } while (cursor.iterate());
-  }
-  return OFFalse;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.26  2005-12-08 15:47:50  meichel
+ *  Revision 1.27  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.26  2005/12/08 15:47:50  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.25  2005/07/27 16:39:16  joergr

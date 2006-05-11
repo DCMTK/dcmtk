@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:09 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:16:49 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,15 +160,14 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
     return !stringValue.empty();
 }
 
-OFBool DSRStringValue::valueContainsExtendedCharacters() const
-{
-  return DSRTypes::stringContainsExtendedCharacters(Value);
-}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.13  2005-12-08 15:48:09  meichel
+ *  Revision 1.14  2006-05-11 09:16:49  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.13  2005/12/08 15:48:09  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.12  2004/11/22 16:39:12  meichel

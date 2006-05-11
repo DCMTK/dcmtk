@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:33 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:13:45 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,43 +90,50 @@ static OFCondition renderFile(ostream &out,
     if (result.good())
     {
         result = EC_CorruptedData;
+        DcmDataset *dset = dfile->getDataset();
         DSRDocument *dsrdoc = new DSRDocument();
         if (dsrdoc != NULL)
         {
             if (debugMode)
                 dsrdoc->setLogStream(&ofConsole);
-            result = dsrdoc->read(*dfile->getDataset(), readFlags);
+            result = dsrdoc->read(*dset, readFlags);
             if (result.good())
             {
                 // check extended character set
                 const char *charset = dsrdoc->getSpecificCharacterSet();
-                if ((charset == NULL || strlen(charset) == 0) && dsrdoc->containsExtendedCharacters())
+                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters())
                 {
-                  // we have an unspecified extended character set
-                  if (defaultCharset == NULL)
-                  {
-                    /* the dataset contains non-ASCII characters that really should not be there */
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent but extended characters used in file: "<< ifname << endl;
-                    result = EC_IllegalCall;
-                  }
-                  else
-                  {
-                    OFString charset(defaultCharset);
-                    if (charset == "latin-1") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
-                    else if (charset == "latin-2") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
-                    else if (charset == "latin-3") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
-                    else if (charset == "latin-4") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
-                    else if (charset == "latin-5") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
-                    else if (charset == "cyrillic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
-                    else if (charset == "arabic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
-                    else if (charset == "greek") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
-                    else if (charset == "hebrew") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
-                  }
+                    // we have an unspecified extended character set
+                    if (defaultCharset == NULL)
+                    {
+                        /* the dataset contains non-ASCII characters that really should not be there */
+                        CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                             << "but extended characters used in file: " << ifname << endl;
+                        result = EC_IllegalCall;
+                    } else {
+                        OFString charset(defaultCharset);
+                        if (charset == "latin-1")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+                        else if (charset == "latin-2")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
+                        else if (charset == "latin-3")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
+                        else if (charset == "latin-4")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
+                        else if (charset == "latin-5")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
+                        else if (charset == "cyrillic")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
+                        else if (charset == "arabic")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
+                        else if (charset == "greek")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
+                        else if (charset == "hebrew")
+                            dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
+                    }
                 }
                 if (result.good()) result = dsrdoc->renderHTML(out, renderFlags, cssName);
-            }
-            else
-            {
+            } else {
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                      << ") parsing file: "<< ifname << endl;
             }
@@ -411,7 +418,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.23  2005-12-08 15:47:33  meichel
+ * Revision 1.24  2006-05-11 09:13:45  joergr
+ * Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ * Revision 1.23  2005/12/08 15:47:33  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.22  2005/12/02 10:37:30  joergr

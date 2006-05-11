@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:30 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:18:21 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -908,16 +908,6 @@ class DSRTypes
                                                        const E_ValueType valueType);
 
 
-    /** check if this element contains non-ASCII characters.
-     *  @return true if element contains non-ASCII characters, false otherwise
-     */
-    static OFBool elementContainsExtendedCharacters(DcmElement &elem);
-
-    /** check if this string contains non-ASCII characters.
-     *  @return true if element contains non-ASCII characters, false otherwise
-     */
-    static OFBool stringContainsExtendedCharacters(const OFString &s);
-
   // --- DICOM data structure access functions ---
 
     /** add given element to the dataset.
@@ -1217,7 +1207,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.46  2005-12-08 16:05:30  meichel
+ *  Revision 1.47  2006-05-11 09:18:21  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.46  2005/12/08 16:05:30  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.45  2005/11/30 12:00:24  joergr

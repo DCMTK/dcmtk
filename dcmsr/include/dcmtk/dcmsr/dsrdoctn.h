@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:00 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-11 09:18:21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,11 +346,6 @@ class DSRDocumentTreeNode
      */
     void removeSignatures();
 
-    /** check if this tree node contains non-ASCII characters in one of the
-     *  strings affected by SpecificCharacterSet in DICOM
-     *  @return true if node contains non-ASCII characters, false otherwise
-     */
-    virtual OFBool containsExtendedCharacters() const;
 
   protected:
 
@@ -622,7 +617,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.21  2005-12-08 16:05:00  meichel
+ *  Revision 1.22  2006-05-11 09:18:21  joergr
+ *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
+ *
+ *  Revision 1.21  2005/12/08 16:05:00  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.20  2004/11/22 16:39:09  meichel
