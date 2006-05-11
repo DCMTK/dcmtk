@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-23 12:46:51 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2006-05-11 08:44:57 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,35 +54,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 // ********************************************
 
-static OFBool checkForNonASCIICharacters(DcmElement& elem)
-{
-    char *c = NULL;
-    if (elem.getString(c).good() && c)
-    {
-        while (*c)
-        {
-            if (OFstatic_cast(unsigned char, *c) > 127)
-                return OFTrue;
-            ++c;
-        }
-    }
-    return OFFalse;
-}
-
-static OFBool checkForNonASCIICharacters(DcmItem& dataset)
-{
-    DcmStack stack;
-    while (dataset.nextObject(stack, OFTrue).good())
-    {
-        if (stack.top()->isaString())
-        {
-            if (checkForNonASCIICharacters(* OFstatic_cast(DcmElement *, stack.top())))
-                return OFTrue;
-        }
-    }
-    return OFFalse;
-}
-
 static OFCondition writeFile(ostream &out,
                              const char *ifname,
                              const E_FileReadMode readMode,
@@ -109,13 +80,14 @@ static OFCondition writeFile(ostream &out,
         CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
              << ") reading file: "<< ifname << endl;
     } else {
+        DcmDataset *dset = dfile.getDataset();
         /* write content to XML format */
         if (loadIntoMemory)
-            dfile.getDataset()->loadAllDataIntoMemory();
+            dset->loadAllDataIntoMemory();
         /* determine dataset character encoding */
         OFString encString;
         OFString csetString;
-        if (dfile.getDataset()->findAndGetOFString(DCM_SpecificCharacterSet, csetString).good())
+        if (dset->findAndGetOFString(DCM_SpecificCharacterSet, csetString).good())
         {
             if (csetString == "ISO_IR 6")
                 encString = "UTF-8";
@@ -143,7 +115,7 @@ static OFCondition writeFile(ostream &out,
                 CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << endl;
         } else {
             /* SpecificCharacterSet is not present in the dataset */
-            if (checkForNonASCIICharacters(*dfile.getDataset()))
+            if (dset->containsExtendedCharacters())
             {
                 if (defaultCharset == NULL)
                 {
@@ -198,7 +170,7 @@ static OFCondition writeFile(ostream &out,
                         csetString = "ISO_IR 138";
                         encString = "ISO-8859-8";
                     }
-                    dfile.getDataset()->putAndInsertString(DCM_SpecificCharacterSet, csetString.c_str());
+                    dset->putAndInsertString(DCM_SpecificCharacterSet, csetString.c_str());
                 }
             }
         }
@@ -242,7 +214,7 @@ static OFCondition writeFile(ostream &out,
         }
         /* write XML document content */
         if (readMode == ERM_dataset)
-            result = dfile.getDataset()->writeXML(out, writeFlags);
+            result = dset->writeXML(out, writeFlags);
         else
             result = dfile.writeXML(out, writeFlags);
     }
@@ -306,7 +278,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--add-dtd-reference",   "+Xd",    "add reference to document type definition (DTD)");
         cmd.addOption("--embed-dtd-content",   "+Xe",    "embed document type definition into XML document");
         cmd.addOption("--use-xml-namespace",   "+Xn",    "add XML namespace declaration to root element");
-      cmd.addSubGroup("DICOM elements:");
+      cmd.addSubGroup("DICOM data elements:");
+        cmd.addOption("--write-element-name",  "+Wn",    "write name of the DICOM data elements (default)");
+        cmd.addOption("--no-element-name",     "-Wn",    "do not write name of the DICOM data elements");
         cmd.addOption("--write-binary-data",   "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
         cmd.addOption("--encode-hex",          "+Eh",    "encode binary data as hex numbers (default)");
         cmd.addOption("--encode-base64",       "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
@@ -405,6 +379,13 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--use-xml-namespace"))
             opt_writeFlags |= DCMTypes::XF_useDcmtkNamespace;
 
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--write-element-name"))
+            opt_writeFlags &= ~DCMTypes::XF_omitDataElementName;
+        if (cmd.findOption("--no-element-name"))
+            opt_writeFlags |= DCMTypes::XF_omitDataElementName;
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--write-binary-data"))
             opt_writeFlags |= DCMTypes::XF_writeBinaryData;
 
@@ -469,7 +450,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.23  2006-02-23 12:46:51  joergr
+ * Revision 1.24  2006-05-11 08:44:57  joergr
+ * Added new option that allows to omit the element name in the XML output.
+ * Moved checkForNonASCIICharacters() from application to library.
+ *
+ * Revision 1.23  2006/02/23 12:46:51  joergr
  * Added new default option --encode-hex. Fixed layout and formatting issues.
  *
  * Revision 1.22  2005/12/08 15:40:42  meichel
