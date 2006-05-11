@@ -203,6 +203,12 @@ multiplicity).
 
 See \b dcm2xml documentation for more details on the XML structure.
 
+\subsection limitations Limitations
+
+Please note that \b xml2dcm currently does not fully support DICOMDIR files.
+Specifically, the value of the various offset data elements is not updated
+automatically by this tool.
+
 \section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square

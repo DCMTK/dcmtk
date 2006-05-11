@@ -181,6 +181,15 @@ Value: There are several rules for writing values:
  (0002,0001) OB 01\\00
 \endverbatim
 
+\subsection limitations Limitations
+
+Please note that \b dump2dcm currently does not fully support DICOMDIR files.
+Specifically, the value of the various offset data elements is not updated
+automatically by this tool.
+
+The \b dump2dcm utility also does not yet support compressed pixel data stored
+in a sequence of pixel items.
+
 \section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
