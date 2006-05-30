@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-05-30 15:00:57 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,6 +159,11 @@ public:
      */
     virtual OFBool containsUnknownVR() const;
 
+    /** check if this object contains non-ASCII characters at any nesting level
+     *  @return true if object contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters();
+
     virtual unsigned long card();
 
     virtual OFCondition prepend(DcmItem *item);
@@ -222,7 +226,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.32  2005-12-08 16:28:41  meichel
+** Revision 1.33  2006-05-30 15:00:57  joergr
+** Added missing method containsExtendedCharacters().
+**
+** Revision 1.32  2005/12/08 16:28:41  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.31  2005/05/10 15:27:14  meichel

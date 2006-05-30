@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:51:05 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2006-05-30 15:00:19 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1242,10 +1242,27 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 }
 
 
+OFBool DcmSequenceOfItems::containsExtendedCharacters()
+{
+    if (!itemList->empty())
+    {
+        itemList->seek(ELP_first);
+        do {
+            if (itemList->get()->containsExtendedCharacters())
+                return OFTrue;
+        } while (itemList->seek(ELP_next));
+    }
+    return OFFalse;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.62  2006-05-11 08:51:05  joergr
+** Revision 1.63  2006-05-30 15:00:19  joergr
+** Added missing method containsExtendedCharacters().
+**
+** Revision 1.62  2006/05/11 08:51:05  joergr
 ** Added new option that allows to omit the element name in the XML output.
 **
 ** Revision 1.61  2005/12/08 15:41:36  meichel
