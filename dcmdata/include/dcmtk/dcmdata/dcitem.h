@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:54:00 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2006-05-30 15:01:52 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,8 +176,7 @@ class DcmItem
      */
     virtual OFBool containsUnknownVR() const;
 
-    /** check if this object contains non-ASCII characters in one of the
-     *  strings affected by SpecificCharacterSet in DICOM (LO, LT, PN, SH, ST, UT)
+    /** check if this object contains non-ASCII characters at any nesting level
      *  @return true if object contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters();
@@ -917,7 +916,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.54  2006-05-11 08:54:00  joergr
+** Revision 1.55  2006-05-30 15:01:52  joergr
+** Modified comment of method containsExtendedCharacters().
+**
+** Revision 1.54  2006/05/11 08:54:00  joergr
 ** Moved checkForNonASCIICharacters() from application to library.
 **
 ** Revision 1.53  2005/12/08 16:28:19  meichel
