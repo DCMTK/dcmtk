@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2006-06-01 15:23:14 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 
 /** Interface class for 'dcmsr' (DICOM Structured Reporting Documents).
  *  This class supports reading, writing, creation, printing and rendering of DICOM
- *  SR documents (according to DICOM PS 3.x-2004, formerly known as Supplement 23).
+ *  Structured Reporting (SR) documents.
  *  The list of supported SOP classes is available in file "dsrtypes.h".
  */
 class DSRDocument
@@ -1184,7 +1184,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.39  2006-05-11 09:18:21  joergr
+ *  Revision 1.40  2006-06-01 15:23:14  joergr
+ *  Removed explicit reference to a particular edition of the DICOM standard.
+ *
+ *  Revision 1.39  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.38  2005/12/08 16:04:59  meichel
@@ -1198,7 +1201,7 @@ class DSRDocument
  *
  *  Revision 1.35  2004/11/22 16:39:09  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
- *    in any of the strings affected by SpecificCharacterSet.
+ *  in any of the strings affected by SpecificCharacterSet.
  *
  *  Revision 1.34  2004/04/16 13:24:07  joergr
  *  Restructured code to avoid default parameter values for "complex types" like

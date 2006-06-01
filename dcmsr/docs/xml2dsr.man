@@ -140,8 +140,7 @@ data set trailing padding (not with --write-dataset):
 
 \subsection dicom_conformance DICOM Conformance
 
-The \b xml2dsr utility supports the following SOP Classes (according to
-DICOM 2004 and Supplement 94):
+The \b xml2dsr utility supports the following SOP Classes:
 
 \verbatim
 BasicTextSR                 1.2.840.10008.5.1.4.1.1.88.11
