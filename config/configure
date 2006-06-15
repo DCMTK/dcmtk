@@ -6498,6 +6498,370 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 
+
+
+echo "$as_me:$LINENO: checking whether the compiler supports const_cast<>" >&5
+echo $ECHO_N "checking whether the compiler supports const_cast<>... $ECHO_C" >&6
+if test "${ac_cv_cxx_const_cast+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+int x = 0;const int& y = x;int& z = const_cast<int&>(y);return z;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_cxx_const_cast=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_cxx_const_cast=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_const_cast" >&5
+echo "${ECHO_T}$ac_cv_cxx_const_cast" >&6
+if test "$ac_cv_cxx_const_cast" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_CONST_CAST
+_ACEOF
+
+fi
+
+
+
+echo "$as_me:$LINENO: checking whether the compiler supports dynamic_cast<>" >&5
+echo $ECHO_N "checking whether the compiler supports dynamic_cast<>... $ECHO_C" >&6
+if test "${ac_cv_cxx_dynamic_cast+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0;};
+class Derived : public Base { public : Derived () {} virtual void f () {} };
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+
+Derived d; Base& b=d; return dynamic_cast<Derived*>(&b) ? 0 : 1;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_cxx_dynamic_cast=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_cxx_dynamic_cast=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_dynamic_cast" >&5
+echo "${ECHO_T}$ac_cv_cxx_dynamic_cast" >&6
+if test "$ac_cv_cxx_dynamic_cast" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_DYNAMIC_CAST
+_ACEOF
+
+fi
+
+
+
+echo "$as_me:$LINENO: checking whether the compiler supports reinterpret_cast<>" >&5
+echo $ECHO_N "checking whether the compiler supports reinterpret_cast<>... $ECHO_C" >&6
+if test "${ac_cv_cxx_reinterpret_cast+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0;};
+class Derived : public Base { public : Derived () {} virtual void f () {} };
+class Unrelated { public : Unrelated () {} };
+int g (Unrelated&) { return 0; }
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+
+Derived d;Base& b=d;Unrelated& e=reinterpret_cast<Unrelated&>(b);return g(e);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_cxx_reinterpret_cast=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_cxx_reinterpret_cast=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_reinterpret_cast" >&5
+echo "${ECHO_T}$ac_cv_cxx_reinterpret_cast" >&6
+if test "$ac_cv_cxx_reinterpret_cast" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_REINTERPRET_CAST
+_ACEOF
+
+fi
+
+
+
+echo "$as_me:$LINENO: checking whether the compiler supports static_cast<>" >&5
+echo $ECHO_N "checking whether the compiler supports static_cast<>... $ECHO_C" >&6
+if test "${ac_cv_cxx_static_cast+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0; };
+class Derived : public Base { public : Derived () {} virtual void f () {} };
+int g (Derived&) { return 0; }
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+
+Derived d; Base& b = d; Derived& s = static_cast<Derived&> (b); return g (s);
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_cxx_static_cast=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_cxx_static_cast=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_static_cast" >&5
+echo "${ECHO_T}$ac_cv_cxx_static_cast" >&6
+if test "$ac_cv_cxx_static_cast" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_STATIC_CAST
+_ACEOF
+
+fi
+
+
+
+echo "$as_me:$LINENO: checking whether the compiler supports std::nothrow" >&5
+echo $ECHO_N "checking whether the compiler supports std::nothrow... $ECHO_C" >&6
+if test "${ac_cv_cxx_std_nothrow+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <new>
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+int *i = new (std::nothrow) int
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_cxx_std_nothrow=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_cxx_std_nothrow=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_std_nothrow" >&5
+echo "${ECHO_T}$ac_cv_cxx_std_nothrow" >&6
+if test "$ac_cv_cxx_std_nothrow" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_STD__NOTHROW
+_ACEOF
+
+fi
+
+
+
 DEBUG="-DNDEBUG"
 DEBUGCXXFLAGS=
 DEBUGCFLAGS=
@@ -6566,7 +6930,6 @@ else
 echo "${ECHO_T}automatic detection" >&6
 
 fi;
-
 
 
 echo "$as_me:$LINENO: checking for -lg++" >&5
@@ -15332,12 +15695,19 @@ fi
   fi
 fi
 
+
 if test $ac_cv_header_pthread_h = yes ; then
   echo "$as_me:$LINENO: checking if pthread_t is a pointer type (in pthread.h)" >&5
 echo $ECHO_N "checking if pthread_t is a pointer type (in pthread.h)... $ECHO_C" >&6
 
 
 ac_includes=""
+cpp_code=""
+if eval "test \"`echo '$ac_cv_cxx_static_cast'`\" = yes"; then
+  cpp_code="unsigned long l = static_cast<unsigned long>(p)"
+else
+  cpp_code="unsigned long l = p"
+fi
 for ac_header in pthread.h
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
@@ -15370,12 +15740,18 @@ $ac_includes
 int
 main ()
 {
+#ifdef __cplusplus
+pthread_t p; $cpp_code
+#else
 pthread_t p; unsigned long l = p
+#endif
+
   ;
   return 0;
 }
 _ACEOF
 rm -f conftest.$ac_objext
+cp conftest.$ac_ext sample_file.cc
 if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -18785,368 +19161,6 @@ fi
 
 
 
-echo "$as_me:$LINENO: checking whether the compiler supports const_cast<>" >&5
-echo $ECHO_N "checking whether the compiler supports const_cast<>... $ECHO_C" >&6
-if test "${ac_cv_cxx_const_cast+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-int x = 0;const int& y = x;int& z = const_cast<int&>(y);return z;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_cxx_const_cast=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_cxx_const_cast=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_cxx_const_cast" >&5
-echo "${ECHO_T}$ac_cv_cxx_const_cast" >&6
-if test "$ac_cv_cxx_const_cast" = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_CONST_CAST
-_ACEOF
-
-fi
-
-
-
-echo "$as_me:$LINENO: checking whether the compiler supports dynamic_cast<>" >&5
-echo $ECHO_N "checking whether the compiler supports dynamic_cast<>... $ECHO_C" >&6
-if test "${ac_cv_cxx_dynamic_cast+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <typeinfo>
-class Base { public : Base () {} virtual void f () = 0;};
-class Derived : public Base { public : Derived () {} virtual void f () {} };
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-
-Derived d; Base& b=d; return dynamic_cast<Derived*>(&b) ? 0 : 1;
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_cxx_dynamic_cast=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_cxx_dynamic_cast=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_cxx_dynamic_cast" >&5
-echo "${ECHO_T}$ac_cv_cxx_dynamic_cast" >&6
-if test "$ac_cv_cxx_dynamic_cast" = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_DYNAMIC_CAST
-_ACEOF
-
-fi
-
-
-
-echo "$as_me:$LINENO: checking whether the compiler supports reinterpret_cast<>" >&5
-echo $ECHO_N "checking whether the compiler supports reinterpret_cast<>... $ECHO_C" >&6
-if test "${ac_cv_cxx_reinterpret_cast+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <typeinfo>
-class Base { public : Base () {} virtual void f () = 0;};
-class Derived : public Base { public : Derived () {} virtual void f () {} };
-class Unrelated { public : Unrelated () {} };
-int g (Unrelated&) { return 0; }
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-
-Derived d;Base& b=d;Unrelated& e=reinterpret_cast<Unrelated&>(b);return g(e);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_cxx_reinterpret_cast=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_cxx_reinterpret_cast=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_cxx_reinterpret_cast" >&5
-echo "${ECHO_T}$ac_cv_cxx_reinterpret_cast" >&6
-if test "$ac_cv_cxx_reinterpret_cast" = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_REINTERPRET_CAST
-_ACEOF
-
-fi
-
-
-
-echo "$as_me:$LINENO: checking whether the compiler supports static_cast<>" >&5
-echo $ECHO_N "checking whether the compiler supports static_cast<>... $ECHO_C" >&6
-if test "${ac_cv_cxx_static_cast+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <typeinfo>
-class Base { public : Base () {} virtual void f () = 0; };
-class Derived : public Base { public : Derived () {} virtual void f () {} };
-int g (Derived&) { return 0; }
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-
-Derived d; Base& b = d; Derived& s = static_cast<Derived&> (b); return g (s);
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_cxx_static_cast=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_cxx_static_cast=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_cxx_static_cast" >&5
-echo "${ECHO_T}$ac_cv_cxx_static_cast" >&6
-if test "$ac_cv_cxx_static_cast" = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_STATIC_CAST
-_ACEOF
-
-fi
-
-
-
-echo "$as_me:$LINENO: checking whether the compiler supports std::nothrow" >&5
-echo $ECHO_N "checking whether the compiler supports std::nothrow... $ECHO_C" >&6
-if test "${ac_cv_cxx_std_nothrow+set}" = set; then
-  echo $ECHO_N "(cached) $ECHO_C" >&6
-else
-
-
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
- cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-#include "confdefs.h"
-#include <new>
-#ifdef F77_DUMMY_MAIN
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int F77_DUMMY_MAIN() { return 1; }
-#endif
-int
-main ()
-{
-int *i = new (std::nothrow) int
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext
-if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
-  (eval $ac_compile) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } &&
-         { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
-  (eval $ac_try) 2>&5
-  ac_status=$?
-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); }; }; then
-  ac_cv_cxx_std_nothrow=yes
-else
-  echo "$as_me: failed program was:" >&5
-cat conftest.$ac_ext >&5
-ac_cv_cxx_std_nothrow=no
-fi
-rm -f conftest.$ac_objext conftest.$ac_ext
- ac_ext=cc
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-fi
-echo "$as_me:$LINENO: result: $ac_cv_cxx_std_nothrow" >&5
-echo "${ECHO_T}$ac_cv_cxx_std_nothrow" >&6
-if test "$ac_cv_cxx_std_nothrow" = yes; then
-
-cat >>confdefs.h <<\_ACEOF
-#define HAVE_STD__NOTHROW
-_ACEOF
-
-fi
-
-
-
 echo "$as_me:$LINENO: checking prototype for _stricmp (in string.h)" >&5
 echo $ECHO_N "checking prototype for _stricmp (in string.h)... $ECHO_C" >&6
 
@@ -22292,7 +22306,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22295 "configure"
+#line 22308 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -22821,7 +22835,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22824 "configure"
+#line 22837 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -22894,7 +22908,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22897 "configure"
+#line 22910 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -22967,7 +22981,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 22970 "configure"
+#line 22983 "configure"
 #include "confdefs.h"
 
 template <class T>

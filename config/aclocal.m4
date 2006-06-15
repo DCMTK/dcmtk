@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.37 $
+dnl Revision:     $Revision: 1.38 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1390,6 +1390,12 @@ AH_TEMPLATE(AS_TR_CPP(HAVE_POINTER_TYPE_$1), [Define if $1 is a pointer type on 
 ifelse([$2], , [ac_includes=""
 ],
 [ac_includes=""
+cpp_code=""
+if eval "test \"`echo '$ac_cv_cxx_static_cast'`\" = yes"; then
+  cpp_code="unsigned long l = static_cast<unsigned long>(p)"
+else
+  cpp_code="unsigned long l = p"
+fi
 for ac_header in $2
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
@@ -1408,7 +1414,12 @@ $ac_includes
 #ifdef __cplusplus
 }
 #endif
-],[$1 p; unsigned long l = p],
+],[#ifdef __cplusplus
+$1 p; $cpp_code
+#else
+$1 p; unsigned long l = p
+#endif
+],
 eval "ac_cv_pointer_type_$tmp_save_1=no", eval "ac_cv_pointer_type_$tmp_save_1=yes")])dnl
 if eval "test \"`echo '$''{'ac_cv_pointer_type_$tmp_save_1'}'`\" = yes"; then
   AC_MSG_RESULT(yes)
@@ -1480,7 +1491,12 @@ AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
 
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.37  2005-11-15 16:05:51  meichel
+dnl Revision 1.38  2006-06-15 15:28:41  meichel
+dnl Updated configure test AC_CHECK_POINTER_TYPE to use a static_cast if available
+dnl   when trying to assign from an unknown type to unsigned long. Needed for Mac OS
+dnl   X 10.3 with gcc 3.3.
+dnl
+dnl Revision 1.37  2005/11/15 16:05:51  meichel
 dnl Configure test AC_CHECK_INTP_SELECT now only includes header files
 dnl   that have been successfully tested for presence before.
 dnl

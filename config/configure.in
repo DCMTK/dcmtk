@@ -214,6 +214,12 @@ dnl Perform remaining tests with C++ compiler
 dnl -------------------------------------------------------
 AC_LANG(C++)
 
+AC_CXX_CONST_CAST
+AC_CXX_DYNAMIC_CAST
+AC_CXX_REINTERPRET_CAST
+AC_CXX_STATIC_CAST
+AC_CXX_STD_NOTHROW
+
 dnl -------------------------------------------------------
 dnl Check for Debug Mode
 dnl -------------------------------------------------------
@@ -399,6 +405,11 @@ if test $ac_cv_header_libc_h = yes ; then
   fi
 fi
 
+dnl -------------------------------------------------------
+dnl Tests for pointer vs. integer types
+dnl These tests REQUIRE as a prerequisite AC_CXX_STATIC_CAST
+dnl -------------------------------------------------------
+
 if test $ac_cv_header_pthread_h = yes ; then
   AC_CHECK_POINTER_TYPE(pthread_t, pthread.h)
 fi
@@ -578,11 +589,6 @@ AC_CHECK_SIZEOF(float)
 AC_CHECK_SIZEOF(double)
 AC_CHECK_SIZEOF(void *)
 AC_STRUCT_TM
-AC_CXX_CONST_CAST
-AC_CXX_DYNAMIC_CAST
-AC_CXX_REINTERPRET_CAST
-AC_CXX_STATIC_CAST
-AC_CXX_STD_NOTHROW
 
 dnl -------------------------------------------------------
 dnl Checks for prototypes
