@@ -520,8 +520,8 @@ Known limitations of DCMTK on the Windows platform.
    can only work if a connection to a provider exists (since the internet
    addresses and names are given dynamically).
 4. Visual C++ contains two different implementations of iostreams which should
-   never be mixed within one application because this may cause nasal daemons,
-   i.e. application errors that are hard to find.  The old, now deprecated
+   never be mixed within one application because this may cause 
+   application errors that are hard to find.  The old, now deprecated
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
    DCMTK can be configured to use either of the two interfaces.  This behaviour
