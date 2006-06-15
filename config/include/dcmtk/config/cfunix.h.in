@@ -3,7 +3,7 @@
 #ifndef CFUNIX_H
 #define CFUNIX_H
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix. 
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
