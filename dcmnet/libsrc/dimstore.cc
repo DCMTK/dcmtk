@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 15:44:46 $
+** Update Date:		$Date: 2006-06-23 10:09:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ DIMSE_storeUser(
 
     /* check if a C-CANCEL-RQ message was encountered earlier */
     if (checkForCancelParams != NULL) {
-        checkForCancelParams->cancelEncountered = OFTrue;
+        checkForCancelParams->cancelEncountered = OFFalse;
     }
 
     /* try to receive C-STORE-RSP */
@@ -515,7 +515,10 @@ DIMSE_storeProvider( T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.19  2005-12-08 15:44:46  meichel
+** Revision 1.20  2006-06-23 10:09:17  meichel
+** Fixed incorrect default initialization of C-GET cancel struct.
+**
+** Revision 1.19  2005/12/08 15:44:46  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.18  2005/02/22 09:40:58  meichel
