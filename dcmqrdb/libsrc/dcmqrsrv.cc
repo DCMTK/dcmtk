@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-16 12:41:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-06-23 10:24:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrsrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,8 @@
 #include "dcmtk/dcmqrdb/dcmqrsrv.h"
 #include "dcmtk/dcmqrdb/dcmqropt.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmqrdb/dcmqrdba.h"
 #include "dcmtk/dcmqrdb/dcmqrcbf.h"    /* for class DcmQueryRetrieveFindContext */
 #include "dcmtk/dcmqrdb/dcmqrcbm.h"    /* for class DcmQueryRetrieveMoveContext */
@@ -421,6 +423,13 @@ OFCondition DcmQueryRetrieveSCP::storeSCP(T_ASC_Association * assoc, T_DIMSE_C_S
 #endif
 
     context.setFileName(imageFileName);
+
+    // store SourceApplicationEntityTitle in metaheader
+    if (assoc && assoc->params)
+    {
+      const char *aet = assoc->params->DULparams.callingAPTitle;
+      if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+    }
 
     DcmDataset *dset = dcmff.getDataset();
 
@@ -1116,7 +1125,11 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
- * Revision 1.1  2005-12-16 12:41:35  joergr
+ * Revision 1.2  2006-06-23 10:24:43  meichel
+ * All Store SCPs in DCMTK now store the source application entity title in the
+ *   metaheader, both in normal and in bit-preserving mode.
+ *
+ * Revision 1.1  2005/12/16 12:41:35  joergr
  * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
  * Sun CC 2.0.1.
  *

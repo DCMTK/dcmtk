@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:10 $
+ *  Update Date:      $Date: 2006-06-23 10:24:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -504,6 +504,14 @@ static OFCondition storeSCP(
     OFCondition cond = EC_Normal;
     char imageFileName[MAXPATHLEN+1];
     DcmFileFormat dcmff;
+
+    // store SourceApplicationEntityTitle in metaheader
+    if (assoc && assoc->params)
+    {
+      const char *aet = assoc->params->DULparams.callingAPTitle;
+      if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+    }
+
     DcmDataset *dset = dcmff.getDataset();
     DIC_US status = STATUS_Success;
     DcmQueryRetrieveIndexDatabaseHandle *dbhandle = NULL;
@@ -1494,7 +1502,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.51  2005-12-08 15:46:10  meichel
+ * Revision 1.52  2006-06-23 10:24:43  meichel
+ * All Store SCPs in DCMTK now store the source application entity title in the
+ *   metaheader, both in normal and in bit-preserving mode.
+ *
+ * Revision 1.51  2005/12/08 15:46:10  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.50  2005/11/28 15:29:05  meichel

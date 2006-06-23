@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:45 $
+** Update Date:         $Date: 2006-06-23 10:24:43 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.43 $
+** CVS/RCS Revision:    $Revision: 1.44 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -105,6 +105,7 @@
 #include "dcmtk/dcmdata/dcvrul.h"      /* for class DcmUnsignedLong */
 #include "dcmtk/dcmdata/dcvrobow.h"    /* for class DcmOtherByteOtherWord */
 #include "dcmtk/dcmdata/dcvrsh.h"      /* for class DcmShortString */
+#include "dcmtk/dcmdata/dcvrae.h"      /* for class Dcm */
 #include "dcmtk/dcmdata/dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
 /*
  * Type definitions
@@ -1329,8 +1330,8 @@ OFCondition DIMSE_createFilestream(
   DcmTag transferSyntaxUID(DCM_TransferSyntaxUID);
   DcmTag implementationClassUID(DCM_ImplementationClassUID);
   DcmTag implementationVersionName(DCM_ImplementationVersionName);
+  DcmTag sourceApplicationEntityTitle(DCM_SourceApplicationEntityTitle);
   T_ASC_PresentationContext presentationContext;
-  
 
   if ((filename == NULL) || (request==NULL) || (assoc==NULL) ||
       (assoc->params==NULL) || (filestream==NULL))
@@ -1382,6 +1383,12 @@ OFCondition DIMSE_createFilestream(
       metainfo->insert(elem, OFTrue);
       const char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
       ((DcmShortString*)elem)->putString(version);
+    } else cond = EC_MemoryExhausted;
+    if (NULL != (elem = new DcmApplicationEntity(sourceApplicationEntityTitle)))
+    {
+      metainfo->insert(elem, OFTrue);
+      const char *aet = assoc->params->DULparams.callingAPTitle;
+      if (aet) ((DcmApplicationEntity*)elem)->putString(aet);
     } else cond = EC_MemoryExhausted;
 
     if (cond == EC_MemoryExhausted)
@@ -1768,7 +1775,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.43  2005-12-08 15:44:45  meichel
+** Revision 1.44  2006-06-23 10:24:43  meichel
+** All Store SCPs in DCMTK now store the source application entity title in the
+**   metaheader, both in normal and in bit-preserving mode.
+**
+** Revision 1.43  2005/12/08 15:44:45  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.42  2005/10/25 08:55:46  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-01-17 15:38:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-06-23 10:24:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,8 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
 #include "dcmtk/ofstd/ofstd.h"
@@ -1154,6 +1156,13 @@ static OFCondition storeSCP(
     DcmFileFormat dcmff;
     callbackData.dcmff = &dcmff;
 
+    // store SourceApplicationEntityTitle in metaheader
+    if (assoc && assoc->params)
+    {
+      const char *aet = assoc->params->DULparams.callingAPTitle;
+      if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+    }
+
     DcmDataset *dset = dcmff.getDataset();
 
     if (opt_bitPreserving)
@@ -1406,7 +1415,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.60  2006-01-17 15:38:50  onken
+** Revision 1.61  2006-06-23 10:24:41  meichel
+** All Store SCPs in DCMTK now store the source application entity title in the
+**   metaheader, both in normal and in bit-preserving mode.
+**
+** Revision 1.60  2006/01/17 15:38:50  onken
 ** Fixed "--key" option, which was broken when using the optional assignment ("=")
 ** operation inside the option value
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-23 12:51:32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-06-23 10:24:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
+#include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdatime.h"
@@ -2023,6 +2024,13 @@ static OFCondition storeSCP(
   DcmFileFormat dcmff;
   callbackData.dcmff = &dcmff;
 
+  // store SourceApplicationEntityTitle in metaheader
+  if (assoc && assoc->params)
+  {
+    const char *aet = assoc->params->DULparams.callingAPTitle;
+    if (aet) dcmff.getMetaInfo()->putAndInsertString(DCM_SourceApplicationEntityTitle, aet);
+  }
+
   // define an address where the information which will be received over the network will be stored
   DcmDataset *dset = dcmff.getDataset();
 
@@ -2542,7 +2550,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.91  2006-02-23 12:51:32  joergr
+** Revision 1.92  2006-06-23 10:24:41  meichel
+** All Store SCPs in DCMTK now store the source application entity title in the
+**   metaheader, both in normal and in bit-preserving mode.
+**
+** Revision 1.91  2006/02/23 12:51:32  joergr
 ** Fixed layout and formatting issues.
 **
 ** Revision 1.90  2006/02/03 10:21:59  joergr
