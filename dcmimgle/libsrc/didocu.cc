@@ -22,8 +22,8 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-03 16:53:14 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-07-03 14:23:57 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,7 +277,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
         Uint16 *val;
         elem->getUint16Array(val);
         returnVal = val;
-        if (elem->getVR() == EVR_OW)
+        const DcmEVR vr = elem->getVR();
+        if ((vr == EVR_OW) || (vr == EVR_lt))
             return elem->getLength(Xfer) / sizeof(Uint16);
         return elem->getVM();
     }
@@ -333,7 +334,8 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
         Uint16 *val;                                            // parameter has no 'const' qualifier
         OFconst_cast(DcmElement *, elem)->getUint16Array(val);  // remove 'const' to use non-const methods
         returnVal = val;
-        if (OFconst_cast(DcmElement *, elem)->getVR() == EVR_OW)
+        const DcmEVR vr = OFconst_cast(DcmElement *, elem)->getVR();
+        if ((vr == EVR_OW) || (vr == EVR_lt))
             return OFconst_cast(DcmElement *, elem)->getLength(/*Xfer*/) / sizeof(Uint16);
         return OFconst_cast(DcmElement *, elem)->getVM();
     }
@@ -372,7 +374,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.17  2006-02-03 16:53:14  joergr
+ * Revision 1.18  2006-07-03 14:23:57  joergr
+ * Fixed issue with handling of LUT data in DICOM objects with implicit VR.
+ *
+ * Revision 1.17  2006/02/03 16:53:14  joergr
  * Fixed inconsistent source code layout.
  *
  * Revision 1.16  2005/12/08 15:42:48  meichel
