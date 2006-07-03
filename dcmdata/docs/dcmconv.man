@@ -90,6 +90,7 @@ handling of undefined length UN elements:
          read undefined len UN as explicit VR
 
 handling of defined length UN elements:
+
   -uc  --retain-un
          retain elements as UN (default)
 
