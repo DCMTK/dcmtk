@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:31 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:52:27 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1465,9 +1465,9 @@ class DicomImage
     /** create true color (24/32 bit) or palette (8 bit) bitmap for MS Windows.
      *  8 bit images require an appropriate color palette (256 entries, values: 0 to 255) and are only
      *  applicable to monochrome images, the beginning of a each line starts on a 32-bit address (if
-     *  'padding' is true); 24 bit images store 24 bits per pixel (RGB) and do align each line to a
-     *  32-bit address (if 'padding' is true); 32 bit images store 32 bits per pixel (RGB), but only
-     *  use the upper 24 bits. The sample order for color images is (i.e. reverse): Blue, Green, Red.
+     *  'padding' is true); 24 bit images store 24 bits per pixel (BGR) and do align each line to a
+     *  32-bit address (if 'padding' is true); 32 bit images store 32 bits per pixel (ARGB), but only
+     *  use the lower 24 bits (-RGB).
      *  The memory buffer can be allocated both externally (from the calling program) and internally
      *  (inside this class/module). If the 'data' parameter is not NULL and the 'size' parameter, which
      *  describes the size (in bytes) of the allocated buffer, is suffiently large, the bitmap is stored
@@ -1706,7 +1706,7 @@ class DicomImage
      *
      ** @param  stream  open C output stream (binary mode required!)
      *  @param  bits    number of bits used for output of pixel data
-     *                  (8 or 24, default (0): 8 for monochrome and 24 for color images)
+     *                  (8, 24 or 32, default (0): 8 for monochrome and 24 for color images)
      *  @param  frame   index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
@@ -1722,7 +1722,7 @@ class DicomImage
      *
      ** @param  filename  name of output file (%d is replaced by frame number if present)
      *  @param  bits      number of bits used for output of pixel data
-     *                    (8 or 24, default (0): 8 for monochrome and 24 for color images)
+     *                    (8, 24 or 32, default (0): 8 for monochrome and 24 for color images)
      *  @param  frame     index of frame used for output (default: first frame = 0)
      *
      ** @return true if successful, false otherwise
@@ -1824,7 +1824,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.54  2005-12-08 16:47:31  meichel
+ * Revision 1.55  2006-07-10 10:52:27  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.54  2005/12/08 16:47:31  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.53  2005/03/09 17:33:40  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:21 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:56:51 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -732,7 +732,7 @@ int DiColorImage::writeBMP(FILE *stream,
                            const unsigned long frame,
                            const int bits)
 {
-    if (RGBColorModel && ((bits == 0) || (bits == 24)))
+    if (RGBColorModel && ((bits == 0) || (bits == 24) || (bits == 32)))
         return DiImage::writeBMP(stream, frame, (bits == 0) ? 24 : bits);
     return 0;
 }
@@ -742,7 +742,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.35  2005-12-08 15:42:21  meichel
+ * Revision 1.36  2006-07-10 10:56:51  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.35  2005/12/08 15:42:21  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.34  2005/03/09 17:45:36  joergr

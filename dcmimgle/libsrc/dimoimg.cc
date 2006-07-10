@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:56 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:54:26 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1734,9 +1734,9 @@ unsigned long DiMonoImage::createDIB(void *&data,
                             for (x = Columns; x != 0; --x)
                             {
                                 value = *(p++);                 // store gray value
-                                *(q++) = (value << 24) |
-                                         (value << 16) |
-                                         (value << 8);          // copy to the three RGB-planes
+                                *(q++) = (value << 16) |
+                                         (value << 8) |
+                                         value;                 // copy to the three RGB-planes
                             }
                             p += nextRow;                       // jump (backwards) to next row
                         }
@@ -2107,14 +2107,14 @@ int DiMonoImage::writeRawPPM(FILE *stream,
 
 
 /*
- *   write output data of 'frame' with depth of 'bits' (8 or 24) to C-file 'stream' (format is BMP)
+ *   write output data of 'frame' with depth of 'bits' (8, 24 or 32) to C-file 'stream' (format is BMP)
  */
 
 int DiMonoImage::writeBMP(FILE *stream,
                           const unsigned long frame,
                           const int bits)
 {
-    if ((bits == 0) || (bits == 8) || (bits == 24))
+    if ((bits == 0) || (bits == 8) || (bits == 24) || (bits == 32))
         return DiImage::writeBMP(stream, frame, (bits == 0) ? 8 : bits);
     return 0;
 }
@@ -2124,7 +2124,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.62  2005-12-08 15:42:56  meichel
+ * Revision 1.63  2006-07-10 10:54:26  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.62  2005/12/08 15:42:56  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.61  2005/03/09 17:43:41  joergr

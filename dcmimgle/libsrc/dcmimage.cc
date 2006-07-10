@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:42 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:54:26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -752,7 +752,8 @@ int DicomImage::writeBMP(const char *filename,
                          const int bits,
                          const unsigned long frame)
 {
-    if ((filename != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
+    if ((filename != NULL) && (Image != NULL) &&
+        ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24) || (bits == 32)))
     {
         char fname[FILENAME_MAX + 1];
         if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
@@ -775,8 +776,11 @@ int DicomImage::writeBMP(FILE *stream,
                          const int bits,
                          const unsigned long frame)
 {
-    if ((stream != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
+    if ((stream != NULL) && (Image != NULL) &&
+        ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24) || (bits == 32)))
+    {
         return Image->writeBMP(stream, frame, bits);
+    }
     return 0;
 }
 
@@ -820,7 +824,10 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.26  2005-12-08 15:42:42  meichel
+ * Revision 1.27  2006-07-10 10:54:26  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.26  2005/12/08 15:42:42  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.25  2003/12/23 16:03:18  joergr

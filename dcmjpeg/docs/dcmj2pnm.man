@@ -363,6 +363,9 @@ other transformations:
   +obt  --write-24-bit-bmp
           write 24-bit truecolor BMP
 
+  +obr  --write-32-bit-bmp
+          write 32-bit truecolor BMP
+
   +ot   --write-tiff
           write 8-bit (monochrome) or 24-bit (color) TIFF
 

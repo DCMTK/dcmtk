@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:42 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:52:27 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -499,7 +499,7 @@ class DiImage
      *
      ** @param  stream  open C output stream
      *  @param  frame   index of frame used for output (default: first frame = 0)
-     *  @param  bits    number of bits used for output of pixel data (8 or 24)
+     *  @param  bits    number of bits used for output of pixel data (8, 24 or 32)
      *
      ** @return true if successful, false otherwise
      */
@@ -652,7 +652,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.38  2005-12-08 16:47:42  meichel
+ * Revision 1.39  2006-07-10 10:52:27  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.38  2005/12/08 16:47:42  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.37  2005/03/09 17:32:35  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:16 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:55:47 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,6 +115,7 @@ enum E_FileType
     EFT_BMP,
     EFT_8bitBMP,
     EFT_24bitBMP,
+    EFT_32bitBMP,
     EFT_JPEG,
     EFT_TIFF,
     EFT_PNG
@@ -396,6 +397,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-bmp",           "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
      cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
      cmd.addOption("--write-24-bit-bmp",    "+obt",    "write 24-bit truecolor BMP");
+     cmd.addOption("--write-32-bit-bmp",    "+obr",    "write 32-bit truecolor BMP");
 #ifdef WITH_LIBTIFF
      cmd.addOption("--write-tiff",          "+ot",     "write 8-bit (monochrome) or 24-bit (color) TIFF");
 #endif
@@ -841,6 +843,8 @@ int main(int argc, char *argv[])
             opt_fileType = EFT_8bitBMP;
         if (cmd.findOption("--write-24-bit-bmp"))
             opt_fileType = EFT_24bitBMP;
+        if (cmd.findOption("--write-32-bit-bmp"))
+            opt_fileType = EFT_32bitBMP;
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
         if (cmd.findOption("--write-jpeg"))
             opt_fileType = EFT_JPEG;
@@ -1357,6 +1361,7 @@ int main(int argc, char *argv[])
           case EFT_BMP:
           case EFT_8bitBMP:
           case EFT_24bitBMP:
+          case EFT_32bitBMP:
             ofext = "bmp";
             break;
           case EFT_JPEG:
@@ -1435,6 +1440,9 @@ int main(int argc, char *argv[])
                 case EFT_24bitBMP:
                     result = di->writeBMP(ofile, 24, frame);
                     break;
+                case EFT_32bitBMP:
+                    result = di->writeBMP(ofile, 32, frame);
+                    break;
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
                 case EFT_JPEG:
                     {
@@ -1510,7 +1518,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.83  2005-12-08 15:42:16  meichel
+ * Revision 1.84  2006-07-10 10:55:47  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.83  2005/12/08 15:42:16  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.82  2005/12/02 09:31:17  joergr

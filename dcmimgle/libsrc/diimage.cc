@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:51 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:54:26 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -776,9 +776,9 @@ int DiImage::writeBMP(FILE *stream,
                       const int bits)
 {
     int result = 0;
-    if ((stream != NULL) && ((bits == 8) || (bits == 24)))
+    if ((stream != NULL) && ((bits == 8) || (bits == 24) || (bits == 32)))
     {
-        /* create device independent bitmap: palette (8) or truecolor (24) */
+        /* create device independent bitmap: palette (8) or truecolor (24/32) */
         void *data = NULL;
         const unsigned long bytes = createDIB(data, 0, frame, bits, 1 /*upsideDown*/);
         if ((data != NULL) && (bytes > 0))
@@ -812,7 +812,7 @@ int DiImage::writeBMP(FILE *stream,
                 /* add palette size */
                 fileHeader.bfSize += 256 * 4;
                 fileHeader.bfOffBits += 256 * 4;
-                /* fill palette entries with gray values, format: B-G-R-0 */
+                /* fill palette entries with gray values */
                 for (Uint32 i = 0; i < 256; ++i)
                     palette[i] = (i << 16) | (i << 8) | i;
             }
@@ -868,7 +868,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.32  2005-12-08 15:42:51  meichel
+ * Revision 1.33  2006-07-10 10:54:26  joergr
+ * Added support for 32-bit BMP images.
+ *
+ * Revision 1.32  2005/12/08 15:42:51  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.31  2005/12/01 09:52:07  joergr
