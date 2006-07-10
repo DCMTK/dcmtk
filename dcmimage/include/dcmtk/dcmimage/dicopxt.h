@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:35 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-10 10:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -347,10 +347,10 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* reverse sample order: B-G-R-0 */
-                                    *(q++) = (OFstatic_cast(Uint32, *(b++)) << 24) |
-                                             (OFstatic_cast(Uint32, *(g++)) << 16) |
-                                             (OFstatic_cast(Uint32, *(r++)) << 8);
+                                    /* normal sample order: 0-R-G-B */
+                                    *(q++) = (OFstatic_cast(Uint32, *(r++)) << 16) |
+                                             (OFstatic_cast(Uint32, *(g++)) << 8) |
+                                             OFstatic_cast(Uint32, *(b++));
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -367,10 +367,10 @@ class DiColorPixelTemplate
                                 {
                                     for (x = width; x != 0; x--)
                                     {
-                                        /* reverse sample order: B-G-R-0 */
-                                        *(q++) = (OFstatic_cast(Uint32, *(b++) * gradient2) << 24) |
-                                                 (OFstatic_cast(Uint32, *(g++) * gradient2) << 16) |
-                                                 (OFstatic_cast(Uint32, *(r++) * gradient2) << 8);
+                                        /* normal sample order: 0-R-G-B */
+                                        *(q++) = (OFstatic_cast(Uint32, *(r++) * gradient2) << 16) |
+                                                 (OFstatic_cast(Uint32, *(g++) * gradient2) << 8) |
+                                                 OFstatic_cast(Uint32, *(b++) * gradient2);
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -379,10 +379,10 @@ class DiColorPixelTemplate
                                 {
                                     for (x = width; x != 0; x--)
                                     {
-                                        /* reverse sample order: B-G-R-0 */
-                                        *(q++) = (OFstatic_cast(Uint32, OFstatic_cast(double, *(b++)) * gradient1) << 24) |
-                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(g++)) * gradient1) << 16) |
-                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(r++)) * gradient1) << 8);
+                                        /* normal sample order: 0-R-G-B */
+                                        *(q++) = (OFstatic_cast(Uint32, OFstatic_cast(double, *(r++)) * gradient1) << 16) |
+                                                 (OFstatic_cast(Uint32, OFstatic_cast(double, *(g++)) * gradient1) << 8) |
+                                                 OFstatic_cast(Uint32, OFstatic_cast(double, *(b++)) * gradient1);
                                     }
                                     r += nextRow; g += nextRow; b += nextRow;       // go backwards if 'upsideDown'
                                 }
@@ -396,10 +396,10 @@ class DiColorPixelTemplate
                             {
                                 for (x = width; x != 0; x--)
                                 {
-                                    /* reverse sample order: B-G-R-0 */
-                                    *(q++) = (OFstatic_cast(Uint32, *(b++) >> shift) << 24) |
-                                             (OFstatic_cast(Uint32, *(g++) >> shift) << 16) |
-                                             (OFstatic_cast(Uint32, *(r++) >> shift) << 8);
+                                    /* normal sample order: 0-R-G-B */
+                                    *(q++) = (OFstatic_cast(Uint32, *(r++) >> shift) << 16) |
+                                             (OFstatic_cast(Uint32, *(g++) >> shift) << 8) |
+                                             OFstatic_cast(Uint32, *(b++) >> shift);
                                 }
                                 r += nextRow; g += nextRow; b += nextRow;           // go backwards if 'upsideDown'
                             }
@@ -564,7 +564,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.25  2005-12-08 16:01:35  meichel
+ * Revision 1.26  2006-07-10 10:59:26  joergr
+ * Fixed incorrect order of sample values in 32-bit DIB images.
+ *
+ * Revision 1.25  2005/12/08 16:01:35  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.24  2004/10/19 12:57:47  joergr
