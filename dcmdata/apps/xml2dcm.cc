@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 15:46:41 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-11 13:59:20 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,46 +250,43 @@ static OFCondition parseElement(DcmItem *dataset,
     OFCondition result = createNewElement(current, newElem);
     if (result.good())
     {
-        /* retrieve specific character set */
-        if (newElem->getTag() == DCM_SpecificCharacterSet)
+        /* retrieve specific character set (only on main dataset level) */
+        if ((EncodingHandler == NULL) && (dataset->ident() == EVR_dataset) &&
+            (newElem->getTag() == DCM_SpecificCharacterSet))
         {
-            if (EncodingHandler == NULL)
+            const char *encString = NULL;
+            xmlChar *elemVal = xmlNodeGetContent(current);
+            /* check for known character set */
+            if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 6")) == 0)
+                encString = "UTF-8";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 192")) == 0)
+                encString = "UTF-8";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 100")) == 0)
+                encString = "ISO-8859-1";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 101")) == 0)
+                encString = "ISO-8859-2";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 109")) == 0)
+                encString = "ISO-8859-3";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 110")) == 0)
+                encString = "ISO-8859-4";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 148")) == 0)
+                encString = "ISO-8859-9";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 144")) == 0)
+                encString = "ISO-8859-5";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 127")) == 0)
+                encString = "ISO-8859-6";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 126")) == 0)
+                encString = "ISO-8859-7";
+            else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
+                encString = "ISO-8859-8";
+            else if (xmlStrlen(elemVal) > 0)
+                CERR << "Warning: character set '" << elemVal << "' not supported" << endl;
+            if (encString != NULL)
             {
-                const char *encString = NULL;
-                xmlChar *elemVal = xmlNodeGetContent(current);
-                /* check for known character set */
-                if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 6")) == 0)
-                    encString = "UTF-8";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 192")) == 0)
-                    encString = "UTF-8";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 100")) == 0)
-                    encString = "ISO-8859-1";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 101")) == 0)
-                    encString = "ISO-8859-2";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 109")) == 0)
-                    encString = "ISO-8859-3";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 110")) == 0)
-                    encString = "ISO-8859-4";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 148")) == 0)
-                    encString = "ISO-8859-9";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 144")) == 0)
-                    encString = "ISO-8859-5";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 127")) == 0)
-                    encString = "ISO-8859-6";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 126")) == 0)
-                    encString = "ISO-8859-7";
-                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
-                    encString = "ISO-8859-8";
-                else if (xmlStrlen(elemVal) > 0)
-                    CERR << "Warning: character set '" << elemVal << "' not supported" << endl;
-                if (encString != NULL)
-                {
-                    /* find appropriate encoding handler */
-                    EncodingHandler = xmlFindCharEncodingHandler(encString);
-                }
-                xmlFree(elemVal);
-           } else
-                CERR << "Warning: encoding handler already set ... ignoring 'SpecificCharacterSet'" << endl;
+                /* find appropriate encoding handler */
+                EncodingHandler = xmlFindCharEncodingHandler(encString);
+            }
+            xmlFree(elemVal);
         }
         /* set the element value */
         result = putElementContent(current, newElem);
@@ -781,7 +778,7 @@ int main(int argc, char *argv[])
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+
     /* check for compatible libxml version */
     LIBXML_TEST_VERSION
     /* initialize the XML library (only required for MT-safety) */
@@ -878,7 +875,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.16  2005-12-16 15:46:41  meichel
+ * Revision 1.17  2006-07-11 13:59:20  joergr
+ * Fixed wrong warning message about multiple Specific Character Set attributes
+ * in DICOMDIR files.
+ *
+ * Revision 1.16  2005/12/16 15:46:41  meichel
  * Declared libxml2 callback functions as extern "C"
  *
  * Revision 1.15  2005/12/09 12:38:51  meichel
