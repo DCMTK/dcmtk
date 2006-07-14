@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-06-23 10:24:41 $
+ *  Update Date:      $Date: 2006-07-14 15:46:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,6 +169,7 @@ const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory(".");          // default: output directory equals "."
 static const char *opt_sortConcerningStudies = NULL;  // default: no sorting
+static OFBool      opt_sortOnPatientsName = OFFalse;  // default: no sorting by patient name
 OFString           lastStudyInstanceUID;
 OFString           subdirectoryPathAndName;
 OFList<OFString>   outputFileNameArray;
@@ -342,7 +343,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",      "allow implicit format conversions (default)");
-      cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read (not with -ss)");
+      cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read (not with -ss/-sp)");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",             "+F",      "write file format (default)");
       cmd.addOption("--write-dataset",          "-F",      "write data set without file meta information");
@@ -375,7 +376,9 @@ int main(int argc, char *argv[])
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
       cmd.addOption("--sort-conc-studies",      "-ss",  1, "[p]refix: string",
-                                                           "sort concerning studies into subdirectories\nthat start with prefix p" );
+                                                           "sort studies into subdirectories\nthat start with prefix p" );
+      cmd.addOption("--sort-on-patientsname",   "-sp",     "sort studies into subdirs by patient name" );
+
     cmd.addSubGroup("filename generation:");
       cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
       cmd.addOption("--unique-filenames",       "+uf",     "generate unique filenames");
@@ -386,10 +389,10 @@ int main(int argc, char *argv[])
   cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
     cmd.addOption(  "--exec-on-reception",      "-xcr", 1, "[c]ommand: string",
                                                            "execute command c after having received and\nprocessed one C-STORE-Request message" );
-    cmd.addOption(  "--exec-on-eostudy",        "-xcs", 1, "[c]ommand: string (only w/ -ss)",
+    cmd.addOption(  "--exec-on-eostudy",        "-xcs", 1, "[c]ommand: string (only with -ss or -sp)",
                                                            "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
     cmd.addOption(  "--rename-on-eostudy",      "-rns",    "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
-    cmd.addOption(  "--eostudy-timeout",        "-tos", 1, "[t]imeout: integer (only w/ -ss, -xcs or -rns)",
+    cmd.addOption(  "--eostudy-timeout",        "-tos", 1, "[t]imeout: integer (only with -ss, -sp, -xcs or -rns)",
                                                            "specifies a timeout of t seconds for\nend-of-study determination" );
 #ifdef _WIN32
     cmd.addOption(  "--exec-sync",              "-xs",     "execute command synchronously in foreground" );
@@ -767,6 +770,13 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(opt_sortConcerningStudies));
     }
 
+    if (cmd.findOption("--sort-on-patientsname"))
+    {
+      app.checkConflict("--sort-on-patientsname", "--bit-preserving", opt_bitPreserving);
+      app.checkConflict("--sort-on-patientsname", "--sort-conc-studies", opt_sortConcerningStudies != NULL);
+      opt_sortOnPatientsName = OFTrue;
+    }
+
     cmd.beginOptionBlock();
     if (cmd.findOption("--default-filenames")) opt_uniqueFilenames = OFFalse;
     if (cmd.findOption("--unique-filenames")) opt_uniqueFilenames = OFTrue;
@@ -778,31 +788,24 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--timenames"))
         app.checkConflict("--timenames", "--unique-filenames", opt_uniqueFilenames);
 
-    if (cmd.findOption("--sort-conc-studies"))
-    {
-      app.checkConflict("--sort-conc-studies", "--bit-preserving", opt_bitPreserving);
-      app.checkValue(cmd.getValue(opt_sortConcerningStudies));
-    }
-
-
     if (cmd.findOption("--exec-on-reception")) app.checkValue(cmd.getValue(opt_execOnReception));
 
     if (cmd.findOption("--exec-on-eostudy"))
     {
-      app.checkDependence("--exec-on-eostudy", "--sort-conc-studies", opt_sortConcerningStudies != NULL );
+      app.checkDependence("--exec-on-eostudy", "--sort-conc-studies or --sort-on-patientsname", opt_sortConcerningStudies || opt_sortOnPatientsName );
       app.checkValue(cmd.getValue(opt_execOnEndOfStudy));
     }
 
     if (cmd.findOption("--rename-on-eostudy"))
     {
-      app.checkDependence("--rename-on-eostudy", "--sort-conc-studies", opt_sortConcerningStudies != NULL );
+      app.checkDependence("--rename-on-eostudy", "--sort-conc-studies or --sort-on-patientsname", opt_sortConcerningStudies || opt_sortOnPatientsName );
       opt_renameOnEndOfStudy = OFTrue;
     }
 
     if (cmd.findOption("--eostudy-timeout"))
     {
-      if( opt_sortConcerningStudies == NULL && opt_execOnEndOfStudy == NULL && opt_renameOnEndOfStudy == OFFalse )
-        app.printError("--eostudy-timeout only in combination with --sort-conc-studies, --exec-on-eostudy or --rename-on-eostudy");
+      if( opt_sortConcerningStudies == NULL && opt_execOnEndOfStudy == NULL && opt_renameOnEndOfStudy == OFFalse && (!opt_sortOnPatientsName) )
+        app.printError("--eostudy-timeout only in combination with --sort-conc-studies, --sort-on-patientsname, --exec-on-eostudy or --rename-on-eostudy");
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
 
@@ -1663,6 +1666,31 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
   return cond;
 }
 
+// substitute non-ASCII characters with ASCII "equivalents"
+static void mapCharacterAndAppendToString(Uint8 c,
+                                          OFString &output)
+{
+    static const char *latin1_table[] =
+    {
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 0-15
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 16-31
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 32-47
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "_", "_", "_", "_", "_", "_", // Codes 48-63
+        "_", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", // Codes 64-79
+        "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "_", "_", "_", "_", "_", // Codes 80-95
+        "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", // Codes 96-111
+        "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "_", "_", "_", "_", "_", // Codes 112-127
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 128-143
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 144-159
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 160-175
+        "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", "_", // Codes 176-191
+        "A", "A", "A", "A", "Ae","A", "A", "C", "E", "E", "E", "E", "I", "I", "I", "I", // Codes 192-107
+        "D", "N", "O", "O", "O", "O", "Oe","_", "O", "U", "U", "U", "Ue","Y", "_", "ss",// Codes 108-123
+        "a", "a", "a", "a", "ae","a", "a", "c", "e", "e", "e", "e", "i", "i", "i", "i", // Codes 124-141
+        "d", "n", "o", "o", "o", "o", "oe","_", "o", "u", "u", "u", "ue","y", "_", "y"  // Codes 142-157
+    };
+    output += latin1_table[c];
+}
 
 struct StoreCallbackData
 {
@@ -1759,9 +1787,9 @@ storeSCPCallback(
     {
       OFString fileName;
 
-      // in case option --sort-conc-studies is set, we need to perform some particular
-      // steps to determine the actual name of the output file
-      if( opt_sortConcerningStudies != NULL )
+      // in case option --sort-conc-studies or --sort-on-patientsname is set, 
+      // we need to perform some particular steps to determine the actual name of the output file
+      if( opt_sortConcerningStudies || opt_sortOnPatientsName )
       {
         // determine the study instance UID in the (current) DICOM object that has just been received
         // note that if findAndGetString says the resulting study instance UID equals NULL, the study
@@ -1779,6 +1807,23 @@ storeSCPCallback(
           return;
         }
         if (tmpstr1) currentStudyInstanceUID = tmpstr1;
+
+        // if --sort-on-patientsname is active, we need to extract the 
+        // patients name (format: last_name^first_name)        
+        OFString currentPatientsName; // default if patient's name is empty
+        if (opt_sortOnPatientsName)
+        {
+            const char *tmpstr2 = NULL;
+            OFCondition ec2 = (*imageDataSet)->findAndGetString(DCM_PatientsName, tmpstr2, OFFalse );
+            OFString tmpName; 
+            if (tmpstr2) tmpName = tmpstr2;
+            if (tmpName.length() == 0) tmpName = "ANONYMOUS"; //default if patient name is missing or empty
+
+            /* substitute non-ASCII characters in patient name to ASCII "equivalent" */
+            const size_t length = tmpName.length();
+            for (size_t i = 0; i < length; i++)
+              mapCharacterAndAppendToString(tmpName[i], currentPatientsName);
+        }
 
         // if this is the first DICOM object that was received or if the study instance UID in the
         // current DICOM object does not equal the last object's study instance UID we need to create
@@ -1802,12 +1847,18 @@ storeSCPCallback(
           // get the current time (needed for subdirectory name)
           OFDateTime dateTime;
           dateTime.setCurrentDateTime();
-          // create a name for the new subdirectory. pattern: "[opt_sortConcerningStudies]_[YYYYMMDD]_[HHMMSSMMM]" (use current datetime)
+
+          // create a name for the new subdirectory. pattern: "[prefix]_[YYYYMMDD]_[HHMMSSMMM]"
+          // where prefix is either opt_sortConcerningStudies or the patient name and date/time is the current time
           char buf[32];
           sprintf(buf, "_%04u%02u%02u_%02u%02u%02u%03u",
             dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
             dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
-          OFString subdirectoryName = opt_sortConcerningStudies;
+
+          OFString subdirectoryName;
+          if (opt_sortOnPatientsName) 
+              subdirectoryName = currentPatientsName;
+              else subdirectoryName = opt_sortConcerningStudies;
           subdirectoryName += buf;
 
           // create subdirectoryPathAndName (string with full path to new subdirectory)
@@ -2550,7 +2601,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.92  2006-06-23 10:24:41  meichel
+** Revision 1.93  2006-07-14 15:46:36  meichel
+** Added new command line option --sort-on-patientsname that sorts images into
+**   study folders named by the patient's name followed by a timestamp.
+**
+** Revision 1.92  2006/06/23 10:24:41  meichel
 ** All Store SCPs in DCMTK now store the source application entity title in the
 **   metaheader, both in normal and in bit-preserving mode.
 **

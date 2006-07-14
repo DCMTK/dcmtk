@@ -157,7 +157,7 @@ bit preserving mode:
           allow implicit format conversions (default)
 
   +B    --bit-preserving
-          write data exactly as read (not with -ss)
+          write data exactly as read (not with -ss/-sp)
 
 output file format:
 
@@ -233,6 +233,9 @@ sorting into subdirectories (not with --bit-preserving):
           sort concerning studies into subdirectories that
           start with prefix p
 
+  -sp   --sort-on-patientsname  
+          sort studies into subdirs by patient name
+
 filename generation:
 
   -uf   --default-filenames
@@ -255,18 +258,18 @@ filename generation:
           execute command c after having received and
           processed one C-STORE-Request message
 
-  -xcs  --exec-on-eostudy  [c]ommand: string (only w/ -ss)
+  -xcs  --exec-on-eostudy  [c]ommand: string (only with -ss or -sp)
           execute command c after having received and processed
           all C-STORE-Request messages that belong to one study
 
   -rns  --rename-on-eostudy
-          (only w/ -ss) having received and processed
+          (only with -ss or -sp) having received and processed
           all C-STORE-Request messages that belong to one study,
           rename output files according to a certain pattern
 
   -tos  --eostudy-timeout  [t]imeout: integer
           specifies a timeout of t seconds for end-of-study
-          determination (only w/ -ss, -xcs or -rns)
+          determination (only with -ss, -sp, -xcs or -rns)
 
   -xs   --exec-sync
           execute command synchronously in foreground.
