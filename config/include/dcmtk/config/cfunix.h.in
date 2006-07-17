@@ -32,6 +32,9 @@
 /* Define the default data dictionary path for the dcmdata library package */
 #undef DCM_DICT_DEFAULT_PATH
 
+/* Define the default directory where configuration files reside */
+#undef DEFAULT_CONFIGURATION_DIR
+
 /* Define the environment variable path separator */
 #ifndef ENVIRONMENT_PATH_SEPARATOR
 #define ENVIRONMENT_PATH_SEPARATOR ':'
@@ -727,25 +730,25 @@ typedef unsigned short ushort;
 /* Define if signal handlers need ellipse (...) parameters */
 #undef SIGNAL_HANDLER_WITH_ELLIPSE
 
-/* The size of a `char', as computed by sizeof. */
+/* The size of `char', as computed by sizeof. */
 #undef SIZEOF_CHAR
 
-/* The size of a `double', as computed by sizeof. */
+/* The size of `double', as computed by sizeof. */
 #undef SIZEOF_DOUBLE
 
-/* The size of a `float', as computed by sizeof. */
+/* The size of `float', as computed by sizeof. */
 #undef SIZEOF_FLOAT
 
-/* The size of a `int', as computed by sizeof. */
+/* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
 
-/* The size of a `long', as computed by sizeof. */
+/* The size of `long', as computed by sizeof. */
 #undef SIZEOF_LONG
 
-/* The size of a `short', as computed by sizeof. */
+/* The size of `short', as computed by sizeof. */
 #undef SIZEOF_SHORT
 
-/* The size of a `void *', as computed by sizeof. */
+/* The size of `void *', as computed by sizeof. */
 #undef SIZEOF_VOID_P
 
 /* Define to 1 if you have the ANSI C header files. */

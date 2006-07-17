@@ -54,6 +54,9 @@
 /* Define the default data dictionary path for the dcmdata library package */
 #define DCM_DICT_DEFAULT_PATH "dicom.dic;\\dicom.dic;" DCMTK_PREFIX "\\lib\\dicom.dic"
 
+/* Define the default directory where configuration files reside */
+#define DEFAULT_CONFIGURATION_DIR ""
+
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 
