@@ -8,14 +8,17 @@
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
 
-bindir = $(DESTDIR)@bindir@
-etcdir = $(DESTDIR)@sysconfdir@
-datadir = $(DESTDIR)@datadir@/data
-docdir = $(DESTDIR)@datadir@/doc
-mandir = $(DESTDIR)@mandir@
-libdir = $(DESTDIR)@libdir@
-includedir = $(DESTDIR)@includedir@
+bindir = @bindir@
+etcdir = @sysconfdir@
+datadir = @datadir@
+docdir = @docdir@
+mandir = @mandir@
+man1dir = @mandir@/man1
+htmldir = @htmldir@
+libdir = @libdir@
+includedir = @includedir@
 
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -24,6 +27,8 @@ INSTALL_PROGRAM = @INSTALL_PROGRAM@
 PACKAGE_NAME = @PACKAGE_NAME@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
+PACKAGE_STRING = @PACKAGE_STRING@
+PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 
 #
 # Definition of dependencies file
