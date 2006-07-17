@@ -17,9 +17,9 @@ files = storescp.cfg storescu.cfg
 all:
 
 install:
-	$(configdir)/mkinstalldirs $(etcdir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(etcdir)
 	for file in $(files); do \
-		$(INSTALL_DATA) $$file $(etcdir) ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(etcdir) ;\
 	done
 
 clean:

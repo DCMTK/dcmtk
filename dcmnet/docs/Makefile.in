@@ -18,9 +18,9 @@ files = asconfig.txt testing.txt
 all:
 
 install:
-	$(configdir)/mkinstalldirs $(docdir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
 	for file in $(files); do \
-		$(INSTALL_DATA) $$file $(docdir) ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(docdir) ;\
 	done
 
 clean:
