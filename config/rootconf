@@ -63,9 +63,9 @@ install-include: $makeinstallinclude
 install-support: $makeinstallsupport
 
 dcmtk-install-doc:
-	\$(configdir)/mkinstalldirs \$(docdir)
+	\$(configdir)/mkinstalldirs \$(DESTDIR)\$(docdir)
 	for file in ANNOUNCE.* CHANGES.* COPYRIGHT FAQ HISTORY; do \\
-		\$(INSTALL_DATA) \$\$file \$(docdir) ;\\
+		\$(INSTALL_DATA) \$\$file \$(DESTDIR)\$(docdir) ;\\
 	done
 
 install-man:
@@ -151,12 +151,12 @@ else
 	exit 1
 fi
 if test "x--help" = "x\$*"; then
-  config/configure --help
+	config/configure --help
 else
-  for module in \$modules ; do
-	echo "Running configure for module \$module."
-	(cd \$module && ./configure \$* )
-  done
+	for module in \$modules ; do
+        echo "Running configure for module \$module."
+	    (cd \$module && ./configure \$* )
+	done
 fi
 EOF
 chmod 755 $output

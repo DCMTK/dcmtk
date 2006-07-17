@@ -28,9 +28,9 @@ install-include:  config-install-include ofstd-install-include dcmdata-install-i
 install-support:  config-install-support ofstd-install-support dcmdata-install-support dcmtls-install-support dcmnet-install-support dcmqrdb-install-support dcmwlm-install-support dcmimgle-install-support dcmsr-install-support dcmsign-install-support dcmpstat-install-support dcmimage-install-support dcmjpeg-install-support
 
 dcmtk-install-doc:
-	$(configdir)/mkinstalldirs $(docdir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(docdir)
 	for file in ANNOUNCE.* CHANGES.* COPYRIGHT FAQ HISTORY; do \
-		$(INSTALL_DATA) $$file $(docdir) ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(docdir) ;\
 	done
 
 install-man:
