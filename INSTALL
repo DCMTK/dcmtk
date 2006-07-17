@@ -7,10 +7,10 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 PRE-REQUISITES
 ==============
 
-The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We 
-recommend using the GNU C++ compiler in versions higher than 2.95 (most of the 
-development was done using GNU C++ 3.2 on Linux 2.4).  The software is also 
-known to compile using the SUNPro C++ compiler and the Microsoft Visual C++ 
+The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
+recommend using the GNU C++ compiler in versions higher than 2.95 (most of the
+development was done using GNU C++ 3.2 on Linux 2.4).  The software is also
+known to compile using the SUNPro C++ compiler and the Microsoft Visual C++
 compiler.
 
 Compatibility with other C++ compilers is unknown, however, we have tried to
@@ -49,7 +49,7 @@ operating system / hardware / compiler combinations using the instructions
 given below:
 
     FreeBSD 4.11   / Intel x86    / GNU gcc 2.95.4
-    FreeBSD 6.0    / Intel x86    / GNU gcc 3.4.4 
+    FreeBSD 6.0    / Intel x86    / GNU gcc 3.4.4
     HP-UX 10.20    / HP PA-RISC   / GNU gcc 2.95.3
     IRIX 5.3       / SGI Indy     / GNU gcc 2.95.2   (see note *2)
     Linux 2.4.20   / Intel x86    / GNU gcc 2.95.4, 3.2.3, 3.3.6, 3.4.5 and 4.0.3 (Debian)
@@ -121,11 +121,11 @@ Platform Notes
      available.
 (*6) Might require -O0 in order to compile "dcmsr/libsrc/dsrdoctr.cc".
 (*7) The libz.so included in QNX 6.2.1 is missing the zlibVersion()
-     function. This will cause the DCMTK compile to fail if configured with 
-     --with-zlib. It has already been corrected in QNX's internal cvs 
-     repository. Earlier QNX versions (6.2.0) and future versions (6.3.x) should 
-     work fine. As a temporary measure it is possible to link against 
-     /usr/lib/libz.so.1 which does include that function, or to disable zlib 
+     function. This will cause the DCMTK compile to fail if configured with
+     --with-zlib. It has already been corrected in QNX's internal cvs
+     repository. Earlier QNX versions (6.2.0) and future versions (6.3.x) should
+     work fine. As a temporary measure it is possible to link against
+     /usr/lib/libz.so.1 which does include that function, or to disable zlib
      support in DCMTK by calling configure --without-zlib.
 
 Please note: Due to resource limitations it is not practical for us to ensure
@@ -172,7 +172,7 @@ version of the zlib library and include files must be available during
 compilation of DCMTK.  By default, DCMTK checks whether zlib is installed
 in the standard path and enables support automatically if present.
 
-On Windows platforms, a compiled version of the zlib libraries and include files 
+On Windows platforms, a compiled version of the zlib libraries and include files
 must be available during compilation of DCMTK. See discussion on CMake below.
 
 
@@ -190,8 +190,8 @@ of DCMTK, and the libtiff support must be switched on explicitly.  By default,
 DCMTK checks whether libtiff is installed in the standard path and enables
 support automatically if present.
 
-On Windows platforms, a compiled version of the libtiff libraries and include 
-files must be available during compilation of DCMTK. See discussion on CMake 
+On Windows platforms, a compiled version of the libtiff libraries and include
+files must be available during compilation of DCMTK. See discussion on CMake
 below.
 
 
@@ -210,8 +210,8 @@ DCMTK checks whether libpng is installed in the standard path and enables
 support automatically if present.  It should be noted that libpng requires
 zlib.
 
-On Windows platforms, a compiled version of the libpng libraries and include 
-files must be available during compilation of DCMTK. See discussion on CMake 
+On Windows platforms, a compiled version of the libpng libraries and include
+files must be available during compilation of DCMTK. See discussion on CMake
 below.
 
 
@@ -276,11 +276,11 @@ Step 1:
 
 Step 1 executes the configure scripts in each subdirectory.  First, the system
 capabilities are examined and then Makefiles are generated.  By default,
-executables and libraries will be installed (in Step 3) in the directory
-"/usr/local/dicom" in the bin and lib subdirectories.  If you wish to use
-another install prefix you can use the --prefix=<path> flag to configure.
-E.g., if you wish to install underneath your home directory in "~/dicom/bin"
-and "~/dicom/lib" then you should start configure as:
+executables and other files will be installed (in Step 3) in the directory
+"/usr/local" in the corresponding subdirectories.  If you wish to use another
+install prefix you can use the --prefix=<path> flag to configure. E.g., if you
+wish to install underneath your home directory in "~/dicom" then you should
+start configure as:
 
     ./configure --prefix=$HOME/dicom
 
@@ -384,17 +384,17 @@ See also the FAQ at http://forum.dcmtk.org/faq for more hints.
 BUILDING (Win32)
 ================
 
-Starting with DCMTK 3.5.4, no project files for Visual Studio are provided 
+Starting with DCMTK 3.5.4, no project files for Visual Studio are provided
 anymore. Project files for all supported compilers can be generated with CMake.
 
-CMake is a cross-platform, open-source make system which can be used to control 
-the software compilation process using simple configuration files.  CMake can be 
-obtained free of charge from http://www.cmake.org/.  For configuring the support 
-of external libraries in DCMTK on Windows platforms, the toolkit contains 
-corresponding "CMakeLists.txt" files in all necessary directories.  In detail, 
-these "CMakeLists.txt" files will serve as an input to CMake which will generate 
-new ".dsp" and ".dsw" files (or ".sln" for Visual C++ .NET 2003/2005) for all of 
-DCMTK's projects from these files, depending on a configuration which can be 
+CMake is a cross-platform, open-source make system which can be used to control
+the software compilation process using simple configuration files.  CMake can be
+obtained free of charge from http://www.cmake.org/.  For configuring the support
+of external libraries in DCMTK on Windows platforms, the toolkit contains
+corresponding "CMakeLists.txt" files in all necessary directories.  In detail,
+these "CMakeLists.txt" files will serve as an input to CMake which will generate
+new ".dsp" and ".dsw" files (or ".sln" for Visual C++ .NET 2003/2005) for all of
+DCMTK's projects from these files, depending on a configuration which can be
 adjusted manually by the user.
 
 In order to be able to use CMake for configuration purposes in DCMTK, perform
@@ -402,8 +402,7 @@ the following steps to install CMake on your machine:
 
 1. Go to http://www.cmake.org/HTML/Download.html to download the latest release
    version of CMake for Windows.  With regard to a certain CMake version, note
-   that CMake 2.x or later can be used in conjunction with DCMTK. If you want to 
-   generate project files for Visual Studio 2005, you need CMake 2.2.x or newer.
+   that CMake 2.4.2 or later can be used in conjunction with DCMTK.
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
@@ -509,8 +508,8 @@ currently not actively supported.  However, they may work.
 
 Known limitations of DCMTK on the Windows platform.
 
-1. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every 
-   association must be handled completely before a new association is 
+1. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every
+   association must be handled completely before a new association is
    possible.
 2. On Windows 95, dcmqrscp always uses exclusive file locking (the LockFileEx
    API call is available on Windows NT only).  This is no problem if only one
@@ -520,7 +519,7 @@ Known limitations of DCMTK on the Windows platform.
    can only work if a connection to a provider exists (since the internet
    addresses and names are given dynamically).
 4. Visual C++ contains two different implementations of iostreams which should
-   never be mixed within one application because this may cause 
+   never be mixed within one application because this may cause
    application errors that are hard to find.  The old, now deprecated
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
@@ -555,7 +554,7 @@ actively supported any more.  However, it may still work.
 
 On Unix platforms, man pages for all command line tools are installed during
 the "make install" step.  In order to use them, just add the directory (e.g.
-"/usr/local/dicom/man") to the MANPATH environment variable and try
+"/usr/local/share/man") to the MANPATH environment variable and try
 "man dcmdump" to check whether it works.
 
 In order to generate plain text files from the man pages call "make text" in
@@ -579,4 +578,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens, Michael Onken
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2006-01-27 (Riesmeier).
+Last revised: 2006-07-17 (Riesmeier).
