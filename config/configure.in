@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(DCMTK, 3.5.4a, [dicom-bugs@offis.de], [dcmtk-3.5.4a])
-AC_PREREQ(2.50)
+AC_INIT(dcmtk, 3.5.4, [dicom-bugs@offis.de], [dcmtk-3.5.4])
+AC_PREREQ(2.60)
 AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/dcmtk/config/cfunix.h)
 
@@ -33,7 +33,22 @@ AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}", [Define the DCMTK defau
 else
 AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}", [Define the DCMTK default path])
 fi
-AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, DCMTK_PREFIX "/lib/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
+
+DATA_DIR="${datadir}"
+DATA_DIR=`(
+	test "$prefix" = NONE && prefix=${ac_default_prefix}
+	test "$exec_prefix" = NONE && exec_prefix=${prefix}
+	eval eval echo "$DATA_DIR"
+)`
+AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
+
+CONF_DIR="${sysconfdir}"
+CONF_DIR=`(
+	test "$prefix" = NONE && prefix=${ac_default_prefix}
+	test "$exec_prefix" = NONE && exec_prefix=${prefix}
+	eval echo "$CONF_DIR"
+)`
+AC_DEFINE_UNQUOTED(DEFAULT_CONFIGURATION_DIR, "${CONF_DIR}/", [Define the default directory where configuration files reside])
 
 AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator */
 #define PATH_SEPARATOR '/'])
@@ -1094,3 +1109,4 @@ AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 
 AC_OUTPUT(Makefile.def Makefile)
 
+dnl disabled: AC_ARG_PROGRAM
