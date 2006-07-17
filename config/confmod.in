@@ -33,6 +33,3 @@ AC_SUBST(configdir)
 files=`find . -name "*.in" -print | grep -v "/config" | sed -e 's/.in$/ /g'`
 
 AC_OUTPUT($files)
-
-
-
