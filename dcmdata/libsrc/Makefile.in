@@ -52,18 +52,18 @@ all: $(library)
 install: install-lib install-support
 
 install-lib: $(library)
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) $(library) $(libdir)/$(library)
-	$(RANLIB) $(libdir)/$(library)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
+	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
 
 install-support: $(DICTFILE) $(PRIVDICTFILE)
-	$(configdir)/mkinstalldirs $(libdir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
 	if [ "x$(INSTALL_PRIVATE_DICTIONARY)" = "xYES" ] ; then \
 		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ;\
-		$(INSTALL_DATA) dicom.tmp $(libdir)/$(DICTFILE) ;\
+		$(INSTALL_DATA) dicom.tmp $(DESTDIR)$(datadir)/$(DICTFILE) ;\
 	else \
-		$(INSTALL_DATA) $(DICTFILE) $(libdir)/$(DICTFILE) ;\
-		$(INSTALL_DATA) $(PRIVDICTFILE) $(libdir)/$(PRIVDICTFILE) ;\
+		$(INSTALL_DATA) $(DICTFILE) $(DESTDIR)$(datadir)/$(DICTFILE) ;\
+		$(INSTALL_DATA) $(PRIVDICTFILE) $(DESTDIR)$(datadir)/$(PRIVDICTFILE) ;\
 	fi
 
 
