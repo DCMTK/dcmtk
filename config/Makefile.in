@@ -12,11 +12,11 @@ include @common_makefile@
 
 all:
 
-install:
+install: install-doc
 
 install-bin:
 
-install-doc:
+install-doc: docs-install
 
 install-etc:
 
@@ -29,12 +29,19 @@ install-support:
 
 libsrc-all:
 
+
 include-install:
-	./mkinstalldirs $(includedir)
-	./mkinstalldirs $(includedir)/dcmtk
-	./mkinstalldirs $(includedir)/dcmtk/config
-	$(INSTALL_DATA) include/dcmtk/config/osconfig.h $(includedir)/dcmtk/config
-	$(INSTALL_DATA) include/dcmtk/config/cfunix.h $(includedir)/dcmtk/config
+	./mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/config
+	$(INSTALL_DATA) include/dcmtk/config/osconfig.h $(DESTDIR)$(includedir)/dcmtk/config
+	$(INSTALL_DATA) include/dcmtk/config/cfunix.h $(DESTDIR)$(includedir)/dcmtk/config
+
+docs-install:
+	./mkinstalldirs $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) docs/config.txt $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) docs/envvars.txt $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) docs/modules.txt $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) docs/dirstruc.txt $(DESTDIR)$(docdir)
+	$(INSTALL_DATA) docs/macros.txt $(DESTDIR)$(docdir)
 
 
 clean:
