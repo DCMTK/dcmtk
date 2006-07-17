@@ -154,8 +154,8 @@ if test "x--help" = "x\$*"; then
 	config/configure --help
 else
 	for module in \$modules ; do
-        echo "Running configure for module \$module."
-	    (cd \$module && ./configure \$* )
+		echo "Running configure for module \$module."
+		(cd \$module && ./configure \$* )
 	done
 fi
 EOF

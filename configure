@@ -17,10 +17,10 @@ else
 	exit 1
 fi
 if test "x--help" = "x$*"; then
-  config/configure --help
+	config/configure --help
 else
-  for module in $modules ; do
-	echo "Running configure for module $module."
-	(cd $module && ./configure $* )
-  done
+	for module in $modules ; do
+		echo "Running configure for module $module."
+		(cd $module && ./configure $* )
+	done
 fi
