@@ -14,8 +14,7 @@ ADD_EXECUTABLE(dcmodify dcmodify mdfconen mdfdsman)
 FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmftest dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm)
   INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
 ENDFOREACH(PROGRAM)
-INSTALL_FILES(${INSTALL_DATDIR} FILES dumppat.txt)
-INSTALL_FILES(${INSTALL_LIBDIR} FILES dcm2xml.dtd)
+INSTALL_FILES(${INSTALL_DATDIR} FILES dumppat.txt dcm2xml.dtd)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2dcm xml2dcm pdf2dcm)

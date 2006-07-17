@@ -248,7 +248,7 @@ work.
 \subsection insertions_subsection insertions
 
 If you wish to insert a private tag (not a reservation with gggg,00xx), be sure,
-that you've listed it in your dictionary (see <em>share/docs/datadict.txt</em>
+that you've listed it in your dictionary (see <em><docdir>/datadict.txt</em>
 for details). If it's not listed, \b dcmodify will insert it with VR=UN and
 empty value. Please note, that the usage of option '-u' will change the VR from
 UN to OB when saving.
@@ -388,14 +388,14 @@ whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
 file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>share/data/dumppat.txt</em>).
+lines (an example is provided in file <em><datadir>/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmodify utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
+<em><datadir>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
