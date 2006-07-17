@@ -7,10 +7,10 @@ IF(NOT WIN32)
 ENDIF(NOT WIN32)
 
 # check required version of CMake
-CMAKE_MINIMUM_REQUIRED(VERSION 2.0)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.0.6)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.0.6 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.0.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.2)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.4.2 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.2)
 
 # default build type
 SET(CMAKE_BUILD_TYPE RELEASE)
@@ -23,7 +23,8 @@ MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 # define user configurable options and paths to external libraries which might be used
 
 # installation path prefix
-SET(INSTALL_PREFIX "${dcmtk_SOURCE_DIR}/../dcmtk-3.5.4-win32-i386/" CACHE PATH "Installation path prefix.")
+GET_FILENAME_COMPONENT(INSTALL_DIR "${dcmtk_SOURCE_DIR}/../dcmtk-3.5.4-win32-i386" ABSOLUTE)
+SET(INSTALL_PREFIX "${INSTALL_DIR}" CACHE PATH "Installation path prefix.")
 
 # shared libraries (option not yet available)
 #OPTION(WITH_SHARED_LIBS "Build with shared libraries." OFF)
@@ -35,19 +36,24 @@ FIND_PROGRAM(DOXYGEN_EXECUTABLE "doxygen")
 
 # libxml support
 OPTION(WITH_LIBXML "Build with libxml support." OFF)
-FIND_PATH(WITH_LIBXMLINC "include/libxml/parser.h" "${dcmtk_SOURCE_DIR}/../libxml2-2.6.26")
+GET_FILENAME_COMPONENT(LIBXML_DIR "${dcmtk_SOURCE_DIR}/../libxml2-2.6.26" ABSOLUTE)
+FIND_PATH(WITH_LIBXMLINC "include/libxml/parser.h" "${LIBXML_DIR}" NO_DEFAULT_PATH)
 # libpng support
 OPTION(WITH_LIBPNG "Build with libpng support." ON)
-FIND_PATH(WITH_LIBPNGINC "include/png.h" "${dcmtk_SOURCE_DIR}/../libpng-1.2.8")
+GET_FILENAME_COMPONENT(LIBPNG_DIR "${dcmtk_SOURCE_DIR}/../libpng-1.2.8" ABSOLUTE)
+FIND_PATH(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
 # libtiff support
 OPTION(WITH_LIBTIFF "Build with libtiff support." ON)
-FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${dcmtk_SOURCE_DIR}/../tiff-3.7.4")
+GET_FILENAME_COMPONENT(LIBTIFF_DIR "${dcmtk_SOURCE_DIR}/../tiff-3.7.4" ABSOLUTE)
+FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
 # openssl support
 OPTION(WITH_OPENSSL "Build with openssl support." OFF)
-FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${dcmtk_SOURCE_DIR}/../openssl-0.9.8a")
+GET_FILENAME_COMPONENT(OPENSSL_DIR "${dcmtk_SOURCE_DIR}/../openssl-0.9.8a" ABSOLUTE)
+FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
 # zlib support
 OPTION(WITH_ZLIB "Build with zlib support." ON)
-FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${dcmtk_SOURCE_DIR}/../zlib-1.2.3")
+GET_FILENAME_COMPONENT(ZLIB_DIR "${dcmtk_SOURCE_DIR}/../zlib-1.2.3" ABSOLUTE)
+FIND_PATH(WITH_ZLIBINC "include/zlib.h" "${ZLIB_DIR}" NO_DEFAULT_PATH)
 
 # set project wide flags for compiler and linker
 
@@ -156,19 +162,20 @@ ENDIF(WITH_ZLIB AND WITH_ZLIBINC)
 
 # specify installation prefix
 SET(CMAKE_INSTALL_PREFIX ${INSTALL_PREFIX})
+MARK_AS_ADVANCED(FORCE CMAKE_INSTALL_PREFIX)
 
 # specify installation sub-directories
 SET(INSTALL_BINDIR "/bin")
-SET(INSTALL_ETCDIR "/etc")
-SET(INSTALL_DATDIR "/share/data")
-SET(INSTALL_DOCDIR "/share/doc")
-SET(INSTALL_HTMDIR "/share/doc/html")
+SET(INSTALL_ETCDIR "/etc/dcmtk")
+SET(INSTALL_DATDIR "/share/dcmtk")
+SET(INSTALL_DOCDIR "/share/doc/dcmtk")
+SET(INSTALL_HTMDIR "/share/doc/dcmtk/html")
 SET(INSTALL_INCDIR "/include")
 SET(INSTALL_LIBDIR "/lib")
 SET(INSTALL_MANDIR "/man")
 
 # declare installation files
-INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY)
+INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY CHANGES.354 ANNOUNCE.354)
 
 # declare include directories which hold for all subdirectories and subsubdirectories
 INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
