@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-07-14 15:46:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-17 10:51:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,10 +72,10 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdatime.h"
-#include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
 #include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
-#include "dcmtk/dcmdata/dcdeftag.h"      /* for DCM_StudyInstanceUID */
-#include "dcmtk/dcmdata/dcostrmz.h"      /* for dcmZlibCompressionLevel */
+#include "dcmtk/dcmdata/dcdeftag.h"     /* for DCM_StudyInstanceUID */
+#include "dcmtk/dcmdata/dcostrmz.h"     /* for dcmZlibCompressionLevel */
 #include "dcmtk/dcmnet/dcasccfg.h"      /* for class DcmAssociationConfiguration */
 #include "dcmtk/dcmnet/dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 
@@ -1269,21 +1269,21 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   {
     case EXS_LittleEndianImplicit:
       /* we only support Little Endian Implicit */
-      transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+      transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
       numTransferSyntaxes = 1;
       break;
     case EXS_LittleEndianExplicit:
       /* we prefer Little Endian Explicit */
       transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
       transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+      transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
       numTransferSyntaxes = 3;
       break;
     case EXS_BigEndianExplicit:
       /* we prefer Big Endian Explicit */
       transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
       transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+      transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
       numTransferSyntaxes = 3;
       break;
     case EXS_JPEGProcess14SV1TransferSyntax:
@@ -1787,7 +1787,7 @@ storeSCPCallback(
     {
       OFString fileName;
 
-      // in case option --sort-conc-studies or --sort-on-patientsname is set, 
+      // in case option --sort-conc-studies or --sort-on-patientsname is set,
       // we need to perform some particular steps to determine the actual name of the output file
       if( opt_sortConcerningStudies || opt_sortOnPatientsName )
       {
@@ -1808,14 +1808,14 @@ storeSCPCallback(
         }
         if (tmpstr1) currentStudyInstanceUID = tmpstr1;
 
-        // if --sort-on-patientsname is active, we need to extract the 
-        // patients name (format: last_name^first_name)        
+        // if --sort-on-patientsname is active, we need to extract the
+        // patients name (format: last_name^first_name)
         OFString currentPatientsName; // default if patient's name is empty
         if (opt_sortOnPatientsName)
         {
             const char *tmpstr2 = NULL;
             OFCondition ec2 = (*imageDataSet)->findAndGetString(DCM_PatientsName, tmpstr2, OFFalse );
-            OFString tmpName; 
+            OFString tmpName;
             if (tmpstr2) tmpName = tmpstr2;
             if (tmpName.length() == 0) tmpName = "ANONYMOUS"; //default if patient name is missing or empty
 
@@ -1856,7 +1856,7 @@ storeSCPCallback(
             dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
 
           OFString subdirectoryName;
-          if (opt_sortOnPatientsName) 
+          if (opt_sortOnPatientsName)
               subdirectoryName = currentPatientsName;
               else subdirectoryName = opt_sortConcerningStudies;
           subdirectoryName += buf;
@@ -2601,7 +2601,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.93  2006-07-14 15:46:36  meichel
+** Revision 1.94  2006-07-17 10:51:56  joergr
+** Fixed layout and formatting issues.
+**
+** Revision 1.93  2006/07/14 15:46:36  meichel
 ** Added new command line option --sort-on-patientsname that sorts images into
 **   study folders named by the patient's name followed by a timestamp.
 **
