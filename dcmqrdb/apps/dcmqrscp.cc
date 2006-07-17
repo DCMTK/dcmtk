@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-03 10:15:45 $
+ *  Update Date:      $Date: 2006-07-17 11:38:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #define APPLICATIONTITLE "DCMQRSCP"
 
-const char *opt_configFileName = "dcmqrscp.cfg";
+const char *opt_configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
 OFBool      opt_checkFindIdentifier = OFFalse;
 OFBool      opt_checkMoveIdentifier = OFFalse;
 OFCmdUnsignedInt opt_port = 0;
@@ -122,7 +122,7 @@ void errmsg(const char* msg, ...)
 }
 
 #define SHORTCOL 4
-#define LONGCOL 21
+#define LONGCOL 22
 
 int
 main(int argc, char *argv[])
@@ -164,25 +164,33 @@ main(int argc, char *argv[])
     cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
     cmd.addOption("--very-verbose",             "-vv",       "print more processing details");
     cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
-    OFString opt5 = "[f]ilename: string (default: ";
-    opt5 += opt_configFileName;
-    opt5 += ")";
-    cmd.addOption("--config",                   "-c",     1, opt5.c_str(), "use specific configuration file");
+    if (strlen(opt_configFileName) > 16)
+    {
+        OFString opt5 = "use specific configuration file\n(default: ";
+        opt5 += opt_configFileName;
+        opt5 += ")";
+        cmd.addOption("--config",               "-c",     1, "[f]ilename: string", opt5.c_str());
+    } else {
+        OFString opt5 = "[f]ilename: string (default: ";
+        opt5 += opt_configFileName;
+        opt5 += ")";
+        cmd.addOption("--config",               "-c",     1, opt5.c_str(), "use specific configuration file");
+    }
 #ifdef HAVE_FORK
     cmd.addOption("--single-process",           "-s",        "single process mode");
 #endif
 
   cmd.addGroup("database options:");
     cmd.addSubGroup("association negotiation:");
-      cmd.addOption("--require-find",                        "reject all MOVE/GET presentation contexts for\nwhich no corresponding FIND context is proposed");
-      cmd.addOption("--no-parallel-store",                   "reject multiple simultaneous STORE presentation\ncontexts for one application entity title");
+      cmd.addOption("--require-find",                        "reject all MOVE/GET presentation contexts for\nwhich no correspond. FIND context is proposed");
+      cmd.addOption("--no-parallel-store",                   "reject multiple simultaneous STORE presentat.\ncontexts for one application entity title");
       cmd.addOption("--disable-get",                         "disable C-GET support");
-      cmd.addOption("--allow-shutdown",                      "allow external shutdown via a private SOP class");
+      cmd.addOption("--allow-shutdown",                      "allow external shutdown via private SOP class");
     cmd.addSubGroup("checking identifier validity:");
       cmd.addOption("--check-find",             "-XF",       "check C-FIND identifier validity");
-      cmd.addOption("--no-check-find",                       "do not check C-FIND identif. validity (default)");
+      cmd.addOption("--no-check-find",                       "do not check C-FIND identifier validity (def.)");
       cmd.addOption("--check-move",             "-XM",       "check C-MOVE identifier validity");
-      cmd.addOption("--no-check-move",                       "do not check C-MOVE identif. validity (default)");
+      cmd.addOption("--no-check-move",                       "do not check C-MOVE identifier validity (def.)");
     cmd.addSubGroup("restriction of move targets:");
       cmd.addOption("--move-unrestricted",                   "do not restrict move destination (default)");
       cmd.addOption("--move-aetitle",           "-ZA",       "restrict move dest. to requesting AE title");
@@ -240,10 +248,6 @@ main(int argc, char *argv[])
       cmd.addOption("--timeout",                "-to",    1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       cmd.addOption("--acse-timeout",           "-ta",    1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",          "-td",    1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-      OFString opt3 = "set max receive pdu to n bytes (default: ";
-      sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
-      opt3 += tempstr;
-      opt3 += ")";
       OFString opt4 = "[n]umber of bytes: integer [";
       sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
@@ -251,7 +255,7 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-pdu",                "-pdu",   1, opt4.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)");
       cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--refuse",                              "refuse association");
       cmd.addOption("--reject",                              "reject association if no implement. class UID");
@@ -671,7 +675,13 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.8  2006-02-03 10:15:45  joergr
+ * Revision 1.9  2006-07-17 11:38:53  joergr
+ * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
+ * in the configuration directory (e.g. "/usr/local/etc") is used.
+ * Corrected documentation of option "--max-pdu" (by default, the value from the
+ * configuration file is used).
+ *
+ * Revision 1.8  2006/02/03 10:15:45  joergr
  * Fixed inconsistent source code layout.
  *
  * Revision 1.7  2005/12/16 12:39:13  joergr
