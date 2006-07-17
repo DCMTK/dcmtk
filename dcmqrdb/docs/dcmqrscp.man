@@ -51,15 +51,17 @@ port  tcp/ip port number to listen on (default: in config file)
   -d    --debug
           debug mode, print debug information
 
-  -c    --config  [f]ilename: string (default: dcmqrscp.cfg)
+  -c    --config  [f]ilename: string
           use specific configuration file
+          (default: /usr/local/etc/dcmqrscp.cfg)
 
   # This option allows a specific configuration file to be
-  # specified.  By default, the configuration file in the current
-  # working directory with the name "dcmqrscp.cfg" will be used
-  # (i.e. the file ./dcmqrscp.cfg).  It is an error if a valid
+  # specified.  By default, the configuration file in the
+  # system configuration directory ("etc" on Unix systems and
+  # current working directory on Windows systems) with the name
+  # "dcmqrscp.cfg" will be used.  It is an error if a valid
   # configuration file is not available.  See the documentation
-  # on configuration for more information (ctnconf.txt and the
+  # on configuration for more information (dcmqrcnf.txt and the
   # example configuration file dcmqrscp.cfg).
 
   -s    --single-process
@@ -114,7 +116,7 @@ checking identifier validity:
   # strict DICOM rules for Query Identifiers.
 
         --no-check-find
-          do not check C-FIND identif. validity (default)
+          do not check C-FIND identifier validity (default)
 
   -XM   --check-move
           check C-MOVE identifier validity
@@ -126,7 +128,7 @@ checking identifier validity:
   # strict DICOM rules for Query Identifiers.
 
         --no-check-move
-          do not check C-MOVE identif. validity (default)
+          do not check C-MOVE identifier validity (default)
 
 restriction of move targets:
 
@@ -134,7 +136,7 @@ restriction of move targets:
           do not restrict move destination (default)
 
   -ZA   --move-aetitle
-          restrict move dest. to requesting AE title
+          restrict move destination to requesting AE title
 
   -ZH   --move-host
           restrict move destination to requesting host
@@ -186,7 +188,7 @@ preferred network transfer syntaxes (incoming associations):
           prefer JPEG 2000 lossy TS
 
   +xd   --prefer-deflated
-          prefer deflated expl. VR little endian TS
+          prefer deflated explicit VR little endian TS
 
   +xi   --implicit
           accept implicit VR little endian TS only
@@ -224,7 +226,7 @@ proposed transmission transfer syntaxes (outgoing associations):
           propose RLE lossless TS
 
   -xd   --propose-deflated
-          propose deflated expl. VR little endian TS
+          propose deflated explicit VR little endian TS
 
   -xi   --propose-implicit
           propose implicit VR little endian TS only
@@ -249,7 +251,8 @@ other network options:
           timeout for DIMSE messages
 
   -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
-          set max receive pdu to n bytes (default: 16384)
+          set max receive pdu to n bytes
+          (default: use value from configuration file)
 
   -dhl  --disable-host-lookup
           disable hostname lookup
@@ -258,7 +261,7 @@ other network options:
           refuse association
 
         --reject
-          reject association if no implement. class UID
+          reject association if no implementation class UID
 
         --ignore
           ignore store data, receive but do not store
@@ -619,15 +622,15 @@ whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
 file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>share/data/dumppat.txt</em>).
+lines (an example is provided in file <em><datadir>/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmqrscp utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
-into the application (default for Windows).
+<em><datadir>/dicom.dic</em> will be loaded unless the dictionary is built into
+the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
 variable only used when alternative data dictionaries are required.  The
@@ -639,9 +642,9 @@ It is an error if no data dictionary can be loaded.
 
 \section files FILES
 
-<em>share/doc/dcmqrcnf.txt</em> - configuration information
-\n<em>share/doc/dcmqrset.txt</em> - setup information
-\n<em>etc/dcmqrscp.cfg</em> - example configuration file
+<em><docdir>/dcmqrcnf.txt</em> - configuration information
+\n<em><docdir>/dcmqrset.txt</em> - setup information
+\n<em><etcdir>/dcmqrscp.cfg</em> - example configuration file
 
 \section see_also SEE ALSO
 
