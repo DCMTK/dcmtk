@@ -35,18 +35,18 @@ text:
 install: install-man install-html
 
 install-man:
-	$(configdir)/mkinstalldirs $(mandir)/man1
+	$(configdir)/mkinstalldirs $(DESTDIR)$(man1dir)
 	for file in manpages/man1/*.1 ; do \
-		$(INSTALL_DATA) $$file $(mandir)/man1 ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(man1dir) ;\
 	done
 
 install-html:
-	$(configdir)/mkinstalldirs $(docdir)/html
+	$(configdir)/mkinstalldirs $(DESTDIR)$(htmldir)
 	if [ ! -f htmldocs/index.html ] ; then \
 		$(DOXYGEN) htmldocs.cfg ;\
 	fi
 	for file in htmldocs/* ; do \
-		$(INSTALL_DATA) $$file $(docdir)/html ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(htmldir) ;\
 	done
 
 

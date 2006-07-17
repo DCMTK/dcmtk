@@ -28,9 +28,9 @@ library = libdcmqrdb.$(LIBEXT)
 all: $(library)
 
 install: $(library)
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) $(library) $(libdir)/$(library)
-	$(RANLIB) $(libdir)/$(library)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
+	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
 
 
 $(library): $(objs)
