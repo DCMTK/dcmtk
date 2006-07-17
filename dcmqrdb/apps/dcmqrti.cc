@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-17 11:38:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ END_EXTERN_C
 #define MAXREMOTEDBTITLES 20
 #define APPLICATIONTITLE "TELNET_INITIATOR"
 #define SHORTCOL 4
-#define LONGCOL 21
+#define LONGCOL 18
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 DcmQueryRetrieveConfig config;
@@ -92,7 +92,7 @@ int main( int argc, char *argv[] )
   OFBool debug = OFFalse;
   const char *remoteDBTitles[ MAXREMOTEDBTITLES ];
   int remoteDBTitlesCount = 0;
-  const char *configFileName = "dcmqrdb.cfg";
+  const char *configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrdb.cfg";
   E_TransferSyntax networkTransferSyntax = EXS_Unknown;
   int opt_acse_timeout = 30;
 
@@ -131,15 +131,23 @@ int main( int argc, char *argv[] )
     cmd.addOption( "--version",                              "print version information and exit", OFTrue );
     cmd.addOption( "--verbose",                   "-v",      "verbose mode, print processing details" );
     cmd.addOption( "--debug",                     "-d",      "debug mode, print debug information" );
-    OFString opt0 = "use configuration file f (default: ";
-    opt0 += configFileName;
-    opt0 += ")";
-    cmd.addOption( "--config",                    "-c",   1, "[f]ilename: string", opt0.c_str() );
+    if (strlen(configFileName) > 21)
+    {
+        OFString opt0 = "use specific configuration file\n(default: ";
+        opt0 += configFileName;
+        opt0 += ")";
+        cmd.addOption( "--config",                "-c",   1, "[f]ilename: string", opt0.c_str() );
+    } else {
+        OFString opt0 = "[f]ilename: string (default: ";
+        opt0 += configFileName;
+        opt0 += ")";
+        cmd.addOption( "--config",                "-c",   1, opt0.c_str(), "use specific configuration file" );
+    }
 
   cmd.addGroup( "network options:" );
     cmd.addOption( "--timeout",                   "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",  "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout", "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--acse-timeout",             "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",            "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
     cmd.addOption( "--propose-implicit",          "-xi",     "propose implicit VR little endian TS only" );
     OFString opt1 = "set my AE title (default: ";
@@ -197,9 +205,9 @@ int main( int argc, char *argv[] )
 
     conf.setDebug(verbose, debug);
     conf.setXferSyntax(networkTransferSyntax);
-    
+
     const char *myAE = NULL;
-    if( cmd.findOption("--aetitle") ) 
+    if( cmd.findOption("--aetitle") )
     {
     	app.checkValue( cmd.getValue( myAE ) );
         conf.setAETitle(myAE);
@@ -412,7 +420,11 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.5  2005-12-08 15:47:03  meichel
+ * Revision 1.6  2006-07-17 11:38:03  joergr
+ * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
+ * in the configuration directory (e.g. "/usr/local/etc") is used.
+ *
+ * Revision 1.5  2005/12/08 15:47:03  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.4  2005/11/17 13:44:59  meichel
