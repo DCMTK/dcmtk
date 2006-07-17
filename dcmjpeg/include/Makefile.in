@@ -16,10 +16,9 @@ include $(configdir)/@common_makefile@
 all: 
 
 install: 
-	$(configdir)/mkinstalldirs $(includedir)/dcmtk
-	$(configdir)/mkinstalldirs $(includedir)/dcmtk/dcmjpeg
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmjpeg
 	for file in dcmtk/dcmjpeg/*.h ; do \
-		$(INSTALL_DATA) $$file $(includedir)/dcmtk/dcmjpeg ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmjpeg ;\
 	done
 
 clean:
