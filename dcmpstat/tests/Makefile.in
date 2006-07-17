@@ -45,9 +45,9 @@ msgserv: msgserv.o
 install: all install-support
 
 install-support:
-	$(configdir)/mkinstalldirs $(datadir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
 	for file in $(support); do \
-		$(INSTALL_DATA) $$file $(datadir) ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
 	done
 
 

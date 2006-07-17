@@ -104,8 +104,8 @@ $(library): $(objs)
 
 
 install: all
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) $(library) $(libdir)/$(library)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 
 clean:
 	rm -f $(objs) $(library) $(TRASH)
