@@ -43,15 +43,15 @@ xml2dsr: xml2dsr.o
 install: install-bin install-support
 
 install-bin: all
-	$(configdir)/mkinstalldirs $(bindir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir) && strip $(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
 	done
 
 install-support:
-	$(configdir)/mkinstalldirs $(libdir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
 	for file in $(support); do \
-		$(INSTALL_DATA) $$file $(libdir) ;\
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
 	done
 
 
