@@ -42,9 +42,8 @@ rootconf        create Makefile and configure script for the root
                 directory in dcmtk. If the modules file in the config
                 directory is available the modules are extracted from this
                 file. It contain whitespace separated list of modules names.
-configure       main configure script created by "autoall" or
-                "autoconf". configure must be started from the config
-                directory.
+configure       main configure script created by "autoall" or "autoconf".
+                configure must be started from the config directory.
 confmod         configure script for the modules created by "autoall"
                 or "autoconf confmod.in >confmod". "confmod" cannot be
                 started from the config directory. See modules.txt for
