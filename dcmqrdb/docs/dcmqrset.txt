@@ -25,7 +25,7 @@ Step 3:
 Copy the example configuration file (dcmqrscp.cfg) to the main image database
 directory.
 e.g.
-	cp <prefix>/etc/dcmqrscp.cfg /home/dicom/db
+	cp /usr/local/etc/dcmqrscp.cfg /home/dicom/db
 
 Step 4:
 
