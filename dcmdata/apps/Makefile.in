@@ -25,8 +25,7 @@ objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
 	dcmdrle dcmodify pdf2dcm
 
-support_lib = dcm2xml.dtd
-support_data = dumppat.txt
+support = dcm2xml.dtd dumppat.txt
 
 
 all: $(progs)
@@ -69,19 +68,15 @@ pdf2dcm: pdf2dcm.o
 install: install-bin install-support
 
 install-bin: all
-	$(configdir)/mkinstalldirs $(bindir)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir) && strip $(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
 	done
 
 install-support:
-	$(configdir)/mkinstalldirs $(libdir)
-	for file in $(support_lib); do \
-		$(INSTALL_DATA) $$file $(libdir) ;\
-	done
-	$(configdir)/mkinstalldirs $(datadir)
-	for file in $(support_data); do \
-		$(INSTALL_DATA) $$file $(datadir) ;\
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
+	for file in $(support); do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
 	done
 
 
