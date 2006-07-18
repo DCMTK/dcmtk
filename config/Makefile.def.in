@@ -17,6 +17,7 @@ docdir = @docdir@
 mandir = @mandir@
 man1dir = @mandir@/man1
 htmldir = @htmldir@
+pdfdir = @pdfdir@
 libdir = @libdir@
 includedir = @includedir@
 
