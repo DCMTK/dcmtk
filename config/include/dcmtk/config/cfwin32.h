@@ -1,8 +1,8 @@
 /*
-** Configuration definitions for the Microsoft Visual C++ Compiler 
+** Configuration definitions for the Microsoft Visual C++ Compiler
 ** with x86 processor environment.
 ** Created manually.
-** 
+**
 */
 
 #ifndef CFWIN32_H
@@ -26,7 +26,7 @@
 /* Define if you have the <winsock.h> header file.  */
 #define HAVE_WINSOCK_H 1
 
-/* MinGW needs some special handling because it is a mixture of WIN32 and Posix. 
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix.
  * The following settings are not tested by configure but need to be set for MinGW.
  */
 #ifdef __MINGW32__
@@ -56,6 +56,9 @@
 
 /* Define the default directory where configuration files reside */
 #define DEFAULT_CONFIGURATION_DIR ""
+
+/* Define the default directory where support data files reside */
+#define DEFAULT_SUPPORT_DATA_DIR ""
 
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ';'
@@ -817,10 +820,10 @@ typedef unsigned short ushort;
 #endif
 
 /* Platform specific settings for Visual C++
- * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer 
- *   _MSC_VER == 1100 on Microsoft Visual C++ 5.0 
- *   _MSC_VER == 1200 on Microsoft Visual C++ 6.0 
- *   _MSC_VER == 1300 on Microsoft Visual C++ 7.0 
+ * By default, enable ANSI standard C++ includes on Visual C++ 6 and newer
+ *   _MSC_VER == 1100 on Microsoft Visual C++ 5.0
+ *   _MSC_VER == 1200 on Microsoft Visual C++ 6.0
+ *   _MSC_VER == 1300 on Microsoft Visual C++ 7.0
  */
 #ifdef _MSC_VER
 #if _MSC_VER >= 1200

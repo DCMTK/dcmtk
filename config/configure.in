@@ -41,6 +41,7 @@ DATA_DIR=`(
 	eval eval echo "$DATA_DIR"
 )`
 AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
+AC_DEFINE_UNQUOTED(DEFAULT_SUPPORT_DATA_DIR, "${DATA_DIR}/", [Define the default directory where support data files reside])
 
 CONF_DIR="${sysconfdir}"
 CONF_DIR=`(

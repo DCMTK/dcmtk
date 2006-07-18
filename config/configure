@@ -1908,6 +1908,11 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+cat >>confdefs.h <<_ACEOF
+#define DEFAULT_SUPPORT_DATA_DIR "${DATA_DIR}/"
+_ACEOF
+
+
 CONF_DIR="${sysconfdir}"
 CONF_DIR=`(
 	test "$prefix" = NONE && prefix=${ac_default_prefix}
@@ -30736,7 +30741,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 30739 "configure"
+#line 30744 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -31391,7 +31396,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 31394 "configure"
+#line 31399 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -31464,7 +31469,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 31467 "configure"
+#line 31472 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -31537,7 +31542,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 31540 "configure"
+#line 31545 "configure"
 #include "confdefs.h"
 
 template <class T>

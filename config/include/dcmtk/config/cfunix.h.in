@@ -35,6 +35,9 @@
 /* Define the default directory where configuration files reside */
 #undef DEFAULT_CONFIGURATION_DIR
 
+/* Define the default directory where support data files reside */
+#undef DEFAULT_SUPPORT_DATA_DIR
+
 /* Define the environment variable path separator */
 #ifndef ENVIRONMENT_PATH_SEPARATOR
 #define ENVIRONMENT_PATH_SEPARATOR ':'
