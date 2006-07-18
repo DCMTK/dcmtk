@@ -50,7 +50,7 @@ tests-all: libsrc-all
 include-install:
 	(cd include && $(MAKE) ARCH="$(ARCH)" install)
 
-libsrc-install: include-all
+libsrc-install: libsrc-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install)
 
 apps-install: apps-all
