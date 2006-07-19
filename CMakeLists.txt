@@ -34,6 +34,9 @@ SET(BUILD_SHARED_LIBS ${WITH_SHARED_LIBS})
 # doxygen support
 FIND_PROGRAM(DOXYGEN_EXECUTABLE "doxygen")
 
+# private tag dictionary
+OPTION(WITH_PRIVATE_TAGS "Build with private tag dictionary." OFF)
+
 # libxml support
 OPTION(WITH_LIBXML "Build with libxml support." OFF)
 GET_FILENAME_COMPONENT(LIBXML_DIR "${dcmtk_SOURCE_DIR}/../libxml2-2.6.26" ABSOLUTE)
@@ -122,6 +125,11 @@ ADD_DEFINITIONS(-D_REENTRANT)
 
 # set precompiler switches, directories and libraries
 # according to optional settings
+
+# private tag dictionary
+IF(WITH_PRIVATE_TAGS)
+  ADD_DEFINITIONS(-DWITH_PRIVATE_TAGS)
+ENDIF(WITH_PRIVATE_TAGS)
 
 # libxml support
 IF(WITH_LIBXML AND WITH_LIBXMLINC)
