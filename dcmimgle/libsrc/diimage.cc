@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:54:26 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2006-07-19 08:31:52 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ DiImage::DiImage(const DiDocument *docu,
         {
             ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
             ok &= (Document->getValue(DCM_BitsStored, BitsStored) > 0);
-            if (((Document->getValue(DCM_HighBit, HighBit) == 0) || (HighBit == 0)) && ok)
+            if (((Document->getValue(DCM_HighBit, HighBit) == 0) || ((HighBit == 0) && (BitsStored > 1))) && ok)
             {
                 HighBit = BitsStored - 1;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -868,7 +868,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.33  2006-07-10 10:54:26  joergr
+ * Revision 1.34  2006-07-19 08:31:52  joergr
+ * Fixed wrong warning when HightBit = 0 and BitsStored = 1.
+ *
+ * Revision 1.33  2006/07/10 10:54:26  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.32  2005/12/08 15:42:51  meichel
