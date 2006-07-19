@@ -49,10 +49,10 @@
 /* #undef  C_RIGHTSHIFT_UNSIGNED */
 
 /* Define the DCMTK default path */
-#define DCMTK_PREFIX "C:\\usr\\local\\dicom"
+#define DCMTK_PREFIX "C:\\usr\\local"
 
 /* Define the default data dictionary path for the dcmdata library package */
-#define DCM_DICT_DEFAULT_PATH "dicom.dic;\\dicom.dic;" DCMTK_PREFIX "\\lib\\dicom.dic"
+#define DCM_DICT_DEFAULT_PATH "dicom.dic;\\dicom.dic;" DCMTK_PREFIX "\\share\\dcmtk\\dicom.dic"
 
 /* Define the default directory where configuration files reside */
 #define DEFAULT_CONFIGURATION_DIR ""
