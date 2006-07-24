@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:24 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2006-07-24 15:43:52 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ DcmPrivateTagCache::DcmPrivateTagCache()
 
 DcmPrivateTagCache::~DcmPrivateTagCache()
 {
-  list_.clear();
+  clear();
 }
 
 
@@ -120,7 +120,10 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
 /*
  * CVS/RCS Log:
  * $Log: dcpcache.cc,v $
- * Revision 1.5  2005-12-08 15:41:24  meichel
+ * Revision 1.6  2006-07-24 15:43:52  meichel
+ * Fixed memory leak in private tag lookup cache.
+ *
+ * Revision 1.5  2005/12/08 15:41:24  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.4  2004/10/20 15:56:15  meichel
