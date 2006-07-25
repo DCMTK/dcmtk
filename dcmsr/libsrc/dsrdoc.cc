@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2006-07-25 14:20:37 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     Modality(DCM_Modality),
     SeriesInstanceUID(DCM_SeriesInstanceUID),
     SeriesNumber(DCM_SeriesNumber),
-    ReferencedPerformedProcedureStepSequence(DCM_ReferencedPerformedProcedureStepSequence),
+    ReferencedPerformedProcedureStep(DCM_ReferencedPerformedProcedureStepSequence),
     InstanceNumber(DCM_InstanceNumber),
     CompletionFlag(DCM_CompletionFlag),
     CompletionFlagDescription(DCM_CompletionFlagDescription),
@@ -129,7 +129,7 @@ void DSRDocument::clear()
     Modality.clear();
     SeriesInstanceUID.clear();
     SeriesNumber.clear();
-    ReferencedPerformedProcedureStepSequence.clear();
+    ReferencedPerformedProcedureStep.clear();
     InstanceNumber.clear();
     CompletionFlag.clear();
     CompletionFlagDescription.clear();
@@ -178,7 +178,7 @@ OFCondition DSRDocument::print(ostream &stream,
             /* patient related information */
             if (PatientsName.getLength() > 0)
             {
-                stream << "Patient            : " << getPrintStringFromElement(PatientsName, tmpString);
+                stream << "Patient             : " << getPrintStringFromElement(PatientsName, tmpString);
                 OFString patientStr;
                 if (PatientsSex.getLength() > 0)
                     patientStr += getPrintStringFromElement(PatientsSex, tmpString);
@@ -201,28 +201,36 @@ OFCondition DSRDocument::print(ostream &stream,
             }
             /* referring physician */
             if (ReferringPhysiciansName.getLength() > 0)
-                stream << "Referring Physician: " << getPrintStringFromElement(ReferringPhysiciansName, tmpString) << endl;
+                stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysiciansName, tmpString) << endl;
+            /* study related information  */
+            if (StudyDescription.getLength() > 0)
+            {
+                stream << "Study               : " << getPrintStringFromElement(StudyDescription, tmpString);
+                if (StudyID.getLength() > 0)
+                    stream << " (#" << getPrintStringFromElement(PatientID, tmpString) << ")";
+                stream << endl;
+            }
             /* manufacturer */
             if (Manufacturer.getLength() > 0)
-                stream << "Manufacturer       : " << getPrintStringFromElement(Manufacturer, tmpString) << endl;
+                stream << "Manufacturer        : " << getPrintStringFromElement(Manufacturer, tmpString) << endl;
             /* Key Object Selection Documents do not contain the SR Document General Module */
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* completion flag */
-                stream << "Completion Flag    : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
+                stream << "Completion Flag     : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
                 if (CompletionFlagDescription.getLength() > 0)
-                    stream << "                     " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << endl;
+                    stream << "                      " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << endl;
                 /* predecessor documents */
                 if (!PredecessorDocuments.empty())
-                    stream << "Predecessor Docs   : " << PredecessorDocuments.getNumberOfInstances() << endl;
+                    stream << "Predecessor Docs    : " << PredecessorDocuments.getNumberOfInstances() << endl;
             }
             /* identical documents */
             if (!IdenticalDocuments.empty())
-                stream << "Identical Docs     : " << IdenticalDocuments.getNumberOfInstances() << endl;
+                stream << "Identical Docs      : " << IdenticalDocuments.getNumberOfInstances() << endl;
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* verification flag */
-                stream << "Verification Flag  : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
+                stream << "Verification Flag   : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
                 for (size_t i = 1; i <= obsCount; i++)
@@ -231,7 +239,10 @@ OFCondition DSRDocument::print(ostream &stream,
                     DSRCodedEntryValue obsCode;
                     if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                     {
-                        stream << "                     " << dateTime << ": " << obsName;
+                        if (i == 1)
+                            stream << "Verifying Observers : " << dateTime << ": " << obsName;
+                        else
+                            stream << "                      " << dateTime << ": " << obsName;
                         if (obsCode.isValid())
                         {
                             stream << " ";
@@ -244,8 +255,8 @@ OFCondition DSRDocument::print(ostream &stream,
             /* content date and time */
             if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
             {
-                stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, tmpString) << " ";
-                stream <<                            getPrintStringFromElement(ContentTime, tmpString) << endl;
+                stream << "Content Date/Time   : " << getPrintStringFromElement(ContentDate, tmpString) << " ";
+                stream <<                             getPrintStringFromElement(ContentTime, tmpString) << endl;
             }
             stream << endl;
         }
@@ -317,6 +328,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
     if (result.good())
     {
         OFCondition searchCond = EC_Normal;
+        OFCondition obsSearchCond = EC_Normal;
 
         /* type 3 element and attributes which have already been checked are not checked */
 
@@ -357,11 +369,11 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", LogStream);
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
-        searchCond = getSequenceFromDataset(dataset, ReferencedPerformedProcedureStepSequence);
-        checkElementValue(ReferencedPerformedProcedureStepSequence, "1", "2", LogStream, searchCond);
+        searchCond = getSequenceFromDataset(dataset, ReferencedPerformedProcedureStep);
+        checkElementValue(ReferencedPerformedProcedureStep, "1", "2", LogStream, searchCond);
         /* remove possible signature sequences */
-        removeAttributeFromSequence(ReferencedPerformedProcedureStepSequence, DCM_MACParametersSequence);
-        removeAttributeFromSequence(ReferencedPerformedProcedureStepSequence, DCM_DigitalSignaturesSequence);
+        removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_MACParametersSequence);
+        removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_DigitalSignaturesSequence);
 
         // --- SR Document General Module (M) ---
         getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", LogStream);
@@ -373,7 +385,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1", LogStream);
             getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", LogStream);
             getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", LogStream);
-            getSequenceFromDataset(dataset, VerifyingObserver);
+            obsSearchCond = getSequenceFromDataset(dataset, VerifyingObserver);
             PredecessorDocuments.read(dataset, LogStream);
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getSequenceFromDataset(dataset, PerformedProcedureCode);
@@ -398,9 +410,11 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             if (CompletionFlagEnum == CF_invalid)
                 printUnknownValueWarningMessage(LogStream, "CompletionFlag", tmpString.c_str());
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
-            /* check VerificationFlag */
+            /* check VerificationFlag and VerifyingObserverSequence */
             if (VerificationFlagEnum == VF_invalid)
                 printUnknownValueWarningMessage(LogStream, "VerificationFlag", tmpString.c_str());
+            else if (VerificationFlagEnum == VF_Verified)
+                checkElementValue(VerifyingObserver, "1-n", "1", LogStream, obsSearchCond);
         }
         SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, tmpString));
         /* check SpecificCharacterSet */
@@ -468,8 +482,8 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SeriesInstanceUID));
         addElementToDataset(result, dataset, new DcmIntegerString(SeriesNumber));
         /* always write empty sequence since not yet fully supported */
-        ReferencedPerformedProcedureStepSequence.clear();
-        addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStepSequence));
+        ReferencedPerformedProcedureStep.clear();
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(ReferencedPerformedProcedureStep));
 
         // --- SR Document General Module (M) ---
         addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber));
@@ -1321,6 +1335,17 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
+            /* study related information */
+            if (StudyDescription.getLength() > 0)
+            {
+                stream << "<tr>" << endl;
+                stream << "<td><b>Study:</b></td>" << endl;
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(StudyDescription, tmpString), htmlString, convertNonASCII);
+                if (StudyID.getLength() > 0)
+                    stream << " (#" << convertToMarkupString(getStringValueFromElement(StudyID, tmpString), htmlString, convertNonASCII) << ")";
+                stream << "</td>" << endl;
+                stream << "</tr>" << endl;
+            }
             /* manufacturer */
             if (Manufacturer.getLength() > 0)
             {
@@ -1379,21 +1404,35 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                     if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                     {
                         stream << "<tr>" << endl;
-                        stream << "<td></td>" << endl;
+                        if (i == 1)
+                            stream << "<td><b>Verifying Observers:</b></td>" << endl;
+                        else
+                            stream << "<td></td>" << endl;
                         stream << "<td>";
                         stream << dicomToReadableDateTime(dateTime, string2) << " - ";
-                        stream << convertToMarkupString(dicomToReadablePersonName(obsName, string2), htmlString, convertNonASCII);
-                        /* optional observer code */
-                        if (obsCode.isValid() && ((newFlags & HF_renderAllCodes) == HF_renderAllCodes))
+                        /* render code details as a tooltip */
+                        if (obsCode.isValid() && (flags & DSRTypes::HF_useCodeDetailsTooltip))
                         {
-                            stream << " ";
-                            if (obsCode.isValid())
+                            stream << "<u><span title=\"(";
+                            stream << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII) << ", ";
+                            stream << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII);
+                            if (!obsCode.getCodingSchemeVersion().empty())
+                                stream << " [" << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << "]";
+                            stream << ", &quot;" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "&quot;)\">";
+                        }
+                        stream << convertToMarkupString(dicomToReadablePersonName(obsName, string2), htmlString, convertNonASCII);
+                        if (obsCode.isValid() && (flags & DSRTypes::HF_useCodeDetailsTooltip))
+                        {
+                            stream << "</span></u>";
+                        } else {
+                            /* render code in a conventional manner */
+                            if (obsCode.isValid() && ((newFlags & HF_renderAllCodes) == HF_renderAllCodes))
                             {
-                                stream << "(" << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII);
-                                stream << "," << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII) << ",";
+                                stream << " (" << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII);
+                                stream << ", " << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII);
                                 if (!obsCode.getCodingSchemeVersion().empty())
-                                    stream << "[" << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << "]";
-                                stream << ",\"" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "\")";
+                                    stream << " [" << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << "]";
+                                stream << ", &quot;" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "&quot;)";
                             }
                         }
                         stream << ", " << convertToMarkupString(organization, htmlString, convertNonASCII);
@@ -2285,7 +2324,16 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.56  2006-05-11 09:16:49  joergr
+ *  Revision 1.57  2006-07-25 14:20:37  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *  Added new checking routine: The VerifyingObserverSequence is required if the
+ *  value of VerificationFlag is "VERIFIED" (type 1C).
+ *  Changed content and layout of document header in textual dump and HTML output,
+ *  e.g. added StudyDescription and StudyID.
+ *
+ *  Revision 1.56  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.55  2005/12/08 15:47:48  meichel
