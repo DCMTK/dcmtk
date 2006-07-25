@@ -23,8 +23,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:13:45 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2006-07-25 13:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ static OFCondition renderFile(ostream &out,
 
 
 #define SHORTCOL 3
-#define LONGCOL 21
+#define LONGCOL 22
 
 
 int main(int argc, char *argv[])
@@ -171,60 +171,63 @@ int main(int argc, char *argv[])
     cmd.addParam("htmlfile-out", "HTML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",     "print this help text and exit");
-      cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",         "-dd",    "verbose debug mode, print more details");
+      cmd.addOption("--help",                   "-h",     "print this help text and exit");
+      cmd.addOption("--version",                          "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+      cmd.addOption("--verbose-debug",          "-dd",    "verbose debug mode, print more details");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
-        cmd.addOption("--read-file-only",      "+fo",    "read file format only");
-        cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-file-only",       "+fo",    "read file format only");
+        cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",       "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",     "-td",    "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("parsing options:");
       cmd.addSubGroup("additional information:");
-        cmd.addOption("--processing-details",  "-Ip",    "show currently processed content item");
+        cmd.addOption("--processing-details",   "-Ip",    "show currently processed content item");
       cmd.addSubGroup("error handling:");
-        cmd.addOption("--ignore-constraints",  "-Ec",    "ignore relationship content constraints");
-        cmd.addOption("--ignore-item-errors",  "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
-        cmd.addOption("--skip-invalid-items",  "-Ei",    "skip invalid content items (incl. sub-tree)");
+        cmd.addOption("--ignore-constraints",   "-Ec",    "ignore relationship content constraints");
+        cmd.addOption("--ignore-item-errors",   "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
+        cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
       cmd.addSubGroup("character set:");
-        cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5,",
-                                                         "greek, cyrillic, arabic, hebrew)\n"
-                                                         "assume charset if undeclared ext. charset found");
+        cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
+        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset : string constant (latin-1 to -5,",
+                                                          "greek, cyrillic, arabic, hebrew)\n"
+                                                          "assume c if undeclared extended charset found");
     cmd.addGroup("output options:");
       cmd.addSubGroup("HTML compatibility:");
-        cmd.addOption("--html-3.2",            "+H3",    "use only HTML version 3.2 compatible features");
-        cmd.addOption("--html-4.0",            "+H4",    "allow all HTML version 4.0 features (default)");
-        cmd.addOption("--add-document-type",   "+Hd",    "add reference to SGML document type definition");
+        cmd.addOption("--html-3.2",             "+H3",    "use only HTML version 3.2 compatible features");
+        cmd.addOption("--html-4.0",             "+H4",    "allow all HTML version 4.0 features (default)");
+        cmd.addOption("--add-document-type",    "+Hd",    "add reference to SGML document type definition");
       cmd.addSubGroup("cascading style sheet (CSS), only with HTML 4.0:");
-        cmd.addOption("--css-reference",       "+Sr", 1, "URL : string",
-                                                         "add reference to specified CSS to HTML page");
-        cmd.addOption("--css-file",            "+Sf", 1, "filename : string",
-                                                         "embed content of specified CSS into HTML page");
+        cmd.addOption("--css-reference",        "+Sr", 1, "URL : string",
+                                                          "add reference to specified CSS to HTML page");
+        cmd.addOption("--css-file",             "+Sf", 1, "filename : string",
+                                                          "embed content of specified CSS into HTML page");
       cmd.addSubGroup("general rendering:");
-        cmd.addOption("--expand-inline",       "+Ri",    "expand short content items inline (default)");
-        cmd.addOption("--never-expand-inline", "-Ri",    "never expand content items inline");
-        cmd.addOption("--render-full-data",    "+Rd",    "render full data of content items");
+        cmd.addOption("--expand-inline",        "+Ri",    "expand short content items inline (default)");
+        cmd.addOption("--never-expand-inline",  "-Ri",    "never expand content items inline");
+        cmd.addOption("--always-expand-inline", "+Ra",    "always expand content items inline");
+        cmd.addOption("--render-full-data",     "+Rd",    "render full data of content items");
+        cmd.addOption("--section-title-inline", "+Rt",    "render section titles inline, not separately");
       cmd.addSubGroup("document rendering:");
-        cmd.addOption("--document-type-title", "+Dt",    "use document type as document title (default)");
-        cmd.addOption("--patient-info-title",  "+Dp",    "use patient information as document title");
-        cmd.addOption("--no-document-header",  "-Dh",    "do not render general document information");
+        cmd.addOption("--document-type-title",  "+Dt",    "use document type as document title (default)");
+        cmd.addOption("--patient-info-title",   "+Dp",    "use patient information as document title");
+        cmd.addOption("--no-document-header",   "-Dh",    "do not render general document information");
       cmd.addSubGroup("code rendering:");
-        cmd.addOption("--render-inline-codes", "+Ci",    "render codes in continuous text blocks");
-        cmd.addOption("--concept-name-codes",  "+Cn",    "render code of concept names");
-        cmd.addOption("--numeric-unit-codes",  "+Cu",    "render code of numeric measurement units");
-        cmd.addOption("--code-value-unit",     "+Cv",    "use code value as measurement unit (default)");
-        cmd.addOption("--code-meaning-unit",   "+Cm",    "use code meaning as measurement unit");
-        cmd.addOption("--render-all-codes",    "+Ca",    "render all codes (implies +Ci, +Cn and +Cu)");
+        cmd.addOption("--render-inline-codes",  "+Ci",    "render codes in continuous text blocks");
+        cmd.addOption("--concept-name-codes",   "+Cn",    "render code of concept names");
+        cmd.addOption("--numeric-unit-codes",   "+Cu",    "render code of numeric measurement units");
+        cmd.addOption("--code-value-unit",      "+Cv",    "use code value as measurement unit (default)");
+        cmd.addOption("--code-meaning-unit",    "+Cm",    "use code meaning as measurement unit");
+        cmd.addOption("--render-all-codes",     "+Cc",    "render all codes (implies +Ci, +Cn and +Cu)");
+        cmd.addOption("--code-details-tooltip", "+Ct",    "render code details as a tooltip (implies +Cc)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -349,10 +352,15 @@ int main(int argc, char *argv[])
         }
         if (cmd.findOption("--never-expand-inline"))
             opt_renderFlags |= DSRTypes::HF_neverExpandChildrenInline;
+        if (cmd.findOption("--always-expand-inline"))
+            opt_renderFlags |= DSRTypes::HF_alwaysExpandChildrenInline;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--render-full-data"))
             opt_renderFlags |= DSRTypes::HF_renderFullData;
+
+        if (cmd.findOption("--section-title-inline"))
+            opt_renderFlags |= DSRTypes::HF_renderSectionTitlesInline;
 
         /* document rendering */
         cmd.beginOptionBlock();
@@ -380,6 +388,8 @@ int main(int argc, char *argv[])
             opt_renderFlags |= DSRTypes::HF_useCodeMeaningAsUnit;
         if (cmd.findOption("--render-all-codes"))
             opt_renderFlags |= DSRTypes::HF_renderAllCodes;
+        if (cmd.findOption("--code-details-tooltip"))
+            opt_renderFlags |= DSRTypes::HF_useCodeDetailsTooltip;
     }
 
     SetDebugLevel((opt_debugMode));
@@ -418,7 +428,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.24  2006-05-11 09:13:45  joergr
+ * Revision 1.25  2006-07-25 13:33:30  joergr
+ * Added new command line options --always-expand-inline, --section-title-inline
+ * and --code-details-tooltip (according to new optional HTML rendering flags).
+ * Changed short option of --render-all-codes from +Ca to +Cc in order to avoid
+ * conflicts with option --charset-assume.
+ *
+ * Revision 1.24  2006/05/11 09:13:45  joergr
  * Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  * Revision 1.23  2005/12/08 15:47:33  meichel

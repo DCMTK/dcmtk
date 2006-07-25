@@ -106,9 +106,9 @@ character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  charset: string constant
+  +Ca  --charset-assume  [c]harset : string constant
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
-         assume charset if undeclared ext. charset found
+         assume c if undeclared extended charset found
 \endverbatim
 
 \subsection output_options output options
@@ -140,8 +140,14 @@ general rendering:
   -Ri  --never-expand-inline
          never expand content items inline
 
+  +Ra  --always-expand-inline
+         always expand content items inline
+
   +Rd  --render-full-data
          render full data of content items
+
+  +Rt  --section-title-inline
+         render section titles inline, not separately
 
 document rendering:
 
@@ -171,8 +177,11 @@ code rendering:
   +Cm  --code-meaning-unit
          use code meaning as measurement unit
 
-  +Ca  --render-all-codes
+  +Cc  --render-all-codes
          render all codes (implies +Ci, +Cn and +Cu)
+
+  +Ct  --code-details-tooltip
+         render code details as a tooltip (implies +Cc)
 \endverbatim
 
 \section notes NOTES
