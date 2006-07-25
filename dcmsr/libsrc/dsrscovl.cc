@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:06 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-25 13:37:48 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,18 +190,19 @@ OFCondition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
     /* render GraphicData */
     if (!isShort(flags))
     {
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream << endl << "<p>" << endl;
             /* render graphic data list (= print)*/
-            docStream << "<b>Graphic Data:</b><br>";
+            docStream << "<b>Graphic Data:</b>" << lineBreak;
             GraphicDataList.print(docStream);
             docStream << "</p>";
         } else {
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
             /* render graphic data list (= print)*/
-            annexStream << "<b>Graphic Data:</b><br>";
+            annexStream << "<b>Graphic Data:</b>" << lineBreak;
             GraphicDataList.print(annexStream);
             annexStream << "</p>" << endl;
         }
@@ -305,7 +306,12 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.16  2005-12-08 15:48:06  meichel
+ *  Revision 1.17  2006-07-25 13:37:48  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.16  2005/12/08 15:48:06  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.15  2003/10/17 16:10:43  joergr

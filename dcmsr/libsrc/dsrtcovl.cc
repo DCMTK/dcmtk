@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:14 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-25 13:37:48 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,21 +244,22 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
     /* render data */
     if (!isShort(flags))
     {
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream << endl << "<p>" << endl;
             /* render data list (= print)*/
             if (!SamplePositionList.isEmpty())
             {
-                docStream << "<b>Reference Sample Positions:</b><br>";
+                docStream << "<b>Reference Sample Positions:</b>" << lineBreak;
                 SamplePositionList.print(docStream);
             }
             else if (!TimeOffsetList.isEmpty())
             {
-                docStream << "<b>Referenced Time Offsets:</b><br>";
+                docStream << "<b>Referenced Time Offsets:</b>" << lineBreak;
                 TimeOffsetList.print(docStream);
             } else {
-                docStream << "<b>Referenced Datetime:</b><br>";
+                docStream << "<b>Referenced Datetime:</b>" << lineBreak;
                 DatetimeList.print(docStream);
             }
             docStream << "</p>";
@@ -268,15 +269,15 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
             /* render data list (= print)*/
             if (!SamplePositionList.isEmpty())
             {
-                annexStream << "<b>Reference Sample Positions:</b><br>";
+                annexStream << "<b>Reference Sample Positions:</b>" << lineBreak;
                 SamplePositionList.print(annexStream);
             }
             else if (!TimeOffsetList.isEmpty())
             {
-                annexStream << "<b>Referenced Time Offsets:</b><br>";
+                annexStream << "<b>Referenced Time Offsets:</b>" << lineBreak;
                 TimeOffsetList.print(annexStream);
             } else {
-                annexStream << "<b>Referenced Datetime:</b><br>";
+                annexStream << "<b>Referenced Datetime:</b>" << lineBreak;
                 DatetimeList.print(annexStream);
             }
             annexStream << "</p>" << endl;
@@ -354,7 +355,12 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.12  2005-12-08 15:48:14  meichel
+ *  Revision 1.13  2006-07-25 13:37:48  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.12  2005/12/08 15:48:14  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.11  2004/01/16 10:10:16  joergr

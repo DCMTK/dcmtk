@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:23 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-25 13:37:48 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,18 +199,20 @@ OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
     /* render (optional) channel list */
     if (!isShort(flags))
     {
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream  << endl << "<p>" << endl;
             /* render channel list (= print)*/
-            docStream << "<b>Referenced Waveform Channels:</b><br>";
+            docStream << "<b>Referenced Waveform Channels:</b>" << lineBreak;
             ChannelList.print(docStream);
             docStream << "</p>";
         } else {
+            docStream << " ";
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
             /* render channel list (= print)*/
-            annexStream << "<b>Referenced Waveform Channels:</b><br>";
+            annexStream << "<b>Referenced Waveform Channels:</b>" << lineBreak;
             ChannelList.print(annexStream);
             annexStream << "</p>" << endl;
         }
@@ -268,7 +270,12 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.16  2005-12-08 15:48:23  meichel
+ *  Revision 1.17  2006-07-25 13:37:48  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.16  2005/12/08 15:48:23  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.15  2003/08/07 14:18:30  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-07-25 13:37:48 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,12 +297,12 @@ OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
         OFString htmlString;
         const OFBool fullCode = (flags & DSRTypes::HF_renderNumericUnitCodes) &&
             ((flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately));
-        if (!fullCode)
+        if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
             docStream << "<u>";
         docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, (flags & DSRTypes::HF_convertNonASCIICharacters) > 0) << " ";
         /* render full code of the measurement unit (value first?) or code value only */
         MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, (flags & DSRTypes::HF_useCodeMeaningAsUnit) == 0 /*valueFirst*/);
-        if (!fullCode)
+        if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
             docStream << "</u>";
     }
     if (!ValueQualifier.isEmpty())
@@ -426,7 +426,12 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.21  2006-05-11 09:16:49  joergr
+ *  Revision 1.22  2006-07-25 13:37:48  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.21  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.20  2005/12/08 15:48:00  meichel

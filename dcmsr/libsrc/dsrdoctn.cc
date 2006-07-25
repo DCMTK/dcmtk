@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2006-07-25 13:36:17 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -885,6 +885,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
 {
     if (!(flags & HF_renderItemInline) && (flags & HF_renderItemsSeparately))
     {
+        const char *lineBreak = (flags & HF_renderSectionTitlesInline) ? " " : "<br>";
         /* flag indicating whether line is empty or not */
         OFBool writeLine = OFFalse;
         if (!ConceptName.getCodeMeaning().empty())
@@ -913,7 +914,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
             writeLine = OFTrue;
         }
         if (writeLine)
-            docStream << "<br>" << endl;
+            docStream << lineBreak << endl;
     }
     return EC_Normal;
 }
@@ -962,8 +963,9 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         paragraphFlag = OFTrue;
                     }
                     docStream << "<u>" << relationshipText << "</u>: ";
-                    /* expand short nodes with no children inline */
-                    if (!(flags & HF_neverExpandChildrenInline) && !node->hasChildNodes() && node->isShort(flags))
+                    /* expand short nodes with no children inline (or depending on 'flags' all nodes) */
+                    if ((flags & HF_alwaysExpandChildrenInline) ||
+                        (!(flags & HF_neverExpandChildrenInline) && !node->hasChildNodes() && node->isShort(flags)))
                     {
                         if (node->getValueType() != VT_byReference)
                         {
@@ -1080,7 +1082,12 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.42  2006-05-11 09:16:49  joergr
+ *  Revision 1.43  2006-07-25 13:36:17  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.42  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.41  2005/12/08 15:47:49  meichel

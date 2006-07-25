@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:55 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-25 13:37:48 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,18 +277,20 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
     docStream << "</a>";
     if (!isShort(flags))
     {
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream << endl << "<p>" << endl;
             /* render frame list (= print)*/
-            docStream << "<b>Referenced Frame Number:</b><br>";
+            docStream << "<b>Referenced Frame Number:</b>" << lineBreak;
             FrameList.print(docStream);
             docStream << "</p>";
         } else {
+            docStream << " ";
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
             /* render frame list (= print)*/
-            annexStream << "<b>Referenced Frame Number:</b><br>";
+            annexStream << "<b>Referenced Frame Number:</b>" << lineBreak;
             FrameList.print(annexStream);
             annexStream << "</p>" << endl;
         }
@@ -359,7 +361,12 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.17  2005-12-08 15:47:55  meichel
+ *  Revision 1.18  2006-07-25 13:37:48  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.17  2005/12/08 15:47:55  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.16  2004/01/16 10:14:14  joergr

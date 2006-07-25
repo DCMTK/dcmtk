@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-07-25 13:35:18 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,10 +147,10 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
     if (result.good())
     {
         const OFBool fullCode = (flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately);
-        if (!fullCode)
+        if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
             docStream << "<u>";
         result = DSRCodedEntryValue::renderHTML(docStream, flags, logStream, fullCode);
-        if (!fullCode)
+        if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
             docStream << "</u>";
         docStream << endl;
     }
@@ -161,7 +161,12 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.21  2006-05-11 09:16:49  joergr
+ *  Revision 1.22  2006-07-25 13:35:18  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.21  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.20  2005/12/08 15:47:40  meichel

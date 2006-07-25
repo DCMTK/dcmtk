@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-07-25 13:35:46 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -317,21 +317,39 @@ OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
 {
     OFString htmlString;
     const OFBool convertNonASCII = (flags & DSRTypes::HF_convertNonASCIICharacters) > 0;
-    if (valueFirst)
-        stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
-    else
-        stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
-    if (fullCode)
+    if (flags & DSRTypes::HF_useCodeDetailsTooltip)
     {
-        stream << " (";
-        if (!valueFirst)
-            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
+        /* render code details as a tooltip */
+        stream << "<span title=\"(";
+        stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
         stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII);
         if (!CodingSchemeVersion.empty())
             stream << " [" << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII) << "]";
+        stream << ", &quot;" << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII) << "&quot;)\">";
+        /* render value */
         if (valueFirst)
-            stream << ", " << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
-        stream << ")";
+            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
+        else
+            stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
+        stream << "</span>";
+    } else {
+        /* render code in a conventional manner */
+        if (valueFirst)
+            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
+        else
+            stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
+        if (fullCode)
+        {
+            stream << " (";
+            if (!valueFirst)
+                stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
+            stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII);
+            if (!CodingSchemeVersion.empty())
+                stream << " [" << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII) << "]";
+            if (valueFirst)
+                stream << ", &quot;" << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII) << "&quot;";
+            stream << ")";
+        }
     }
     return EC_Normal;
 }
@@ -390,7 +408,12 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.21  2006-05-11 09:16:49  joergr
+ *  Revision 1.22  2006-07-25 13:35:46  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.21  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.20  2005/12/08 15:47:41  meichel
