@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:13:45 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2006-07-25 13:32:01 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,44 +171,44 @@ int main(int argc, char *argv[])
     cmd.addParam("xmlfile-out", "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                   "-h",    "print this help text and exit");
-      cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--debug",                  "-d",    "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",          "-dd",   "verbose debug mode, print more details");
+      cmd.addOption("--help",                   "-h",     "print this help text and exit");
+      cmd.addOption("--version",                          "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+      cmd.addOption("--verbose-debug",          "-dd",    "verbose debug mode, print more details");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",            "+f",    "read file format or data set (default)");
-        cmd.addOption("--read-file-only",       "+fo",   "read file format only");
-        cmd.addOption("--read-dataset",         "-f",    "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-file-only",       "+fo",    "read file format only");
+        cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",       "-t=",   "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",     "-td",   "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",     "-te",   "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",        "-tb",   "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",   "-ti",   "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",       "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",     "-td",    "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
-        cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",      "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
-                                                         "greek, cyrillic, arabic, hebrew)\n"
-                                                         "assume charset c if no extended charset found");
+        cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
+        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset : string constant (latin-1 to -5,",
+                                                          "greek, cyrillic, arabic, hebrew)\n"
+                                                          "assume charset c if no extended charset found");
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
-        cmd.addOption("--attr-all",             "+Ea",   "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
-        cmd.addOption("--attr-code",            "+Ec",   "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
-        cmd.addOption("--attr-relationship",    "+Er",   "encode relationship type as XML attribute");
-        cmd.addOption("--attr-value-type",      "+Ev",   "encode value type as XML attribute");
-        cmd.addOption("--attr-template-id",     "+Et",   "encode template id as XML attribute");
-        cmd.addOption("--template-envelope",    "+Ee",   "template element encloses content items\n(requires +Wt, implies +Et)");
+        cmd.addOption("--attr-all",             "+Ea",    "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
+        cmd.addOption("--attr-code",            "+Ec",    "encode code value, coding scheme designator\nand coding scheme version as XML attribute");
+        cmd.addOption("--attr-relationship",    "+Er",    "encode relationship type as XML attribute");
+        cmd.addOption("--attr-value-type",      "+Ev",    "encode value type as XML attribute");
+        cmd.addOption("--attr-template-id",     "+Et",    "encode template id as XML attribute");
+        cmd.addOption("--template-envelope",    "+Ee",    "template element encloses content items\n(requires +Wt, implies +Et)");
       cmd.addSubGroup("XML structure:");
-        cmd.addOption("--add-schema-reference", "+Xs",   "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)");
-        cmd.addOption("--use-xml-namespace",    "+Xn",   "add XML namespace declaration to root element");
+        cmd.addOption("--add-schema-reference", "+Xs",    "add reference to XML Schema \"" DCMSR_XML_XSD_FILE "\"\n(not with +Ea, +Ec, +Er, +Ev, +Et, +Ee, +We)");
+        cmd.addOption("--use-xml-namespace",    "+Xn",    "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
-        cmd.addOption("--write-empty-tags",     "+We",   "write all tags even if their value is empty");
-        cmd.addOption("--write-item-id",        "+Wi",   "always write item identifier");
-        cmd.addOption("--write-template-id",    "+Wt",   "write template identification information");
+        cmd.addOption("--write-empty-tags",     "+We",    "write all tags even if their value is empty");
+        cmd.addOption("--write-item-id",        "+Wi",    "always write item identifier");
+        cmd.addOption("--write-template-id",    "+Wt",    "write template identification information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -361,7 +361,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.30  2006-05-11 09:13:45  joergr
+ * Revision 1.31  2006-07-25 13:32:01  joergr
+ * Fixed minor layout and formatting issues.
+ *
+ * Revision 1.30  2006/05/11 09:13:45  joergr
  * Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  * Revision 1.29  2006/02/23 12:49:43  joergr
