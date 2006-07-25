@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2006-07-25 13:41:52 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,10 +157,20 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
         }
         /* first try to read value type */
         OFString tmpString;
-        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1", LogStream).good())
+        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1", LogStream).good() ||
+            (flags & RF_ignoreContentItemErrors))
         {
             /* root node should always be a container */
-            if (definedTermToValueType(tmpString) == VT_Container)
+            if (definedTermToValueType(tmpString) != VT_Container)
+            {
+                if (flags & RF_ignoreContentItemErrors)
+                    printWarningMessage(LogStream, "Root content item should always be a CONTAINER");
+                else {
+                    printErrorMessage(LogStream, "Root content item should always be a CONTAINER");
+                    result = SR_EC_InvalidDocumentTree;
+                }
+            }
+            if (result.good())
             {
                 /* ... then create corresponding document tree node */
                 DSRDocumentTreeNode *node = new DSRContainerTreeNode(RT_isRoot);
@@ -177,9 +187,6 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                         result = SR_EC_InvalidDocumentTree;
                 } else
                     result = EC_MemoryExhausted;
-            } else {
-                printErrorMessage(LogStream, "Root content item should always be a CONTAINER");
-                result = SR_EC_InvalidDocumentTree;
             }
         } else {
             printErrorMessage(LogStream, "ValueType attribute for root content item is missing");
@@ -642,7 +649,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.27  2006-05-11 09:16:49  joergr
+ *  Revision 1.28  2006-07-25 13:41:52  joergr
+ *  Enhanced robustness of reading methods by accepting SR documents where the
+ *  value type of the root content item is absent or not "CONTAINER".
+ *
+ *  Revision 1.27  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.26  2005/12/08 15:47:50  meichel
