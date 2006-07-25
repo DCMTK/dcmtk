@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-06-01 15:23:14 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2006-07-25 13:19:53 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1140,7 +1140,7 @@ class DSRDocument
     /// Series Number: (IS, 1, 1)
     DcmIntegerString    SeriesNumber;
     /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)
-    DcmSequenceOfItems  ReferencedPerformedProcedureStepSequence;
+    DcmSequenceOfItems  ReferencedPerformedProcedureStep;
 
     // --- SR Document General Module (M) ---
 
@@ -1184,7 +1184,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.40  2006-06-01 15:23:14  joergr
+ *  Revision 1.41  2006-07-25 13:19:53  joergr
+ *  Renamed member variable "ReferencedPerformedProcedureStepSequence" to
+ *  "ReferencedPerformedProcedureStep" for consistency reasons.
+ *
+ *  Revision 1.40  2006/06/01 15:23:14  joergr
  *  Removed explicit reference to a particular edition of the DICOM standard.
  *
  *  Revision 1.39  2006/05/11 09:18:21  joergr
