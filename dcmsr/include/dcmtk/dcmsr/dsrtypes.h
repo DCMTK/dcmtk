@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2006-07-25 13:21:29 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,8 +184,14 @@ class DSRTypes
     /// external: never expand child nodes inline
     static const size_t HF_neverExpandChildrenInline;
 
+    /// external: always expand child nodes inline
+    static const size_t HF_alwaysExpandChildrenInline;
+
     /// external: render codes even if they appear inline
     static const size_t HF_renderInlineCodes;
+
+    /// external: render code details as a tooltip
+    static const size_t HF_useCodeDetailsTooltip;
 
     /// external: render concept name codes (default: code meaning only)
     static const size_t HF_renderConceptNameCodes;
@@ -207,6 +213,9 @@ class DSRTypes
 
     /// external: render the full data of all content items
     static const size_t HF_renderFullData;
+
+    /// external: render section titles inline (default: separate paragraph)
+    static const size_t HF_renderSectionTitlesInline;
 
     /// external: copy Cascading Style Sheet (CSS) content to HTML file
     static const size_t HF_copyStyleSheetContent;
@@ -1207,7 +1216,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.47  2006-05-11 09:18:21  joergr
+ *  Revision 1.48  2006-07-25 13:21:29  joergr
+ *  Added new optional flags for the HTML rendering of SR documents:
+ *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
+ *  HF_renderSectionTitlesInline.
+ *
+ *  Revision 1.47  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.46  2005/12/08 16:05:30  meichel
