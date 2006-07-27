@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmqridx [options] index-out [dcmimg-in...]
+dcmqridx [options] index-out [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
@@ -20,9 +20,9 @@ used by the \b dcmqrscp and \b dcmqrti applications.  No image files are copied.
 
 \section parameters PARAMETERS
 \verbatim
-index-out  storage area for the index file (directory)
+index-out   storage area for the index file (directory)
 
-dcmimg-in  DICOM image file to be registered in the index file
+dcmfile-in  DICOM image file to be registered in the index file
 \endverbatim
 
 \section options OPTIONS
