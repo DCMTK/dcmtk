@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmodify.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:34:35 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +48,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.6  2005-12-08 15:40:49  meichel
+** Revision 1.7  2006-07-27 13:34:35  joergr
+** Updated copyright date.
+**
+** Revision 1.6  2005/12/08 15:40:49  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.5  2004/10/22 16:53:26  onken
