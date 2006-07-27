@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:49 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:17:23 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ class OFConsoleApplication
      ** @param  cmd       reference to the OFCommandLine object
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument array (argv[])
-     *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::ExpandWildcards)
+     *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::PF_ExpandWildcards)
      *  @param  startPos  first argument to be parsed (default: 1, i.e. omit program name)
      *
      ** @return status of parsing process, true if successful, false otherwise
@@ -205,7 +205,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.20  2005-12-08 16:05:49  meichel
+ * Revision 1.21  2006-07-27 13:17:23  joergr
+ * Prepended prefix "PF_" to parseLine() flags.
+ *
+ * Revision 1.20  2005/12/08 16:05:49  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.19  2004/01/16 10:30:12  joergr
