@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:55:47 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2006-07-27 13:58:39 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,11 +221,11 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
-    cmd.addParam("pnmfile-out", OFFIS_OUTFILE_DESCRIPTION, OFCmdParam::PM_Optional);
+    cmd.addParam("bitmap-out", OFFIS_OUTFILE_DESCRIPTION, OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",      "print this help text and exit" /*, OFTrue is set implicitly */);
-     cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--help",                "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",             "-v",      "verbose mode, print processing details");
      cmd.addOption("--quiet",               "-q",      "quiet mode, print no warnings and errors");
      cmd.addOption("--debug",               "-d",      "debug mode, print debug information");
@@ -415,7 +415,7 @@ int main(int argc, char *argv[])
     {
         /* check exclusive options first */
 
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
             if (cmd.findOption("--version"))
             {
@@ -1518,7 +1518,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.84  2006-07-10 10:55:47  joergr
+ * Revision 1.85  2006-07-27 13:58:39  joergr
+ * Made naming conventions for command line parameters more consistent, e.g.
+ * used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Option "--help" is no longer an exclusive option
+ * by default.
+ *
+ * Revision 1.84  2006/07/10 10:55:47  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.83  2005/12/08 15:42:16  meichel
