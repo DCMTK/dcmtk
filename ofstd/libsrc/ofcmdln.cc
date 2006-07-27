@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:21:28 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2006-07-27 15:49:08 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -954,7 +954,7 @@ void OFCommandLine::unpackColumnValues(const int value,
 
 
 #ifdef HAVE_WINDOWS_H
-void OFCommandLine::PF_ExpandWildcards(const OFString &param,
+void OFCommandLine::expandWildcards(const OFString &param,
                                     int directOpt)
 {
     const size_t paramLen = param.length();
@@ -1474,7 +1474,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.37  2006-07-27 13:21:28  joergr
+ * Revision 1.38  2006-07-27 15:49:08  joergr
+ * Fixed typo which caused compilation problems under Windows.
+ *
+ * Revision 1.37  2006/07/27 13:21:28  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags".
  * Added new addOption() flag for internal options that are not shown in the
