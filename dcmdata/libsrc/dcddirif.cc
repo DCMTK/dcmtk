@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 15:40:18 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2006-07-27 13:09:25 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -553,8 +553,8 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_VoiLut:
             recordName = "VOILUT";
             break;
-        case ERT_StructReport:
-            recordName = "StructReport";
+        case ERT_SRDocument:
+            recordName = "SRDocument";
             break;
         case ERT_Presentation:
             recordName = "Presentation";
@@ -601,6 +601,9 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_HangingProtocol:
             recordName = "HangingProtocol";
             break;
+        case ERT_Stereometric:
+            recordName = "Stereometric";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -631,9 +634,10 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_ComprehensiveSR) ||
              compare(sopClass, UID_MammographyCADSR) ||
              compare(sopClass, UID_ChestCADSR) ||
-             compare(sopClass, UID_ProcedureLogStorage))
+             compare(sopClass, UID_ProcedureLogStorage) ||
+             compare(sopClass, UID_XRayRadiationDoseSR))
     {
-        result = ERT_StructReport;
+        result = ERT_SRDocument;
     }
     else if (compare(sopClass, UID_GrayscaleSoftcopyPresentationStateStorage) ||
              compare(sopClass, UID_ColorSoftcopyPresentationStateStorage) ||
@@ -681,6 +685,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_ValueMap;
     else if (compare(sopClass, UID_HangingProtocolStorage))
         result = ERT_HangingProtocol;
+    else if (compare(sopClass, UID_StereometricRelationshipStorage))
+        result = ERT_Stereometric;
     return result;
 }
 
@@ -809,7 +815,7 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
                 /* try to insert based on LUTNumber */
                 result = insertWithISCriterion(parent, child, DCM_LookupTableNumber);
                 break;
-            case ERT_StructReport:
+            case ERT_SRDocument:
             case ERT_Presentation:
             case ERT_Waveform:
             case ERT_RTDose:
@@ -831,6 +837,8 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
                 /* try to insert based on SeriesNumber */
                 result = insertWithISCriterion(parent, child, DCM_SeriesNumber);
                 break;
+            case ERT_Stereometric:
+                /* no InstanceNumber or the like */
             default:
                 /* append */
                 result = parent->insertSub(child);
@@ -1348,7 +1356,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = found || compare(mediaSOPClassUID, UID_MammographyCADSR);
                     found = found || compare(mediaSOPClassUID, UID_ChestCADSR);
                     found = found || compare(mediaSOPClassUID, UID_ProcedureLogStorage);
-                    found = found || compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
+                    found = found || compare(mediaSOPClassUID, UID_ProcedureLogStorage);
+                    found = found || compare(mediaSOPClassUID, UID_XRayRadiationDoseSR);
                     /* is it one of the waveform SOP Classes? */
                     found = found || compare(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
                     found = found || compare(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
@@ -1368,7 +1377,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = found || compare(mediaSOPClassUID, UID_RawDataStorage);
                     found = found || compare(mediaSOPClassUID, UID_MRSpectroscopyStorage);
                     found = found || compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage);
+                    found = found || compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage);
                     found = found || compare(mediaSOPClassUID, UID_HangingProtocolStorage);
+                    found = found || compare(mediaSOPClassUID, UID_StereometricRelationshipStorage);
                     if (ApplicationProfile == AP_GeneralPurpose)
                     {
                         /* a detached patient mgmt sop class is also ok */
@@ -2073,7 +2084,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                             result = EC_InvalidTag;
                     }
                     break;
-                case ERT_StructReport:
+                case ERT_SRDocument:
                     if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
                         result = EC_InvalidTag;
                     if (!checkExistsWithValue(dataset, DCM_CompletionFlag, filename))
@@ -2228,6 +2239,9 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                         result = EC_InvalidTag;
                     if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
                         result = EC_InvalidTag;
+                    break;
+                case ERT_Stereometric:
+                    /* nothing to check */
                     break;
                 default:
                     /* it can only be an image */
@@ -2420,7 +2434,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_Curve:
             case ERT_ModalityLut:
             case ERT_VoiLut:
-            case ERT_StructReport:
+            case ERT_SRDocument:
             case ERT_Presentation:
             case ERT_Waveform:
             case ERT_RTDose:
@@ -2436,6 +2450,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_EncapDoc:
             case ERT_ValueMap:
             case ERT_HangingProtocol:
+            case ERT_Stereometric:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -2705,7 +2720,7 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmItem *dataset,
                                                                const OFString &sourceFilename)
 {
     /* create new struct report record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_StructReport, referencedFileID.c_str(), sourceFilename.c_str());
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -2730,13 +2745,13 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmItem *dataset,
             copyElement(dataset, DCM_ConceptNameCodeSequence, record);
             addConceptModContentItems(record, dataset);
         } else {
-            printRecordErrorMessage(record->error(), ERT_StructReport, "create");
+            printRecordErrorMessage(record->error(), ERT_SRDocument, "create");
             /* free memory */
             delete record;
             record = NULL;
         }
     } else
-        printRecordErrorMessage(EC_MemoryExhausted, ERT_StructReport, "create");
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_SRDocument, "create");
     return record;
 }
 
@@ -2993,7 +3008,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to presentation record */
+            /* copy attribute values from dataset to registration record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_ContentDate, record);
             copyElement(dataset, DCM_ContentTime, record);
@@ -3025,7 +3040,7 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to presentation record */
+            /* copy attribute values from dataset to fiducial record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_ContentDate, record);
             copyElement(dataset, DCM_ContentTime, record);
@@ -3057,7 +3072,7 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to presentation record */
+            /* copy attribute values from dataset to raw data record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_ContentDate, record);
             copyElement(dataset, DCM_ContentTime, record);
@@ -3088,7 +3103,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to presentation record */
+            /* copy attribute values from dataset to spectroscopy record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_ImageType, record);
             copyElement(dataset, DCM_ContentDate, record);
@@ -3145,7 +3160,7 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to presentation record */
+            /* copy attribute values from dataset to encap doc record */
             copyElement(dataset, DCM_InstanceNumber, record);
             copyElement(dataset, DCM_MIMETypeOfEncapsulatedDocument, record);
             copyStringWithDefault(dataset, DCM_ContentDate, record);
@@ -3177,7 +3192,7 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to presentation record */
+            /* copy attribute values from dataset to value map record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_ContentDate, record);
             copyElement(dataset, DCM_ContentTime, record);
@@ -3193,6 +3208,32 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmItem *dataset,
         }
     } else
         printRecordErrorMessage(EC_MemoryExhausted, ERT_ValueMap, "create");
+    return record;
+}
+
+
+// create new stereometric record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmItem *dataset,
+                                                               const OFString &referencedFileID,
+                                                               const OFString &sourceFilename)
+{
+    /* create new value map record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to stereometric record */
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Stereometric, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Stereometric, "create");
     return record;
 }
 
@@ -3605,7 +3646,7 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_Curve:
                     record = buildCurveRecord(dataset, referencedFileID, sourceFilename);
                     break;
-                case ERT_StructReport:
+                case ERT_SRDocument:
                     record = buildStructReportRecord(dataset, referencedFileID, sourceFilename);
                     break;
                 case ERT_Presentation:
@@ -3652,6 +3693,9 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                     break;
                 case ERT_HangingProtocol:
                     record = buildHangingProtocolRecord(dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Stereometric:
+                    record = buildStereometricRecord(dataset, referencedFileID, sourceFilename);
                     break;
                 default:
                     /* it can only be an image */
@@ -3779,7 +3823,7 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                     if (!record->tagExistsWithValue(DCM_CurveNumber))
                         setDefaultValue(record, DCM_CurveNumber, AutoCurveNumber++);
                     break;
-                case ERT_StructReport:
+                case ERT_SRDocument:
                 case ERT_Presentation:
                 case ERT_Waveform:
                 case ERT_RTTreatRecord:
@@ -3788,6 +3832,9 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_Fiducial:
                 case ERT_RawData:
                 case ERT_Spectroscopy:
+                case ERT_EncapDoc:
+                case ERT_ValueMap:
+                case ERT_Stereometric:
                     /* nothing to do */
                     break;
                 default:
@@ -4784,7 +4831,12 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.16  2005-12-15 15:40:18  joergr
+ *  Revision 1.17  2006-07-27 13:09:25  joergr
+ *  Added support for DICOMDIR record type "STEREOMETRIC" (CP 628).
+ *  Added full support for X-Ray Radiation Dose SR documents and Real World Value
+ *  Mapping objects to DICOMDIR. Renamed ERT_StructReport to ERT_SRDocument.
+ *
+ *  Revision 1.16  2005/12/15 15:40:18  joergr
  *  Removed unsused parameter.
  *
  *  Revision 1.15  2005/12/08 15:41:00  meichel
