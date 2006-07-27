@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:48 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:16:11 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,6 +145,8 @@ class OFCommandLine
         PS_Normal,
         /// no arguments to be parsed
         PS_NoArguments,
+        /// exclusive option used
+        PS_ExclusiveOption,
         /// unknown option detected
         PS_UnknownOption,
         /// missing value(s) for an option
@@ -249,9 +251,7 @@ class OFCommandLine
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option (use '\n' for line break)
-     *  @param  exclusive   exclusive option which cannot be combined with any other command
-     *                      line argument (if OFTrue). "--help" is always considered an
-     *                      exclusive option.
+     *  @param  flags       optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
      */
@@ -260,7 +260,7 @@ class OFCommandLine
                      const int valueCount,
                      const char *valueDescr,
                      const char *optDescr,
-                     const OFBool exclusive = OFFalse);
+                     const int flags = 0);
 
     /** adds an item to the list of valid options
      *  (without additional values)
@@ -268,16 +268,14 @@ class OFCommandLine
      ** @param  longOpt     long option name
      *  @param  shortOpt    short option name
      *  @param  optDescr    description of command line option (use '\n' for line break)
-     *  @param  exclusive   exclusive option which cannot be combined with any other command
-     *                      line argument (if OFTrue). "--help" is always considered an
-     *                      exclusive option.
+     *  @param  flags       optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const char *shortOpt,
                      const char *optDescr,
-                     const OFBool exclusive = OFFalse);
+                     const int flags = 0);
 
     /** adds an item to the list of valid options
      *  (without short name)
@@ -286,9 +284,7 @@ class OFCommandLine
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option (use '\n' for line break)
-     *  @param  exclusive   exclusive option which cannot be combined with any other command
-     *                      line argument (if OFTrue). "--help" is always considered an
-     *                      exclusive option.
+     *  @param  flags       optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
      */
@@ -296,22 +292,20 @@ class OFCommandLine
                      const int valueCount,
                      const char *valueDescr,
                      const char *optDescr,
-                     const OFBool exclusive = OFFalse);
+                     const int flags = 0);
 
     /** adds an item to the list of valid options
      *  (without short name and additional values)
      *
      ** @param  longOpt    long option name
      *  @param  optDescr   description of command line option (use '\n' for line break)
-     *  @param  exclusive   exclusive option which cannot be combined with any other command
-     *                      line argument (if OFTrue). "--help" is always considered an
-     *                      exclusive option.
+     *  @param  flags       optional flags (see AF_xxx below)
      *
      ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const char *optDescr,
-                     const OFBool exclusive = OFFalse);
+                     const int flags = 0);
 
     /** adds a new group (top-level).
      *  all following options belong to this group
@@ -779,15 +773,15 @@ class OFCommandLine
 
     /** parses specified command line arguments (argc, argv).
      *  Additionally create internal structures for evaluation and return status indicating any errors
-     *  occuring during the parse process. If "--help" or the specified shortcut is the only command
-     *  line argument, the status code PS_NoArguments is returned.
+     *  occuring during the parse process.
      *
      ** @param  argCount  number of command line arguments stored in argValue
      *  @param  argValue  array where the command line arguments are stored
-     *  @param  flags     optional flags affecting the parse process (see below)
+     *  @param  flags     optional flags affecting the parse process (see PF_xxx below)
      *  @param  startPos  index of first argument which should be parsed (starting from 0, default: 1)
      *
-     ** @return status of parse process, PS_Normal if successful (use getStatusString for error string)
+     ** @return status of parse process, PS_Normal if successful (use getStatusString for error string).
+     *          If an exclusive option is used the status code PS_ExclusiveOption is returned.
      */
     E_ParseStatus parseLine(int argCount,
                             char *argValue[],
@@ -847,10 +841,16 @@ class OFCommandLine
  // --- flags (used for method parseLine)
 
     /// parsing flag to expand wildcard under Windows (very similar to Unix)
-    static const int ExpandWildcards;
+    static const int PF_ExpandWildcards;
     /// disable support for command files ("@filename") containing additional arguments
-    static const int NoCommandFiles;
+    static const int PF_NoCommandFiles;
 
+ // --- flags (used for method addOption)
+
+    /// exclusive option that overrides any other option (e.g. "--help")
+    static const int AF_Exclusive;
+    /// internal option that is not shown in the syntax usage output
+    static const int AF_Internal;
 
  protected:
 
@@ -969,7 +969,14 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.37  2005-12-08 16:05:48  meichel
+ * Revision 1.38  2006-07-27 13:16:11  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags".
+ * Added addOption() flag for internal options that are not shown in the syntax
+ * usage output. Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.37  2005/12/08 16:05:48  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.36  2003/12/05 13:59:33  joergr
