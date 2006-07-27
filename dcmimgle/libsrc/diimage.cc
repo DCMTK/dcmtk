@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-19 08:31:52 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2006-07-27 14:02:40 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -868,7 +868,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.34  2006-07-19 08:31:52  joergr
+ * Revision 1.35  2006-07-27 14:02:40  joergr
+ * Fixed typo.
+ *
+ * Revision 1.34  2006/07/19 08:31:52  joergr
  * Fixed wrong warning when HightBit = 0 and BitsStored = 1.
  *
  * Revision 1.33  2006/07/10 10:54:26  joergr
@@ -957,7 +960,7 @@ int DiImage::writeBMP(FILE *stream,
  * (#ifndef DEBUG).
  *
  * Revision 1.10  2000/04/28 12:33:44  joergr
- * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ * DebugLevel - global for the module - now derived from OFGlobal (MT-safe).
  *
  * Revision 1.9  2000/04/27 13:10:27  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
