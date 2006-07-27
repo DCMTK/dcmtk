@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcm2pnm [options] dcmfile-in [pnmfile-out]
+dcm2pnm [options] bitmap-in [pnmfile-out]
 \endverbatim
 
 \section description DESCRIPTION
@@ -24,9 +24,9 @@ number of JPEG compression schemes.
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in  DICOM input filename to be converted
 
-pnmfile-out  output filename to be written (default: stdout)
+bitmap-out  output filename to be written (default: stdout)
 \endverbatim
 
 \section options OPTIONS
