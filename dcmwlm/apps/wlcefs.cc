@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-23 12:50:30 $
+ *  Update Date:      $Date: 2006-07-27 14:53:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,8 +108,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   cmd->setOptionColumns(LONGCOL, SHORTCOL);
   cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--help",                  "-h",      "print this help text and exit");
-    cmd->addOption("--version",                          "print version information and exit", OFTrue /* exclusive */);
+    cmd->addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd->addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
     cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
     cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
 #ifdef HAVE_FORK
@@ -182,7 +182,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   // Evaluate command line.
   prepareCmdLineArgs( argc, argv, applicationName );
-  if( app->parseCommandLine( *cmd, argc, argv, OFCommandLine::ExpandWildcards ) )
+  if( app->parseCommandLine( *cmd, argc, argv, OFCommandLine::PF_ExpandWildcards ) )
   {
     /* check exclusive options first */
     if (cmd->getParamCount() == 0)
@@ -190,12 +190,19 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       if (cmd->findOption("--version"))
       {
         app->printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-        CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-        CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+        ofConsole.lockCerr() << endl << "External libraries used:";
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
+        ofConsole.getCerr() << " none" << endl;
 #else
-        CERR << " none" << endl;
+        ofConsole.getCerr() << endl;
 #endif
+#ifdef WITH_ZLIB
+        ofConsole.getCerr() << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_TCPWRAPPER
+        ofConsole.getCerr() << "- LIBWRAP" << endl;
+#endif
+        ofConsole.unlockCerr();
         exit(0);
       }
     }
@@ -398,7 +405,13 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.11  2006-02-23 12:50:30  joergr
+** Revision 1.12  2006-07-27 14:53:49  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+** Added optional library "LIBWRAP" to output of option "--version".
+**
+** Revision 1.11  2006/02/23 12:50:30  joergr
 ** Fixed layout and formatting issues.
 **
 ** Revision 1.10  2005/12/08 15:48:30  meichel

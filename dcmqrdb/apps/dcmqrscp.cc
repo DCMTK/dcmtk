@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-17 11:38:53 $
+ *  Update Date:      $Date: 2006-07-27 14:49:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,8 +159,8 @@ main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption("--help",                     "-h",        "print this help text and exit");
-    cmd.addOption("--version",                               "print version information and exit", OFTrue /* exclusive */);
+    cmd.addOption("--help",                     "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                               "print version information and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
     cmd.addOption("--very-verbose",             "-vv",       "print more processing details");
     cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
@@ -292,19 +292,25 @@ main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
           app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
           CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-          CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
+              CERR << " none" << endl;
 #else
-          CERR << " none" << endl;
+              CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_TCPWRAPPER
+              CERR << "- LIBWRAP" << endl;
 #endif
           return 0;
         }
@@ -675,7 +681,13 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.9  2006-07-17 11:38:53  joergr
+ * Revision 1.10  2006-07-27 14:49:30  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Added optional library "LIBWRAP" to output of option "--version".
+ *
+ * Revision 1.9  2006/07/17 11:38:53  joergr
  * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
  * in the configuration directory (e.g. "/usr/local/etc") is used.
  * Corrected documentation of option "--max-pdu" (by default, the value from the

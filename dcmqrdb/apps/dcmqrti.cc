@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-17 11:38:03 $
+ *  Update Date:      $Date: 2006-07-27 14:47:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,8 +127,8 @@ int main( int argc, char *argv[] )
 
   cmd.setOptionColumns( LONGCOL, SHORTCOL );
   cmd.addGroup( "general options:");
-    cmd.addOption( "--help",                      "-h",      "print this help text and exit" );
-    cmd.addOption( "--version",                              "print version information and exit", OFTrue );
+    cmd.addOption( "--help",                      "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive );
+    cmd.addOption( "--version",                              "print version information and exit", OFCommandLine::AF_Exclusive );
     cmd.addOption( "--verbose",                   "-v",      "verbose mode, print processing details" );
     cmd.addOption( "--debug",                     "-d",      "debug mode, print debug information" );
     if (strlen(configFileName) > 21)
@@ -161,15 +161,15 @@ int main( int argc, char *argv[] )
     sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
     opt2 += tempstr;
     opt2 += "]";
-    cmd.addOption( "--max-pdu",                   "-pdu", 1,  opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );
+    cmd.addOption( "--max-pdu",                   "-pdu", 1, opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );
 
   cmd.addGroup( "other options:" );
-    cmd.addOption( "--disable-new-vr",            "-u",       "disable support for new VRs, convert to OB" );
-    cmd.addOption( "--remote",                    "-rmt", 1,  "[t]itle: string", "connect to remote database defined in cfg file" );
+    cmd.addOption( "--disable-new-vr",            "-u",      "disable support for new VRs, convert to OB" );
+    cmd.addOption( "--remote",                    "-rmt", 1, "[t]itle: string", "connect to remote database defined in cfg file" );
 
   // evaluate command line
   prepareCmdLineArgs( argc, argv, OFFIS_CONSOLE_APPLICATION );
-  if( app.parseCommandLine( cmd, argc, argv, OFCommandLine::ExpandWildcards ) )
+  if( app.parseCommandLine( cmd, argc, argv, OFCommandLine::PF_ExpandWildcards ) )
   {
     // check exclusive options first
     if( cmd.getParamCount() == 0 )
@@ -420,7 +420,13 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.6  2006-07-17 11:38:03  joergr
+ * Revision 1.7  2006-07-27 14:47:05  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Added optional library "LIBWRAP" to output of option "--version".
+ *
+ * Revision 1.6  2006/07/17 11:38:03  joergr
  * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
  * in the configuration directory (e.g. "/usr/local/etc") is used.
  *
