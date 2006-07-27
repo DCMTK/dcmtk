@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 17:43:42 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:38:03 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1021,23 +1021,23 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("filename_in",   "presentation state file(s) to be checked", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dcmfile-in", "presentation state file(s) to be checked", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",        "-h",    "print this help text and exit");
-     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
-     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
+     cmd.addOption("--help",    "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",          "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose", "-v",    "verbose mode, print actions");
+     cmd.addOption("--debug",   "-d",    "debug mode, print debug information");
 
-     cmd.addOption("--logfile",     "-l", 1, "[f]ilename: string",
-                                             "write output to logfile f");
+     cmd.addOption("--logfile", "-l", 1, "[f]ilename: string",
+                                         "write output to logfile f");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -1095,7 +1095,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.22  2005-12-14 17:43:42  meichel
+ * Revision 1.23  2006-07-27 14:38:03  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Made naming conventions for command line parameters more consistent, e.g.
+ * used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+ *
+ * Revision 1.22  2005/12/14 17:43:42  meichel
  * Adapted code for compilation with TCP wrappers to NetBSD
  *
  * Revision 1.21  2005/12/12 15:14:34  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:33:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,43 +86,43 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmimg-in",      "DICOM input image file");
-    cmd.addParam("curvedata-in",   "curve data input file (text)");
-    cmd.addParam("dcmimg-out",     "DICOM output filename");
+    cmd.addParam("dcmfile-in", "DICOM input image file");
+    cmd.addParam("curvedata-in", "curve data input file (text)");
+    cmd.addParam("dcmfile-out", "DICOM output filename");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",           "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                 "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose",        "-v",    "verbose mode, print processing details");
+     cmd.addOption("--debug",          "-d",    "debug mode, print debug information");
     cmd.addGroup("curve creation options:");
       cmd.addSubGroup("curve type:");
-        cmd.addOption("--poly",        "-r",     "create as POLY curve (default)");
-        cmd.addOption("--roi",         "+r",     "create as ROI curve");
+        cmd.addOption("--poly",        "-r",    "create as POLY curve (default)");
+        cmd.addOption("--roi",         "+r",    "create as ROI curve");
 
       cmd.addSubGroup("curve value representation:");
-        cmd.addOption("--data-vr",     "+v", 1,  "[n]umber: integer 0..4 (default: 4)",
-                                                 "select curve data VR: 0=US, 1=SS, 2=FL, 3=FD, 4=SL");
-        cmd.addOption("--curve-vr",    "-c", 1,  "[n]umber: integer 0..2 (default: 0)",
-                                                 "select VR with which the Curve Data element is written\n"
-                                                 "0=VR according to --data-vr, 1=OB, 2=OW");
+        cmd.addOption("--data-vr",     "+v", 1, "[n]umber: integer 0..4 (default: 4)",
+                                                "select curve data VR: 0=US, 1=SS, 2=FL, 3=FD, 4=SL");
+        cmd.addOption("--curve-vr",    "-c", 1, "[n]umber: integer 0..2 (default: 0)",
+                                                "select VR with which the Curve Data element is written\n"
+                                                "0=VR according to --data-vr, 1=OB, 2=OW");
       cmd.addSubGroup("repeating group:");
-        cmd.addOption("--group",       "-g", 1,  "[n]umber: integer 0..15 (default: 0)",
-                                                 "select repeating group: 0=0x5000, 1=0x5002 etc.");
+        cmd.addOption("--group",       "-g", 1, "[n]umber: integer 0..15 (default: 0)",
+                                                "select repeating group: 0=0x5000, 1=0x5002 etc.");
       cmd.addSubGroup("curve description:");
-        cmd.addOption("--label",       "-l", 1,  "s: string",
-                                                 "set Curve Label to s (default: absent)");
-        cmd.addOption("--description", "+d", 1,  "s: string",
-                                                 "set Curve Description to s (default: absent)");
-        cmd.addOption("--axis",        "-a", 2,  "x: string, y: string",
-                                                 "set Axis Units to x\\y (default: absent)");
+        cmd.addOption("--label",       "-l", 1, "s: string",
+                                                "set Curve Label to s (default: absent)");
+        cmd.addOption("--description", "+d", 1, "s: string",
+                                                "set Curve Description to s (default: absent)");
+        cmd.addOption("--axis",        "-a", 2, "x: string, y: string",
+                                                "set Axis Units to x\\y (default: absent)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -421,7 +421,14 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.19  2005-12-08 15:46:02  meichel
+** Revision 1.20  2006-07-27 14:33:49  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+** Made naming conventions for command line parameters more consistent, e.g.
+** used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+**
+** Revision 1.19  2005/12/08 15:46:02  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.18  2005/11/28 15:29:05  meichel

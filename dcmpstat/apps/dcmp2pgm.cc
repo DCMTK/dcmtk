@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:35:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -444,12 +444,12 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("dcmimage_in",              "input DICOM image");
-    cmd.addParam("bitmap_out",               "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
+    cmd.addParam("dcmfile-in", "input DICOM image");
+    cmd.addParam("bitmap-out", "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",        "-h",    "print this help text and exit");
-     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--help",        "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",     "-v",    "verbose mode, dump presentation state contents");
      cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
 
@@ -470,10 +470,10 @@ int main(int argc, char *argv[])
                                              "save presentation state to file");
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -586,7 +586,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.36  2005-12-08 15:46:04  meichel
+ * Revision 1.37  2006-07-27 14:35:25  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Made naming conventions for command line parameters more consistent, e.g.
+ * used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+ *
+ * Revision 1.36  2005/12/08 15:46:04  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.35  2005/11/28 15:29:05  meichel

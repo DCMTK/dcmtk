@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:40:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,125 +177,125 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL+2);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("imagefile_in",   "DICOM image file(s) to be printed", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("dcmfile-in", "DICOM image file(s) to be printed", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print actions");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",              "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                     "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose",           "-v",     "verbose mode, print actions");
+     cmd.addOption("--debug",             "-d",     "debug mode, print debug information");
 
     cmd.addGroup("processing options:");
-     cmd.addOption("--pstate",      "+p", 1, "[p]state-file: string",
-                                             "render the following image with pres. state p");
-     cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
-                                             "process using settings from configuration file f");
-     cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
-                                             "select printer with identifier n from cfg file");
+     cmd.addOption("--pstate",            "+p",  1, "[p]state-file: string",
+                                                    "render the following image with pres. state p");
+     cmd.addOption("--config",            "-c",  1, "[f]ilename: string",
+                                                    "process using settings from configuration file f");
+     cmd.addOption("--printer",           "-p",  1, "[n]ame: string (default: 1st printer in cfg file)",
+                                                    "select printer with identifier n from cfg file");
 
     cmd.addGroup("spooling options:");
-     cmd.addOption("--spool",       "-s",    "spool print job to DICOM printer");
-     cmd.addOption("--nospool",              "do not spool print job to DICOM printer (default)");
+     cmd.addOption("--spool",             "-s",     "spool print job to DICOM printer");
+     cmd.addOption("--nospool",                     "do not spool print job to DICOM printer (default)");
 
     cmd.addGroup("film orientation options:");
-     cmd.addOption("--portrait",             "set portrait orientation");
-     cmd.addOption("--landscape",            "set landscape orientation");
-     cmd.addOption("--default-orientation",  "use printer default (default)");
+     cmd.addOption("--portrait",                    "set portrait orientation");
+     cmd.addOption("--landscape",                   "set landscape orientation");
+     cmd.addOption("--default-orientation",         "use printer default (default)");
 
     cmd.addGroup("trim (border) options:");
-     cmd.addOption("--trim",                 "set trim on");
-     cmd.addOption("--no-trim",              "set trim off");
-     cmd.addOption("--default-trim",         "use printer default (default)");
+     cmd.addOption("--trim",                        "set trim on");
+     cmd.addOption("--no-trim",                     "set trim off");
+     cmd.addOption("--default-trim",                "use printer default (default)");
 
     cmd.addGroup("requested decimate/crop behaviour options:");
-     cmd.addOption("--request-decimate",     "request decimate");
-     cmd.addOption("--request-crop",         "request crop");
-     cmd.addOption("--request-fail",         "request failure");
-     cmd.addOption("--default-request",      "use printer default (default)");
+     cmd.addOption("--request-decimate",            "request decimate");
+     cmd.addOption("--request-crop",                "request crop");
+     cmd.addOption("--request-fail",                "request failure");
+     cmd.addOption("--default-request",             "use printer default (default)");
 
     cmd.addGroup("print presentation LUT options:");
-     cmd.addOption("--default-plut",         "do not create presentation LUT (default)");
-     cmd.addOption("--identity",             "set IDENTITY presentation LUT shape");
-     cmd.addOption("--lin-od",               "set LIN OD presentation LUT shape");
-     cmd.addOption("--plut",              1, "[l]ut identifier: string",
-                                             "add LUT [l] to print job");
-     cmd.addOption("--inverse-plut",         "render the inverse presentation LUT into the\nbitmap of the hardcopy grayscale image");
-     cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
-                                             "set illumination to v (in cd/m^2)");
-     cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
-                                             "set reflected ambient light to v (in cd/m^2)");
+     cmd.addOption("--default-plut",                "do not create presentation LUT (default)");
+     cmd.addOption("--identity",                    "set IDENTITY presentation LUT shape");
+     cmd.addOption("--lin-od",                      "set LIN OD presentation LUT shape");
+     cmd.addOption("--plut",                     1, "[l]ut identifier: string",
+                                                    "add LUT [l] to print job");
+     cmd.addOption("--inverse-plut",                "render the inverse presentation LUT into the\nbitmap of the hardcopy grayscale image");
+     cmd.addOption("--illumination",             1, "[v]alue: integer (0..65535)",
+                                                    "set illumination to v (in cd/m^2)");
+     cmd.addOption("--reflection",               1, "[v]alue: integer (0..65535)",
+                                                    "set reflected ambient light to v (in cd/m^2)");
 
     cmd.addGroup("basic film session options (only with --spool):");
-     cmd.addOption("--copies",            1, "[v]alue: integer (1..100, default: 1)",
-                                             "set number of copies to v");
-     cmd.addOption("--medium-type",       1, "[v]alue: string",
-                                             "set medium type to v");
-     cmd.addOption("--destination",       1, "[v]alue: string",
-                                             "set film destination to v");
-     cmd.addOption("--label",             1, "[v]alue: string",
-                                             "set film session label to v");
-     cmd.addOption("--priority",          1, "[v]alue: string",
-                                             "set print priority to v");
-     cmd.addOption("--owner",             1, "[v]alue: string",
-                                             "set film session owner ID to v");
+     cmd.addOption("--copies",                   1, "[v]alue: integer (1..100, default: 1)",
+                                                    "set number of copies to v");
+     cmd.addOption("--medium-type",              1, "[v]alue: string",
+                                                    "set medium type to v");
+     cmd.addOption("--destination",              1, "[v]alue: string",
+                                                    "set film destination to v");
+     cmd.addOption("--label",                    1, "[v]alue: string",
+                                                    "set film session label to v");
+     cmd.addOption("--priority",                 1, "[v]alue: string",
+                                                    "set print priority to v");
+     cmd.addOption("--owner",                    1, "[v]alue: string",
+                                                    "set film session owner ID to v");
 
     cmd.addGroup("annotation options:");
-     cmd.addOption("--no-annotation",        "do not create annotation (default)");
-     cmd.addOption("--annotation",  "-a", 1, "[t]ext: string",
-                                             "create annotation with text t");
-     cmd.addOption("--print-date",        "+pd",  "prepend date/time to annotation (default)");
-     cmd.addOption("--print-no-date",     "-pd",  "do not prepend date/time to annotation");
+     cmd.addOption("--no-annotation",               "do not create annotation (default)");
+     cmd.addOption("--annotation",        "-a",  1, "[t]ext: string",
+                                                    "create annotation with text t");
+     cmd.addOption("--print-date",        "+pd",    "prepend date/time to annotation (default)");
+     cmd.addOption("--print-no-date",     "-pd",    "do not prepend date/time to annotation");
 
-     cmd.addOption("--print-name",        "+pn",  "prepend printer name to annotation (default)");
-     cmd.addOption("--print-no-name",     "-pn",  "do not prepend printer name to annotation");
+     cmd.addOption("--print-name",        "+pn",    "prepend printer name to annotation (default)");
+     cmd.addOption("--print-no-name",     "-pn",    "do not prepend printer name to annotation");
 
-     cmd.addOption("--print-lighting",    "+pl",  "prepend illumination to annotation (default)");
-     cmd.addOption("--print-no-lighting", "-pl",  "do not prepend illumination to annotation");
+     cmd.addOption("--print-lighting",    "+pl",    "prepend illumination to annotation (default)");
+     cmd.addOption("--print-no-lighting", "-pl",    "do not prepend illumination to annotation");
 
     cmd.addGroup("overlay options:");
-     cmd.addOption("--overlay",       "+O" , 3, "[f]ilename : string, [x] [y] : integer",
-                                                "load overlay data from PBM file f and\ndisplay at position (x,y)");
-     cmd.addOption("--ovl-graylevel", "+Og", 1, "[v]alue: integer (0..4095)",
-                                                "use overlay gray level v (default: 4095 = white)");
+     cmd.addOption("--overlay",           "+O" , 3, "[f]ilename : string, [x] [y] : integer",
+                                                    "load overlay data from PBM file f and\ndisplay at position (x,y)");
+     cmd.addOption("--ovl-graylevel",     "+Og", 1, "[v]alue: integer (0..4095)",
+                                                    "use overlay gray level v (default: 4095 = white)");
 
     cmd.addGroup("other print options:");
-     cmd.addOption("--layout",      "-l", 2, "[c]olumns [r]ows: integer (default: 1 1)",
-                                             "use 'STANDARD\\c,r' image display format");
-     cmd.addOption("--filmsize",          1, "[v]alue: string",
-                                             "set film size ID to v");
-     cmd.addOption("--magnification",     1, "[v]alue: string",
-                                             "set magnification type to v");
-     cmd.addOption("--smoothing",         1, "[v]alue: string",
-                                             "set smoothing type to v");
-     cmd.addOption("--configinfo",        1, "[v]alue: string",
-                                             "set configuration information to v");
-     cmd.addOption("--resolution",        1, "[v]alue: string",
-                                             "set requested resolution ID to v");
-     cmd.addOption("--border",            1, "[v]alue: string",
-                                             "set border density to v");
-     cmd.addOption("--empty-image",       1, "[v]alue: string",
-                                             "set empty image density to v");
-     cmd.addOption("--max-density",       1, "[v]alue: string",
-                                             "set max density to v");
-     cmd.addOption("--min-density",       1, "[v]alue: string",
-                                             "set min density to v");
-     cmd.addOption("--img-polarity",      1, "[v]alue: string",
-                                             "set image box polarity to v (NORMAL or REVERSE)");
-     cmd.addOption("--img-request-size",  1, "[v]alue: string",
-                                             "set requested image size to v (width in mm)");
-     cmd.addOption("--img-magnification", 1, "[v]alue: string",
-                                             "set image box magnification type to v");
-     cmd.addOption("--img-smoothing",     1, "[v]alue: string",
-                                             "set image box smoothing type to v");
-     cmd.addOption("--img-configinfo",    1, "[v]alue: string",
-                                             "set image box configuration information to v");
+     cmd.addOption("--layout",            "-l",  2, "[c]olumns [r]ows: integer (default: 1 1)",
+                                                    "use 'STANDARD\\c,r' image display format");
+     cmd.addOption("--filmsize",                 1, "[v]alue: string",
+                                                    "set film size ID to v");
+     cmd.addOption("--magnification",            1, "[v]alue: string",
+                                                    "set magnification type to v");
+     cmd.addOption("--smoothing",                1, "[v]alue: string",
+                                                    "set smoothing type to v");
+     cmd.addOption("--configinfo",               1, "[v]alue: string",
+                                                    "set configuration information to v");
+     cmd.addOption("--resolution",               1, "[v]alue: string",
+                                                    "set requested resolution ID to v");
+     cmd.addOption("--border",                   1, "[v]alue: string",
+                                                    "set border density to v");
+     cmd.addOption("--empty-image",              1, "[v]alue: string",
+                                                    "set empty image density to v");
+     cmd.addOption("--max-density",              1, "[v]alue: string",
+                                                    "set max density to v");
+     cmd.addOption("--min-density",              1, "[v]alue: string",
+                                                    "set min density to v");
+     cmd.addOption("--img-polarity",             1, "[v]alue: string",
+                                                    "set image box polarity to v (NORMAL or REVERSE)");
+     cmd.addOption("--img-request-size",         1, "[v]alue: string",
+                                                    "set requested image size to v (width in mm)");
+     cmd.addOption("--img-magnification",        1, "[v]alue: string",
+                                                    "set image box magnification type to v");
+     cmd.addOption("--img-smoothing",            1, "[v]alue: string",
+                                                    "set image box smoothing type to v");
+     cmd.addOption("--img-configinfo",           1, "[v]alue: string",
+                                                    "set image box configuration information to v");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -706,7 +706,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.36  2005-12-08 15:46:09  meichel
+ * Revision 1.37  2006-07-27 14:40:06  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Made naming conventions for command line parameters more consistent, e.g.
+ * used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+ *
+ * Revision 1.36  2005/12/08 15:46:09  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.35  2005/11/28 15:29:05  meichel
