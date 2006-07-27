@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005, OFFIS
+ *  Copyright (C) 2005-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:18:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,38 +122,38 @@ int main( int argc, char *argv[] )
 
   cmd.setOptionColumns( LONGCOL, SHORTCOL );
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-  cmd.addOption("--help", "-h", "print this help text and exit");
-  cmd.addOption("--version", "print version information and exit", OFTrue ); // OFTrue means "exclusive"
-  cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
-  cmd.addOption("--debug", "-d", "debug mode, print debug information");
+  cmd.addOption("--help",      "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+  cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
+  cmd.addOption("--verbose",   "-v",      "verbose mode, print processing details");
+  cmd.addOption("--debug",     "-d",      "debug mode, print debug information");
 
   cmd.addGroup("network options:");
-  cmd.addSubGroup("application entity titles:");
-  OFString opt1 = "set my calling AE title (default: ";
-  opt1 += APPLICATIONTITLE;
-  opt1 += ")";
-  cmd.addOption("--aetitle", "-aet", 1, "aetitle: string", opt1.c_str());
-  OFString opt2 = "set called AE title of peer (default: ";
-  opt2 += PEERAPPLICATIONTITLE;
-  opt2 += ")";
-  cmd.addOption("--call", "-aec", 1, "aetitle: string", opt2.c_str());
-  cmd.addSubGroup("other network options:");
-  OFString opt3 = "set max receive pdu to n bytes (default: ";
-  sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
-  opt3 += tempstr;
-  opt3 += ")";
-  OFString opt4 = "[n]umber of bytes: integer [";
-  sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
-  opt4 += tempstr;
-  opt4 += "..";
-  sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
-  opt4 += tempstr;
-  opt4 += "]";
-  cmd.addOption("--max-pdu", "-pdu", 1, opt4.c_str(), opt3.c_str());
+   cmd.addSubGroup("application entity titles:");
+    OFString opt1 = "set my calling AE title (default: ";
+    opt1 += APPLICATIONTITLE;
+    opt1 += ")";
+    cmd.addOption("--aetitle", "-aet", 1, "aetitle: string", opt1.c_str());
+    OFString opt2 = "set called AE title of peer (default: ";
+    opt2 += PEERAPPLICATIONTITLE;
+    opt2 += ")";
+    cmd.addOption("--call",    "-aec", 1, "aetitle: string", opt2.c_str());
+   cmd.addSubGroup("other network options:");
+    OFString opt3 = "set max receive pdu to n bytes (default: ";
+    sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
+    opt3 += tempstr;
+    opt3 += ")";
+    OFString opt4 = "[n]umber of bytes: integer [";
+    sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
+    opt4 += tempstr;
+    opt4 += "..";
+    sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
+    opt4 += tempstr;
+    opt4 += "]";
+    cmd.addOption("--max-pdu", "-pdu", 1, opt4.c_str(), opt3.c_str());
 
   // evaluate command line
   prepareCmdLineArgs( argc, argv, OFFIS_CONSOLE_APPLICATION );
-  if( app.parseCommandLine( cmd, argc, argv, OFCommandLine::ExpandWildcards ) )
+  if( app.parseCommandLine( cmd, argc, argv ) )
   {
     // check exclusive options first
     if( cmd.getParamCount() == 0 )
@@ -343,7 +343,13 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.4  2005-12-08 15:44:23  meichel
+** Revision 1.5  2006-07-27 14:18:48  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Option "--help" is no longer an exclusive option
+** by default.
+** Removed option "ExpandWildcards" from parseComandLine() call.
+**
+** Revision 1.4  2005/12/08 15:44:23  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.3  2005/11/16 14:58:07  meichel
