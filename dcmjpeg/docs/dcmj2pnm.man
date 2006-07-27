@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmj2pnm [options] dcmfile-in [pnmfile-out]
+dcmj2pnm [options] dcmfile-in [bitmap-out]
 \endverbatim
 
 \section description DESCRIPTION
@@ -24,9 +24,9 @@ RLE compressed DICOM images.
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in   DICOM input filename to be converted
+dcmfile-in  DICOM input filename to be converted
 
-pnmfile-out  output filename to be written (default: stdout)
+bitmap-out  output filename to be written (default: stdout)
 \endverbatim
 
 \section options OPTIONS
