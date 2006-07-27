@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:22:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,14 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
     {
         case OFCommandLine::PS_NoArguments:
             /* check whether to print the "usage text" or not */
-            if (((cmd.getMinParamCount() > 0) && !cmd.hasExclusiveOption()) || cmd.findOption("--help"))
+            if (cmd.getMinParamCount() > 0)
+                printUsage();
+            else
+                result = OFTrue;
+            break;
+        case OFCommandLine::PS_ExclusiveOption:
+            /* check whether to print the "usage text" or not */
+            if (cmd.findOption("--help"))
                 printUsage();
             else
                 result = OFTrue;
@@ -254,7 +261,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.21  2005-12-08 15:48:50  meichel
+ * Revision 1.22  2006-07-27 13:22:12  joergr
+ * Slightly changed behaviour of "exclusive" options like "--help" or
+ * "--version". Method parseLine() now returns PS_ExclusiveOption.
+ *
+ * Revision 1.21  2005/12/08 15:48:50  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.20  2003/06/12 13:22:43  joergr
