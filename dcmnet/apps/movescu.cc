@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-06-23 10:24:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:22:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,68 +263,68 @@ main(int argc, char *argv[])
   cmd.setParamColumn(LONGCOL+SHORTCOL+4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
-  cmd.addParam("dcmfile_in", "DICOM query file(s)", OFCmdParam::PM_MultiOptional);
+  cmd.addParam("dcmfile-in", "DICOM query file(s)", OFCmdParam::PM_MultiOptional);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+   cmd.addOption("--help",                   "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--verbose",                "-v",      "verbose mode, print processing details");
+   cmd.addOption("--debug",                  "-d",      "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"str\" or data dict. name=\"str\"",
-                                                             "override matching key");
+      cmd.addOption("--key",                 "-k",   1, "key: gggg,eeee=\"str\" or data dict. name=\"str\"",
+                                                        "override matching key");
     cmd.addSubGroup("query information model:");
-      cmd.addOption("--patient",                "-P",        "use patient root information model (default)");
-      cmd.addOption("--study",                  "-S",        "use study root information model");
-      cmd.addOption("--psonly",                 "-O",        "use patient/study only information model");
+      cmd.addOption("--patient",             "-P",      "use patient root information model (default)");
+      cmd.addOption("--study",               "-S",      "use study root information model");
+      cmd.addOption("--psonly",              "-O",      "use patient/study only information model");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet",  1,  "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",             "-aet", 1, "aetitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",                   "-aec",  1,  "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",                "-aec", 1, "aetitle: string", opt2.c_str());
       OFString opt5 = "set move destinat. AE title (default: ";
       opt5 += APPLICATIONTITLE;
       opt5 += ")";
-      cmd.addOption("--move",                   "-aem",  1,  "aetitle: string", opt5.c_str());
+      cmd.addOption("--move",                "-aem", 1, "aetitle: string", opt5.c_str());
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
-      cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
-      cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
-      cmd.addOption("--prefer-big",             "+xb",       "prefer explicit VR big endian TS");
-      cmd.addOption("--prefer-lossless",        "+xs",       "prefer default JPEG lossless TS");
-      cmd.addOption("--prefer-jpeg8",           "+xy",       "prefer default JPEG lossy TS for 8 bit data");
-      cmd.addOption("--prefer-jpeg12",          "+xx",       "prefer default JPEG lossy TS for 12 bit data");
-      cmd.addOption("--prefer-j2k-lossless",    "+xv",       "prefer JPEG 2000 lossless TS");
-      cmd.addOption("--prefer-j2k-lossy",       "+xw",       "prefer JPEG 2000 lossy TS");
-      cmd.addOption("--prefer-rle",             "+xr",       "prefer RLE lossless TS");
-      cmd.addOption("--implicit",               "+xi",       "accept implicit VR little endian TS only");
+      cmd.addOption("--prefer-uncompr",      "+x=",     "prefer explicit VR local byte order (default)");
+      cmd.addOption("--prefer-little",       "+xe",     "prefer explicit VR little endian TS");
+      cmd.addOption("--prefer-big",          "+xb",     "prefer explicit VR big endian TS");
+      cmd.addOption("--prefer-lossless",     "+xs",     "prefer default JPEG lossless TS");
+      cmd.addOption("--prefer-jpeg8",        "+xy",     "prefer default JPEG lossy TS for 8 bit data");
+      cmd.addOption("--prefer-jpeg12",       "+xx",     "prefer default JPEG lossy TS for 12 bit data");
+      cmd.addOption("--prefer-j2k-lossless", "+xv",     "prefer JPEG 2000 lossless TS");
+      cmd.addOption("--prefer-j2k-lossy",    "+xw",     "prefer JPEG 2000 lossy TS");
+      cmd.addOption("--prefer-rle",          "+xr",     "prefer RLE lossless TS");
+      cmd.addOption("--implicit",            "+xi",     "accept implicit VR little endian TS only");
     cmd.addSubGroup("proposed transmission transfer syntaxes (outgoing associations):");
-      cmd.addOption("--propose-uncompr",        "-x=",       "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
-      cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
-      cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
-      cmd.addOption("--propose-implicit",       "-xi",       "propose implicit VR little endian TS only");
+      cmd.addOption("--propose-uncompr",     "-x=",     "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
+      cmd.addOption("--propose-little",      "-xe",     "propose all uncompressed TS, explicit VR\nlittle endian first");
+      cmd.addOption("--propose-big",         "-xb",     "propose all uncompressed TS, explicit VR\nbig endian first");
+      cmd.addOption("--propose-implicit",    "-xi",     "propose implicit VR little endian TS only");
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper) options:");
-      cmd.addOption("--access-full",            "-ac",       "accept connections from any host (default)");
-      cmd.addOption("--access-control",         "+ac",       "enforce host access control rules");
+      cmd.addOption("--access-full",         "-ac",     "accept connections from any host (default)");
+      cmd.addOption("--access-control",      "+ac",     "enforce host access control rules");
 #endif
     cmd.addSubGroup("port for incoming network associations:");
-      cmd.addOption("--no-port",                "-P",        "No port for incoming associations (default)");
-      cmd.addOption("--port",                   "+P",    1,  "[n]umber: integer",
-                                                             "port number for incoming associations");
+      cmd.addOption("--no-port",             "-P",      "no port for incoming associations (default)");
+      cmd.addOption("--port",                "+P",   1, "[n]umber: integer",
+                                                        "port number for incoming associations");
     cmd.addSubGroup("handling of illegal datasets following 'pending' move responses:");
-      cmd.addOption("--pending-ignore",         "-pi",        "Assume no dataset present (default)");
-      cmd.addOption("--pending-read",           "-pr",        "Read and ignore dataset");
+      cmd.addOption("--pending-ignore",      "-pi",     "assume no dataset present (default)");
+      cmd.addOption("--pending-read",        "-pr",     "read and ignore dataset");
 
     cmd.addSubGroup("other network options:");
-      cmd.addOption("--timeout",                "-to", 1,    "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",           "-ta", 1,    "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout",          "-td", 1,    "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--timeout",             "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",       "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
@@ -337,57 +337,63 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
-      cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
-      cmd.addOption("--repeat",                          1,  "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                               "abort association instead of releasing it");
-      cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
-      cmd.addOption("--cancel",                          1,  "[n]umber: integer",
-                                                             "cancel after n responses (default: never)");
-      cmd.addOption("--uid-padding",            "-up",       "silently correct space-padded UIDs");
+      cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
+      cmd.addOption("--repeat",                      1, "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                          "abort association instead of releasing it");
+      cmd.addOption("--ignore",                         "ignore store data, receive but do not store");
+      cmd.addOption("--cancel",                      1, "[n]umber: integer",
+                                                        "cancel after n responses (default: never)");
+      cmd.addOption("--uid-padding",         "-up",     "silently correct space-padded UIDs");
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
-      cmd.addOption("--normal",                 "-B",        "allow implicit format conversions (default)");
-      cmd.addOption("--bit-preserving",         "+B",        "write data exactly as read");
+      cmd.addOption("--normal",              "-B",      "allow implicit format conversions (default)");
+      cmd.addOption("--bit-preserving",      "+B",      "write data exactly as read");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+      cmd.addOption("--write-file",          "+F",      "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",      "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax (not with --bit-preserving or compressed transmission):");
-      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addOption("--write-xfer-same",     "+t=",     "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",   "+te",     "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",      "+tb",     "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit", "+ti",     "write with implicit VR little endian TS");
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding (not with --bit-preserving):");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd.addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",      "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",      "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items (not with --bit-preserving):");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd.addOption("--length-explicit",     "+e",      "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",      "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset or --bit-preserving):");
-      cmd.addOption("--padding-off",            "-p",        "no padding (default)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-off",         "-p",      "no padding (default)");
+      cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad: integer",
+                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
             CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
             CERR << " none" << endl;
+#else
+            CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_TCPWRAPPER
+            CERR << "- LIBWRAP" << endl;
 #endif
             return 0;
          }
@@ -1415,7 +1421,15 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.61  2006-06-23 10:24:41  meichel
+** Revision 1.62  2006-07-27 14:22:28  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+** Made naming conventions for command line parameters more consistent, e.g.
+** used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+** Added optional library "LIBWRAP" to output of option "--version".
+**
+** Revision 1.61  2006/06/23 10:24:41  meichel
 ** All Store SCPs in DCMTK now store the source application entity title in the
 **   metaheader, both in normal and in bit-preserving mode.
 **
