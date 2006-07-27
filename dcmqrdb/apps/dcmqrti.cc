@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:47:05 $
+ *  Update Date:      $Date: 2006-07-27 14:48:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,11 +420,13 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.7  2006-07-27 14:47:05  joergr
+ * Revision 1.8  2006-07-27 14:48:05  joergr
+ * Fixed typo.
+ *
+ * Revision 1.7  2006/07/27 14:47:05  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.
- * Added optional library "LIBWRAP" to output of option "--version".
  *
  * Revision 1.6  2006/07/17 11:38:03  joergr
  * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
