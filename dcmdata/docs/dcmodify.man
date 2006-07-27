@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmodify [options] [dcmfile-in...]
+dcmodify [options] dcmfile-in...
 \endverbatim
 
 \section description DESCRIPTION
