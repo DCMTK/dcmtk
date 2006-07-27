@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:20:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,33 +184,33 @@ main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-   cmd.addOption("--help",          "-h",      "print this help text and exit");
-   cmd.addOption("--version",                  "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",       "-v",      "verbose mode, print processing details");
-   cmd.addOption("--debug",         "-d",      "debug mode, print debug information");
+   cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--verbose",              "-v",      "verbose mode, print processing details");
+   cmd.addOption("--debug",                "-d",      "debug mode, print debug information");
 
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",    "-aet", 1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",           "-aet", 1, "aetitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",       "-aec", 1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",              "-aec", 1, "aetitle: string", opt2.c_str());
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
       sprintf(tempstr, "%ld", (long)maxXferSyntaxes);
       opt5 += tempstr;
       opt5 += ")";
-      cmd.addOption("--propose-ts", "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
-      cmd.addOption("--propose-pc", "-ppc", 1, "[n]umber: integer (1..128)", "propose n presentation contexts");
+      cmd.addOption("--propose-ts",        "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
+      cmd.addOption("--propose-pc",        "-ppc", 1, "[n]umber: integer (1..128)", "propose n presentation contexts");
 
     cmd.addSubGroup("other network options:");
-      cmd.addOption("--timeout",       "-to", 1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
-      cmd.addOption("--acse-timeout",  "-ta", 1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
-      cmd.addOption("--dimse-timeout", "-td", 1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
+      cmd.addOption("--timeout",           "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+      cmd.addOption("--acse-timeout",      "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
+      cmd.addOption("--dimse-timeout",     "-td",  1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
 
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
@@ -223,54 +223,54 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",    "-pdu", 1, opt4.c_str(), opt3.c_str());
-      cmd.addOption("--repeat",             1, "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                 "abort association instead of releasing it");
+      cmd.addOption("--max-pdu",           "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--repeat",                    1, "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                        "abort association instead of releasing it");
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
     cmd.addSubGroup("transport protocol stack options:");
-      cmd.addOption("--disable-tls",            "-tls",      "use normal TCP/IP connection (default)");
-      cmd.addOption("--enable-tls",             "+tls",  2,  "[p]rivate key file, [c]ertificate file: string",
-                                                             "use authenticated secure TLS connection");
-      cmd.addOption("--anonymous-tls",          "+tla",      "use secure TLS connection without certificate");
+      cmd.addOption("--disable-tls",       "-tls",    "use normal TCP/IP connection (default)");
+      cmd.addOption("--enable-tls",        "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
+                                                      "use authenticated secure TLS connection");
+      cmd.addOption("--anonymous-tls",     "+tla",    "use secure TLS connection without certificate");
     cmd.addSubGroup("private key password options (only with --enable-tls):");
-      cmd.addOption("--std-passwd",             "+ps",       "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",             "+pw",   1,  "[p]assword: string ",
-                                                             "use specified password");
-      cmd.addOption("--null-passwd",            "-pw",       "use empty string as password");
+      cmd.addOption("--std-passwd",        "+ps",     "prompt user to type password on stdin (default)");
+      cmd.addOption("--use-passwd",        "+pw",  1, "[p]assword: string ",
+                                                      "use specified password");
+      cmd.addOption("--null-passwd",       "-pw",     "use empty string as password");
     cmd.addSubGroup("key and certificate file format options:");
-      cmd.addOption("--pem-keys",               "-pem",      "read keys and certificates as PEM file (default)");
-      cmd.addOption("--der-keys",               "-der",      "read keys and certificates as DER file");
+      cmd.addOption("--pem-keys",          "-pem",    "read keys and certificates as PEM file (default)");
+      cmd.addOption("--der-keys",          "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority options:");
-      cmd.addOption("--add-cert-file",          "+cf",   1,  "[c]ertificate filename: string",
-                                                             "add certificate file to list of certificates");
-      cmd.addOption("--add-cert-dir",           "+cd",   1,  "[c]ertificate directory: string",
-                                                             "add certificates in d to list of certificates");
+      cmd.addOption("--add-cert-file",     "+cf",  1, "[c]ertificate filename: string",
+                                                      "add certificate file to list of certificates");
+      cmd.addOption("--add-cert-dir",      "+cd",  1, "[c]ertificate directory: string",
+                                                      "add certificates in d to list of certificates");
     cmd.addSubGroup("ciphersuite options:");
-      cmd.addOption("--cipher",                 "+cs",   1,  "[c]iphersuite name: string",
-                                                             "add ciphersuite to list of negotiated suites");
-      cmd.addOption("--dhparam",                "+dp",   1,  "[f]ilename: string",
-                                                             "read DH parameters for DH/DSS ciphersuites");
+      cmd.addOption("--cipher",            "+cs",  1, "[c]iphersuite name: string",
+                                                      "add ciphersuite to list of negotiated suites");
+      cmd.addOption("--dhparam",           "+dp",  1, "[f]ilename: string",
+                                                      "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator options:");
-      cmd.addOption("--seed",                   "+rs",   1,  "[f]ilename: string",
-                                                             "seed random generator with contents of f");
-      cmd.addOption("--write-seed",             "+ws",       "write back modified seed (only with --seed)");
-      cmd.addOption("--write-seed-file",        "+wf",   1,  "[f]ilename: string (only with --seed)",
-                                                             "write modified seed to file f");
+      cmd.addOption("--seed",              "+rs",  1, "[f]ilename: string",
+                                                      "seed random generator with contents of f");
+      cmd.addOption("--write-seed",        "+ws",     "write back modified seed (only with --seed)");
+      cmd.addOption("--write-seed-file",   "+wf",  1, "[f]ilename: string (only with --seed)",
+                                                      "write modified seed to file f");
     cmd.addSubGroup("peer authentication options:");
-      cmd.addOption("--require-peer-cert",      "-rc",       "verify peer certificate, fail if absent (default)");
-      cmd.addOption("--verify-peer-cert",       "-vc",       "verify peer certificate if present");
-      cmd.addOption("--ignore-peer-cert",       "-ic",       "don't verify peer certificate");
+      cmd.addOption("--require-peer-cert", "-rc",     "verify peer certificate, fail if absent (default)");
+      cmd.addOption("--verify-peer-cert",  "-vc",     "verify peer certificate if present");
+      cmd.addOption("--ignore-peer-cert",  "-ic",     "don't verify peer certificate");
 #endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -793,7 +793,12 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.39  2005-12-08 15:44:18  meichel
+** Revision 1.40  2006-07-27 14:20:08  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+**
+** Revision 1.39  2005/12/08 15:44:18  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.38  2005/11/23 16:10:23  meichel
