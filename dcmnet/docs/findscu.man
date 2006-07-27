@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-findscu [options] peer port [dcmfile_in...]
+findscu [options] peer port [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
@@ -27,7 +27,7 @@ peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
 
-dcmfile_in  DICOM query file(s)
+dcmfile-in  DICOM query file(s)
 \endverbatim
 
 \section options OPTIONS

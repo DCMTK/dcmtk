@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-storescu [options] peer port dcmfile_in...
+storescu [options] peer port dcmfile-in...
 \endverbatim
 
 \section description DESCRIPTION
@@ -26,7 +26,7 @@ peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
 
-dcmfile_in  DICOM file(s) to be transmitted
+dcmfile-in  DICOM file(s) to be transmitted
 \endverbatim
 
 \section options OPTIONS

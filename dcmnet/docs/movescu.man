@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-movescu [options] peer port [dcmfile_in...]
+movescu [options] peer port [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
@@ -32,7 +32,7 @@ peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
 
-dcmfile_in  DICOM query file(s)
+dcmfile-in  DICOM query file(s)
 \endverbatim
 
 \section options OPTIONS
@@ -141,7 +141,7 @@ network host access control (tcp wrapper) options:
 port for incoming network associations:
 
   -P    --no-port
-          No port for incoming associations (default)
+          no port for incoming associations (default)
 
   +P    --port  [n]umber: integer
           port number for incoming associations
@@ -149,10 +149,10 @@ port for incoming network associations:
 handling of illegal datasets following 'pending' move responses:
 
   -pi   --pending-ignore
-          Assume no dataset present (default)
+          assume no dataset present (default)
 
   -pr   --pending-read
-          Read and ignore dataset
+          read and ignore dataset
 
 other network options:
 
