@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-06-23 10:24:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:41:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -902,11 +902,11 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    int         opt_debugMode    = 0;         /* default: no debug */
-    OFBool      opt_verbose      = OFFalse;   /* default: not verbose */
-    int         opt_terminate    = 0;         /* default: no terminate mode */
-    const char *opt_cfgName      = NULL;      /* config file name */
-    const char *opt_cfgID        = NULL;      /* name of entry in config file */
+    int         opt_debugMode = 0;         /* default: no debug */
+    OFBool      opt_verbose   = OFFalse;   /* default: not verbose */
+    int         opt_terminate = 0;         /* default: no terminate mode */
+    const char *opt_cfgName   = NULL;      /* config file name */
+    const char *opt_cfgID     = NULL;      /* name of entry in config file */
 
     SetDebugLevel(( 0 ));
     dcmDisableGethostbyaddr.set(OFTrue);               // disable hostname lookup
@@ -920,18 +920,18 @@ int main(int argc, char *argv[])
     cmd.addParam("receiver-id",  "identifier of receiver in config file", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
-     cmd.addOption("--terminate",                 "-t",        "terminate all running receivers");
+     cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
+     cmd.addOption("--debug",     "-d", "debug mode, print debug information");
+     cmd.addOption("--terminate", "-t", "terminate all running receivers");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -1502,7 +1502,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.52  2006-06-23 10:24:43  meichel
+ * Revision 1.53  2006-07-27 14:41:35  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.52  2006/06/23 10:24:43  meichel
  * All Store SCPs in DCMTK now store the source application entity title in the
  *   metaheader, both in normal and in bit-preserving mode.
  *

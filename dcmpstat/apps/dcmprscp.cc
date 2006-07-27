@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:36:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,25 +166,25 @@ int main(int argc, char *argv[])
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",        "-h",    "print this help text and exit");
-     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
-     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
+     cmd.addOption("--help",    "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",          "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose", "-v",    "verbose mode, print actions");
+     cmd.addOption("--debug",   "-d",    "debug mode, print debug information");
 
     cmd.addGroup("processing options:");
-     cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
-                                             "process using settings from configuration file");
-     cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
-                                             "select printer with identifier [n] from cfg file");
-     cmd.addOption("--dump",        "+d",    "print all DIMSE messages");
-     cmd.addOption("--logfile",     "-l",    "print to log file instead of stdout");
+     cmd.addOption("--config",  "-c", 1, "[f]ilename: string",
+                                         "process using settings from configuration file");
+     cmd.addOption("--printer", "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
+                                         "select printer with identifier [n] from cfg file");
+     cmd.addOption("--dump",    "+d",    "print all DIMSE messages");
+     cmd.addOption("--logfile", "-l",    "print to log file instead of stdout");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -587,7 +587,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.20  2005-12-08 15:46:05  meichel
+ * Revision 1.21  2006-07-27 14:36:27  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.20  2005/12/08 15:46:05  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.19  2005/11/28 15:29:05  meichel

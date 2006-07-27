@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates
  *    a matching presentation state.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 17:43:42 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:39:02 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,65 +123,65 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM presentation state file to be created");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                     "-h",        "print this help text and exit");
-      cmd.addOption("--version",                               "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
-      cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
+      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
+      cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-       cmd.addOption("--read-file",               "+f",        "read file format or data set (default)");
-       cmd.addOption("--read-file-only",          "+fo",       "read file format only");
-       cmd.addOption("--read-dataset",            "-f",        "read data set without file meta information");
+       cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+       cmd.addOption("--read-file-only",      "+fo",    "read file format only");
+       cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
-       cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
-       cmd.addOption("--read-xfer-detect",        "-td",       "ignore TS specified in the file meta header");
-       cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
-       cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
-       cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+       cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+       cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
+       cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+       cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+       cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("VOI transform handling:");
-       cmd.addOption("--voi-lut",                 "+Vl",       "use first VOI LUT if present (default)");
-       cmd.addOption("--voi-window",              "+Vw",       "use first window center/width if present");
-       cmd.addOption("--voi-ignore",              "-V",        "ignore VOI LUT and window center/width");
+       cmd.addOption("--voi-lut",             "+Vl",    "use first VOI LUT if present (default)");
+       cmd.addOption("--voi-window",          "+Vw",    "use first window center/width if present");
+       cmd.addOption("--voi-ignore",          "-V",     "ignore VOI LUT and window center/width");
       cmd.addSubGroup("curve handling:");
-       cmd.addOption("--curve-activate",          "+c",        "activate curve data if present (default)");
-       cmd.addOption("--curve-ignore",            "-c",        "ignore curve data");
+       cmd.addOption("--curve-activate",      "+c",     "activate curve data if present (default)");
+       cmd.addOption("--curve-ignore",        "-c",     "ignore curve data");
       cmd.addSubGroup("overlay handling:");
-       cmd.addOption("--overlay-copy",            "+oc",       "copy overlays if not embedded,\nactivate otherwise (default)");
-       cmd.addOption("--overlay-activate",        "+oa",       "activate overlays");
-       cmd.addOption("--overlay-ignore",          "-o",        "ignore overlays");
+       cmd.addOption("--overlay-copy",        "+oc",    "copy overlays if not embedded,\nactivate otherwise (default)");
+       cmd.addOption("--overlay-activate",    "+oa",    "activate overlays");
+       cmd.addOption("--overlay-ignore",      "-o",     "ignore overlays");
       cmd.addSubGroup("shutter handling:");
-       cmd.addOption("--shutter-activate",        "+s",        "use shutter if present in image (default)");
-       cmd.addOption("--shutter-ignore",          "-s",        "ignore shutter");
+       cmd.addOption("--shutter-activate",    "+s",     "use shutter if present in image (default)");
+       cmd.addOption("--shutter-ignore",      "-s",     "ignore shutter");
       cmd.addSubGroup("presentation LUT shape handling:");
-       cmd.addOption("--plut-activate",           "+p",        "use presentation LUT shape if present (default)");
-       cmd.addOption("--plut-ignore",             "-p",        "ignore presentation LUT shape");
+       cmd.addOption("--plut-activate",       "+p",     "use presentation LUT shape if present (default)");
+       cmd.addOption("--plut-ignore",         "-p",     "ignore presentation LUT shape");
       cmd.addSubGroup("layering:");
-       cmd.addOption("--layer-single",            "+l1",       "all curves and overlays are in one layer");
-       cmd.addOption("--layer-double",            "+l2",       "one layer for curves, one for overlays (default)");
-       cmd.addOption("--layer-separate",          "+ls",       "separate layers for each curve and overlay");
+       cmd.addOption("--layer-single",        "+l1",    "all curves and overlays are in one layer");
+       cmd.addOption("--layer-double",        "+l2",    "one layer for curves, one for overlays (default)");
+       cmd.addOption("--layer-separate",      "+ls",    "separate layers for each curve and overlay");
       cmd.addSubGroup("location of referenced image:");
-       cmd.addOption("--location-none",           "-lx",       "image reference without location (default)");
-       cmd.addOption("--location-network",        "-ln",    1, "[a]etitle: string",
-                                                               "image located at application entity a");
-       cmd.addOption("--location-media",          "-lm",    2, "[f]ilesetID, fileset[UID]: string",
-                                                               "image located on storage medium");
+       cmd.addOption("--location-none",       "-lx",    "image reference without location (default)");
+       cmd.addOption("--location-network",    "-ln", 1, "[a]etitle: string",
+                                                        "image located at application entity a");
+       cmd.addOption("--location-media",      "-lm", 2, "[f]ilesetID, fileset[UID]: string",
+                                                        "image located on storage medium");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output transfer syntax:");
-       cmd.addOption("--write-xfer-same",         "+t=",       "write with same TS as image file (default)");
-       cmd.addOption("--write-xfer-little",       "+te",       "write with explicit VR little endian TS");
-       cmd.addOption("--write-xfer-big",          "+tb",       "write with explicit VR big endian TS");
-       cmd.addOption("--write-xfer-implicit",     "+ti",       "write with implicit VR little endian TS");
+       cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as image file (default)");
+       cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
+       cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+       cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -429,7 +429,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.22  2005-12-14 17:43:42  meichel
+** Revision 1.23  2006-07-27 14:39:02  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+**
+** Revision 1.22  2005/12/14 17:43:42  meichel
 ** Adapted code for compilation with TCP wrappers to NetBSD
 **
 ** Revision 1.21  2005/12/12 15:14:34  meichel

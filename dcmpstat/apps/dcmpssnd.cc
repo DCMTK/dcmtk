@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:41:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -372,24 +372,24 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("config-file",  "configuration file to be read");
-    cmd.addParam("target",       "symbolic identifier of send target in config file");
-    cmd.addParam("study",        "study instance UID of study in database to be sent");
-    cmd.addParam("series",       "series instance UID (default: send complete study)", OFCmdParam::PM_Optional);
-    cmd.addParam("instance",     "SOP instance UID (default: send complete series)", OFCmdParam::PM_Optional);
+    cmd.addParam("config-file", "configuration file to be read");
+    cmd.addParam("target",      "symbolic identifier of send target in config file");
+    cmd.addParam("study",       "study instance UID of study in database to be sent");
+    cmd.addParam("series",      "series instance UID (default: send complete study)", OFCmdParam::PM_Optional);
+    cmd.addParam("instance",    "SOP instance UID (default: send complete series)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
+     cmd.addOption("--debug",   "-d", "debug mode, print debug information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -1019,7 +1019,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.38  2005-12-08 15:46:11  meichel
+ * Revision 1.39  2006-07-27 14:41:35  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.38  2005/12/08 15:46:11  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.37  2005/11/28 15:29:05  meichel

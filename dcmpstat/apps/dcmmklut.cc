@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:34:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -736,8 +736,8 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmimg-out",                   "DICOM output filename" /* , OFCmdParam::PM_Optional */);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",           "-h",     "print this help text and exit");
-     cmd.addOption("--version",                  "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--help",           "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                  "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",        "-v",     "verbose mode, print processing details");
      cmd.addOption("--debug",          "-d",     "debug mode, print debug information");
     cmd.addGroup("LUT creation options:");
@@ -793,10 +793,10 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
         /* check exclusive options first */
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
           if (cmd.findOption("--version"))
           {
@@ -1093,7 +1093,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.39  2005-12-08 15:46:03  meichel
+ * Revision 1.40  2006-07-27 14:34:40  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.39  2005/12/08 15:46:03  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.38  2005/11/28 15:29:05  meichel
