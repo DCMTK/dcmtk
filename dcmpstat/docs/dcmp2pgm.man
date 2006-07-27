@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmp2pgm [options] dcmimage_in [bitmap_out]
+dcmp2pgm [options] dcmimage-in [bitmap-out]
 \endverbatim
 
 \section description DESCRIPTION
@@ -29,9 +29,9 @@ and defined in the configuration file.
 \section parameters PARAMETERS
 
 \verbatim
-dcmimage_in  input DICOM image
+dcmimage-in  input DICOM image
 
-bitmap_out   output DICOM image or PGM bitmap
+bitmap-out   output DICOM image or PGM bitmap
 \endverbatim
 
 \section options OPTIONS

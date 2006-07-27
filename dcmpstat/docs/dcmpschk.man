@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmpschk [options] [filename_in...]
+dcmpschk [options] [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
@@ -40,7 +40,7 @@ phases:
 \section parameters PARAMETERS
 
 \verbatim
-filename_in  presentation state file(s) to be checked
+dcmfile-in  presentation state file(s) to be checked
 \endverbatim
 
 \section options OPTIONS

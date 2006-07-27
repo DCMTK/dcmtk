@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmprscu [options] [filename_in...]
+dcmprscu [options] [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
@@ -41,7 +41,7 @@ in which case commands are read periodically from a spool directory.
 \section parameters PARAMETERS
 
 \verbatim
-filename_in  stored print file(s) to be spooled
+dcmfile-in  stored print file(s) to be spooled
 \endverbatim
 
 \section options OPTIONS

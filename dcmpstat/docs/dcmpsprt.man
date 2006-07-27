@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmpsprt [options] [imagefile_in...]
+dcmpsprt [options] [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
@@ -24,7 +24,7 @@ application which performs communication with the printer.
 \section parameters PARAMETERS
 
 \verbatim
-imagefile_in  DICOM image file(s) to be printed
+dcmfile-in  DICOM image file(s) to be printed
 \endverbatim
 
 \section options OPTIONS
