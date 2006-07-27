@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:49 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:21:28 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,8 +53,11 @@
  *  constant initializations  *
  *----------------------------*/
 
-const int OFCommandLine::ExpandWildcards = 0x0001;
-const int OFCommandLine::NoCommandFiles  = 0x0002;
+const int OFCommandLine::PF_ExpandWildcards = 0x0001;
+const int OFCommandLine::PF_NoCommandFiles  = 0x0002;
+
+const int OFCommandLine::AF_Exclusive       = 0x0001;
+const int OFCommandLine::AF_Internal        = 0x0002;
 
 
 /*-----------------------*
@@ -75,21 +78,20 @@ struct OFCmdOption
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option
-     *  @param  exclusive   exclusive option which cannot be combined with any other command
-     *                      line argument if OFTrue, e.g. "--help" or "--version"
+     *  @param  flags       flags (see AF_xxx)
      */
     OFCmdOption(const char *longOpt,
                 const char *shortOpt,
                 const int valueCount,
                 const char *valueDescr,
                 const char *optDescr,
-                const OFBool exclusive)
+                const int flags)
       : LongOption(longOpt),
         ShortOption(shortOpt),
         ValueCount(valueCount),
         ValueDescription(valueDescr),
         OptionDescription(optDescr),
-        ExclusiveOption(exclusive),
+        Flags(flags),
         Checked(OFFalse)
     {
     }
@@ -99,7 +101,7 @@ struct OFCmdOption
     ~OFCmdOption()
     {
 #ifdef DEBUG
-        if (!Checked && !ExclusiveOption && (LongOption.length() > 0))
+        if (!Checked && !(flags & OFCommandLine::AF_Exclusive) && (LongOption.length() > 0))
         {
             ofConsole.lockCerr() << "WARNING: option " << LongOption << " has possibly never been checked !" << endl;
             ofConsole.unlockCerr();
@@ -117,8 +119,8 @@ struct OFCmdOption
     const OFString ValueDescription;
     /// description of command line option
     const OFString OptionDescription;
-    /// exclusive option cannot be combined with any other command line argument
-    const OFBool ExclusiveOption;
+    /// flags (see AF_xxx)
+    const int Flags;
     /// OFTrue if findOption has been applied to this option
     OFBool Checked;
 
@@ -270,7 +272,7 @@ OFBool OFCommandLine::addOption(const char *longOpt,
                                 const int valueCount,
                                 const char *valueDescr,
                                 const char *optDescr,
-                                const OFBool exclusive)
+                                const int flags)
 {
     if (checkOption(longOpt) && checkOption(shortOpt))
     {
@@ -298,9 +300,7 @@ OFBool OFCommandLine::addOption(const char *longOpt,
             }
         }
 #endif
-        /* consider "--help" always an exclusive option */
-        const OFBool exclMode = (longOpt != NULL) && (strcmp(longOpt, "--help") == 0) ? OFTrue : exclusive;
-        OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr, exclMode);
+        OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr, flags);
         if (opt != NULL)
         {
             ValidOptionList.push_back(opt);
@@ -318,9 +318,9 @@ OFBool OFCommandLine::addOption(const char *longOpt,
 OFBool OFCommandLine::addOption(const char *longOpt,
                                 const char *shortOpt,
                                 const char *optDescr,
-                                const OFBool exclusive)
+                                const int flags)
 {
-    return addOption(longOpt, shortOpt, 0, "", optDescr, exclusive);
+    return addOption(longOpt, shortOpt, 0, "", optDescr, flags);
 }
 
 
@@ -328,17 +328,17 @@ OFBool OFCommandLine::addOption(const char *longOpt,
                                 const int valueCount,
                                 const char *valueDescr,
                                 const char *optDescr,
-                                const OFBool exclusive)
+                                const int flags)
 {
-    return addOption(longOpt, "", valueCount, valueDescr, optDescr, exclusive);
+    return addOption(longOpt, "", valueCount, valueDescr, optDescr, flags);
 }
 
 
 OFBool OFCommandLine::addOption(const char *longOpt,
                                 const char *optDescr,
-                                const OFBool exclusive)
+                                const int flags)
 {
-    return addOption(longOpt, "", 0, "", optDescr, exclusive);
+    return addOption(longOpt, "", 0, "", optDescr, flags);
 }
 
 
@@ -954,7 +954,7 @@ void OFCommandLine::unpackColumnValues(const int value,
 
 
 #ifdef HAVE_WINDOWS_H
-void OFCommandLine::expandWildcards(const OFString &param,
+void OFCommandLine::PF_ExpandWildcards(const OFString &param,
                                     int directOpt)
 {
     const size_t paramLen = param.length();
@@ -1030,8 +1030,10 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
         }
         ++iter;
     }
-    if ((getArgCount() == 0) || ((getArgCount() == 1) && hasExclusiveOption()))
+    if (getArgCount() == 0)
         return PS_NoArguments;
+    else if  (hasExclusiveOption())
+        return PS_ExclusiveOption;
     else if (getParamCount() < MinParamCount)
         return PS_MissingParameter;
     else if ((MaxParamCount >= 0) && (getParamCount() > MaxParamCount))
@@ -1089,7 +1091,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
         /* expand command files (if any) */
         for (i = startPos; i < argCount; i++)                            // skip program name (argValue[0])
         {
-            if (flags & NoCommandFiles)                                  // do not try to detect command files
+            if (flags & PF_NoCommandFiles)                               // do not try to detect command files
                 argList.push_back(argValue[i]);
             else
             {
@@ -1113,7 +1115,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
             if (!checkOption(*argIter, OFFalse))                         // arg = parameter
             {
 #ifdef HAVE_WINDOWS_H
-                if (flags & ExpandWildcards)                             // expand wildcards
+                if (flags & PF_ExpandWildcards)                          // expand wildcards
                     expandWildcards(*argIter, directOption);
                 else
 #endif
@@ -1125,7 +1127,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 {
                     ArgumentList.push_back(OFstatic_cast(OFString, opt->LongOption)); // convert argument to long format
                     OptionPosList.push_back(--ArgumentList.end());
-                    if (opt->ExclusiveOption)                            // check for an "exclusive" option
+                    if (opt->Flags & AF_Exclusive)                       // check for an "exclusive" option
                         ExclusiveOption = OFTrue;
                     directOption++;
                     int j = opt->ValueCount;                             // number of expected values
@@ -1208,60 +1210,70 @@ void OFCommandLine::getOptionString(OFString &optionStr) const
         const unsigned int columnSpace = 2;
         while (iter != last)
         {
-            if (newGrp)
+            /* skip internal options */
+            if (!((*iter)->Flags & OFCommandLine::AF_Internal))
             {
-                OFListConstIterator(OFCmdOption *) i = iter;
-                while ((i != last) && ((*i)->LongOption.length() > 0))
+                if (newGrp)
                 {
-                    if ((*i)->ShortOption.length() > shortSize)
-                        shortSize = (*i)->ShortOption.length();
-                    if ((*i)->LongOption.length() > longSize)
-                        longSize = (*i)->LongOption.length();
-                    i++;
+                    /* determine column width per group */
+                    OFListConstIterator(OFCmdOption *) i = iter;
+                    while ((i != last) && ((*i)->LongOption.length() > 0))
+                    {
+                        if (!((*i)->Flags & OFCommandLine::AF_Internal))
+                        {
+                            if ((*i)->ShortOption.length() > shortSize)
+                                shortSize = (*i)->ShortOption.length();
+                            if ((*i)->LongOption.length() > longSize)
+                                longSize = (*i)->LongOption.length();
+                        }
+                        i++;
+                    }
+                    newGrp = 0;
                 }
-                newGrp = 0;
-            }
-            if ((*iter)->LongOption.length() <= 0)
-            {
-                newGrp = 1;
-                unpackColumnValues((*iter)->ValueCount, longSize, shortSize);
-                if ((*iter)->OptionDescription.length() > 0)                 // new group
+                if ((*iter)->LongOption.length() <= 0)
                 {
-                    optionStr += (*iter)->OptionDescription;
-                    lineIndent = groupIndent;
-                } else {                                                     // new sub group
-                    optionStr.append(groupIndent, ' ');
-                    optionStr += (*iter)->ValueDescription;
-                    lineIndent = subGrpIndent;
-                }
-                optionStr += "\n";
-            } else {
-                optionStr.append(lineIndent, ' ');
-                if (shortSize > 0)
-                {
-                    str = (*iter)->ShortOption;
-                    str.resize(shortSize, ' ');
+                    /* group entry */
+                    newGrp = 1;
+                    unpackColumnValues((*iter)->ValueCount, longSize, shortSize);
+                    if ((*iter)->OptionDescription.length() > 0)                 // new group
+                    {
+                        optionStr += (*iter)->OptionDescription;
+                        lineIndent = groupIndent;
+                    } else {                                                     // new sub group
+                        optionStr.append(groupIndent, ' ');
+                        optionStr += (*iter)->ValueDescription;
+                        lineIndent = subGrpIndent;
+                    }
+                    optionStr += "\n";
+                } else {
+                    /* regular option */
+                    optionStr.append(lineIndent, ' ');
+                    if (shortSize > 0)
+                    {
+                        str = (*iter)->ShortOption;
+                        str.resize(shortSize, ' ');
+                        optionStr += str;
+                        optionStr.append(columnSpace, ' ');
+                    }
+                    str = (*iter)->LongOption;
+                    str.resize(longSize, ' ');
                     optionStr += str;
                     optionStr.append(columnSpace, ' ');
-                }
-                str = (*iter)->LongOption;
-                str.resize(longSize, ' ');
-                optionStr += str;
-                optionStr.append(columnSpace, ' ');
-                if ((*iter)->ValueDescription.length() > 0)
-                {
-                    optionStr += (*iter)->ValueDescription;
+                    if ((*iter)->ValueDescription.length() > 0)
+                    {
+                        optionStr += (*iter)->ValueDescription;
+                        optionStr += "\n";
+                        optionStr.append(lineIndent + shortSize + longSize + columnSpace, ' ');
+                        if (shortSize > 0)
+                            optionStr.append(columnSpace, ' ');
+                    }
+                    str = (*iter)->OptionDescription;
+                    size_t pos = 0;
+                    while (((pos = (str.find('\n', pos))) != OFString_npos) && (pos < str.length()))
+                        str.insert(++pos, OFString(lineIndent + shortSize + longSize + 2 * columnSpace, ' '));
+                    optionStr += str;
                     optionStr += "\n";
-                    optionStr.append(lineIndent + shortSize + longSize + columnSpace, ' ');
-                    if (shortSize > 0)
-                        optionStr.append(columnSpace, ' ');
                 }
-                str = (*iter)->OptionDescription;
-                size_t pos = 0;
-                while (((pos = (str.find('\n', pos))) != OFString_npos) && (pos < str.length()))
-                    str.insert(++pos, OFString(lineIndent + shortSize + longSize + 2 * columnSpace, ' '));
-                optionStr += str;
-                optionStr += "\n";
             }
             ++iter;
         }
@@ -1462,7 +1474,16 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.36  2005-12-08 15:48:49  meichel
+ * Revision 1.37  2006-07-27 13:21:28  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags".
+ * Added new addOption() flag for internal options that are not shown in the
+ * syntax usage output. Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Slightly changed behaviour of "exclusive" options like "--help" or
+ * "--version". Method parseLine() now returns PS_ExclusiveOption.
+ *
+ * Revision 1.36  2005/12/08 15:48:49  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.35  2003/12/05 13:58:28  joergr
