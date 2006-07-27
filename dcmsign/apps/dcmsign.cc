@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 13:16:37 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:50:20 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -734,8 +734,8 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename", OFCmdParam::PM_Optional);
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                      "-h",        "print this help text and exit");
-      cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--help",                      "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                                "print version information and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
       cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
       cmd.addOption("--dump",                      "+d",     1, "[f]ilename: string",
@@ -800,11 +800,11 @@ int main(int argc, char *argv[])
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-  if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+  if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
     /* check exclusive options first */
 
-    if (cmd.getParamCount() == 0)
+    if (cmd.hasExclusiveOption())
     {
         if (cmd.findOption("--version"))
         {
@@ -1165,7 +1165,12 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.23  2005-12-16 13:16:37  meichel
+ *  Revision 1.24  2006-07-27 14:50:20  joergr
+ *  Changed parameter "exclusive" of method addOption() from type OFBool into an
+ *  integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ *  Option "--help" is no longer an exclusive option by default.
+ *
+ *  Revision 1.23  2005/12/16 13:16:37  meichel
  *  Simplified code to avoid warning on Fedora Core 4
  *
  *  Revision 1.22  2005/12/16 09:19:17  onken

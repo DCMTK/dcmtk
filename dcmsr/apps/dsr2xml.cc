@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:32:01 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2006-07-27 14:52:00 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,8 +171,8 @@ int main(int argc, char *argv[])
     cmd.addParam("xmlfile-out", "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                   "-h",     "print this help text and exit");
-      cmd.addOption("--version",                          "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
       cmd.addOption("--verbose-debug",          "-dd",    "verbose debug mode, print more details");
 
@@ -212,10 +212,10 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
         /* check exclusive options first */
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
           if (cmd.findOption("--version"))
           {
@@ -361,7 +361,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.31  2006-07-25 13:32:01  joergr
+ * Revision 1.32  2006-07-27 14:52:00  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.31  2006/07/25 13:32:01  joergr
  * Fixed minor layout and formatting issues.
  *
  * Revision 1.30  2006/05/11 09:13:45  joergr
