@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 17:48:53 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2006-07-27 13:05:05 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ typedef enum {
     ERT_Topic = 17,
     ERT_Visit = 18,
     ERT_VoiLut = 19,
-    ERT_StructReport = 20,
+    ERT_SRDocument = 20,
     ERT_Presentation = 21,
     ERT_Waveform = 22,
     ERT_RTDose = 23,
@@ -79,7 +79,8 @@ typedef enum {
     ERT_Spectroscopy = 32,
     ERT_EncapDoc = 33,
     ERT_ValueMap = 34,
-    ERT_HangingProtocol = 35
+    ERT_HangingProtocol = 35,
+    ERT_Stereometric = 36
 } E_DirRecType;
 
 
@@ -238,7 +239,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.31  2006-05-11 17:48:53  joergr
+** Revision 1.32  2006-07-27 13:05:05  joergr
+** Added support for DICOMDIR record type "STEREOMETRIC" (CP 628).
+**
+** Revision 1.31  2006/05/11 17:48:53  joergr
 ** Fixed wrong CVS log entry.
 **
 ** Revision 1.30  2006/05/11 08:53:36  joergr
