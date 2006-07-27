@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-17 10:51:56 $
+ *  Update Date:      $Date: 2006-07-27 14:12:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,8 +259,8 @@ int main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption("--help",                     "-h",      "print this help text and exit");
-    cmd.addOption("--version",                             "print version information and exit", OFTrue /* exclusive */);
+    cmd.addOption("--help",                     "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                             "print version information and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--verbose",                  "-v",      "verbose mode, print processing details");
     cmd.addOption("--debug",                    "-d",      "debug mode, print debug information");
     OFString opt0 = "[p]ath: string (default: ";
@@ -272,7 +272,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
     cmd.addOption("--fork",                                "fork child process for each association");
 #ifdef _WIN32
-    cmd.addOption("--forked-child",                        "process is forked child, internal use only");
+    cmd.addOption("--forked-child",                        "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
 #endif
 
@@ -436,20 +436,20 @@ int main(int argc, char *argv[])
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-  if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+  if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
     /* print help text and exit */
     if (cmd.getArgCount() == 0)
       app.printUsage();
 
     /* check exclusive options first */
-    if (cmd.getParamCount() == 0)
+    if (cmd.hasExclusiveOption())
     {
       if (cmd.findOption("--version"))
       {
         app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
         CERR << endl << "External libraries used:";
-#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL) && !defined(WITH_TCPWRAPPER)
         CERR << " none" << endl;
 #else
         CERR << endl;
@@ -459,6 +459,9 @@ int main(int argc, char *argv[])
 #endif
 #ifdef WITH_OPENSSL
         CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+#endif
+#ifdef WITH_TCPWRAPPER
+        CERR << "- LIBWRAP" << endl;
 #endif
         return 0;
       }
@@ -2601,7 +2604,15 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.94  2006-07-17 10:51:56  joergr
+** Revision 1.95  2006-07-27 14:12:45  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+** Added new addOption() flag for internal options that are not shown in the
+** syntax usage output. Used e.g. for the "--fork" option in storescp.
+** Added optional library "LIBWRAP" to output of option "--version".
+**
+** Revision 1.94  2006/07/17 10:51:56  joergr
 ** Fixed layout and formatting issues.
 **
 ** Revision 1.93  2006/07/14 15:46:36  meichel
