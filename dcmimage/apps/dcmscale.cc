@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 17:42:10 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2006-07-27 13:59:24 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,11 +46,11 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 
-#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
-#include "dcmtk/ofstd/ofcmdln.h"       /* for OFCommandLine */
+#include "dcmtk/ofstd/ofconapp.h"        /* for OFConsoleApplication */
+#include "dcmtk/ofstd/ofcmdln.h"         /* for OFCommandLine */
 
-#include "dcmtk/dcmimgle/dcmimage.h"      /* for DicomImage */
-#include "dcmtk/dcmimage/diregist.h"      /* include to support color images */
+#include "dcmtk/dcmimgle/dcmimage.h"     /* for DicomImage */
+#include "dcmtk/dcmimage/diregist.h"     /* include to support color images */
 #include "dcmtk/dcmdata/dcrledrg.h"      /* for DcmRLEDecoderRegistration */
 
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
@@ -130,8 +130,8 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM output filename to be written");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",       "print this help text and exit" /*, OFTrue is set implicitly */);
-     cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--help",                "-h",       "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",             "-v",       "verbose mode, print processing details");
      cmd.addOption("--debug",               "-d",       "debug mode, print debug information");
 
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
@@ -657,7 +657,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.14  2005-12-15 17:42:10  joergr
+ * Revision 1.15  2006-07-27 13:59:24  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Option "--help" is no longer an exclusive option
+ * by default.
+ *
+ * Revision 1.14  2005/12/15 17:42:10  joergr
  * Changed type of local variable, reported by Sun CC 2.0.1 on Solaris.
  *
  * Revision 1.13  2005/12/08 15:42:18  meichel

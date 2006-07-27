@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:39 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:01:53 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,8 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",          "-h",     "print this help text and exit");
+     cmd.addOption("--help",          "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                 "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",       "-v",     "verbose mode, print processing details");
      cmd.addOption("--quiet",         "-q",     "quiet mode, print no warnings and errors");
      cmd.addOption("--debug",         "-d",     "debug mode, print debug information");
@@ -125,6 +126,17 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
+        /* check exclusive options */
+        if (cmd.hasExclusiveOption())
+        {
+            if (cmd.findOption("--version"))
+            {
+                app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+                CERR << endl << "External libraries used: none" << endl;
+                return 0;
+           }
+        }
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--verbose"))
             opt_verboseMode = 2;
@@ -341,7 +353,12 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.19  2005-12-08 15:42:39  meichel
+ * Revision 1.20  2006-07-27 14:01:53  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Option "--help" is no longer an exclusive option
+ * by default.
+ *
+ * Revision 1.19  2005/12/08 15:42:39  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.18  2003/12/23 15:40:13  joergr

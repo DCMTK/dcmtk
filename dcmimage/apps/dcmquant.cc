@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:17 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:59:24 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,13 @@
 #include "dcmtk/dcmdata/dcdebug.h"       /* for SetDebugLevel */
 #include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
-#include "dcmtk/dcmimgle/dcmimage.h"      /* for DicomImage */
+#include "dcmtk/dcmimgle/dcmimage.h"     /* for DicomImage */
 
-#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
-#include "dcmtk/ofstd/ofcmdln.h"       /* for OFCommandLine */
+#include "dcmtk/ofstd/ofconapp.h"        /* for OFConsoleApplication */
+#include "dcmtk/ofstd/ofcmdln.h"         /* for OFCommandLine */
 
-#include "dcmtk/dcmimage/diregist.h"      /* include to support color images */
-#include "dcmtk/dcmimage/diquant.h"       /* for DcmQuant */
+#include "dcmtk/dcmimage/diregist.h"     /* include to support color images */
+#include "dcmtk/dcmimage/diquant.h"      /* for DcmQuant */
 #include "dcmtk/dcmdata/dccodec.h"       /* for DcmCodec */
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
@@ -133,95 +133,95 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM output filename to be written");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",      "print this help text and exit" /*, OFTrue is set implicitly */);
-     cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
-     cmd.addOption("--verbose",             "-v",      "verbose mode, print processing details");
+     cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
 
     cmd.addGroup("input options:");
 
      cmd.addSubGroup("input file format:");
-      cmd.addOption("--read-file",          "+f",      "read file format or data set (default)");
-      cmd.addOption("--read-file-only",     "+fo",     "read file format only");
-      cmd.addOption("--read-dataset",       "-f",      "read data set without file meta information");
+      cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+      cmd.addOption("--read-file-only",      "+fo",    "read file format only");
+      cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
 
      cmd.addSubGroup("input transfer syntax:");
-      cmd.addOption("--read-xfer-auto",     "-t=",     "use TS recognition (default)");
-      cmd.addOption("--read-xfer-detect",   "-td",     "ignore TS specified in the file meta header");
-      cmd.addOption("--read-xfer-little",   "-te",     "read with explicit VR little endian TS");
-      cmd.addOption("--read-xfer-big",      "-tb",     "read with explicit VR big endian TS");
-      cmd.addOption("--read-xfer-implicit", "-ti",     "read with implicit VR little endian TS");
+      cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
+      cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
 
     cmd.addGroup("image processing and encoding options:");
      cmd.addSubGroup("frame selection:");
-      cmd.addOption("--frame",              "+fr",  1, "[n]umber : integer",
+      cmd.addOption("--frame",               "+fr", 1, "[n]umber : integer",
                                                        "select specified frame");
-      cmd.addOption("--all-frames",         "+fa",     "select all frames (default)");
+      cmd.addOption("--all-frames",          "+fa",    "select all frames (default)");
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
      cmd.addSubGroup("color space conversion options (compressed images only):");
-      cmd.addOption("--conv-photometric",   "+cp",     "convert if YCbCr photom. interpr. (default)");
-      cmd.addOption("--conv-lossy",         "+cl",     "convert YCbCr to RGB if lossy JPEG");
-      cmd.addOption("--conv-always",        "+ca",     "always convert YCbCr to RGB");
-      cmd.addOption("--conv-never",         "+cn",     "never convert color space");
+      cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-lossy",          "+cl",    "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
+      cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 #endif
 
      cmd.addSubGroup("compatibility options:");
-      cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
+      cmd.addOption("--accept-palettes",     "+Mp",    "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
      cmd.addSubGroup("median cut dimension selection options:");
-      cmd.addOption("--mc-dimension-rgb",   "+Dr",     "max dimension from RGB range (default)");
-      cmd.addOption("--mc-dimension-lum",   "+Dl",     "max dimension from luminance");
+      cmd.addOption("--mc-dimension-rgb",    "+Dr",    "max dimension from RGB range (default)");
+      cmd.addOption("--mc-dimension-lum",    "+Dl",    "max dimension from luminance");
 
      cmd.addSubGroup("median cut representative color selection options:");
-      cmd.addOption("--mc-color-avgbox",   "+Cb",     "average colors in box (default)");
-      cmd.addOption("--mc-color-avgpixel", "+Cp",     "average pixels in box");
-      cmd.addOption("--mc-color-center",   "+Cc",     "select center of box");
+      cmd.addOption("--mc-color-avgbox",     "+Cb",    "average colors in box (default)");
+      cmd.addOption("--mc-color-avgpixel",   "+Cp",    "average pixels in box");
+      cmd.addOption("--mc-color-center",     "+Cc",    "select center of box");
 
      cmd.addSubGroup("color palette creation options:");
-      cmd.addOption("--write-ow",           "+pw",     "write Palette LUT as OW instead of US");
-      cmd.addOption("--lut-entries-word",   "+pe",     "write Palette LUT with 16-bit entries");
-      cmd.addOption("--floyd-steinberg",    "+pf",     "use Floyd-Steinberg error diffusion");
-      cmd.addOption("--colors",             "+pc",  1, "number of colors: 2..65536 (default 256)",
+      cmd.addOption("--write-ow",            "+pw",    "write Palette LUT as OW instead of US");
+      cmd.addOption("--lut-entries-word",    "+pe",    "write Palette LUT with 16-bit entries");
+      cmd.addOption("--floyd-steinberg",     "+pf",    "use Floyd-Steinberg error diffusion");
+      cmd.addOption("--colors",              "+pc", 1, "number of colors: 2..65536 (default 256)",
                                                        "number of colors to quantize to");
 
-    cmd.addSubGroup("SOP Class UID options:");
-     cmd.addOption("--class-default",      "+cd",     "keep SOP Class UID (default)");
-     cmd.addOption("--class-sc",           "+cs",     "convert to Secondary Capture Image\n(implies --uid-always)");
+     cmd.addSubGroup("SOP Class UID options:");
+      cmd.addOption("--class-default",       "+cd",    "keep SOP Class UID (default)");
+      cmd.addOption("--class-sc",            "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
 
-    cmd.addSubGroup("SOP Instance UID options:");
-     cmd.addOption("--uid-always",         "+ua",     "always assign new UID (default)");
-     cmd.addOption("--uid-never",          "+un",     "never assign new UID");
+     cmd.addSubGroup("SOP Instance UID options:");
+      cmd.addOption("--uid-always",          "+ua",    "always assign new UID (default)");
+      cmd.addOption("--uid-never",           "+un",    "never assign new UID");
 
-  cmd.addGroup("output options:");
-    cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
-    cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
-    cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
-    cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
-    cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
-    cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
-      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
+    cmd.addGroup("output options:");
+     cmd.addSubGroup("output file format:");
+      cmd.addOption("--write-file",          "+F",     "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
+     cmd.addSubGroup("output transfer syntax:");
+      cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
+     cmd.addSubGroup("post-1993 value representations:");
+      cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
+     cmd.addSubGroup("group length encoding:");
+      cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
+     cmd.addSubGroup("length encoding in sequences and items:");
+      cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
+     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
+      cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                       "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
@@ -513,7 +513,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.13  2005-12-08 15:42:17  meichel
+ * Revision 1.14  2006-07-27 13:59:24  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Option "--help" is no longer an exclusive option
+ * by default.
+ *
+ * Revision 1.13  2005/12/08 15:42:17  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2005/12/02 09:31:17  joergr
