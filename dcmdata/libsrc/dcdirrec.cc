@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 17:48:28 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2006-07-27 13:10:18 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,7 @@ static const char *DRTypeNames[] =
     "ENCAP DOC",
     "VALUE MAP",
     "HANGING PROTOCOL",
+    "STEREOMETRIC"
 };
 
 static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -222,7 +223,7 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char *recordTypeName)
         if (i < DIM_OF_DRTypeNames && strcmp(DRTypeNames[i], recordTypeName) == 0)
             recType = OFstatic_cast(E_DirRecType, i);
         else if (strcmp(recordTypeName,"STRUCT REPORT") == 0)
-            recType = ERT_StructReport; // we recognise the old name as well
+            recType = ERT_SRDocument; // we recognise the old name as well
         DCM_dcmdataDebug(4, ("DcmDirectoryRecord::recordNameToType() input char*=\"%s\" output enum=%d", recordTypeName, recType));
     }
     return recType;
@@ -369,7 +370,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Overlay:
                 case ERT_Private:
                 case ERT_VoiLut:
-                case ERT_StructReport:
+                case ERT_SRDocument:
                 case ERT_Presentation:
                 case ERT_Waveform:
                 case ERT_RTDose:
@@ -384,6 +385,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Spectroscopy:
                 case ERT_EncapDoc:
                 case ERT_ValueMap:
+                case ERT_Stereometric:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -419,7 +421,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Series:
                 case ERT_Study:
                 case ERT_VoiLut:
-                case ERT_StructReport:
+                case ERT_SRDocument:
                 case ERT_Presentation:
                 case ERT_Waveform:
                 case ERT_RTDose:
@@ -434,6 +436,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Spectroscopy:
                 case ERT_EncapDoc:
                 case ERT_ValueMap:
+                case ERT_Stereometric:
                     l_error = EC_Normal;
                     break;
                 default:
@@ -454,7 +457,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_StudyComponent:
         case ERT_Visit:
         case ERT_VoiLut:
-        case ERT_StructReport:
+        case ERT_SRDocument:
         case ERT_Presentation:
         case ERT_Waveform:
         case ERT_RTDose:
@@ -470,6 +473,7 @@ OFCondition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
         case ERT_EncapDoc:
         case ERT_ValueMap:
         case ERT_HangingProtocol:
+        case ERT_Stereometric:
             switch (lowerRecord)
             {
                 case ERT_Private:
@@ -1466,7 +1470,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.56  2006-05-11 17:48:28  joergr
+ * Revision 1.57  2006-07-27 13:10:18  joergr
+ * Added support for DICOMDIR record type "STEREOMETRIC" (CP 628).
+ * Renamed ERT_StructReport to ERT_SRDocument.
+ *
+ * Revision 1.56  2006/05/11 17:48:28  joergr
  * Fixed wrong CVS log entry.
  *
  * Revision 1.55  2006/05/11 08:47:56  joergr
