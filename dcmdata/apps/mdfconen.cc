@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-09 15:41:41 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-07-27 13:37:47 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,108 +93,104 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     cmd=new OFCommandLine();
 
     cmd->setParamColumn(LONGCOL + SHORTCOL + 4);
-    cmd->addParam("dcmfile-in", "DICOM input filename to be modified",
-                  OFCmdParam::PM_MultiOptional);
+    cmd->addParam("dcmfile-in", "DICOM input filename to be modified", OFCmdParam::PM_MultiMandatory);
 
     cmd->setOptionColumns(LONGCOL, SHORTCOL-2);
     //add options to commandline application
     cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
-        cmd->addOption("--help",                  "-h",         "print this help text and exit");
-        cmd->addOption("--version",                             "print version information and exit", OFTrue /* exclusive */);
-        cmd->addOption("--debug",                 "-d",         "debug mode, print debug information");
-        cmd->addOption("--verbose",               "-v",         "verbose mode, print verbose output");
-        cmd->addOption("--ignore-errors",         "-ie",        "continue with file, if modify error occurs\n");
+        cmd->addOption("--help",                  "-h",       "print this help text and exit", OFCommandLine::AF_Exclusive);
+        cmd->addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
+        cmd->addOption("--debug",                 "-d",       "debug mode, print debug information");
+        cmd->addOption("--verbose",               "-v",       "verbose mode, print verbose output");
+        cmd->addOption("--ignore-errors",         "-ie",      "continue with file, if modify error occurs");
 
     cmd->addGroup("input options:", LONGCOL, SHORTCOL);
         cmd->addSubGroup("input file format:", LONGCOL, SHORTCOL);
-            cmd->addOption("--read-file",          "+f",        "read file format or data set (default)");
-            cmd->addOption("--read-file-only",     "+fo",       "read file format only");
-            cmd->addOption("--read-dataset",       "-f",        "read data set without file meta information");
+            cmd->addOption("--read-file",          "+f",      "read file format or data set (default)");
+            cmd->addOption("--read-file-only",     "+fo",     "read file format only");
+            cmd->addOption("--read-dataset",       "-f",      "read data set without file meta information");
         cmd->addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
-            cmd->addOption("--read-xfer-auto",     "-t=",       "use TS recognition (default)");
-            cmd->addOption("--read-xfer-detect",   "-td",       "ignore TS specified in the file meta header");
-            cmd->addOption("--read-xfer-little",   "-te",       "read with explicit VR little endian TS");
-            cmd->addOption("--read-xfer-big",      "-tb",       "read with explicit VR big endian TS");
-            cmd->addOption("--read-xfer-implicit", "-ti",       "read with implicit VR little endian TS");
+            cmd->addOption("--read-xfer-auto",     "-t=",     "use TS recognition (default)");
+            cmd->addOption("--read-xfer-detect",   "-td",     "ignore TS specified in the file meta header");
+            cmd->addOption("--read-xfer-little",   "-te",     "read with explicit VR little endian TS");
+            cmd->addOption("--read-xfer-big",      "-tb",     "read with explicit VR big endian TS");
+            cmd->addOption("--read-xfer-implicit", "-ti",     "read with implicit VR little endian TS");
         cmd->addSubGroup("parsing of odd-length attributes:", LONGCOL, SHORTCOL);
-            cmd->addOption("--accept-odd-length",  "+ao",       "accept odd length attributes (default)");
-            cmd->addOption("--assume-even-length", "+ae",       "assume real length is one byte larger");
+            cmd->addOption("--accept-odd-length",  "+ao",     "accept odd length attributes (default)");
+            cmd->addOption("--assume-even-length", "+ae",     "assume real length is one byte larger");
         cmd->addSubGroup("automatic data correction:", LONGCOL, SHORTCOL);
-            cmd->addOption("--enable-correction",  "+dc",       "enable automatic data correction (default)");
-            cmd->addOption("--disable-correction", "-dc",       "disable automatic data correction");
+            cmd->addOption("--enable-correction",  "+dc",     "enable automatic data correction (default)");
+            cmd->addOption("--disable-correction", "-dc",     "disable automatic data correction");
 #ifdef WITH_ZLIB
         cmd->addSubGroup("bitstream format of deflated input:", LONGCOL, SHORTCOL);
-            cmd->addOption("--bitstream-deflated", "+bd",       "expect deflated bitstream (default)");
-            cmd->addOption("--bitstream-zlib",     "+bz",       "expect deflated zlib bitstream");
+            cmd->addOption("--bitstream-deflated", "+bd",     "expect deflated bitstream (default)");
+            cmd->addOption("--bitstream-zlib",     "+bz",     "expect deflated zlib bitstream");
 #endif
 
     cmd->addGroup("processing options:", LONGCOL, SHORTCOL);
         cmd->addSubGroup("insert mode options:", LONGCOL, SHORTCOL);
-            cmd->addOption("--insert-tag",            "-i",1, "\"[t]ag-path=[v]alue\"", "insert (or overwrite) tag at position t\nwith value v");
+            cmd->addOption("--insert-tag",         "-i",   1, "\"[t]ag-path=[v]alue\"", "insert (or overwrite) tag at position t\nwith value v");
         cmd->addSubGroup("modify mode options:", LONGCOL, SHORTCOL);
-            cmd->addOption("--modify-tag",            "-m",1, "\"[t]ag-path=[v]alue\"", "modify tag at position t to value v");
-            cmd->addOption("--modify-all-tags",       "-ma",1, "\"[t]ag=[v]value\"", "modify ALL matching tags t in file to value v");
+            cmd->addOption("--modify-tag",         "-m",   1, "\"[t]ag-path=[v]alue\"", "modify tag at position t to value v");
+            cmd->addOption("--modify-all-tags",    "-ma",  1, "\"[t]ag=[v]value\"", "modify ALL matching tags t in file to value v");
         cmd->addSubGroup("erase mode options:", LONGCOL, SHORTCOL);
-            cmd->addOption("--erase-tag",             "-e",1, "\"[t]ag-path\"", "erase tag at position t");
-            cmd->addOption("--erase-all-tags",        "-ea",1, "\"[t]ag\"", "erase ALL matching tags t in file");
+            cmd->addOption("--erase-tag",          "-e",   1, "\"[t]ag-path\"", "erase tag at position t");
+            cmd->addOption("--erase-all-tags",     "-ea",  1, "\"[t]ag\"", "erase ALL matching tags t in file");
         cmd->addSubGroup("uid options:", LONGCOL, SHORTCOL);
-            cmd->addOption("--gen-stud-uid",          "-gst",       "generate new Study Instance UID");
-            cmd->addOption("--gen-ser-uid",           "-gse",       "generate new Series Instance UID");
-            cmd->addOption("--gen-inst-uid",          "-gin",       "generate new SOP Instance UID");
-            cmd->addOption("--no-meta-uid",           "-nmu",       "don't update metaheader UIDs\nUIDs in the metaheader won't be changed,\nif related UIDs in dataset are modified\nvia options -m, -i or -ma");
+            cmd->addOption("--gen-stud-uid",       "-gst",    "generate new Study Instance UID");
+            cmd->addOption("--gen-ser-uid",        "-gse",    "generate new Series Instance UID");
+            cmd->addOption("--gen-inst-uid",       "-gin",    "generate new SOP Instance UID");
+            cmd->addOption("--no-meta-uid",        "-nmu",    "don't update metaheader UIDs\nUIDs in the metaheader won't be changed,\nif related UIDs in dataset are modified\nvia options -m, -i or -ma");
 
     cmd->addGroup("output options:", LONGCOL, SHORTCOL);
       cmd->addSubGroup("output file format:", LONGCOL, SHORTCOL);
-        cmd->addOption("--write-file",          "+F",    "write file format (default)");
-        cmd->addOption("--write-dataset",       "-F",    "write data set without file meta information");
+        cmd->addOption("--write-file",             "+F",      "write file format (default)");
+        cmd->addOption("--write-dataset",          "-F",      "write data set without file meta information");
       cmd->addSubGroup("output transfer syntax:", LONGCOL, SHORTCOL);
-        cmd->addOption("--write-xfer-same",     "+t=",   "write with same TS as input (default)");
-        cmd->addOption("--write-xfer-little",   "+te",   "write with explicit VR little endian TS");
-        cmd->addOption("--write-xfer-big",      "+tb",   "write with explicit VR big endian TS");
-        cmd->addOption("--write-xfer-implicit", "+ti",   "write with implicit VR little endian TS");
+        cmd->addOption("--write-xfer-same",        "+t=",     "write with same TS as input (default)");
+        cmd->addOption("--write-xfer-little",      "+te",     "write with explicit VR little endian TS");
+        cmd->addOption("--write-xfer-big",         "+tb",     "write with explicit VR big endian TS");
+        cmd->addOption("--write-xfer-implicit",    "+ti",     "write with implicit VR little endian TS");
       cmd->addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
-        cmd->addOption("--enable-new-vr",       "+u",    "enable support for new VRs (UN/UT) (default)");
-        cmd->addOption("--disable-new-vr",      "-u",    "disable support for new VRs, convert to OB");
+        cmd->addOption("--enable-new-vr",          "+u",      "enable support for new VRs (UN/UT) (default)");
+        cmd->addOption("--disable-new-vr",         "-u",      "disable support for new VRs, convert to OB");
       cmd->addSubGroup("group length encoding:", LONGCOL, SHORTCOL);
-        cmd->addOption("--group-length-recalc", "+g=",   "recalcul. group lengths if present (default)");
-        cmd->addOption("--group-length-create", "+g",    "always write with group length elements");
-        cmd->addOption("--group-length-remove", "-g",    "always write without group length elements");
+        cmd->addOption("--group-length-recalc",    "+g=",     "recalcul. group lengths if present (default)");
+        cmd->addOption("--group-length-create",    "+g",      "always write with group length elements");
+        cmd->addOption("--group-length-remove",    "-g",      "always write without group length elements");
       cmd->addSubGroup("length encoding in sequences and items:", LONGCOL, SHORTCOL);
-        cmd->addOption("--length-explicit",     "+le",    "write with explicit lengths (default)");
-        cmd->addOption("--length-undefined",    "-le",    "write with undefined lengths");
+        cmd->addOption("--length-explicit",        "+le",     "write with explicit lengths (default)");
+        cmd->addOption("--length-undefined",       "-le",     "write with undefined lengths");
       cmd->addSubGroup("data set trailing padding (not with --write-dataset):", LONGCOL, SHORTCOL);
-        cmd->addOption("--padding-retain",      "-p=",   "do not change padding\n(default if not --write-dataset)");
-        cmd->addOption("--padding-off",         "-p",    "no padding (implicit if --write-dataset)");
-        cmd->addOption("--padding-create",      "+p", 2, "[f]ile-pad [i]tem-pad: integer",
-                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
-
+        cmd->addOption("--padding-retain",         "-p=",     "do not change padding\n(default if not --write-dataset)");
+        cmd->addOption("--padding-off",            "-p",      "no padding (implicit if --write-dataset)");
+        cmd->addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
+                                                              "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     //evaluate commandline
     prepareCmdLineArgs(argc, argv, application_name);
-    if (app->parseCommandLine(*cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app->parseCommandLine(*cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        //if no argument or --help is given, print usage
-        if ( (cmd->getArgCount() == 0) || (cmd->findOption("--help")) )
-        {
+        /* print help text and exit */
+        if (cmd->getArgCount() == 0)
             app->printUsage();
-            delete app;
-            delete cmd;
-            exit(0);
-        }
 
-        //if no Parameter is given, check for --version and print info
-        if (cmd->findOption("--version"))
+        // check exclusive options first
+        if (cmd->hasExclusiveOption())
         {
-            app->printHeader(OFTrue /*print host identifier*/);
-            debugMsg(OFTrue,"External libraries used: ","","");
+            if (cmd->findOption("--version"))
+            {
+                app->printHeader(OFTrue /*print host identifier*/);
 #ifdef WITH_ZLIB
-            debugMsg(OFTrue,"ZLIB, Version ", zlibVersion(),"");
+                debugMsg(OFTrue,"\nExternal libraries used: ","","");
+                debugMsg(OFTrue,"- ZLIB, Version ", zlibVersion(),"");
 #else
-            debugMsg(OFTrue," none","","");
-            delete app;
-            delete cmd;
-            exit(0);
+                debugMsg(OFTrue,"\nExternal libraries used: none","","");
 #endif
+                delete app;
+                delete cmd;
+                exit(0);
+            }
         }
 
         //iterate the files (parameters) and save them in list
@@ -710,7 +706,15 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.18  2006-02-09 15:41:41  joergr
+** Revision 1.19  2006-07-27 13:37:47  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+** Made command line parameter "dcmfile-in" mandatory.
+** Print help text if no command line argument is specified. This is the default
+** behaviour of most DCMTK tools.
+**
+** Revision 1.18  2006/02/09 15:41:41  joergr
 ** Fixed typo in CVS log.
 **
 ** Revision 1.17  2006/02/09 15:20:28  joergr
