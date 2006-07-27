@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmmkcrv [options] dcmimg-in curvedata-in dcmimg-out
+dcmmkcrv [options] dcmfile-in curvedata-in dcmfile-out
 \endverbatim
 
 \section description DESCRIPTION
@@ -27,11 +27,11 @@ two-dimensional curves.
 \section parameters PARAMETERS
 
 \verbatim
-dcmimg-in     DICOM input image file
+dcmfile-in    DICOM input image file
 
 curvedata-in  curve data input file (text)
 
-dcmimg-out    DICOM output filename
+dcmfile-out   DICOM output filename
 \endverbatim
 
 \section options OPTIONS
