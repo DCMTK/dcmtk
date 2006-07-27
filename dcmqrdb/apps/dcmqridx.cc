@@ -22,9 +22,9 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-01-17 18:36:35 $
+ *  Update Date:      $Date: 2006-07-27 14:45:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,12 +97,12 @@ int main (int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("index-out",         "storage area for the index file (directory)");
-    cmd.addParam("dcmimg-in",         "DICOM image file to be registered in the index file", OFCmdParam::PM_MultiOptional);
+    cmd.addParam("index-out", "storage area for the index file (directory)");
+    cmd.addParam("dcmfile-in", "DICOM image file to be registered in the index file", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("options:", LONGCOL, SHORTCOL);
-     cmd.addOption("--help",    "-h", "print this help text and exit");
-     cmd.addOption("--version",       "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
      cmd.addOption("--debug",   "-d", "debug mode, print debug information");
      cmd.addOption("--print",   "-p", "list contents of database index file");
@@ -116,19 +116,25 @@ int main (int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
         /* check exclusive options first */
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
               CERR << endl << "External libraries used:";
-#ifdef WITH_ZLIB
-              CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
-#else
+#if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
               CERR << " none" << endl;
+#else
+              CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_TCPWRAPPER
+              CERR << "- LIBWRAP" << endl;
 #endif
               return 0;
            }
@@ -203,7 +209,14 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.5  2006-01-17 18:36:35  joergr
+ * Revision 1.6  2006-07-27 14:45:18  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ * Made naming conventions for command line parameters more consistent, e.g.
+ * used "dcmfile-in", "dcmfile-out" and "bitmap-out".
+ *
+ * Revision 1.5  2006/01/17 18:36:35  joergr
  * Fixed syntax errors in debug code.
  *
  * Revision 1.4  2005/12/14 17:43:42  meichel
