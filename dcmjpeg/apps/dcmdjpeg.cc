@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-03-29 15:58:52 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:05:02 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,67 +104,67 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
+    cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
    cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
-     cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
-     cmd.addOption("--read-file-only",         "+fo",       "read file format only");
-     cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
+     cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
+     cmd.addOption("--read-file-only",       "+fo",    "read file format only");
+     cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
 
   cmd.addGroup("processing options:");
     cmd.addSubGroup("color space conversion options:");
-      cmd.addOption("--conv-photometric",       "+cp",       "convert if YCbCr photom. interpr. (default)");
-      cmd.addOption("--conv-lossy",             "+cl",       "convert YCbCr to RGB if lossy JPEG");
-      cmd.addOption("--conv-always",            "+ca",       "always convert YCbCr to RGB");
-      cmd.addOption("--conv-never",             "+cn",       "never convert color space");
+      cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-lossy",          "+cl",    "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
+      cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 
     cmd.addSubGroup("planar configuration options:");
-      cmd.addOption("--planar-auto",            "+pa",       "automatically determine planar configuration\nfrom SOP class and color space (default)");
-      cmd.addOption("--color-by-pixel",         "+px",       "always store color-by-pixel");
-      cmd.addOption("--color-by-plane",         "+pl",       "always store color-by-plane");
+      cmd.addOption("--planar-auto",         "+pa",    "automatically determine planar configuration\nfrom SOP class and color space (default)");
+      cmd.addOption("--color-by-pixel",      "+px",    "always store color-by-pixel");
+      cmd.addOption("--color-by-plane",      "+pl",    "always store color-by-plane");
 
     cmd.addSubGroup("SOP Instance UID options:");
-     cmd.addOption("--uid-default",        "+ud",            "keep same SOP Instance UID (default)");
-     cmd.addOption("--uid-always",         "+ua",            "always assign new UID");
+      cmd.addOption("--uid-default",         "+ud",    "keep same SOP Instance UID (default)");
+      cmd.addOption("--uid-always",          "+ua",    "always assign new UID");
 
     cmd.addSubGroup("Workaround options for incorrect JPEG encodings:");
-     cmd.addOption("--workaround-pred6",        "+w6",      "enable workaround for JPEG lossless images\nwith overflow in predictor 6.");
+      cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6.");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+      cmd.addOption("--write-file",          "+F",     "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian (default)");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian (default)");
+      cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
-      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                       "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
@@ -378,7 +378,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.14  2006-03-29 15:58:52  meichel
+ * Revision 1.15  2006-07-27 14:05:02  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.14  2006/03/29 15:58:52  meichel
  * Added support for decompressing images with 16 bits/pixel compressed with
  *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
  *
