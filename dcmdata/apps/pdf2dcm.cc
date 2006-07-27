@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005, OFFIS
+ *  Copyright (C) 2005-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:53 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -378,8 +378,8 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                 "-h",     "print this help text and exit");
-   cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
+   cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
    cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
@@ -406,7 +406,7 @@ int main(int argc, char *argv[])
                                                      "patient's sex");
 
     cmd.addSubGroup("study and series:");
-      cmd.addOption("--generate"       ,   "+sg",    "generate new study and series UIDs (default)");
+      cmd.addOption("--generate",          "+sg",    "generate new study and series UIDs (default)");
       cmd.addOption("--study-from",        "+st", 1, "[f]ilename : string",
                                                      "read patient/study data from DICOM file");
       cmd.addOption("--series-from",       "+se", 1, "[f]ilename : string",
@@ -418,10 +418,10 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
@@ -662,7 +662,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
-** Revision 1.4  2005-12-08 15:40:53  meichel
+** Revision 1.5  2006-07-27 13:52:42  joergr
+** Changed parameter "exclusive" of method addOption() from type OFBool into an
+** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+** Option "--help" is no longer an exclusive option by default.
+**
+** Revision 1.4  2005/12/08 15:40:53  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.3  2005/11/28 15:28:54  meichel

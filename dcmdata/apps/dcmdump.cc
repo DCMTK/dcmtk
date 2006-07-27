@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:46 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,8 +151,8 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-in", "DICOM input filename to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                 "-h",     "print this help text and exit");
-      cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
+      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
 #ifdef USE_EXPERIMENTAL_QUIET_MODE
       cmd.addOption("--quiet",                "-q",     "quiet mode, print no warnings and errors");
 #endif
@@ -204,10 +204,8 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("searching:");
         cmd.addOption("--search",             "+P",  1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
                                                         "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
-
         cmd.addOption("--search-all",         "+s",     "print all instances of searched tags (default)");
         cmd.addOption("--search-first",       "-s",     "only print first instance of searched tags");
-
         cmd.addOption("--prepend",            "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
         cmd.addOption("--no-prepend",         "-p",     "do not prepend hierarchy to tag (default)");
 
@@ -217,11 +215,11 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -543,7 +541,12 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.55  2005-12-08 15:40:46  meichel
+ * Revision 1.56  2006-07-27 13:52:42  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.55  2005/12/08 15:40:46  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.54  2005/12/07 16:42:49  onken

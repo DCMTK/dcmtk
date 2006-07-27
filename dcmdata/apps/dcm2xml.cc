@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:44:57 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2006-07-27 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,55 +243,55 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in",   "DICOM input filename to be converted", OFCmdParam::PM_Mandatory);
-    cmd.addParam("xmlfile-out",  "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
+    cmd.addParam("dcmfile-in",  "DICOM input filename to be converted", OFCmdParam::PM_Mandatory);
+    cmd.addParam("xmlfile-out", "XML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",     "print this help text and exit");
-      cmd.addOption("--version",                         "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
+      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
-        cmd.addOption("--read-file-only",      "+fo",    "read file format only");
-        cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
+        cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-file-only",     "+fo",    "read file format only");
+        cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
       cmd.addSubGroup("long tag values:");
-        cmd.addOption("--load-all",            "+M",     "load very long tag values (e.g. pixel data)");
-        cmd.addOption("--load-short",          "-M",     "do not load very long values (default)");
-        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
-                                                         "set threshold for long values to k kbytes");
+        cmd.addOption("--load-all",           "+M",     "load very long tag values (e.g. pixel data)");
+        cmd.addOption("--load-short",         "-M",     "do not load very long values (default)");
+        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
+                                                        "set threshold for long values to k kbytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
-        cmd.addOption("--charset-require",     "+Cr",    "require declaration of extended charset (default)");
-        cmd.addOption("--charset-assume",      "+Ca", 1, "[c]harset: string constant",
-                                                         "(latin-1 to -5, cyrillic, arabic, greek, hebrew)\n"
-                                                         "assume charset c if no extended charset declared");
+        cmd.addOption("--charset-require",    "+Cr",    "require declaration of extended charset (default)");
+        cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset: string constant",
+                                                        "(latin-1 to -5, cyrillic, arabic, greek, hebrew)\n"
+                                                        "assume charset c if no extended charset declared");
     cmd.addGroup("output options:");
       cmd.addSubGroup("XML structure:");
-        cmd.addOption("--add-dtd-reference",   "+Xd",    "add reference to document type definition (DTD)");
-        cmd.addOption("--embed-dtd-content",   "+Xe",    "embed document type definition into XML document");
-        cmd.addOption("--use-xml-namespace",   "+Xn",    "add XML namespace declaration to root element");
+        cmd.addOption("--add-dtd-reference",  "+Xd",    "add reference to document type definition (DTD)");
+        cmd.addOption("--embed-dtd-content",  "+Xe",    "embed document type definition into XML document");
+        cmd.addOption("--use-xml-namespace",  "+Xn",    "add XML namespace declaration to root element");
       cmd.addSubGroup("DICOM data elements:");
-        cmd.addOption("--write-element-name",  "+Wn",    "write name of the DICOM data elements (default)");
-        cmd.addOption("--no-element-name",     "-Wn",    "do not write name of the DICOM data elements");
-        cmd.addOption("--write-binary-data",   "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
-        cmd.addOption("--encode-hex",          "+Eh",    "encode binary data as hex numbers (default)");
-        cmd.addOption("--encode-base64",       "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
+        cmd.addOption("--write-element-name", "+Wn",    "write name of the DICOM data elements (default)");
+        cmd.addOption("--no-element-name",    "-Wn",    "do not write name of the DICOM data elements");
+        cmd.addOption("--write-binary-data",  "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
+        cmd.addOption("--encode-hex",         "+Eh",    "encode binary data as hex numbers (default)");
+        cmd.addOption("--encode-base64",      "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
         /* check exclusive options first */
 
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
           if (cmd.findOption("--version"))
           {
@@ -450,7 +450,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.24  2006-05-11 08:44:57  joergr
+ * Revision 1.25  2006-07-27 13:52:42  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.24  2006/05/11 08:44:57  joergr
  * Added new option that allows to omit the element name in the XML output.
  * Moved checkForNonASCIICharacters() from application to library.
  *

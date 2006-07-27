@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-11 13:59:20 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-07-27 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -619,53 +619,53 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM output filename", OFCmdParam::PM_Mandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",    "print this help text and exit");
-      cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
-      cmd.addOption("--verbose",               "-v",    "verbose mode, print processing details");
-      cmd.addOption("--debug",                 "-d",    "debug mode, print debug information");
+      cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
+      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-meta-info",      "+f",    "read meta information if present (default)");
-        cmd.addOption("--ignore-meta-info",    "-f",    "ignore file meta information");
+        cmd.addOption("--read-meta-info",      "+f",     "read meta information if present (default)");
+        cmd.addOption("--ignore-meta-info",    "-f",     "ignore file meta information");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("validation:");
-        cmd.addOption("--validate-document",   "+Vd",   "validate XML document against DTD");
-        cmd.addOption("--check-namespace",     "+Vn",   "check XML namespace in document root");
+        cmd.addOption("--validate-document",   "+Vd",    "validate XML document against DTD");
+        cmd.addOption("--check-namespace",     "+Vn",    "check XML namespace in document root");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output file format:");
-        cmd.addOption("--write-file",          "+F",    "write file format (default)");
-        cmd.addOption("--write-dataset",       "-F",    "write data set without file meta information");
+        cmd.addOption("--write-file",          "+F",     "write file format (default)");
+        cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
       cmd.addSubGroup("output transfer syntax:");
-        cmd.addOption("--write-xfer-same",     "+t=",   "write with same TS as input (default)");
-        cmd.addOption("--write-xfer-little",   "+te",   "write with explicit VR little endian TS");
-        cmd.addOption("--write-xfer-big",      "+tb",   "write with explicit VR big endian TS");
-        cmd.addOption("--write-xfer-implicit", "+ti",   "write with implicit VR little endian TS");
+        cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
+        cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
+        cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+        cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
       cmd.addSubGroup("post-1993 value representations:");
-        cmd.addOption("--enable-new-vr",       "+u",    "enable support for new VRs (UN/UT) (default)");
-        cmd.addOption("--disable-new-vr",      "-u",    "disable support for new VRs, convert to OB");
+        cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+        cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
       cmd.addSubGroup("group length encoding:");
-        cmd.addOption("--group-length-recalc", "+g=",   "recalculate group lengths if present (default)");
-        cmd.addOption("--group-length-create", "+g",    "always write with group length elements");
-        cmd.addOption("--group-length-remove", "-g",    "always write without group length elements");
+        cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+        cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
+        cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
       cmd.addSubGroup("length encoding in sequences and items:");
-        cmd.addOption("--length-explicit",     "+e",    "write with explicit lengths (default)");
-        cmd.addOption("--length-undefined",    "-e",    "write with undefined lengths");
+        cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
+        cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
       cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-        cmd.addOption("--padding-retain",      "-p=",   "do not change padding\n(default if not --write-dataset)");
-        cmd.addOption("--padding-off",         "-p",    "no padding (implicit if --write-dataset)");
-        cmd.addOption("--padding-create",      "+p", 2, "[f]ile-pad [i]tem-pad: integer",
-                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
+        cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+        cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+        cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                         "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
         /* check exclusive options first */
 
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
           if (cmd.findOption("--version"))
           {
@@ -875,7 +875,12 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.17  2006-07-11 13:59:20  joergr
+ * Revision 1.18  2006-07-27 13:52:42  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.17  2006/07/11 13:59:20  joergr
  * Fixed wrong warning message about multiple Specific Character Set attributes
  * in DICOMDIR files.
  *

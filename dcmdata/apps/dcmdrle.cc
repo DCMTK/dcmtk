@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress RLE-compressed DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:45 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,59 +101,59 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+   cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
+   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
 
    cmd.addGroup("input options:");
 
     cmd.addSubGroup("input file format:");
-     cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
-     cmd.addOption("--read-file-only",         "+fo",       "read file format only");
-     cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
+     cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
+     cmd.addOption("--read-file-only",       "+fo",    "read file format only");
+     cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
 
   cmd.addGroup("processing options:");
 
     cmd.addSubGroup("SOP Instance UID options:");
-     cmd.addOption("--uid-default",             "+ud",     "keep same SOP Instance UID (default)");
-     cmd.addOption("--uid-always",              "+ua",     "always assign new UID");
+     cmd.addOption("--uid-default",          "+ud",    "keep same SOP Instance UID (default)");
+     cmd.addOption("--uid-always",           "+ua",    "always assign new UID");
 
     cmd.addSubGroup("RLE byte segment order options:");
-     cmd.addOption("--byte-order-default",      "+bd",     "most significant byte first (default)");
-     cmd.addOption("--byte-order-reverse",      "+br",     "least significant byte first");
+     cmd.addOption("--byte-order-default",   "+bd",    "most significant byte first (default)");
+     cmd.addOption("--byte-order-reverse",   "+br",    "least significant byte first");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",             "+F",        "write file format (default)");
-      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+      cmd.addOption("--write-file",          "+F",     "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian (default)");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+      cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian (default)");
+      cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
     cmd.addSubGroup("post-1993 value representations:");
-      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+      cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
     cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
-      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+      cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+      cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
-      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
-                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                       "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       /* check exclusive options first */
 
-      if (cmd.getParamCount() == 0)
+      if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
@@ -342,7 +342,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
- * Revision 1.12  2005-12-08 15:40:45  meichel
+ * Revision 1.13  2006-07-27 13:52:42  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.12  2005/12/08 15:40:45  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.11  2005/12/02 09:03:52  joergr

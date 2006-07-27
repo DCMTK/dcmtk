@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -45,9 +45,9 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:48 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:52:42 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,19 +58,19 @@
 #include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
-#include "dcmtk/dcmdata/dcddirif.h"     /* for class DicomDirInterface */
-#include "dcmtk/ofstd/ofstd.h"        /* for class OFStandard */
-#include "dcmtk/ofstd/ofconapp.h"     /* for class OFConsoleApplication */
-#include "dcmtk/ofstd/ofcond.h"       /* for class OFCondition */
+#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcddirif.h"    /* for class DicomDirInterface */
+#include "dcmtk/ofstd/ofstd.h"         /* for class OFStandard */
+#include "dcmtk/ofstd/ofconapp.h"      /* for class OFConsoleApplication */
+#include "dcmtk/ofstd/ofcond.h"        /* for class OFCondition */
 #include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-#include "dcmtk/dcmimage/diregist.h"     /* include to support color images */
-#include "dcmtk/dcmdata/dcrledrg.h"     /* for DcmRLEDecoderRegistration */
-#include "dcmtk/dcmjpeg/djdecode.h"     /* for dcmjpeg decoders */
-#include "dcmtk/dcmjpeg/dipijpeg.h"     /* for dcmimage JPEG plugin */
-#include "dcmtk/dcmjpeg/ddpiimpl.h"     /* for class DicomDirImageImplementation */
+#include "dcmtk/dcmimage/diregist.h"   /* include to support color images */
+#include "dcmtk/dcmdata/dcrledrg.h"    /* for DcmRLEDecoderRegistration */
+#include "dcmtk/dcmjpeg/djdecode.h"    /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/dipijpeg.h"    /* for dcmimage JPEG plugin */
+#include "dcmtk/dcmjpeg/ddpiimpl.h"    /* for class DicomDirImageImplementation */
 #endif
 
 #ifdef WITH_ZLIB
@@ -134,21 +134,21 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-in", "referenced DICOM file", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                     "-h",     "print this help text and exit");
-     cmd.addOption("--version",                            "print version information and exit", OFTrue /* exclusive */);
+     cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",                  "-v",     "verbose mode, print processing details");
      cmd.addOption("--quiet",                    "-q",     "quiet mode, print no warnings and errors");
      cmd.addOption("--debug",                    "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("DICOMDIR identifiers:");
-        cmd.addOption("--output-file",           "+D", 1,  "[f]ilename : string",
+        cmd.addOption("--output-file",           "+D",  1, "[f]ilename : string",
                                                            "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
-        cmd.addOption("--fileset-id",            "+F", 1,  "[i]d : string (default: " DEFAULT_FILESETID ")",
+        cmd.addOption("--fileset-id",            "+F",  1, "[i]d : string (default: " DEFAULT_FILESETID ")",
                                                            "use specific file set ID");
-        cmd.addOption("--descriptor",            "+R", 1,  "[f]ilename : string",
+        cmd.addOption("--descriptor",            "+R",  1, "[f]ilename : string",
                                                            "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
-        cmd.addOption("--char-set",              "+C", 1,  "[c]har-set : string",
+        cmd.addOption("--char-set",              "+C",  1, "[c]har-set : string",
                                                            "add a specific character set for descriptor\n(default: \"" DEFAULT_DESCRIPTOR_CHARSET "\" if descriptor present)");
       cmd.addSubGroup("type 1 attributes:");
         cmd.addOption("--strict",                "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--no-recurse",            "-r",     "do not recurse within directories (default)");
         cmd.addOption("--recurse",               "+r",     "recurse within filesystem directories");
 #ifdef PATTERN_MATCHING_AVAILABLE
-        cmd.addOption("--pattern",               "+p", 1,  "[p]attern : string (only with --recurse)",
+        cmd.addOption("--pattern",               "+p",  1, "[p]attern : string (only with --recurse)",
                                                            "pattern for filename matching (wildcards)");
 #endif
       cmd.addSubGroup("checking:");
@@ -221,14 +221,14 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
         /* print help text and exit */
         if (cmd.getArgCount() == 0)
             app.printUsage();
 
         /* check exclusive options first */
-        if (cmd.getParamCount() == 0)
+        if (cmd.hasExclusiveOption())
         {
             if (cmd.findOption("--version"))
             {
@@ -581,7 +581,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.81  2005-12-08 15:40:48  meichel
+ * Revision 1.82  2006-07-27 13:52:42  joergr
+ * Changed parameter "exclusive" of method addOption() from type OFBool into an
+ * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
+ * Option "--help" is no longer an exclusive option by default.
+ *
+ * Revision 1.81  2005/12/08 15:40:48  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.80  2005/11/28 15:28:54  meichel
