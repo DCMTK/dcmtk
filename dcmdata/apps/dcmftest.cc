@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 13:34:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,8 +58,8 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     cmd.addParam("file", OFCmdParam::PM_MultiMandatory);
-    app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards);
-    
+    app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards);
+
     int badCount = 0;
     int count = cmd.getParamCount();
     const char *fname = NULL;
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
             ok = OFFalse;
         } else {
             char signature[4];
-            if ((fseek(f, DCM_PreambleLen, SEEK_SET) < 0) || 
+            if ((fseek(f, DCM_PreambleLen, SEEK_SET) < 0) ||
                 (fread(signature, 1, DCM_MagicLen, f) != DCM_MagicLen)) {
                 ok = OFFalse;
             } else if (strncmp(signature, DCM_Magic, DCM_MagicLen) != 0) {
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    /* 
+    /*
     ** if all files are ok then return zero, otherwise the
     ** number of non-dicom files.
     */
@@ -102,7 +102,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.18  2005-12-08 15:40:47  meichel
+** Revision 1.19  2006-07-27 13:34:18  joergr
+** Prepended prefix "PF_" to parseLine() flags.
+**
+** Revision 1.18  2005/12/08 15:40:47  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.17  2004/08/03 11:41:04  meichel
