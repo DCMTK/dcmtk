@@ -48,6 +48,12 @@ port  tcp/ip port number to listen on.
           write output-files to (existing) directory p
 \endverbatim
 
+\subsection multi_process_options multi-process options
+\verbatim
+        --fork
+          fork child process for each association
+\endverbatim
+
 \subsection network_options network options
 \verbatim
 association negotiation profile from configuration file:
