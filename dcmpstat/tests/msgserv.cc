@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 17:43:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-07-27 14:42:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
+    if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
       cmd.getParam(1, opt_port);
       if (cmd.findOption("--verbose")) opt_verbose = 1;
@@ -377,7 +377,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.11  2005-12-14 17:43:42  meichel
+ * Revision 1.12  2006-07-27 14:42:59  joergr
+ * Prepended prefix "PF_" to parseLine() flags.
+ *
+ * Revision 1.11  2005/12/14 17:43:42  meichel
  * Adapted code for compilation with TCP wrappers to NetBSD
  *
  * Revision 1.10  2005/12/12 15:14:34  meichel
