@@ -45,7 +45,7 @@ wlmscpfs: $(objs)
 install: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(DESTDIR)$(bindir)$(BINEXT) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
 	done
 
 
