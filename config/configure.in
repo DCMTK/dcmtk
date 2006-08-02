@@ -345,6 +345,12 @@ AC_CHECK_LIB(wsock32, main,[
 LIBS="$LIBS -lwsock32"
 ])
 
+dnl On MinGW we have to link against the netapi32 library
+dnl
+AC_CHECK_LIB(netapi32, main,[
+LIBS="$LIBS -lnetapi32"
+])
+
 dnl -------------------------------------------------------
 dnl Checks for header files.
 dnl -------------------------------------------------------
