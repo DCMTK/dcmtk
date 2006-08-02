@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-09 15:04:37 $
+ *  Update Date:      $Date: 2006-08-02 15:20:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,13 +172,11 @@ getUserName(char* userString, int maxLen)
 static char*
 getUserName(char* userString, int maxLen)
 {
-    char* s = NULL;
-
     WKSTA_USER_INFO_0 *userinfo;
-    if (NetWkstaUserGetInfo(NULL, 0, (LPBYTE*)&userinfo) == NERR_Success){
-        LPTSTR lptstr = userinfo->wkui0_username;
+    if (NetWkstaUserGetInfo(NULL, 0, (LPBYTE*)&userinfo) == NERR_Success)
+    {
         // Convert the Unicode full name to ANSI.
-        WideCharToMultiByte( CP_ACP, 0, (WCHAR*)lptstr, -1,
+        WideCharToMultiByte( CP_ACP, 0, (WCHAR*)userinfo->wkui0_username, -1,
             userString, maxLen, NULL, NULL );
     } else {
         strncpy(userString, "<no-user-information-available>", maxLen);
@@ -355,7 +353,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.24  2005-12-09 15:04:37  meichel
+** Revision 1.25  2006-08-02 15:20:42  meichel
+** Fixed bugs that prevented compiling the affected tools under MinGW
+**
+** Revision 1.24  2005/12/09 15:04:37  meichel
 ** Updated build system for dcdeftag/dcdictzz to reflect new directory structure
 **
 ** Revision 1.23  2005/12/08 15:42:12  meichel
