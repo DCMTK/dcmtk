@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 13:04:30 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-08-02 10:17:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -457,7 +457,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     EP_Interpretation interpr = EPI_Unknown;
     Uint8 *jpegData = NULL;
     Uint32 jpegLen  = 0;
-    OFBool byteSwapped = OFFalse;  // true if we have byte-swapped the original pixel data
+    OFBool byteSwapped = OFFalse;      // true if we have byte-swapped the original pixel data
     OFBool planConfSwitched = OFFalse; // true if planar configuration was toggled
     DcmOffsetList offsetList;
     OFString photometricInterpretation;
@@ -481,7 +481,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.bad())
     {
-      CERR << "True Lossless Encoder: Unable to get relevant attributes from dataset" << endl;
+      CERR << "True lossless encoder: Unable to get relevant attributes from dataset" << endl;
       return result;
     }
 
@@ -492,14 +492,14 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       bytesAllocated = 2;
     else
     {
-      CERR << "True lossless encoder: only 8 or 16 bits allocated supported" << endl;
+      CERR << "True lossless encoder: Only 8 or 16 bits allocated supported" << endl;
       return EC_IllegalParameter;
     }
 
     // make sure that all the descriptive attributes have sensible values
     if ((columns < 1)||(rows < 1)||(samplesPerPixel < 1))
     {
-      CERR << "Invalid attribute values in pixel module" << endl;
+      CERR << "True lossless encoder: Invalid attribute values in pixel module" << endl;
       return EC_CannotChangeRepresentation;
     }
 
@@ -520,7 +520,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
               (photometricInterpretation == "YBR_ICT")         ||
               (photometricInterpretation == "YBR_RCT") )
     {
-      CERR << "True lossless encoder: photometric interpretation not supported: " << photometricInterpretation << endl;
+      CERR << "True lossless encoder: Photometric interpretation not supported: " << photometricInterpretation << endl;
       return EC_IllegalParameter;
     }
     else    // Palette, HSV, ARGB, CMYK
@@ -541,7 +541,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.bad())
     {
-        CERR << "True Lossless Encoder: Unable to change Planar Configuration for encoding" << endl;
+        CERR << "True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding" << endl;
         return result;
     }
 
@@ -549,13 +549,18 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned long,numberOfFrames) > length)
     {
       CERR << "True lossless encoder: Can not change representation, not enough data" << endl;
-      result = EC_CannotChangeRepresentation;
+      return EC_CannotChangeRepresentation;
     }
 
     // byte swap pixel data to little endian if bits allocated is 8
     if ((gLocalByteOrder == EBO_BigEndian) && (bitsAllocated == 8))
     {
-      swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
+      result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
+      if ( result.bad() )
+      {
+        CERR << "True lossless encoder: Unable to swap bytes to respect local byte ordering";
+        return EC_CannotChangeRepresentation;
+      }
       byteSwapped = OFTrue;
     }
 
@@ -614,7 +619,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     else
     {
-      CERR << "True lossless Encoder: Cannot allocate encoder instance" << endl;
+      CERR << "True lossless encoder: Cannot allocate encoder instance" << endl;
       result = EC_IllegalCall;
     }
     if (result.good())
@@ -657,6 +662,11 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       {
         // update Planar Configuration in dataset
         result = updatePlanarConfiguration(datsetItem, 0 /* update to "by pixel" */);
+      }
+      else
+      {
+        CERR << "True lossless encoder: Error switching back original pixeldata's planar configuration" << endl;
+        result = EC_CannotChangeRepresentation;
       }
     }
     // byte swap pixel data back to local endian if necessary
@@ -1440,7 +1450,11 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.22  2005-12-16 13:04:30  meichel
+ * Revision 1.23  2006-08-02 10:17:42  onken
+ * Fixed segfault in true lossless encoder in case of not enough pixel data.
+ * Minor corrections and enhancements regarding error handling and messages.
+ *
+ * Revision 1.22  2005/12/16 13:04:30  meichel
  * Added typecasts to avoid warnings on VS2005
  *
  * Revision 1.21  2005/12/15 17:47:26  joergr
@@ -1523,4 +1537,3 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
  *
  *
  */
-
