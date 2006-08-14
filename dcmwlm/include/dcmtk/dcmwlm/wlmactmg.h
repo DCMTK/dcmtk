@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class provider engines.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:43 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-08-14 15:30:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,13 @@ class WlmActivityManager
     OFBool opt_failInvalidQuery;
     /// indicates if the application is run in single process mode or not
     OFBool opt_singleProcess;
+    /// indicates, that this process was spawn as child from a parent process
+    /// needed for multiprocess mode on WIN32
+    OFBool opt_forkedChild;
+    /// number of arguments in commandline, needed for multiprocess mode on WIN32
+    int cmd_argc;
+    /// complete command line, needed for multiprocess mode on WIN32
+    char **cmd_argv;
     /// maximum number of association for non-single process mode
     int opt_maxAssociations;
     /// blocking mode for DIMSE operations
@@ -201,6 +208,9 @@ class WlmActivityManager
        *  @param opt_dimse_timeoutv                  Specifies the timeout for DIMSE operations
        *  @param opt_acse_timeoutv                   Specifies the timeout for ACSE operations
        *  @param logStreamv                          A stream information can be dumped to.
+       *  @param opt_forkedChildv                    Indicates, whether this process was "forked" from a parent process, default: false
+			 *  @param argcv															 Number of commandline arguments given
+			 *  @param argvv															 Complete command line
        */
     WlmActivityManager(
         WlmDataSource *dataSourcev, 
@@ -219,7 +229,10 @@ class WlmActivityManager
         T_DIMSE_BlockingMode opt_blockModev,
         int opt_dimse_timeoutv,
         int opt_acse_timeoutv,
-        OFConsole *logStreamv );
+        OFConsole *logStreamv,
+        OFBool opt_forkedChild = OFFalse,
+        int argcv = 0,
+        char *argvv[] = NULL );
 
       /** destructor
        */
@@ -238,7 +251,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.13  2005-12-08 16:05:43  meichel
+** Revision 1.14  2006-08-14 15:30:58  onken
+** Added WIN32 multiprocess mode to wlmscpfs.
+**
+** Revision 1.13  2005/12/08 16:05:43  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.12  2005/11/17 13:45:39  meichel

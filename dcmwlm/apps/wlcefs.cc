@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:53:49 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-08-14 15:30:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
-    opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ), opt_enableRejectionOfIncompleteWlFiles( OFTrue ),
-    opt_blockMode(DIMSE_BLOCKING), opt_dimse_timeout(0), opt_acse_timeout(30),
-    app( NULL ), cmd( NULL ), dataSource( dataSourcev )
+    opt_forkedChild( OFFalse ), opt_maxAssociations( 50 ), opt_noSequenceExpansion( OFFalse ),
+    opt_enableRejectionOfIncompleteWlFiles( OFTrue ), opt_blockMode(DIMSE_BLOCKING),
+    opt_dimse_timeout(0), opt_acse_timeout(30), app( NULL ), cmd( NULL ), command_argc( argc ),
+    command_argv(argv), dataSource( dataSourcev )
 {
   // Initialize application identification string.
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
@@ -91,7 +92,8 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   // Initialize starting values for variables pertaining to program options.
   opt_dfPath = "/home/www/wlist";
 
-#ifdef HAVE_FORK
+  // default: spawn new process for each incoming connection (fork()-OS or WIN32)
+#if defined(HAVE_FORK) || defined(_WIN32)
   opt_singleProcess = OFFalse;
 #else
   opt_singleProcess = OFTrue;
@@ -108,12 +110,16 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   cmd->setOptionColumns(LONGCOL, SHORTCOL);
   cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
-    cmd->addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
-    cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
-#ifdef HAVE_FORK
-    cmd->addOption("--single-process",        "-s",      "single process mode");
+    cmd->addOption("--help",                      "-h",        "print this help text and exit");
+    cmd->addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
+    cmd->addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+    cmd->addOption("--debug",                     "-d",        "debug mode, print debug information");
+#if defined(HAVE_FORK) || defined(_WIN32)
+    cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
+    cmd->addOption("--single-process",            "-s",        "single process mode");
+#ifdef _WIN32
+    cmd->addOption("--forked-child",                             "process is forked child, internal use only");
+#endif
 #endif
     cmd->addOption("--no-sq-expansion",       "-nse",    "disable expansion of empty sequences\nin C-FIND request messages");
     OFString opt5 = "[p]ath: string (default: ";
@@ -216,8 +222,18 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       DIMSE_debug(OFTrue);
       SetDebugLevel(3);
     }
-#ifdef HAVE_FORK
-    if( cmd->findOption("--single-process") ) opt_singleProcess = OFTrue;
+
+#if defined(HAVE_FORK) || defined(_WIN32)
+    if (cmd->findOption("--single-process"))
+    {
+      opt_singleProcess = OFTrue;
+    }
+#ifdef _WIN32
+    if (cmd->findOption("--forked-child"))
+    {
+      opt_forkedChild = OFTrue;
+    }
+#endif
 #endif
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
@@ -347,7 +363,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
       opt_verbose, opt_debug, opt_failInvalidQuery,
       opt_singleProcess, opt_maxAssociations,
       opt_blockMode, opt_dimse_timeout, opt_acse_timeout,
-      &ofConsole );
+      &ofConsole, opt_forkedChild, command_argc, command_argv );
   cond = activityManager->StartProvidingService();
   if( cond.bad() )
   {
@@ -405,7 +421,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.12  2006-07-27 14:53:49  joergr
+** Revision 1.13  2006-08-14 15:30:40  onken
+** Added WIN32 multiprocess mode to wlmscpfs.
+**
+** Revision 1.12  2006/07/27 14:53:49  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

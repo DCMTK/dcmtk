@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:35 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-08-14 15:31:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,24 +93,27 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 
 // ----------------------------------------------------------------------------
 
-WlmActivityManager::WlmActivityManager( 
-    WlmDataSource *dataSourcev, 
-    OFCmdUnsignedInt opt_portv, 
-    OFBool opt_refuseAssociationv, 
-    OFBool opt_rejectWithoutImplementationUIDv, 
-    OFCmdUnsignedInt opt_sleepAfterFindv, 
-    OFCmdUnsignedInt opt_sleepDuringFindv, 
-    OFCmdUnsignedInt opt_maxPDUv, 
-    E_TransferSyntax opt_networkTransferSyntaxv, 
-    OFBool opt_verbosev, 
-    OFBool opt_debugv, 
-    OFBool opt_failInvalidQueryv, 
-    OFBool opt_singleProcessv, 
-    int opt_maxAssociationsv, 
+WlmActivityManager::WlmActivityManager(
+    WlmDataSource *dataSourcev,
+    OFCmdUnsignedInt opt_portv,
+    OFBool opt_refuseAssociationv,
+    OFBool opt_rejectWithoutImplementationUIDv,
+    OFCmdUnsignedInt opt_sleepAfterFindv,
+    OFCmdUnsignedInt opt_sleepDuringFindv,
+    OFCmdUnsignedInt opt_maxPDUv,
+    E_TransferSyntax opt_networkTransferSyntaxv,
+    OFBool opt_verbosev,
+    OFBool opt_debugv,
+    OFBool opt_failInvalidQueryv,
+    OFBool opt_singleProcessv,
+    int opt_maxAssociationsv,
     T_DIMSE_BlockingMode opt_blockModev,
     int opt_dimse_timeoutv,
     int opt_acse_timeoutv,
-    OFConsole *logStreamv )
+    OFConsole *logStreamv,
+    OFBool opt_forkedChildv,
+    int argcv,
+    char *argvv[] )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
@@ -128,13 +131,17 @@ WlmActivityManager::WlmActivityManager(
 //                opt_singleProcessv                  - [in] Specifies if the application shall run in a single process.
 //                opt_maxAssociationsv                - [in] Specifies many concurrent associations the application shall be able to handle.
 //                logStreamv                          - [in] A stream information can be dumped to.
+//                opt_forkedChildv                    - [in] Indicates, whether this process was "forked" from a parent process, default: false
+//                argcv                               - [in] Number of arguments in command line
+//                argvv                               - [in/out] Holds complete commandline
 // Return Value : none.
   : dataSource( dataSourcev ), opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
     opt_rejectWithoutImplementationUID( opt_rejectWithoutImplementationUIDv ),
     opt_sleepAfterFind( opt_sleepAfterFindv ), opt_sleepDuringFind( opt_sleepDuringFindv ),
     opt_maxPDU( opt_maxPDUv ), opt_networkTransferSyntax( opt_networkTransferSyntaxv ),
     opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
-    opt_singleProcess( opt_singleProcessv ), opt_maxAssociations( opt_maxAssociationsv ),
+    opt_singleProcess( opt_singleProcessv ),  opt_forkedChild( opt_forkedChildv ), cmd_argc( argcv ), 
+    cmd_argv( argvv ), opt_maxAssociations( opt_maxAssociationsv ),
     opt_blockMode(opt_blockModev), opt_dimse_timeout(opt_dimse_timeoutv), opt_acse_timeout(opt_acse_timeoutv),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
     logStream( logStreamv ), processTable( processTable )
@@ -217,6 +224,40 @@ OFCondition WlmActivityManager::StartProvidingService()
     return( WLM_EC_InsufficientPortPrivileges );
 #endif
 
+#ifdef _WIN32
+  /* if this process was started by CreateProcess, opt_forkedChild is set */
+  if (opt_forkedChild)
+  {
+    /* tell dcmnet DUL about child process status, too */
+    DUL_markProcessAsForkedChild();
+
+    char buf[256];
+    DWORD bytesRead = 0;
+    HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
+
+    // read socket handle number from stdin, i.e. the anonymous pipe
+    // to which our parent process has written the handle number.
+    if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL))
+    {
+      // make sure buffer is zero terminated
+      DumpMessage("StartProvidingService(): Setting external socket handle");
+      buf[bytesRead] = '\0';
+        dcmExternalSocketHandle.set(atoi(buf));
+    }
+    else
+    {
+      CERR << "Error while reading socket handle: " << GetLastError() << endl;
+      exit(0);
+    }
+  }
+  else
+  {
+    // parent process
+    if (!opt_singleProcess)
+      DUL_requestForkOnTransportConnectionReceipt(cmd_argc, cmd_argv);
+  }
+#endif
+
   // Initialize network, i.e. create an instance of T_ASC_Network*.
   cond = ASC_initializeNetwork( NET_ACCEPTOR, (int)opt_port, opt_acse_timeout, &net );
   if( cond.bad() ) return( WLM_EC_InitializationOfNetworkConnectionFailed );
@@ -240,11 +281,17 @@ OFCondition WlmActivityManager::StartProvidingService()
     cond = WaitForAssociation( net );
 
     // Clean up any child processes if the execution is not limited to a single process.
-    // (Note that on a Windows platform, opt_singleProcess will always be OFTrue.)
+    // (On windows platform, childs are not handled via the process table,
+    // so there's no need to clean up children)
+#ifdef HAVE_FORK
     if( !opt_singleProcess )
       CleanChildren();
+#elif _WIN32
+    // if running in multi-process mode, always terminate child after one association
+    // for unix, this is done in WaitForAssociation() with exit()
+    if (DUL_processIsForkedChild()) break;
+#endif
   }
-
   // Drop the network, i.e. free memory of T_ASC_Network* structure. This call
   // is the counterpart of ASC_initializeNetwork(...) which was called above.
   cond = ASC_dropNetwork( &net );
@@ -341,8 +388,8 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   int timeout;
 
   // Depending on if the execution is limited to one single process
-  // or not we need to set the timeout value correspondingly
-  // (Note that on a Windows platform, opt_singleProcess will always be OFTrue.)
+  // or not we need to set the timeout value correspondingly.
+  // for WIN32, child processes cannot be counted (always 0) -> timeout=1000
   if( opt_singleProcess )
     timeout = 1000;
   else
@@ -354,206 +401,204 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
   }
 
   // Listen to a socket for timeout seconds and wait for an association request.
-  OFBool dataReceived = ASC_associationWaiting( net, timeout );
-  if( dataReceived )
+  OFCondition cond = ASC_receiveAssociation( net, &assoc, opt_maxPDU, NULL, NULL, OFFalse, DUL_NOBLOCK, timeout );
+
+  // just return, if timeout occured (DUL_NOASSOCIATIONREQUEST)
+  // or (WIN32) if dcmnet has started a child for us, to handle this
+  // association (signaled by "DULC_FORKEDCHILD") -> return to "event loop"
+  if ( ( cond.code() == DULC_FORKEDCHILD ) || ( cond == DUL_NOASSOCIATIONREQUEST ) )
+    return EC_Normal;
+
+  // if error occurs and we're not in single process mode, close association and return
+  if( cond.bad() && !opt_singleProcess )
   {
-    // try to receive an association request:
-    OFCondition cond = ASC_receiveAssociation( net, &assoc, opt_maxPDU );
-    if( cond.bad() )
+    ASC_dropAssociation( assoc );
+    ASC_destroyAssociation( &assoc );
+    return EC_Normal;
+  }
+  // Dump some information if required
+  if( opt_verbose )
+  {
+    sprintf( msg, "Association Received (%s:%s -> %s)\n", assoc->params->DULparams.callingPresentationAddress, assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle );
+    DumpMessage( msg );
+  }
+
+  // Dump more information if required
+  if( opt_debug && logStream != NULL )
+  {
+    DumpMessage( "Parameters:\n" );
+    logStream->lockCout();
+    ASC_dumpParameters( assoc->params, logStream->getCout() );
+    logStream->unlockCout();
+  }
+
+  // Now we have to figure out if we might have to refuse the association request.
+  // This is the case if at least one of five conditions is met:
+
+  // Condition 1: if option "--refuse" is set we want to refuse the association request.
+  if( opt_refuseAssociation )
+  {
+    RefuseAssociation( &assoc, WLM_FORCED );
+    if( !opt_singleProcess )
     {
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Dump some information if required
-    if( opt_verbose )
+  // Condition 2: determine the application context name. If an error occurred or if the
+  // application context name is not supported we want to refuse the association request.
+  cond = ASC_getApplicationContextName( assoc->params, buf );
+  if( cond.bad() || strcmp( buf, DICOM_STDAPPLICATIONCONTEXT ) != 0 )
+  {
+    RefuseAssociation( &assoc, WLM_BAD_APP_CONTEXT );
+    if( !opt_singleProcess )
     {
-      sprintf( msg, "Association Received (%s:%s -> %s)\n", assoc->params->DULparams.callingPresentationAddress, assoc->params->DULparams.callingAPTitle, assoc->params->DULparams.calledAPTitle );
-      DumpMessage( msg );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Dump more information if required
-    if( opt_debug && logStream != NULL )
+  // Condition 3: if option "--reject" is set and the caller did not provide an
+  // implementation class UID we want to refuse the association request
+  if( opt_rejectWithoutImplementationUID && strlen( assoc->params->theirImplementationClassUID ) == 0 )
+  {
+    RefuseAssociation( &assoc, WLM_NO_IC_UID );
+    if( !opt_singleProcess )
     {
-      DumpMessage( "Parameters:\n" );
-      logStream->lockCout();
-      ASC_dumpParameters( assoc->params, logStream->getCout() );
-      logStream->unlockCout();
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Now we have to figure out if we might have to refuse the association request.
-    // This is the case if at least one of five conditions is met:
-
-    // Condition 1: if option "--refuse" is set we want to refuse the association request.
-    if( opt_refuseAssociation )
+  // Condition 4: if there are too many concurrent associations
+  // we want to refuse the association request
+  if( CountChildProcesses() >= opt_maxAssociations )
+  {
+    RefuseAssociation( &assoc, WLM_TOO_MANY_ASSOCIATIONS );
+    if( !opt_singleProcess )
     {
-      RefuseAssociation( &assoc, WLM_FORCED );
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Condition 2: determine the application context name. If an error occurred or if the
-    // application context name is not supported we want to refuse the association request.
-    cond = ASC_getApplicationContextName( assoc->params, buf );
-    if( cond.bad() || strcmp( buf, DICOM_STDAPPLICATIONCONTEXT ) != 0 )
+  // Condition 5: if the called application entity title is not supported
+  // whithin the data source we want to refuse the association request
+  dataSource->SetCalledApplicationEntityTitle( assoc->params->DULparams.calledAPTitle );
+  if( !dataSource->IsCalledApplicationEntityTitleSupported() )
+  {
+    RefuseAssociation( &assoc, WLM_BAD_AE_SERVICE );
+    if( !opt_singleProcess )
     {
-      RefuseAssociation( &assoc, WLM_BAD_APP_CONTEXT );
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Condition 3: if option "--reject" is set and the caller did not provide an
-    // implementation class UID we want to refuse the association request
-    if( opt_rejectWithoutImplementationUID && strlen( assoc->params->theirImplementationClassUID ) == 0 )
+  // If we get to this point the association shall be negotiated.
+  cond = NegotiateAssociation( assoc );
+  if( cond.bad() )
+  {
+    if( !opt_singleProcess )
     {
-      RefuseAssociation( &assoc, WLM_NO_IC_UID );
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Condition 4: if there are too many concurrent associations
-    // we want to refuse the association request
-    if( CountChildProcesses() >= opt_maxAssociations )
+  // Reject association if no presentation context was negotiated
+  if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
+  {
+    RefuseAssociation( &assoc, WLM_FORCED );
+    if( !opt_singleProcess )
     {
-      RefuseAssociation( &assoc, WLM_TOO_MANY_ASSOCIATIONS );
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // Condition 5: if the called application entity title is not supported
-    // whithin the data source we want to refuse the association request
-    dataSource->SetCalledApplicationEntityTitle( assoc->params->DULparams.calledAPTitle );
-    if( !dataSource->IsCalledApplicationEntityTitleSupported() )
+  // If the negotiation was successful, accept the association request.
+  cond = ASC_acknowledgeAssociation( assoc );
+  if( cond.bad() )
+  {
+    if( !opt_singleProcess )
     {
-      RefuseAssociation( &assoc, WLM_BAD_AE_SERVICE );
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
     }
+    return( EC_Normal );
+  }
 
-    // If we get to this point the association shall be negotiated.
-    cond = NegotiateAssociation( assoc );
-    if( cond.bad() )
-    {
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
-    }
+  // Dump some information if required.
+  if( opt_verbose )
+  {
+    sprintf( msg, "Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength );
+    DumpMessage( msg );
 
-    // Reject association if no presentation context was negotiated
     if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
-    {
-      RefuseAssociation( &assoc, WLM_FORCED );
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
-    }
+      DumpMessage("    (but no valid presentation contexts)\n");
+  }
 
-    // If the negotiation was successful, accept the association request.
-    cond = ASC_acknowledgeAssociation( assoc );
-    if( cond.bad() )
-    {
-      if( !opt_singleProcess )
-      {
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      return( EC_Normal );
-    }
+  // Dump some more information if required.
+  if( opt_debug && logStream != NULL )
+  {
+    logStream->lockCout();
+    ASC_dumpParameters( assoc->params, logStream->getCout() );
+    logStream->unlockCout();
+  }
 
-    // Dump some information if required.
-    if( opt_verbose )
-    {
-      sprintf( msg, "Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength );
-      DumpMessage( msg );
-
-      if( ASC_countAcceptedPresentationContexts( assoc->params ) == 0 )
-        DumpMessage("    (but no valid presentation contexts)\n");
-    }
-
-    // Dump some more information if required.
-    if( opt_debug && logStream != NULL )
-    {
-      logStream->lockCout();
-      ASC_dumpParameters( assoc->params, logStream->getCout() );
-      logStream->unlockCout();
-    }
-
-    // Depending on if this execution shall be limited to one process or not, spawn a sub-
-    // process to handle the association or don't. (Note that at the moment, this is only
-    // possible if fork() is available; in other words, it is not possible on a Windows
-    // platform) (Note that under Windows opt_singleProcess will always be OFTrue.)
-    if( opt_singleProcess )
-    {
-      // Go ahead and handle the association (i.e. handle the callers requests) in this process.
-      HandleAssociation( assoc );
-    }
+  // Depending on if this execution shall be limited to one process or not, spawn a sub-
+  // process to handle the association or don't. (Note: For windows dcmnet is handling
+  // the creation for a new subprocess, so we can call HandleAssociation directly, too)
+  if( opt_singleProcess || opt_forkedChild )
+  {
+    // Go ahead and handle the association (i.e. handle the callers requests) in this process.
+    HandleAssociation( assoc );
+  }
 #ifdef HAVE_FORK
+  else
+  {
+    // Spawn a sub-process to handle the association (i.e. handle the callers requests)
+    int pid = (int)(fork());
+    if( pid < 0 )
+    {
+      RefuseAssociation( &assoc, WLM_CANNOT_FORK );
+      if( !opt_singleProcess )
+      {
+        ASC_dropAssociation( assoc );
+        ASC_destroyAssociation( &assoc );
+      }
+      return( EC_Normal );
+    }
+    else if( pid > 0 )
+    {
+      // Fork returns a positive process id if this is the parent process.
+      // If this is the case, remeber the process in a table and go ahead.
+      AddProcessToTable( pid, assoc );
+
+      // the child will handle the association, we can drop it
+      ASC_dropAssociation( assoc );
+      ASC_destroyAssociation( &assoc );
+    }
     else
     {
-      // Spawn a sub-process to handle the association (i.e. handle the callers requests)
-      int pid = (int)(fork());
-      if( pid < 0 )
-      {
-        RefuseAssociation( &assoc, WLM_CANNOT_FORK );
-        if( !opt_singleProcess )
-        {
-          ASC_dropAssociation( assoc );
-          ASC_destroyAssociation( &assoc );
-        }
-        return( EC_Normal );
-      }
-      else if( pid > 0 )
-      {
-        // Fork returns a positive process id if this is the parent process.
-        // If this is the case, remeber the process in a table and go ahead.
-        AddProcessToTable( pid, assoc );
+      // If the process id is not positive, this must be the child process.
+      // We want to handle the association, i.e. the callers requests.
+      HandleAssociation( assoc );
 
-        // the child will handle the association, we can drop it
-        ASC_dropAssociation( assoc );
-        ASC_destroyAssociation( &assoc );
-      }
-      else
-      {
-        // If the process id is not positive, this must be the child process.
-        // We want to handle the association, i.e. the callers requests.
-        HandleAssociation( assoc );
-
-        // When everything is finished, terminate the child process.
-        exit(0);
-      }
+      // When everything is finished, terminate the child process.
+      exit(0);
     }
-#endif
   }
+#endif // HAVE_FORK
 
   return( EC_Normal );
 }
@@ -1279,7 +1324,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.20  2005-12-08 15:48:35  meichel
+** Revision 1.21  2006-08-14 15:31:01  onken
+** Added WIN32 multiprocess mode to wlmscpfs.
+**
+** Revision 1.20  2005/12/08 15:48:35  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.19  2005/11/17 13:45:41  meichel

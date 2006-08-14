@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:50 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-08-14 15:30:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,8 @@ class WlmConsoleEngineFileSystem
     OFBool opt_failInvalidQuery;
     /// indicates if this application is run in single process mode or not
     OFBool opt_singleProcess;
+    /// indicates if this process is called as a child process, used by dcmnet
+    OFBool opt_forkedChild;
     /// indicates how many associations can be accepted at the same time
     int opt_maxAssociations;
     /// indicates if an expansion of empty sequences in C-Find RQ messages shall take place or not
@@ -92,6 +94,10 @@ class WlmConsoleEngineFileSystem
     OFConsoleApplication *app;
     /// instance of command line class (for handling command line arguments)
     OFCommandLine *cmd;
+    /// number of command line arguments, needed for multiprocess mode on WIN32
+    int command_argc;
+    /// complete command line, needed for mulitprocess mode on WIN32
+    char **command_argv;
     /// data source which shall be queried on incoming C-Find RQ messages
     WlmDataSource *dataSource;
 
