@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:06 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2006-08-14 16:42:02 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,13 +77,24 @@ using namespace std;
 #endif
 #include <iomanip.h>
 
-#endif
+#endif 
 
 #ifdef USE_STRINGSTREAM
 
-typedef stringstream OFStringStream;
-typedef ostringstream OFOStringStream;
-typedef istringstream OFIStringStream;
+// define STD_NAMESPACE to std:: if the standard namespace exists
+#ifndef STD_NAMESPACE
+#ifdef HAVE_STD_NAMESPACE
+#define STD_NAMESPACE std::
+#else
+#define STD_NAMESPACE
+#endif
+#endif
+
+#define OFendl STD_NAMESPACE endl
+
+typedef STD_NAMESPACE stringstream OFStringStream;
+typedef STD_NAMESPACE ostringstream OFOStringStream;
+typedef STD_NAMESPACE istringstream OFIStringStream;
 
 #define OFStringStream_ends ""
 #define OFSTRINGSTREAM_GETOFSTRING(oss, string) \
@@ -125,7 +136,12 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
- * Revision 1.7  2005-12-08 16:06:06  meichel
+ * Revision 1.8  2006-08-14 16:42:02  meichel
+ * Defined two new macros: STD_NAMESPACE is defined to std:: if the standard
+ *   namespace exists and empty otherwise. OFendl is defined as std::endl if
+ *   the standard namespace exists and as endl otherwise.
+ *
+ * Revision 1.7  2005/12/08 16:06:06  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2004/05/07 10:46:32  meichel
