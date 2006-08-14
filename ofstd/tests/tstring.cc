@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -38,9 +38,9 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:10 $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ void iotest()
 {
   OFString z;
   COUT << "enter a word:";
-  cin >> z;
+  STD_NAMESPACE cin >> z;
   COUT << "word =" << z << " ";
   COUT << "length = " << z.length() << "\n";
 }
@@ -229,7 +229,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstring.cc,v $
-** Revision 1.7  2005-12-08 15:49:10  meichel
+** Revision 1.8  2006-08-14 16:42:48  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
+** Revision 1.7  2005/12/08 15:49:10  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.6  2003/07/04 13:31:52  meichel

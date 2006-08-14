@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:08 $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstftoa.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,23 +163,23 @@ int main()
 
     if (s == buf)
     {
-      CERR << "test #" << i+1 << " passed" << endl;
+      CERR << "test #" << i+1 << " passed" << OFendl;
       numPassed++;
     }
     else
     {
-      CERR << "test #" << i+1 << " failed, expected \"" << values[i].output << "\", got \"" << buf << "\"" << endl;
+      CERR << "test #" << i+1 << " failed, expected \"" << values[i].output << "\", got \"" << buf << "\"" << OFendl;
     }
   }
 
   if (numTuples == numPassed)
   {
-    CERR << "All tests passed." << endl;
+    CERR << "All tests passed." << OFendl;
     return 0;
   }
   else
   {
-    CERR << "Failures: " << numPassed << " of " << numTuples << " tests passed." << endl;
+    CERR << "Failures: " << numPassed << " of " << numTuples << " tests passed." << OFendl;
   }
 
   return 1;
@@ -189,7 +189,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstftoa.cc,v $
- * Revision 1.4  2005-12-08 15:49:08  meichel
+ * Revision 1.5  2006-08-14 16:42:48  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.4  2005/12/08 15:49:08  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2002/12/09 13:11:39  joergr

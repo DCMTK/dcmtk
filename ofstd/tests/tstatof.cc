@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:07 $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstatof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ int main()
         {
           passed = OFFalse;
           CERR << "test #" << i << " failed: conversion error, atof=" << d2 << ", ref="
-               << d1 << ", delta=" << delta << endl;
+               << d1 << ", delta=" << delta << OFendl;
         }
       }
     }
@@ -121,27 +121,27 @@ int main()
       {
         passed = OFFalse;
         if (r)
-          CERR << "test #" << i << " failed: conversion did not flag error as expected, atof=" << d2 << endl;
+          CERR << "test #" << i << " failed: conversion did not flag error as expected, atof=" << d2 << OFendl;
         else
-          CERR << "test #" << i << " failed: conversion did not succeed as expected" << endl;
+          CERR << "test #" << i << " failed: conversion did not succeed as expected" << OFendl;
       }
     }
 
     if (passed)
     {
-      CERR << "test #" << i << " passed" << endl;
+      CERR << "test #" << i << " passed" << OFendl;
       numPassed++;
     }
   }
 
   if (numVp == numPassed)
   {
-    CERR << "All tests passed." << endl;
+    CERR << "All tests passed." << OFendl;
     return 0;
   }
   else
   {
-    CERR << "Failures: " << numPassed << " of " << numVp << " tests passed." << endl;
+    CERR << "Failures: " << numPassed << " of " << numVp << " tests passed." << OFendl;
   }
 
   return 1;
@@ -151,7 +151,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstatof.cc,v $
- * Revision 1.4  2005-12-08 15:49:07  meichel
+ * Revision 1.5  2006-08-14 16:42:48  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.4  2005/12/08 15:49:07  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2002/11/27 11:23:13  meichel

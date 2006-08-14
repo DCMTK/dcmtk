@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -52,8 +52,8 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:52 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-08-14 16:42:26 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ public:
    *  to the stream.
    *  @return reference to cout stream
    */
-  ostream& lockCout()
+  STD_NAMESPACE ostream& lockCout()
   {
 #ifdef _REENTRANT
     coutMutex.lock();
@@ -114,7 +114,7 @@ public:
    *  must ensure that the stream is locked and unlocked appropriately.
    *  @return reference to cout stream
    */
-  ostream& getCout()
+  STD_NAMESPACE ostream& getCout()
   {
     return *currentCout;
   }
@@ -130,13 +130,13 @@ public:
    *         active upon creation of the console object.
    *  @return pointer to replaced cout stream.
    */
-  ostream *setCout(ostream *newCout=NULL);
+  STD_NAMESPACE ostream *setCout(STD_NAMESPACE ostream *newCout=NULL);
 
   /** acquires a lock on the cerr stream and returns a reference
    *  to the stream.
    *  @return reference to cerr stream
    */
-  ostream& lockCerr()
+  STD_NAMESPACE ostream& lockCerr()
   {
 #ifdef _REENTRANT
     cerrMutex.lock();
@@ -156,7 +156,7 @@ public:
    *  must ensure that the stream is locked and unlocked appropriately.
    *  @return reference to cerr stream
    */
-  ostream& getCerr()
+  STD_NAMESPACE ostream& getCerr()
   {
     if (joined) return *currentCout;
     else return *currentCerr;
@@ -183,7 +183,7 @@ public:
    *         active upon creation of the console object.
    *  @return pointer to replaced cerr stream.
    */
-  ostream *setCerr(ostream *newCerr=NULL);
+  STD_NAMESPACE ostream *setCerr(STD_NAMESPACE ostream *newCerr=NULL);
 
   /** combines the cerr and cout streams.
    *  After a call to this method, both cout and cerr related methods
@@ -229,10 +229,10 @@ private:
   OFConsole& operator=(const OFConsole &arg);
 
   /** pointer to current cout stream, never NULL */
-  ostream *currentCout;
+  STD_NAMESPACE ostream *currentCout;
 
   /** pointer to current cerr stream, never NULL */
-  ostream *currentCerr;
+  STD_NAMESPACE ostream *currentCerr;
 
   /** true if streams are combined, false otherwise */
   int joined;
@@ -280,7 +280,11 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.18  2005-12-08 16:05:52  meichel
+ * Revision 1.19  2006-08-14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.18  2005/12/08 16:05:52  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.17  2004/01/21 11:50:10  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:59 $
+ *  Update Date:      $Date: 2006-08-14 16:42:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ OFLogFile::OFLogFile(const char *filename, int flags)
 }
 
 
-ofstream &OFLogFile::lockFile(LF_Level level, const char *module)
+STD_NAMESPACE ofstream &OFLogFile::lockFile(LF_Level level, const char *module)
 {
 #ifdef _REENTRANT
     Mutex.lock();
@@ -84,7 +84,7 @@ ofstream &OFLogFile::lockFile(LF_Level level, const char *module)
              File << "INFO";
         }
         if ((module != NULL) && (strlen(module) > 0))
-            File << ", Module: " << module << endl; 
+            File << ", Module: " << module << OFendl; 
     }
     return File;
 }
@@ -98,7 +98,7 @@ void OFLogFile::writeMessage(const char *message, int indent)
         OFString msgStr = message;
         while (((pos = (msgStr.find('\n', pos))) != OFString_npos) && (pos < msgStr.length()))
             msgStr.insert(++pos, OFString(indent, ' '));
-        File << OFString(indent, ' ') << msgStr << endl;
+        File << OFString(indent, ' ') << msgStr << OFendl;
     }
 }
 
@@ -107,7 +107,11 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.10  2005-12-08 15:48:59  meichel
+ * Revision 1.11  2006-08-14 16:42:46  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.10  2005/12/08 15:48:59  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.9  2003/07/09 13:58:04  meichel

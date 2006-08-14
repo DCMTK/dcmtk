@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:12 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 
 static void bailout(const char *message, int line)
 {
-  CERR << "[" << line << "]: " << message << endl;
+  CERR << "[" << line << "]: " << message << OFendl;
   exit(10);
 }
 
@@ -127,7 +127,7 @@ void mutex_test()
   if ((!mtx_cond2) || (!mtx_cond3)) bailout("mutex lock/unlock test failed", __LINE__);
 
   delete mutex;
-  CERR << "mutex test passed." << endl;
+  CERR << "mutex test passed." << OFendl;
 }
 
 
@@ -215,7 +215,7 @@ void semaphore_test()
 
   delete mutex;
   delete semaphore;
-  CERR << "semaphore test passed." << endl;
+  CERR << "semaphore test passed." << OFendl;
 }
 
 static OFReadWriteLock *rwlock=NULL;
@@ -328,7 +328,7 @@ void rwlock_test()
   delete mutex;
   delete mutex2;
   delete rwlock;
-  CERR << "read/write lock test passed." << endl;
+  CERR << "read/write lock test passed." << OFendl;
 }
 
 static OFThreadSpecificData *tsdata=NULL;
@@ -442,7 +442,7 @@ void tsdata_test()
   delete mutex;
   delete mutex2;
   delete tsdata;
-  CERR << "thread specific data test passed." << endl;
+  CERR << "thread specific data test passed." << OFendl;
 }
 
 
@@ -452,7 +452,7 @@ int main()
   semaphore_test(); // may assume that mutexes work correctly
   rwlock_test();    // may assume that mutexes and semaphores work correctly
   tsdata_test();
-  CERR << "all tests passed." << endl;
+  CERR << "all tests passed." << OFendl;
   return 0;
 }
 
@@ -461,7 +461,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.10  2005-12-08 15:49:12  meichel
+ * Revision 1.11  2006-08-14 16:42:48  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.10  2005/12/08 15:49:12  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.9  2004/01/16 10:37:23  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:07 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2006-08-14 16:42:26 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -814,7 +814,7 @@ private:
  *  @param s string to print
  *  @return reference to stream
  */
-ostream& operator<< (ostream& o, const OFString& s);
+STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFString& s);
 
 /** reads a string of characters from input stream i into s. Any
  *  whitespace is treated as a string terminator.
@@ -822,7 +822,7 @@ ostream& operator<< (ostream& o, const OFString& s);
  *  @param s string to print
  *  @return reference to stream
  */
-istream& operator>> (istream& i, OFString& s);
+STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s);
 
 /** appends the string rhs to lhs.
  *  @param lhs left-hand side string
@@ -1077,7 +1077,11 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.20  2005-12-08 16:06:07  meichel
+** Revision 1.21  2006-08-14 16:42:26  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
+** Revision 1.20  2005/12/08 16:06:07  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.19  2004/08/03 11:45:42  meichel

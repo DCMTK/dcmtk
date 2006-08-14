@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:03 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2006-08-14 16:42:46 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -593,7 +593,7 @@ double OFTime::getLocalTimeZone()
 }
 
 
-ostream& operator<<(ostream& stream, const OFTime &timeVal)
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &timeVal)
 {
     OFString tmpString;
     /* print the given time in ISO format to the stream */
@@ -607,7 +607,11 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.14  2005-12-08 15:49:03  meichel
+ * Revision 1.15  2006-08-14 16:42:46  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.14  2005/12/08 15:49:03  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2004/01/16 10:35:18  joergr

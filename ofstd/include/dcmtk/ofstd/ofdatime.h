@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Combined class for date and time functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2006-08-14 16:42:26 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -236,7 +236,7 @@ class OFDateTime
  *  @param time OFDateTime object to print
  *  @return reference to the output stream
  */
-ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTime &dateTime);
 
 
 #endif
@@ -246,7 +246,11 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
  *
  * CVS/RCS Log:
  * $Log: ofdatime.h,v $
- * Revision 1.7  2005-12-08 16:05:55  meichel
+ * Revision 1.8  2006-08-14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.7  2005/12/08 16:05:55  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2004/04/16 12:43:26  joergr

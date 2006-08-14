@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Define general purpose facility for log file output
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:59 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-08-14 16:42:26 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ class OFLogFile
      *  @param filename name of the log file to be created
      *  @param flags file type used to create the file (default: append)
      */
-    OFLogFile(const char *filename, int flags = ios::app);
+    OFLogFile(const char *filename, int flags = STD_NAMESPACE ios::app);
 
     /** destructor
      */
@@ -85,7 +85,7 @@ class OFLogFile
      *  @param module name of the module the message belongs to (optional)
      *  @return reference to log file stream (used to write the message)
      */
-    ofstream &lockFile(LF_Level level = LL_none, const char *module = NULL);
+    STD_NAMESPACE ofstream &lockFile(LF_Level level = LL_none, const char *module = NULL);
 
     /** releases the lock on the log file stream.
      */
@@ -117,7 +117,7 @@ class OFLogFile
      *  must ensure that the stream is locked and unlocked appropriately.
      *  @return reference to log file stream
      */
-    ostream& getFile()
+    STD_NAMESPACE ostream& getFile()
     {
         return File;
     }
@@ -177,7 +177,7 @@ class OFLogFile
     OFLogFile& operator=(const OFLogFile &arg);
 
     /** log file stream */
-    ofstream File;
+    STD_NAMESPACE ofstream File;
 
     /** log message filter */
     LF_Level Filter;
@@ -196,7 +196,11 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.13  2005-12-08 16:05:59  meichel
+ * Revision 1.14  2006-08-14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.13  2005/12/08 16:05:59  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2004/01/16 10:30:12  joergr

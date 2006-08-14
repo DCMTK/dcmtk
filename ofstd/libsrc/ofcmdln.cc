@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 15:49:08 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-14 16:42:46 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ struct OFCmdOption
     ~OFCmdOption()
     {
 #ifdef DEBUG
-        if (!Checked && !(flags & OFCommandLine::AF_Exclusive) && (LongOption.length() > 0))
+        if (!Checked && !(Flags & OFCommandLine::AF_Exclusive) && (LongOption.length() > 0))
         {
             ofConsole.lockCerr() << "WARNING: option " << LongOption << " has possibly never been checked !" << endl;
             ofConsole.unlockCerr();
@@ -1051,9 +1051,9 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
     {
         /* open command file */
 #ifdef HAVE_IOS_NOCREATE
-        ifstream cmdFile(argValue + 1, ios::in|ios::nocreate);
+        STD_NAMESPACE ifstream cmdFile(argValue + 1, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
 #else
-        ifstream cmdFile(argValue + 1, ios::in);
+        STD_NAMESPACE ifstream cmdFile(argValue + 1, STD_NAMESPACE ios::in);
 #endif
         if (cmdFile)
         {
@@ -1474,7 +1474,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.38  2006-07-27 15:49:08  joergr
+ * Revision 1.39  2006-08-14 16:42:46  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.38  2006/07/27 15:49:08  joergr
  * Fixed typo which caused compilation problems under Windows.
  *
  * Revision 1.37  2006/07/27 13:21:28  joergr

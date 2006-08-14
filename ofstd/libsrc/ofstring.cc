@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:01 $
+ *  Update Date:      $Date: 2006-08-14 16:42:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -767,7 +767,7 @@ OFString::find_last_not_of (char s, size_t pos) const
 ** Operator <<
 */
 
-ostream& operator<< (ostream& o, const OFString& s)
+STD_NAMESPACE ostream& operator<< (STD_NAMESPACE ostream& o, const OFString& s)
 {
     return o.write (s.c_str(), s.size());
 }
@@ -775,7 +775,7 @@ ostream& operator<< (ostream& o, const OFString& s)
 /*
 ** Operator >>
 */
-istream& operator>> (istream& i, OFString& s)
+STD_NAMESPACE istream& operator>> (STD_NAMESPACE istream& i, OFString& s)
 {
     s.resize(0);
     char c = '\0';
@@ -1031,7 +1031,11 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.21  2005-12-08 15:49:01  meichel
+** Revision 1.22  2006-08-14 16:42:46  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
+** Revision 1.21  2005/12/08 15:49:01  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.20  2003/07/09 13:58:04  meichel

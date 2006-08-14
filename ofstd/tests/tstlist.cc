@@ -21,9 +21,9 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-02-09 15:41:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ void print(OFList<int> & l)
     COUT << "Werte der List: ";
     for (OFListIterator(int) i(l.begin()); i != e; ++i)
         COUT << *i << " ";
-    COUT << endl;
+    COUT << OFendl;
 }
 
 
@@ -61,7 +61,7 @@ int main()
 
     OFListIterator(int) a(l.begin());
     ++a; ++a;
-    COUT << "2xa++ :Was ist jetzt a? " << *a << endl;
+    COUT << "2xa++ :Was ist jetzt a? " << *a << OFendl;
     l.insert(a, 50);
     l.insert(a, 10, 100);
 
@@ -81,7 +81,7 @@ int main()
     COUT << "Ausgabe der List l1\n";
     print(l1);
 
-    COUT << "Loesche alle 100er (nacheinander) aus l" << endl;
+    COUT << "Loesche alle 100er (nacheinander) aus l" << OFendl;
 
     OFListIterator(int) del;
     a = l.begin();
@@ -96,21 +96,21 @@ int main()
         }
     }
 
-    COUT << "Anzahl Elemente in l: " << l.size() << endl;
+    COUT << "Anzahl Elemente in l: " << l.size() << OFendl;
     COUT << "Loesche Werte mit pop_front aus l: ";
     while(!l.empty())
     {
         COUT << l.front() << " ";
         l.pop_front();
     }
-    COUT << endl;
+    COUT << OFendl;
 
     COUT << "Loesche letztes Element aus l1: " << l1.back()
          << " und gebe l aus:\n";
     l1.pop_back();
     print(l1);
 
-    COUT << "Suche 1 in l1: " << endl;
+    COUT << "Suche 1 in l1: " << OFendl;
     a = OFFind(OFListIterator(int), int, l1.begin(), l1.end(), 1);
     if ( a == l1.end())
         COUT << "Fehler, 1 nicht gefunden\n";
@@ -132,7 +132,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstlist.cc,v $
-** Revision 1.10  2006-02-09 15:41:25  joergr
+** Revision 1.11  2006-08-14 16:42:48  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
+** Revision 1.10  2006/02/09 15:41:25  joergr
 ** Fixed typo in CVS log.
 **
 ** Revision 1.9  2006/02/09 15:19:53  joergr

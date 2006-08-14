@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for date functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:54 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2006-08-14 16:42:26 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,7 +267,7 @@ class OFDate
  *  @param dateVal OFDate object to print
  *  @return reference to the output stream
  */
-ostream& operator<<(ostream& stream, const OFDate &dateVal);
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDate &dateVal);
 
 
 #endif
@@ -277,7 +277,11 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal);
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
- * Revision 1.7  2005-12-08 16:05:54  meichel
+ * Revision 1.8  2006-08-14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.7  2005/12/08 16:05:54  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.6  2004/01/16 10:30:39  joergr

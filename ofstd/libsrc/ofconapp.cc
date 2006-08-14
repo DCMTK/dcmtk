@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:22:12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-14 16:42:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,16 +104,16 @@ void OFConsoleApplication::printHeader(const OFBool hostInfo,
                                        const OFBool stdError)
 {
     /* lock output stream */
-    ostream *output = (stdError) ? &ofConsole.lockCerr() : &ofConsole.lockCout();
+    STD_NAMESPACE ostream *output = (stdError) ? &ofConsole.lockCerr() : &ofConsole.lockCout();
     if (!Identification.empty())
-        (*output) << Identification << endl << endl;
+        (*output) << Identification << OFendl << OFendl;
     (*output) << Name;
     if (!Description.empty())
         (*output) << ": " << Description;
-    (*output) << endl;
+    (*output) << OFendl;
     /* print optional host information */
     if (hostInfo)
-        (*output) << endl << "Host type: " << CANONICAL_HOST_TYPE << endl;
+        (*output) << OFendl << "Host type: " << CANONICAL_HOST_TYPE << OFendl;
     /* release output stream */
     if (stdError)
         ofConsole.unlockCerr();
@@ -127,21 +127,21 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
     if (cmd == NULL)
         cmd = CmdLine;
     printHeader();
-    ostream &output = ofConsole.lockCout();
+    STD_NAMESPACE ostream &output = ofConsole.lockCout();
     output << "usage: " << Name;
     if (cmd != NULL)
     {
         OFString str;
         cmd->getSyntaxString(str);
-        output << str << endl;
+        output << str << OFendl;
         cmd->getParamString(str);
         if (str.length() > 0)
-            output << endl << str;
+            output << OFendl << str;
         cmd->getOptionString(str);
         if (str.length() > 0)
-            output << endl << str;
+            output << OFendl << str;
     }
-    output << endl;
+    output << OFendl;
     ofConsole.unlockCout();
     /* exit code: no error */
     exit(0);
@@ -154,7 +154,7 @@ void OFConsoleApplication::printError(const char *str,
     if (!QuietMode)
     {
         printHeader(OFFalse /*hostInfo*/, OFTrue /*stdError*/);
-        ofConsole.lockCerr() << "error: " << str << endl;
+        ofConsole.lockCerr() << "error: " << str << OFendl;
         ofConsole.unlockCerr();
     }
     exit(code);
@@ -169,7 +169,7 @@ void OFConsoleApplication::printWarning(const char *str,
         ofConsole.lockCerr() << Name << ": ";
         if ((prefix != NULL) && (strlen(prefix) > 0))
             ofConsole.getCerr() << prefix << ": ";
-        ofConsole.getCerr() << str << endl;
+        ofConsole.getCerr() << str << OFendl;
         ofConsole.unlockCerr();
     }
 }
@@ -179,7 +179,7 @@ void OFConsoleApplication::printMessage(const char *str)
 {
     if (!QuietMode)
     {
-        ofConsole.lockCerr() << str << endl;
+        ofConsole.lockCerr() << str << OFendl;
         ofConsole.unlockCerr();
     }
 }
@@ -261,7 +261,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.22  2006-07-27 13:22:12  joergr
+ * Revision 1.23  2006-08-14 16:42:46  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.22  2006/07/27 13:22:12  joergr
  * Slightly changed behaviour of "exclusive" options like "--help" or
  * "--version". Method parseLine() now returns PS_ExclusiveOption.
  *

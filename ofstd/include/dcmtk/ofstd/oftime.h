@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:09 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2006-08-14 16:42:26 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -429,7 +429,7 @@ class OFTime
  *  @param timeVal OFTime object to print
  *  @return reference to the output stream
  */
-ostream& operator<<(ostream& stream, const OFTime &timeVal);
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &timeVal);
 
 
 #endif
@@ -439,7 +439,11 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal);
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
- * Revision 1.8  2005-12-08 16:06:09  meichel
+ * Revision 1.9  2006-08-14 16:42:26  meichel
+ * Updated all code in module ofstd to correctly compile if the standard
+ *   namespace has not included into the global one with a "using" directive.
+ *
+ * Revision 1.8  2005/12/08 16:06:09  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2004/01/16 10:30:39  joergr

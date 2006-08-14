@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test programm for class OFStack
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:11 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,23 +45,23 @@ int main()
     st.push(3);
 
     OFStack<int> nst(st);
-    COUT << "Output of number of Elements in st: " << st.size() << endl;
+    COUT << "Output of number of Elements in st: " << st.size() << OFendl;
     COUT << "Output and deletion of st: ";
     while(!st.empty())
     {
 	COUT << st.top() << " ";
 	st.pop();
     }
-    COUT << endl;
+    COUT << OFendl;
 
-    COUT << "Output of number of Elements in copy from st: " << nst.size() << endl;
+    COUT << "Output of number of Elements in copy from st: " << nst.size() << OFendl;
     COUT << "Output and deletion of copy from st: ";
     while(!nst.empty())
     {
 	COUT << nst.top() << " ";
 	nst.pop();
     }
-    COUT << endl;
+    COUT << OFendl;
 }
 
 
@@ -69,7 +69,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tststack.cc,v $
-** Revision 1.9  2005-12-08 15:49:11  meichel
+** Revision 1.10  2006-08-14 16:42:48  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
+** Revision 1.9  2005/12/08 15:49:11  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.8  2004/01/16 10:37:23  joergr

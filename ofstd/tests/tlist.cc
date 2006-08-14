@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test programm for classes OFList and OFListIterator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:04 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-08-14 16:42:48 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ int test_splice ()
   l1.splice (i1, l2);
   OFListIterator(int) i2 = l1.begin ();
   while (i2 != l1.end ())
-    COUT << *i2++ << endl;
+    COUT << *i2++ << OFendl;
   return 0;
 }
 
@@ -181,7 +181,11 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.10  2005-12-08 15:49:04  meichel
+** Revision 1.11  2006-08-14 16:42:48  meichel
+** Updated all code in module ofstd to correctly compile if the standard
+**   namespace has not included into the global one with a "using" directive.
+**
+** Revision 1.10  2005/12/08 15:49:04  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.9  2004/01/16 10:37:23  joergr
