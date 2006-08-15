@@ -21,10 +21,10 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:48:05 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:09:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,14 +177,14 @@ int main( int argc, char *argv[] )
       if( cmd.findOption("--version") )
       {
         app.printHeader( OFTrue );
-        CERR << endl << "External libraries used:";
+        CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB)
-        CERR << " none" << endl;
+        CERR << " none" << OFendl;
 #else
-        CERR << endl;
+        CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-        CERR << "- ZLIB, Version " << zlibVersion() << endl;
+        CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
         return( 0 );
       }
@@ -256,7 +256,7 @@ int main( int argc, char *argv[] )
           app.checkValue( cmd.getValue( remoteDBTitles[remoteDBTitlesCount] ) );
           remoteDBTitlesCount++;
         }
-        else CERR << "ti: Too many remote database titles." << endl;
+        else CERR << "ti: Too many remote database titles." << OFendl;
       } while (cmd.findOption("--remote", 0, OFCommandLine::FOM_Next));
     }
 
@@ -279,7 +279,7 @@ int main( int argc, char *argv[] )
       // in case its value is not in a certain range, use the default value
       if( maxPDU == 0 || maxPDU < ASC_MINIMUMPDUSIZE || maxPDU > ASC_MAXIMUMPDUSIZE )
       {
-        COUT << "ti: no or invalid max pdu size found in configuration file." << endl;
+        COUT << "ti: no or invalid max pdu size found in configuration file." << OFendl;
         maxPDU = ASC_DEFAULTMAXPDU;
       }
 
@@ -349,7 +349,7 @@ int main( int argc, char *argv[] )
 
         // make sure data dictionary is loaded
         if( !dcmDataDict.isDictionaryLoaded() )
-          CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+          CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
 
         // if starting up network is successful
         cond = ASC_initializeNetwork( NET_REQUESTOR, 0, opt_acse_timeout, conf.accessNet() );
@@ -390,19 +390,19 @@ int main( int argc, char *argv[] )
       }
       else
       {
-        CERR << "ti: no accessable databases." << endl;
+        CERR << "ti: no accessable databases." << OFendl;
         returnValue = 1;
       }
     }
     else
     {
-      CERR << "ti: error while reading configuration file '" << configFileName << "'." << endl;
+      CERR << "ti: error while reading configuration file '" << configFileName << "'." << OFendl;
       returnValue = 1;
     }
   }
   else
   {
-    CERR << "ti: cannot access configuration file '" << configFileName << "'." << endl;
+    CERR << "ti: cannot access configuration file '" << configFileName << "'." << OFendl;
     returnValue = 1;
   }
 
@@ -420,7 +420,11 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.8  2006-07-27 14:48:05  joergr
+ * Revision 1.9  2006-08-15 16:09:33  meichel
+ * Updated the code in module dcmqrdb to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.8  2006/07/27 14:48:05  joergr
  * Fixed typo.
  *
  * Revision 1.7  2006/07/27 14:47:05  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-16 09:16:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:09:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ static void DB_UIDAddFound (
 
     plist = (DB_UidList *) malloc (sizeof (DB_UidList)) ;
     if (plist == NULL) {
-        CERR << "DB_UIDAddFound: out of memory" << endl;
+        CERR << "DB_UIDAddFound: out of memory" << OFendl;
         return;
     }
     plist->next = phandle->uidList ;
@@ -396,26 +396,26 @@ static long DB_lseek(int fildes, long offset, int whence)
     ** we should not be seeking to an offset < 0
     */
     if (offset < 0) {
-        CERR << "*** DB ALERT: attempt to seek before begining of file" << endl;
+        CERR << "*** DB ALERT: attempt to seek before begining of file" << OFendl;
     }
 
     /* get the current position */
     curpos = lseek(fildes, 0, SEEK_CUR);
     if (curpos < 0) {
-        CERR << "DB_lseek: cannot get current position: " << strerror(errno) << endl;
+        CERR << "DB_lseek: cannot get current position: " << strerror(errno) << OFendl;
         return curpos;
     }
     /* get the end of file position */
     endpos = lseek(fildes, 0, SEEK_END);
     if (endpos < 0) {
-        CERR << "DB_lseek: cannot get end of file position: " << strerror(errno) << endl;
+        CERR << "DB_lseek: cannot get end of file position: " << strerror(errno) << OFendl;
         return endpos;
     }
 
     /* return to current position */
     curpos = lseek(fildes, curpos, SEEK_SET);
     if (curpos < 0) {
-        CERR << "DB_lseek: cannot reset current position: " << strerror(errno) << endl;
+        CERR << "DB_lseek: cannot reset current position: " << strerror(errno) << OFendl;
         return curpos;
     }
 
@@ -424,7 +424,7 @@ static long DB_lseek(int fildes, long offset, int whence)
     if (pos < 0) {
         char msg[1024];
         sprintf(msg, "DB_lseek: cannot seek to %ld", offset);
-        CERR << msg << ": " << strerror(errno) << endl;
+        CERR << msg << ": " << strerror(errno) << OFendl;
         return pos;
     }
 
@@ -435,15 +435,15 @@ static long DB_lseek(int fildes, long offset, int whence)
     */
     const long maxFileSize = 33554432;
     if (pos > maxFileSize) {
-        CERR << "*** DB ALERT: attempt to seek beyond " << maxFileSize << " bytes" << endl;
+        CERR << "*** DB ALERT: attempt to seek beyond " << maxFileSize << " bytes" << OFendl;
     }
 
     /* print an alert if we are seeking beyond the end of file.
      * ignore when file is empty
      */
     if ((endpos > 0) && (pos > endpos)) {
-        CERR << "*** DB ALERT: attempt to seek beyond end of file" << endl
-            << "              offset=" << offset << " filesize=" << endpos << endl;
+        CERR << "*** DB ALERT: attempt to seek beyond end of file" << OFendl
+            << "              offset=" << offset << " filesize=" << endpos << OFendl;
     }
 
     return pos;
@@ -948,7 +948,7 @@ static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
         memcpy (dst -> PValueField,  src -> PValueField,
             (size_t) src -> ValueLength);
     } else {
-        CERR << "DB_DuplicateElement: out of memory" << endl;
+        CERR << "DB_DuplicateElement: out of memory" << OFendl;
     }
     }
 }
@@ -1332,7 +1332,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::makeResponseList (
 
         plist = (DB_ElementList *) malloc (sizeof (DB_ElementList)) ;
         if (plist == NULL) {
-            CERR << "makeResponseList: out of memory" << endl;
+            CERR << "makeResponseList: out of memory" << OFendl;
             return;
         }
         plist->next = NULL ;
@@ -1529,7 +1529,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::hierarchicalCompare (
 
         if (plist == NULL) {
             *match = OFFalse ;
-            CERR << "hierarchicalCompare : No UID Key found at level " << (int) level << endl;
+            CERR << "hierarchicalCompare : No UID Key found at level " << (int) level << OFendl;
             return DcmQRIndexDatabaseError ;
         }
 
@@ -1748,7 +1748,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     if (!qrLevelFound) {
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
-        CERR << "DB_startFindRequest(): missing Query/Retrieve Level" << endl;
+        CERR << "DB_startFindRequest(): missing Query/Retrieve Level" << OFendl;
         handle->idxCounter = -1 ;
         DB_FreeElementList (handle->findRequestList) ;
         handle->findRequestList = NULL ;
@@ -1921,14 +1921,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                 strlen(plist->elem.PValueField) > 0) {
                 OFCondition ec = dce->putString(plist->elem.PValueField);
                 if (ec != EC_Normal) {
-                    CERR << "dbfind: DB_nextFindResponse: cannot put()" << endl;
+                    CERR << "dbfind: DB_nextFindResponse: cannot put()" << OFendl;
                     status->setStatus(STATUS_FIND_Failed_UnableToProcess);
                     return DcmQRIndexDatabaseError;
                 }
             }
             OFCondition ec = (*findResponseIdentifiers)->insert(dce, OFTrue /*replaceOld*/);
             if (ec != EC_Normal) {
-                CERR << "dbfind: DB_nextFindResponse: cannot insert()" << endl;
+                CERR << "dbfind: DB_nextFindResponse: cannot insert()" << OFendl;
                 status->setStatus(STATUS_FIND_Failed_UnableToProcess);
                 return DcmQRIndexDatabaseError;
             }
@@ -1955,7 +1955,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
                               DCM_QueryRetrieveLevel, queryLevelString);
 #ifdef DEBUG
         if (debugLevel > 0) {
-            COUT << "DB: findResponseIdentifiers:" << endl;
+            COUT << "DB: findResponseIdentifiers:" << OFendl;
             (*findResponseIdentifiers)->print(COUT);
         }
 #endif
@@ -2347,7 +2347,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     if (!qrLevelFound) {
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
-        CERR << "DB_startMoveRequest(): missing Query/Retrieve Level" << endl;
+        CERR << "DB_startMoveRequest(): missing Query/Retrieve Level" << OFendl;
         handle->idxCounter = -1 ;
         DB_FreeElementList (handle->findRequestList) ;
         handle->findRequestList = NULL ;
@@ -2559,10 +2559,10 @@ void DcmQueryRetrieveIndexDatabaseHandle::enableQuotaSystem(OFBool enable)
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 {
     if (!quotaSystemEnabled) {
-    CERR << "DB QUOTA: disabled: retaining: " << imgFile << endl;
+    CERR << "DB QUOTA: disabled: retaining: " << imgFile << OFendl;
     return EC_Normal;
     } else {
-    CERR << "DB QUOTA: enabled: deleting: " << imgFile << endl;
+    CERR << "DB QUOTA: enabled: deleting: " << imgFile << OFendl;
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -2573,24 +2573,24 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
     lockfd = open(imgFile, O_RDWR, 0666);   /* obtain file descriptor */
 #endif
     if (lockfd < 0) {
-    CERR << "DB ERROR: cannot open image file for deleting: " << imgFile << endl;
+    CERR << "DB ERROR: cannot open image file for deleting: " << imgFile << OFendl;
     return DcmQRIndexDatabaseError;
     }
     if (dcmtk_flock(lockfd, LOCK_EX) < 0) { /* exclusive lock (blocking) */
-    CERR << "DB ERROR: cannot lock image file  for deleting: " << imgFile << endl;
+    CERR << "DB ERROR: cannot lock image file  for deleting: " << imgFile << OFendl;
         dcmtk_plockerr("DB ERROR");
     }
 #endif
 
     if (unlink(imgFile) < 0) {
         /* delete file */
-    CERR << "DB ERROR: cannot delete image file: " << imgFile << endl
-        << "DcmQRIndexDatabaseError: " << strerror(errno) << endl;
+    CERR << "DB ERROR: cannot delete image file: " << imgFile << OFendl
+        << "DcmQRIndexDatabaseError: " << strerror(errno) << OFendl;
    }
 
 #ifdef LOCK_IMAGE_FILES
     if (dcmtk_flock(lockfd, LOCK_UN) < 0) { /* unlock */
-    CERR << "DB ERROR: cannot unlock image file  for deleting: " << imgFile << endl;
+    CERR << "DB ERROR: cannot unlock image file  for deleting: " << imgFile << OFendl;
         dcmtk_plockerr("DB ERROR");
      }
     close(lockfd);              /* release file descriptor */
@@ -2670,7 +2670,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     StudyArray = (ImagesofStudyArray *)malloc(MAX_NUMBER_OF_IMAGES * sizeof(ImagesofStudyArray)) ;
 
     if (StudyArray == NULL) {
-    CERR << "deleteOldestImages: out of memory" << endl;
+    CERR << "deleteOldestImages: out of memory" << OFendl;
     return DcmQRIndexDatabaseError;
     }
 
@@ -2919,7 +2919,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
     if (dcmff.loadFile(imageFileName).bad())
     {
       CERR << "DB: Cannot open file: " << imageFileName << ": "
-           << strerror(errno) << endl;
+           << strerror(errno) << OFendl;
       status->setStatus(STATUS_STORE_Error_CannotUnderstand);
       return (DcmQRIndexDatabaseError) ;
     }
@@ -3039,7 +3039,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-      CERR << "DB_storeRequest: out of memory" << endl;
+      CERR << "DB_storeRequest: out of memory" << OFendl;
       status->setStatus(STATUS_STORE_Refused_OutOfResources);
       DB_unlock();
       return (DcmQRIndexDatabaseError) ;
@@ -3103,7 +3103,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-      CERR << "DB_pruneInvalidRecords: out of memory" << endl;
+      CERR << "DB_pruneInvalidRecords: out of memory" << OFendl;
       DB_unlock();
       return (DcmQRIndexDatabaseError) ;
     }
@@ -3171,7 +3171,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
     pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
     if (pStudyDesc == NULL) {
-        CERR << "printIndexFile: out of memory" << endl;
+        CERR << "printIndexFile: out of memory" << OFendl;
         return;
     }
 
@@ -3181,12 +3181,12 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
     for (i=0; i<handle.handle->maxStudiesAllowed; i++) {
         if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {
-            COUT << "******************************************************" << endl
-                << "STUDY DESCRIPTOR: " << i << endl
-                << "  Study UID: " << pStudyDesc[i].StudyInstanceUID << endl
-                << "  StudySize: " << pStudyDesc[i].StudySize << endl
-                << "  LastRecDate: " << pStudyDesc[i].LastRecordedDate << endl
-                << "  NumOfImages: " << pStudyDesc[i].NumberofRegistratedImages << endl;
+            COUT << "******************************************************" << OFendl
+                << "STUDY DESCRIPTOR: " << i << OFendl
+                << "  Study UID: " << pStudyDesc[i].StudyInstanceUID << OFendl
+                << "  StudySize: " << pStudyDesc[i].StudySize << OFendl
+                << "  LastRecDate: " << pStudyDesc[i].LastRecordedDate << OFendl
+                << "  NumOfImages: " << pStudyDesc[i].NumberofRegistratedImages << OFendl;
         }
     }
 
@@ -3195,26 +3195,26 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
         if (handle.DB_IdxGetNext(&j, &idxRec) != EC_Normal)
             break ;
 
-        COUT << "*******************************************************" << endl;
-        COUT << "RECORD NUMBER: " << j << endl << "  Status: ";
+        COUT << "*******************************************************" << OFendl;
+        COUT << "RECORD NUMBER: " << j << OFendl << "  Status: ";
         if (idxRec.hstat == DVIF_objectIsNotNew)
-            COUT << "is NOT new" << endl;
+            COUT << "is NOT new" << OFendl;
         else
-            COUT << "is new" << endl;
-        COUT << "  Filename: " << idxRec.filename << endl
-             << "  ImageSize: " << idxRec.ImageSize << endl
-             << "  RecordedDate: " << idxRec.RecordedDate << endl;
+            COUT << "is new" << OFendl;
+        COUT << "  Filename: " << idxRec.filename << OFendl
+             << "  ImageSize: " << idxRec.ImageSize << OFendl
+             << "  RecordedDate: " << idxRec.RecordedDate << OFendl;
         for (i = 0 ; i < NBPARAMETERS ; i++) {  /* new definition */
             DB_SmallDcmElmt *se = idxRec.param + i;
             const char* value = "";
             if (se->PValueField != NULL) value = se->PValueField;
             DcmTag tag(se->XTag);
-            COUT << "    " << tag.getTagName() << ": \"" << value << "\"" << endl;
+            COUT << "    " << tag.getTagName() << ": \"" << value << "\"" << OFendl;
         }
-            COUT << "  InstanceDescription: \"" << idxRec.InstanceDescription << "\"" << endl;
+            COUT << "  InstanceDescription: \"" << idxRec.InstanceDescription << "\"" << OFendl;
     }
-    COUT << "*******************************************************" << endl
-         << "RECORDS IN THIS INDEXFILE: " << j << endl;
+    COUT << "*******************************************************" << OFendl
+         << "RECORDS IN THIS INDEXFILE: " << j << OFendl;
 
     handle.DB_unlock();
 
@@ -3254,7 +3254,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::dbdebug(int level, const char* format,
         va_start(ap, format);
         vsprintf(buf, format, ap);
         va_end(ap);
-        CERR << buf << endl;
+        CERR << buf << OFendl;
     }
 }
 
@@ -3292,8 +3292,8 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 #endif
 
     if (maxStudiesPerStorageArea > DB_UpperMaxStudies) {
-        CERR << "WARING: maxStudiesPerStorageArea too large" << endl
-             << "        setting to " << DB_UpperMaxStudies << endl;
+        CERR << "WARING: maxStudiesPerStorageArea too large" << OFendl
+             << "        setting to " << DB_UpperMaxStudies << OFendl;
         maxStudiesPerStorageArea = DB_UpperMaxStudies;
     }
     if (maxStudiesPerStorageArea < 0) {
@@ -3310,7 +3310,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
         /* create index file if it does not already exist */
         FILE* f = fopen(handle->indexFilename, "ab");
         if (f == NULL) {
-            CERR << handle->indexFilename << ": " << strerror(errno) << endl;
+            CERR << handle->indexFilename << ": " << strerror(errno) << OFendl;
             result = DcmQRIndexDatabaseError;
             return;
         }
@@ -3470,7 +3470,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.9  2005-12-16 09:16:08  onken
+ * Revision 1.10  2006-08-15 16:09:34  meichel
+ * Updated the code in module dcmqrdb to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.9  2005/12/16 09:16:08  onken
  * - Added variable initialization to avoid compiler warning
  *
  * Revision 1.8  2005/12/14 14:29:43  joergr
