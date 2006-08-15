@@ -22,10 +22,10 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:18:48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:04:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,11 +161,11 @@ int main( int argc, char *argv[] )
       if( cmd.findOption("--version") )
       {
         app.printHeader( OFTrue );
-        CERR << endl << "External libraries used:";
+        CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-        CERR << "- ZLIB, Version " << zlibVersion() << endl;
+        CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-        CERR << " none" << endl;
+        CERR << " none" << OFendl;
 #endif
 
         return( 0 );
@@ -343,7 +343,11 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.5  2006-07-27 14:18:48  joergr
+** Revision 1.6  2006-08-15 16:04:28  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.5  2006/07/27 14:18:48  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Option "--help" is no longer an exclusive option
 ** by default.

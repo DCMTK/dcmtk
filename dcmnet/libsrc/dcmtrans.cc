@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:35 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2006-08-15 16:04:29 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,9 +275,9 @@ OFBool DcmTCPConnection::isTransparentConnection()
   return OFTrue;
 }
 
-void DcmTCPConnection::dumpConnectionParameters(ostream &out)
+void DcmTCPConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out)
 {
-  out << "Transport connection: TCP/IP, unencrypted." << endl;
+  out << "Transport connection: TCP/IP, unencrypted." << OFendl;
 }
 
 const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
@@ -305,7 +305,11 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.9  2005-12-08 15:44:35  meichel
+ *  Revision 1.10  2006-08-15 16:04:29  meichel
+ *  Updated the code in module dcmnet to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.9  2005/12/08 15:44:35  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.8  2003/07/03 14:21:10  meichel

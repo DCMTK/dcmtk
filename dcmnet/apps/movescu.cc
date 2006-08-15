@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:22:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:04:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,7 +161,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
       // try to parse dictionary name and value instead
       OFString toParse = s;
       size_t eqPos = toParse.find('=');
-      if (eqPos != string::npos)
+      if (eqPos != OFString_npos)
       {
         dicName = toParse.substr(0,eqPos).c_str();
         valStr = toParse.substr(eqPos+1,toParse.length());
@@ -383,17 +383,17 @@ main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #else
-            CERR << endl;
+            CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-            CERR << "- LIBWRAP" << endl;
+            CERR << "- LIBWRAP" << OFendl;
 #endif
             return 0;
          }
@@ -1421,7 +1421,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.62  2006-07-27 14:22:28  joergr
+** Revision 1.63  2006-08-15 16:04:28  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.62  2006/07/27 14:22:28  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

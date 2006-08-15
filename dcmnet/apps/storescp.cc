@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:12:45 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:04:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -448,20 +448,20 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--version"))
       {
         app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-        CERR << endl << "External libraries used:";
+        CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL) && !defined(WITH_TCPWRAPPER)
-        CERR << " none" << endl;
+        CERR << " none" << OFendl;
 #else
-        CERR << endl;
+        CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-        CERR << "- ZLIB, Version " << zlibVersion() << endl;
+        CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-        CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+        CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-        CERR << "- LIBWRAP" << endl;
+        CERR << "- LIBWRAP" << OFendl;
 #endif
         return 0;
       }
@@ -599,7 +599,7 @@ int main(int argc, char *argv[])
       if (cond.bad())
       {
         CERR << "error reading config file: "
-             << cond.text() << endl;
+             << cond.text() << OFendl;
         return 1;
       }
 
@@ -615,7 +615,7 @@ int main(int argc, char *argv[])
       if (!asccfg.isKnownProfile(sprofile.c_str()))
       {
         CERR << "unknown configuration profile name: "
-             << sprofile << endl;
+             << sprofile << OFendl;
         return 1;
       }
 
@@ -624,7 +624,7 @@ int main(int argc, char *argv[])
         CERR << "profile '"
              << sprofile
              << "' is not valid for SCP use, duplicate abstract syntaxes found."
-             << endl;
+             << OFendl;
         return 1;
       }
 
@@ -898,11 +898,11 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(current));
       if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
       {
-        CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+        CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
         unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
         for (unsigned long cs=0; cs < numSuites; cs++)
         {
-          CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+          CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
         }
         return 1;
       }
@@ -949,7 +949,7 @@ int main(int argc, char *argv[])
      */
     if( !OFStandard::dirExists(opt_outputDirectory) )
     {
-      CERR << "Error: invalid output directory encountered ('" << opt_outputDirectory << "')" << endl;
+      CERR << "Error: invalid output directory encountered ('" << opt_outputDirectory << "')" << OFendl;
       return 1;
     }
   }
@@ -977,7 +977,7 @@ int main(int argc, char *argv[])
     }
     else
 	{
-      CERR << "Error while reading socket handle: " << GetLastError() << endl;
+      CERR << "Error while reading socket handle: " << GetLastError() << OFendl;
       return 1;
     }
   }
@@ -1024,7 +1024,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
         {
-          CERR << "warning unable to load certificate file '" << current << "', ignoring" << endl;
+          CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
         }
       } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
     }
@@ -1036,37 +1036,37 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
         {
-          CERR << "warning unable to certificates from directory '" << current << "', ignoring" << endl;
+          CERR << "warning unable to certificates from directory '" << current << "', ignoring" << OFendl;
         }
       } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
     }
 
     if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
     {
-      CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
+      CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
     }
 
     if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
 
     if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
     {
-      CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
+      CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
       return 1;
     }
     if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
     {
-      CERR << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
+      CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
       return 1;
     }
     if (! tLayer->checkPrivateKeyMatchesCertificate())
     {
-      CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
+      CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
       return 1;
     }
 
     if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
     {
-      CERR << "unable to set selected cipher suites" << endl;
+      CERR << "unable to set selected cipher suites" << OFendl;
       return 1;
     }
 
@@ -1106,12 +1106,12 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
         }
       }
       else
       {
-        CERR << "Warning: cannot write random seed, ignoring." << endl;
+        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
       }
     }
 #endif
@@ -1245,8 +1245,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     DIC_AE calledTitle;
     ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL);
 
-    CERR << "called AE:  " << calledTitle << endl
-         << "calling AE: " << callingTitle << endl;
+    CERR << "called AE:  " << calledTitle << OFendl
+         << "calling AE: " << callingTitle << OFendl;
   }
 
   if (opt_refuseAssociation)
@@ -2439,7 +2439,7 @@ static void cleanChildren(pid_t pid, OFBool synch)
 #endif
     if (child < 0)
     {
-      if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
+      if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << OFendl;
     }
 
     if (synch) child = -1; // break out of loop
@@ -2604,7 +2604,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.95  2006-07-27 14:12:45  joergr
+** Revision 1.96  2006-08-15 16:04:28  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.95  2006/07/27 14:12:45  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 16:02:06 $
+** Update Date:		$Date: 2006-08-15 16:04:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.24 $
+** CVS/RCS Revision:	$Revision: 1.25 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -329,7 +329,7 @@ ASC_printRejectParameters(
 
 void 
 ASC_printRejectParameters(
-    ostream &out, 
+    STD_NAMESPACE ostream& out, 
     T_ASC_RejectParameters *rej);
 
 OFCondition 
@@ -414,13 +414,13 @@ OFCondition
 ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int takeoverOwnership);
 
 void 
-ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream);
+ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
 
 void 
-ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, ostream& outstream);
+ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream);
 
 void
-ASC_dumpConnectionParameters(T_ASC_Association *association, ostream& outstream);
+ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream);
 
 void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb);
 
@@ -501,7 +501,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.24  2005-12-08 16:02:06  meichel
+** Revision 1.25  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.24  2005/12/08 16:02:06  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.23  2004/07/15 08:10:45  meichel
@@ -538,7 +542,7 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 **
 ** Revision 1.15  2000/10/10 12:06:05  meichel
 ** Added version of function ASC_printRejectParameters that takes
-**   an ostream& instead of a FILE*
+**   an STD_NAMESPACE ostream& instead of a FILE*
 **
 ** Revision 1.14  2000/08/10 14:50:52  meichel
 ** Added initial OpenSSL support.

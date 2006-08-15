@@ -45,9 +45,9 @@
 ** Intent:              This file contains functions for parsing Dicom
 **                      Upper Layer (DUL) Protocol Data Units (PDUs)
 **                      into logical in-memory structures.
-** Last Update:         $Author: meichel $, $Date: 2005-12-08 15:44:52 $
+** Last Update:         $Author: meichel $, $Date: 2006-08-15 16:04:29 $
 ** Source File:         $RCSfile: dulparse.cc,v $
-** Revision:            $Revision: 1.24 $
+** Revision:            $Revision: 1.25 $
 ** Status:              $State: Exp $
 */
 
@@ -167,7 +167,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 #ifdef DEBUG
     if (debug) {
         const char *s;
-        DEBUG_DEVICE << "Parsing an A-ASSOCIATE PDU" << endl;
+        DEBUG_DEVICE << "Parsing an A-ASSOCIATE PDU" << OFendl;
         if (assoc->type == DUL_TYPEASSOCIATERQ)
             s = "A-ASSOCIATE RQ";
         else if (assoc->type == DUL_TYPEASSOCIATEAC)
@@ -180,10 +180,10 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 **      expects its input to have been properly screened.
 */
         DEBUG_DEVICE << "PDU type: " << hex << ((unsigned int)assoc->type) << dec
-        << " (" << s << "), PDU Length: " << assoc->length << endl
-            << "DICOM Protocol: " << hex << assoc->protocol << dec << endl
-            << "Called AP Title:  " << assoc->calledAPTitle << endl
-            << "Calling AP Title: " << assoc->callingAPTitle << endl;
+        << " (" << s << "), PDU Length: " << assoc->length << OFendl
+            << "DICOM Protocol: " << hex << assoc->protocol << dec << OFendl
+            << "Called AP Title:  " << assoc->calledAPTitle << OFendl
+            << "Calling AP Title: " << assoc->callingAPTitle << OFendl;
     }
 #endif
     while ((cond.good()) && (pduLength > 0))
@@ -192,9 +192,9 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 #ifdef DEBUG
         if (debug) {
             DEBUG_DEVICE << "Parsing remaining " << pduLength
-            << " bytes of A-ASSOCIATE PDU" << endl
+            << " bytes of A-ASSOCIATE PDU" << OFendl
             << "Next item type: ";
-        DEBUG_DEVICE << hex << setfill('0') << setw(2) << ((unsigned int)type) << dec << endl;
+        DEBUG_DEVICE << hex << setfill('0') << setw(2) << ((unsigned int)type) << dec << OFendl;
         }
 #endif
         switch (type) {
@@ -207,7 +207,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
                 pduLength -= itemLength;
 #ifdef DEBUG
                 if (debug)
-                    COUT << "Successfully parsed Application Context" << endl;
+                    COUT << "Successfully parsed Application Context" << OFendl;
 #endif
             }
             break;
@@ -224,7 +224,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             if (cond.bad()) return cond;
 #ifdef DEBUG
             if (debug)
-                    DEBUG_DEVICE << "Successfully parsed Presentation Context " << endl;
+                    DEBUG_DEVICE << "Successfully parsed Presentation Context " << OFendl;
 #endif
             break;
         case DUL_TYPEUSERINFO:
@@ -235,7 +235,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
             pduLength -= itemLength;
 #ifdef DEBUG
             if (debug)
-                    DEBUG_DEVICE << "Successfully parsed User Information" << endl;
+                    DEBUG_DEVICE << "Successfully parsed User Information" << OFendl;
 #endif
             break;
         default:
@@ -311,7 +311,7 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 #ifdef DEBUG
     if (debug) {
         DEBUG_DEVICE << "Subitem parse: Type " << hex << setfill('0') << setw(2) << ((unsigned int)subItem->type) << dec << ", Length ";
-        DEBUG_DEVICE << setw(4) << (int)subItem->length << ", Content: " << subItem->data << endl;
+        DEBUG_DEVICE << setw(4) << (int)subItem->length << ", Content: " << subItem->data << OFendl;
     }
 #endif
     return EC_Normal;
@@ -370,9 +370,9 @@ parsePresentationContext(unsigned char type,
     if (debug) {
         DEBUG_DEVICE << "Parsing Presentation Context: ("
             << hex << setfill('0') << setw(2) << (unsigned int)context->type << dec
-            << "), Length: " << (unsigned long)context->length << endl
+            << "), Length: " << (unsigned long)context->length << OFendl
             << "Presentation Context ID: ";
-        DEBUG_DEVICE << hex << setfill('0') << setw(2) << (unsigned int)context->contextID << dec << endl;
+        DEBUG_DEVICE << hex << setfill('0') << setw(2) << (unsigned int)context->contextID << dec << OFendl;
     }
 #endif
     presentationLength = length - 4;
@@ -382,8 +382,8 @@ parsePresentationContext(unsigned char type,
 #ifdef DEBUG
             if (debug) {
               DEBUG_DEVICE << "Parsing remaining " << presentationLength
-                << " bytes of Presentation Ctx" << endl;
-              DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
+                << " bytes of Presentation Ctx" << OFendl;
+              DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << OFendl;
             }
 #endif
             switch (*buf) {
@@ -396,7 +396,7 @@ parsePresentationContext(unsigned char type,
                 presentationLength -= length;
 #ifdef DEBUG
                 if (debug) {
-                    DEBUG_DEVICE << "Successfully parsed Abstract Syntax" << endl;
+                    DEBUG_DEVICE << "Successfully parsed Abstract Syntax" << OFendl;
                 }
 #endif
                 break;
@@ -411,7 +411,7 @@ parsePresentationContext(unsigned char type,
                 presentationLength -= length;
 #ifdef DEBUG
                 if (debug) {
-                    DEBUG_DEVICE << "Successfully parsed Transfer Syntax" << endl;
+                    DEBUG_DEVICE << "Successfully parsed Transfer Syntax" << OFendl;
                 }
 #endif
                 break;
@@ -470,15 +470,15 @@ parseUserInfo(DUL_USERINFO * userInfo,
     if (debug) {
         DEBUG_DEVICE << "Parsing user info field ("
             << hex << setfill('0') << setw(2) << (unsigned int)userInfo->type << dec << "), Length: "
-            << (unsigned long)userInfo->length << endl;
+            << (unsigned long)userInfo->length << OFendl;
     }
 #endif
     while (userLength > 0) {
 #ifdef DEBUG
         if (debug) {
             DEBUG_DEVICE << "Parsing remaining " << (long)userLength
-            << " bytes of User Information" << endl;
-            DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << endl;
+            << " bytes of User Information" << OFendl;
+            DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << OFendl;
         }
 #endif
         switch (*buf) {
@@ -490,7 +490,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
             userLength -= (unsigned short) length;
 #ifdef DEBUG
             if (debug) {
-                    DEBUG_DEVICE << "Successfully parsed Maximum PDU Length" << endl;
+                    DEBUG_DEVICE << "Successfully parsed Maximum PDU Length" << OFendl;
             }
 #endif
             break;
@@ -585,7 +585,7 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-            DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << endl;
+            DEBUG_DEVICE << "Maximum PDU Length: " << (unsigned long)max->maxLength << OFendl;
     }
 #endif
 
@@ -669,7 +669,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
       DEBUG_DEVICE << "Subitem parse: Type "
         << hex << setfill('0') << setw(2) << (unsigned int)role->type << dec << ", Length ";
       DEBUG_DEVICE << setw(4) << (int)role->length << ", Content: " << role->SOPClassUID
-        << " " << (int)role->SCURole << " " << (int)role->SCPRole << endl;
+        << " " << (int)role->SCURole << " " << (int)role->SCPRole << OFendl;
     }
 #endif
     return EC_Normal;
@@ -715,13 +715,13 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
         DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
             << hex << setfill('0') << setw(2) << (unsigned int)extNeg->itemType << dec << ", Length ";
         DEBUG_DEVICE << setw(4) << (int)extNeg->itemLength << ", SOP Class: "
-            << extNeg->sopClassUID.c_str() << endl;
+            << extNeg->sopClassUID.c_str() << OFendl;
 
         DEBUG_DEVICE << "   values: ";
         for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
             DEBUG_DEVICE << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[j] << dec << " ";
         }
-        DEBUG_DEVICE << endl;
+        DEBUG_DEVICE << OFendl;
     }
 #endif
 
@@ -767,7 +767,11 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.24  2005-12-08 15:44:52  meichel
+** Revision 1.25  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.24  2005/12/08 15:44:52  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.23  2004/02/04 15:33:48  joergr

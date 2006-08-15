@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: network conditions and helper class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:25 $
+ *  Update Date:      $Date: 2006-08-15 16:04:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ void DimseCondition::dump(OFCondition cond, OFConsole& console)
 {
   char buf[16];
   sprintf(buf,"%04x:%04x ", cond.module(), cond.code());
-  console.lockCerr() << buf << cond.text() << endl;
+  console.lockCerr() << buf << cond.text() << OFendl;
   console.unlockCerr();
 }
 
@@ -144,7 +144,7 @@ OFCondition DimseCondition::push(
   OFConditionString *condString;
   char buf[16];
   sprintf(buf,"%04x:%04x ", subCondition.module(), subCondition.code()); 
-  os << aText << endl << buf << subCondition.text() << OFStringStream_ends;
+  os << aText << OFendl << buf << subCondition.text() << OFStringStream_ends;
   OFSTRINGSTREAM_GETSTR(os, c)
   condString = new OFConditionString(aModule, aCode, aStatus, c);
   OFSTRINGSTREAM_FREESTR(c)
@@ -162,7 +162,11 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.14  2005-12-08 15:44:25  meichel
+ * Revision 1.15  2006-08-15 16:04:29  meichel
+ * Updated the code in module dcmnet to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.14  2005/12/08 15:44:25  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2004/02/04 15:35:17  joergr

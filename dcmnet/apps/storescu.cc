@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:23:32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:04:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -343,17 +343,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
           app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-          CERR << endl << "External libraries used:";
+          CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-          CERR << " none" << endl;
+          CERR << " none" << OFendl;
 #else
-          CERR << endl;
+          CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-          CERR << "- ZLIB, Version " << zlibVersion() << endl;
+          CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-          CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+          CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
           return 0;
         }
@@ -424,7 +424,7 @@ int main(int argc, char *argv[])
         OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
         if (cond.bad())
         {
-          CERR << "error reading config file: " << cond.text() << endl;
+          CERR << "error reading config file: " << cond.text() << OFendl;
           return 1;
         }
       }
@@ -594,11 +594,11 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
           {
-            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs=0; cs < numSuites; cs++)
             {
-              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
             }
             return 1;
           } else {
@@ -629,7 +629,7 @@ int main(int argc, char *argv[])
           errormsg += currentFilename;
           if (opt_haltOnUnsuccessfulStore)
             app.printError(errormsg.c_str());
-            else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+            else CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
         }
         else
         {
@@ -642,7 +642,7 @@ int main(int argc, char *argv[])
               errormsg += currentFilename;
               if (opt_haltOnUnsuccessfulStore)
                 app.printError(errormsg.c_str());
-                else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+                else CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
             }
             else if (!dcmIsaStorageSOPClassUID(sopClassUID))
             {
@@ -653,7 +653,7 @@ int main(int argc, char *argv[])
               errormsg += sopClassUID;
               if (opt_haltOnUnsuccessfulStore)
                 app.printError(errormsg.c_str());
-                else CERR << "warning: " << errormsg << ", ignoring file" << endl;
+                else CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
             }
             else
             {
@@ -713,7 +713,7 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificate file '" << current << "', ignoring" << endl;
+            CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
@@ -726,14 +726,14 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << OFendl;
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
       if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
       }
 
       if (opt_doAuthenticate)
@@ -742,24 +742,24 @@ int main(int argc, char *argv[])
 
         if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
+          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
+          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
+          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
           return 1;
         }
       }
 
       if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << OFendl;
         return 1;
       }
 
@@ -856,7 +856,7 @@ int main(int argc, char *argv[])
     /* dump the connection parameters if in debug mode*/
     if (opt_debug)
     {
-      ostream& out = ofConsole.lockCout();
+      STD_NAMESPACE ostream& out = ofConsole.lockCout();
       ASC_dumpConnectionParameters(assoc, out);
       ofConsole.unlockCout();
     }
@@ -973,10 +973,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
         }
       } else {
-        CERR << "Warning: cannot write random seed, ignoring." << endl;
+        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
       }
     }
     delete tLayer;
@@ -1214,7 +1214,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
   if (cond != EC_Normal) {
     CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName()
          << " " << key << ": "
-         << cond.text() << endl;
+         << cond.text() << OFendl;
     return OFFalse;
   }
 
@@ -1224,7 +1224,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
   if (elem->getLength() > vr.getMaxValueLength()) {
     CERR << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
          << " " << key << ": value too large (max "
-        << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << endl;
+        << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << OFendl;
     return OFFalse;
   }
 
@@ -1232,7 +1232,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
   if (cond != EC_Normal) {
     CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
          << " " << key << ": "
-         << cond.text() << endl;
+         << cond.text() << OFendl;
     return OFFalse;
   }
 
@@ -1289,15 +1289,15 @@ replaceSOPInstanceInformation(DcmDataset* dataset)
   if (opt_verbose) {
     COUT << "Inventing Identifying Information ("
          << "pa" << patientCounter << ", st" << studyCounter
-         << ", se" << seriesCounter << ", im" << imageCounter << "): " << endl;
-    COUT << "  PatientName=" << patientName << endl;
-    COUT << "  PatientID=" << patientID << endl;
-    COUT << "  StudyInstanceUID=" << studyInstanceUID << endl;
-    COUT << "  StudyID=" << studyID << endl;
-    COUT << "  SeriesInstanceUID=" << seriesInstanceUID << endl;
-    COUT << "  SeriesNumber=" << seriesNumber << endl;
-    COUT << "  SOPInstanceUID=" << sopInstanceUID << endl;
-    COUT << "  ImageNumber=" << imageNumber << endl;
+         << ", se" << seriesCounter << ", im" << imageCounter << "): " << OFendl;
+    COUT << "  PatientName=" << patientName << OFendl;
+    COUT << "  PatientID=" << patientID << OFendl;
+    COUT << "  StudyInstanceUID=" << studyInstanceUID << OFendl;
+    COUT << "  StudyID=" << studyID << OFendl;
+    COUT << "  SeriesInstanceUID=" << seriesInstanceUID << OFendl;
+    COUT << "  SeriesNumber=" << seriesNumber << OFendl;
+    COUT << "  SOPInstanceUID=" << sopInstanceUID << OFendl;
+    COUT << "  ImageNumber=" << imageNumber << OFendl;
   }
 
   updateStringAttributeValue(dataset, DCM_PatientsName, patientName);
@@ -1507,7 +1507,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.66  2006-07-27 14:23:32  joergr
+** Revision 1.67  2006-08-15 16:04:28  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.66  2006/07/27 14:23:32  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

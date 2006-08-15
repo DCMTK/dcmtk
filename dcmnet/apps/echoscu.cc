@@ -21,10 +21,10 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:20:08 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:04:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,17 +275,17 @@ main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-              CERR << " none" << endl;
+              CERR << " none" << OFendl;
 #else
-              CERR << endl;
+              CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-              CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+              CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
          }
@@ -421,11 +421,11 @@ main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
           {
-            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs=0; cs < numSuites; cs++)
             {
-              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
             }
             return 1;
           } else {
@@ -470,7 +470,7 @@ main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificate file '" << current << "', ignoring" << endl;
+            CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
@@ -483,14 +483,14 @@ main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
           {
-            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << endl;
+            CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << OFendl;
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
       if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
       }
 
       if (opt_doAuthenticate)
@@ -499,24 +499,24 @@ main(int argc, char *argv[])
 
         if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
+          CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
+          CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
+          CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
           return 1;
         }
       }
 
       if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << OFendl;
         return 1;
       }
 
@@ -712,10 +712,10 @@ main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
         }
       } else {
-        CERR << "Warning: cannot write random seed, ignoring." << endl;
+        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
       }
     }
     delete tLayer;
@@ -793,7 +793,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.40  2006-07-27 14:20:08  joergr
+** Revision 1.41  2006-08-15 16:04:28  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.40  2006/07/27 14:20:08  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

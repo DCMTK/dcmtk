@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:02:18 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2006-08-15 16:04:29 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ public:
    *  on the given output stream.
    *  @param out output stream
    */
-  virtual void dumpConnectionParameters(ostream &out) = 0;
+  virtual void dumpConnectionParameters(STD_NAMESPACE ostream& out) = 0;
 
   /** returns an error string for a given error code.
    *  @param code error code
@@ -309,7 +309,7 @@ public:
    *  on the given output stream.
    *  @param out output stream
    */
-  virtual void dumpConnectionParameters(ostream &out);
+  virtual void dumpConnectionParameters(STD_NAMESPACE ostream& out);
 
   /** returns an error string for a given error code.
    *  @param code error code
@@ -331,7 +331,11 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
- *  Revision 1.7  2005-12-08 16:02:18  meichel
+ *  Revision 1.8  2006-08-15 16:04:29  meichel
+ *  Updated the code in module dcmnet to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.7  2005/12/08 16:02:18  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.6  2004/08/03 11:42:43  meichel

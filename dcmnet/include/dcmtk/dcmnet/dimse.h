@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 16:02:21 $
+** Update Date:		$Date: 2006-08-15 16:04:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1025,7 +1025,7 @@ void DIMSE_printNCreateRSP(FILE * f, T_DIMSE_N_CreateRSP * rsp);
 void DIMSE_printNDeleteRQ(FILE * f, T_DIMSE_N_DeleteRQ * req);
 void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 
-void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *dataset=NULL);
+void DIMSE_printMessage(STD_NAMESPACE ostream& outstream, T_DIMSE_Message &msg, DcmItem *dataset=NULL);
 
 
 #endif
@@ -1033,7 +1033,11 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.17  2005-12-08 16:02:21  meichel
+** Revision 1.18  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.17  2005/12/08 16:02:21  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.16  2005/11/22 16:44:44  meichel

@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:44:49 $
+** Last Update:		$Author: meichel $, $Date: 2006-08-15 16:04:29 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.16 $
+** Revision:		$Revision: 1.17 $
 ** Status:		$State: Exp $
 */
 
@@ -190,7 +190,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
     cond = EC_Normal;
     if (type == DUL_TYPEASSOCIATERQ) {
 	if (debug)
-	    DEBUG_DEVICE << "Constructing Associate RQ PDU" << endl;
+	    DEBUG_DEVICE << "Constructing Associate RQ PDU" << OFendl;
 	presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->requestedPresentationContext);
 	(void) LST_Position(&params->requestedPresentationContext,
 			    (LST_NODE*)presentationCtx);
@@ -213,7 +213,7 @@ constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * params,
 	}
     } else {
 	if (debug)
-	    DEBUG_DEVICE << "Constructing Associate AC PDU" << endl;
+	    DEBUG_DEVICE << "Constructing Associate AC PDU" << OFendl;
 	if (params->acceptedPresentationContext != NULL) {
 	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
 	    if (presentationCtx != NULL)
@@ -1495,7 +1495,11 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.16  2005-12-08 15:44:49  meichel
+** Revision 1.17  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.16  2005/12/08 15:44:49  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.15  2004/06/16 12:51:34  meichel

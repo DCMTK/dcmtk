@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2005-12-12 15:15:08 $
+** Last Update:		$Author: meichel $, $Date: 2006-08-15 16:04:29 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.23 $
+** Revision:		$Revision: 1.24 $
 ** Status:		$State: Exp $
 */
 
@@ -406,7 +406,7 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
 			const char *transferSyntax,...);
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
-void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outstream);
+void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
 
 OFCondition DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
@@ -483,7 +483,11 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.23  2005-12-12 15:15:08  meichel
+** Revision 1.24  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.23  2005/12/12 15:15:08  meichel
 ** Added missing include dependency
 **
 ** Revision 1.22  2005/12/09 14:48:35  meichel

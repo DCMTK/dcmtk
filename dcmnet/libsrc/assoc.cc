@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2005-12-08 15:44:24 $
+** Update Date:         $Date: 2006-08-15 16:04:29 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.46 $
+** CVS/RCS Revision:    $Revision: 1.47 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -298,7 +298,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     /* make sure max pdv length is even */
     if ((maxReceivePDUSize % 2) != 0)
     {
-      ofConsole.lockCerr() << "ASSOC: Warning: PDV receive length " << maxReceivePDUSize << " is odd (using " << (maxReceivePDUSize-1) << ")" << endl;
+      ofConsole.lockCerr() << "ASSOC: Warning: PDV receive length " << maxReceivePDUSize << " is odd (using " << (maxReceivePDUSize-1) << ")" << OFendl;
       ofConsole.unlockCerr();
       maxReceivePDUSize--;
     }
@@ -306,7 +306,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
     {
       ofConsole.lockCerr() << "ASC_createAssociationParameters: Warning: maxReceivePDUSize "
             << maxReceivePDUSize << " too small (using " << ASC_MINIMUMPDUSIZE << ")"
-            << endl;
+            << OFendl;
       ofConsole.unlockCerr();
       maxReceivePDUSize = ASC_MINIMUMPDUSIZE;
     }
@@ -543,7 +543,7 @@ ASC_printRejectParameters(FILE *f, T_ASC_RejectParameters *rej)
 }
 
 void 
-ASC_printRejectParameters(ostream &out, T_ASC_RejectParameters *rej)
+ASC_printRejectParameters(STD_NAMESPACE ostream& out, T_ASC_RejectParameters *rej)
 {
     out << "Result: ";
     switch (rej->result)
@@ -589,7 +589,7 @@ ASC_printRejectParameters(ostream &out, T_ASC_RejectParameters *rej)
     default:
         out << "UNKNOWN"; break;
     }
-    out << endl;
+    out << OFendl;
 }
 
 static T_ASC_SC_ROLE
@@ -1285,7 +1285,7 @@ void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotia
 }
 
 void 
-ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream)
+ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream)
  /*
   * Write parameters in textual form to stdout (debugging aid) 
   */
@@ -1294,27 +1294,27 @@ ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream)
     T_ASC_PresentationContext pc;
         
     outstream << "Our Implementation Class UID:    "
-        << params->ourImplementationClassUID << endl
+        << params->ourImplementationClassUID << OFendl
         << "Our Implementation Version Name: "
-        << params->ourImplementationVersionName << endl
+        << params->ourImplementationVersionName << OFendl
         << "Their Implementation Class UID:    "
-        << params->theirImplementationClassUID << endl
+        << params->theirImplementationClassUID << OFendl
         << "Their Implementation Version Name: "
-        << params->theirImplementationVersionName << endl
+        << params->theirImplementationVersionName << OFendl
         << "Application Context Name:    "
-        << params->DULparams.applicationContextName << endl
+        << params->DULparams.applicationContextName << OFendl
         << "Calling Application Name:    "
-        << params->DULparams.callingAPTitle << endl
+        << params->DULparams.callingAPTitle << OFendl
         << "Called Application Name:     "
-        << params->DULparams.calledAPTitle << endl
+        << params->DULparams.calledAPTitle << OFendl
         << "Responding Application Name: "
-        << params->DULparams.respondingAPTitle << endl
+        << params->DULparams.respondingAPTitle << OFendl
         << "Our Max PDU Receive Size: "
-        << params->ourMaxPDUReceiveSize << endl
+        << params->ourMaxPDUReceiveSize << OFendl
         << "Their Max PDU Receive Size: "
-        << params->theirMaxPDUReceiveSize << endl;
+        << params->theirMaxPDUReceiveSize << OFendl;
 
-    outstream << "Presentation Contexts:" << endl;
+    outstream << "Presentation Contexts:" << OFendl;
     for (i=0; i<ASC_countPresentationContexts(params); i++) {
         ASC_getPresentationContext(params, i, &pc);
         ASC_dumpPresentationContext(&pc, outstream);
@@ -1324,29 +1324,29 @@ ASC_dumpParameters(T_ASC_Parameters * params, ostream& outstream)
     ASC_getRequestedExtNegList(params, &extNegList);
     outstream << "Requested Extended Negotiation:";
     if (extNegList != NULL) {
-        outstream << endl;
+        outstream << OFendl;
         dumpExtNegList(*extNegList);
     } else {
-        outstream << " none" << endl;
+        outstream << " none" << OFendl;
     }
     ASC_getAcceptedExtNegList(params, &extNegList);
     outstream << "Accepted Extended Negotiation:";
     if (extNegList != NULL) {
-        outstream << endl;
+        outstream << OFendl;
         dumpExtNegList(*extNegList);
     } else {
-        outstream << " none" << endl;
+        outstream << " none" << OFendl;
     }
 
 #if 0
-    outstream << "DUL Params --- BEGIN" << endl;
+    outstream << "DUL Params --- BEGIN" << OFendl;
     DUL_DumpParams(&params->DULparams);
-    outstream << "DUL Params --- END" << endl;
+    outstream << "DUL Params --- END" << OFendl;
 #endif
 }
 
 void
-ASC_dumpPresentationContext(T_ASC_PresentationContext * p, ostream& outstream)
+ASC_dumpPresentationContext(T_ASC_PresentationContext * p, STD_NAMESPACE ostream& outstream)
  /*
   * Write presentation context structure in textual form to stdout.
   * (debugging aid) 
@@ -1357,64 +1357,64 @@ ASC_dumpPresentationContext(T_ASC_PresentationContext * p, ostream& outstream)
     outstream << "  Context ID:        " << (int)p->presentationContextID << " ";
     switch (p->resultReason) {
     case ASC_P_ACCEPTANCE:
-        outstream << "(Accepted)" << endl;
+        outstream << "(Accepted)" << OFendl;
         break;
     case ASC_P_USERREJECTION:
-        outstream << "(User Rejection)" << endl;
+        outstream << "(User Rejection)" << OFendl;
         break;
     case ASC_P_NOREASON:
-        outstream << "(No Reason)" << endl;
+        outstream << "(No Reason)" << OFendl;
         break;
     case ASC_P_ABSTRACTSYNTAXNOTSUPPORTED:
-        outstream << "(Abstract Syntax Not Supported)" << endl;
+        outstream << "(Abstract Syntax Not Supported)" << OFendl;
         break;
     case ASC_P_TRANSFERSYNTAXESNOTSUPPORTED:
-        outstream << "(Transfer Syntaxes Not Supported)" << endl;
+        outstream << "(Transfer Syntaxes Not Supported)" << OFendl;
         break;
     case ASC_P_NOTYETNEGOTIATED:
-        outstream << "(Proposed)" << endl;
+        outstream << "(Proposed)" << OFendl;
         break;
     default:
-        outstream << "(--Invalid Result/Reason--)" << endl;
+        outstream << "(--Invalid Result/Reason--)" << OFendl;
     }
 
     const char* l_as = dcmFindNameOfUID(p->abstractSyntax);
     if (l_as) {
-        outstream << "    Abstract Syntax: =" << l_as  << endl;
+        outstream << "    Abstract Syntax: =" << l_as  << OFendl;
     } else {
-        outstream << "    Abstract Syntax: " <<  p->abstractSyntax << endl;
+        outstream << "    Abstract Syntax: " <<  p->abstractSyntax << OFendl;
     }
     
     outstream << "    Proposed SCP/SCU Role: "
-        << ascRole2String(p->proposedRole) << endl
+        << ascRole2String(p->proposedRole) << OFendl
         << "    Accepted SCP/SCU Role: "
-        << ascRole2String(p->acceptedRole) << endl;
+        << ascRole2String(p->acceptedRole) << OFendl;
 
     if (p->resultReason == ASC_P_ACCEPTANCE) {
         const char* ts = dcmFindNameOfUID(p->acceptedTransferSyntax);
         if (ts) {
-            outstream << "    Accepted Transfer Syntax: =" << ts << endl;
+            outstream << "    Accepted Transfer Syntax: =" << ts << OFendl;
         } else {
             outstream << "    Accepted Transfer Syntax: "
-                << p->acceptedTransferSyntax << endl;
+                << p->acceptedTransferSyntax << OFendl;
         }
     }
 
     if (p->resultReason == ASC_P_NOTYETNEGOTIATED) {
-        outstream << "    Proposed Transfer Syntax(es):" << endl;
+        outstream << "    Proposed Transfer Syntax(es):" << OFendl;
         for (i = 0; i < (int)p->transferSyntaxCount; i++) {
             const char* ts = dcmFindNameOfUID(p->proposedTransferSyntaxes[i]);
             if (ts) {
-                outstream << "      =" << ts << endl;
+                outstream << "      =" << ts << OFendl;
             } else {
-                outstream << "      " << p->proposedTransferSyntaxes[i] << endl;
+                outstream << "      " << p->proposedTransferSyntaxes[i] << OFendl;
             }
         }
     }
 }
 
 void
-ASC_dumpConnectionParameters(T_ASC_Association *association, ostream& outstream)
+ASC_dumpConnectionParameters(T_ASC_Association *association, STD_NAMESPACE ostream& outstream)
 {
   if (association==NULL) return;
   DUL_DumpConnectionParameters(association->DULassociation, outstream);
@@ -1734,7 +1734,7 @@ ASC_requestAssociation(T_ASC_Network * network,
         if ((sendLen % 2) != 0)
         {
           ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen
-                << " is odd (using " << (sendLen-1) << ")" << endl;
+                << " is odd (using " << (sendLen-1) << ")" << OFendl;
           ofConsole.unlockCerr();
           sendLen--;
         }
@@ -1742,7 +1742,7 @@ ASC_requestAssociation(T_ASC_Network * network,
         sendLen -= 12;
         if (sendLen < 1)
         {
-            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen << " (using default)" << endl;
+            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen << " (using default)" << OFendl;
             ofConsole.unlockCerr();
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
@@ -1753,7 +1753,7 @@ ASC_requestAssociation(T_ASC_Network * network,
              * We use a larger value on this level and let the Upper Layer FSM
              * split the buffer for us into many small PDVs.
              */
-            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << endl;
+            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << OFendl;
             ofConsole.unlockCerr();
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
@@ -1819,7 +1819,7 @@ ASC_acknowledgeAssociation(
         if ((sendLen % 2) != 0)
         {
            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen
-                << " is odd (using " << (sendLen-1) << ")" << endl;
+                << " is odd (using " << (sendLen-1) << ")" << OFendl;
            ofConsole.unlockCerr();
           sendLen--;
         }
@@ -1828,7 +1828,7 @@ ASC_acknowledgeAssociation(
         if (sendLen < 1)
         {
            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length " << sendLen
-                << " (using default)" << endl;
+                << " (using default)" << OFendl;
            ofConsole.unlockCerr();
            sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
@@ -1839,7 +1839,7 @@ ASC_acknowledgeAssociation(
              * We use a larger value on this level and let the Upper Layer FSM
              * split the buffer for us into many small PDVs.
              */
-            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << endl;
+            ofConsole.lockCerr() << "ASSOC: Warning: PDV send length too small, using DUL to split larger PDVs." << OFendl;
             ofConsole.unlockCerr();
             sendLen = ASC_MINIMUMPDUSIZE - 12;
         }
@@ -1980,7 +1980,11 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.46  2005-12-08 15:44:24  meichel
+** Revision 1.47  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.46  2005/12/08 15:44:24  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.45  2005/11/25 11:31:14  meichel
@@ -2035,7 +2039,7 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 **
 ** Revision 1.32  2000/10/10 12:06:07  meichel
 ** Added version of function ASC_printRejectParameters that takes
-**   an ostream& instead of a FILE*
+**   an STD_NAMESPACE ostream& instead of a FILE*
 **
 ** Revision 1.31  2000/08/10 14:50:55  meichel
 ** Added initial OpenSSL support.

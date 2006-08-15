@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:44:51 $
+** Last Update:		$Author: meichel $, $Date: 2006-08-15 16:04:29 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.59 $
+** Revision:		$Revision: 1.60 $
 ** Status:		$State: Exp $
 */
 
@@ -738,8 +738,8 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     if (debug) {
         DEBUG_DEVICE.width(2);
             DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event
-                << "DUL  Event:  " << entry->eventName << endl
-                << "DUL  Action: " << entry->actionName << endl;
+                << "DUL  Event:  " << entry->eventName << OFendl
+                << "DUL  Action: " << entry->actionName << OFendl;
     }
 #endif
 
@@ -2438,7 +2438,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         {
             if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1)
             {
-              ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
+              ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << OFendl;
               ofConsole.unlockCerr();
             }
         }
@@ -3418,7 +3418,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
         {
             DEBUG_DEVICE << hex << " " << setfill('0') << setw(2) << (unsigned short)(buffer[idx]);
         }
-        DEBUG_DEVICE << dec << endl;
+        DEBUG_DEVICE << dec << OFendl;
     }
 #endif
 
@@ -3453,7 +3453,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     if (debug) {
             DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << setfill('0') << setw(2) << (unsigned short)(*type)
             << ", length: " << dec << (*pduLength)
-            << " (" << hex << setfill('0') << setw(2) << (unsigned int)*pduLength << ")" << dec << endl;
+            << " (" << hex << setfill('0') << setw(2) << (unsigned int)*pduLength << ")" << dec << OFendl;
         }
 #endif
 
@@ -3665,18 +3665,18 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
     int
         position = 0;
 
-    DEBUG_DEVICE << "PDU Type: " << type << ", PDU Length: " << length-6 << " + 6 bytes PDU header" << endl;
+    DEBUG_DEVICE << "PDU Type: " << type << ", PDU Length: " << length-6 << " + 6 bytes PDU header" << OFendl;
     if (length > 512) {
-            DEBUG_DEVICE << "Only dumping 512 bytes." << endl;
+            DEBUG_DEVICE << "Only dumping 512 bytes." << OFendl;
             length = 512;
     }
     p = (unsigned char*)buffer;
 
     while (length-- > 0) {
-        DEBUG_DEVICE << "  " << hex << setfill('0') << setw(2) << ((unsigned int)(*p++)) << dec;
-        if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
+        DEBUG_DEVICE << "  " << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)(*p++)) << STD_NAMESPACE dec;
+        if ((++position) % 16 == 0) DEBUG_DEVICE << OFendl;
     }
-    DEBUG_DEVICE << endl;
+    DEBUG_DEVICE << OFendl;
 }
 
 
@@ -3719,7 +3719,7 @@ setTCPBufferLength(int sock)
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
         if (sscanf(TCPBufferLength, "%d", &bufLen) != 1)
         {
-            ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
+            ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -3729,7 +3729,7 @@ setTCPBufferLength(int sock)
 #else
      ofConsole.lockCerr() << "DULFSM: setTCPBufferLength: "
             "cannot set TCP buffer length socket option: "
-            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << endl;
+            "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << OFendl;
      ofConsole.unlockCerr();
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
@@ -3939,7 +3939,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.59  2005-12-08 15:44:51  meichel
+** Revision 1.60  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.59  2005/12/08 15:44:51  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.58  2005/11/16 16:19:16  meichel

@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2006-06-23 10:24:43 $
+** Update Date:         $Date: 2006-08-15 16:04:29 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.44 $
+** CVS/RCS Revision:    $Revision: 1.45 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -617,7 +617,7 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
         if (debug) {
             COUT << "DIMSE sendStraightFileData: sending "
             << pdv.fragmentLength << " bytes (last: "
-            << ((last)?("YES"):("NO")) << ")" << endl;
+            << ((last)?("YES"):("NO")) << ")" << OFendl;
         }
 
         dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
@@ -782,7 +782,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
             /* dump some information if required */
             if (debug) {
                 COUT << "DIMSE sendDcmDataset: sending " << pdv.fragmentLength
-                << " bytes" << endl;
+                << " bytes" << OFendl;
             }
 
             /* send information over the network to the other DICOM application */
@@ -955,7 +955,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       /* dump information if required */
       if (debug)
       {
-            COUT << "DIMSE Command To Send:" << endl;
+            COUT << "DIMSE Command To Send:" << OFendl;
             cmdObj->print(COUT);
       }
 
@@ -1131,7 +1131,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     /* dump some information if required */
     if (debug) {
-        COUT << "DIMSE receiveCommand" << endl;
+        COUT << "DIMSE receiveCommand" << OFendl;
     }
 
     /* check if the data dictionary is available. If not return an error */
@@ -1242,7 +1242,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     /* dump information if required */
     if (debug) {
         COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
-        << bytesRead << " bytes), presID=" << (int) pid << endl;
+        << bytesRead << " bytes), presID=" << (int) pid << OFendl;
     }
 
     /* check if this is a valid presentation context */
@@ -1271,7 +1271,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     /* dump some more information if required */
     if (debug) {
-        COUT << "DIMSE Command Received:" << endl;
+        COUT << "DIMSE Command Received:" << OFendl;
         cmdSet->print(COUT);
     }
 
@@ -1523,7 +1523,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
           if (debug)
           {
              COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
-             << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
+             << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
           }
           if (callback)
           { /* execute callback function */
@@ -1716,7 +1716,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
             if (debug) 
             {
                 COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
-                << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
+                << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
             }
             
             /* execute callback function after each received PDV */
@@ -1768,14 +1768,18 @@ void DIMSE_warning(T_ASC_Association *assoc,
     va_start(args, format);
     vsprintf(buf, format, args);
     va_end(args);
-    CERR << buf << endl;
+    CERR << buf << OFendl;
 }
 
 
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.44  2006-06-23 10:24:43  meichel
+** Revision 1.45  2006-08-15 16:04:29  meichel
+** Updated the code in module dcmnet to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.44  2006/06/23 10:24:43  meichel
 ** All Store SCPs in DCMTK now store the source application entity title in the
 **   metaheader, both in normal and in bit-preserving mode.
 **
