@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-14 15:31:01 $
+ *  Update Date:      $Date: 2006-08-15 14:22:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -240,7 +240,6 @@ OFCondition WlmActivityManager::StartProvidingService()
     if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL))
     {
       // make sure buffer is zero terminated
-      DumpMessage("StartProvidingService(): Setting external socket handle");
       buf[bytesRead] = '\0';
         dcmExternalSocketHandle.set(atoi(buf));
     }
@@ -1324,7 +1323,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.21  2006-08-14 15:31:01  onken
+** Revision 1.22  2006-08-15 14:22:27  onken
+** Removed	superfluous output message
+**
+** Revision 1.21  2006/08/14 15:31:01  onken
 ** Added WIN32 multiprocess mode to wlmscpfs.
 **
 ** Revision 1.20  2005/12/08 15:48:35  meichel
