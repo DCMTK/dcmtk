@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTransportConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:39 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2006-08-15 16:02:55 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,7 +139,7 @@ public:
    *  on the given output stream.
    *  @param out output stream
    */
-  virtual void dumpConnectionParameters(ostream &out);
+  virtual void dumpConnectionParameters(STD_NAMESPACE ostream& out);
 
   /** returns an error string for a given error code.
    *  @param code error code
@@ -168,7 +168,11 @@ private:
 
 /*
  *  $Log: tlstrans.h,v $
- *  Revision 1.6  2005-12-08 16:05:39  meichel
+ *  Revision 1.7  2006-08-15 16:02:55  meichel
+ *  Updated the code in module dcmtls to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.6  2005/12/08 16:05:39  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.5  2003/12/05 10:38:55  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:38 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2006-08-15 16:02:55 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,7 +224,7 @@ public:
    *  @param out output stream
    *  @param peerCertificate X.509 certificate, may be NULL
    */
-  static void printX509Certificate(ostream &out, X509 *peerCertificate);
+  static void printX509Certificate(STD_NAMESPACE ostream& out, X509 *peerCertificate);
 
 private:
 
@@ -251,7 +251,11 @@ private:
 
 /*
  *  $Log: tlslayer.h,v $
- *  Revision 1.6  2005-12-08 16:05:38  meichel
+ *  Revision 1.7  2006-08-15 16:02:55  meichel
+ *  Updated the code in module dcmtls to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.6  2005/12/08 16:05:38  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.5  2003/12/05 10:38:55  joergr

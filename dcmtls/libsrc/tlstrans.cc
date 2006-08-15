@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:29 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-08-15 16:02:56 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -286,15 +286,15 @@ OFBool DcmTLSConnection::isTransparentConnection()
   return OFFalse;
 }
 
-void DcmTLSConnection::dumpConnectionParameters(ostream &out)
+void DcmTLSConnection::dumpConnectionParameters(STD_NAMESPACE ostream& out)
 {
-  out << "Transport connection: TLS/SSL over TCP/IP" << endl
-      << "  Protocol: " << SSL_get_version(tlsConnection) << endl 
+  out << "Transport connection: TLS/SSL over TCP/IP" << OFendl
+      << "  Protocol: " << SSL_get_version(tlsConnection) << OFendl 
       << "  Ciphersuite: " << SSL_CIPHER_get_name(SSL_get_current_cipher(tlsConnection))
       << ", version: " << SSL_CIPHER_get_version(SSL_get_current_cipher(tlsConnection))
-      << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << endl;
+      << ", encryption: " << SSL_CIPHER_get_bits(SSL_get_current_cipher(tlsConnection), NULL) << " bits" << OFendl;
   DcmTLSTransportLayer::printX509Certificate(out, SSL_get_peer_certificate(tlsConnection));
-  // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << endl;
+  // out << "Certificate verification: " << X509_verify_cert_error_string(SSL_get_verify_result(tlsConnection)) << OFendl;
   return;
 }
 
@@ -342,7 +342,11 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.10  2005-12-08 15:48:29  meichel
+ *  Revision 1.11  2006-08-15 16:02:56  meichel
+ *  Updated the code in module dcmtls to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.10  2005/12/08 15:48:29  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.9  2002/11/27 12:58:39  meichel

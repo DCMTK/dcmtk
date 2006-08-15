@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSTransportLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:28 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-08-15 16:02:56 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,7 +208,7 @@ DcmTLSTransportLayer::DcmTLSTransportLayer(int networkRole, const char *randFile
    {
       const char *result = ERR_reason_error_string(ERR_peek_error());
       if (result == NULL) result = "unknown error in SSL_CTX_new()";
-      ofConsole.lockCerr() << "error: unable to create TLS transport layer: " << result << endl;
+      ofConsole.lockCerr() << "error: unable to create TLS transport layer: " << result << OFendl;
       ofConsole.unlockCerr();      
    }
 #endif
@@ -384,7 +384,7 @@ void DcmTLSTransportLayer::seedPRNG(const char *randFile)
   else
   {
     /* warn user */
-    ofConsole.lockCerr() << "Warning: PRNG for TLS not seeded with sufficient random data." << endl;
+    ofConsole.lockCerr() << "Warning: PRNG for TLS not seeded with sufficient random data." << OFendl;
     ofConsole.unlockCerr();    
   }
 }
@@ -403,7 +403,7 @@ OFBool DcmTLSTransportLayer::writeRandomSeed(const char *randFile)
   return OFFalse;
 }
 
-void DcmTLSTransportLayer::printX509Certificate(ostream &out, X509 *peerCertificate)
+void DcmTLSTransportLayer::printX509Certificate(STD_NAMESPACE ostream& out, X509 *peerCertificate)
 {
   if (peerCertificate)
   {
@@ -462,14 +462,14 @@ void DcmTLSTransportLayer::printX509Certificate(ostream &out, X509 *peerCertific
       certPubKeyBits = EVP_PKEY_bits(pubkey);
       EVP_PKEY_free(pubkey);
     } 
-    out << "X.509v" << certVersion << " Certificate" << endl
-         << "  Subject      : " << certSubjectName << endl
-         << "  Issued by    : " << certIssuerName << endl
-         << "  Serial no.   : " << certSerialNumber << endl
-         << "  Validity     : not before " << certValidNotBefore << ", not after " << certValidNotAfter << endl
-         << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << endl;
+    out << "X.509v" << certVersion << " Certificate" << OFendl
+         << "  Subject      : " << certSubjectName << OFendl
+         << "  Issued by    : " << certIssuerName << OFendl
+         << "  Serial no.   : " << certSerialNumber << OFendl
+         << "  Validity     : not before " << certValidNotBefore << ", not after " << certValidNotAfter << OFendl
+         << "  Public key   : " << certPubKeyType << ", " << certPubKeyBits << " bits" << OFendl;
   } else {
-    out << "No X.509 Certificate." << endl;
+    out << "No X.509 Certificate." << OFendl;
   }
 }
 
@@ -487,7 +487,11 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.11  2005-12-08 15:48:28  meichel
+ *  Revision 1.12  2006-08-15 16:02:56  meichel
+ *  Updated the code in module dcmtls to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.11  2005/12/08 15:48:28  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.10  2005/11/23 16:10:28  meichel
