@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:58:39 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:35:00 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,28 +420,28 @@ int main(int argc, char *argv[])
             if (cmd.findOption("--version"))
             {
                 app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-                CERR << endl << "External libraries used:";
+                CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(WITH_LIBTIFF) && !defined(WITH_LIBPNG)
-                CERR << " none" << endl;
+                CERR << " none" << OFendl;
 #else
-                CERR << endl;
+                CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-                CERR << "- ZLIB, Version " << zlibVersion() << endl;
+                CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
 #ifdef WITH_LIBTIFF
-                CERR << "- " << DiTIFFPlugin::getLibraryVersionString() << endl;
+                CERR << "- " << DiTIFFPlugin::getLibraryVersionString() << OFendl;
 #ifdef HAVE_LIBTIFF_LZW_COMPRESSION
-                CERR << "  with LZW compression support" << endl;
+                CERR << "  with LZW compression support" << OFendl;
 #else
-                CERR << "  without LZW compression support" << endl;
+                CERR << "  without LZW compression support" << OFendl;
 #endif
 #endif
 #ifdef WITH_LIBPNG
-                CERR << "- " << DiPNGPlugin::getLibraryVersionString() << endl;
+                CERR << "- " << DiPNGPlugin::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
@@ -883,7 +883,7 @@ int main(int argc, char *argv[])
     if (opt_verboseMode > 1)
     {
         DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
-        OUTPUT << "reading DICOM file: " << opt_ifname << endl;
+        OUTPUT << "reading DICOM file: " << opt_ifname << OFendl;
     }
 
     // register RLE decompression codec
@@ -906,7 +906,7 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verboseMode > 1)
-        OUTPUT << "preparing pixel data." << endl;
+        OUTPUT << "preparing pixel data." << OFendl;
 
     E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
 
@@ -943,7 +943,7 @@ int main(int argc, char *argv[])
                            << ((opt_displayFunction == 1) ? "CIELAB" : "GSDF")
                            << " display function for "
                            << ((deviceType == DiDisplayFunction::EDT_Monitor) ? "softcopy" : "hardcopy")
-                           << " devices." << endl;
+                           << " devices." << OFendl;
                 }
                 if (!di->setDisplayFunction(disp))
                     app.printWarning("cannot select display function");
@@ -956,7 +956,7 @@ int main(int argc, char *argv[])
 
         /* dump image parameters */
         if (opt_verboseMode > 1)
-            OUTPUT << "dumping image parameters." << endl;
+            OUTPUT << "dumping image parameters." << OFendl;
 
         double minVal = 0.0;
         double maxVal = 0.0;
@@ -986,21 +986,21 @@ int main(int argc, char *argv[])
         char aspectRatio[30];
         OFStandard::ftoa(aspectRatio, sizeof(aspectRatio), di->getHeightWidthRatio(), OFStandard::ftoa_format_f, 0, 2);
 
-        CERR << "filename            : " << opt_ifname << endl
-             << "transfer syntax     : " << XferText << endl
-             << "SOP class           : " << SOPClassText << endl
-             << "SOP instance UID    : " << SOPInstanceUID << endl << endl
-             << "columns x rows      : " << di->getWidth() << " x " << di->getHeight() << endl
-             << "bits per sample     : " << di->getDepth() << endl
-             << "color model         : " << colorModel << endl;
-        CERR << "pixel aspect ratio  : " << aspectRatio << endl
-             << "number of frames    : " << di->getFrameCount() << endl << endl;
+        CERR << "filename            : " << opt_ifname << OFendl
+             << "transfer syntax     : " << XferText << OFendl
+             << "SOP class           : " << SOPClassText << OFendl
+             << "SOP instance UID    : " << SOPInstanceUID << OFendl << OFendl
+             << "columns x rows      : " << di->getWidth() << " x " << di->getHeight() << OFendl
+             << "bits per sample     : " << di->getDepth() << OFendl
+             << "color model         : " << colorModel << OFendl;
+        CERR << "pixel aspect ratio  : " << aspectRatio << OFendl
+             << "number of frames    : " << di->getFrameCount() << OFendl << OFendl;
 
         /* dump VOI windows */
         unsigned long count;
         OFString explStr;
         count = di->getWindowCount();
-        CERR << "VOI windows in file : " << di->getWindowCount() << endl;
+        CERR << "VOI windows in file : " << di->getWindowCount() << OFendl;
         for (i = 0; i < count; i++)
         {
             CERR << " - ";
@@ -1008,12 +1008,12 @@ int main(int argc, char *argv[])
                 CERR << "<no explanation>";
             else
                 CERR << explStr;
-            CERR << endl;
+            CERR << OFendl;
         }
 
         /* dump VOI LUTs */
         count = di->getVoiLutCount();
-        CERR << "VOI LUTs in file    : " << count << endl;
+        CERR << "VOI LUTs in file    : " << count << OFendl;
         for (i = 0; i < count; i++)
         {
             CERR << " - ";
@@ -1021,18 +1021,18 @@ int main(int argc, char *argv[])
                  CERR << "<no explanation>";
             else
                 CERR << explStr;
-            CERR << endl;
+            CERR << OFendl;
         }
 
-        CERR << "Overlays in file    : " << di->getOverlayCount() << endl << endl;
+        CERR << "Overlays in file    : " << di->getOverlayCount() << OFendl << OFendl;
 
         if (minmaxValid)
         {
           char minmaxText[30];
           OFStandard::ftoa(minmaxText, sizeof(minmaxText), maxVal, OFStandard::ftoa_format_f, 0, 0);
-          CERR << "maximum pixel value : " << minmaxText << endl;
+          CERR << "maximum pixel value : " << minmaxText << OFendl;
           OFStandard::ftoa(minmaxText, sizeof(minmaxText), minVal, OFStandard::ftoa_format_f, 0, 0);
-          CERR << "minimum pixel value : " << minmaxText << endl;
+          CERR << "minimum pixel value : " << minmaxText << OFendl;
         }
     }
 
@@ -1052,7 +1052,7 @@ int main(int argc, char *argv[])
         if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
         {
              if (opt_verboseMode > 1)
-                 OUTPUT << "converting image to grayscale." << endl;
+                 OUTPUT << "converting image to grayscale." << OFendl;
 
              DicomImage *newimage = di->createMonochromeImage();
              if (newimage == NULL)
@@ -1075,7 +1075,7 @@ int main(int argc, char *argv[])
                 if ((opt_Overlay[k] == 1) || (k < di->getOverlayCount()))
                 {
                     if (opt_verboseMode > 1)
-                        OUTPUT << "activating overlay plane " << k + 1 << endl;
+                        OUTPUT << "activating overlay plane " << k + 1 << OFendl;
                     if (opt_OverlayMode != EMO_Default)
                     {
                         if (!di->showOverlay(k, opt_OverlayMode, opt_foregroundDensity, opt_thresholdDensity))
@@ -1114,7 +1114,7 @@ int main(int argc, char *argv[])
                     OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window " << opt_windowParameter << endl;
+                    OUTPUT << "activating VOI window " << opt_windowParameter << OFendl;
                 if (!di->setWindow(opt_windowParameter - 1))
                 {
                     OFOStringStream oss;
@@ -1135,7 +1135,7 @@ int main(int argc, char *argv[])
                     OFSTRINGSTREAM_FREESTR(tmpString)
                 }
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI LUT " << opt_windowParameter << endl;
+                    OUTPUT << "activating VOI LUT " << opt_windowParameter << OFendl;
                 if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth))
                 {
                     OFOStringStream oss;
@@ -1147,19 +1147,19 @@ int main(int argc, char *argv[])
                 break;
             case 3: /* Compute VOI window using min-max algorithm */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window min-max algorithm" << endl;
+                    OUTPUT << "activating VOI window min-max algorithm" << OFendl;
                 if (!di->setMinMaxWindow(0))
                     app.printWarning("cannot compute min/max VOI window");
                 break;
             case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << endl;
+                    OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << OFendl;
                 if (!di->setHistogramWindow(OFstatic_cast(double, opt_windowParameter)/100.0))
                     app.printWarning("cannot compute histogram VOI window");
                 break;
             case 5: /* Compute VOI window using center r and width s */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth << endl;
+                    OUTPUT << "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth << OFendl;
                 if (!di->setWindow(opt_windowCenter, opt_windowWidth))
                 {
                     OFOStringStream oss;
@@ -1172,13 +1172,13 @@ int main(int argc, char *argv[])
                 break;
             case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window min-max algorithm, ignoring extreme values" << endl;
+                    OUTPUT << "activating VOI window min-max algorithm, ignoring extreme values" << OFendl;
                 if (!di->setMinMaxWindow(1))
                     app.printWarning("cannot compute min/max VOI window");
                 break;
             case 7: /* Compute region of interest VOI window */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "activating region of interest VOI window" << endl;
+                    OUTPUT << "activating region of interest VOI window" << OFendl;
                 if (!di->setRoiWindow(opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight))
                     app.printWarning("cannot compute region of interest VOI window");
                 break;
@@ -1186,7 +1186,7 @@ int main(int argc, char *argv[])
                 if (di->isMonochrome())
                 {
                     if (opt_verboseMode > 1)
-                        OUTPUT << "disabling VOI window computation" << endl;
+                        OUTPUT << "disabling VOI window computation" << OFendl;
                     if (! di->setNoVoiTransformation())
                         app.printWarning("cannot ignore VOI window");
                 }
@@ -1199,11 +1199,11 @@ int main(int argc, char *argv[])
             if (opt_verboseMode > 1)
             {
                 if (opt_presShape == ESP_Identity)
-                    OUTPUT << "setting presentation LUT shape to IDENTITY" << endl;
+                    OUTPUT << "setting presentation LUT shape to IDENTITY" << OFendl;
                 else if (opt_presShape == ESP_Inverse)
-                    OUTPUT << "setting presentation LUT shape to INVERSE" << endl;
+                    OUTPUT << "setting presentation LUT shape to INVERSE" << OFendl;
                 else if (opt_presShape == ESP_LinOD)
-                    OUTPUT << "setting presentation LUT shape to LIN OD" << endl;
+                    OUTPUT << "setting presentation LUT shape to LIN OD" << OFendl;
             }
             di->setPresentationLutShape(opt_presShape);
         }
@@ -1212,7 +1212,7 @@ int main(int argc, char *argv[])
         if (opt_changePolarity)
         {
             if (opt_verboseMode > 1)
-                OUTPUT << "setting polarity to REVERSE" << endl;
+                OUTPUT << "setting polarity to REVERSE" << OFendl;
             di->setPolarity(EPP_Reverse);
         }
 
@@ -1220,7 +1220,7 @@ int main(int argc, char *argv[])
         if (opt_useClip && (opt_scaleType == 0))
         {
              if (opt_verboseMode > 1)
-                 OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
+                 OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << OFendl;
              DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
              if (newimage==NULL)
              {
@@ -1243,7 +1243,7 @@ int main(int argc, char *argv[])
         if (opt_rotateDegree > 0)
         {
             if (opt_verboseMode > 1)
-                OUTPUT << "rotating image by " << opt_rotateDegree << " degrees." << endl;
+                OUTPUT << "rotating image by " << opt_rotateDegree << " degrees." << OFendl;
             di->rotateImage(opt_rotateDegree);
         }
 
@@ -1256,22 +1256,22 @@ int main(int argc, char *argv[])
             {
                 case 1:
                     if (opt_verboseMode > 1)
-                        OUTPUT << " horizontally." << endl;
+                        OUTPUT << " horizontally." << OFendl;
                     di->flipImage(1, 0);
                     break;
                 case 2:
                     if (opt_verboseMode > 1)
-                        OUTPUT << " vertically." << endl;
+                        OUTPUT << " vertically." << OFendl;
                     di->flipImage(0, 1);
                     break;
                 case 3:
                     if (opt_verboseMode > 1)
-                        OUTPUT << " horizontally and vertically." << endl;
+                        OUTPUT << " horizontally and vertically." << OFendl;
                     di->flipImage(1, 1);
                     break;
                 default:
                     if (opt_verboseMode > 1)
-                        OUTPUT << endl;
+                        OUTPUT << OFendl;
             }
         }
 
@@ -1280,14 +1280,14 @@ int main(int argc, char *argv[])
         {
             DicomImage *newimage;
             if ((opt_verboseMode > 1) && opt_useClip)
-                OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
+                OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << OFendl;
             switch (opt_scaleType)
             {
                 case 1:
                     if (opt_verboseMode > 1)
                         OUTPUT << "scaling image, X factor=" << opt_scale_factor
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1299,7 +1299,7 @@ int main(int argc, char *argv[])
                     if (opt_verboseMode > 1)
                         OUTPUT << "scaling image, Y factor=" << opt_scale_factor
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1311,7 +1311,7 @@ int main(int argc, char *argv[])
                     if (opt_verboseMode > 1)
                         OUTPUT << "scaling image, X size=" << opt_scale_size
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1323,7 +1323,7 @@ int main(int argc, char *argv[])
                     if (opt_verboseMode > 1)
                         OUTPUT << "scaling image, Y size=" << opt_scale_size
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1333,7 +1333,7 @@ int main(int argc, char *argv[])
                     break;
                 default:
                     if (opt_verboseMode > 1)
-                        OUTPUT << "internal error: unknown scaling type" << endl;
+                        OUTPUT << "internal error: unknown scaling type" << OFendl;
                     newimage = NULL;
                     break;
             }
@@ -1398,7 +1398,7 @@ int main(int argc, char *argv[])
                 else
                     strcpy(ofname, opt_ofname);
                 if (opt_verboseMode > 1)
-                     OUTPUT << "writing frame " << (opt_frame + frame) << " to " << ofname << endl;
+                     OUTPUT << "writing frame " << (opt_frame + frame) << " to " << ofname << OFendl;
                 ofile = fopen(ofname, "wb");
                 if (ofile == NULL)
                 {
@@ -1412,7 +1412,7 @@ int main(int argc, char *argv[])
                 /* output to stdout */
                 ofile = stdout;
                 if (opt_verboseMode > 1)
-                     OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << endl;
+                     OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << OFendl;
             }
 
             /* finally create output image file */
@@ -1500,7 +1500,7 @@ int main(int argc, char *argv[])
 
     /* done, now cleanup. */
     if (opt_verboseMode > 1)
-         OUTPUT << "cleaning up memory." << endl;
+         OUTPUT << "cleaning up memory." << OFendl;
     delete di;
     delete disp;
 
@@ -1518,7 +1518,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.85  2006-07-27 13:58:39  joergr
+ * Revision 1.86  2006-08-15 16:35:00  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.85  2006/07/27 13:58:39  joergr
  * Made naming conventions for command line parameters more consistent, e.g.
  * used "dcmfile-in", "dcmfile-out" and "bitmap-out".
  * Changed parameter "exclusive" of method addOption() from type OFBool into an

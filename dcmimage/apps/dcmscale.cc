@@ -21,9 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:59:24 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:35:00 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,17 +213,17 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:";
+              CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_DCMSCALE_AS_DCMJSCAL)
-              CERR << " none" << endl;
+              CERR << " none" << OFendl;
 #else
-              CERR << endl;
+              CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
-              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
               return 0;
           }
@@ -390,7 +390,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     // register RLE decompression codec
@@ -410,12 +410,12 @@ int main(int argc, char *argv[])
 
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "Error: invalid filename: <empty string>" << endl;
+        CERR << "Error: invalid filename: <empty string>" << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "open input file " << opt_ifname << endl;
+        COUT << "open input file " << opt_ifname << OFendl;
 
     DcmFileFormat fileformat;
     DcmDataset *dataset = fileformat.getDataset();
@@ -424,12 +424,12 @@ int main(int argc, char *argv[])
     if (error.bad())
     {
         CERR << "Error: " << error.text()
-             << ": reading file: " <<  opt_ifname << endl;
+             << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "load all data into memory" << endl;
+        COUT << "load all data into memory" << OFendl;
 
     /* make sure that pixel data is loaded before output file is created */
     dataset->loadAllDataIntoMemory();
@@ -440,12 +440,12 @@ int main(int argc, char *argv[])
     if (opt_oxfer == EXS_Unknown)
     {
         if (opt_verbose)
-            COUT << "set output transfer syntax to input transfer syntax" << endl;
+            COUT << "set output transfer syntax to input transfer syntax" << OFendl;
         opt_oxfer = dataset->getOriginalXfer();
     }
 
     if (opt_verbose)
-        COUT << "check if new output transfer syntax is possible" << endl;
+        COUT << "check if new output transfer syntax is possible" << OFendl;
 
     DcmXfer opt_oxferSyn(opt_oxfer);
     dataset->chooseRepresentation(opt_oxfer, NULL);
@@ -454,10 +454,10 @@ int main(int argc, char *argv[])
     {
         if (opt_verbose)
             COUT << "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written" << endl;
+                 << " can be written" << OFendl;
     } else {
         CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!" << endl;
+             << " possible!" << OFendl;
         return 1;
     }
 
@@ -465,7 +465,7 @@ int main(int argc, char *argv[])
     // image processing starts here
 
     if (opt_verbose)
-        COUT << "preparing pixel data" << endl;
+        COUT << "preparing pixel data" << OFendl;
 
     const unsigned long flags = (opt_scaleType > 0) ? CIF_MayDetachPixelData : 0;
     // create DicomImage object
@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose && opt_useClip)
         COUT << "clipping image to (" << opt_left << "," << opt_top
-             << "," << opt_width << "," << opt_height << ")" << endl;
+             << "," << opt_width << "," << opt_height << ")" << OFendl;
     // perform clipping (without scaling)
     if (opt_scaleType <= 0)
     {
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
                 if (opt_verbose)
                     COUT << "scaling image, X factor=" << opt_scale_factor
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -511,7 +511,7 @@ int main(int argc, char *argv[])
                 if (opt_verbose)
                     COUT << "scaling image, Y factor=" << opt_scale_factor
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -523,7 +523,7 @@ int main(int argc, char *argv[])
                 if (opt_verbose)
                     COUT << "scaling image, X size=" << opt_scale_size
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -535,7 +535,7 @@ int main(int argc, char *argv[])
                 if (opt_verbose)
                     COUT << "scaling image, Y size=" << opt_scale_size
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
             derivationDescription = "Scaled image";
     }
     if (opt_scaleType > 4)
-        CERR << "internal error: unknown scaling type" << endl;
+        CERR << "internal error: unknown scaling type" << OFendl;
     else if (newimage == NULL)
         app.printError("cannot create new image");
     else if (newimage->getStatus() != EIS_Normal)
@@ -630,18 +630,18 @@ int main(int argc, char *argv[])
     // write back output file
 
     if (opt_verbose)
-        COUT << "create output file " << opt_ofname << endl;
+        COUT << "create output file " << opt_ofname << OFendl;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, opt_filepad, opt_itempad, opt_oDataset);
     if (error.bad())
     {
         CERR << "Error: " << error.text()
-             << ": writing file: " <<  opt_ofname << endl;
+             << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "conversion successful" << endl;
+        COUT << "conversion successful" << OFendl;
 
     // deregister RLE decompression codec
     DcmRLEDecoderRegistration::cleanup();
@@ -657,7 +657,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.15  2006-07-27 13:59:24  joergr
+ * Revision 1.16  2006-08-15 16:35:00  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.15  2006/07/27 13:59:24  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Option "--help" is no longer an exclusive option
  * by default.

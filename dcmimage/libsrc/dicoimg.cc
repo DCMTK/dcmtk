@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:56:51 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
             default:
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
         }
@@ -167,7 +167,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
             default:
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
         }
@@ -202,7 +202,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
             default:
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
         }
@@ -234,7 +234,7 @@ int DiColorImage::checkInterData(const int mode)
             ImageStatus = EIS_MemoryFailure;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
+                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
                 ofConsole.unlockCerr();
             }
         } else
@@ -251,7 +251,7 @@ int DiColorImage::checkInterData(const int mode)
             {
                 ofConsole.lockCerr() << "WARNING: computed (" << count
                                      << ") and stored (" << InterData->getInputCount() << ") "
-                                     << "pixel count differ !" << endl;
+                                     << "pixel count differ !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -353,7 +353,7 @@ const void *DiColorImage::getData(void *buffer,
                 default:
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                        ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                         ofConsole.unlockCerr();
                     }
             }
@@ -362,7 +362,7 @@ const void *DiColorImage::getData(void *buffer,
                 ImageStatus = EIS_MemoryFailure;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
-                    ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
+                    ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -371,7 +371,7 @@ const void *DiColorImage::getData(void *buffer,
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
+                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -435,7 +435,7 @@ int DiColorImage::flip(const int horz,
         default:
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                 ofConsole.unlockCerr();
             }
     }
@@ -481,7 +481,7 @@ int DiColorImage::rotate(const int degree)
             default:
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
         }
@@ -664,7 +664,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
 }
 
 
-int DiColorImage::writePPM(ostream &stream,
+int DiColorImage::writePPM(STD_NAMESPACE ostream& stream,
                            const unsigned long frame,
                            const int bits)
 {
@@ -673,9 +673,9 @@ int DiColorImage::writePPM(ostream &stream,
         getOutputData(frame, bits);
         if (OutputData != NULL)
         {
-            stream << "P3" << endl;
-            stream << Columns << " " << Rows << endl;
-            stream << DicomImageClass::maxval(bits) << endl;
+            stream << "P3" << OFendl;
+            stream << Columns << " " << Rows << OFendl;
+            stream << DicomImageClass::maxval(bits) << OFendl;
             int ok = OutputData->writePPM(stream);
             deleteOutputData();
             return ok;
@@ -742,7 +742,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.36  2006-07-10 10:56:51  joergr
+ * Revision 1.37  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.36  2006/07/10 10:56:51  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.35  2005/12/08 15:42:21  meichel

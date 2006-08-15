@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:59:24 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:35:00 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,17 +226,17 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:";
+              CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_WITH_DCMJPEG_SUPPORT)
-              CERR << " none" << endl;
+              CERR << " none" << OFendl;
 #else
-              CERR << endl;
+              CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
-              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
               return 0;
           }
@@ -377,7 +377,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
@@ -390,7 +390,7 @@ int main(int argc, char *argv[])
 
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "Error: invalid filename: <empty string>" << endl;
+        CERR << "Error: invalid filename: <empty string>" << OFendl;
         return 1;
     }
 
@@ -401,12 +401,12 @@ int main(int argc, char *argv[])
     if (error.bad())
     {
         CERR << "Error: " << error.text()
-             << ": reading file: " <<  opt_ifname << endl;
+             << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "load all data into memory" << endl;
+        COUT << "load all data into memory" << OFendl;
 
     /* make sure that pixel data is loaded before output file is created */
     dataset->loadAllDataIntoMemory();
@@ -417,12 +417,12 @@ int main(int argc, char *argv[])
     if (opt_oxfer == EXS_Unknown)
     {
         if (opt_verbose)
-            COUT << "set output transfer syntax to input transfer syntax" << endl;
+            COUT << "set output transfer syntax to input transfer syntax" << OFendl;
         opt_oxfer = dataset->getOriginalXfer();
     }
 
     if (opt_verbose)
-        COUT << "check if new output transfer syntax is possible" << endl;
+        COUT << "check if new output transfer syntax is possible" << OFendl;
 
     DcmXfer opt_oxferSyn(opt_oxfer);
     dataset->chooseRepresentation(opt_oxfer, NULL);
@@ -431,10 +431,10 @@ int main(int argc, char *argv[])
     {
         if (opt_verbose)
             COUT << "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written" << endl;
+                 << " can be written" << OFendl;
     } else {
         CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!" << endl;
+             << " possible!" << OFendl;
         return 1;
     }
 
@@ -442,7 +442,7 @@ int main(int argc, char *argv[])
     // image processing starts here
 
     if (opt_verbose)
-        CERR << "preparing pixel data." << endl;
+        CERR << "preparing pixel data." << OFendl;
 
     // create DicomImage object
     DicomImage di(dataset, opt_oxfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
@@ -478,7 +478,7 @@ int main(int argc, char *argv[])
     if (error.bad())
     {
         CERR << "Error: " << error.text()
-             << ": converting image: " <<  opt_ifname << endl;
+             << ": converting image: " <<  opt_ifname << OFendl;
         return 1;
     }
 
@@ -486,7 +486,7 @@ int main(int argc, char *argv[])
     // write back output file
 
     if (opt_verbose)
-        COUT << "write converted DICOM file" << endl;
+        COUT << "write converted DICOM file" << OFendl;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
         OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_oDataset);
@@ -494,12 +494,12 @@ int main(int argc, char *argv[])
     if (error.bad())
     {
         CERR << "Error: " << error.text()
-             << ": writing file: " <<  opt_ofname << endl;
+             << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "conversion successful" << endl;
+        COUT << "conversion successful" << OFendl;
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
     // deregister global decompression codecs
@@ -513,7 +513,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.14  2006-07-27 13:59:24  joergr
+ * Revision 1.15  2006-08-15 16:35:00  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.14  2006/07/27 13:59:24  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Option "--help" is no longer an exclusive option
  * by default.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DcmQuant
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:33 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     // Create histogram of the colors, clustered if necessary
     if (verbose)
     {
-      ofConsole.lockCerr() << "computing image histogram" << endl;
+      ofConsole.lockCerr() << "computing image histogram" << OFendl;
       ofConsole.unlockCerr();
     }
 
@@ -84,7 +84,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     unsigned long maxval = chv.getMaxVal();
     if (verbose)
     {
-      ofConsole.lockCerr() << "image histogram: found " << chv.getColors() << " colors (at maxval=" << maxval << ")" << endl;
+      ofConsole.lockCerr() << "image histogram: found " << chv.getColors() << " colors (at maxval=" << maxval << ")" << OFendl;
       ofConsole.unlockCerr();
     }
 
@@ -95,7 +95,7 @@ OFCondition DcmQuant::createPaletteColorImage(
 
     if (verbose)
     {
-      ofConsole.lockCerr() << "computing color map using Heckbert's median cut algorithm" << endl;
+      ofConsole.lockCerr() << "computing color map using Heckbert's median cut algorithm" << OFendl;
       ofConsole.unlockCerr();
     }
 
@@ -109,7 +109,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     DcmQuantColorHashTable cht;
     if (verbose)
     {
-      ofConsole.lockCerr() << "mapping image data to color table" << endl;
+      ofConsole.lockCerr() << "mapping image data to color table" << OFendl;
       ofConsole.unlockCerr();
     }
 
@@ -169,7 +169,7 @@ OFCondition DcmQuant::createPaletteColorImage(
 
     if (verbose)
     {
-      ofConsole.lockCerr() << "creating DICOM image pixel module" << endl;
+      ofConsole.lockCerr() << "creating DICOM image pixel module" << OFendl;
       ofConsole.unlockCerr();
     }
 
@@ -256,7 +256,11 @@ OFCondition DcmQuant::updateDerivationDescription(DcmItem *dataset, const char *
  *
  * CVS/RCS Log:
  * $Log: diquant.cc,v $
- * Revision 1.4  2005-12-08 15:42:33  meichel
+ * Revision 1.5  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.4  2005/12/08 15:42:33  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2004/08/24 14:55:28  meichel

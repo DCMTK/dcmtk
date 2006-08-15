@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:19 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
-                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -145,7 +145,11 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
- * Revision 1.17  2005-12-08 15:42:19  meichel
+ * Revision 1.18  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.17  2005/12/08 15:42:19  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.16  2003/12/17 17:50:37  joergr

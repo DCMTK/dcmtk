@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixel (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:23 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us
-                                         << ") ... assuming " << samples << " !" << endl;
+                                         << ") ... assuming " << samples << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -78,7 +78,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                         {
                             ofConsole.lockCerr() << "WARNING: invalid value for 'PlanarConfiguration' (" << us
-                                                 << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                                                 << ") ... assuming 'color-by-pixel' (0) !" << OFendl;
                             ofConsole.unlockCerr();
                         }
                     }
@@ -86,7 +86,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: unexpected attribute 'PlanarConfiguration' (" << us
-                                             << ") ... ignoring !" << endl;
+                                             << ") ... ignoring !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -96,7 +96,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 status = EIS_MissingAttribute;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
-                    ofConsole.lockCerr() << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
+                    ofConsole.lockCerr() << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 return;
@@ -112,7 +112,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             status = EIS_MissingAttribute;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
+                ofConsole.lockCerr() << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -140,7 +140,11 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.15  2005-12-08 15:42:23  meichel
+ * Revision 1.16  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.15  2005/12/08 15:42:23  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.14  2004/06/03 09:08:01  joergr

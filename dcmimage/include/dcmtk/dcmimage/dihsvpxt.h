@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:39 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,7 +214,7 @@ class DiHSVPixelTemplate
                 default:
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << endl;
+                        ofConsole.lockCerr() << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << OFendl;
                         ofConsole.unlockCerr();
                     }
             }
@@ -230,7 +230,11 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.19  2005-12-08 16:01:39  meichel
+ * Revision 1.20  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.19  2005/12/08 16:01:39  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.18  2004/04/21 10:00:31  meichel

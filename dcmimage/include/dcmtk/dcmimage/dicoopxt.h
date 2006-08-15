@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:33 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,7 +186,7 @@ class DiColorOutputPixelTemplate
      *
      ** @return status, true if successful, false otherwise
      */
-    int writePPM(ostream &stream) const
+    int writePPM(STD_NAMESPACE ostream& stream) const
     {
         if (Data != NULL)
         {
@@ -431,7 +431,11 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.24  2005-12-08 16:01:33  meichel
+ * Revision 1.25  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.24  2005/12/08 16:01:33  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.23  2004/02/06 11:18:18  joergr

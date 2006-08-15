@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:41 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ class DiPalettePixelTemplate
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: invalid value for 'PlanarConfiguration' ("
-                                         << this->PlanarConfiguration << ") ! " << endl;
+                                         << this->PlanarConfiguration << ") ! " << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -137,7 +137,11 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.18  2005-12-08 16:01:41  meichel
+ * Revision 1.19  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.18  2005/12/08 16:01:41  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.17  2004/04/21 10:00:31  meichel

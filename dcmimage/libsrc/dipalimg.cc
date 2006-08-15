@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:25 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: segmented palettes not yet supported ... ignoring!" << endl;
+                        ofConsole.lockCerr() << "WARNING: segmented palettes not yet supported ... ignoring!" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -100,7 +100,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: invalid value for 'BitsPerSample' (" << BitsPerSample
-                                             << ") computed from color palettes !" << endl;
+                                             << ") computed from color palettes !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -133,7 +133,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                     default:
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                         {
-                            ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                            ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
                             ofConsole.unlockCerr();
                         }
                 }
@@ -151,7 +151,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             {
                 ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
                                      << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE
-                                     << " bits !" << endl;
+                                     << " bits !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -172,7 +172,11 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.18  2005-12-08 15:42:25  meichel
+ * Revision 1.19  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.18  2005/12/08 15:42:25  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.17  2003/12/17 16:21:47  joergr

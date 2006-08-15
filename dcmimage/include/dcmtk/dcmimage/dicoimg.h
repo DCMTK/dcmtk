@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Header)
  *
- *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2006-07-10 10:57:50 $
- *  CVS/RCS Revision:    $Revision: 1.24 $
+ *  Last Update:         $Author: meichel $
+ *  Update Date:         $Date: 2006-08-15 16:35:01 $
+ *  CVS/RCS Revision:    $Revision: 1.25 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,7 +303,7 @@ class DiColorImage
      *
      ** @return true if successful, false otherwise
      */
-    int writePPM(ostream &stream,
+    int writePPM(STD_NAMESPACE ostream& stream,
                  const unsigned long frame,
                  const int bits);
 
@@ -457,7 +457,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.24  2006-07-10 10:57:50  joergr
+ * Revision 1.25  2006-08-15 16:35:01  meichel
+ * Updated the code in module dcmimage to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.24  2006/07/10 10:57:50  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.23  2005/12/08 16:01:30  meichel
