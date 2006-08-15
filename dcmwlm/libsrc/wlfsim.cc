@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2006-01-27 15:07:33 $
+*  Last Update:      $Author: meichel $
+*  Update Date:      $Date: 2006-08-15 16:15:48 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.17 $
+*  CVS/RCS Revision: $Revision: 1.18 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -196,7 +196,7 @@ void WlmFileSystemInteractionManager::DumpMessage( const char *message )
   if( logStream != NULL && message != NULL )
   {
     logStream->lockCout();
-    logStream->getCout() << message << endl;
+    logStream->getCout() << message << OFendl;
     logStream->unlockCout();
   }
 }
@@ -2228,7 +2228,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.17  2006-01-27 15:07:33  joergr
+** Revision 1.18  2006-08-15 16:15:48  meichel
+** Updated the code in module dcmwlm to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.17  2006/01/27 15:07:33  joergr
 ** Fixed issue with missing type 2 attributes in worklist files being reported
 ** as incomplete.  Now, the attributes are inserted automatically if required.
 ** Removed email address from CVS log.

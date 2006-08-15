@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:32 $
+ *  Update Date:      $Date: 2006-08-15 16:15:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1319,7 +1319,7 @@ void WlmDataSource::DumpMessage( const char *message )
   if( logStream != NULL && message != NULL )
   {
     logStream->lockCout();
-    logStream->getCout() << message << endl;
+    logStream->getCout() << message << OFendl;
     logStream->unlockCout();
   }
 }
@@ -1617,7 +1617,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.19  2005-12-08 15:48:32  meichel
+** Revision 1.20  2006-08-15 16:15:48  meichel
+** Updated the code in module dcmwlm to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.19  2005/12/08 15:48:32  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.18  2005/09/23 12:57:02  wilkens

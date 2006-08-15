@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-15 14:22:27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:15:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,7 @@ OFCondition WlmActivityManager::StartProvidingService()
     }
     else
     {
-      CERR << "Error while reading socket handle: " << GetLastError() << endl;
+      CERR << "Error while reading socket handle: " << GetLastError() << OFendl;
       exit(0);
     }
   }
@@ -877,7 +877,7 @@ void WlmActivityManager::DumpMessage( const char *message )
   if( logStream != NULL && message != NULL )
   {
     logStream->lockCout();
-    logStream->getCout() << message << endl;
+    logStream->getCout() << message << OFendl;
     logStream->unlockCout();
   }
 }
@@ -1113,7 +1113,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
   if( logStream != NULL )
   {
     logStream->lockCout();
-    logStream->getCout() << "  Status Detail: " << endl;
+    logStream->getCout() << "  Status Detail: " << OFendl;
     logStream->unlockCout();
   }
 
@@ -1127,7 +1127,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       {
         sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
-        logStream->getCout() << msg << endl;
+        logStream->getCout() << msg << OFendl;
         logStream->unlockCout();
       }
       (*statusDetail)->insert( lo, OFTrue /*replaceOld*/ );
@@ -1144,7 +1144,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       {
         sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
-        logStream->getCout() << msg << endl;
+        logStream->getCout() << msg << OFendl;
         logStream->unlockCout();
       }
       (*statusDetail)->insert( at, OFTrue /*replaceOld*/ );
@@ -1161,7 +1161,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       {
         sprintf( msg, "AddStatusDetail: unsupported status detail type: %s", vr.getVRName() );
         logStream->lockCout();
-        logStream->getCout() << msg << endl;
+        logStream->getCout() << msg << OFendl;
         logStream->unlockCout();
       }
       break;
@@ -1222,9 +1222,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
     if( opt_verbose && logStream != NULL )
     {
       logStream->lockCout();
-      logStream->getCout() << "Find SCP Request Identifiers:" << endl;
+      logStream->getCout() << "Find SCP Request Identifiers:" << OFendl;
       requestIdentifiers->print( logStream->getCout() );
-      logStream->getCout() << "=============================" << endl;
+      logStream->getCout() << "=============================" << OFendl;
       logStream->unlockCout();
     }
 
@@ -1235,14 +1235,14 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
     {
       sprintf( msg, "findSCP: Worklist Database: StartFindRequest() Failed (%s).", DU_cfindStatusString( (Uint16)dbstatus ) );
       logStream->lockCout();
-      logStream->getCout() << msg << endl;
+      logStream->getCout() << msg << OFendl;
       logStream->unlockCout();
     }
 
     if( opt_verbose && logStream != NULL )
     {
       logStream->lockCout();
-      logStream->getCout() << "=============================" << endl;
+      logStream->getCout() << "=============================" << OFendl;
       logStream->unlockCout();
     }
   }
@@ -1255,7 +1255,7 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
     {
       sprintf( msg, "SLEEPING (during find): %ld secs\n", opt_sleepDuringFind );
       logStream->lockCout();
-      logStream->getCout() << msg << endl;
+      logStream->getCout() << msg << OFendl;
       logStream->unlockCout();
     }
     OFStandard::sleep((unsigned int)opt_sleepDuringFind);
@@ -1278,13 +1278,13 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   {
     logStream->lockCout();
     sprintf( msg, "Worklist Find SCP Response %d [status: %s]", responseCount, DU_cfindStatusString( (Uint16)dbstatus ) );
-    logStream->getCout() << msg << endl;
+    logStream->getCout() << msg << OFendl;
     if( *responseIdentifiers != NULL && (*responseIdentifiers)->card() > 0 )
     {
       sprintf( msg, "Response Identifiers (%d)", responseCount );
-      logStream->getCout() << msg << endl;
+      logStream->getCout() << msg << OFendl;
       (*responseIdentifiers)->print( logStream->getCout() );
-      logStream->getCout() << "-------" << endl;
+      logStream->getCout() << "-------" << OFendl;
     }
     logStream->unlockCout();
   }
@@ -1323,7 +1323,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.22  2006-08-15 14:22:27  onken
+** Revision 1.23  2006-08-15 16:15:48  meichel
+** Updated the code in module dcmwlm to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.22  2006/08/15 14:22:27  onken
 ** Removed	superfluous output message
 **
 ** Revision 1.21  2006/08/14 15:31:01  onken

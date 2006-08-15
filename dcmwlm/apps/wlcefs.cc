@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-15 11:32:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:15:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,17 +197,17 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       if (cmd->findOption("--version"))
       {
         app->printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-        ofConsole.lockCerr() << endl << "External libraries used:";
+        ofConsole.lockCerr() << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-        ofConsole.getCerr() << " none" << endl;
+        ofConsole.getCerr() << " none" << OFendl;
 #else
-        ofConsole.getCerr() << endl;
+        ofConsole.getCerr() << OFendl;
 #endif
 #ifdef WITH_ZLIB
-        ofConsole.getCerr() << "- ZLIB, Version " << zlibVersion() << endl;
+        ofConsole.getCerr() << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-        ofConsole.getCerr() << "- LIBWRAP" << endl;
+        ofConsole.getCerr() << "- LIBWRAP" << OFendl;
 #endif
         ofConsole.unlockCerr();
         exit(0);
@@ -412,7 +412,7 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
   if( message != NULL )
   {
     ofConsole.lockCout();
-    ofConsole.getCout() << message << endl;
+    ofConsole.getCout() << message << OFendl;
     ofConsole.unlockCout();
   }
 }
@@ -422,7 +422,11 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.14  2006-08-15 11:32:06  onken
+** Revision 1.15  2006-08-15 16:15:47  meichel
+** Updated the code in module dcmwlm to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.14  2006/08/15 11:32:06  onken
 ** Added WIN32 multiprocess mode capabilities to wlmscpfs
 **
 ** Revision 1.13  2006/08/14 15:30:40  onken

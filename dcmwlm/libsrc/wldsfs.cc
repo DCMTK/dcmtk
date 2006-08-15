@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:33 $
+ *  Update Date:      $Date: 2006-08-15 16:15:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -329,9 +329,9 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   if( verbose && logStream != NULL )
   {
     logStream->lockCout();
-    logStream->getCout() << "Expanded Find SCP Request Identifiers:" << endl;
+    logStream->getCout() << "Expanded Find SCP Request Identifiers:" << OFendl;
     identifiers->print( logStream->getCout() );
-    logStream->getCout() << "=============================" << endl;
+    logStream->getCout() << "=============================" << OFendl;
     logStream->unlockCout();
   }
 
@@ -849,7 +849,11 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.19  2005-12-08 15:48:33  meichel
+** Revision 1.20  2006-08-15 16:15:48  meichel
+** Updated the code in module dcmwlm to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.19  2005/12/08 15:48:33  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.18  2005/11/08 12:59:25  wilkens

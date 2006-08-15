@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *   hexedecimal encoded string.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:40 $
+ *  Update Date:      $Date: 2006-08-15 16:15:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,25 +189,25 @@ addStringAttr(DcmItem *item, const DcmTagKey& key, const SimpleStr& str)
     DcmElement *newElement = NULL;
 
     if (item == NULL) {
-	CERR << "error: cannot add to null item" << endl;
+	CERR << "error: cannot add to null item" << OFendl;
 	return OFFalse;
     }
 
     ec = newDicomElement(newElement, tag);
     if (ec != EC_Normal) {
-	CERR << "error: cannot create element: " << key << endl;
+	CERR << "error: cannot create element: " << key << OFendl;
 	return OFFalse;
     }
 
     ec = newElement->putString(str.c_str());
     if (ec != EC_Normal) {
-	CERR << "error: cannot put element value: " << key << endl;
+	CERR << "error: cannot put element value: " << key << OFendl;
 	return OFFalse;
     }
 
     ec = item->insert(newElement, OFTrue);
     if (ec != EC_Normal) {
-	CERR << "error: cannot insert element: " << key << endl;
+	CERR << "error: cannot insert element: " << key << OFendl;
 	return OFFalse;
     }
 
@@ -224,7 +224,7 @@ getOrInsertSequenceItem(DcmItem *dset, const DcmTagKey& key,
     DcmItem *foundItem = NULL;
 
     if (dset == NULL) {
-	CERR << "error: cannot add to null item" << endl;
+	CERR << "error: cannot add to null item" << OFendl;
 	return NULL;
     }
 
@@ -251,7 +251,7 @@ getOrInsertSequenceItem(DcmItem *dset, const DcmTagKey& key,
 	} 
 	foundItem = sq->getItem(itemNumber);
     } else {
-	CERR << "error: not a sequence: " << key << endl;
+	CERR << "error: not a sequence: " << key << OFendl;
 	return NULL;
     }
 
@@ -316,7 +316,7 @@ addValue(int valCount, SimpleStr& val, DcmDataset& dset)
     KeyPos *kp = &posTab[valCount];
     if (kp->position != valCount) {
 	CERR << "internal error: inconsistent posTab (valCount=" 
-	     << valCount <<")" << endl;
+	     << valCount <<")" << OFendl;
 	return OFFalse;
     }
 
@@ -353,7 +353,7 @@ parseWorklist(FILE* f, DcmDataset& dset)
     }
     if (c != SEPARATOR_CHAR) {
 	CERR << "error: expected \'" << char(SEPARATOR_CHAR) << "\' " <<
-	    "as first input character" << endl;
+	    "as first input character" << OFendl;
 	return OFFalse;
     }
 
@@ -376,7 +376,7 @@ parseWorklist(FILE* f, DcmDataset& dset)
 	} else if (isspace(c)) {
 	    /* ignore */
 	} else {
-	    CERR << "error bad hex value: " << char(c) << endl;
+	    CERR << "error bad hex value: " << char(c) << OFendl;
 	    return OFFalse;
 	}
     }
@@ -417,7 +417,7 @@ int main(int argc, char *argv[])
 	    ifname = arg;
 	} else if (arg[0] == '-' || arg[0] == '+') {
 	    if (strlen(arg) < 2) {
-		CERR << "unknown argument: " << arg << endl;
+		CERR << "unknown argument: " << arg << OFendl;
 		usage();
 		return 1;
 	    }
@@ -464,7 +464,7 @@ int main(int argc, char *argv[])
 		    xfer = EXS_BigEndianExplicit;
 		    break;
 		default:
-		    CERR << "unknown option: " << arg << endl;
+		    CERR << "unknown option: " << arg << OFendl;
 		    return 1;
 		}
 		break;
@@ -472,7 +472,7 @@ int main(int argc, char *argv[])
 		if (arg[0] == '+' && arg[2] == '\0') {
 		    verifymode = OFTrue;
 		} else {
-		    CERR << "unknown option: " << arg << endl;
+		    CERR << "unknown option: " << arg << OFendl;
 		    return 1;
 		}
 		break;
@@ -480,18 +480,18 @@ int main(int argc, char *argv[])
 		if (arg[0] == '+' && arg[2] == '\0') {
 		    verbosemode = OFTrue;
 		} else {
-		    CERR << "unknown option: " << arg << endl;
+		    CERR << "unknown option: " << arg << OFendl;
 		    return 1;
 		}
 		break;
 	    case 'd':
 		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    CERR << "unknown option: " << arg << endl;
+		    CERR << "unknown option: " << arg << OFendl;
 		    return 1;
 		}
 		break;
 	    default:
-		CERR << "unknown option: " << arg << endl;
+		CERR << "unknown option: " << arg << OFendl;
 		return 1;
 	    }
 	} else if ( ifname == NULL ) {
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
 	} else if ( ofname == NULL ) {
 	    ofname = arg;
 	} else {
-	    CERR << "too many arguments: " << arg << endl;
+	    CERR << "too many arguments: " << arg << OFendl;
 	    usage();
 	    return 1;
 	}
@@ -519,7 +519,7 @@ int main(int argc, char *argv[])
     if (!dcmDataDict.isDictionaryLoaded()) {
 	CERR << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+	     << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
     
     SetDebugLevel(( localDebugLevel ));
@@ -528,7 +528,7 @@ int main(int argc, char *argv[])
 
     fileformat = new DcmFileFormat();
     if (! fileformat) {
-	CERR << "virtual memory exhausted" << endl;
+	CERR << "virtual memory exhausted" << OFendl;
 	return 1;
     }
     
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
 	    parseOK = parseWorklist(f, *dataset);
 	    fclose(f);
 	} else {
-	    CERR << "cannot open file: " << ifname << endl;
+	    CERR << "cannot open file: " << ifname << OFendl;
 	}
     }
 
@@ -567,20 +567,20 @@ int main(int argc, char *argv[])
 
     if (verifymode) {
 	if (verbosemode)
-	    COUT << "verifying dataset" << endl;
+	    COUT << "verifying dataset" << OFendl;
 	dataset->verify(OFTrue);
     }
 
     /* write to file */
     
     if (verbosemode)
-	COUT << "writing file: " << ofname << endl;
+	COUT << "writing file: " << ofname << OFendl;
 
     OFCondition l_error = fileformat->saveFile(ofname, xfer, enctype, ogltype);
 
     if (l_error.bad()) {
 	CERR << "Error: " << l_error.text()
-	    << ": writing file: "  << ofname << endl;
+	    << ": writing file: "  << ofname << OFendl;
 	return 1;
     }
 
@@ -590,7 +590,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
- *   Revision 1.4  2005-12-08 15:48:40  meichel
+ *   Revision 1.5  2006-08-15 16:15:48  meichel
+ *   Updated the code in module dcmwlm to correctly compile when
+ *     all standard C++ classes remain in namespace std.
+ *
+ *   Revision 1.4  2005/12/08 15:48:40  meichel
  *   Changed include path schema for all DCMTK header files
  *
  *   Revision 1.3  2005/03/09 18:04:14  joergr
