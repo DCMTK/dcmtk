@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:43 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ OFBool DSRCompositeTreeNode::isValid() const
 }
 
 
-OFCondition DSRCompositeTreeNode::print(ostream &stream,
+OFCondition DSRCompositeTreeNode::print(STD_NAMESPACE ostream& stream,
                                         const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -79,16 +79,16 @@ OFCondition DSRCompositeTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRCompositeTreeNode::writeXML(ostream &stream,
+OFCondition DSRCompositeTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                            const size_t flags,
                                            OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    stream << "<value>" << endl;
+    stream << "<value>" << OFendl;
     DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
-    stream << "</value>" << endl;
+    stream << "</value>" << OFendl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -118,8 +118,8 @@ OFCondition DSRCompositeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                        ostream &annexStream,
+OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                        STD_NAMESPACE ostream& annexStream,
                                                         const size_t /* nestingLevel */,
                                                         size_t &annexNumber,
                                                         const size_t flags,
@@ -131,7 +131,7 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
     if (result.good())
     {
         result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -140,7 +140,11 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.17  2005-12-08 15:47:43  meichel
+ *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2005/12/08 15:47:43  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.16  2003/09/15 14:13:42  joergr

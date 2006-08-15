@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFBool DSRPNameTreeNode::isValid() const
 }
 
 
-OFCondition DSRPNameTreeNode::print(ostream &stream,
+OFCondition DSRPNameTreeNode::print(STD_NAMESPACE ostream& stream,
                                     const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -86,7 +86,7 @@ OFCondition DSRPNameTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRPNameTreeNode::writeXML(ostream &stream,
+OFCondition DSRPNameTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                        const size_t flags,
                                        OFConsole *logStream) const
 {
@@ -96,7 +96,7 @@ OFCondition DSRPNameTreeNode::writeXML(ostream &stream,
     if (!getValue().empty() || (flags & XF_writeEmptyTags))
     {
         OFString tmpString;
-        stream << "<value>" << endl << dicomToXMLPersonName(getValue(), tmpString) << endl << "</value>" << endl;
+        stream << "<value>" << OFendl << dicomToXMLPersonName(getValue(), tmpString) << OFendl << "</value>" << OFendl;
     }
     writeXMLItemEnd(stream, flags);
     return result;
@@ -168,8 +168,8 @@ OFString &DSRPNameTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &doc
 }
 
 
-OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                    ostream & /*annexStream*/,
+OFCondition DSRPNameTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                    STD_NAMESPACE ostream&  /*annexStream*/,
                                                     const size_t /*nestingLevel*/,
                                                     size_t & /*annexNumber*/,
                                                     const size_t flags,
@@ -186,7 +186,7 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
         docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), tmpString), htmlString, (flags & HF_convertNonASCIICharacters) > 0);
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -195,7 +195,11 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.23  2006-05-11 09:16:49  joergr
+ *  Revision 1.24  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.23  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.22  2005/12/08 15:48:01  meichel

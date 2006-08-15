@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 14:20:37 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,7 +159,7 @@ OFBool DSRDocument::isFinalized() const
 }
 
 
-OFCondition DSRDocument::print(ostream &stream,
+OFCondition DSRDocument::print(STD_NAMESPACE ostream& stream,
                                const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
@@ -174,7 +174,7 @@ OFCondition DSRDocument::print(ostream &stream,
         if (!(flags & PF_printNoDocumentHeader))
         {
             /* document type/title */
-            stream << documentTypeToDocumentTitle(getDocumentType(), tmpString) << endl << endl;
+            stream << documentTypeToDocumentTitle(getDocumentType(), tmpString) << OFendl << OFendl;
             /* patient related information */
             if (PatientsName.getLength() > 0)
             {
@@ -197,40 +197,40 @@ OFCondition DSRDocument::print(ostream &stream,
                 }
                 if (!patientStr.empty())
                     stream << " (" << patientStr << ")";
-                stream << endl;
+                stream << OFendl;
             }
             /* referring physician */
             if (ReferringPhysiciansName.getLength() > 0)
-                stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysiciansName, tmpString) << endl;
+                stream << "Referring Physician : " << getPrintStringFromElement(ReferringPhysiciansName, tmpString) << OFendl;
             /* study related information  */
             if (StudyDescription.getLength() > 0)
             {
                 stream << "Study               : " << getPrintStringFromElement(StudyDescription, tmpString);
                 if (StudyID.getLength() > 0)
                     stream << " (#" << getPrintStringFromElement(PatientID, tmpString) << ")";
-                stream << endl;
+                stream << OFendl;
             }
             /* manufacturer */
             if (Manufacturer.getLength() > 0)
-                stream << "Manufacturer        : " << getPrintStringFromElement(Manufacturer, tmpString) << endl;
+                stream << "Manufacturer        : " << getPrintStringFromElement(Manufacturer, tmpString) << OFendl;
             /* Key Object Selection Documents do not contain the SR Document General Module */
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* completion flag */
-                stream << "Completion Flag     : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
+                stream << "Completion Flag     : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << OFendl;
                 if (CompletionFlagDescription.getLength() > 0)
-                    stream << "                      " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << endl;
+                    stream << "                      " << getPrintStringFromElement(CompletionFlagDescription, tmpString) << OFendl;
                 /* predecessor documents */
                 if (!PredecessorDocuments.empty())
-                    stream << "Predecessor Docs    : " << PredecessorDocuments.getNumberOfInstances() << endl;
+                    stream << "Predecessor Docs    : " << PredecessorDocuments.getNumberOfInstances() << OFendl;
             }
             /* identical documents */
             if (!IdenticalDocuments.empty())
-                stream << "Identical Docs      : " << IdenticalDocuments.getNumberOfInstances() << endl;
+                stream << "Identical Docs      : " << IdenticalDocuments.getNumberOfInstances() << OFendl;
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* verification flag */
-                stream << "Verification Flag   : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
+                stream << "Verification Flag   : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << OFendl;
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
                 for (size_t i = 1; i <= obsCount; i++)
@@ -248,7 +248,7 @@ OFCondition DSRDocument::print(ostream &stream,
                             stream << " ";
                             obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/);
                         }
-                        stream << ", " << organization << endl;
+                        stream << ", " << organization << OFendl;
                     }
                 }
             }
@@ -256,9 +256,9 @@ OFCondition DSRDocument::print(ostream &stream,
             if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
             {
                 stream << "Content Date/Time   : " << getPrintStringFromElement(ContentDate, tmpString) << " ";
-                stream <<                             getPrintStringFromElement(ContentTime, tmpString) << endl;
+                stream <<                             getPrintStringFromElement(ContentTime, tmpString) << OFendl;
             }
-            stream << endl;
+            stream << OFendl;
         }
 
         // --- dump document tree to stream ---
@@ -946,7 +946,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRDocument::writeXML(ostream &stream,
+OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream& stream,
                                   const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
@@ -970,7 +970,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             else
                 printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent XML encoding");
         }
-        stream << "?>" << endl;
+        stream << "?>" << OFendl;
 
         stream << "<report";
         /* optional namespace declaration */
@@ -980,11 +980,11 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         if (flags & XF_addSchemaReference)
         {
             if (flags & XF_useDcmsrNamespace)
-                stream << endl << "       ";
-            stream << " xmlns:xsi=\"" XML_SCHEMA_INSTANCE_URI "\"" << endl << "       "
-                   << " xsi:noNamespaceSchemaLocation=\"" DCMSR_XML_XSD_FILE "\"" << endl << "       ";
+                stream << OFendl << "       ";
+            stream << " xmlns:xsi=\"" XML_SCHEMA_INSTANCE_URI "\"" << OFendl << "       "
+                   << " xsi:noNamespaceSchemaLocation=\"" DCMSR_XML_XSD_FILE "\"" << OFendl << "       ";
         }
-        stream << " type=\"" << documentTypeToReadableName(getDocumentType()) << "\">" << endl;
+        stream << " type=\"" << documentTypeToReadableName(getDocumentType()) << "\">" << OFendl;
 
         // --- write some general document information ---
 
@@ -993,32 +993,32 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         const char *sopClass = dcmFindNameOfUID(tmpString.c_str());
         if (sopClass != NULL)
             stream << sopClass;
-        stream << "</sopclass>" << endl;
+        stream << "</sopclass>" << OFendl;
         writeStringFromElementToXML(stream, SpecificCharacterSet, "charset", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, Modality, "modality", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, Manufacturer, "manufacturer", (flags & XF_writeEmptyTags) > 0);
 
         if ((flags & XF_writeEmptyTags) || (ReferringPhysiciansName.getLength() > 0))
         {
-            stream << "<referringphysician>" << endl;
+            stream << "<referringphysician>" << OFendl;
             writeStringFromElementToXML(stream, ReferringPhysiciansName, "name", (flags & XF_writeEmptyTags) > 0);
-            stream << "</referringphysician>" << endl;
+            stream << "</referringphysician>" << OFendl;
         }
 
-        stream << "<patient>" << endl;
+        stream << "<patient>" << OFendl;
         writeStringFromElementToXML(stream, PatientID, "id", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, PatientsName, "name", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (PatientsBirthDate.getLength() > 0))
         {
-            stream << "<birthday>" << endl;
+            stream << "<birthday>" << OFendl;
             PatientsBirthDate.getISOFormattedDate(tmpString);
             writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
-            stream << "</birthday>" << endl;
+            stream << "</birthday>" << OFendl;
         }
         writeStringFromElementToXML(stream, PatientsSex, "sex", (flags & XF_writeEmptyTags) > 0);
-        stream << "</patient>" << endl;
+        stream << "</patient>" << OFendl;
 
-        stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, tmpString) << "\">" << endl;
+        stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, tmpString) << "\">" << OFendl;
         writeStringFromElementToXML(stream, StudyID, "id", (flags & XF_writeEmptyTags) > 0);
         StudyDate.getISOFormattedDate(tmpString);
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
@@ -1026,19 +1026,19 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (AccessionNumber.getLength() > 0))
         {
-            stream << "<accession>" << endl;
+            stream << "<accession>" << OFendl;
             writeStringFromElementToXML(stream, AccessionNumber, "number", (flags & XF_writeEmptyTags) > 0);
-            stream << "</accession>" << endl;
+            stream << "</accession>" << OFendl;
         }
         writeStringFromElementToXML(stream, StudyDescription, "description", (flags & XF_writeEmptyTags) > 0);
-        stream << "</study>" << endl;
+        stream << "</study>" << OFendl;
 
-        stream << "<series uid=\"" << getMarkupStringFromElement(SeriesInstanceUID, tmpString) << "\">" << endl;
+        stream << "<series uid=\"" << getMarkupStringFromElement(SeriesInstanceUID, tmpString) << "\">" << OFendl;
         writeStringFromElementToXML(stream, SeriesNumber, "number", (flags & XF_writeEmptyTags) > 0);
         writeStringFromElementToXML(stream, SeriesDescription, "description", (flags & XF_writeEmptyTags) > 0);
-        stream << "</series>" << endl;
+        stream << "</series>" << OFendl;
 
-        stream << "<instance uid=\"" << getMarkupStringFromElement(SOPInstanceUID, tmpString) << "\">" << endl;
+        stream << "<instance uid=\"" << getMarkupStringFromElement(SOPInstanceUID, tmpString) << "\">" << OFendl;
         writeStringFromElementToXML(stream, InstanceNumber, "number", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (InstanceCreatorUID.getLength() > 0) ||
             (InstanceCreationDate.getLength() > 0) || (InstanceCreationTime.getLength() > 0))
@@ -1046,49 +1046,49 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             stream << "<creation";
             if (InstanceCreatorUID.getLength() > 0)
                 stream << " uid=\"" << getMarkupStringFromElement(InstanceCreatorUID, tmpString) << "\"";
-            stream << ">" << endl;
+            stream << ">" << OFendl;
             InstanceCreationDate.getISOFormattedDate(tmpString);
             writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
             InstanceCreationTime.getISOFormattedTime(tmpString);
             writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
-            stream << "</creation>" << endl;
+            stream << "</creation>" << OFendl;
         }
-        stream << "</instance>" << endl;
+        stream << "</instance>" << OFendl;
 
         if ((flags & XF_writeEmptyTags) || !CodingSchemeIdentification.empty())
         {
-            stream << "<coding>" << endl;
+            stream << "<coding>" << OFendl;
             CodingSchemeIdentification.writeXML(stream, flags);
-            stream << "</coding>" << endl;
+            stream << "</coding>" << OFendl;
         }
         if ((flags & XF_writeEmptyTags) || !CurrentRequestedProcedureEvidence.empty())
         {
-            stream << "<evidence type=\"Current Requested Procedure\">" << endl;
+            stream << "<evidence type=\"Current Requested Procedure\">" << OFendl;
             CurrentRequestedProcedureEvidence.writeXML(stream, flags);
-            stream << "</evidence>" << endl;
+            stream << "</evidence>" << OFendl;
         }
         if (getDocumentType() != DT_KeyObjectDoc)
         {
             if ((flags & XF_writeEmptyTags) || !PertinentOtherEvidence.empty())
             {
-                stream << "<evidence type=\"Pertinent Other\">" << endl;
+                stream << "<evidence type=\"Pertinent Other\">" << OFendl;
                 PertinentOtherEvidence.writeXML(stream, flags);
-                stream << "</evidence>" << endl;
+                stream << "</evidence>" << OFendl;
             }
         }
 
-        stream << "<document>" << endl;
+        stream << "<document>" << OFendl;
         if (getDocumentType() != DT_KeyObjectDoc)
         {
-            stream << "<completion flag=\"" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "\">" << endl;
+            stream << "<completion flag=\"" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "\">" << OFendl;
             writeStringFromElementToXML(stream, CompletionFlagDescription, "description", (flags & XF_writeEmptyTags) > 0);
-            stream << "</completion>" << endl;
+            stream << "</completion>" << OFendl;
 
-            stream << "<verification flag=\"" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "\">" << endl;
+            stream << "<verification flag=\"" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "\">" << OFendl;
             const size_t obsCount = getNumberOfVerifyingObservers();
             for (size_t i = 1; i <= obsCount; i++)
             {
-                stream << "<observer pos=\"" << i << "\">" << endl;
+                stream << "<observer pos=\"" << i << "\">" << OFendl;
                 DSRCodedEntryValue obsCode;
                 OFString dateTime, obsName, organization;
                 if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
@@ -1097,56 +1097,56 @@ OFCondition DSRDocument::writeXML(ostream &stream,
                         OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
                     writeStringValueToXML(stream, tmpString, "datetime", (flags & XF_writeEmptyTags) > 0);
                     if (!obsName.empty() || (flags & XF_writeEmptyTags))
-                        stream << "<name>" << endl << dicomToXMLPersonName(obsName, tmpString) << endl << "</name>" << endl;
+                        stream << "<name>" << OFendl << dicomToXMLPersonName(obsName, tmpString) << OFendl << "</name>" << OFendl;
                     if (obsCode.isValid())
                     {
                         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
                             stream << "<code";     // bracket ">" is closed in next writeXML() call
                         else
-                            stream << "<code>" << endl;
+                            stream << "<code>" << OFendl;
                         obsCode.writeXML(stream, flags, LogStream);
-                        stream << "</code>" << endl;
+                        stream << "</code>" << OFendl;
                     }
                     writeStringValueToXML(stream, organization, "organization", (flags & XF_writeEmptyTags) > 0);
                 }
-                stream << "</observer>" << endl;
+                stream << "</observer>" << OFendl;
             }
-            stream << "</verification>" << endl;
+            stream << "</verification>" << OFendl;
 
             if ((flags & XF_writeEmptyTags) || !PredecessorDocuments.empty())
             {
-                stream << "<predecessor>" << endl;
+                stream << "<predecessor>" << OFendl;
                 PredecessorDocuments.writeXML(stream, flags);
-                stream << "</predecessor>" << endl;
+                stream << "</predecessor>" << OFendl;
             }
         }
         if ((flags & XF_writeEmptyTags) || !IdenticalDocuments.empty())
         {
-            stream << "<identical>" << endl;
+            stream << "<identical>" << OFendl;
             IdenticalDocuments.writeXML(stream, flags);
-            stream << "</identical>" << endl;
+            stream << "</identical>" << OFendl;
         }
 
         // --- write document content/tree to stream ---
 
-        stream << "<content>" << endl;
+        stream << "<content>" << OFendl;
         ContentDate.getISOFormattedDate(tmpString);
         writeStringValueToXML(stream, tmpString, "date", (flags & XF_writeEmptyTags) > 0);
         ContentTime.getISOFormattedTime(tmpString);
         writeStringValueToXML(stream, tmpString, "time", (flags & XF_writeEmptyTags) > 0);
         result = DocumentTree.writeXML(stream, flags);
-        stream << "</content>" << endl;
-        stream << "</document>" << endl;
+        stream << "</content>" << OFendl;
+        stream << "</document>" << OFendl;
 
         // --- XML document structure (end) ---
 
-        stream << "</report>" << endl;
+        stream << "</report>" << OFendl;
     }
     return result;
 }
 
 
-void DSRDocument::renderHTMLPatientData(ostream &stream,
+void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream& stream,
                                         const size_t flags)
 {
     OFString tmpString, string2;
@@ -1185,7 +1185,7 @@ void DSRDocument::renderHTMLPatientData(ostream &stream,
 }
 
 
-void DSRDocument::renderHTMLReferenceList(ostream &stream,
+void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream& stream,
                                           DSRSOPInstanceReferenceList &refList,
                                           const size_t /*flags*/)
 {
@@ -1198,9 +1198,9 @@ void DSRDocument::renderHTMLReferenceList(ostream &stream,
         do {
             if (i > 0)
             {
-                stream << "</tr>" << endl;
-                stream << "<tr>" << endl;
-                stream << "<td></td>" << endl;
+                stream << "</tr>" << OFendl;
+                stream << "<tr>" << OFendl;
+                stream << "<td></td>" << OFendl;
             }
             /* hyperlink to composite object */
             OFString sopClass, sopInstance;
@@ -1209,16 +1209,16 @@ void DSRDocument::renderHTMLReferenceList(ostream &stream,
                 stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
                 stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
                 stream << documentTypeToDocumentTitle(sopClassUIDToDocumentType(sopClass), tmpString);
-                stream << "</a></td>" << endl;
+                stream << "</a></td>" << OFendl;
             } else
-                stream << "<td><i>invalid document reference</i></td>" << endl;
+                stream << "<td><i>invalid document reference</i></td>" << OFendl;
             i++;
         } while (refList.gotoNextItem().good());
     }
 }
 
 
-OFCondition DSRDocument::renderHTML(ostream &stream,
+OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
                                     const size_t flags,
                                     const char *styleSheet)
 {
@@ -1244,23 +1244,23 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
         if (newFlags & HF_addDocumentTypeReference)
         {
             if (newFlags & HF_version32Compatibility)
-                stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << endl;
+                stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << OFendl;
             else {
                 if (styleSheet != NULL)
-                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" << endl;
+                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" << OFendl;
                 else
-                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" << endl;
+                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" << OFendl;
             }
         }
-        stream << "<html>" << endl;
-        stream << "<head>" << endl;
+        stream << "<html>" << OFendl;
+        stream << "<head>" << OFendl;
         /* document title */
         stream << "<title>";
         if (newFlags & HF_renderPatientTitle)
             renderHTMLPatientData(stream, convertNonASCII);
         else
             stream << documentTypeToDocumentTitle(getDocumentType(), tmpString);
-        stream << "</title>" << endl;
+        stream << "</title>" << OFendl;
         if (!(newFlags & HF_version32Compatibility))
         {
             /* optional cascading style sheet (HTML 4.0) */
@@ -1270,20 +1270,20 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                 {
                     /* copy content from CSS file */
 #ifdef HAVE_IOS_NOCREATE
-                    ifstream cssFile(styleSheet, ios::in|ios::nocreate);
+                    STD_NAMESPACE ifstream cssFile(styleSheet, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-                    ifstream cssFile(styleSheet, ios::in);
+                    STD_NAMESPACE ifstream cssFile(styleSheet, STD_NAMESPACE ios::in);
 #endif
                     if (cssFile)
                     {
                         char c;
-                        stream << "<style type=\"text/css\">" << endl;
-                        stream << "<!--" << endl;
+                        stream << "<style type=\"text/css\">" << OFendl;
+                        stream << "<!--" << OFendl;
                         /* copy all characters */
                         while (cssFile.get(c))
                             stream << c;
-                        stream << "//-->" << endl;
-                        stream << "</style>" << endl;
+                        stream << "//-->" << OFendl;
+                        stream << "</style>" << OFendl;
                     } else {
                         OFString message = "Could not open CSS file \"";
                         message += styleSheet;
@@ -1292,7 +1292,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                     }
                 } else {
                     /* just add a reference to the CSS file (might be an URL) */
-                    stream << "<link rel=stylesheet type=\"text/css\" href=\"" << styleSheet << "\">" << endl;
+                    stream << "<link rel=stylesheet type=\"text/css\" href=\"" << styleSheet << "\">" << OFendl;
                 }
             }
             /* optional character set (HTML 4.0) */
@@ -1302,99 +1302,99 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                 if (tmpString != "?")
                 {
                     stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
-                    stream << tmpString << "\">" << endl;
+                    stream << tmpString << "\">" << OFendl;
                 } else
                     printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent HTML charset");
             }
         }
-        stream << "</head>" << endl;
-        stream << "<body>" << endl;
+        stream << "</head>" << OFendl;
+        stream << "<body>" << OFendl;
 
         // --- render some general document information ---
 
         if (!(newFlags & HF_renderNoDocumentHeader))
         {
             /* create a table for this purpose */
-            stream << "<table>" << endl;
+            stream << "<table>" << OFendl;
             /* patient related information */
             if (PatientsName.getLength() > 0)
             {
-                stream << "<tr>" << endl;
-                stream << "<td><b>Patient:</b></td>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Patient:</b></td>" << OFendl;
                 stream << "<td>";
                 renderHTMLPatientData(stream, convertNonASCII);
-                stream << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
             }
             /* referring physician */
             if (ReferringPhysiciansName.getLength() > 0)
             {
-                stream << "<tr>" << endl;
-                stream << "<td><b>Referring Physician:</b></td>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Referring Physician:</b></td>" << OFendl;
                 stream << "<td>" << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, tmpString), string2), htmlString, convertNonASCII);
-                stream << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
             }
             /* study related information */
             if (StudyDescription.getLength() > 0)
             {
-                stream << "<tr>" << endl;
-                stream << "<td><b>Study:</b></td>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Study:</b></td>" << OFendl;
                 stream << "<td>" << convertToMarkupString(getStringValueFromElement(StudyDescription, tmpString), htmlString, convertNonASCII);
                 if (StudyID.getLength() > 0)
                     stream << " (#" << convertToMarkupString(getStringValueFromElement(StudyID, tmpString), htmlString, convertNonASCII) << ")";
-                stream << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
             }
             /* manufacturer */
             if (Manufacturer.getLength() > 0)
             {
-                stream << "<tr>" << endl;
-                stream << "<td><b>Manufacturer:</b></td>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Manufacturer:</b></td>" << OFendl;
                 stream << "<td>" << convertToMarkupString(getStringValueFromElement(Manufacturer, tmpString), htmlString, convertNonASCII);
-                stream << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
             }
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* completion flag */
-                stream << "<tr>" << endl;
-                stream << "<td><b>Completion Flag:</b></td>" << endl;
-                stream << "<td>" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Completion Flag:</b></td>" << OFendl;
+                stream << "<td>" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
                 /* completion flag description */
                 if (CompletionFlagDescription.getLength() > 0)
                 {
-                    stream << "<tr>" << endl;
-                    stream << "<td></td>" << endl;
+                    stream << "<tr>" << OFendl;
+                    stream << "<td></td>" << OFendl;
                     stream << "<td>" << convertToMarkupString(getStringValueFromElement(CompletionFlagDescription, tmpString), htmlString, convertNonASCII);
-                    stream << "</td>" << endl;
-                    stream << "</tr>" << endl;
+                    stream << "</td>" << OFendl;
+                    stream << "</tr>" << OFendl;
                 }
                 /* predecessor documents */
                 if (!PredecessorDocuments.empty())
                 {
-                    stream << "<tr>" << endl;
-                    stream << "<td><b>Predecessor Docs:</b></td>" << endl;
+                    stream << "<tr>" << OFendl;
+                    stream << "<td><b>Predecessor Docs:</b></td>" << OFendl;
                     renderHTMLReferenceList(stream, PredecessorDocuments, flags);
-                    stream << "</tr>" << endl;
+                    stream << "</tr>" << OFendl;
                 }
             }
             /* identical documents */
             if (!IdenticalDocuments.empty())
             {
-                stream << "<tr>" << endl;
-                stream << "<td><b>Identical Docs:</b></td>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Identical Docs:</b></td>" << OFendl;
                 renderHTMLReferenceList(stream, IdenticalDocuments, flags);
-                stream << "</tr>" << endl;
+                stream << "</tr>" << OFendl;
             }
             if (getDocumentType() != DT_KeyObjectDoc)
             {
                 /* verification flag */
-                stream << "<tr>" << endl;
-                stream << "<td><b>Verification Flag:</b></td>" << endl;
-                stream << "<td>" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Verification Flag:</b></td>" << OFendl;
+                stream << "<td>" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
                 /* verifying observer */
                 const size_t obsCount = getNumberOfVerifyingObservers();
                 for (size_t i = 1; i <= obsCount; i++)
@@ -1403,11 +1403,11 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                     DSRCodedEntryValue obsCode;
                     if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                     {
-                        stream << "<tr>" << endl;
+                        stream << "<tr>" << OFendl;
                         if (i == 1)
-                            stream << "<td><b>Verifying Observers:</b></td>" << endl;
+                            stream << "<td><b>Verifying Observers:</b></td>" << OFendl;
                         else
-                            stream << "<td></td>" << endl;
+                            stream << "<td></td>" << OFendl;
                         stream << "<td>";
                         stream << dicomToReadableDateTime(dateTime, string2) << " - ";
                         /* render code details as a tooltip */
@@ -1436,24 +1436,24 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                             }
                         }
                         stream << ", " << convertToMarkupString(organization, htmlString, convertNonASCII);
-                        stream << "</td>" << endl;
-                        stream << "</tr>" << endl;
+                        stream << "</td>" << OFendl;
+                        stream << "</tr>" << OFendl;
                     }
                 }
             }
             if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
             {
                 /* content date and time */
-                stream << "<tr>" << endl;
-                stream << "<td><b>Content Date/Time:</b></td>" << endl;
+                stream << "<tr>" << OFendl;
+                stream << "<td><b>Content Date/Time:</b></td>" << OFendl;
                 stream << "<td>" << dicomToReadableDate(getStringValueFromElement(ContentDate, tmpString), string2) << " ";
-                stream << dicomToReadableTime(getStringValueFromElement(ContentTime, tmpString), string2) << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << dicomToReadableTime(getStringValueFromElement(ContentTime, tmpString), string2) << "</td>" << OFendl;
+                stream << "</tr>" << OFendl;
             }
             /* end of table */
-            stream << "</table>" << endl;
+            stream << "</table>" << OFendl;
 
-            stream << "<hr>" << endl;
+            stream << "<hr>" << OFendl;
         }
 
         // --- render document tree to stream ---
@@ -1470,18 +1470,18 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
 
         if (newFlags & HF_renderDcmtkFootnote)
         {
-            stream << "<hr>" << endl;
+            stream << "<hr>" << OFendl;
 
-            stream << "<small>" << endl;
+            stream << "<small>" << OFendl;
             stream << "This page was generated from a DICOM Structured Reporting document by ";
-            stream << "<a href=\"" << DCMTK_INTERNET_URL << "\">OFFIS DCMTK</a> " << OFFIS_DCMTK_VERSION << "." << endl;
-            stream << "</small>" << endl;
+            stream << "<a href=\"" << DCMTK_INTERNET_URL << "\">OFFIS DCMTK</a> " << OFFIS_DCMTK_VERSION << "." << OFendl;
+            stream << "</small>" << OFendl;
         }
 
         // --- HTML document structure (end) ---
 
-        stream << "</body>" << endl;
-        stream << "</html>" << endl;
+        stream << "</body>" << OFendl;
+        stream << "</html>" << OFendl;
     }
     return result;
 }
@@ -2324,7 +2324,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.57  2006-07-25 14:20:37  joergr
+ *  Revision 1.58  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.57  2006/07/25 14:20:37  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

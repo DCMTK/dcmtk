@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:35:18 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ OFBool DSRCodeTreeNode::isValid() const
 }
 
 
-OFCondition DSRCodeTreeNode::print(ostream &stream,
+OFCondition DSRCodeTreeNode::print(STD_NAMESPACE ostream& stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -99,7 +99,7 @@ OFCondition DSRCodeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRCodeTreeNode::writeXML(ostream &stream,
+OFCondition DSRCodeTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                       const size_t flags,
                                       OFConsole *logStream) const
 {
@@ -110,7 +110,7 @@ OFCondition DSRCodeTreeNode::writeXML(ostream &stream,
     {
         stream << "<value";     // bracket ">" is closed in next the writeXML() routine
         DSRCodedEntryValue::writeXML(stream, flags, logStream);
-        stream << "</value>" << endl;
+        stream << "</value>" << OFendl;
     } else
         DSRCodedEntryValue::writeXML(stream, flags, logStream);
     writeXMLItemEnd(stream, flags);
@@ -134,8 +134,8 @@ OFCondition DSRCodeTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                   ostream & /*annexStream*/,
+OFCondition DSRCodeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                   STD_NAMESPACE ostream&  /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t flags,
@@ -152,7 +152,7 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
         result = DSRCodedEntryValue::renderHTML(docStream, flags, logStream, fullCode);
         if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
             docStream << "</u>";
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -161,7 +161,11 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.22  2006-07-25 13:35:18  joergr
+ *  Revision 1.23  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.22  2006/07/25 13:35:18  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom structured reporting file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:52:00 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static OFCondition dumpFile(ostream &out,
+static OFCondition dumpFile(STD_NAMESPACE ostream& out,
                             const char *ifname,
                             const E_FileReadMode readMode,
                             const E_TransferSyntax xfer,
@@ -65,7 +65,7 @@ static OFCondition dumpFile(ostream &out,
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
         return EC_IllegalParameter;
     }
 
@@ -79,7 +79,7 @@ static OFCondition dumpFile(ostream &out,
         if (result.bad())
         {
             CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                 << ") reading file: "<< ifname << endl;
+                 << ") reading file: "<< ifname << OFendl;
         }
     } else
         result = EC_MemoryExhausted;
@@ -96,12 +96,12 @@ static OFCondition dumpFile(ostream &out,
             if (result.good())
             {
                 result = dsrdoc->print(out, printFlags);
-                out << endl;
+                out << OFendl;
             }
             else
             {
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                     << ") parsing file: "<< ifname << endl;
+                     << ") parsing file: "<< ifname << OFendl;
             }
         }
         delete dsrdoc;
@@ -182,11 +182,11 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:";
+              CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-              CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-              CERR << " none" << endl;
+              CERR << " none" << OFendl;
 #endif
               return 0;
            }
@@ -272,7 +272,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     int errorCount = 0;
@@ -283,8 +283,8 @@ int main(int argc, char *argv[])
         cmd.getParam(i, current);
         if (opt_printFilename)
         {
-            COUT << OFString(79, '-') << endl;
-            COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl << endl;
+            COUT << OFString(79, '-') << OFendl;
+            COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl << OFendl;
         }
         if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags, opt_debugMode != 0).bad())
             errorCount++;
@@ -300,7 +300,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.25  2006-07-27 14:52:00  joergr
+ * Revision 1.26  2006-08-15 16:40:02  meichel
+ * Updated the code in module dcmsr to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.25  2006/07/27 14:52:00  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

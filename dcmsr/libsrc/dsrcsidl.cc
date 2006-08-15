@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,7 +207,7 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::writeXML(ostream &stream,
+OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream& stream,
                                                         const size_t flags) const
 {
     OFString tmpString;
@@ -220,14 +220,14 @@ OFCondition DSRCodingSchemeIdentificationList::writeXML(ostream &stream,
         /* check whether list item really exists */
         if (item != NULL)
         {
-            stream << "<scheme designator=\"" << convertToMarkupString(item->CodingSchemeDesignator, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\">" << endl;
+            stream << "<scheme designator=\"" << convertToMarkupString(item->CodingSchemeDesignator, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\">" << OFendl;
             writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeRegistry, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "registry", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, item->CodingSchemeUID, "uid", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeExternalID, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "identifier", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeName, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "name", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeVersion, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "version", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, convertToMarkupString(item->ResponsibleOrganization, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "organization", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-            stream << "</scheme>" << endl;
+            stream << "</scheme>" << OFendl;
         }
         ++iter;
     }
@@ -575,7 +575,11 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.8  2006-05-11 09:16:49  joergr
+ *  Revision 1.9  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.8  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.7  2005/12/08 15:47:46  meichel

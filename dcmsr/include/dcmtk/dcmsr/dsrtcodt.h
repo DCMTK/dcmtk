@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRReferencedDatetimeList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:20 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ class DSRReferencedDatetimeList
      *  @param  separator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(ostream &stream,
+    OFCondition print(STD_NAMESPACE ostream& stream,
                       const size_t flags = 0,
                       const char separator = ',') const;
 
@@ -117,7 +117,11 @@ class DSRReferencedDatetimeList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.h,v $
- *  Revision 1.8  2005-12-08 16:05:20  meichel
+ *  Revision 1.9  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.8  2005/12/08 16:05:20  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.7  2003/08/07 12:51:14  joergr

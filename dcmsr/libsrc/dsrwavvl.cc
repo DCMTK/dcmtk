@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:37:48 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRWaveformReferenceValue::print(ostream &stream,
+OFCondition DSRWaveformReferenceValue::print(STD_NAMESPACE ostream& stream,
                                              const size_t flags) const
 {
     const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
@@ -133,7 +133,7 @@ OFCondition DSRWaveformReferenceValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRWaveformReferenceValue::writeXML(ostream &stream,
+OFCondition DSRWaveformReferenceValue::writeXML(STD_NAMESPACE ostream& stream,
                                                 const size_t flags,
                                                 OFConsole *logStream) const
 {
@@ -142,7 +142,7 @@ OFCondition DSRWaveformReferenceValue::writeXML(ostream &stream,
     {
         stream << "<channels>";
         ChannelList.print(stream);
-        stream << "</channels>" << endl;
+        stream << "</channels>" << OFendl;
     }
     return result;
 }
@@ -175,8 +175,8 @@ OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
-                                                  ostream &annexStream,
+OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
+                                                  STD_NAMESPACE ostream& annexStream,
                                                   size_t &annexNumber,
                                                   const size_t flags,
                                                   OFConsole * /*logStream*/) const
@@ -202,7 +202,7 @@ OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
         const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream  << endl << "<p>" << endl;
+            docStream  << OFendl << "<p>" << OFendl;
             /* render channel list (= print)*/
             docStream << "<b>Referenced Waveform Channels:</b>" << lineBreak;
             ChannelList.print(docStream);
@@ -210,11 +210,11 @@ OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
         } else {
             docStream << " ";
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
-            annexStream << "<p>" << endl;
+            annexStream << "<p>" << OFendl;
             /* render channel list (= print)*/
             annexStream << "<b>Referenced Waveform Channels:</b>" << lineBreak;
             ChannelList.print(annexStream);
-            annexStream << "</p>" << endl;
+            annexStream << "</p>" << OFendl;
         }
     }
     return EC_Normal;
@@ -270,7 +270,11 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.17  2006-07-25 13:37:48  joergr
+ *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2006/07/25 13:37:48  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

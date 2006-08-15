@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:21:29 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1149,7 +1149,7 @@ class DSRTypes
      *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
      ** @return OFTrue if tag/value has been written, OFFalse otherwise
      */
-    static OFBool writeStringValueToXML(ostream &stream,
+    static OFBool writeStringValueToXML(STD_NAMESPACE ostream& stream,
                                         const OFString &stringValue,
                                         const OFString &tagName,
                                         const OFBool writeEmptyValue = OFFalse);
@@ -1163,7 +1163,7 @@ class DSRTypes
      *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
      ** @return OFTrue if tag/value has been written, OFFalse otherwise
      */
-    static OFBool writeStringFromElementToXML(ostream &stream,
+    static OFBool writeStringFromElementToXML(STD_NAMESPACE ostream& stream,
                                               DcmElement &delem,
                                               const OFString &tagName,
                                               const OFBool writeEmptyValue = OFFalse);
@@ -1178,8 +1178,8 @@ class DSRTypes
      *                         Value is increased automatically by 1 after the new entry has been added.
      ** @return current annex number after the new entry has been added
      */
-    static size_t createHTMLAnnexEntry(ostream &docStream,
-                                       ostream &annexStream,
+    static size_t createHTMLAnnexEntry(STD_NAMESPACE ostream& docStream,
+                                       STD_NAMESPACE ostream& annexStream,
                                        const OFString &referenceText,
                                        size_t &annexNumber);
 
@@ -1192,8 +1192,8 @@ class DSRTypes
      *                          is created.  Used to create a unique name for the hyperlink.
      ** @return current footnote number after the new entry has been added
      */
-    static size_t createHTMLFootnote(ostream &docStream,
-                                     ostream &footnoteStream,
+    static size_t createHTMLFootnote(STD_NAMESPACE ostream& docStream,
+                                     STD_NAMESPACE ostream& footnoteStream,
                                      size_t &footnoteNumber,
                                      const size_t nodeID);
 
@@ -1204,7 +1204,7 @@ class DSRTypes
      *                      This string is only added if 'tempStream' is not empty.
      ** @return status, EC_Normal if stream has been added successfully, an error code otherwise
      */
-    static OFCondition appendStream(ostream &mainStream,
+    static OFCondition appendStream(STD_NAMESPACE ostream& mainStream,
                                     OFOStringStream &tempStream,
                                     const char *heading = NULL);
 };
@@ -1216,7 +1216,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.48  2006-07-25 13:21:29  joergr
+ *  Revision 1.49  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.48  2006/07/25 13:21:29  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

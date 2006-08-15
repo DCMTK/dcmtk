@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:55 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ class DSRCompositeReferenceValue
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition print(ostream &stream,
+    virtual OFCondition print(STD_NAMESPACE ostream& stream,
                               const size_t flags) const;
 
     /** read reference value from XML document
@@ -126,7 +126,7 @@ class DSRCompositeReferenceValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &stream,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream& stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -162,8 +162,8 @@ class DSRCompositeReferenceValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
+                                   STD_NAMESPACE ostream& annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
                                    OFConsole *logStream) const;
@@ -289,7 +289,11 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
- *  Revision 1.7  2005-12-08 16:04:55  meichel
+ *  Revision 1.8  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.7  2005/12/08 16:04:55  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.6  2003/08/07 18:01:42  joergr

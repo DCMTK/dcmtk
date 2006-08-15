@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:36:17 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ OFBool DSRDocumentTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
-OFCondition DSRDocumentTreeNode::print(ostream &stream,
+OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream& stream,
                                        const size_t flags) const
 {
     if (RelationshipType != RT_isRoot)
@@ -237,7 +237,7 @@ OFCondition DSRDocumentTreeNode::readXMLContentItem(const DSRXMLDocument & /*doc
 }
 
 
-OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
+OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                           const size_t flags,
                                           OFConsole *logStream) const
 {
@@ -251,13 +251,13 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
         {
             if (flags & XF_templateIdentifierAsAttribute)
-                stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\"/>" << endl;
+                stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\"/>" << OFendl;
             else
             {
-                stream << "<template>" << endl;
+                stream << "<template>" << OFendl;
                 writeStringValueToXML(stream, MappingResource, "resource");
                 writeStringValueToXML(stream, TemplateIdentifier, "id");
-                stream << "</template>" << endl;
+                stream << "</template>" << OFendl;
             }
         }
     }
@@ -270,19 +270,19 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
         if (flags & XF_codeComponentsAsAttribute)
             stream << "<concept";     // bracket ">" is closed in the next writeXML() routine
         else
-            stream << "<concept>" << endl;
+            stream << "<concept>" << OFendl;
         ConceptName.writeXML(stream, flags, logStream);
-        stream << "</concept>" << endl;
+        stream << "</concept>" << OFendl;
     }
     /* observation datetime (optional) */
     if (!ObservationDateTime.empty())
     {
         OFString tmpString;
-        stream << "<observation>" << endl;
+        stream << "<observation>" << OFendl;
         DcmDateTime::getISOFormattedDateTimeFromString(ObservationDateTime, tmpString, OFTrue /*seconds*/,
             OFFalse /*fraction*/, OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
         writeStringValueToXML(stream, tmpString, "datetime");
-        stream << "</observation>" << endl;
+        stream << "</observation>" << OFendl;
     }
     /* write child nodes (if any) */
     DSRTreeNodeCursor cursor(Down);
@@ -301,7 +301,7 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
 }
 
 
-void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
+void DSRDocumentTreeNode::writeXMLItemStart(STD_NAMESPACE ostream& stream,
                                             const size_t flags,
                                             const OFBool closingBracket) const
 {
@@ -309,7 +309,7 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
     if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
-            stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\">" << endl;
+            stream << "<template resource=\"" << MappingResource << "\" tid=\"" << TemplateIdentifier << "\">" << OFendl;
     }
     /* write content item */
     if (flags & XF_valueTypeAsAttribute)
@@ -324,29 +324,29 @@ void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
     if (ReferenceTarget || (flags & XF_alwaysWriteItemIdentifier))
         stream << " id=\"" << getNodeID() << "\"";
     if (closingBracket)
-        stream << ">" << endl;
+        stream << ">" << OFendl;
 }
 
 
-void DSRDocumentTreeNode::writeXMLItemEnd(ostream &stream,
+void DSRDocumentTreeNode::writeXMLItemEnd(STD_NAMESPACE ostream& stream,
                                           const size_t flags) const
 {
     /* close content item */
     if (flags & XF_valueTypeAsAttribute)
-        stream << "</item>" << endl;
+        stream << "</item>" << OFendl;
     else
-        stream << "</" << valueTypeToXMLTagName(ValueType) <<  ">" << endl;
+        stream << "</" << valueTypeToXMLTagName(ValueType) <<  ">" << OFendl;
     /* close optional template identification */
     if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
         if (!TemplateIdentifier.empty() && !MappingResource.empty())
-            stream << "</template>" << endl;
+            stream << "</template>" << OFendl;
     }
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTML(ostream &docStream,
-                                            ostream &annexStream,
+OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream& docStream,
+                                            STD_NAMESPACE ostream& annexStream,
                                             const size_t nestingLevel,
                                             size_t &annexNumber,
                                             const size_t flags,
@@ -357,11 +357,11 @@ OFCondition DSRDocumentTreeNode::renderHTML(ostream &docStream,
         printInvalidContentItemMessage(logStream, "Rendering", this);
     /* declare hyperlink target */
     if (ReferenceTarget)
-        docStream << "<a name=\"content_item_" << getNodeID() << "\">" << endl;
+        docStream << "<a name=\"content_item_" << getNodeID() << "\">" << OFendl;
     /* render content item */
     OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
     if (ReferenceTarget)
-        docStream << "</a>" << endl;
+        docStream << "</a>" << OFendl;
     /* render child nodes */
     if (result.good())
         result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, logStream);
@@ -454,8 +454,8 @@ OFCondition DSRDocumentTreeNode::writeContentItem(DcmItem & /*dataset*/,
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /*docStream*/,
-                                                       ostream & /*annexStream*/,
+OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream&  /*docStream*/,
+                                                       STD_NAMESPACE ostream&  /*annexStream*/,
                                                        const size_t /*nestingLevel*/,
                                                        size_t & /*annexNumber*/,
                                                        const size_t /*flags*/,
@@ -727,7 +727,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     location += numberToString(OFstatic_cast(size_t, i + 1), buffer);
                     if ((logStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
                     {
-                        logStream->lockCerr() << "Processing content item " << location << endl;
+                        logStream->lockCerr() << "Processing content item " << location << OFendl;
                         logStream->unlockCerr();
                     }
                     /* read RelationshipType */
@@ -795,9 +795,9 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         /* print current data set (item) that caused the error */
                         if ((logStream != NULL) && (flags & RF_verboseDebugMode))
                         {
-                            logStream->lockCerr() << OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << endl;
+                            logStream->lockCerr() << OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl;
                             ditem->print(logStream->getCerr(), OFFalse /*showFullData*/, 1 /*level*/);
-                            logStream->getCerr() << OFString(78, '-') << endl;
+                            logStream->getCerr() << OFString(78, '-') << OFendl;
                             logStream->unlockCerr();
                         }
                     }
@@ -879,7 +879,7 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
+OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream& docStream,
                                                        const size_t flags,
                                                        OFConsole *logStream) const
 {
@@ -914,14 +914,14 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(ostream &docStream,
             writeLine = OFTrue;
         }
         if (writeLine)
-            docStream << lineBreak << endl;
+            docStream << lineBreak << OFendl;
     }
     return EC_Normal;
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
-                                                      ostream &annexStream,
+OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& docStream,
+                                                      STD_NAMESPACE ostream& annexStream,
                                                       const size_t nestingLevel,
                                                       size_t &annexNumber,
                                                       const size_t flags,
@@ -956,10 +956,10 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                     if (paragraphFlag)
                     {
                         /* inside paragraph: line break */
-                        docStream << "<br>" << endl;
+                        docStream << "<br>" << OFendl;
                     } else {
                         /* open paragraph */
-                        docStream << "<p><small>" << endl;
+                        docStream << "<p><small>" << OFendl;
                         paragraphFlag = OFTrue;
                     }
                     docStream << "<u>" << relationshipText << "</u>: ";
@@ -998,12 +998,12 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                     /* close paragraph */
                     if (paragraphFlag)
                     {
-                        docStream << "</small></p>" << endl;
+                        docStream << "</small></p>" << OFendl;
                         paragraphFlag = OFFalse;
                     }
                     /* begin new paragraph */
                     if (flags & HF_renderItemsSeparately)
-                        docStream << "<p>" << endl;
+                        docStream << "<p>" << OFendl;
                     /* write footnote text to temporary stream */
                     if (newFlags & HF_createFootnoteReferences)
                     {
@@ -1013,7 +1013,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         if (result.good())
                         {
                             /* tags are closed automatically in 'node->renderHTMLChildNodes()' */
-                            tempDocStream << "<p><small>" << endl;
+                            tempDocStream << "<p><small>" << OFendl;
                             /* render footnote text and reference */
                             createHTMLFootnote(docStream, tempDocStream, footnoteNumber, node->getNodeID());
                             /* render child nodes to temporary stream */
@@ -1025,14 +1025,14 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                     }
                     /* end paragraph */
                     if (flags & HF_renderItemsSeparately)
-                        docStream << "</p>" << endl;
+                        docStream << "</p>" << OFendl;
                 }
             } else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.gotoNext());
         /* close last open paragraph (if any) */
         if (paragraphFlag)
-            docStream << "</small></p>" << endl;
+            docStream << "</small></p>" << OFendl;
         /* append temporary stream to main stream */
         if (result.good())
             result = appendStream(docStream, tempDocStream);
@@ -1082,7 +1082,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.43  2006-07-25 13:36:17  joergr
+ *  Revision 1.44  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.43  2006/07/25 13:36:17  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

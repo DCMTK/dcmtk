@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:45 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ OFBool DSRContainerTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
-OFCondition DSRContainerTreeNode::print(ostream &stream,
+OFCondition DSRContainerTreeNode::print(STD_NAMESPACE ostream& stream,
                                         const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -130,22 +130,22 @@ OFCondition DSRContainerTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRContainerTreeNode::writeXML(ostream &stream,
+OFCondition DSRContainerTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                            const size_t flags,
                                            OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
-    stream << ">" << endl;
+    stream << ">" << OFendl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                        ostream & /*annexStream*/,
+OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                        STD_NAMESPACE ostream&  /*annexStream*/,
                                                         const size_t nestingLevel,
                                                         size_t & /*annexNumber*/,
                                                         const size_t flags,
@@ -160,21 +160,21 @@ OFCondition DSRContainerTreeNode::renderHTMLContentItem(ostream &docStream,
             const size_t section = (nestingLevel > 6) ? 6 : nestingLevel;
             docStream << "<h" << section << ">";
             getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /*fullCode*/);
-            docStream << "</h" << section << ">" << endl;
+            docStream << "</h" << section << ">" << OFendl;
         }
         /* render optional observation datetime */
         if (!getObservationDateTime().empty())
         {
             OFString tmpString;
-            docStream << "<small>(observed: " << dicomToReadableDateTime(getObservationDateTime(), tmpString) << ")</small>" << endl;
+            docStream << "<small>(observed: " << dicomToReadableDateTime(getObservationDateTime(), tmpString) << ")</small>" << OFendl;
         }
     }
     return EC_Normal;
 }
 
 
-OFCondition DSRContainerTreeNode::renderHTML(ostream &docStream,
-                                             ostream &annexStream,
+OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream& docStream,
+                                             STD_NAMESPACE ostream& annexStream,
                                              const size_t nestingLevel,
                                              size_t &annexNumber,
                                              const size_t flags,
@@ -213,7 +213,11 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.24  2005-12-08 15:47:45  meichel
+ *  Revision 1.25  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.24  2005/12/08 15:47:45  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.23  2003/09/15 14:13:42  joergr

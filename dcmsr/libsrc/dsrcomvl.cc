@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:44 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ OFBool DSRCompositeReferenceValue::isEmpty() const
 }
 
 
-OFCondition DSRCompositeReferenceValue::print(ostream &stream,
+OFCondition DSRCompositeReferenceValue::print(STD_NAMESPACE ostream& stream,
                                               const size_t flags) const
 {
     const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
@@ -131,7 +131,7 @@ OFCondition DSRCompositeReferenceValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRCompositeReferenceValue::writeXML(ostream &stream,
+OFCondition DSRCompositeReferenceValue::writeXML(STD_NAMESPACE ostream& stream,
                                                  const size_t flags,
                                                  OFConsole * /* logStream */) const
 {
@@ -142,8 +142,8 @@ OFCondition DSRCompositeReferenceValue::writeXML(ostream &stream,
         const char *sopClass = dcmFindNameOfUID(SOPClassUID.c_str());
         if (sopClass != NULL)
             stream << sopClass;
-        stream << "</sopclass>" << endl;
-        stream << "<instance uid=\"" << SOPInstanceUID << "\"/>" << endl;
+        stream << "</sopclass>" << OFendl;
+        stream << "<instance uid=\"" << SOPInstanceUID << "\"/>" << OFendl;
     }
     return EC_Normal;
 }
@@ -223,8 +223,8 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
-                                                   ostream & /*annexStream*/,
+OFCondition DSRCompositeReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
+                                                   STD_NAMESPACE ostream&  /*annexStream*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t /*flags*/,
                                                    OFConsole * /*logStream*/) const
@@ -309,7 +309,11 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.15  2005-12-08 15:47:44  meichel
+ *  Revision 1.16  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.15  2005/12/08 15:47:44  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.14  2003/08/07 13:14:26  joergr

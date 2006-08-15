@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,18 +246,18 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocum
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(ostream &stream,
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE ostream& stream,
                                                                 const size_t flags) const
 {
     /* write the series level attributes */
-    stream << "<series uid=\"" << SeriesUID << "\">" << endl;
+    stream << "<series uid=\"" << SeriesUID << "\">" << OFendl;
     writeStringValueToXML(stream, RetrieveAETitle, "aetitle", (flags & XF_writeEmptyTags) > 0);
     if ((flags & XF_writeEmptyTags) || !StorageMediaFileSetUID.empty() || !StorageMediaFileSetID.empty())
     {
         stream << "<fileset";
         if (!StorageMediaFileSetUID.empty())
             stream << " uid=\"" << StorageMediaFileSetUID << "\"";
-        stream << ">" << StorageMediaFileSetID << "</fileset>" << endl;
+        stream << ">" << StorageMediaFileSetID << "</fileset>" << OFendl;
     }
     /* iterate over all list items */
     OFListConstIterator(InstanceStruct *) iter = InstanceList.begin();
@@ -269,19 +269,19 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(ostream &stream,
         if (instance != NULL)
         {
             /* write instance level */
-            stream << "<value>" << endl;
+            stream << "<value>" << OFendl;
             stream << "<sopclass uid=\"" << instance->SOPClassUID << "\">";
             /* retrieve name of SOP class */
             const char *sopClass = dcmFindNameOfUID(instance->SOPClassUID.c_str());
             if (sopClass != NULL)
                 stream << sopClass;
-            stream << "</sopclass>" << endl;
-            stream << "<instance uid=\"" << instance->InstanceUID << "\"/>" << endl;
-            stream << "</value>" << endl;
+            stream << "</sopclass>" << OFendl;
+            stream << "<instance uid=\"" << instance->InstanceUID << "\"/>" << OFendl;
+            stream << "</value>" << OFendl;
         }
         iter++;
     }
-    stream << "</series>" << endl;
+    stream << "</series>" << OFendl;
     return EC_Normal;
 }
 
@@ -560,12 +560,12 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::readXML(const DSRXMLDocume
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::StudyStruct::writeXML(ostream &stream,
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::writeXML(STD_NAMESPACE ostream& stream,
                                                                const size_t flags) const
 {
     OFCondition result = EC_Normal;
     /* write the study level attributes */
-    stream << "<study uid=\"" << StudyUID << "\">" << endl;
+    stream << "<study uid=\"" << StudyUID << "\">" << OFendl;
     /* iterate over all list items */
     OFListConstIterator(SeriesStruct *) iter = SeriesList.begin();
     const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
@@ -580,7 +580,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::writeXML(ostream &stream,
         }
         iter++;
     }
-    stream << "</study>" << endl;
+    stream << "</study>" << OFendl;
     return result;
 }
 
@@ -938,7 +938,7 @@ OFCondition DSRSOPInstanceReferenceList::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::writeXML(ostream &stream,
+OFCondition DSRSOPInstanceReferenceList::writeXML(STD_NAMESPACE ostream& stream,
                                                   const size_t flags) const
 {
     OFCondition result = EC_Normal;
@@ -1386,7 +1386,11 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.11  2006-05-11 09:16:49  joergr
+ *  Revision 1.12  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.11  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.10  2005/12/15 16:53:48  joergr

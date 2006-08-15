@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDateTimeTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:51 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFBool DSRDateTimeTreeNode::isValid() const
 }
 
 
-OFCondition DSRDateTimeTreeNode::print(ostream &stream,
+OFCondition DSRDateTimeTreeNode::print(STD_NAMESPACE ostream& stream,
                                        const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -86,7 +86,7 @@ OFCondition DSRDateTimeTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRDateTimeTreeNode::writeXML(ostream &stream,
+OFCondition DSRDateTimeTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                           const size_t flags,
                                           OFConsole *logStream) const
 {
@@ -155,8 +155,8 @@ OFString &DSRDateTimeTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &
 }
 
 
-OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                       ostream & /*annexStream*/,
+OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                       STD_NAMESPACE ostream&  /*annexStream*/,
                                                        const size_t /*nestingLevel*/,
                                                        size_t & /*annexNumber*/,
                                                        const size_t flags,
@@ -173,7 +173,7 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(ostream &docStream,
         docStream << dicomToReadableDateTime(getValue(), htmlString);
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -182,7 +182,11 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
- *  Revision 1.20  2005-12-08 15:47:51  meichel
+ *  Revision 1.21  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.20  2005/12/08 15:47:51  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.19  2004/01/16 10:17:04  joergr

@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,7 @@ class DSRSOPInstanceReferenceList
          *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition writeXML(ostream &stream,
+        OFCondition writeXML(STD_NAMESPACE ostream& stream,
                              const size_t flags = 0) const;
 
         /** set cursor to the specified instance (if existent)
@@ -223,7 +223,7 @@ class DSRSOPInstanceReferenceList
          *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition writeXML(ostream &stream,
+        OFCondition writeXML(STD_NAMESPACE ostream& stream,
                              const size_t flags = 0) const;
 
         /** set cursor to the specified series entry (if existent)
@@ -347,7 +347,7 @@ class DSRSOPInstanceReferenceList
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeXML(ostream &stream,
+    OFCondition writeXML(STD_NAMESPACE ostream& stream,
                          const size_t flags = 0) const;
 
     /** add the specified item to the list of references.
@@ -554,7 +554,11 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.10  2006-05-11 09:18:21  joergr
+ *  Revision 1.11  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.10  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.9  2005/12/08 16:05:18  meichel

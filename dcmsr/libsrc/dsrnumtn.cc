@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ OFBool DSRNumTreeNode::isValid() const
 }
 
 
-OFCondition DSRNumTreeNode::print(ostream &stream,
+OFCondition DSRNumTreeNode::print(STD_NAMESPACE ostream& stream,
                                   const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -78,7 +78,7 @@ OFCondition DSRNumTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRNumTreeNode::writeXML(ostream &stream,
+OFCondition DSRNumTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                      const size_t flags,
                                      OFConsole *logStream) const
 {
@@ -112,8 +112,8 @@ OFCondition DSRNumTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                  ostream &annexStream,
+OFCondition DSRNumTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                  STD_NAMESPACE ostream& annexStream,
                                                   const size_t /*nestingLevel*/,
                                                   size_t &annexNumber,
                                                   const size_t flags,
@@ -125,7 +125,7 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
     if (result.good())
     {
         result = DSRNumericMeasurementValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -134,7 +134,11 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.19  2006-05-11 09:16:49  joergr
+ *  Revision 1.20  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.19  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.18  2005/12/08 15:47:59  meichel

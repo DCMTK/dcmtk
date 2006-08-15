@@ -22,10 +22,10 @@
  *  Purpose: Convert the contents of an XML document to a DICOM structured
  *            reporting file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:52:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,13 +140,13 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:" << endl;
+              CERR << OFendl << "External libraries used:" << OFendl;
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-              CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << endl;
+              CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
 #ifndef LIBXML_SCHEMAS_ENABLED
-              CERR << "  without XML Schema support" << endl;
+              CERR << "  without XML Schema support" << OFendl;
 #endif
               return 0;
            }
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     /* check for compatible libxml version */
@@ -265,12 +265,12 @@ int main(int argc, char *argv[])
     /* check filenames */
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>" << OFendl;
         result = EC_IllegalParameter;
     }
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>" << OFendl;
         result = EC_IllegalParameter;
     }
 
@@ -290,14 +290,14 @@ int main(int argc, char *argv[])
                 if (opt_readFlags & DSRTypes::XF_validateSchema)
                     COUT << "and validating ";
 #endif
-                COUT << "XML input file: " << opt_ifname << endl;
+                COUT << "XML input file: " << opt_ifname << OFendl;
             }
             /* read XML file and feed data into DICOM fileformat */
             result = dsrdoc->readXML(opt_ifname, opt_readFlags);
             if (result.good())
             {
                 if (opt_verbose)
-                    COUT << "writing DICOM SR output file: " << opt_ofname << endl;
+                    COUT << "writing DICOM SR output file: " << opt_ofname << OFendl;
                 /* write SR document to dataset */
                 result = dsrdoc->write(*fileformat.getDataset());
                 /* write DICOM file */
@@ -306,9 +306,9 @@ int main(int argc, char *argv[])
                                                  OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
                                                  opt_dataset);
                 if (result.bad())
-                    CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << endl;
+                    CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << OFendl;
             } else
-                CERR << "Error: " << result.text() << ": reading file: "  << opt_ifname << endl;
+                CERR << "Error: " << result.text() << ": reading file: "  << opt_ifname << OFendl;
         }
         delete dsrdoc;
     }
@@ -323,10 +323,10 @@ int main(int argc, char *argv[])
 
 int main(int, char *[])
 {
-  CERR << rcsid << endl << OFFIS_CONSOLE_DESCRIPTION << endl << endl
-       << OFFIS_CONSOLE_APPLICATION " requires the libxml library." << endl
-       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without libxml." << endl
-       << "Please reconfigure your system and recompile if appropriate." << endl;
+  CERR << rcsid << OFendl << OFFIS_CONSOLE_DESCRIPTION << OFendl << OFendl
+       << OFFIS_CONSOLE_APPLICATION " requires the libxml library." << OFendl
+       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without libxml." << OFendl
+       << "Please reconfigure your system and recompile if appropriate." << OFendl;
   return 0;
 }
 
@@ -336,7 +336,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
- * Revision 1.6  2006-07-27 14:52:00  joergr
+ * Revision 1.7  2006-08-15 16:40:02  meichel
+ * Updated the code in module dcmsr to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.6  2006/07/27 14:52:00  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:35:46 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ OFBool DSRCodedEntryValue::isEmpty() const
 }
 
 
-void DSRCodedEntryValue::print(ostream &stream,
+void DSRCodedEntryValue::print(STD_NAMESPACE ostream& stream,
                                const OFBool printCodeValue,
                                const OFBool printInvalid) const
 {
@@ -284,7 +284,7 @@ OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
+OFCondition DSRCodedEntryValue::writeXML(STD_NAMESPACE ostream& stream,
                                          const size_t flags,
                                          OFConsole * /*logStream*/) const
 {
@@ -299,17 +299,17 @@ OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
         stream << DSRTypes::convertToMarkupString(CodeMeaning, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
     } else {
         DSRTypes::writeStringValueToXML(stream, CodeValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-        stream << "<scheme>" << endl;
+        stream << "<scheme>" << OFendl;
         DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", (flags & DSRTypes::XF_writeEmptyTags) > 0);
         DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-        stream << "</scheme>" << endl;
+        stream << "</scheme>" << OFendl;
         DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", (flags & DSRTypes::XF_writeEmptyTags) > 0);
     }
     return EC_Normal;
 }
 
 
-OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
+OFCondition DSRCodedEntryValue::renderHTML(STD_NAMESPACE ostream& stream,
                                            const size_t flags,
                                            OFConsole * /*logStream*/,
                                            const OFBool fullCode,
@@ -408,7 +408,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.22  2006-07-25 13:35:46  joergr
+ *  Revision 1.23  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.22  2006/07/25 13:35:46  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

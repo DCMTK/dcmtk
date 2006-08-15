@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ class DSRNumTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition print(ostream &stream,
+    virtual OFCondition print(STD_NAMESPACE ostream& stream,
                               const size_t flags) const;
 
     /** write content item in XML format
@@ -91,7 +91,7 @@ class DSRNumTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &stream,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream& stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -132,8 +132,8 @@ class DSRNumTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTMLContentItem(ostream &docStream,
-                                              ostream &annexStream,
+    virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                              STD_NAMESPACE ostream& annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
                                               const size_t flags,
@@ -156,7 +156,11 @@ class DSRNumTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.h,v $
- *  Revision 1.12  2006-05-11 09:18:21  joergr
+ *  Revision 1.13  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.12  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.11  2005/12/08 16:05:10  meichel

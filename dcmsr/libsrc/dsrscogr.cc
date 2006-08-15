@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:04 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ DSRGraphicDataList &DSRGraphicDataList::operator=(const DSRGraphicDataList &lst)
 }
 
 
-OFCondition DSRGraphicDataList::print(ostream &stream,
+OFCondition DSRGraphicDataList::print(STD_NAMESPACE ostream& stream,
                                       const size_t flags,
                                       const char pairSeparator,
                                       const char itemSeparator) const
@@ -224,7 +224,11 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.18  2005-12-08 15:48:04  meichel
+ *  Revision 1.19  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.18  2005/12/08 15:48:04  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.17  2004/04/20 08:10:36  joergr

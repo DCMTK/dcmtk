@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataItem, DSRGraphicDataList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:15 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ class DSRGraphicDataList
      *  @param  itemSeparator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(ostream &stream,
+    OFCondition print(STD_NAMESPACE ostream& stream,
                       const size_t flags = 0,
                       const char pairSeparator = '/',
                       const char itemSeparator = ',') const;
@@ -202,7 +202,11 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
- *  Revision 1.11  2005-12-08 16:05:15  meichel
+ *  Revision 1.12  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.11  2005/12/08 16:05:15  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.10  2003/08/07 12:45:38  joergr

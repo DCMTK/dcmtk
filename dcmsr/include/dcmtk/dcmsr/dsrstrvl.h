@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ class DSRStringValue
      *                     A value of 0 turns this meachanism off (default), i.e. the full string
      *                     value is printed.
      */
-    void print(ostream &stream,
+    void print(STD_NAMESPACE ostream& stream,
                const size_t maxLength = 0) const;
 
     /** read string value from dataset.
@@ -140,7 +140,7 @@ class DSRStringValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(ostream &docStream,
+    OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
                            const size_t flags,
                            OFConsole *logStream) const;
 
@@ -187,7 +187,11 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.12  2006-05-11 09:18:21  joergr
+ *  Revision 1.13  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.12  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.11  2005/12/08 16:05:19  meichel

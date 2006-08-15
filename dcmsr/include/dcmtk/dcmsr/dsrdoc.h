@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:19:53 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(ostream &stream,
+    OFCondition print(STD_NAMESPACE ostream& stream,
                       const size_t flags = 0);
 
     /** read SR document from DICOM dataset.
@@ -172,7 +172,7 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeXML(ostream &stream,
+    OFCondition writeXML(STD_NAMESPACE ostream& stream,
                          const size_t flags = 0);
 
     /** render current SR document in HTML format.
@@ -182,7 +182,7 @@ class DSRDocument
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(ostream &stream,
+    OFCondition renderHTML(STD_NAMESPACE ostream& stream,
                            const size_t flags = 0,
                            const char *styleSheet = NULL);
 
@@ -1017,7 +1017,7 @@ class DSRDocument
      ** @param  stream  output stream to which the HTML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
      */
-    void renderHTMLPatientData(ostream &stream,
+    void renderHTMLPatientData(STD_NAMESPACE ostream& stream,
                                const size_t flags);
 
     /** render list of referenced SOP instances in HTML format
@@ -1025,7 +1025,7 @@ class DSRDocument
      *  @param  refList  list of referenced SOP instances to be rendered
      *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
      */
-    void renderHTMLReferenceList(ostream &stream,
+    void renderHTMLReferenceList(STD_NAMESPACE ostream& stream,
                                  DSRSOPInstanceReferenceList &refList,
                                  const size_t flags);
 
@@ -1184,7 +1184,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.41  2006-07-25 13:19:53  joergr
+ *  Revision 1.42  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.41  2006/07/25 13:19:53  joergr
  *  Renamed member variable "ReferencedPerformedProcedureStepSequence" to
  *  "ReferencedPerformedProcedureStep" for consistency reasons.
  *

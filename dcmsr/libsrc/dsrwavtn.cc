@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRWaveformTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:22 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ OFBool DSRWaveformTreeNode::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRWaveformTreeNode::print(ostream &stream,
+OFCondition DSRWaveformTreeNode::print(STD_NAMESPACE ostream& stream,
                                        const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -83,16 +83,16 @@ OFCondition DSRWaveformTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRWaveformTreeNode::writeXML(ostream &stream,
+OFCondition DSRWaveformTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                           const size_t flags,
                                           OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    stream << "<value>" << endl;
+    stream << "<value>" << OFendl;
     DSRWaveformReferenceValue::writeXML(stream, flags, logStream);
-    stream << "</value>" << endl;
+    stream << "</value>" << OFendl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -122,8 +122,8 @@ OFCondition DSRWaveformTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRWaveformTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                       ostream &annexStream,
+OFCondition DSRWaveformTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                       STD_NAMESPACE ostream& annexStream,
                                                        const size_t /*nestingLevel*/,
                                                        size_t &annexNumber,
                                                        const size_t flags,
@@ -135,7 +135,7 @@ OFCondition DSRWaveformTreeNode::renderHTMLContentItem(ostream &docStream,
     if (result.good())
     {
         result = DSRWaveformReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -144,7 +144,11 @@ OFCondition DSRWaveformTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.cc,v $
- *  Revision 1.17  2005-12-08 15:48:22  meichel
+ *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2005/12/08 15:48:22  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.16  2003/09/15 14:13:42  joergr

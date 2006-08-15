@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:34:24 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1250,7 +1250,7 @@ void DSRTypes::printMessage(OFConsole *stream,
 {
     if ((stream != NULL) && (message != NULL))
     {
-        stream->lockCerr() << message << endl;
+        stream->lockCerr() << message << OFendl;
         stream->unlockCerr();
     }
 }
@@ -1261,7 +1261,7 @@ void DSRTypes::printWarningMessage(OFConsole *stream,
 {
     if ((stream != NULL) && (message != NULL))
     {
-        stream->lockCerr() << "DCMSR - Warning: " << message << endl;
+        stream->lockCerr() << "DCMSR - Warning: " << message << OFendl;
         stream->unlockCerr();
     }
 }
@@ -1272,7 +1272,7 @@ void DSRTypes::printErrorMessage(OFConsole *stream,
 {
     if ((stream != NULL) && (message != NULL))
     {
-        stream->lockCerr() << "DCMSR - Error: " << message << endl;
+        stream->lockCerr() << "DCMSR - Error: " << message << OFendl;
         stream->unlockCerr();
     }
 }
@@ -1365,7 +1365,7 @@ void DSRTypes::printUnknownValueWarningMessage(OFConsole *stream,
 }
 
 
-OFBool DSRTypes::writeStringValueToXML(ostream &stream,
+OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream& stream,
                                        const OFString &stringValue,
                                        const OFString &tagName,
                                        const OFBool writeEmptyValue)
@@ -1376,14 +1376,14 @@ OFBool DSRTypes::writeStringValueToXML(ostream &stream,
         OFString tmpString;
         stream << "<" << tagName << ">";
         stream << convertToMarkupString(stringValue, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
-        stream << "</" << tagName << ">" << endl;
+        stream << "</" << tagName << ">" << OFendl;
         result = OFTrue;
     }
     return result;
 }
 
 
-OFBool DSRTypes::writeStringFromElementToXML(ostream &stream,
+OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream& stream,
                                              DcmElement &delem,
                                              const OFString &tagName,
                                              const OFBool writeEmptyValue)
@@ -1396,18 +1396,18 @@ OFBool DSRTypes::writeStringFromElementToXML(ostream &stream,
         if (delem.getVR() == EVR_PN)        // special formatting for person names
         {
             OFString xmlString;
-            stream << endl << dicomToXMLPersonName(getStringValueFromElement(delem, tmpString), xmlString, writeEmptyValue) << endl;
+            stream << OFendl << dicomToXMLPersonName(getStringValueFromElement(delem, tmpString), xmlString, writeEmptyValue) << OFendl;
         } else
             stream << getMarkupStringFromElement(delem, tmpString);
-        stream << "</" << tagName << ">" << endl;
+        stream << "</" << tagName << ">" << OFendl;
         result = OFTrue;
     }
     return result;
 }
 
 
-size_t DSRTypes::createHTMLAnnexEntry(ostream &docStream,
-                                      ostream &annexStream,
+size_t DSRTypes::createHTMLAnnexEntry(STD_NAMESPACE ostream& docStream,
+                                      STD_NAMESPACE ostream& annexStream,
                                       const OFString &referenceText,
                                       size_t &annexNumber)
 {
@@ -1415,31 +1415,31 @@ size_t DSRTypes::createHTMLAnnexEntry(ostream &docStream,
     docStream << "[";
     if (!referenceText.empty())
         docStream << referenceText << " ";
-    docStream << "<a name=\"annex_src_" << annexNumber << "\" href=\"#annex_dst_" << annexNumber << "\">Annex " << annexNumber << "</a>]" << endl;
+    docStream << "<a name=\"annex_src_" << annexNumber << "\" href=\"#annex_dst_" << annexNumber << "\">Annex " << annexNumber << "</a>]" << OFendl;
     /* create new annex */
-    annexStream << "<h2><a name=\"annex_dst_" << annexNumber << "\" href=\"#annex_src_" << annexNumber << "\">Annex " << annexNumber << "</a></h2>" << endl;
+    annexStream << "<h2><a name=\"annex_dst_" << annexNumber << "\" href=\"#annex_src_" << annexNumber << "\">Annex " << annexNumber << "</a></h2>" << OFendl;
     /* increase annex number, return previous number */
     return annexNumber++;
 }
 
 
-size_t DSRTypes::createHTMLFootnote(ostream &docStream,
-                                    ostream &footnoteStream,
+size_t DSRTypes::createHTMLFootnote(STD_NAMESPACE ostream& docStream,
+                                    STD_NAMESPACE ostream& footnoteStream,
                                     size_t &footnoteNumber,
                                     const size_t nodeID)
 {
     /* hyperlink to corresponding footnote */
     docStream << "<sup><small><a name=\"footnote_src_" << nodeID << "_" << footnoteNumber << "\" ";
-    docStream << "href=\"#footnote_dst_" << nodeID << "_" << footnoteNumber << "\">" << footnoteNumber << "</a></small></sup>" << endl;
+    docStream << "href=\"#footnote_dst_" << nodeID << "_" << footnoteNumber << "\">" << footnoteNumber << "</a></small></sup>" << OFendl;
     /* create new footnote */
     footnoteStream << "<b><a name=\"footnote_dst_" << nodeID << "_" << footnoteNumber << "\" ";
-    footnoteStream << "href=\"#footnote_src_" << nodeID << "_" << footnoteNumber << "\">Footnote " << footnoteNumber << "</a></b>" << endl;
+    footnoteStream << "href=\"#footnote_src_" << nodeID << "_" << footnoteNumber << "\">Footnote " << footnoteNumber << "</a></b>" << OFendl;
     /* increase footnote number, return previous number */
     return footnoteNumber++;
 }
 
 
-OFCondition DSRTypes::appendStream(ostream &mainStream,
+OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream& mainStream,
                                    OFOStringStream &tempStream,
                                    const char *heading)
 {
@@ -1455,7 +1455,7 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
         {
             /* append optional heading */
             if (heading != NULL)
-                mainStream << heading << endl;
+                mainStream << heading << OFendl;
             /* append temporal document to main document */
             mainStream << tempString;
         }
@@ -1470,7 +1470,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.50  2006-07-25 13:34:24  joergr
+ *  Revision 1.51  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.50  2006/07/25 13:34:24  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

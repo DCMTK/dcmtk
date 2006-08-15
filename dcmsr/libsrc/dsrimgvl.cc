@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:37:48 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRImageReferenceValue::print(ostream &stream,
+OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream& stream,
                                           const size_t flags) const
 {
     const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
@@ -184,7 +184,7 @@ OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRImageReferenceValue::writeXML(ostream &stream,
+OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream& stream,
                                              const size_t flags,
                                              OFConsole *logStream) const
 {
@@ -193,14 +193,14 @@ OFCondition DSRImageReferenceValue::writeXML(ostream &stream,
     {
         stream << "<frames>";
         FrameList.print(stream);
-        stream << "</frames>" << endl;
+        stream << "</frames>" << OFendl;
     }
     if ((flags & DSRTypes::XF_writeEmptyTags) || PresentationState.isValid())
     {
-        stream << "<pstate>" << endl;
+        stream << "<pstate>" << OFendl;
         if (PresentationState.isValid())
             PresentationState.writeXML(stream, flags, logStream);
-        stream << "</pstate>" << endl;
+        stream << "</pstate>" << OFendl;
     }
     return result;
 }
@@ -242,8 +242,8 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
-                                               ostream &annexStream,
+OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
+                                               STD_NAMESPACE ostream& annexStream,
                                                size_t &annexNumber,
                                                const size_t flags,
                                                OFConsole * /*logStream*/) const
@@ -280,7 +280,7 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
         const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream << endl << "<p>" << endl;
+            docStream << OFendl << "<p>" << OFendl;
             /* render frame list (= print)*/
             docStream << "<b>Referenced Frame Number:</b>" << lineBreak;
             FrameList.print(docStream);
@@ -288,11 +288,11 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
         } else {
             docStream << " ";
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
-            annexStream << "<p>" << endl;
+            annexStream << "<p>" << OFendl;
             /* render frame list (= print)*/
             annexStream << "<b>Referenced Frame Number:</b>" << lineBreak;
             FrameList.print(annexStream);
-            annexStream << "</p>" << endl;
+            annexStream << "</p>" << OFendl;
         }
     }
     return EC_Normal;
@@ -361,7 +361,11 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.18  2006-07-25 13:37:48  joergr
+ *  Revision 1.19  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.18  2006/07/25 13:37:48  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

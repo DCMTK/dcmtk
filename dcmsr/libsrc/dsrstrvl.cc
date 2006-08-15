@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ OFBool DSRStringValue::isValid() const
 }
 
 
-void DSRStringValue::print(ostream &stream,
+void DSRStringValue::print(STD_NAMESPACE ostream& stream,
                            const size_t maxLength) const
 {
     OFString printString;
@@ -129,7 +129,7 @@ OFCondition DSRStringValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRStringValue::renderHTML(ostream &docStream,
+OFCondition DSRStringValue::renderHTML(STD_NAMESPACE ostream& docStream,
                                        const size_t flags,
                                        OFConsole * /*logStream*/) const
 {
@@ -164,7 +164,11 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.14  2006-05-11 09:16:49  joergr
+ *  Revision 1.15  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.14  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.13  2005/12/08 15:48:09  meichel

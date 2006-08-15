@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:13 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ DSRReferencedTimeOffsetList &DSRReferencedTimeOffsetList::operator=(const DSRRef
 }
 
 
-OFCondition DSRReferencedTimeOffsetList::print(ostream &stream,
+OFCondition DSRReferencedTimeOffsetList::print(STD_NAMESPACE ostream& stream,
                                                const size_t flags,
                                                const char separator) const
 {
@@ -179,7 +179,11 @@ OFCondition DSRReferencedTimeOffsetList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.14  2005-12-08 15:48:13  meichel
+ *  Revision 1.15  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.14  2005/12/08 15:48:13  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.13  2003/08/07 14:07:04  joergr

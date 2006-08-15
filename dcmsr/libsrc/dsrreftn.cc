@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:03 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ OFBool DSRByReferenceTreeNode::isValid() const
 }
 
 
-OFCondition DSRByReferenceTreeNode::print(ostream &stream,
+OFCondition DSRByReferenceTreeNode::print(STD_NAMESPACE ostream& stream,
                                           const size_t /*flags*/) const
 {
     stream << relationshipTypeToReadableName(getRelationshipType()) << " " << ReferencedContentItem;
@@ -87,13 +87,13 @@ OFCondition DSRByReferenceTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRByReferenceTreeNode::writeXML(ostream &stream,
+OFCondition DSRByReferenceTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                              const size_t flags,
                                              OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
-    stream << " ref=\"" << ReferencedNodeID << "\">" << endl;
+    stream << " ref=\"" << ReferencedNodeID << "\">" << OFendl;
     /* basically, there should be no child content items but ... */
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeXMLItemEnd(stream, flags);
@@ -180,15 +180,15 @@ OFCondition DSRByReferenceTreeNode::readXMLContentItem(const DSRXMLDocument &doc
 }
 
 
-OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                          ostream & /*annexStream*/,
+OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                          STD_NAMESPACE ostream&  /*annexStream*/,
                                                           const size_t /*nestingLevel*/,
                                                           size_t & /*annexNumber*/,
                                                           const size_t /*flags*/,
                                                           OFConsole * /*logStream*/) const
 {
     /* render reference string */
-    docStream << "Content Item <a href=\"#content_item_" << ReferencedNodeID << "\">by-reference</a>" << endl;
+    docStream << "Content Item <a href=\"#content_item_" << ReferencedNodeID << "\">by-reference</a>" << OFendl;
     return EC_Normal;
 }
 
@@ -218,7 +218,11 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.15  2005-12-08 15:48:03  meichel
+ *  Revision 1.16  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.15  2005/12/08 15:48:03  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.14  2004/01/05 14:37:00  joergr

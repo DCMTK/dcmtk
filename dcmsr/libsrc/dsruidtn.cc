@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:20 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFBool DSRUIDRefTreeNode::isValid() const
 }
 
 
-OFCondition DSRUIDRefTreeNode::print(ostream &stream,
+OFCondition DSRUIDRefTreeNode::print(STD_NAMESPACE ostream& stream,
                                      const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -86,7 +86,7 @@ OFCondition DSRUIDRefTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRUIDRefTreeNode::writeXML(ostream &stream,
+OFCondition DSRUIDRefTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                         const size_t flags,
                                         OFConsole *logStream) const
 {
@@ -123,8 +123,8 @@ OFCondition DSRUIDRefTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                     ostream & /*annexStream*/,
+OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                     STD_NAMESPACE ostream&  /*annexStream*/,
                                                      const size_t /*nestingLevel*/,
                                                      size_t & /*annexNumber*/,
                                                      const size_t flags,
@@ -136,7 +136,7 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
     if (result.good())
     {
         result = DSRStringValue::renderHTML(docStream, flags, logStream);
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -145,7 +145,11 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.18  2005-12-08 15:48:20  meichel
+ *  Revision 1.19  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.18  2005/12/08 15:48:20  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.17  2003/09/15 14:13:42  joergr

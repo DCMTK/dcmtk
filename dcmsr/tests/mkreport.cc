@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:27 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,42 +76,42 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        COUT << "mkreport: Create DICOM SR documents" << endl;
-        COUT << "----------------------------------------------------" << endl;
-        COUT << " ki = IHE Year 2 key image note (empty)" << endl;
-        COUT << " si = IHE Year 2 simple image report (empty)" << endl;
-        COUT << " fk = Fake report, C. Iulius Caesar: De bello Gallico" << endl;
-        COUT << " lp = Valid comprehensive report with loop/cycle" << endl;
-        COUT << endl;
-        COUT << " 01 = Consultation report (text only)" << endl;
-        COUT << " 02 = Same as 01 but with NUM and PNAME items" << endl;
-        COUT << " 03 = Very short report (text only)" << endl;
-        COUT << " 04 = Text report with several sections (history)" << endl;
-        COUT << " 05 = Text report with several blocks (discharge)" << endl;
-        COUT << " 06 = Radiology report with image reference (dentist)" << endl;
-        COUT << " 07 = Same as 06 with image/pstate reference" << endl;
-        COUT << " 08 = Same as 06 with composite (pstate) reference" << endl;
-        COUT << endl;
-        COUT << " 09 = RSNA '95: Picker, CT, #3" << endl;
-        COUT << " 10 = RSNA '95: Picker, MR, #4" << endl;
-        COUT << " 11 = RSNA '95: Kodak, CR, #8" << endl;
-        COUT << " 12 = RSNA '95: Acuson, US, #11" << endl;
-        COUT << " 13 = RSNA '95: GE, CT, #17" << endl;
-        COUT << " 14 = RSNA '95: GE, MR, #21" << endl;
-        COUT << " 15 = RSNA '95: Siemens, MR, #26" << endl;
-        COUT << " 16 = RSNA '95: Siemens, DS, #29" << endl;
-        COUT << " 17 = RSNA '95: Siemens, DR, #31" << endl;
-        COUT << " 18 = RSNA '95: Fuji, CR, #32" << endl;
-        COUT << " 19 = RSNA '95: ATL, US, #36" << endl;
-        COUT << "----------------------------------------------------" << endl;
-        COUT << "all = create all abovementioned DICOM SR documents" << endl;
+        COUT << "mkreport: Create DICOM SR documents" << OFendl;
+        COUT << "----------------------------------------------------" << OFendl;
+        COUT << " ki = IHE Year 2 key image note (empty)" << OFendl;
+        COUT << " si = IHE Year 2 simple image report (empty)" << OFendl;
+        COUT << " fk = Fake report, C. Iulius Caesar: De bello Gallico" << OFendl;
+        COUT << " lp = Valid comprehensive report with loop/cycle" << OFendl;
+        COUT << OFendl;
+        COUT << " 01 = Consultation report (text only)" << OFendl;
+        COUT << " 02 = Same as 01 but with NUM and PNAME items" << OFendl;
+        COUT << " 03 = Very short report (text only)" << OFendl;
+        COUT << " 04 = Text report with several sections (history)" << OFendl;
+        COUT << " 05 = Text report with several blocks (discharge)" << OFendl;
+        COUT << " 06 = Radiology report with image reference (dentist)" << OFendl;
+        COUT << " 07 = Same as 06 with image/pstate reference" << OFendl;
+        COUT << " 08 = Same as 06 with composite (pstate) reference" << OFendl;
+        COUT << OFendl;
+        COUT << " 09 = RSNA '95: Picker, CT, #3" << OFendl;
+        COUT << " 10 = RSNA '95: Picker, MR, #4" << OFendl;
+        COUT << " 11 = RSNA '95: Kodak, CR, #8" << OFendl;
+        COUT << " 12 = RSNA '95: Acuson, US, #11" << OFendl;
+        COUT << " 13 = RSNA '95: GE, CT, #17" << OFendl;
+        COUT << " 14 = RSNA '95: GE, MR, #21" << OFendl;
+        COUT << " 15 = RSNA '95: Siemens, MR, #26" << OFendl;
+        COUT << " 16 = RSNA '95: Siemens, DS, #29" << OFendl;
+        COUT << " 17 = RSNA '95: Siemens, DR, #31" << OFendl;
+        COUT << " 18 = RSNA '95: Fuji, CR, #32" << OFendl;
+        COUT << " 19 = RSNA '95: ATL, US, #36" << OFendl;
+        COUT << "----------------------------------------------------" << OFendl;
+        COUT << "all = create all abovementioned DICOM SR documents" << OFendl;
     } else {
         /* make sure data dictionary is loaded */
         if (!dcmDataDict.isDictionaryLoaded())
         {
             CERR << "Warning: no data dictionary loaded, "
                  << "check environment variable: "
-                 << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+                 << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
         }
 
         DSRDocument *doc = new DSRDocument();
@@ -174,15 +174,15 @@ int main(int argc, char *argv[])
                     generate_19(doc);
                 else {
                     writeFile = OFFalse;
-                    CERR << "WARNING: unknown document identifier \"" << array[i] << "\" ... ignoring" << endl;
+                    CERR << "WARNING: unknown document identifier \"" << array[i] << "\" ... ignoring" << OFendl;
                 }
 
                 if (writeFile)
                 {
-                    COUT << OFString(79, '-') << endl;
-                    COUT << "mkreport: report" << array[i] << ".dcm" << endl << endl;
+                    COUT << OFString(79, '-') << OFendl;
+                    COUT << "mkreport: report" << array[i] << ".dcm" << OFendl << OFendl;
                     doc->print(COUT, DSRTypes::PF_shortenLongItemValues);
-                    COUT << endl;
+                    COUT << OFendl;
 
                     DcmFileFormat *fileformat = new DcmFileFormat();
                     DcmDataset *dataset = NULL;
@@ -198,7 +198,7 @@ int main(int argc, char *argv[])
                             filename += ".dcm";
                             fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
                         } else
-                            CERR << "ERROR: could not write SR document into dataset" << endl;
+                            CERR << "ERROR: could not write SR document into dataset" << OFendl;
                     }
                 }
             }
@@ -1273,7 +1273,11 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.25  2005-12-08 15:48:27  meichel
+ *  Revision 1.26  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.25  2005/12/08 15:48:27  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.24  2004/01/05 14:38:05  joergr

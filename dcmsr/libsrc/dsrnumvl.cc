@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:37:48 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ OFBool DSRNumericMeasurementValue::isEmpty() const
 }
 
 
-OFCondition DSRNumericMeasurementValue::print(ostream &stream,
+OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream& stream,
                                               const size_t /*flags*/) const
 {
     if (isEmpty())
@@ -158,7 +158,7 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
+OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream& stream,
                                                  const size_t flags,
                                                  OFConsole *logStream) const
 {
@@ -169,9 +169,9 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
             stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
         else
-            stream << "<unit>" << endl;
+            stream << "<unit>" << OFendl;
         MeasurementUnit.writeXML(stream, flags, logStream);
-        stream << "</unit>" << endl;
+        stream << "</unit>" << OFendl;
     }
     if (!ValueQualifier.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
     {
@@ -179,9 +179,9 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
             stream << "<qualifier";     // bracket ">" is closed in the next writeXML() routine
         else
-            stream << "<qualifier>" << endl;
+            stream << "<qualifier>" << OFendl;
         ValueQualifier.writeXML(stream, flags, logStream);
-        stream << "</qualifier>" << endl;
+        stream << "</qualifier>" << OFendl;
     }
     return EC_Normal;
 }
@@ -283,8 +283,8 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
-                                                   ostream & /*annexStream*/,
+OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream& docStream,
+                                                   STD_NAMESPACE ostream&  /*annexStream*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
@@ -426,7 +426,11 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.22  2006-07-25 13:37:48  joergr
+ *  Revision 1.23  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.22  2006/07/25 13:37:48  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

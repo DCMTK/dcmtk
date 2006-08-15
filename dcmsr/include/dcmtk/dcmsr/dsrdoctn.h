@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ class DSRDocumentTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition print(ostream &stream,
+    virtual OFCondition print(STD_NAMESPACE ostream& stream,
                               const size_t flags) const;
 
     /** read content item from dataset.
@@ -159,7 +159,7 @@ class DSRDocumentTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &stream,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream& stream,
                                  const size_t flags,
                                  OFConsole *logStream = NULL) const;
 
@@ -175,8 +175,8 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
+                                   STD_NAMESPACE ostream& annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -415,8 +415,8 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTMLContentItem(ostream &docStream,
-                                              ostream &annexStream,
+    virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                              STD_NAMESPACE ostream& annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
                                               const size_t flags,
@@ -428,7 +428,7 @@ class DSRDocumentTreeNode
      *  @param  closingBracket  write closing bracket of XML start tag if OFTrue, otherwise the
      *                          bracket has to be closed in the calling method
      */
-    void writeXMLItemStart(ostream &stream,
+    void writeXMLItemStart(STD_NAMESPACE ostream& stream,
                            const size_t flags,
                            const OFBool closingBracket = OFTrue) const;
 
@@ -436,7 +436,7 @@ class DSRDocumentTreeNode
      ** @param  stream  output stream to which the XML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      */
-    void writeXMLItemEnd(ostream &stream,
+    void writeXMLItemEnd(STD_NAMESPACE ostream& stream,
                          const size_t flags) const;
 
     /** read SR document content module
@@ -539,7 +539,7 @@ class DSRDocumentTreeNode
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTMLConceptName(ostream &docStream,
+    OFCondition renderHTMLConceptName(STD_NAMESPACE ostream& docStream,
                                       const size_t flags,
                                       OFConsole *logStream) const;
 
@@ -553,8 +553,8 @@ class DSRDocumentTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTMLChildNodes(ostream &docStream,
-                                     ostream &annexStream,
+    OFCondition renderHTMLChildNodes(STD_NAMESPACE ostream& docStream,
+                                     STD_NAMESPACE ostream& annexStream,
                                      const size_t nestingLevel,
                                      size_t &annexNumber,
                                      const size_t flags,
@@ -617,7 +617,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.22  2006-05-11 09:18:21  joergr
+ *  Revision 1.23  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.22  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.21  2005/12/08 16:05:00  meichel

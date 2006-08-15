@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRImageTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:54 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ OFBool DSRImageTreeNode::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRImageTreeNode::print(ostream &stream,
+OFCondition DSRImageTreeNode::print(STD_NAMESPACE ostream& stream,
                                     const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -83,16 +83,16 @@ OFCondition DSRImageTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRImageTreeNode::writeXML(ostream &stream,
+OFCondition DSRImageTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                        const size_t flags,
                                        OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    stream << "<value>" << endl;
+    stream << "<value>" << OFendl;
     DSRImageReferenceValue::writeXML(stream, flags, logStream);
-    stream << "</value>" << endl;
+    stream << "</value>" << OFendl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -122,8 +122,8 @@ OFCondition DSRImageTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRImageTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                    ostream &annexStream,
+OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                    STD_NAMESPACE ostream& annexStream,
                                                     const size_t /*nestingLevel*/,
                                                     size_t &annexNumber,
                                                     const size_t flags,
@@ -135,7 +135,7 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(ostream &docStream,
     if (result.good())
     {
         result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
-        docStream << endl;
+        docStream << OFendl;
     }
     return result;
 }
@@ -144,7 +144,11 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.17  2005-12-08 15:47:54  meichel
+ *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2005/12/08 15:47:54  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.16  2003/09/15 14:13:42  joergr

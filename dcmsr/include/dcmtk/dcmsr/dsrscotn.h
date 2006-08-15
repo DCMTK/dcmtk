@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:16 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ class DSRSCoordTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition print(ostream &stream,
+    virtual OFCondition print(STD_NAMESPACE ostream& stream,
                               const size_t flags) const;
 
     /** write content item in XML format
@@ -98,7 +98,7 @@ class DSRSCoordTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &stream,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream& stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -139,8 +139,8 @@ class DSRSCoordTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTMLContentItem(ostream &docStream,
-                                              ostream &annexStream,
+    virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                              STD_NAMESPACE ostream& annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
                                               const size_t flags,
@@ -163,7 +163,11 @@ class DSRSCoordTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.h,v $
- *  Revision 1.10  2005-12-08 16:05:16  meichel
+ *  Revision 1.11  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.10  2005/12/08 16:05:16  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.9  2003/09/15 14:18:54  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:41:52 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ void DSRDocumentTree::setLogStream(OFConsole *stream)
 }
 
 
-OFCondition DSRDocumentTree::print(ostream &stream,
+OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream& stream,
                                    const size_t flags)
 {
     OFCondition result = EC_Normal;
@@ -129,7 +129,7 @@ OFCondition DSRDocumentTree::print(ostream &stream,
                             stream << "  # TID " << templateIdentifier << " (" << mappingResource << ")";
                     }
                 }
-                stream << endl;
+                stream << OFendl;
             } else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.iterate());
@@ -152,7 +152,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
             printWarningMessage(LogStream, "Check for template constraints not yet supported");
         if ((LogStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
         {
-            LogStream->lockCerr() << "Processing content item 1" << endl;
+            LogStream->lockCerr() << "Processing content item 1" << OFendl;
             LogStream->unlockCerr();
         }
         /* first try to read value type */
@@ -280,7 +280,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
 }
 
 
-OFCondition DSRDocumentTree::writeXML(ostream &stream,
+OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream& stream,
                                       const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocumentTree;
@@ -301,8 +301,8 @@ OFCondition DSRDocumentTree::writeXML(ostream &stream,
 }
 
 
-OFCondition DSRDocumentTree::renderHTML(ostream &docStream,
-                                        ostream &annexStream,
+OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream& docStream,
+                                        STD_NAMESPACE ostream& annexStream,
                                         const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocumentTree;
@@ -649,7 +649,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.28  2006-07-25 13:41:52  joergr
+ *  Revision 1.29  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.28  2006/07/25 13:41:52  joergr
  *  Enhanced robustness of reading methods by accepting SR documents where the
  *  value type of the root content item is absent or not "CONTAINER".
  *

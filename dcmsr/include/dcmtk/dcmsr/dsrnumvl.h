@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +120,7 @@ class DSRNumericMeasurementValue
      *  @param  flags   flag used to customize the output (not used)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition print(ostream &stream,
+    virtual OFCondition print(STD_NAMESPACE ostream& stream,
                               const size_t flags) const;
 
     /** read numeric measurement value from XML document
@@ -137,7 +137,7 @@ class DSRNumericMeasurementValue
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(ostream &stream,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream& stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
@@ -171,8 +171,8 @@ class DSRNumericMeasurementValue
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTML(ostream &docStream,
-                                   ostream &annexStream,
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
+                                   STD_NAMESPACE ostream& annexStream,
                                    size_t &annexNumber,
                                    const size_t flags,
                                    OFConsole *logStream) const;
@@ -347,7 +347,11 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
- *  Revision 1.11  2006-05-11 09:18:21  joergr
+ *  Revision 1.12  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.11  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.10  2005/12/08 16:05:11  meichel

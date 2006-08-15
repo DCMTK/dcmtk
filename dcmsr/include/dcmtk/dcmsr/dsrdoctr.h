@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:18:21 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(ostream &stream,
+    OFCondition print(STD_NAMESPACE ostream& stream,
                       const size_t flags = 0);
 
     /** read SR document tree from DICOM dataset.
@@ -138,7 +138,7 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeXML(ostream &stream,
+    OFCondition writeXML(STD_NAMESPACE ostream& stream,
                          const size_t flags);
 
     /** render current SR document tree in HTML format
@@ -147,8 +147,8 @@ class DSRDocumentTree
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(ostream &docStream,
-                           ostream &annexStream,
+    OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
+                           STD_NAMESPACE ostream& annexStream,
                            const size_t flags = 0);
 
     /** get document type
@@ -350,7 +350,11 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.17  2006-05-11 09:18:21  joergr
+ *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2006/05/11 09:18:21  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.16  2005/12/08 16:05:01  meichel

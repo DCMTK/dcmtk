@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:21 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ DSRWaveformChannelList &DSRWaveformChannelList::operator=(const DSRWaveformChann
 }
 
 
-OFCondition DSRWaveformChannelList::print(ostream &stream,
+OFCondition DSRWaveformChannelList::print(STD_NAMESPACE ostream& stream,
                                           const size_t flags,
                                           const char pairSeparator,
                                           const char itemSeparator) const
@@ -210,7 +210,11 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.21  2005-12-08 15:48:21  meichel
+ *  Revision 1.22  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.21  2005/12/08 15:48:21  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.20  2003/12/02 19:36:47  joergr

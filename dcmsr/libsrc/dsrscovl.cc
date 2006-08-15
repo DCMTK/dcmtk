@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-25 13:37:48 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ OFBool DSRSpatialCoordinatesValue::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRSpatialCoordinatesValue::print(ostream &stream,
+OFCondition DSRSpatialCoordinatesValue::print(STD_NAMESPACE ostream& stream,
                                               const size_t flags) const
 {
     /* GraphicType */
@@ -126,7 +126,7 @@ OFCondition DSRSpatialCoordinatesValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
+OFCondition DSRSpatialCoordinatesValue::writeXML(STD_NAMESPACE ostream& stream,
                                                  const size_t flags,
                                                  OFConsole * /*logStream*/) const
 {
@@ -135,7 +135,7 @@ OFCondition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
     {
         stream << "<data>";
         GraphicDataList.print(stream);
-        stream << "</data>" << endl;
+        stream << "</data>" << OFendl;
     }
     return EC_Normal;
 }
@@ -179,8 +179,8 @@ OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
 }
 
 
-OFCondition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
-                                                   ostream &annexStream,
+OFCondition DSRSpatialCoordinatesValue::renderHTML(STD_NAMESPACE ostream& docStream,
+                                                   STD_NAMESPACE ostream& annexStream,
                                                    size_t &annexNumber,
                                                    const size_t flags,
                                                    OFConsole * /*logStream*/) const
@@ -193,18 +193,18 @@ OFCondition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
         const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream << endl << "<p>" << endl;
+            docStream << OFendl << "<p>" << OFendl;
             /* render graphic data list (= print)*/
             docStream << "<b>Graphic Data:</b>" << lineBreak;
             GraphicDataList.print(docStream);
             docStream << "</p>";
         } else {
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
-            annexStream << "<p>" << endl;
+            annexStream << "<p>" << OFendl;
             /* render graphic data list (= print)*/
             annexStream << "<b>Graphic Data:</b>" << lineBreak;
             GraphicDataList.print(annexStream);
-            annexStream << "</p>" << endl;
+            annexStream << "</p>" << OFendl;
         }
     }
     return EC_Normal;
@@ -306,7 +306,11 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.17  2006-07-25 13:37:48  joergr
+ *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2006/07/25 13:37:48  joergr
  *  Added new optional flags for the HTML rendering of SR documents:
  *  HF_alwaysExpandChildrenInline, HF_useCodeDetailsTooltip and
  *  HF_renderSectionTitlesInline.

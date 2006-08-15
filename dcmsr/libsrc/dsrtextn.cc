@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 09:16:49 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ OFBool DSRTextTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
-OFCondition DSRTextTreeNode::print(ostream &stream,
+OFCondition DSRTextTreeNode::print(STD_NAMESPACE ostream& stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -96,7 +96,7 @@ OFCondition DSRTextTreeNode::print(ostream &stream,
 }
 
 
-OFCondition DSRTextTreeNode::writeXML(ostream &stream,
+OFCondition DSRTextTreeNode::writeXML(STD_NAMESPACE ostream& stream,
                                       const size_t flags,
                                       OFConsole *logStream) const
 {
@@ -133,8 +133,8 @@ OFCondition DSRTextTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                   ostream & /*annexStream*/,
+OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
+                                                   STD_NAMESPACE ostream&  /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t flags,
@@ -145,9 +145,9 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
-        docStream << "\"" << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0) << "\"" << endl;
+        docStream << "\"" << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0) << "\"" << OFendl;
     else
-        docStream << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0, OFTrue /*newlineAllowed*/) << endl;
+        docStream << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0, OFTrue /*newlineAllowed*/) << OFendl;
     return result;
 }
 
@@ -155,7 +155,11 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.23  2006-05-11 09:16:49  joergr
+ *  Revision 1.24  2006-08-15 16:40:03  meichel
+ *  Updated the code in module dcmsr to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.23  2006/05/11 09:16:49  joergr
  *  Moved containsExtendedCharacters() from dcmsr to dcmdata module.
  *
  *  Revision 1.22  2005/12/08 15:48:15  meichel
