@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:40 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,7 +277,7 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
     // presentation LUT does not exist or wrong instance UID
     if (verboseMode)
     {
-      logstream->lockCerr() << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << endl;
+      logstream->lockCerr() << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << OFendl;
       logstream->unlockCerr();
     }
     rsp.msg.NDeleteRSP.DimseStatus = STATUS_N_NoSuchObjectInstance;
@@ -287,7 +287,11 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.17  2005-12-08 15:46:40  meichel
+ *  Revision 1.18  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2005/12/08 15:46:40  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.16  2004/02/04 15:57:49  joergr

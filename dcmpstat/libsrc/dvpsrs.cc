@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:45 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -94,7 +94,7 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with seriesInstanceUID VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -103,7 +103,7 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with retrieveAETitle VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -112,7 +112,7 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetID VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -121,7 +121,7 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced series SQ item with storageMediaFileSetUID VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -246,7 +246,11 @@ void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.13  2005-12-08 15:46:45  meichel
+ *  Revision 1.14  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.13  2005/12/08 15:46:45  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.12  2003/06/04 12:30:28  meichel

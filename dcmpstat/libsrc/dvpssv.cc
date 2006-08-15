@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSSoftcopyVOI
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:49 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
+          logstream->lockCerr() << "Error: VOI LUT SQ does not have exactly one item in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       } 
@@ -141,7 +141,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
+          logstream->lockCerr() << "Error: windowCenter present but windowWidth absent or empty in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -150,7 +150,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -159,7 +159,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: windowCenter present but VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: windowCenter present but VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -173,7 +173,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: both VOI window and LUT present in presentation state" << endl;
+          logstream->lockCerr() << "Error: both VOI window and LUT present in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -183,7 +183,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
+          logstream->lockCerr() << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -192,7 +192,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
+          logstream->lockCerr() << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -202,7 +202,7 @@ OFCondition DVPSSoftcopyVOI::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: neither VOI window nor LUT present in presentation state" << endl;
+          logstream->lockCerr() << "Error: neither VOI window nor LUT present in presentation state" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -337,7 +337,7 @@ OFCondition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const c
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: Window Width < 1 not allowed." << endl;
+      logstream->lockCerr() << "Error: Window Width < 1 not allowed." << OFendl;
       logstream->unlockCerr();
     }
     return EC_IllegalCall;
@@ -392,7 +392,11 @@ void DVPSSoftcopyVOI::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpssv.cc,v $
- *  Revision 1.12  2005-12-08 15:46:49  meichel
+ *  Revision 1.13  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.12  2005/12/08 15:46:49  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.11  2003/06/04 12:30:29  meichel

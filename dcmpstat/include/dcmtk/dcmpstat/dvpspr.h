@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-09 14:48:35 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,7 +241,7 @@ public:
   /** sets an ostream to which all network communication is dumped.
    *  @param stream output stream, default: no output
    */
-  void setDumpStream(ostream *stream=NULL)
+  void setDumpStream(STD_NAMESPACE ostream *stream=NULL)
   {
   	dumpStream = stream;
   }
@@ -314,7 +314,7 @@ private:
   int timeout;
 
   /// if not NULL, dump all network communication
-  ostream *dumpStream;
+  STD_NAMESPACE ostream *dumpStream;
 
   /** output stream for error messages, never NULL
    */
@@ -334,7 +334,11 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.12  2005-12-09 14:48:35  meichel
+ *  Revision 1.13  2006-08-15 16:57:01  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.12  2005/12/09 14:48:35  meichel
  *  Added missing virtual destructors
  *
  *  Revision 1.11  2005/12/08 16:03:57  meichel

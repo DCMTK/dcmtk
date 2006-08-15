@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:41:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ static int errorCond(OFCondition cond, const char *message)
   int result = (cond.bad());
   if (result)
   {
-    CERR << message << endl;
+    CERR << message << OFendl;
     DimseCondition::dump(cond);
   }
   return result;
@@ -138,7 +138,7 @@ static void cleanChildren()
 #endif
         if (child < 0)
         {
-           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
+           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << OFendl;
         }
     }
 #endif
@@ -225,7 +225,7 @@ static associationType negotiateAssociation(
       {
         // notify about failed association setup
         OFOStringStream out;
-        out << "Unable to Receive DIMSE Association Request:" << endl << cond.text() << endl << OFStringStream_ends;
+        out << "Unable to Receive DIMSE Association Request:" << OFendl << cond.text() << OFendl << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(out, theString)
         if (useTLS)
           messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
@@ -251,18 +251,18 @@ static associationType negotiateAssociation(
       if (cond.bad() || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
       {
           /* reject: the application context name is not supported */
-          if (opt_verbose) CERR << "Bad AppContextName: " << buf << endl;
+          if (opt_verbose) CERR << "Bad AppContextName: " << buf << OFendl;
           cond = refuseAssociation(*assoc, ref_BadAppContext);
 
           if (messageClient)
           {
             // notify about rejected association
             OFOStringStream out;
-            out << "DIMSE Association Rejected:" << endl
-                << "  reason: bad application context name '" << buf << "'" << endl
-                << "  calling presentation address: " << (*assoc)->params->DULparams.callingPresentationAddress << endl
-                << "  calling AE title: " << (*assoc)->params->DULparams.callingAPTitle << endl
-                << "  called AE title: " << (*assoc)->params->DULparams.calledAPTitle << endl;
+            out << "DIMSE Association Rejected:" << OFendl
+                << "  reason: bad application context name '" << buf << "'" << OFendl
+                << "  calling presentation address: " << (*assoc)->params->DULparams.callingPresentationAddress << OFendl
+                << "  calling AE title: " << (*assoc)->params->DULparams.callingAPTitle << OFendl
+                << "  called AE title: " << (*assoc)->params->DULparams.calledAPTitle << OFendl;
             ASC_dumpConnectionParameters(*assoc, out);
             out << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(out, theString)
@@ -369,7 +369,7 @@ checkRequestAgainstDataset(
       /* load the data from file */
       if (ff.loadFile(fname).bad())
       {
-        CERR << "Cannot open file: " << fname << endl;
+        CERR << "Cannot open file: " << fname << OFendl;
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         return;
       }
@@ -382,7 +382,7 @@ checkRequestAgainstDataset(
 
     if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, opt_correctUIDPadding))
     {
-      CERR << "Bad image file: " << fname << endl;
+      CERR << "Bad image file: " << fname << OFendl;
       rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
     }
     else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -399,7 +399,7 @@ checkRequestAgainstDataset(
       DcmPresentationState pstate;
       if (EC_Normal != pstate.read(*dataSet))
       {
-        CERR << "Grayscale softcopy presentation state object cannot be displayed - rejected." << endl;
+        CERR << "Grayscale softcopy presentation state object cannot be displayed - rejected." << OFendl;
         rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
       }
     }
@@ -424,7 +424,7 @@ saveImageToDB(
           imageFileName, &dbStatus).bad())
       {
         CERR << "storeSCP: Database: DB_storeRequest Failed ("
-             << DU_cstoreStatusString(dbStatus.status()) << ")" << endl;
+             << DU_cstoreStatusString(dbStatus.status()) << ")" << OFendl;
       }
       context->status = dbStatus.status();
     }
@@ -467,7 +467,7 @@ storeProgressCallback(
           EET_ExplicitLength, EGL_recalcGL);
         if (! cond.good())
         {
-          CERR << "Cannot write image file: " << context->fileName << endl;
+          CERR << "Cannot write image file: " << context->fileName << OFendl;
           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         }
       }
@@ -478,7 +478,7 @@ storeProgressCallback(
 
 static OFCondition echoSCP(T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_ASC_PresentationContextID presId, OFBool opt_verbose)
 {
-    if (opt_verbose) CERR << "Received Echo SCP RQ: MsgID " << req->MessageID << endl;
+    if (opt_verbose) CERR << "Received Echo SCP RQ: MsgID " << req->MessageID << OFendl;
     OFCondition cond = DIMSE_sendEchoResponse(assoc, presId, req, STATUS_Success, NULL);
     errorCond(cond, "echoSCP: Echo Response Failed:");
     return cond;
@@ -528,7 +528,7 @@ static OFCondition storeSCP(
       dbhandle = new DcmQueryRetrieveIndexDatabaseHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, cond);
       if (cond.bad())
       {
-        CERR << "Unable to access database '" << dbfolder << "'" << endl;
+        CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
         /* callback will send back out of resources status */
@@ -542,7 +542,7 @@ static OFCondition storeSCP(
             request->AffectedSOPInstanceUID,
             imageFileName).bad())
         {
-            CERR << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
+            CERR << "storeSCP: Database: DB_makeNewStoreFileName Failed" << OFendl;
             /* must still receive data */
             strcpy(imageFileName, NULL_DEVICE_NAME);
             /* callback will send back out of resources status */
@@ -584,7 +584,7 @@ static OFCondition storeSCP(
         /* remove file */
         if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0)
         {
-          if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << endl;
+          if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << OFendl;
           unlink(imageFileName);
         }
         if (dbhandle) dbhandle->pruneInvalidRecords();
@@ -613,9 +613,9 @@ static OFCondition storeSCP(
       if (operationStatus == DVPSIPCMessage::statusOK) successName = "successful";
       if (sopClassName==NULL) sopClassName = request->AffectedSOPClassUID;
 
-      out << "DICOM C-STORE receipt " << successName << ": " << endl
-          << "\tSOP class UID          : " << sopClassName << endl
-          << "\tSOP instance UID       : " << request->AffectedSOPInstanceUID << endl;
+      out << "DICOM C-STORE receipt " << successName << ": " << OFendl
+          << "\tSOP class UID          : " << sopClassName << OFendl
+          << "\tSOP instance UID       : " << request->AffectedSOPInstanceUID << OFendl;
 
       if (operationStatus == DVPSIPCMessage::statusOK)
       {
@@ -623,13 +623,13 @@ static OFCondition storeSCP(
         struct stat fileStat;
         if (0 == stat(imageFileName, &fileStat)) fileSize = fileStat.st_size;
         out
-          << "\tTarget file path       : " << imageFileName << endl
-          << "\tTarget file size (kB)  : " << (fileSize+1023)/1024 << endl;
+          << "\tTarget file path       : " << imageFileName << OFendl
+          << "\tTarget file size (kB)  : " << (fileSize+1023)/1024 << OFendl;
       }
 
-      out << "\tDIMSE presentation ctx : " << (int)presId << endl
-          << "\tDIMSE message ID       : " << request->MessageID << endl
-          << "\tDIMSE status           : " << DU_cstoreStatusString(context.status) << endl
+      out << "\tDIMSE presentation ctx : " << (int)presId << OFendl
+          << "\tDIMSE message ID       : " << request->MessageID << OFendl
+          << "\tDIMSE status           : " << DU_cstoreStatusString(context.status) << OFendl
           << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(out, theString)
       messageClient->notifyReceivedDICOMObject(operationStatus, theString);
@@ -652,20 +652,20 @@ static void handleClient(
   {
     if (opt_verbose)
     {
-      CERR << "Association Acknowledged (Max Send PDV: " << (*assoc)->sendPDVLength << ")" << endl;
-      if (ASC_countAcceptedPresentationContexts((*assoc)->params) == 0) CERR << "    (but no valid presentation contexts)" << endl;
+      CERR << "Association Acknowledged (Max Send PDV: " << (*assoc)->sendPDVLength << ")" << OFendl;
+      if (ASC_countAcceptedPresentationContexts((*assoc)->params) == 0) CERR << "    (but no valid presentation contexts)" << OFendl;
     }
 
     if (messageClient)
     {
       // notify about successfully negotiated association
       OFOStringStream out;
-      out << "DIMSE Association Acknowledged:" << endl
-          << "  calling presentation address: " << (*assoc)->params->DULparams.callingPresentationAddress << endl
-          << "  calling AE title: " << (*assoc)->params->DULparams.callingAPTitle << endl
-          << "  called AE title: " << (*assoc)->params->DULparams.calledAPTitle << endl
-          << "  max send PDV: " << (*assoc)->sendPDVLength << endl
-          << "  presentation contexts: " << ASC_countAcceptedPresentationContexts((*assoc)->params) << endl;
+      out << "DIMSE Association Acknowledged:" << OFendl
+          << "  calling presentation address: " << (*assoc)->params->DULparams.callingPresentationAddress << OFendl
+          << "  calling AE title: " << (*assoc)->params->DULparams.callingAPTitle << OFendl
+          << "  called AE title: " << (*assoc)->params->DULparams.calledAPTitle << OFendl
+          << "  max send PDV: " << (*assoc)->sendPDVLength << OFendl
+          << "  presentation contexts: " << ASC_countAcceptedPresentationContexts((*assoc)->params) << OFendl;
       ASC_dumpConnectionParameters(*assoc, out);
       out << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(out, theString)
@@ -698,7 +698,7 @@ static void handleClient(
               break;
             default:
               cond = DIMSE_BADCOMMANDTYPE; /* unsupported command */
-              CERR << "Cannot handle command: 0x" << hex << (unsigned)msg.CommandField << dec << endl;
+              CERR << "Cannot handle command: 0x" << STD_NAMESPACE hex << (unsigned)msg.CommandField << STD_NAMESPACE dec << OFendl;
               break;
           }
       }
@@ -711,14 +711,14 @@ static void handleClient(
     /* close association */
     if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      if (opt_verbose) CERR << "Association Release" << endl;
+      if (opt_verbose) CERR << "Association Release" << OFendl;
       cond = ASC_acknowledgeRelease(*assoc);
       errorCond(cond, "Cannot release association:");
       if (messageClient) messageClient->notifyConnectionClosed(DVPSIPCMessage::statusOK);
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-      if (opt_verbose) CERR << "Association Aborted" << endl;
+      if (opt_verbose) CERR << "Association Aborted" << OFendl;
       if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusWarning, "DIMSE association aborted by remote peer.");
     }
     else
@@ -735,7 +735,7 @@ static void handleClient(
 static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
 {
 
-  if (opt_verbose) CERR << "Terminating all receivers" << endl;
+  if (opt_verbose) CERR << "Terminating all receivers" << OFendl;
 
   const char *recID=NULL;
   const char *recAETitle=NULL;
@@ -773,7 +773,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
     if (opt_verbose)
     {
       CERR << "Receiver " << recID << " on port " << recPort;
-      if (recUseTLS) CERR << " with TLS" << endl; else CERR << endl;
+      if (recUseTLS) CERR << " with TLS" << OFendl; else CERR << OFendl;
     }
 
     if (recUseTLS)
@@ -936,17 +936,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #else
-            CERR << endl;
+            CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
          }
@@ -962,13 +962,13 @@ int main(int argc, char *argv[])
 
     if ((opt_cfgID == 0)&&(! opt_terminate))
     {
-        CERR << "error: paramter receiver-id required unless --terminate is specified." << endl;
+        CERR << "error: paramter receiver-id required unless --terminate is specified." << OFendl;
         return 10;
     }
 
     if (opt_verbose)
     {
-      CERR << rcsid << endl << endl;
+      CERR << rcsid << OFendl << OFendl;
     }
 
     if (opt_cfgName)
@@ -976,11 +976,11 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
         return 10;
       }
     } else {
-        CERR << "error: missing configuration file name" << endl;
+        CERR << "error: missing configuration file name" << OFendl;
         return 10;
     }
 
@@ -989,7 +989,7 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     DVConfiguration dvi(opt_cfgName);
@@ -1089,11 +1089,11 @@ int main(int argc, char *argv[])
       	dvi.getTargetCipherSuite(opt_cfgID, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
           }
           return 1;
         } else {
@@ -1105,20 +1105,20 @@ int main(int argc, char *argv[])
 #else
     if (useTLS)
     {
-        CERR << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        CERR << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
         return 10;
     }
 #endif
 
     if (networkAETitle==NULL)
     {
-        CERR << "error: no application entity title" << endl;
+        CERR << "error: no application entity title" << OFendl;
         return 10;
     }
 
     if (networkPort==0)
     {
-        CERR << "error: no or invalid port number" << endl;
+        CERR << "error: no or invalid port number" << OFendl;
         return 10;
     }
 
@@ -1126,7 +1126,7 @@ int main(int argc, char *argv[])
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
     {
-        CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << endl;
+        CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << OFendl;
         return 10;
     }
 #endif
@@ -1134,7 +1134,7 @@ int main(int argc, char *argv[])
     if (networkMaxPDU==0) networkMaxPDU = DEFAULT_MAXPDU;
     else if (networkMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
-        CERR << "warning: max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU << endl;
+        CERR << "warning: max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU << OFendl;
         networkMaxPDU = DEFAULT_MAXPDU;
     }
 
@@ -1147,10 +1147,10 @@ int main(int argc, char *argv[])
     OFOStringStream verboseParameters;
 
     OFBool comma=OFFalse;
-    verboseParameters << "Network parameters:" << endl
-         << "  port            : " << networkPort << endl
-         << "  aetitle         : " << networkAETitle << endl
-         << "  max pdu         : " << networkMaxPDU << endl
+    verboseParameters << "Network parameters:" << OFendl
+         << "  port            : " << networkPort << OFendl
+         << "  aetitle         : " << networkAETitle << OFendl
+         << "  max pdu         : " << networkMaxPDU << OFendl
          << "  options         : ";
     if (networkImplicitVROnly)
     {
@@ -1168,32 +1168,32 @@ int main(int argc, char *argv[])
       verboseParameters << "disable post-1993 VRs";
     }
     if (!comma) verboseParameters << "none";
-    verboseParameters << endl;
+    verboseParameters << OFendl;
     verboseParameters << "  TLS             : ";
-    if (useTLS) verboseParameters << "enabled" << endl; else verboseParameters << "disabled" << endl;
+    if (useTLS) verboseParameters << "enabled" << OFendl; else verboseParameters << "disabled" << OFendl;
 
 #ifdef WITH_OPENSSL
     if (useTLS)
     {
-      verboseParameters << "  TLS certificate : " << tlsCertificateFile << endl
-           << "  TLS key file    : " << tlsPrivateKeyFile << endl
-           << "  TLS DH params   : " << tlsDHParametersFile << endl
-           << "  TLS PRNG seed   : " << tlsRandomSeedFile << endl
-           << "  TLS CA directory: " << tlsCACertificateFolder << endl
-           << "  TLS ciphersuites: " << tlsCiphersuites << endl
+      verboseParameters << "  TLS certificate : " << tlsCertificateFile << OFendl
+           << "  TLS key file    : " << tlsPrivateKeyFile << OFendl
+           << "  TLS DH params   : " << tlsDHParametersFile << OFendl
+           << "  TLS PRNG seed   : " << tlsRandomSeedFile << OFendl
+           << "  TLS CA directory: " << tlsCACertificateFolder << OFendl
+           << "  TLS ciphersuites: " << tlsCiphersuites << OFendl
            << "  TLS key format  : ";
-      if (keyFileFormat == SSL_FILETYPE_PEM) verboseParameters << "PEM" << endl; else verboseParameters << "DER" << endl;
+      if (keyFileFormat == SSL_FILETYPE_PEM) verboseParameters << "PEM" << OFendl; else verboseParameters << "DER" << OFendl;
       verboseParameters << "  TLS cert verify : ";
       switch (tlsCertVerification)
       {
           case DCV_checkCertificate:
-            verboseParameters << "verify" << endl;
+            verboseParameters << "verify" << OFendl;
             break;
           case DCV_ignoreCertificate:
-            verboseParameters << "ignore" << endl;
+            verboseParameters << "ignore" << OFendl;
             break;
           default:
-            verboseParameters << "require" << endl;
+            verboseParameters << "require" << OFendl;
             break;
       }
     }
@@ -1201,14 +1201,14 @@ int main(int argc, char *argv[])
 
     verboseParameters << OFStringStream_ends;
     OFSTRINGSTREAM_GETSTR(verboseParameters, verboseParametersString)
-    if (opt_verbose) CERR << verboseParametersString << endl;
+    if (opt_verbose) CERR << verboseParametersString << OFendl;
 
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
 
     if (opt_verbose)
     {
-      CERR << "Using database in directory '" << dbfolder << "'" << endl;
+      CERR << "Using database in directory '" << dbfolder << "'" << OFendl;
     }
 
     OFCondition cond2 = EC_Normal;
@@ -1217,7 +1217,7 @@ int main(int argc, char *argv[])
 
     if (cond2.bad())
     {
-      CERR << "Unable to access database '" << dbfolder << "'" << endl;
+      CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
       return 1;
     }
 
@@ -1241,32 +1241,32 @@ int main(int argc, char *argv[])
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
       if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
       {
-        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
         return 1;
       }
       if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
       {
-        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
         return 1;
       }
       if (! tLayer->checkPrivateKeyMatchesCertificate())
       {
-        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
         return 1;
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << OFendl;
         return 1;
       }
 
@@ -1324,7 +1324,7 @@ int main(int argc, char *argv[])
           messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCP, verboseParametersString, messagePort, keepMessagePortOpen);
           if (! messageClient->isServerActive())
           {
-            CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << endl;
+            CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << OFendl;
           }
         }
         connected = 0;
@@ -1352,18 +1352,18 @@ int main(int argc, char *argv[])
             pid = (int)(fork());
             if (pid < 0)
             {
-              CERR << "Cannot create association sub-process: " << strerror(errno) << endl;
+              CERR << "Cannot create association sub-process: " << strerror(errno) << OFendl;
               refuseAssociation(assoc, ref_CannotFork);
 
               if (messageClient)
               {
                 // notify about rejected association
                 OFOStringStream out;
-                out << "DIMSE Association Rejected:" << endl
-                    << "  reason: cannot create association sub-process: " << strerror(errno) << endl
-                    << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << endl
-                    << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-                    << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+                out << "DIMSE Association Rejected:" << OFendl
+                    << "  reason: cannot create association sub-process: " << strerror(errno) << OFendl
+                    << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << OFendl
+                    << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
+                    << "  called AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
                 ASC_dumpConnectionParameters(assoc, out);
                 out << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(out, theString)
@@ -1431,18 +1431,18 @@ int main(int argc, char *argv[])
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS, opt_correctUIDPadding);
               finished1=OFTrue;
             } else {
-              CERR << "Cannot execute command line: " << commandline << endl;
+              CERR << "Cannot execute command line: " << commandline << OFendl;
               refuseAssociation(assoc, ref_CannotFork);
 
               if (messageClient)
               {
                 // notify about rejected association
                 OFOStringStream out;
-                out << "DIMSE Association Rejected:" << endl
-                    << "  reason: cannot execute command line: " << commandline << endl
-                    << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << endl
-                    << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-                    << "  called AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+                out << "DIMSE Association Rejected:" << OFendl
+                    << "  reason: cannot execute command line: " << commandline << OFendl
+                    << "  calling presentation address: " << assoc->params->DULparams.callingPresentationAddress << OFendl
+                    << "  calling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
+                    << "  called AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
                 ASC_dumpConnectionParameters(assoc, out);
                 out << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(out, theString)
@@ -1480,10 +1480,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
         }
       } else {
-	CERR << "Warning: cannot write back random seed, ignoring." << endl;
+	CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
       }
     }
     delete tLayer;
@@ -1502,7 +1502,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.53  2006-07-27 14:41:35  joergr
+ * Revision 1.54  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.53  2006/07/27 14:41:35  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

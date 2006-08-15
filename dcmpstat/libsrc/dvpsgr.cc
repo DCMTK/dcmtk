@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:30 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -95,7 +95,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicAnnotationUnits VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -105,7 +105,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   } else {
@@ -115,7 +115,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << endl;
+        logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicDimensions != 2" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -126,7 +126,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -135,7 +135,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with numberOfGraphicPoints VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -145,7 +145,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -154,7 +154,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicData VM < 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -164,7 +164,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -173,7 +173,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicType VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -183,7 +183,7 @@ OFCondition DVPSGraphicObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic object SQ item with graphicFilled present but VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -329,7 +329,11 @@ void DVPSGraphicObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.11  2005-12-08 15:46:30  meichel
+ *  Revision 1.12  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.11  2005/12/08 15:46:30  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.10  2001/09/26 15:36:27  meichel

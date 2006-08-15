@@ -21,10 +21,10 @@
  *
  *  Purpose: Sample message server for class DVPSIPCClient
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:42:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-      CERR << rcsid << endl << endl;
+      CERR << rcsid << OFendl << OFendl;
     }
 
     SetDebugLevel((opt_debugMode));
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
     unsigned short networkPort = (unsigned short) opt_port;
     if (networkPort==0)
     {
-      CERR << "error: no or invalid port number" << endl;
+      CERR << "error: no or invalid port number" << OFendl;
       return 10;
     }
 
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     /* if port is privileged we must be as well */
     if ((networkPort < 1024)&&(geteuid() != 0))
     {
-      CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << endl;
+      CERR << "error: cannot listen on port " << networkPort << ", insufficient privileges" << OFendl;
       return 10;
     }
 #endif
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
     int s = socket(AF_INET, SOCK_STREAM, 0);
     if (s < 0)
     {
-      CERR << "error: failed to create socket." << endl;
+      CERR << "error: failed to create socket." << OFendl;
       return 10;
     }
 
@@ -187,7 +187,7 @@ int main(int argc, char *argv[])
     int reuse = 1;
     if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
     {
-      CERR << "error: failed to set socket options." << endl;
+      CERR << "error: failed to set socket options." << OFendl;
       return 10;
     }
 #endif
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
     server.sin_port = (unsigned short) htons(networkPort);
     if (bind(s, (struct sockaddr *) & server, sizeof(server)))
     {
-      CERR << "error: failed to bind socket to port, already in use?" << endl;
+      CERR << "error: failed to bind socket to port, already in use?" << OFendl;
       return 10;
     }
     listen(s, 64);  // accept max 64 pending TCP connections on this socket
@@ -250,7 +250,7 @@ int main(int argc, char *argv[])
 
         if (sock < 0)
         {
-          CERR << "error: unable to accept incoming connection" << endl;
+          CERR << "error: unable to accept incoming connection" << OFendl;
           return 10;
         }
 
@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
         reuse = 1;
         if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
         {
-          CERR << "error: failed to set socket options." << endl;
+          CERR << "error: failed to set socket options." << OFendl;
           return 10;
         }
 #endif
@@ -288,63 +288,63 @@ int main(int argc, char *argv[])
             msgType = msg.getMessageType();
             if (msgType == DVPSIPCMessage::OK)
             {
-                COUT << "received 'OK' (should not happen)" << endl;
+                COUT << "received 'OK' (should not happen)" << OFendl;
             } else if (msgType == DVPSIPCMessage::requestApplicationID) {
-                COUT << "New client requests application ID, assigning #" << clientID+1 << endl
+                COUT << "New client requests application ID, assigning #" << clientID+1 << OFendl
                      << "Application Type: ";
-                if (msg.extractIntFromPayload(i)) COUT << applicationType(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << applicationType(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::assignApplicationID) {
-                COUT << "received 'AssignApplicationID' (should not happen)." << endl;
+                COUT << "received 'AssignApplicationID' (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::applicationTerminates) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Application Terminates, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
             } else if (msgType == DVPSIPCMessage::receivedUnencryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Received Unencrypted DICOM Connection, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::receivedEncryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Received Encrypted DICOM Connection, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::connectionClosed) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Connection Closed, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
             } else if (msgType == DVPSIPCMessage::connectionAborted) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Connection Aborted, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::requestedUnencryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Requested Unencrypted DICOM Connection, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::requestedEncryptedDICOMConnection) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Requested Encrypted DICOM Connection, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::receivedDICOMObject) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Received DICOM Object, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else if (msgType == DVPSIPCMessage::sentDICOMObject) {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "Sent DICOM Object, status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
-                if (msg.extractStringFromPayload(str)) COUT << str << endl; else COUT << "No description (should not happen)." << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
+                if (msg.extractStringFromPayload(str)) COUT << str << OFendl; else COUT << "No description (should not happen)." << OFendl;
             } else {
                 if (msg.extractIntFromPayload(i)) COUT << "#" << i << ": "; else COUT << "unknown client: ";
                 COUT << "received unknown message type " << msg.getMessageType() << ", status: ";
-                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << endl; else COUT << "(none)" << endl;
+                if (msg.extractIntFromPayload(i)) COUT << statusString(i) << OFendl; else COUT << "(none)" << OFendl;
             }
-            COUT << endl;
+            COUT << OFendl;
             msg.erasePayload();
             if (msg.getMessageType() == DVPSIPCMessage::requestApplicationID)
             {
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
             }
             if (! msg.send(connection))
             {
-              CERR << "warning: unable to send response message, closing connection." << endl;
+              CERR << "warning: unable to send response message, closing connection." << OFendl;
               finished = OFTrue;
             }
           } else finished = OFTrue;
@@ -377,7 +377,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.12  2006-07-27 14:42:59  joergr
+ * Revision 1.13  2006-08-15 16:57:02  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.12  2006/07/27 14:42:59  joergr
  * Prepended prefix "PF_" to parseLine() flags.
  *
  * Revision 1.11  2005/12/14 17:43:42  meichel

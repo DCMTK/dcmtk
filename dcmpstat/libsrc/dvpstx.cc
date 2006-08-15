@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:53 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with unformattedTextValue absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with unformattedTextValue absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -106,7 +106,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with unformattedTextValue VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with unformattedTextValue VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -116,7 +116,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxAnnotationUnits VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxAnnotationUnits VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -126,7 +126,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPointAnnotationUnits VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPointAnnotationUnits VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -136,7 +136,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPointVisibility VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPointVisibility VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -146,7 +146,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM == 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM == 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -155,7 +155,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM > 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTLHC VM > 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -165,7 +165,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM == 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM == 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -174,7 +174,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM > 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxBRHC VM > 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -184,7 +184,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -194,7 +194,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPoint VM == 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPoint VM == 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -203,7 +203,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPoint VM > 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchorPoint VM > 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -216,7 +216,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -227,7 +227,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -237,7 +237,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchor point but anchorPointAnnotationUnits absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchor point but anchorPointAnnotationUnits absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -247,7 +247,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchor point but anchorPointVisibility absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item with anchor point but anchorPointVisibility absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -257,7 +257,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -267,7 +267,7 @@ OFCondition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a text object SQ item without bounding box and anchor point" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -512,7 +512,11 @@ void DVPSTextObject::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.13  2005-12-08 15:46:53  meichel
+ *  Revision 1.14  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.13  2005/12/08 15:46:53  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.12  2002/11/27 15:48:17  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ OFCondition DVPSOverlayCurveActivationLayer::read(DcmItem &dset, Uint16 ovGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a curve or overlay activation layer with VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -130,7 +130,11 @@ void DVPSOverlayCurveActivationLayer::setLog(OFConsole *stream, OFBool verbMode,
 
 /*
  *  $Log: dvpsal.cc,v $
- *  Revision 1.8  2005-12-08 15:46:18  meichel
+ *  Revision 1.9  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.8  2005/12/08 15:46:18  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.7  2001/09/26 15:36:23  meichel

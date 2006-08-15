@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:33:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,11 +127,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     if (!dcmDataDict.isDictionaryLoaded()) {
 	CERR << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+	     << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     DcmFileFormat *fileformat = new DcmFileFormat;
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
     {
 	CERR << "Error: "
 	     << error.text()
-	     << ": reading file: " <<  opt_inName << endl;
+	     << ": reading file: " <<  opt_inName << OFendl;
 	return 1;
     }
 
@@ -191,17 +191,17 @@ int main(int argc, char *argv[])
 
     /* read curve data */
 
-    ifstream curvefile(opt_curveName);
+    STD_NAMESPACE ifstream curvefile(opt_curveName);
     if (!curvefile)
     {
-      CERR << "cannot open curve file: " << opt_curveName << endl;
+      CERR << "cannot open curve file: " << opt_curveName << OFendl;
       return 1;
     }
 
     double *array = new double[MAX_POINTS*2];
     if (array==NULL)
     {
-      CERR << "out of memory" << endl;
+      CERR << "out of memory" << OFendl;
       return 1;
     }
 
@@ -213,7 +213,7 @@ int main(int argc, char *argv[])
       curvefile >> d;
       if (idx == MAX_POINTS*2)
       {
-      	CERR << "warning: too many curve points, can only handle " << MAX_POINTS << "." << endl;
+      	CERR << "warning: too many curve points, can only handle " << MAX_POINTS << "." << OFendl;
         done = OFTrue;
       } else {
       	if (curvefile.good()) array[idx++] = d;
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
     if ((!curveDimensions)||(!numberOfPoints)||(!typeOfData)||(!dataValueRepresentation)
        ||(!curveDescription)||(!axisUnits)||(!curveLabel))
     {
-      CERR << "out of memory" << endl;
+      CERR << "out of memory" << OFendl;
       return 1;
     }
 
@@ -285,47 +285,47 @@ int main(int argc, char *argv[])
     switch (opt_data_vr)
     {
       case 0: // US
-        if (opt_verbose) CERR << "creating curve, VR=US, points=" << idx/2 << endl;
+        if (opt_verbose) CERR << "creating curve, VR=US, points=" << idx/2 << OFendl;
         rawData = new Uint16[idx];
-        if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
         byteLength = sizeof(Uint16)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Uint16 *,rawData)[i] = OFstatic_cast(Uint16,array[i]);
         align = sizeof(Uint16);
         break;
       case 1: // SS
-        if (opt_verbose) CERR << "creating curve, VR=SS, points=" << idx/2 << endl;
+        if (opt_verbose) CERR << "creating curve, VR=SS, points=" << idx/2 << OFendl;
         rawData = new Sint16[idx];
-        if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
         byteLength = sizeof(Sint16)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Sint16 *,rawData)[i] = OFstatic_cast(Sint16,array[i]);
         align = sizeof(Sint16);
         break;
       case 2: // FL
-        if (opt_verbose) CERR << "creating curve, VR=FL, points=" << idx/2 << endl;
+        if (opt_verbose) CERR << "creating curve, VR=FL, points=" << idx/2 << OFendl;
         rawData = new Float32[idx];
-        if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
         byteLength = sizeof(Float32)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Float32 *,rawData)[i] = OFstatic_cast(Float32,array[i]);
         align = sizeof(Float32);
         break;
       case 3: // FD
-        if (opt_verbose) CERR << "creating curve, VR=FD, points=" << idx/2 << endl;
+        if (opt_verbose) CERR << "creating curve, VR=FD, points=" << idx/2 << OFendl;
         rawData = new Float64[idx];
-        if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
         byteLength = sizeof(Float64)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Float64 *,rawData)[i] = OFstatic_cast(Float64,array[i]);
         align = sizeof(Float64);
         break;
       case 4: // SL
-        if (opt_verbose) CERR << "creating curve, VR=SL, points=" << idx/2 << endl;
+        if (opt_verbose) CERR << "creating curve, VR=SL, points=" << idx/2 << OFendl;
         rawData = new Sint32[idx];
-        if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (rawData==NULL) { CERR << "out of memory" << OFendl; return 1; }
         byteLength = sizeof(Sint32)*idx;
         for (i=0; i<idx; i++) OFstatic_cast(Sint32 *,rawData)[i] = OFstatic_cast(Sint32,array[i]);
         align = sizeof(Sint32);
         break;
       default:
-        CERR << "unknown data VR, bailing out" << endl;
+        CERR << "unknown data VR, bailing out" << OFendl;
         return 1;
     }
 
@@ -336,37 +336,37 @@ int main(int argc, char *argv[])
         switch (opt_data_vr)
         {
           case 0: // US
-            if (opt_verbose) CERR << "encoding curve data element as VR=US" << endl;
+            if (opt_verbose) CERR << "encoding curve data element as VR=US" << OFendl;
             element = new DcmUnsignedShort(DcmTag(DCM_CurveData, EVR_US));
-            if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
             break;
           case 1: // SS
-            if (opt_verbose) CERR << "encoding curve data element as VR=SS" << endl;
+            if (opt_verbose) CERR << "encoding curve data element as VR=SS" << OFendl;
             element = new DcmSignedShort(DcmTag(DCM_CurveData, EVR_SS));
-            if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putSint16Array(OFstatic_cast(Sint16 *,rawData), byteLength/sizeof(Sint16));
             break;
           case 2: // FL
-            if (opt_verbose) CERR << "encoding curve data element as VR=FL" << endl;
+            if (opt_verbose) CERR << "encoding curve data element as VR=FL" << OFendl;
             element = new DcmFloatingPointSingle(DcmTag(DCM_CurveData, EVR_FL));
-            if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putFloat32Array(OFstatic_cast(Float32 *,rawData), byteLength/sizeof(Float32));
             break;
           case 3: // FD
-            if (opt_verbose) CERR << "encoding curve data element as VR=FD" << endl;
+            if (opt_verbose) CERR << "encoding curve data element as VR=FD" << OFendl;
             element = new DcmFloatingPointDouble(DcmTag(DCM_CurveData, EVR_FD));
-            if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putFloat64Array(OFstatic_cast(Float64 *,rawData), byteLength/sizeof(Float64));
             break;
           case 4: // SL
-            if (opt_verbose) CERR << "encoding curve data element as VR=SL" << endl;
+            if (opt_verbose) CERR << "encoding curve data element as VR=SL" << OFendl;
             element = new DcmSignedLong(DcmTag(DCM_CurveData, EVR_SL));
-            if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+            if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putSint32Array(OFstatic_cast(Sint32 *,rawData), byteLength/sizeof(Sint32));
             break;
           default:
-            CERR << "unknown data VR, bailing out" << endl;
+            CERR << "unknown data VR, bailing out" << OFendl;
             return 1;
         }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
@@ -374,10 +374,10 @@ int main(int argc, char *argv[])
         break;
       case 1: // OB
         // create little endian byte order
-        if (opt_verbose) CERR << "encoding curve data element as VR=OB" << endl;
+        if (opt_verbose) CERR << "encoding curve data element as VR=OB" << OFendl;
         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
         element = new DcmOtherByteOtherWord(DCM_CurveData);
-        if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OB);
         element->putUint8Array(OFstatic_cast(Uint8 *,rawData), byteLength);
@@ -385,21 +385,21 @@ int main(int argc, char *argv[])
         break;
       case 2: // OW
         // create little endian byte order
-        if (opt_verbose) CERR << "encoding curve data element as VR=OW" << endl;
+        if (opt_verbose) CERR << "encoding curve data element as VR=OW" << OFendl;
         if (align != sizeof(Uint16))
         {
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawData, byteLength, sizeof(Uint16));
         }
         element = new DcmOtherByteOtherWord(DCM_CurveData);
-        if (element==NULL) { CERR << "out of memory" << endl; return 1; }
+        if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OW);
         element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
         dataset->insert(element, OFTrue);
         break;
       default:
-        CERR << "unsupported VR, bailing out" << endl;
+        CERR << "unsupported VR, bailing out" << OFendl;
         return 1;
     }
     /* write back */
@@ -409,7 +409,7 @@ int main(int argc, char *argv[])
     {
 	CERR << "Error: "
 	     << error.text()
-	     << ": writing file: " <<  opt_outName << endl;
+	     << ": writing file: " <<  opt_outName << OFendl;
 	return 1;
     }
 
@@ -421,7 +421,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.20  2006-07-27 14:33:49  joergr
+** Revision 1.21  2006-08-15 16:57:01  meichel
+** Updated the code in module dcmpstat to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.20  2006/07/27 14:33:49  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

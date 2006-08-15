@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:59 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ void DVSignatureHandler::replaceString(DVPSObjectType objtype, const char *str)
   }
 }
 
-void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, ostream& os)
+void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, STD_NAMESPACE ostream& os)
 {
   DcmObject *elem = NULL;
   DcmSequenceOfItems *sq = NULL;
@@ -387,19 +387,19 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& /*dataset*/,
   switch (objtype)
   {
     case DVPSS_structuredReport:
-      if (counter == 0) os << "The current structured report does not contain any digital signature." << endl;
+      if (counter == 0) os << "The current structured report does not contain any digital signature." << OFendl;
       corruptSignaturesSR = corrupt_counter;
       untrustSignaturesSR = untrustworthy_counter;  
       correctSignaturesSR = counter - corrupt_counter - untrustworthy_counter;
       break;
     case DVPSS_image:
-      if (counter == 0) os << "The current image does not contain any digital signature." << endl;
+      if (counter == 0) os << "The current image does not contain any digital signature." << OFendl;
       corruptSignaturesImage = corrupt_counter;
       untrustSignaturesImage = untrustworthy_counter;  
       correctSignaturesImage = counter - corrupt_counter - untrustworthy_counter;
       break;
     case DVPSS_presentationState:
-      if (counter == 0) os << "The current presentation state does not contain any digital signature." << endl;
+      if (counter == 0) os << "The current presentation state does not contain any digital signature." << OFendl;
       corruptSignaturesPState = corrupt_counter;
       untrustSignaturesPState = untrustworthy_counter;  
       correctSignaturesPState = counter - corrupt_counter - untrustworthy_counter;
@@ -877,7 +877,11 @@ OFCondition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.14  2005-12-08 15:46:59  meichel
+ *  Revision 1.15  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.14  2005/12/08 15:46:59  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.13  2004/02/04 15:57:49  joergr

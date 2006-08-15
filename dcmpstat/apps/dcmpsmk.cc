@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates
  *    a matching presentation state.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:39:02 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,11 +186,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -288,13 +288,13 @@ int main(int argc, char *argv[])
     // additional checks
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "invalid input filename: <empty string>" << endl;
+        CERR << "invalid input filename: <empty string>" << OFendl;
         return 1;
     }
 
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        CERR << "invalid output filename: <empty string>" << endl;
+        CERR << "invalid output filename: <empty string>" << OFendl;
         return 1;
     }
 
@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     // open input file
@@ -313,7 +313,7 @@ int main(int argc, char *argv[])
 
     if (verbosemode)
         COUT << "read and interpret DICOM file "
-             << opt_ifname << endl;
+             << opt_ifname << OFendl;
 
 
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": reading file: " <<  opt_ifname << endl;
+             << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
     DcmPresentationState state;
     if (verbosemode)
     {
-        COUT << "creating presentation state object" << endl;
+        COUT << "creating presentation state object" << OFendl;
     }
 
     error = state.createFromImage(*dataset, overlayActivation, voiActivation,
@@ -340,7 +340,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": creating presentation state from image file: " << opt_ifname << endl;
+             << ": creating presentation state from image file: " << opt_ifname << OFendl;
         return 1;
     }
 
@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
     if (cmd.getParamCount() > 2)
     {
         if (verbosemode)
-            COUT << "adding additonal image reference(s)" << endl;
+            COUT << "adding additonal image reference(s)" << OFendl;
         const int count = cmd.getParamCount();
         for (int i = 2; i < count; i++)
         {
@@ -378,7 +378,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": re-encoding presentation state : " <<  opt_ifname << endl;
+             << ": re-encoding presentation state : " <<  opt_ifname << OFendl;
         return 1;
     }
 
@@ -415,7 +415,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": writing file: " <<  opt_ofname << endl;
+             << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
 
@@ -429,7 +429,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.23  2006-07-27 14:39:02  joergr
+** Revision 1.24  2006-08-15 16:57:01  meichel
+** Updated the code in module dcmpstat to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.23  2006/07/27 14:39:02  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

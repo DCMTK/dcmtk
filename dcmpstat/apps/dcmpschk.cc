@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:38:03 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ static const char *     opt_logfilename     = NULL;
 static const char *     opt_filename        = NULL;
 static int              opt_debugMode       = 0;
 
-static ostream *        logstream           = &COUT;
+static STD_NAMESPACE ostream *        logstream           = &COUT;
 
 // ********************************************
 
@@ -97,37 +97,37 @@ enum ErrorMode
 #define MSGw_wrongDType    "Warning: Attribute value uses retired form."
 
 void printVRError(
-  ostream& out,
+  STD_NAMESPACE ostream& out,
   ErrorMode mode,
   const char *elementDescription,
   const DcmDictEntry* dictRef,
   const char *format)
 {
-  if (mode == EM_error)              out << MSGe_wrongDType << endl;
-  else if (mode == EM_warning)       out << MSGw_wrongDType << endl;
-  else if (mode == EM_informational) out << MSGi_wrongDType << endl;
+  if (mode == EM_error)              out << MSGe_wrongDType << OFendl;
+  else if (mode == EM_warning)       out << MSGw_wrongDType << OFendl;
+  else if (mode == EM_informational) out << MSGi_wrongDType << OFendl;
   out << "   Affected attribute: ";
   if (dictRef)
   {
      out << dictRef->getTagName();
      out << " " << dictRef->getKey();
-     out << ", Type " << dictRef->getVR().getVRName() << endl;
-  } else out << "(unnamed)" << endl;
+     out << ", Type " << dictRef->getVR().getVRName() << OFendl;
+  } else out << "(unnamed)" << OFendl;
   out << "   Attribute value   : ";
-  if (elementDescription) out << "[" << elementDescription << "]" << endl;
-  else out << "(empty)" << endl;
+  if (elementDescription) out << "[" << elementDescription << "]" << OFendl;
+  else out << "(empty)" << OFendl;
   if (mode == EM_error)
   {
     out << "   Expected format for each value: ";
     if (format)
     {
-      out << format << endl;
-    } else out << "(undefined)" << endl;
+      out << format << OFendl;
+    } else out << "(undefined)" << OFendl;
   }
-  out << endl;
+  out << OFendl;
 }
 
-void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
+void printResult(STD_NAMESPACE ostream& out, DcmStack& stack, OFBool showFullData)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -265,7 +265,7 @@ OFBool isaKnownPointer(DcmTag& t)
     return result;
 }
 
-int scanValue(istream& scannerInput)
+int scanValue(STD_NAMESPACE istream& scannerInput)
 {
    vrscan valueScanner;
    valueScanner.yyin = &scannerInput;
@@ -275,7 +275,7 @@ int scanValue(istream& scannerInput)
    return firstResult;
 }
 
-int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
+int checkelem(STD_NAMESPACE ostream&  out, DcmElement *elem,  DcmXfer& oxfer,
         DcmStack& stack, OFBool showFullData,
         int& dderrors, OFBool /* verbose */)
 {
@@ -293,21 +293,21 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
     */
     if (oxfer.isExplicitVR()) {
         if (!vr.isStandard() && !isaKnownPointer(tag)) {
-            out << MSG_invalidVR << endl
+            out << MSG_invalidVR << OFendl
                 << "   Affected VR       : [" << vr.getVRName() << "]";
             if (dictRef) out << ", should be ["
                 << dictRef->getVR().getVRName() << "] according to data dictionary.";
-            out << endl << "   Affected attribute: ";
+            out << OFendl << "   Affected attribute: ";
             printResult(out, stack, showFullData);
-            out << endl;
+            out << OFendl;
             dderrors++;
         } else if (dictRef && !vr.isEquivalent(dictRef->getVR())) {
-            out << MSG_unexpectedVR << endl
+            out << MSG_unexpectedVR << OFendl
                 << "   Affected VR       : [" << vr.getVRName() << "], should be ["
-                << dictRef->getVR().getVRName() << "] according to data dictionary." << endl
+                << dictRef->getVR().getVRName() << "] according to data dictionary." << OFendl
                 << "   Affected attribute: ";
             printResult(out, stack, showFullData);
-            out << endl;
+            out << OFendl;
             dderrors++;
         }
     }
@@ -320,23 +320,23 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
        */
        if ((dictRef)&&(vm < (Uint32)dictRef->getVMMin()))
        {
-           out << MSG_vmtoosmall << endl
+           out << MSG_vmtoosmall << OFendl
                << "   Affected VM       : " << vm << ", should be "
                << streamvm(dictRef) << " according to data dictionary."
-               << endl << "   Affected attribute: ";
+               << OFendl << "   Affected attribute: ";
            printResult(out, stack, showFullData);
-           out << endl;
+           out << OFendl;
            dderrors++;
        }
 
        if ((dictRef)&&(vm > (Uint32)dictRef->getVMMax()))
        {
-           out << MSG_vmtoolarge << endl
+           out << MSG_vmtoolarge << OFendl
                << "   Affected VM       : " << vm << ", should be "
                << streamvm(dictRef) << " according to data dictionary."
-               << endl << "   Affected attribute: ";
+               << OFendl << "   Affected attribute: ";
            printResult(out, stack, showFullData);
-           out << endl;
+           out << OFendl;
            dderrors++;
        }
 
@@ -352,37 +352,37 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            char **fields = new char*[vm+1];
            if (fields == NULL) {
                printResult(out, stack, showFullData);
-               out << "Internal error: out of memory (value multiplicity too large)" << endl;
+               out << "Internal error: out of memory (value multiplicity too large)" << OFendl;
            } else {
                int nfields = splitFields(value, fields, vm, '\\');
                if ((Uint32)nfields != vm) {
                    printResult(out, stack, showFullData);
                    out << "Internal error: splitFields inconsistency ("
-                       << nfields << "!=" << vm << ")" << endl;
+                       << nfields << "!=" << vm << ")" << OFendl;
                    exit(1);
                }
                for (i=0; (Uint32)i<vm; i++) {
                    char* s = fields[i];
                    int slen = strlen(s);
                    if ((Uint32)slen > vr.getMaxValueLength()) {
-                       out << MSG_lengthtoolarge << endl
+                       out << MSG_lengthtoolarge << OFendl
                            << "   Affected length   : " << slen << " bytes, should be "
-                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl;
-                    if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << endl;
+                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl;
+                    if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << OFendl;
                        out << "   Affected attribute: ";
                        printResult(out, stack, showFullData);
                     dderrors++;
-                    out << endl;
+                    out << OFendl;
                    }
                    if ((Uint32)slen < vr.getMinValueLength()) {
-                       out << MSG_lengthtoosmall << endl
+                       out << MSG_lengthtoosmall << OFendl
                            << "   Affected length   : " << slen << " bytes, should be "
-                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl;
-                    if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << endl;
+                           << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl;
+                    if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << OFendl;
                        out << "   Affected attribute: ";
                        printResult(out, stack, showFullData);
                     dderrors++;
-                    out << endl;
+                    out << OFendl;
                    }
 
                    delete[] fields[i];
@@ -394,22 +394,22 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            Uint32 componentSize = len; /* vm is 0 if value field is too short, e.g. < 8 bytes for FD */
            if (vm>0) componentSize = len/vm;
            if (componentSize > vr.getMaxValueLength()) {
-               out << MSG_lengthtoolarge << endl
+               out << MSG_lengthtoolarge << OFendl
                    << "   Affected length   : " << componentSize << " bytes, should be "
-                   << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl
+                   << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl
                    << "   Affected attribute: ";
                printResult(out, stack, showFullData);
             dderrors++;
-            out << endl;
+            out << OFendl;
         }
            if (componentSize < vr.getMinValueLength()) {
-               out << MSG_lengthtoosmall << endl
+               out << MSG_lengthtoosmall << OFendl
                    << "   Affected length   : " << componentSize << " bytes, should be "
-                   << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl
+                   << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << OFendl
                    << "   Affected attribute: ";
                printResult(out, stack, showFullData);
             dderrors++;
-            out << endl;
+            out << OFendl;
            }
        }
 
@@ -611,7 +611,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
     return 0;
 }
 
-int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
+int checkitem(STD_NAMESPACE ostream&  out, DcmItem *item,  DcmXfer& oxfer,
         DcmStack& stack, OFBool showFullData, int& dderrors, OFBool verbose)
 {
 
@@ -645,7 +645,7 @@ int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
 }
 
 int dcmchk(
-  ostream & out,
+  STD_NAMESPACE ostream&  out,
   const char* ifname,
   E_FileReadMode readMode,
   E_TransferSyntax xfer,
@@ -659,7 +659,7 @@ int dcmchk(
     OFCondition cond = ds->loadFile(ifname, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
     if (! cond.good())
     {
-      out << "Error: " << cond.text() << " reading file: " << ifname << endl;
+      out << "Error: " << cond.text() << " reading file: " << ifname << OFendl;
     }
 
     if (loadAllDataInMemory) {
@@ -667,7 +667,7 @@ int dcmchk(
         if (ds->error() != EC_Normal)
         {
            out << "Error: " << ds->error().text()
-                << " reading file: " << ifname << endl;
+                << " reading file: " << ifname << OFendl;
             return 1;
         }
     }
@@ -693,7 +693,7 @@ int dcmchk(
 //*********************************************************
 
 static void
-printAttribute(ostream& out, DcmItem* dset,
+printAttribute(STD_NAMESPACE ostream& out, DcmItem* dset,
                const DcmTagKey& key)
 {
     DcmElement *elem = NULL;
@@ -706,22 +706,22 @@ printAttribute(ostream& out, DcmItem* dset,
 }
 
 static OFBool
-chkType1AttributeExistance(ostream& out, DcmItem* dset,
+chkType1AttributeExistance(STD_NAMESPACE ostream& out, DcmItem* dset,
                       const DcmTagKey& key)
 {
     OFBool found = OFTrue;
     if (!dset->tagExistsWithValue(key)) {
         DcmTag t(key);
-        out << MSGe_missingAtt << endl
+        out << MSGe_missingAtt << OFendl
             << "   Affected attribute: " << t.getXTag()
-            << " " << t.getTagName() << endl;
-        out << endl;
+            << " " << t.getTagName() << OFendl;
+        out << OFendl;
         found = OFFalse;
     }
     return found;
 }
 
-int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
+int dcmchkMetaHeader(STD_NAMESPACE ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
 {
 
     if (meta == NULL || meta->card() == 0) {
@@ -737,9 +737,9 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     if (meta->getOriginalXfer() != EXS_LittleEndianExplicit) {
         DcmXfer used(meta->getOriginalXfer());
         DcmXfer expected(EXS_LittleEndianExplicit);
-        out << MSGe_mhxferError << endl
-            << "    Expected: " << expected.getXferName() << endl
-            << "    Used:     " << used.getXferName() << endl << endl;
+        out << MSGe_mhxferError << OFendl
+            << "    Expected: " << expected.getXferName() << OFendl
+            << "    Used:     " << used.getXferName() << OFendl << OFendl;
         nErrs++;
     }
 
@@ -757,11 +757,11 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
         meta->findAndGetUint8(fmiv, b1, 1);
         // we expect 0x00/0x01 for the version
         if ((b0 != 0x00) || (b1 != 0x01)) {
-            out << MSGe_wrongAtt << endl
+            out << MSGe_wrongAtt << OFendl
                 << "   Invalid FileMetaInformationVersion (expected: 00\\01)"
-                << endl << "   Affected attribute: " << endl << "      ";
+                << OFendl << "   Affected attribute: " << OFendl << "      ";
             printAttribute(out, meta, fmiv);
-            out << endl;
+            out << OFendl;
             nErrs++;
         }
     } else {
@@ -778,22 +778,22 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
             OFString datasetClassUID;
             dset->findAndGetOFStringArray(DCM_SOPClassUID, datasetClassUID);
             if (metaHeaderClassUID != datasetClassUID) {
-                out << MSGe_wrongAtt << endl
+                out << MSGe_wrongAtt << OFendl
                     << "   Inconsistent SOP class information"
-                << endl << "   Affected attributes: " << endl << "      ";
+                << OFendl << "   Affected attributes: " << OFendl << "      ";
                 printAttribute(out, meta, msscuid);
                 out << "      ";
                 printAttribute(out, dset, DCM_SOPClassUID);
-                out << endl;
+                out << OFendl;
                 nErrs++;
             }
         }
         if (!dcmFindNameOfUID(metaHeaderClassUID.c_str())) {
-            out << MSGe_wrongAtt << endl
+            out << MSGe_wrongAtt << OFendl
                 << "   Unknown SOP Class"
-                << endl << "   Affected attribute: " << endl << "      ";
+                << OFendl << "   Affected attribute: " << OFendl << "      ";
             printAttribute(out, meta, msscuid);
-            out << endl;
+            out << OFendl;
             nErrs++;
         }
     } else {
@@ -810,13 +810,13 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
             OFString datasetInstanceUID;
             dset->findAndGetOFStringArray(DCM_SOPInstanceUID, datasetInstanceUID);
             if (metaHeaderInstanceUID != datasetInstanceUID) {
-                out << MSGe_wrongAtt << endl
+                out << MSGe_wrongAtt << OFendl
                     << "   Inconsistent SOP instance information"
-                << endl << "   Affected attributes: " << endl << "      ";
+                << OFendl << "   Affected attributes: " << OFendl << "      ";
                 printAttribute(out, meta, mssiuid);
                 out << "      ";
                 printAttribute(out, dset, DCM_SOPInstanceUID);
-                out << endl;
+                out << OFendl;
                 nErrs++;
             }
         }
@@ -832,11 +832,11 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
         // is this transfer syntax known ?
         DcmXfer expected(transferSyntaxUID.c_str());
         if (expected.getXfer() == EXS_Unknown) {
-            out << MSGe_wrongAtt << endl
+            out << MSGe_wrongAtt << OFendl
                 << "   Unknown Transfer Syntax"
-                << endl << "   Affected attribute: " << endl << "      ";
+                << OFendl << "   Affected attribute: " << OFendl << "      ";
             printAttribute(out, meta, tsuid);
-            out << endl;
+            out << OFendl;
             nErrs++;
         }
 
@@ -845,12 +845,12 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
             DcmXfer used(dset->getOriginalXfer());
             OFString usedTransferSyntaxUID(used.getXferID());
             if (transferSyntaxUID != usedTransferSyntaxUID) {
-                out << MSGe_wrongAtt << endl
+                out << MSGe_wrongAtt << OFendl
                     << "   Dataset not encoded using specified transfer syntax"
-                    << endl << "   Affected attribute: " << endl << "      ";
+                    << OFendl << "   Affected attribute: " << OFendl << "      ";
                 printAttribute(out, meta, tsuid);
                 out << "   Dataset encoded using: " << used.getXferName()
-                    << endl << endl;
+                    << OFendl << OFendl;
                 nErrs++;
             }
 
@@ -870,12 +870,12 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
         expectedLength -= 12; // less length of group length element itself
 
         if (len != expectedLength) {
-            out << MSGe_wrongAtt << endl
+            out << MSGe_wrongAtt << OFendl
                 << "   Invalid meta-header group length (expected: "
                 <<  expectedLength  << ")"
-                << endl << "   Affected attribute: " << endl << "      ";
+                << OFendl << "   Affected attribute: " << OFendl << "      ";
             printAttribute(out, meta, gltag);
-            out << endl;
+            out << OFendl;
             nErrs++;
         }
     } else {
@@ -885,19 +885,19 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     return nErrs;
 }
 
-int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *outconsole, OFBool opt_debug)
+int checkfile(const char *filename, OFBool verbose, STD_NAMESPACE ostream& out, OFConsole *outconsole, OFBool opt_debug)
 {
     DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile == NULL)
     {
-      out << "Error: out of memory." << endl;
+      out << "Error: out of memory." << OFendl;
       return -1;
     }
 
     OFCondition cond = dfile->loadFile(filename);
     if (! cond.good())
     {
-      out << "Error: " << cond.text() << " reading file: " << filename << endl;
+      out << "Error: " << cond.text() << " reading file: " << filename << OFendl;
       delete dfile;
       return -1;
     }
@@ -910,30 +910,30 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
 
     if (verbose)
     {
-      out << "=========================================================" << endl;
+      out << "=========================================================" << OFendl;
     }
-    out << "Testing: " << filename << endl;
+    out << "Testing: " << filename << OFendl;
     if (verbose)
     {
-      out << "=========================================================" << endl << endl;
-    } else out << endl;
+      out << "=========================================================" << OFendl << OFendl;
+    } else out << OFendl;
 
     if (MetaInfo)
     {
       if (verbose)
       {
-        out << "---------------------------------------------------------" << endl
-            << "Pass 1 - Inconsistencies between Meta-header and Data Set" << endl
-            << "---------------------------------------------------------" << endl << endl;
+        out << "---------------------------------------------------------" << OFendl
+            << "Pass 1 - Inconsistencies between Meta-header and Data Set" << OFendl
+            << "---------------------------------------------------------" << OFendl << OFendl;
       }
       numberOfErrors += dcmchkMetaHeader(out, MetaInfo, DataSet);
     }
 
     if (verbose)
     {
-      out << "-------------------------------------------------------------" << endl
-          << "Pass 2 - Inconsistencies between Data Dictionary and Data Set" << endl
-          << "-------------------------------------------------------------" << endl << endl;
+      out << "-------------------------------------------------------------" << OFendl
+          << "Pass 2 - Inconsistencies between Data Dictionary and Data Set" << OFendl
+          << "-------------------------------------------------------------" << OFendl << OFendl;
     }
 
     dcmchk(out, opt_filename, ERM_autoDetect, EXS_Unknown,
@@ -942,9 +942,9 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
 
     if (verbose)
     {
-      out << "-------------------------------------------------------------" << endl
-          << "Pass 3 - Semantic Check of Presentation State Object         " << endl
-          << "-------------------------------------------------------------" << endl << endl;
+      out << "-------------------------------------------------------------" << OFendl
+          << "Pass 3 - Semantic Check of Presentation State Object         " << OFendl
+          << "-------------------------------------------------------------" << OFendl << OFendl;
     }
 
 
@@ -963,15 +963,15 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
       if (pState.read(*DataSet).bad())
       {
         test_passed = OFFalse;
-        out << endl;
+        out << OFendl;
       }
     } else {
-      if (verbose) out << "Not a Grayscale Softcopy Presentation State, skipping pass 3." << endl <<endl;
+      if (verbose) out << "Not a Grayscale Softcopy Presentation State, skipping pass 3." << OFendl << OFendl;
     }
     if (numberOfErrors > 0) test_passed = OFFalse;
 
-    if (test_passed) out << "Test passed." << endl << endl;
-    else out << "Test failed - one or more errors." << endl << endl;
+    if (test_passed) out << "Test passed." << OFendl << OFendl;
+    else out << "Test failed - one or more errors." << OFendl << OFendl;
 
     if (dfile) delete dfile;
     return numberOfErrors;
@@ -1042,11 +1042,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -1064,7 +1064,7 @@ int main(int argc, char *argv[])
 
     if (opt_logfilename)
     {
-      ofstream *newstream = new ofstream(opt_logfilename);
+      STD_NAMESPACE ofstream *newstream = new STD_NAMESPACE ofstream(opt_logfilename);
       if (newstream && (newstream->good()))
       {
         logstream=newstream;
@@ -1073,7 +1073,7 @@ int main(int argc, char *argv[])
       }
       else
       {
-      	delete newstream;
+        delete newstream;
       }
     }
 
@@ -1095,7 +1095,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.23  2006-07-27 14:38:03  joergr
+ * Revision 1.24  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.23  2006/07/27 14:38:03  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

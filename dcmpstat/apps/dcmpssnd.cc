@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:41:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
 #endif
     if (lockfd < 0)
     {
-      if (opt_verbose) CERR << "error: unable to lock image file '" << imgFile << "'" << endl;
+      if (opt_verbose) CERR << "error: unable to lock image file '" << imgFile << "'" << OFendl;
       return DIMSE_BADDATA;
     }
     dcmtk_flock(lockfd, LOCK_SH);
@@ -119,7 +119,7 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0)
     {
-      if (opt_verbose) CERR << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << endl;
+      if (opt_verbose) CERR << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << OFendl;
       if (messageClient)
       {
         OFString buf("unable to send image: no presentation context for ");
@@ -151,12 +151,12 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
     if (cond.good())
     {
        if (opt_verbose) CERR << "[MsgID " << req.MessageID << "] Complete [Status: "
-          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
+          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << OFendl;
     } else {
        if (opt_verbose)
        {
           CERR << "[MsgID " << req.MessageID << "] Failed [Status: "
-          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
+          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << OFendl;
           DimseCondition::dump(cond);
        }
     }
@@ -178,14 +178,14 @@ static OFCondition sendImage(T_ASC_Association *assoc, const char *sopClass, con
       unsigned long fileSize = 0;
       struct stat fileStat;
       if (0 == stat(imgFile, &fileStat)) fileSize = fileStat.st_size;
-      out << "DICOM C-STORE transmission " << successName << ": " << endl
-          << "\tSOP class UID          : " << sopClassName << endl
-          << "\tSOP instance UID       : " << sopInstance << endl
-          << "\tSource file path       : " << imgFile << endl
-          << "\tSource file size (kB)  : " << (fileSize+1023)/1024 << endl
-          << "\tDIMSE presentation ctx : " << (int)presId << endl
-          << "\tDIMSE message ID       : " << req.MessageID << endl
-          << "\tDIMSE status           : " << DU_cstoreStatusString(rsp.DimseStatus) << endl
+      out << "DICOM C-STORE transmission " << successName << ": " << OFendl
+          << "\tSOP class UID          : " << sopClassName << OFendl
+          << "\tSOP instance UID       : " << sopInstance << OFendl
+          << "\tSource file path       : " << imgFile << OFendl
+          << "\tSource file size (kB)  : " << (fileSize+1023)/1024 << OFendl
+          << "\tDIMSE presentation ctx : " << (int)presId << OFendl
+          << "\tDIMSE message ID       : " << req.MessageID << OFendl
+          << "\tDIMSE status           : " << DU_cstoreStatusString(rsp.DimseStatus) << OFendl
           << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(out, theString)
       messageClient->notifySentDICOMObject(operationStatus, theString);
@@ -232,10 +232,10 @@ static OFCondition sendStudy(
       if (cond.bad()) return cond;
       if (opt_verbose)
       {
-        CERR << "Sending at IMAGE level:" << endl
-             << "  Study Instance UID : " << studyUID << endl
-             << "  Series Instance UID: " << seriesUID << endl
-             << "  SOP Instance UID   : " << instanceUID << endl << endl;
+        CERR << "Sending at IMAGE level:" << OFendl
+             << "  Study Instance UID : " << studyUID << OFendl
+             << "  Series Instance UID: " << seriesUID << OFendl
+             << "  SOP Instance UID   : " << instanceUID << OFendl << OFendl;
       }
     }
     else if (seriesUID)
@@ -246,9 +246,9 @@ static OFCondition sendStudy(
       if (cond.bad()) return cond;
       if (opt_verbose)
       {
-        CERR << "Sending at SERIES level:" << endl
-             << "  Study Instance UID : " << studyUID << endl
-             << "  Series Instance UID: " << seriesUID << endl << endl;
+        CERR << "Sending at SERIES level:" << OFendl
+             << "  Study Instance UID : " << studyUID << OFendl
+             << "  Series Instance UID: " << seriesUID << OFendl << OFendl;
       }
     }
     else
@@ -257,8 +257,8 @@ static OFCondition sendStudy(
       if (cond.bad()) return cond;
       if (opt_verbose)
       {
-        CERR << "Sending at STUDY level:" << endl
-             << "  Study Instance UID : " << studyUID << endl << endl;
+        CERR << "Sending at STUDY level:" << OFendl
+             << "  Study Instance UID : " << studyUID << OFendl << OFendl;
       }
     }
 
@@ -394,17 +394,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #else
-            CERR << endl;
+            CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
          }
@@ -423,7 +423,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-      CERR << rcsid << endl << endl;
+      CERR << rcsid << OFendl << OFendl;
     }
 
     if (opt_cfgName)
@@ -431,11 +431,11 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
         return 10;
       }
     } else {
-        CERR << "error: missing configuration file name" << endl;
+        CERR << "error: missing configuration file name" << OFendl;
         return 10;
     }
 
@@ -444,7 +444,7 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     DVConfiguration dvi(opt_cfgName);
@@ -542,11 +542,11 @@ int main(int argc, char *argv[])
         dvi.getTargetCipherSuite(opt_target, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
           }
           return 1;
         } else {
@@ -558,26 +558,26 @@ int main(int argc, char *argv[])
 #else
     if (useTLS)
     {
-        CERR << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        CERR << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
         return 10;
     }
 #endif
 
     if (targetHostname==NULL)
     {
-        CERR << "error: no hostname for send target '" << opt_target << "'" << endl;
+        CERR << "error: no hostname for send target '" << opt_target << "'" << OFendl;
         return 10;
     }
 
     if (targetAETitle==NULL)
     {
-        CERR << "error: no aetitle for send target '" << opt_target << "'" << endl;
+        CERR << "error: no aetitle for send target '" << opt_target << "'" << OFendl;
         return 10;
     }
 
     if (targetPort==0)
     {
-        CERR << "error: no or invalid port number for send target '" << opt_target << "'" << endl;
+        CERR << "error: no or invalid port number for send target '" << opt_target << "'" << OFendl;
         return 10;
     }
 
@@ -585,7 +585,7 @@ int main(int argc, char *argv[])
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
         CERR << "warning: max PDU size " << targetMaxPDU << " too big for send target '"
-             << opt_target << "', using default: " << DEFAULT_MAXPDU << endl;
+             << opt_target << "', using default: " << DEFAULT_MAXPDU << OFendl;
         targetMaxPDU = DEFAULT_MAXPDU;
     }
 
@@ -597,47 +597,47 @@ int main(int argc, char *argv[])
 
     OFOStringStream verboseParameters;
 
-    verboseParameters << "Send target parameters:" << endl
-         << "\thostname        : " << targetHostname << endl
-         << "\tport            : " << targetPort << endl
+    verboseParameters << "Send target parameters:" << OFendl
+         << "\thostname        : " << targetHostname << OFendl
+         << "\tport            : " << targetPort << OFendl
          << "\tdescription     : ";
     if (targetDescription) verboseParameters << targetDescription; else verboseParameters << "(none)";
-    verboseParameters << endl
-         << "\taetitle         : " << targetAETitle << endl
-         << "\tmax pdu         : " << targetMaxPDU << endl
-         << "\ttimeout         : " << timeout << endl
+    verboseParameters << OFendl
+         << "\taetitle         : " << targetAETitle << OFendl
+         << "\tmax pdu         : " << targetMaxPDU << OFendl
+         << "\ttimeout         : " << timeout << OFendl
          << "\toptions         : ";
     if (targetImplicitOnly && targetDisableNewVRs) verboseParameters << "implicit xfer syntax only, disable post-1993 VRs";
     else if (targetImplicitOnly) verboseParameters << "implicit xfer syntax only";
     else if (targetDisableNewVRs) verboseParameters << "disable post-1993 VRs";
     else verboseParameters << "none.";
-    verboseParameters << endl;
+    verboseParameters << OFendl;
 
     verboseParameters << "\tTLS             : ";
-    if (useTLS) verboseParameters << "enabled" << endl; else verboseParameters << "disabled" << endl;
+    if (useTLS) verboseParameters << "enabled" << OFendl; else verboseParameters << "disabled" << OFendl;
 
 #ifdef WITH_OPENSSL
     if (useTLS)
     {
-      verboseParameters << "\tTLS certificate : " << tlsCertificateFile << endl
-           << "\tTLS key file    : " << tlsPrivateKeyFile << endl
-           << "\tTLS DH params   : " << tlsDHParametersFile << endl
-           << "\tTLS PRNG seed   : " << tlsRandomSeedFile << endl
-           << "\tTLS CA directory: " << tlsCACertificateFolder << endl
-           << "\tTLS ciphersuites: " << tlsCiphersuites << endl
+      verboseParameters << "\tTLS certificate : " << tlsCertificateFile << OFendl
+           << "\tTLS key file    : " << tlsPrivateKeyFile << OFendl
+           << "\tTLS DH params   : " << tlsDHParametersFile << OFendl
+           << "\tTLS PRNG seed   : " << tlsRandomSeedFile << OFendl
+           << "\tTLS CA directory: " << tlsCACertificateFolder << OFendl
+           << "\tTLS ciphersuites: " << tlsCiphersuites << OFendl
            << "\tTLS key format  : ";
-      if (keyFileFormat == SSL_FILETYPE_PEM) verboseParameters << "PEM" << endl; else verboseParameters << "DER" << endl;
+      if (keyFileFormat == SSL_FILETYPE_PEM) verboseParameters << "PEM" << OFendl; else verboseParameters << "DER" << OFendl;
       verboseParameters << "\tTLS cert verify : ";
       switch (tlsCertVerification)
       {
           case DCV_checkCertificate:
-            verboseParameters << "verify" << endl;
+            verboseParameters << "verify" << OFendl;
             break;
           case DCV_ignoreCertificate:
-            verboseParameters << "ignore" << endl;
+            verboseParameters << "ignore" << OFendl;
             break;
           default:
-            verboseParameters << "require" << endl;
+            verboseParameters << "require" << OFendl;
             break;
       }
     }
@@ -645,21 +645,21 @@ int main(int argc, char *argv[])
 
     verboseParameters << OFStringStream_ends;
     OFSTRINGSTREAM_GETOFSTRING(verboseParameters, verboseParametersString)
-    if (opt_verbose) CERR << verboseParametersString << endl;
+    if (opt_verbose) CERR << verboseParametersString << OFendl;
 
     /* open database */
     const char *dbfolder = dvi.getDatabaseFolder();
 
     if (opt_verbose)
     {
-      CERR << "Opening database in directory '" << dbfolder << "'" << endl;
+      CERR << "Opening database in directory '" << dbfolder << "'" << OFendl;
     }
 
     OFCondition result;
     DcmQueryRetrieveIndexDatabaseHandle dbhandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, result);    
     if (result.bad())
     {
-      CERR << "Unable to access database '" << dbfolder << "'" << endl;
+      CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
       return 1;
     }
 
@@ -676,11 +676,11 @@ int main(int argc, char *argv[])
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
@@ -688,23 +688,23 @@ int main(int argc, char *argv[])
       {
         if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
           return 1;
         }
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << OFendl;
         return 1;
       }
 
@@ -777,12 +777,12 @@ int main(int argc, char *argv[])
       messageClient = new DVPSIPCClient(DVPSIPCMessage::clientStoreSCU, verboseParametersString.c_str(), messagePort, keepMessagePortOpen);
       if (! messageClient->isServerActive())
       {
-        CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << endl;
+        CERR << "Warning: no IPC message server found at port " << messagePort << ", disabling IPC." << OFendl;
       }
     }
 
     /* create association */
-    if (opt_verbose) CERR << "Requesting Association" << endl;
+    if (opt_verbose) CERR << "Requesting Association" << OFendl;
 
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad())
@@ -792,18 +792,18 @@ int main(int argc, char *argv[])
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            CERR << "Association Rejected" << endl;
+            CERR << "Association Rejected" << OFendl;
             ASC_printRejectParameters(stderr, &rej);
             if (messageClient)
             {
               // notify about rejected association
               OFOStringStream out;
-              out << "DIMSE Association Rejected:" << endl
+              out << "DIMSE Association Rejected:" << OFendl
                   << "\t";
               ASC_printRejectParameters(out, &rej);
-              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-                  << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
+                  << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
+                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
               ASC_dumpConnectionParameters(assoc, out);
               out << OFStringStream_ends;
               OFSTRINGSTREAM_GETSTR(out, theString)
@@ -816,18 +816,18 @@ int main(int argc, char *argv[])
             }
             return 1;
         } else {
-            CERR << "Association Request Failed" << endl;
+            CERR << "Association Request Failed" << OFendl;
             DimseCondition::dump(cond);
             if (messageClient)
             {
               // notify about rejected association
               OFOStringStream out;
-              out << "DIMSE Association Request Failed:" << endl;
-              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-                  << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+              out << "DIMSE Association Request Failed:" << OFendl;
+              out << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
+                  << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
+                  << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
               ASC_dumpConnectionParameters(assoc, out);
-              out << cond.text() << endl << OFStringStream_ends;
+              out << cond.text() << OFendl << OFStringStream_ends;
               OFSTRINGSTREAM_GETSTR(out, theString)
               if (useTLS)
                 messageClient->notifyRequestedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
@@ -842,21 +842,21 @@ int main(int argc, char *argv[])
 
     if (ASC_countAcceptedPresentationContexts(params) == 0)
     {
-      CERR << "No Acceptable Presentation Contexts" << endl;
+      CERR << "No Acceptable Presentation Contexts" << OFendl;
       cond = ASC_abortAssociation(assoc);
       if (cond.bad())
       {
-        CERR << "Association Abort Failed" << endl;
+        CERR << "Association Abort Failed" << OFendl;
         DimseCondition::dump(cond);
       }
       if (messageClient)
       {
         // notify about rejected association
         OFOStringStream out;
-        out << "DIMSE association accepted, but no acceptable presentation contexts - aborting." << endl
-            << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-            << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-            << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl;
+        out << "DIMSE association accepted, but no acceptable presentation contexts - aborting." << OFendl
+            << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
+            << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
+            << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl;
         ASC_dumpConnectionParameters(assoc, out);
         out << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(out, theString)
@@ -870,18 +870,18 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    if (opt_verbose) CERR << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+    if (opt_verbose) CERR << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
 
     if (messageClient)
     {
       // notify about successfully negotiated association
       OFOStringStream out;
-      out << "DIMSE Association Accepted:" << endl
-          << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << endl
-          << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << endl
-          << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << endl
-          << "\tmax send PDV: " << assoc->sendPDVLength << endl
-          << "\tpresentation contexts: " << ASC_countAcceptedPresentationContexts(assoc->params) << endl;
+      out << "DIMSE Association Accepted:" << OFendl
+          << "\tcalled presentation address: " << assoc->params->DULparams.calledPresentationAddress << OFendl
+          << "\tcalling AE title: " << assoc->params->DULparams.callingAPTitle << OFendl
+          << "\tcalled AE title: " << assoc->params->DULparams.calledAPTitle << OFendl
+          << "\tmax send PDV: " << assoc->sendPDVLength << OFendl
+          << "\tpresentation contexts: " << ASC_countAcceptedPresentationContexts(assoc->params) << OFendl;
       ASC_dumpConnectionParameters(assoc, out);
       out << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(out, theString)
@@ -899,11 +899,11 @@ int main(int argc, char *argv[])
     if (cond.good())
     {
         /* release association */
-        if (opt_verbose) CERR << "Releasing Association" << endl;
+        if (opt_verbose) CERR << "Releasing Association" << OFendl;
         cond = ASC_releaseAssociation(assoc);
         if (cond.bad())
         {
-          CERR << "Association Release Failed" << endl;
+          CERR << "Association Release Failed" << OFendl;
           DimseCondition::dump(cond);
           if (messageClient)
           {
@@ -916,12 +916,12 @@ int main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        CERR << "Protocol Error: peer requested release (Aborting)" << endl;
-        if (opt_verbose) CERR << "Aborting Association" << endl;
+        CERR << "Protocol Error: peer requested release (Aborting)" << OFendl;
+        if (opt_verbose) CERR << "Aborting Association" << OFendl;
         cond = ASC_abortAssociation(assoc);
         if (cond.bad())
         {
-            CERR << "Association Abort Failed" << endl;
+            CERR << "Association Abort Failed" << OFendl;
             DimseCondition::dump(cond);
             if (messageClient)
             {
@@ -934,18 +934,18 @@ int main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-        if (opt_verbose) CERR << "Peer Aborted Association" << endl;
+        if (opt_verbose) CERR << "Peer Aborted Association" << OFendl;
         if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusError, "Peer aborted association.");
     }
     else
     {
-        CERR << "SCU Failed" << endl;
+        CERR << "SCU Failed" << OFendl;
         DimseCondition::dump(cond);
-        if (opt_verbose) CERR << "Aborting Association" << endl;
+        if (opt_verbose) CERR << "Aborting Association" << OFendl;
         cond = ASC_abortAssociation(assoc);
         if (cond.bad())
         {
-            CERR << "Association Abort Failed" << endl;
+            CERR << "Association Abort Failed" << OFendl;
             DimseCondition::dump(cond);
             if (messageClient)
             {
@@ -999,10 +999,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-          CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+          CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
         }
       } else {
-        CERR << "Warning: cannot write back random seed, ignoring." << endl;
+        CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
       }
     }
     delete tLayer;
@@ -1019,7 +1019,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.39  2006-07-27 14:41:35  joergr
+ * Revision 1.40  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.39  2006/07/27 14:41:35  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

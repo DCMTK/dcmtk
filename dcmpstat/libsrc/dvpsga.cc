@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:26 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -94,7 +94,7 @@ OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item with graphicAnnotationLayer VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -104,7 +104,7 @@ OFCondition DVPSGraphicAnnotation::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item without any graphic or text objects" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic annotation SQ item without any graphic or text objects" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -236,7 +236,11 @@ void DVPSGraphicAnnotation::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.11  2005-12-08 15:46:26  meichel
+ *  Revision 1.12  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.11  2005/12/08 15:46:26  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.10  2003/06/04 12:30:28  meichel

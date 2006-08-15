@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:36 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayRows absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayRows absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -120,7 +120,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayRows VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayRows VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -130,7 +130,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayColumns absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayColumns absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -139,7 +139,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayColumns VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayColumns VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -149,7 +149,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayType absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayType absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -158,7 +158,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayType VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayType VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -168,7 +168,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayOrigin absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayOrigin absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -177,7 +177,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayOrigin VM != 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayOrigin VM != 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -187,7 +187,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitsAllocated absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitsAllocated absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -196,7 +196,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitsAllocated VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitsAllocated VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -206,7 +206,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitPosition absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitPosition absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -215,7 +215,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitPosition VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayBitPosition VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -226,7 +226,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayData absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains an overlay with overlayData absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -331,7 +331,11 @@ void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.16  2005-12-08 15:46:36  meichel
+ *  Revision 1.17  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.16  2005/12/08 15:46:36  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.15  2003/08/27 14:59:42  meichel

@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:40:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ int addOverlay(const char *filename,
     if ((filename != NULL) && (pixel != NULL))
     {
 #ifdef HAVE_IOS_NOCREATE
-        ifstream input(filename, ios::in|ios::nocreate);
+        STD_NAMESPACE ifstream input(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-        ifstream input(filename);
+        STD_NAMESPACE ifstream input(filename);
 #endif
         if (input)
         {
@@ -109,11 +109,11 @@ int addOverlay(const char *filename,
                     }
                     return 1;
                 } else
-                    CERR << "error: invalid position for overlay PBM file '" << filename << endl;
+                    CERR << "error: invalid position for overlay PBM file '" << filename << OFendl;
             } else
-                CERR << "error: overlay PBM file '" << filename << "' has no magic number P1" << endl;
+                CERR << "error: overlay PBM file '" << filename << "' has no magic number P1" << OFendl;
         } else
-            CERR << "error: can't open overlay PBM file '" << filename << "'" << endl;
+            CERR << "error: can't open overlay PBM file '" << filename << "'" << OFendl;
     }
     return 0;
 }
@@ -300,11 +300,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -461,67 +461,67 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        CERR << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
         return 10;
       }
     }
     DVInterface dvi(opt_cfgName);
 
     if (opt_printerID && (EC_Normal != dvi.setCurrentPrinter(opt_printerID)))
-      CERR << "warning: unable to select printer '" << opt_printerID << "', ignoring." << endl;
+      CERR << "warning: unable to select printer '" << opt_printerID << "', ignoring." << OFendl;
 
     /* dump printer characteristics if requested */
     const char *currentPrinter = dvi.getCurrentPrinter();
 
 	if ((opt_img_request_size) && (!dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
-      CERR << "warning: printer does not support requested image size" << endl;
+      CERR << "warning: printer does not support requested image size" << OFendl;
 
     if (EC_Normal != dvi.getPrintHandler().setImageDisplayFormat(opt_columns, opt_rows))
       CERR << "warning: cannot set image display format to columns=" << opt_columns
-           << ", rows=" << opt_rows << ", ignoring." << endl;
+           << ", rows=" << opt_rows << ", ignoring." << OFendl;
     if ((opt_filmsize)&&(EC_Normal != dvi.getPrintHandler().setFilmSizeID(opt_filmsize)))
-      CERR << "warning: cannot set film size ID to '" << opt_filmsize << "', ignoring." << endl;
+      CERR << "warning: cannot set film size ID to '" << opt_filmsize << "', ignoring." << OFendl;
     if ((opt_magnification)&&(EC_Normal != dvi.getPrintHandler().setMagnificationType(opt_magnification)))
-      CERR << "warning: cannot set magnification type to '" << opt_magnification << "', ignoring." << endl;
+      CERR << "warning: cannot set magnification type to '" << opt_magnification << "', ignoring." << OFendl;
     if ((opt_smoothing)&&(EC_Normal != dvi.getPrintHandler().setSmoothingType(opt_smoothing)))
-      CERR << "warning: cannot set smoothing type to '" << opt_smoothing << "', ignoring." << endl;
+      CERR << "warning: cannot set smoothing type to '" << opt_smoothing << "', ignoring." << OFendl;
     if ((opt_configuration)&&(EC_Normal != dvi.getPrintHandler().setConfigurationInformation(opt_configuration)))
-      CERR << "warning: cannot set configuration information to '" << opt_configuration << "', ignoring." << endl;
+      CERR << "warning: cannot set configuration information to '" << opt_configuration << "', ignoring." << OFendl;
     if ((opt_resolution)&&(EC_Normal != dvi.getPrintHandler().setResolutionID(opt_resolution)))
-      CERR << "warning: cannot set requested resolution ID to '" << opt_resolution << "', ignoring." << endl;
+      CERR << "warning: cannot set requested resolution ID to '" << opt_resolution << "', ignoring." << OFendl;
     if ((opt_border)&&(EC_Normal != dvi.getPrintHandler().setBorderDensity(opt_border)))
-      CERR << "warning: cannot set border density to '" << opt_border << "', ignoring." << endl;
+      CERR << "warning: cannot set border density to '" << opt_border << "', ignoring." << OFendl;
     if ((opt_emptyimage)&&(EC_Normal != dvi.getPrintHandler().setEmtpyImageDensity(opt_emptyimage)))
-      CERR << "warning: cannot set empty image density to '" << opt_emptyimage << "', ignoring." << endl;
+      CERR << "warning: cannot set empty image density to '" << opt_emptyimage << "', ignoring." << OFendl;
     if ((opt_maxdensity)&&(EC_Normal != dvi.getPrintHandler().setMaxDensity(opt_maxdensity)))
-      CERR << "warning: cannot set max density to '" << opt_maxdensity << "', ignoring." << endl;
+      CERR << "warning: cannot set max density to '" << opt_maxdensity << "', ignoring." << OFendl;
     if ((opt_mindensity)&&(EC_Normal != dvi.getPrintHandler().setMinDensity(opt_mindensity)))
-      CERR << "warning: cannot set min density to '" << opt_mindensity << "', ignoring." << endl;
+      CERR << "warning: cannot set min density to '" << opt_mindensity << "', ignoring." << OFendl;
     if (EC_Normal != dvi.getPrintHandler().setFilmOrientation(opt_filmorientation))
-      CERR << "warning: cannot set film orientation, ignoring." << endl;
+      CERR << "warning: cannot set film orientation, ignoring." << OFendl;
     if (EC_Normal != dvi.getPrintHandler().setTrim(opt_trim))
-      CERR << "warning: cannot set trim, ignoring." << endl;
+      CERR << "warning: cannot set trim, ignoring." << OFendl;
     if (EC_Normal != dvi.getPrintHandler().setRequestedDecimateCropBehaviour(opt_decimate))
-      CERR << "warning: cannot set requested decimate/crop behaviour, ignoring." << endl;
+      CERR << "warning: cannot set requested decimate/crop behaviour, ignoring." << OFendl;
     if ((opt_illumination != (OFCmdUnsignedInt)-1)&&(EC_Normal != dvi.getPrintHandler().setPrintIllumination((Uint16)opt_illumination)))
-      CERR << "warning: cannot set illumination to '" << opt_illumination << "', ignoring." << endl;
+      CERR << "warning: cannot set illumination to '" << opt_illumination << "', ignoring." << OFendl;
     if ((opt_reflection != (OFCmdUnsignedInt)-1)&&(EC_Normal != dvi.getPrintHandler().setPrintReflectedAmbientLight((Uint16)opt_reflection)))
-      CERR << "warning: cannot set reflected ambient light to '" << opt_reflection << "', ignoring." << endl;
+      CERR << "warning: cannot set reflected ambient light to '" << opt_reflection << "', ignoring." << OFendl;
 
     if ((opt_copies > 0)&&(EC_Normal != dvi.setPrinterNumberOfCopies(opt_copies)))
-      CERR << "warning: cannot set film session number of copies to '" << opt_copies << "', ignoring." << endl;
+      CERR << "warning: cannot set film session number of copies to '" << opt_copies << "', ignoring." << OFendl;
     if ((opt_mediumtype)&&(EC_Normal != dvi.setPrinterMediumType(opt_mediumtype)))
-      CERR << "warning: cannot set film session medium type to '" << opt_mediumtype << "', ignoring." << endl;
+      CERR << "warning: cannot set film session medium type to '" << opt_mediumtype << "', ignoring." << OFendl;
     if ((opt_destination)&&(EC_Normal != dvi.setPrinterFilmDestination(opt_destination)))
-      CERR << "warning: cannot set film destination to '" << opt_destination << "', ignoring." << endl;
+      CERR << "warning: cannot set film destination to '" << opt_destination << "', ignoring." << OFendl;
     if ((opt_sessionlabel)&&(EC_Normal != dvi.setPrinterFilmSessionLabel(opt_sessionlabel)))
-      CERR << "warning: cannot set film session label to '" << opt_sessionlabel << "', ignoring." << endl;
+      CERR << "warning: cannot set film session label to '" << opt_sessionlabel << "', ignoring." << OFendl;
     if ((opt_priority)&&(EC_Normal != dvi.setPrinterPriority(opt_priority)))
-      CERR << "warning: cannot set film session print priority to '" << opt_priority << "', ignoring." << endl;
+      CERR << "warning: cannot set film session print priority to '" << opt_priority << "', ignoring." << OFendl;
     if ((opt_ownerID)&&(EC_Normal != dvi.setPrinterOwnerID(opt_ownerID)))
-      CERR << "warning: cannot set film session owner ID to '" << opt_ownerID << "', ignoring." << endl;
+      CERR << "warning: cannot set film session owner ID to '" << opt_ownerID << "', ignoring." << OFendl;
     if ((opt_spool)&&(EC_Normal != dvi.startPrintSpooler()))
-      CERR << "warning: unable to start print spooler, ignoring." << endl;
+      CERR << "warning: unable to start print spooler, ignoring." << OFendl;
 
     OFListIterator(char *) first = opt_filenames.begin();
     OFListIterator(char *) last = opt_filenames.end();
@@ -544,21 +544,21 @@ int main(int argc, char *argv[])
         ++first;
         if (currentPState)
         {
-          if (opt_verbose) CERR << "loading image file '" << currentImage << "' with presentation state '" << currentPState << "'" << endl;
+          if (opt_verbose) CERR << "loading image file '" << currentImage << "' with presentation state '" << currentPState << "'" << OFendl;
           status = dvi.loadPState(currentPState, currentImage);
           if (EC_Normal != status)
           {
-            CERR << "error: loading image file '" << currentImage << "' with presentation state '" << currentPState << "' failed." << endl;
+            CERR << "error: loading image file '" << currentImage << "' with presentation state '" << currentPState << "' failed." << OFendl;
             return 10;
           }
         }
         else
         {
-          if (opt_verbose) CERR << "loading image file '" << currentImage << "'" << endl;
+          if (opt_verbose) CERR << "loading image file '" << currentImage << "'" << OFendl;
           status = dvi.loadImage(currentImage);
           if (EC_Normal != status)
           {
-            CERR << "error: loading image file '" << currentImage << "' failed." << endl;
+            CERR << "error: loading image file '" << currentImage << "' failed." << OFendl;
             return 10;
           }
         }
@@ -566,7 +566,7 @@ int main(int argc, char *argv[])
         if (opt_plutname)
         {
           if (EC_Normal != dvi.selectDisplayPresentationLUT(opt_plutname))
-          CERR << "warning: cannot set requested presentation LUT '" << opt_plutname << "', ignoring." << endl;
+          CERR << "warning: cannot set requested presentation LUT '" << opt_plutname << "', ignoring." << OFendl;
         } else {
           // in the case of a Presentation LUT Shape, we set the shape inside
           // the GSPS object to default (corresponding to IDENTITY for MONOCHROME2
@@ -575,12 +575,12 @@ int main(int argc, char *argv[])
           if ((opt_LUTshape == 1) || (opt_LUTshape == 2))
           {
             if (dvi.getCurrentPState().setDefaultPresentationLUTShape().bad())
-               CERR << "warning: cannot set presentation LUT shape, ignoring." << endl;
+               CERR << "warning: cannot set presentation LUT shape, ignoring." << OFendl;
 
             if (opt_LUTshape == 2)
             {
               if (dvi.getPrintHandler().setPresentationLUTShape(DVPSP_lin_od).bad())
-              CERR << "warning: cannot set LIN OD presentation LUT shape, ignoring." << endl;
+              CERR << "warning: cannot set LIN OD presentation LUT shape, ignoring." << OFendl;
             }
           }
         }
@@ -592,12 +592,12 @@ int main(int argc, char *argv[])
         {
             if (EC_Normal != dvi.getCurrentPState().getPrintBitmapWidthHeight(width, height))
             {
-              CERR << "error: can't determine bitmap size" << endl;
+              CERR << "error: can't determine bitmap size" << OFendl;
               return 10;
             }
             if (EC_Normal != dvi.getCurrentPState().getPrintBitmap(pixelData, bitmapSize, opt_inverse_plut))
             {
-              CERR << "error: can't create print bitmap" << endl;
+              CERR << "error: can't create print bitmap" << OFendl;
               return 10;
             }
             pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio();
@@ -615,19 +615,19 @@ int main(int argc, char *argv[])
                 } while (cmd.findOption("--overlay", 0, OFCommandLine::FOM_Next));
             }
 
-            if (opt_verbose) CERR << "writing DICOM grayscale hardcopy image to database." << endl;
+            if (opt_verbose) CERR << "writing DICOM grayscale hardcopy image to database." << OFendl;
             if (EC_Normal != dvi.saveHardcopyGrayscaleImage(pixelData, width, height, pixelAspectRatio))
             {
-              CERR << "error during creation of DICOM grayscale hardcopy image file" << endl;
+              CERR << "error during creation of DICOM grayscale hardcopy image file" << OFendl;
               return 10;
             }
             delete[] (char *)pixelData;
         } else {
-          CERR << "out of memory error: cannot allocate print bitmap" << endl;
+          CERR << "out of memory error: cannot allocate print bitmap" << OFendl;
           return 10;
         }
       } else {
-        CERR << "internal error - odd number of filenames" << endl;
+        CERR << "internal error - odd number of filenames" << OFendl;
         return 10;
       }
     }
@@ -645,7 +645,7 @@ int main(int argc, char *argv[])
           dvi.setPrependLighting(opt_annotationIllumination);
           dvi.setAnnotationText(opt_annotationString);
         } else {
-          CERR << "warning: printer '" << currentPrinter << "' does not support annotations, ignoring." << endl;
+          CERR << "warning: printer '" << currentPrinter << "' does not support annotations, ignoring." << OFendl;
           dvi.setActiveAnnotation(OFFalse);
         }
       } else {
@@ -659,23 +659,23 @@ int main(int argc, char *argv[])
       for (size_t i=0; i<numImages; i++)
       {
         if ((opt_img_polarity)&&(EC_Normal != dvi.getPrintHandler().setImagePolarity(i, opt_img_polarity)))
-          CERR << "warning: cannot set polarity for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_polarity << "', ignoring." << endl;
+          CERR << "warning: cannot set polarity for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_polarity << "', ignoring." << OFendl;
         if ((opt_img_request_size)&&(EC_Normal != dvi.getPrintHandler().setImageRequestedSize(i, opt_img_request_size)))
-          CERR << "warning: cannot set requested size for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_request_size << "', ignoring." << endl;
+          CERR << "warning: cannot set requested size for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_request_size << "', ignoring." << OFendl;
         if ((opt_img_magnification)&&(EC_Normal != dvi.getPrintHandler().setImageMagnificationType(i, opt_img_magnification)))
-          CERR << "warning: cannot set magnification type for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_magnification << "', ignoring." << endl;
+          CERR << "warning: cannot set magnification type for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_magnification << "', ignoring." << OFendl;
         if ((opt_img_smoothing)&&(EC_Normal != dvi.getPrintHandler().setImageSmoothingType(i, opt_img_smoothing)))
-          CERR << "warning: cannot set smoothing type for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_smoothing << "', ignoring." << endl;
+          CERR << "warning: cannot set smoothing type for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_smoothing << "', ignoring." << OFendl;
         if ((opt_img_configuration)&&(EC_Normal != dvi.getPrintHandler().setImageConfigurationInformation(i, opt_img_configuration)))
-          CERR << "warning: cannot set configuration information for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_configuration << "', ignoring." << endl;
+          CERR << "warning: cannot set configuration information for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_configuration << "', ignoring." << OFendl;
       }
       if ((numImages > 0)&&(! opt_spool))
       {
         // no need to do this manually if we are spooling - spoolPrintJob() will do this anyway.
-        if (opt_verbose) CERR << "writing DICOM stored print object to database." << endl;
+        if (opt_verbose) CERR << "writing DICOM stored print object to database." << OFendl;
         if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
         {
-          CERR << "error during creation of DICOM stored print object" << endl;
+          CERR << "error during creation of DICOM stored print object" << OFendl;
         }
       }
     }
@@ -684,16 +684,16 @@ int main(int argc, char *argv[])
     {
       if (currentPrinter)
       {
-        if (opt_verbose) CERR << "spooling print job to printer '" << currentPrinter << "'" << endl;
+        if (opt_verbose) CERR << "spooling print job to printer '" << currentPrinter << "'" << OFendl;
         if (EC_Normal != dvi.spoolPrintJob())
-          CERR << "warning: unable to spool print job to printer '" << currentPrinter << "', ignoring." << endl;
+          CERR << "warning: unable to spool print job to printer '" << currentPrinter << "', ignoring." << OFendl;
       } else {
-          CERR << "warning: no printer (undefined in config file?), cannot spool print job." << endl;
+          CERR << "warning: no printer (undefined in config file?), cannot spool print job." << OFendl;
       }
     }
 
     if ((opt_spool)&&(EC_Normal != dvi.terminatePrintSpooler()))
-      CERR << "warning: unable to stop print spooler, ignoring." << endl;
+      CERR << "warning: unable to stop print spooler, ignoring." << OFendl;
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
@@ -706,7 +706,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.37  2006-07-27 14:40:06  joergr
+ * Revision 1.38  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.37  2006/07/27 14:40:06  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

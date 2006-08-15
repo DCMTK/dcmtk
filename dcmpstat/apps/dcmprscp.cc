@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Server
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:36:27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ static OFBool           opt_logFile         = OFFalse;
 static OFBool           opt_binaryLog       = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
-static ostream *        logstream           = &CERR;
+static STD_NAMESPACE ostream *        logstream           = &CERR;
 
 /* print scp data, taken from configuration file */
 static OFBool         haveHandledClients    = OFFalse;
@@ -88,7 +88,7 @@ static int errorCond(OFCondition cond, const char *message)
   int result = (cond.bad());
   if (result)
   {
-    CERR << message << endl;
+    CERR << message << OFendl;
     DimseCondition::dump(cond);
   }
   return result;
@@ -100,7 +100,7 @@ void closeLog()
   ofConsole.split();
   if (logstream != &CERR)
   {
-    *logstream << endl << OFDateTime::getCurrentDateTime() << endl << "terminating" << endl;
+    *logstream << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "terminating" << OFendl;
     delete logstream;
     logstream = &CERR;
   }
@@ -132,7 +132,7 @@ static void cleanChildren()
 #endif
         if (child < 0)
         {
-           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << endl;
+           if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << OFendl;
         }
     }
 #endif
@@ -189,17 +189,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #else
-            CERR << endl;
+            CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
          }
@@ -221,11 +221,11 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
         return 10;
       }
     } else {
-        *logstream << "error: no configuration file specified" << endl;
+        *logstream << "error: no configuration file specified" << OFendl;
         return 10;
     }
 
@@ -235,14 +235,14 @@ int main(int argc, char *argv[])
     {
       if (DVPSE_printLocal != dvi.getTargetType(opt_printer))
       {
-        *logstream << "error: no print scp definition for '" << opt_printer << "' found in config file." << endl;
+        *logstream << "error: no print scp definition for '" << opt_printer << "' found in config file." << OFendl;
         return 10;
       }
     } else {
       opt_printer = dvi.getTargetID(0, DVPSE_printLocal); // use default print scp
       if (opt_printer==NULL)
       {
-        *logstream << "error: no default print scp available - no config file?" << endl;
+        *logstream << "error: no default print scp available - no config file?" << OFendl;
         return 10;
       }
     }
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
       logfilename = logfileprefix;
       logfilename += ".log";
 
-      ofstream *newstream = new ofstream(logfilename.c_str());
+      STD_NAMESPACE ofstream *newstream = new STD_NAMESPACE ofstream(logfilename.c_str());
       if (newstream && (newstream->good()))
       {
         logstream=newstream;
@@ -289,19 +289,19 @@ int main(int argc, char *argv[])
       }
     }
 
-    *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
+    *logstream << rcsid << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "started" << OFendl;
 
     dvi.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
 
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
     if (opt_verbose)
     {
-      *logstream << "Using database in directory '" << dbfolder << "'" << endl;
+      *logstream << "Using database in directory '" << dbfolder << "'" << OFendl;
     }
 
     OFCondition cond2 = EC_Normal;
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
 
     if (cond2.bad())
     {
-      CERR << "Unable to access database '" << dbfolder << "'" << endl;
+      CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
       return 10;
     }
 
@@ -321,7 +321,7 @@ int main(int argc, char *argv[])
 
     if (targetPort == 0)
     {
-        *logstream << "error: no or invalid port number for print scp '" << opt_printer << "'" << endl;
+        *logstream << "error: no or invalid port number for print scp '" << opt_printer << "'" << OFendl;
         closeLog();
         return 10;
     }
@@ -413,11 +413,11 @@ int main(int argc, char *argv[])
       	dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          CERR << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
           }
           return 1;
         } else {
@@ -438,32 +438,32 @@ int main(int argc, char *argv[])
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
       if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
       {
-        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+        CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
         return 1;
       }
       if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
       {
-        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+        CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
         return 1;
       }
       if (! tLayer->checkPrivateKeyMatchesCertificate())
       {
-        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+        CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
         return 1;
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << OFendl;
         return 1;
       }
 
@@ -473,7 +473,7 @@ int main(int argc, char *argv[])
 #else
     if (targetUseTLS)
     {
-        CERR << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        CERR << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
         return 10;
     }
 #endif
@@ -572,10 +572,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
         {
-  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+  	  CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
         }
       } else {
-	CERR << "Warning: cannot write back random seed, ignoring." << endl;
+	CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
       }
     }
     delete tLayer;
@@ -587,7 +587,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.21  2006-07-27 14:36:27  joergr
+ * Revision 1.22  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.21  2006/07/27 14:36:27  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

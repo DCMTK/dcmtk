@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:34:40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ OFCondition readMapFile(const char *filename,
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         if (opt_verbose)
-            CERR << "reading map file ..." << endl;
+            CERR << "reading map file ..." << OFendl;
         unsigned char buffer[1000];
         FILE *inf = fopen(filename, "rb");
         if (inf != NULL)
@@ -121,14 +121,14 @@ OFCondition readMapFile(const char *filename,
                             result = EC_Normal;
                         }
                     } else
-                        CERR << "Warning: magic word wrong, not a map file ... ignoring !" << endl;
+                        CERR << "Warning: magic word wrong, not a map file ... ignoring !" << OFendl;
                 } else
-                    CERR << "Warning: file too large, not a map file ... ignoring !" << endl;
+                    CERR << "Warning: file too large, not a map file ... ignoring !" << OFendl;
             } else
-                CERR << "Warning: read error in map file ... ignoring !" << endl;
+                CERR << "Warning: read error in map file ... ignoring !" << OFendl;
             fclose(inf);
         } else
-            CERR << "Warning: cannot open map file ... ignoring !" << endl;
+            CERR << "Warning: cannot open map file ... ignoring !" << OFendl;
     }
     return result;
 }
@@ -144,11 +144,11 @@ OFCondition readTextFile(const char *filename,
     if ((filename != NULL) && (strlen(filename) > 0))
     {
         if (opt_verbose)
-            CERR << "reading text file ..." << endl;
+            CERR << "reading text file ..." << OFendl;
 #ifdef HAVE_IOS_NOCREATE
-        ifstream file(filename, ios::in|ios::nocreate);
+        STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-        ifstream file(filename, ios::in);
+        STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in);
 #endif
         if (file)
         {
@@ -182,11 +182,11 @@ OFCondition readTextFile(const char *filename,
                                 if ((inputXData == NULL) || (inputYData == NULL))
                                     return EC_IllegalCall;
                             } else {
-                                CERR << "Error: invalid or missing value for number of entries in text file ... ignoring !" << endl;
+                                CERR << "Error: invalid or missing value for number of entries in text file ... ignoring !" << OFendl;
                                 return EC_IllegalCall;                      // abort
                             }
                         } else {
-                            CERR << "Error: missing keyword 'count' for number of entries in text file ... ignoring !" << endl;
+                            CERR << "Error: missing keyword 'count' for number of entries in text file ... ignoring !" << OFendl;
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -200,10 +200,10 @@ OFCondition readTextFile(const char *filename,
                             if (inputXMax <= 0)
                             {
                                 if (opt_debug)
-                                    CERR << "Warning: invalid value for xMax in text file ...ignoring !" << endl;
+                                    CERR << "Warning: invalid value for xMax in text file ...ignoring !" << OFendl;
                             }
                         } else {
-                            CERR << "Error: invalid text file ... ignoring !" << endl;
+                            CERR << "Error: invalid text file ... ignoring !" << OFendl;
                             return EC_IllegalCall;                          // abort
                         }
                     }
@@ -217,10 +217,10 @@ OFCondition readTextFile(const char *filename,
                             if (inputYMax <= 0)
                             {
                                 if (opt_debug)
-                                    CERR << "Warning: invalid value for yMax in text file ...ignoring !" << endl;
+                                    CERR << "Warning: invalid value for yMax in text file ...ignoring !" << OFendl;
                             }
                         } else {
-                            CERR << "Error: invalid text file ... ignoring !" << endl;
+                            CERR << "Error: invalid text file ... ignoring !" << OFendl;
                             return EC_IllegalCall;                          // abort
                         }
                     } else {
@@ -231,12 +231,12 @@ OFCondition readTextFile(const char *filename,
                             if (file.fail())
                             {
                                 if (opt_debug)
-                                    CERR << "Warning: missing y value in text file ... ignoring last entry !" << endl;
+                                    CERR << "Warning: missing y value in text file ... ignoring last entry !" << OFendl;
                             } else {
                                 if ((count > 0) && (inputXData[count] <= xmax))
                                 {
                                     if (opt_debug)
-                                        CERR << "Warning: x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !" << endl;
+                                        CERR << "Warning: x values in text file not strictly monotonous ... ignoring entry #" << (count + 1) << " !" << OFendl;
                                 } else {
                                     xmax = inputXData[count];
                                     if (inputYData[count] > ymax)
@@ -246,7 +246,7 @@ OFCondition readTextFile(const char *filename,
                                         if (opt_debug)
                                         {
                                             CERR << "Warning: x value (" << inputXData[count] << ") exceeds maximum value (";
-                                            CERR << inputXMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                            CERR << inputXMax << ") in text file ..." << OFendl << "         ... ignoring value !" << OFendl;
                                         }
                                     }
                                     else if ((inputYMax != 0) && (inputYData[count] > inputYMax))
@@ -254,7 +254,7 @@ OFCondition readTextFile(const char *filename,
                                         if (opt_debug)
                                         {
                                             CERR << "Warning: y value (" << inputYData[count] << ") exceeds maximum value (";
-                                            CERR << inputYMax << ") in text file ..." << endl << "         ... ignoring value !" << endl;
+                                            CERR << inputYMax << ") in text file ..." << OFendl << "         ... ignoring value !" << OFendl;
                                         }
                                     } else
                                         count++;
@@ -262,7 +262,7 @@ OFCondition readTextFile(const char *filename,
                             }
                         } else {
                             if (opt_debug)
-                                CERR << "Warning: too many values in text file ... ignoring last line(s) !" << endl;
+                                CERR << "Warning: too many values in text file ... ignoring last line(s) !" << OFendl;
                             break;
                         }
                     }
@@ -272,7 +272,7 @@ OFCondition readTextFile(const char *filename,
             {
                 inputEntries = count;
                 if (opt_debug)
-                    CERR << "Warning: automatically setting number of entries in text file to " << inputEntries << " !" << endl;
+                    CERR << "Warning: automatically setting number of entries in text file to " << inputEntries << " !" << OFendl;
             }
             if (inputXMax == 0)                                             // automatic calculation
                 inputXMax = xmax;
@@ -281,9 +281,9 @@ OFCondition readTextFile(const char *filename,
             if (/*(inputXMax > 0) && (inputYMax > 0) &&*/ (inputEntries > 0) && (inputXData != NULL) && (inputYData != NULL))
                 return EC_Normal;
             else
-                CERR << "Warning: invalid text file ... ignoring !" << endl;
+                CERR << "Warning: invalid text file ... ignoring !" << OFendl;
         } else
-            CERR << "Warning: can't open text file ... ignoring !" << endl;
+            CERR << "Warning: can't open text file ... ignoring !" << OFendl;
     }
     return EC_IllegalCall;
 }
@@ -301,15 +301,15 @@ OFCondition writeTextOutput(const char *filename,
         if ((outputData != NULL) && (numberOfEntries > 0))
         {
             if (opt_verbose)
-                CERR << "writing text file ..." << endl;
-            ofstream file(filename);
+                CERR << "writing text file ..." << OFendl;
+            STD_NAMESPACE ofstream file(filename);
             if (file)
             {
-                file << header << endl;
+                file << header << OFendl;
                 for (unsigned long i = 0; i < numberOfEntries; i++)
-                    file << (firstMapped + (signed long)i) << "\t" << outputData[i] << endl;
+                    file << (firstMapped + (signed long)i) << "\t" << outputData[i] << OFendl;
             } else
-               CERR << "Warning: can't create output text file ... ignoring !" << endl;
+               CERR << "Warning: can't create output text file ... ignoring !" << OFendl;
         }
     }
     return result;
@@ -341,15 +341,15 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
                     DicomImageClass::tobits((int)inputXMax), DicomImageClass::tobits((int)inputYMax),
                     (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
             }
-            oss << "# " << explanation << endl;
+            oss << "# " << explanation << OFendl;
         }
         const double factor = (double)(DicomImageClass::maxval(numberOfBits)) / inputYMax;
         if (factor != 1.0)
         {
             if (opt_verbose)
             {
-                CERR.setf(ios::fixed, ios::floatfield);
-                CERR << "multiplying input values by " << factor << " ..." << endl;
+                CERR.setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
+                CERR << "multiplying input values by " << factor << " ..." << OFendl;
             }
             for (unsigned long i = 0; i < inputEntries; i++)
                 inputYData[i] *= factor;
@@ -357,29 +357,29 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
         if (numberOfEntries == inputEntries)
         {
             if (opt_verbose)
-                CERR << "importing LUT data directly ..." << endl;
+                CERR << "importing LUT data directly ..." << OFendl;
             for (unsigned long i = 0; i < numberOfEntries; i++)
                 outputData[i] = (Uint16)inputYData[i];
             result = EC_Normal;
         } else {
             if (opt_verbose)
-                CERR << "using polynomial curve fitting algorithm ..." << endl;
+                CERR << "using polynomial curve fitting algorithm ..." << OFendl;
             double *coeff = new double[order + 1];
             if (DiCurveFitting<double, double>::calculateCoefficients(inputXData, inputYData, (unsigned int)inputEntries, order, coeff))
             {
                 if (DiCurveFitting<double, Uint16>::calculateValues(0, inputXMax, outputData, (unsigned int)numberOfEntries, order, coeff))
                 {
-                    oss << "# using polynomial curve fitting algorithm (order = " << order << ")" << endl;
-                    oss << "# equation: y = C0 + C1*x + C2*x^2 + C3*x^3 + ... + Cn*x^n" << endl;
+                    oss << "# using polynomial curve fitting algorithm (order = " << order << ")" << OFendl;
+                    oss << "# equation: y = C0 + C1*x + C2*x^2 + C3*x^3 + ... + Cn*x^n" << OFendl;
                     oss << "# where: ";
                     for (unsigned int i = 0; i <= order; i++)
                     {
                         oss << "C" << i << " = ";
-                        oss.setf(ios::fixed, ios::floatfield);
+                        oss.setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
                         //oss.setf(ios::showpos);
                         oss.precision(5);
                         oss.width(10);
-                        oss << coeff[i] << endl;
+                        oss << coeff[i] << OFendl;
                         if (i < order)
                         {
                             oss << "#       ";
@@ -399,7 +399,7 @@ OFCondition convertInputLUT(const unsigned int numberOfBits,
             header += tmpString;
             OFSTRINGSTREAM_FREESTR(tmpString)
         } else
-            CERR << "Warning: can't create lookup table from text file ... ignoring !" << endl;
+            CERR << "Warning: can't create lookup table from text file ... ignoring !" << OFendl;
     }
     return result;
 }
@@ -417,7 +417,7 @@ void gammaLUT(const unsigned int numberOfBits,
     if (outputData != NULL)
     {
         if (opt_verbose)
-            CERR << "computing gamma function ..." << endl;
+            CERR << "computing gamma function ..." << OFendl;
         OFOStringStream oss;
         if (explanation != NULL)
         {
@@ -429,7 +429,7 @@ void gammaLUT(const unsigned int numberOfBits,
                 sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                     (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
             }
-            oss << "# " << explanation << endl;
+            oss << "# " << explanation << OFendl;
         }
         Uint16 maxValue = 0xFFFF >> (16 - numberOfBits);
         double step = (double)maxValue / ((double)numberOfEntries - 1.0);
@@ -475,7 +475,7 @@ void applyInverseGSDF(const unsigned int numberOfBits,
     if (outputData != NULL)
     {
         if (opt_verbose)
-            CERR << "applying inverse GSDF ..." << endl;
+            CERR << "applying inverse GSDF ..." << OFendl;
         OFOStringStream oss;
         if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", inverse GSDF");
@@ -500,7 +500,7 @@ void applyInverseGSDF(const unsigned int numberOfBits,
                 outputData[i] = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow((double)10, -(dmin + (double)outputData[i] * density))) - jmin) * factor);
         }
         oss << "# applied inverse GSDF with Dmin/max = " << minDensity << "/" << maxDensity << ", L0/La = "
-            << illumination << "/" << reflection << endl;
+            << illumination << "/" << reflection << OFendl;
         oss << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
         header += tmpString;
@@ -526,7 +526,7 @@ void mixingUpLUT(const unsigned long numberOfEntries,
     if (outputData != NULL)
     {
         if (opt_verbose)
-            CERR << "mixing up LUT entries ..." << endl;
+            CERR << "mixing up LUT entries ..." << OFendl;
         if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", mixed-up entries");
         srand(randomSeed);
@@ -578,17 +578,17 @@ OFCondition createLUT(const unsigned int numberOfBits,
     Uint16 numEntries16 = 0;
 
     if (numberOfEntries == 0)
-        CERR << "Warning: creating LUT without LUT data" << endl;
+        CERR << "Warning: creating LUT without LUT data" << OFendl;
     if (numberOfEntries > 65536)
     {
-        CERR << "Error: cannot create LUT with more than 65536 entries" << endl;
+        CERR << "Error: cannot create LUT with more than 65536 entries" << OFendl;
         return EC_IllegalCall;
     }
     if (numberOfEntries < 65536)
         numEntries16 = (Uint16)numberOfEntries;
     if ((numberOfBits < 8) || (numberOfBits > 16))
     {
-        CERR << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << endl;
+        CERR << "Error: cannot create LUT with " << numberOfBits << " bit entries, only 8..16" << OFendl;
         return EC_IllegalCall;
     }
 
@@ -598,7 +598,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
         // LUT Descriptor is SS
         if (firstMapped < -32768)
         {
-            CERR << "Error: cannot create LUT - first value mapped < -32768" << endl;
+            CERR << "Error: cannot create LUT - first value mapped < -32768" << OFendl;
             return EC_IllegalCall;
         }
         descriptor = new DcmSignedShort(DcmTag(DCM_LUTDescriptor, EVR_SS));
@@ -614,7 +614,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
         // LUT Descriptor is US
         if (firstMapped > 0xFFFF)
         {
-            CERR << "Error: cannot create LUT - first value mapped > 65535" << endl;
+            CERR << "Error: cannot create LUT - first value mapped > 65535" << OFendl;
             return EC_IllegalCall;
         }
         descriptor = new DcmUnsignedShort(DcmTag(DCM_LUTDescriptor, EVR_US));
@@ -638,7 +638,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
         wordsToWrite = numberOfEntries;
     if ((wordsToWrite > 32767) && (lutVR != EVR_OW))
     {
-        CERR << "Warning: LUT data >= 64K, writing as OW" << endl;
+        CERR << "Warning: LUT data >= 64K, writing as OW" << OFendl;
         lutVR = EVR_OW;
     }
 
@@ -674,7 +674,7 @@ OFCondition createLUT(const unsigned int numberOfBits,
                 return EC_MemoryExhausted;
             break;
         default:
-            CERR << "Error: unsupported VR for LUT Data" << endl;
+            CERR << "Error: unsupported VR for LUT Data" << OFendl;
             return EC_IllegalCall;
             /* break; */
   }
@@ -801,11 +801,11 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:";
+              CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-              CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-              CERR << " none" << endl;
+              CERR << " none" << OFendl;
 #endif
               return 0;
            }
@@ -900,12 +900,12 @@ int main(int argc, char *argv[])
 
     if ((opt_lutType == LUT_Modality) && (opt_bits != 8) && (opt_bits != 16))
     {
-        CERR << "Error: --modality cannot be used with --bits other than 8 or 16" << endl;
+        CERR << "Error: --modality cannot be used with --bits other than 8 or 16" << OFendl;
         return 1;
     }
     if ((opt_bits != 8) && opt_byteAlign)
     {
-        CERR << "Error: --byte-align cannot be used with --bits other than 8" << endl;
+        CERR << "Error: --byte-align cannot be used with --bits other than 8" << OFendl;
         return 1;
     }
 
@@ -913,14 +913,14 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
 
     E_TransferSyntax Xfer= EXS_LittleEndianExplicit;
     OFCondition result = EC_Normal;
     DcmFileFormat *fileformat = new DcmFileFormat();
     if (!fileformat)
     {
-        CERR << "Error: memory exhausted" << endl;
+        CERR << "Error: memory exhausted" << OFendl;
         return 1;
     }
     DcmDataset *dataset = fileformat->getDataset();
@@ -930,7 +930,7 @@ int main(int argc, char *argv[])
         OFCondition cond = fileformat->loadFile(opt_inName);
         if (! cond.good())
         {
-            CERR << "Error: cannot open file: " << opt_inName << endl;
+            CERR << "Error: cannot open file: " << opt_inName << OFendl;
             return 1;
         }
         Xfer = dataset->getOriginalXfer();
@@ -985,7 +985,7 @@ int main(int argc, char *argv[])
         delete[] outputData;
         if (EC_Normal != result)
         {
-            CERR << "Error: could not create LUT, bailing out." << endl;
+            CERR << "Error: could not create LUT, bailing out." << OFendl;
             return 1;
         }
     } else
@@ -1071,17 +1071,17 @@ int main(int argc, char *argv[])
 
         if (result != EC_Normal)
         {
-            CERR << "error while adding LUT to image dataset. Bailing out."<< endl;
+            CERR << "error while adding LUT to image dataset. Bailing out."<< OFendl;
             return 1;
         }
 
         if (opt_verbose)
-            CERR << "writing DICOM file ..." << endl;
+            CERR << "writing DICOM file ..." << OFendl;
 
         result = fileformat->saveFile(opt_outName, Xfer);
         if (result.bad())
         {
-            CERR << "Error: " << result.text() << ": writing file: " <<  opt_outName << endl;
+            CERR << "Error: " << result.text() << ": writing file: " <<  opt_outName << OFendl;
             return 1;
         }
     }
@@ -1093,7 +1093,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.40  2006-07-27 14:34:40  joergr
+ * Revision 1.41  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.40  2006/07/27 14:34:40  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

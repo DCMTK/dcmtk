@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:20 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,7 +183,7 @@ static DVPSPeerType getConfigTargetType(const char *val, OFConsole *logstream, O
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "warning: unsupported peer type in config file: '" << val << "', ignoring." << endl;
+      logstream->lockCerr() << "warning: unsupported peer type in config file: '" << val << "', ignoring." << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -1508,7 +1508,11 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.43  2005-12-08 15:46:20  meichel
+ *  Revision 1.44  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.43  2005/12/08 15:46:20  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.42  2003/04/29 10:13:56  meichel

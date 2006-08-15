@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:38 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,7 +122,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: found Presentation LUT SQ with number of items != 1" << endl;
+          logstream->lockCerr() << "Error: found Presentation LUT SQ with number of items != 1" << OFendl;
           logstream->unlockCerr();
         }
       } 
@@ -141,7 +141,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << endl;
+        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTDescriptor absent or empty" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -150,7 +150,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << endl;
+        logstream->lockCerr() << "Error: presentationLUTDescriptor present but VM != 3 in presentation state" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -159,7 +159,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTData absent or empty" << endl;
+        logstream->lockCerr() << "Error: presentationLUTShape and presentationLUTData absent or empty" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -169,7 +169,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: presentationLUTShape present but VM != 1" << endl;
+        logstream->lockCerr() << "Error: presentationLUTShape present but VM != 1" << OFendl;
         logstream->unlockCerr();
       }
     } else {
@@ -184,7 +184,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: unknown presentationLUTShape keyword: " << aString << endl;
+          logstream->lockCerr() << "Error: unknown presentationLUTShape keyword: " << aString << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -198,7 +198,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: sOPInstanceUID absent in Presentation LUT Content Sequence" << endl;
+        logstream->lockCerr() << "Error: sOPInstanceUID absent in Presentation LUT Content Sequence" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -207,7 +207,7 @@ OFCondition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in Presentation LUT Content Sequence" << endl;
+        logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in Presentation LUT Content Sequence" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -421,7 +421,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "cannot create Presentation LUT: attribute list error." << endl;
+      logstream->lockCerr() << "cannot create Presentation LUT: attribute list error." << OFendl;
       logstream->unlockCerr();
     }
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -451,8 +451,8 @@ OFBool DVPSPresentationLUT::printSCPCreate(
       {
         if (verboseMode)
         {
-          ostream &mycerr = logstream->lockCerr();
-          mycerr << "cannot create Presentation LUT: unsupported attribute received:" << endl;
+          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+          mycerr << "cannot create Presentation LUT: unsupported attribute received:" << OFendl;
           (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
@@ -483,7 +483,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << endl;
+        logstream->lockCerr() << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -523,7 +523,11 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.27  2005-12-08 15:46:38  meichel
+ *  Revision 1.28  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.27  2005/12/08 15:46:38  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.26  2004/02/04 15:57:49  joergr

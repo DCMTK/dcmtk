@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:41 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,12 +61,12 @@ void DVPSPrintMessageHandler::dumpNMessage(T_DIMSE_Message &msg, DcmItem *datase
     if (dumpStream == NULL) return;    
     if (outgoing)
     {
-      *dumpStream << "===================== OUTGOING DIMSE MESSAGE ====================" << endl;
+      *dumpStream << "===================== OUTGOING DIMSE MESSAGE ====================" << OFendl;
     } else {
-      *dumpStream << "===================== INCOMING DIMSE MESSAGE ====================" << endl;
+      *dumpStream << "===================== INCOMING DIMSE MESSAGE ====================" << OFendl;
     }
     DIMSE_printMessage(*dumpStream, msg, dataset);
-    *dumpStream << "======================= END DIMSE MESSAGE =======================" << endl << endl;  
+    *dumpStream << "======================= END DIMSE MESSAGE =======================" << OFendl << OFendl;  
     return;
 }
 
@@ -557,7 +557,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   /* create association */
   if (verboseMode)
   {
-    logstream->lockCerr() << "Requesting Association" << endl;
+    logstream->lockCerr() << "Requesting Association" << OFendl;
     logstream->unlockCerr();
   }
     
@@ -571,7 +571,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
       ASC_getRejectParameters(params, &rej);
       if (verboseMode)
       {
-        logstream->lockCerr() << "Association Rejected" << endl;
+        logstream->lockCerr() << "Association Rejected" << OFendl;
         logstream->unlockCerr();
         ASC_printRejectParameters(stderr, &rej);
       }
@@ -595,7 +595,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   {                     
     if (verboseMode)
     {
-      logstream->lockCerr() << "Peer does not support Basic Grayscale Print Management, aborting association." << endl;
+      logstream->lockCerr() << "Peer does not support Basic Grayscale Print Management, aborting association." << OFendl;
       logstream->unlockCerr();
     }
     abortAssociation();
@@ -606,7 +606,7 @@ OFCondition DVPSPrintMessageHandler::negotiateAssociation(
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+      logstream->lockCerr() << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
       logstream->unlockCerr();
     }
   } else {
@@ -641,7 +641,11 @@ void DVPSPrintMessageHandler::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.20  2005-12-08 15:46:41  meichel
+ *  Revision 1.21  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.20  2005/12/08 15:46:41  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.19  2005/11/16 14:58:24  meichel

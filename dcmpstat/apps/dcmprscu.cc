@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:37:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ static const char *     opt_ownerID         = NULL;
 static const char *     opt_spoolPrefix     = NULL;
 static OFCmdUnsignedInt opt_sleep           = (OFCmdUnsignedInt) 1;
 static OFCmdUnsignedInt opt_copies          = (OFCmdUnsignedInt) 0;
-static ostream *        logstream           = &CERR;
+static STD_NAMESPACE ostream *        logstream           = &CERR;
 
 /* print target data, taken from configuration file */
 static const char *   targetHostname        = NULL;
@@ -217,14 +217,14 @@ static OFCondition spoolStoredPrintFile(
 
   if (opt_spoolMode)
   {
-  	*logstream << endl << OFDateTime::getCurrentDateTime() << endl << "processing " << filename << endl;
+  	*logstream << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "processing " << filename << OFendl;
   }
 
   if (filename==NULL) return EC_IllegalCall;
   OFCondition result = DVPSHelper::loadFileFormat(filename, ffile);
   if (EC_Normal != result)
   {
-    *logstream << "spooler: unable to load file '" << filename << "'" << endl;
+    *logstream << "spooler: unable to load file '" << filename << "'" << OFendl;
   }
   if (ffile) dset = ffile->getDataset();
 
@@ -236,7 +236,7 @@ static OFCondition spoolStoredPrintFile(
   }
   if (EC_Normal != result)
   {
-    *logstream << "spooler: file '" << filename << "' is not a valid Stored Print object" << endl;
+    *logstream << "spooler: file '" << filename << "' is not a valid Stored Print object" << OFendl;
   }
   delete ffile;
 
@@ -257,25 +257,25 @@ static OFCondition spoolStoredPrintFile(
 
     if (result.bad())
     {
-      *logstream << "spooler: connection setup with printer failed." << endl;
+      *logstream << "spooler: connection setup with printer failed." << OFendl;
       DimseCondition::dump(result);
     } else {
       if (EC_Normal != (result = stprint.printSCUgetPrinterInstance(printHandler)))
       {
-        *logstream << "spooler: printer communication failed, unable to request printer settings." << endl;
+        *logstream << "spooler: printer communication failed, unable to request printer settings." << OFendl;
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUpreparePresentationLUT(
         printHandler, targetRequiresMatchingLUT, targetPreferSCPLUTRendering, targetSupports12bit)))
       {
-        *logstream << "spooler: printer communication failed, unable to create presentation LUT." << endl;
+        *logstream << "spooler: printer communication failed, unable to create presentation LUT." << OFendl;
       }
       if (EC_Normal==result) if (EC_Normal != (result = dvi.printSCUcreateBasicFilmSession(printHandler, targetPLUTinFilmSession)))
       {
-        *logstream << "spooler: printer communication failed, unable to create basic film session." << endl;
+        *logstream << "spooler: printer communication failed, unable to create basic film session." << OFendl;
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUcreateBasicFilmBox(printHandler, targetPLUTinFilmSession)))
       {
-        *logstream << "spooler: printer communication failed, unable to create basic film box." << endl;
+        *logstream << "spooler: printer communication failed, unable to create basic film box." << OFendl;
       }
       // Process images
       size_t numberOfImages = stprint.getNumberOfImages();
@@ -301,16 +301,16 @@ static OFCondition spoolStoredPrintFile(
               // N-SET basic image box
               if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, *dcmimage, opt_Monochrome1)))
               {
-                *logstream << "spooler: printer communication failed, unable to transmit basic grayscale image box." << endl;
+                *logstream << "spooler: printer communication failed, unable to transmit basic grayscale image box." << OFendl;
               }
             } else {
               result = EC_IllegalCall;
-              *logstream << "spooler: unable to load image file '" << theFilename.c_str() << "'" << endl;
+              *logstream << "spooler: unable to load image file '" << theFilename.c_str() << "'" << OFendl;
             }
             delete dcmimage;
           } else {
             result = EC_IllegalCall;
-            *logstream << "spooler: unable to locate image file in database." << endl;
+            *logstream << "spooler: unable to locate image file in database." << OFendl;
           }
         } else result = EC_IllegalCall;
       }
@@ -323,7 +323,7 @@ static OFCondition spoolStoredPrintFile(
         {
           if (EC_Normal != (result = stprint.printSCUsetBasicAnnotationBox(printHandler, currentAnnotation)))
           {
-            *logstream << "spooler: printer communication failed, unable to transmit basic annotation box." << endl;
+            *logstream << "spooler: printer communication failed, unable to transmit basic annotation box." << OFendl;
           }
         }
       }
@@ -334,24 +334,24 @@ static OFCondition spoolStoredPrintFile(
         {
           if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmSession(printHandler)))
           {
-            *logstream << "spooler: printer communication failed, unable to print (at film session level)." << endl;
+            *logstream << "spooler: printer communication failed, unable to print (at film session level)." << OFendl;
           }
         } else {
           if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
           {
-            *logstream << "spooler: printer communication failed, unable to print." << endl;
+            *logstream << "spooler: printer communication failed, unable to print." << OFendl;
           }
         }
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUdelete(printHandler)))
       {
-        *logstream << "spooler: printer communication failed, unable to delete print objects." << endl;
+        *logstream << "spooler: printer communication failed, unable to delete print objects." << OFendl;
       }
 
       result = printHandler.releaseAssociation();
       if (result.bad())
       {
-        *logstream << "spooler: release of connection to printer failed." << endl;
+        *logstream << "spooler: release of connection to printer failed." << OFendl;
         DimseCondition::dump(result);
         if (EC_Normal == result) result =  EC_IllegalCall;
       }
@@ -397,11 +397,11 @@ static OFCondition spoolJobList(
       result2 = spoolStoredPrintFile(currentJob->storedPrintFilename.c_str(), dvi, tlayer);
       if (result2 != EC_Normal)
       {
-        *logstream << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << endl;
+        *logstream << "spooler: error occured during spooling of Stored Print object '" << currentJob->storedPrintFilename.c_str() << "'" << OFendl;
       }
       if (result == EC_Normal) result = result2; // forward error codes, but do not erase
     } else {
-      *logstream << "spooler: unable to find Stored Print object for print job in database" << endl;
+      *logstream << "spooler: unable to find Stored Print object for print job in database" << OFendl;
       result = EC_IllegalCall;
     }
     delete currentJob;
@@ -474,7 +474,7 @@ static OFCondition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.numberOfCopies))
       {
-        *logstream << "spooler: parse error for 'copies' in job file '" << infile << "'" << endl;
+        *logstream << "spooler: parse error for 'copies' in job file '" << infile << "'" << OFendl;
         result = EC_IllegalCall;
       }
     }
@@ -483,7 +483,7 @@ static OFCondition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.illumination))
       {
-        *logstream << "spooler: parse error for 'illumination' in job file '" << infile << "'" << endl;
+        *logstream << "spooler: parse error for 'illumination' in job file '" << infile << "'" << OFendl;
         result = EC_IllegalCall;
       }
     }
@@ -491,7 +491,7 @@ static OFCondition readJobFile(
     {
       if (1 != sscanf(value.c_str(),"%lu", &job.reflectedAmbientLight))
       {
-        *logstream << "spooler: parse error for 'reflection' in job file '" << infile << "'" << endl;
+        *logstream << "spooler: parse error for 'reflection' in job file '" << infile << "'" << OFendl;
         result = EC_IllegalCall;
       }
     }
@@ -511,7 +511,7 @@ static OFCondition readJobFile(
     }
     else
     {
-      *logstream << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << endl;
+      *logstream << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << OFendl;
       result = EC_IllegalCall;
     }
   }
@@ -521,7 +521,7 @@ static OFCondition readJobFile(
   {
     if (0 != unlink(infile))
     {
-      *logstream << "spooler: unable to delete job file '" << infile << "'" << endl;
+      *logstream << "spooler: unable to delete job file '" << infile << "'" << OFendl;
       result = EC_IllegalCall;
     }
   } else {
@@ -530,7 +530,7 @@ static OFCondition readJobFile(
       // if we can't rename, we delete to make sure we don't read the same file again next time.
       if (0 != unlink(infile))
       {
-        *logstream << "spooler: unable to delete job file '" << infile << "'" << endl;
+        *logstream << "spooler: unable to delete job file '" << infile << "'" << OFendl;
         result = EC_IllegalCall;
       }
     }
@@ -539,7 +539,7 @@ static OFCondition readJobFile(
   // make sure that either all mandatory parameters are set or "terminate" is defined.
   if ((EC_Normal==result)&&(! terminateFlag)&&((job.studyUID.size()==0)||(job.seriesUID.size()==0)||(job.instanceUID.size()==0)))
   {
-    *logstream << "spooler: UIDs missing in job file '" << infile << "'" << endl;
+    *logstream << "spooler: UIDs missing in job file '" << infile << "'" << OFendl;
     result = EC_IllegalCall;
   }
   return result;
@@ -613,7 +613,7 @@ static OFCondition updateJobList(
           else
           {
             delete currentJob;
-            *logstream << "spooler: parsing of job file '" << jobName.c_str() << "' failed." << endl;
+            *logstream << "spooler: parsing of job file '" << jobName.c_str() << "' failed." << OFendl;
           }
         } else result = EC_MemoryExhausted;
       }
@@ -629,7 +629,7 @@ static OFCondition updateJobList(
     closedir(dirp);
 #endif
   } else {
-    *logstream << "error: unable to read spool directory '" << spoolFolder << "'" << endl;
+    *logstream << "error: unable to read spool directory '" << spoolFolder << "'" << OFendl;
     result = EC_IllegalCall;
   }
   return result;
@@ -641,7 +641,7 @@ void closeLog()
   ofConsole.split();
   if (logstream != &CERR)
   {
-    *logstream << endl << OFDateTime::getCurrentDateTime() << endl << "terminating" << endl;
+    *logstream << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "terminating" << OFendl;
     delete logstream;
     logstream = &CERR;
   }
@@ -720,17 +720,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #else
-            CERR << endl;
+            CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
          }
@@ -802,11 +802,11 @@ int main(int argc, char *argv[])
       FILE *cfgfile = fopen(opt_cfgName, "rb");
       if (cfgfile) fclose(cfgfile); else
       {
-        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        *logstream << "error: can't open configuration file '" << opt_cfgName << "'" << OFendl;
         return 10;
       }
     } else {
-        *logstream << "error: no configuration file specified" << endl;
+        *logstream << "error: no configuration file specified" << OFendl;
         return 10;
     }
 
@@ -815,14 +815,14 @@ int main(int argc, char *argv[])
     {
       if (EC_Normal != dvi.setCurrentPrinter(opt_printer))
       {
-        *logstream << "error: unable to select printer '" << opt_printer << "'." << endl;
+        *logstream << "error: unable to select printer '" << opt_printer << "'." << OFendl;
         return 10;
       }
     } else {
       opt_printer = dvi.getCurrentPrinter(); // use default printer
       if (opt_printer==NULL)
       {
-        *logstream << "error: no default printer available - no config file?" << endl;
+        *logstream << "error: no default printer available - no config file?" << OFendl;
         return 10;
       }
     }
@@ -840,7 +840,7 @@ int main(int argc, char *argv[])
       logfilename += "_";
       logfilename += opt_printer;
       logfilename += ".log";
-      ofstream *newstream = new ofstream(logfilename.c_str());
+      STD_NAMESPACE ofstream *newstream = new STD_NAMESPACE ofstream(logfilename.c_str());
       if (newstream && (newstream->good()))
       {
         logstream=newstream;
@@ -852,14 +852,14 @@ int main(int argc, char *argv[])
       	delete newstream;
       	logfilename.clear();
       }
-      *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
+      *logstream << rcsid << OFendl << OFDateTime::getCurrentDateTime() << OFendl << "started" << OFendl;
     }
 
     dvi.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
 
     /* get print target from configuration file */
     targetHostname              = dvi.getTargetHostname(opt_printer);
@@ -959,11 +959,11 @@ int main(int argc, char *argv[])
         dvi.getTargetCipherSuite(opt_printer, ui, currentSuite);
         if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
         {
-          *logstream << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << endl;
+          *logstream << "ciphersuite '" << currentSuite << "' is unknown. Known ciphersuites are:" << OFendl;
           unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
           for (unsigned long cs=0; cs < numSuites; cs++)
           {
-            *logstream << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+            *logstream << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
           }
           return 1;
         } else {
@@ -984,11 +984,11 @@ int main(int argc, char *argv[])
 
       if (tlsCACertificateFolder && (TCS_ok != tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat)))
       {
-        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << endl;
+        CERR << "warning unable to load certificates from directory '" << tlsCACertificateFolder << "', ignoring" << OFendl;
       }
       if ((tlsDHParametersFile.size() > 0) && ! (tLayer->setTempDHParameters(tlsDHParametersFile.c_str())))
       {
-        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << tlsDHParametersFile << "', ignoring" << OFendl;
       }
       tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
 
@@ -996,23 +996,23 @@ int main(int argc, char *argv[])
       {
         if (TCS_ok != tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << endl;
+          CERR << "unable to load private TLS key from '" << tlsPrivateKeyFile<< "'" << OFendl;
           return 1;
         }
         if (TCS_ok != tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat))
         {
-          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << endl;
+          CERR << "unable to load certificate from '" << tlsCertificateFile << "'" << OFendl;
           return 1;
         }
         if (! tLayer->checkPrivateKeyMatchesCertificate())
         {
-          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
+          CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << OFendl;
           return 1;
         }
       }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
-        CERR << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << OFendl;
         return 1;
       }
 
@@ -1029,7 +1029,7 @@ int main(int argc, char *argv[])
     DcmTransportLayer *tLayer = NULL;
     if (useTLS)
     {
-        *logstream << "error: not compiled with OpenSSL, cannot use TLS." << endl;
+        *logstream << "error: not compiled with OpenSSL, cannot use TLS." << OFendl;
         closeLog();
         return 10;
     }
@@ -1037,19 +1037,19 @@ int main(int argc, char *argv[])
 
     if (targetHostname == NULL)
     {
-        *logstream << "error: no hostname for print target '" << opt_printer << "' - no config file?" << endl;
+        *logstream << "error: no hostname for print target '" << opt_printer << "' - no config file?" << OFendl;
         closeLog();
         return 10;
     }
     if (targetAETitle == NULL)
     {
-        *logstream << "error: no aetitle for print target '" << opt_printer << "'" << endl;
+        *logstream << "error: no aetitle for print target '" << opt_printer << "'" << OFendl;
         closeLog();
         return 10;
     }
     if (targetPort == 0)
     {
-        *logstream << "error: no or invalid port number for print target '" << opt_printer << "'" << endl;
+        *logstream << "error: no or invalid port number for print target '" << opt_printer << "'" << OFendl;
         closeLog();
         return 10;
     }
@@ -1057,7 +1057,7 @@ int main(int argc, char *argv[])
     else if (targetMaxPDU > ASC_MAXIMUMPDUSIZE)
     {
         *logstream << "warning: max PDU size " << targetMaxPDU << " too big for print target '"
-             << opt_printer << "', using default: " << DEFAULT_MAXPDU << endl;
+             << opt_printer << "', using default: " << DEFAULT_MAXPDU << OFendl;
         targetMaxPDU = DEFAULT_MAXPDU;
     }
     if (targetDisableNewVRs)
@@ -1068,71 +1068,71 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-       *logstream << "Printer parameters for '" <<  opt_printer << "':" << endl
-            << "  hostname      : " << targetHostname << endl
-            << "  port          : " << targetPort << endl
+       *logstream << "Printer parameters for '" <<  opt_printer << "':" << OFendl
+            << "  hostname      : " << targetHostname << OFendl
+            << "  port          : " << targetPort << OFendl
             << "  description   : ";
        if (targetDescription) *logstream << targetDescription; else *logstream << "(none)";
-       *logstream << endl
-            << "  aetitle       : " << targetAETitle << endl
-            << "  max pdu       : " << targetMaxPDU << endl
-            << "  timeout       : " << timeout << endl
+       *logstream << OFendl
+            << "  aetitle       : " << targetAETitle << OFendl
+            << "  max pdu       : " << targetMaxPDU << OFendl
+            << "  timeout       : " << timeout << OFendl
             << "  options       : ";
        if (targetImplicitOnly && targetDisableNewVRs)
-         *logstream << "implicit xfer syntax only, disable post-1993 VRs" << endl;
+         *logstream << "implicit xfer syntax only, disable post-1993 VRs" << OFendl;
        else if (targetImplicitOnly)
-         *logstream << "implicit xfer syntax only" << endl;
+         *logstream << "implicit xfer syntax only" << OFendl;
        else if (targetDisableNewVRs)
-         *logstream << "disable post-1993 VRs" << endl;
+         *logstream << "disable post-1993 VRs" << OFendl;
        else
-         *logstream << "none." << endl;
-       *logstream << "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported") << endl
-            << "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported") << endl
-            << "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported") << endl;
-       *logstream << endl << "Spooler parameters:" << endl
-            << "  mode          : " << (opt_spoolMode ? "spooler mode" : "printer mode") << endl;
+         *logstream << "none." << OFendl;
+       *logstream << "  12-bit xfer   : " << (targetSupports12bit ? "supported" : "not supported") << OFendl
+            << "  present.lut   : " << (targetSupportsPLUT ? "supported" : "not supported") << OFendl
+            << "  annotation    : " << (targetSupportsAnnotation ? "supported" : "not supported") << OFendl;
+       *logstream << OFendl << "Spooler parameters:" << OFendl
+            << "  mode          : " << (opt_spoolMode ? "spooler mode" : "printer mode") << OFendl;
        if (opt_spoolMode)
        {
-         *logstream << "  sleep time    : " << opt_sleep << endl;
+         *logstream << "  sleep time    : " << opt_sleep << OFendl;
        } else {
-         *logstream << "  copies        : " << opt_copies << endl;
-         *logstream << "  medium        : " << (opt_mediumtype ? opt_mediumtype : "printer default") << endl;
-         *logstream << "  destination   : " << (opt_destination ? opt_destination : "printer default") << endl;
-         *logstream << "  label         : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << endl;
-         *logstream << "  priority      : " << (opt_priority ? opt_priority : "printer default") << endl;
-         *logstream << "  owner ID      : " << (opt_ownerID ? opt_ownerID : "printer default") << endl;
+         *logstream << "  copies        : " << opt_copies << OFendl;
+         *logstream << "  medium        : " << (opt_mediumtype ? opt_mediumtype : "printer default") << OFendl;
+         *logstream << "  destination   : " << (opt_destination ? opt_destination : "printer default") << OFendl;
+         *logstream << "  label         : " << (opt_sessionlabel ? opt_sessionlabel : "printer default") << OFendl;
+         *logstream << "  priority      : " << (opt_priority ? opt_priority : "printer default") << OFendl;
+         *logstream << "  owner ID      : " << (opt_ownerID ? opt_ownerID : "printer default") << OFendl;
        }
-       *logstream << endl << "transport layer security parameters:" << endl
+       *logstream << OFendl << "transport layer security parameters:" << OFendl
                   << "  TLS           : ";
-       if (useTLS) *logstream << "enabled" << endl; else *logstream << "disabled" << endl;
+       if (useTLS) *logstream << "enabled" << OFendl; else *logstream << "disabled" << OFendl;
 
 #ifdef WITH_OPENSSL
        if (useTLS)
        {
-         *logstream << "  certificate   : " << tlsCertificateFile << endl
-              << "  key file      : " << tlsPrivateKeyFile << endl
-              << "  DH params     : " << tlsDHParametersFile << endl
-              << "  PRNG seed     : " << tlsRandomSeedFile << endl
-              << "  CA directory  : " << tlsCACertificateFolder << endl
-              << "  ciphersuites  : " << tlsCiphersuites << endl
+         *logstream << "  certificate   : " << tlsCertificateFile << OFendl
+              << "  key file      : " << tlsPrivateKeyFile << OFendl
+              << "  DH params     : " << tlsDHParametersFile << OFendl
+              << "  PRNG seed     : " << tlsRandomSeedFile << OFendl
+              << "  CA directory  : " << tlsCACertificateFolder << OFendl
+              << "  ciphersuites  : " << tlsCiphersuites << OFendl
               << "  key format    : ";
-         if (keyFileFormat == SSL_FILETYPE_PEM) *logstream << "PEM" << endl; else *logstream << "DER" << endl;
+         if (keyFileFormat == SSL_FILETYPE_PEM) *logstream << "PEM" << OFendl; else *logstream << "DER" << OFendl;
          *logstream << "  cert verify   : ";
          switch (tlsCertVerification)
          {
              case DCV_checkCertificate:
-               *logstream << "verify" << endl;
+               *logstream << "verify" << OFendl;
                break;
              case DCV_ignoreCertificate:
-               *logstream << "ignore" << endl;
+               *logstream << "ignore" << OFendl;
                break;
              default:
-               *logstream << "require" << endl;
+               *logstream << "require" << OFendl;
                break;
          }
        }
 #endif
-       *logstream << endl;
+       *logstream << OFendl;
     }
 
    int paramCount = cmd.getParamCount();
@@ -1141,7 +1141,7 @@ int main(int argc, char *argv[])
    {
       if (paramCount > 0)
       {
-        *logstream << "warning: filenames specified on command line, will be ignored in spooler mode" << endl;
+        *logstream << "warning: filenames specified on command line, will be ignored in spooler mode" << OFendl;
       }
 
       OFString jobNamePrefix = opt_spoolPrefix;
@@ -1155,19 +1155,19 @@ int main(int argc, char *argv[])
         OFStandard::sleep((unsigned int)opt_sleep);
         if (EC_Normal != updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str()))
         {
-          *logstream << "spooler: non recoverable error occured, terminating." << endl;
+          *logstream << "spooler: non recoverable error occured, terminating." << OFendl;
           closeLog();
           return 10;
         }
         // static OFCondition updateJobList(jobList, dvi, terminateFlag, jobNamePrefix.c_str());
         if (EC_Normal != spoolJobList(jobList, dvi, tLayer)) { /* ignore */ }
       } while (! terminateFlag);
-      if (opt_verbose) *logstream << "spooler is terminating, goodbye!" << endl;
+      if (opt_verbose) *logstream << "spooler is terminating, goodbye!" << OFendl;
    } else {
       // printer mode
       if (paramCount == 0)
       {
-        *logstream << "spooler: no stored print files specified - nothing to do." << endl;
+        *logstream << "spooler: no stored print files specified - nothing to do." << OFendl;
       } else {
         dvi.clearFilmSessionSettings();
         if (opt_mediumtype) dvi.setPrinterMediumType(opt_mediumtype);
@@ -1181,16 +1181,16 @@ int main(int argc, char *argv[])
           cmd.getParam(param, currentParam);
           if (opt_verbose && currentParam)
           {
-            *logstream << "spooling file '" << currentParam << "'" << endl;
+            *logstream << "spooling file '" << currentParam << "'" << OFendl;
           }
           if (currentParam)
           {
             if (EC_Normal != spoolStoredPrintFile(currentParam, dvi, tLayer))
             {
-              *logstream << "error: spooling of file '" << currentParam << "' failed." << endl;
+              *logstream << "error: spooling of file '" << currentParam << "' failed." << OFendl;
             }
           } else {
-            *logstream << "error: empty file name" << endl;
+            *logstream << "error: empty file name" << OFendl;
           }
         }
       }
@@ -1203,10 +1203,10 @@ int main(int argc, char *argv[])
     {
       if (!tLayer->writeRandomSeed(tlsRandomSeedFile.c_str()))
       {
-        CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << endl;
+        CERR << "Error while writing back random seed file '" << tlsRandomSeedFile << "', ignoring." << OFendl;
       }
     } else {
-      CERR << "Warning: cannot write back random seed, ignoring." << endl;
+      CERR << "Warning: cannot write back random seed, ignoring." << OFendl;
     }
   }
   delete tLayer;
@@ -1233,7 +1233,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.23  2006-07-27 14:37:16  joergr
+ * Revision 1.24  2006-08-15 16:57:01  meichel
+ * Updated the code in module dcmpstat to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.23  2006/07/27 14:37:16  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

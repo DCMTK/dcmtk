@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:46 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ OFBool DVPSReferencedSeries_PList::isValid()
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: referenced series SQ is empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: referenced series SQ is empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
     return OFFalse;
@@ -307,7 +307,11 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.17  2005-12-08 15:46:46  meichel
+ *  Revision 1.18  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2005/12/08 15:46:46  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.16  2004/02/04 15:57:49  joergr

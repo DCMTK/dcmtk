@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:16 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ OFCondition DVPSAnnotationContent::read(DcmItem &dset)
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print Annotation" << endl;
+          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print Annotation" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -114,7 +114,7 @@ OFCondition DVPSAnnotationContent::read(DcmItem &dset)
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: AnnotationPosition missing or incorrect in Stored Print Annotation" << endl;
+          logstream->lockCerr() << "Error: AnnotationPosition missing or incorrect in Stored Print Annotation" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -123,7 +123,7 @@ OFCondition DVPSAnnotationContent::read(DcmItem &dset)
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: TextString missing or incorrect in Stored Print Annotation" << endl;
+          logstream->lockCerr() << "Error: TextString missing or incorrect in Stored Print Annotation" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -143,7 +143,7 @@ OFCondition DVPSAnnotationContent::write(DcmItem &dset)
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: SOPInstanceUID empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: SOPInstanceUID empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -152,7 +152,7 @@ OFCondition DVPSAnnotationContent::write(DcmItem &dset)
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: AnnotationPosition empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: AnnotationPosition empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -161,7 +161,7 @@ OFCondition DVPSAnnotationContent::write(DcmItem &dset)
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: TextString empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Annotation: TextString empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -208,7 +208,11 @@ void DVPSAnnotationContent::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsab.cc,v $
- *  Revision 1.9  2005-12-08 15:46:16  meichel
+ *  Revision 1.10  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.9  2005/12/08 15:46:16  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.8  2001/09/26 15:36:22  meichel

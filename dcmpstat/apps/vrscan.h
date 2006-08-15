@@ -72,16 +72,16 @@
 #ifdef YY_USE_CLASS
 #ifdef YY_vrscan_IOSTREAM
 #include "dcmtk/ofstd/ofstream.h"
-#define YY_vrscan_IFILE  istream
-#define YY_vrscan_OFILE ostream 
-#define YY_vrscan_ERRFILE cerr
+#define YY_vrscan_IFILE  STD_NAMESPACE istream
+#define YY_vrscan_OFILE STD_NAMESPACE ostream 
+#define YY_vrscan_ERRFILE STD_NAMESPACE cerr
 
 #ifndef YY_vrscan_IFILE_DEFAULT
-#define YY_vrscan_IFILE_DEFAULT &cin
+#define YY_vrscan_IFILE_DEFAULT &STD_NAMESPACE cin
 #endif
 
 #ifndef YY_vrscan_OFILE_DEFAULT
-#define YY_vrscan_OFILE_DEFAULT &cout
+#define YY_vrscan_OFILE_DEFAULT &STD_NAMESPACE cout
 #endif
 
 #endif
@@ -273,7 +273,7 @@ YY_vrscan_LEX_PARAM_DEF
 #ifndef YY_vrscan_IOSTREAM
 #define YY_vrscan_INPUT_CODE return result= fread(  buffer, 1,max_size,YY_vrscan_IN );
 #else
-#define YY_vrscan_INPUT_CODE if(YY_vrscan_IN->eof())  result=0;else {YY_vrscan_IN->read(buffer,max_size);result=YY_vrscan_IN->gcount();YY_vrscan_IN->clear(YY_vrscan_IN->rdstate()&(~ios::failbit));if(YY_vrscan_IN->bad()) result= -1;} return result;
+#define YY_vrscan_INPUT_CODE if(YY_vrscan_IN->eof())  result=0;else {YY_vrscan_IN->read(buffer,max_size);result=YY_vrscan_IN->gcount();YY_vrscan_IN->clear(YY_vrscan_IN->rdstate()&(~STD_NAMESPACE ios::failbit));if(YY_vrscan_IN->bad()) result= -1;} return result;
 #endif
 #endif
 
@@ -288,7 +288,7 @@ YY_vrscan_LEX_PARAM_DEF
 #ifndef YY_vrscan_IOSTREAM
 #define YY_vrscan_FATAL_ERROR_CODE fputs( msg, YY_vrscan_ERRFILE );putc( '\n', YY_vrscan_ERRFILE );exit( 1 );
 #else
-#define YY_vrscan_FATAL_ERROR_CODE YY_vrscan_ERRFILE<< msg <<endl;exit( 1 );
+#define YY_vrscan_FATAL_ERROR_CODE YY_vrscan_ERRFILE<< msg <<STD_NAMESPACE endl;exit( 1 );
 #endif
 #endif
 

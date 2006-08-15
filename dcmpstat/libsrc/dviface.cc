@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:15 $
- *  CVS/RCS Revision: $Revision: 1.154 $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.155 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -193,7 +193,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
                 if (df) delete df;
                 if (verboseMode)
                 {
-                  logstream->lockCerr() << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
+                  logstream->lockCerr() << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << OFendl;
                   logstream->unlockCerr();
                 }
             }
@@ -689,8 +689,8 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not register in index file.");
                 if (verboseMode)
                 {
-                  ostream &mycerr = logstream->lockCerr();
-                  mycerr << "unable to register presentation state '" << imageFileName << "' in database." << endl;
+                  STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+                  mycerr << "unable to register presentation state '" << imageFileName << "' in database." << OFendl;
                   logstream->unlockCerr();
                 }
             }
@@ -724,8 +724,8 @@ OFCondition DVInterface::savePState(OFBool replaceSOPInstanceUID)
                             writeLogMessage(DVPSM_error, "DCMPSTAT", "Save presentation state to database failed: could not register image in index file.");
                             if (verboseMode)
                             {
-                              ostream &mycerr = logstream->lockCerr();
-                              mycerr << "unable to register image '" << imageFileName << "' in database." << endl;
+                              STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+                              mycerr << "unable to register image '" << imageFileName << "' in database." << OFendl;
                               logstream->unlockCerr();
                             }
                         } else {
@@ -825,8 +825,8 @@ OFCondition DVInterface::saveStructuredReport()
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: could not register in index file.");
                 if (verboseMode)
                 {
-                  ostream &mycerr = logstream->lockCerr();
-                  mycerr << "unable to register structured report '" << filename << "' in database." << endl;
+                  STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+                  mycerr << "unable to register structured report '" << filename << "' in database." << OFendl;
                   logstream->unlockCerr();
                 }
             }
@@ -1322,7 +1322,7 @@ void DVInterface::resetDatabaseReferenceTime()
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "warning: cannot set database index file modification time" << endl;
+        logstream->lockCerr() << "warning: cannot set database index file modification time" << OFendl;
         logstream->unlockCerr();
       }
     } else {
@@ -2258,7 +2258,7 @@ OFCondition DVInterface::sendIOD(const char * targetID,
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << sender_application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << sender_application << "'" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -2290,7 +2290,7 @@ OFCondition DVInterface::sendIOD(const char * targetID,
   } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << sender_application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << sender_application << "'" << OFendl;
         logstream->unlockCerr();
       }
   }
@@ -2329,7 +2329,7 @@ OFCondition DVInterface::startReceiver()
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+          logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -2356,7 +2356,7 @@ OFCondition DVInterface::startReceiver()
     } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+          logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << OFendl;
           logstream->unlockCerr();
         }
         result = EC_IllegalCall;
@@ -2392,7 +2392,7 @@ OFCondition DVInterface::terminateReceiver()
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -2419,7 +2419,7 @@ OFCondition DVInterface::terminateReceiver()
   } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << receiver_application << "'" << OFendl;
         logstream->unlockCerr();
       }
       result = EC_IllegalCall;
@@ -2473,7 +2473,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
 
     if (verboseMode)
     {
-      logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << endl;
+      logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << OFendl;
       logstream->unlockCerr();
     }
 
@@ -2510,7 +2510,7 @@ OFCondition DVInterface::startQueryRetrieveServer()
   } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << server_application << "'" << OFendl;
         logstream->unlockCerr();
       }
   }
@@ -2577,24 +2577,24 @@ OFCondition DVInterface::terminateQueryRetrieveServer()
 
 OFCondition DVInterface::createQueryRetrieveServerConfigFile(const char *filename)
 {
-  ofstream output(filename);
+  STD_NAMESPACE ofstream output(filename);
   if (output)
   {
     writeLogMessage(DVPSM_informational, "DCMPSTAT", "Creating configuration file for query/retrieve server.");
-    output << "# ATTENTION: This file has been created automatically and will" << endl;
-    output << "#            be re-created each time the query/retrieve server" << endl;
-    output << "#            is started.  To avoid that manual changes to this" << endl;
-    output << "#            file are destroyed, the flag AutoCreateConfigFile" << endl;
-    output << "#            in the configuration file '" << configPath << "' has to be" << endl;
-    output << "#            switched off." << endl;
-    output << endl;
-    output << "NetworkType     = \"tcp\"" << endl;
-    output << "NetworkTCPPort  = " << getQueryRetrievePort() << endl;
-    output << "MaxPDUSize      = " << getQueryRetrieveMaxPDU() << endl;
-    output << "MaxAssociations = " << getQueryRetrieveMaxAssociations() << endl;
-    output << "Display         = \"no\"" << endl;
-    output << endl;
-    output << "HostTable BEGIN" << endl;
+    output << "# ATTENTION: This file has been created automatically and will" << OFendl;
+    output << "#            be re-created each time the query/retrieve server" << OFendl;
+    output << "#            is started.  To avoid that manual changes to this" << OFendl;
+    output << "#            file are destroyed, the flag AutoCreateConfigFile" << OFendl;
+    output << "#            in the configuration file '" << configPath << "' has to be" << OFendl;
+    output << "#            switched off." << OFendl;
+    output << OFendl;
+    output << "NetworkType     = \"tcp\"" << OFendl;
+    output << "NetworkTCPPort  = " << getQueryRetrievePort() << OFendl;
+    output << "MaxPDUSize      = " << getQueryRetrieveMaxPDU() << OFendl;
+    output << "MaxAssociations = " << getQueryRetrieveMaxAssociations() << OFendl;
+    output << "Display         = \"no\"" << OFendl;
+    output << OFendl;
+    output << "HostTable BEGIN" << OFendl;
     const char *aet = NULL;
     const char *name = NULL;
     const Uint32 count = getNumberOfTargets();
@@ -2606,15 +2606,15 @@ OFCondition DVInterface::createQueryRetrieveServerConfigFile(const char *filenam
           aet = getTargetAETitle(id);
           name = getTargetHostname(id);
           if ((aet != NULL) && (name != NULL))
-            output << id << " = (" << aet << ", " << name << ", " << getTargetPort(id) << ")" << endl;
+            output << id << " = (" << aet << ", " << name << ", " << getTargetPort(id) << ")" << OFendl;
       }
     }
-    output << "HostTable END" << endl;
-    output << endl;
-    output << "AETable BEGIN" << endl;
+    output << "HostTable END" << OFendl;
+    output << OFendl;
+    output << "AETable BEGIN" << OFendl;
     output << getQueryRetrieveAETitle() << "\t" << getDatabaseFolder() << "\tR\t(";
-    output << PSTAT_MAXSTUDYCOUNT << ", " << PSTAT_STUDYSIZE / 1024 / 1024 << "mb)\tANY" << endl;
-    output << "AETable END" << endl;
+    output << PSTAT_MAXSTUDYCOUNT << ", " << PSTAT_STUDYSIZE / 1024 / 1024 << "mb)\tANY" << OFendl;
+    output << "AETable END" << OFendl;
     return EC_Normal;
   }
   writeLogMessage(DVPSM_error, "DCMPSTAT", "Could not create configuration file for query/retrieve server.");
@@ -2741,8 +2741,8 @@ OFCondition DVInterface::saveDICOMImage(
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save image to database failed: could not register in index file.");
          if (verboseMode)
          {
-           ostream &mycerr = logstream->lockCerr();
-           mycerr << "unable to register secondary capture image '" << imageFileName << "' in database." << endl;
+           STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+           mycerr << "unable to register secondary capture image '" << imageFileName << "' in database." << OFendl;
            logstream->unlockCerr();
          }
        }
@@ -2904,8 +2904,8 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to database failed: could not register in index file.");
          if (verboseMode)
          {
-           ostream &mycerr = logstream->lockCerr();
-           mycerr << "unable to register hardcopy grayscale image '" << imageFileName << "' in database." << endl;
+           STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+           mycerr << "unable to register hardcopy grayscale image '" << imageFileName << "' in database." << OFendl;
            logstream->unlockCerr();
          }
        }
@@ -2962,8 +2962,8 @@ OFCondition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save fileformat to database failed: could not register in index file.");
          if (verboseMode)
          {
-           ostream &mycerr = logstream->lockCerr();
-           mycerr << "unable to register file '" << imageFileName << "' in database." << endl;
+           STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+           mycerr << "unable to register file '" << imageFileName << "' in database." << OFendl;
            logstream->unlockCerr();
          }
        }
@@ -3146,8 +3146,8 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save stored print to database failed: could not register in index file.");
          if (verboseMode)
          {
-           ostream &mycerr = logstream->lockCerr();
-           mycerr << "unable to register stored print object '" << imageFileName << "' in database." << endl;
+           STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+           mycerr << "unable to register stored print object '" << imageFileName << "' in database." << OFendl;
            logstream->unlockCerr();
          }
        }
@@ -3514,7 +3514,7 @@ OFCondition DVInterface::startPrintSpooler()
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << endl;
+            logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << OFendl;
             logstream->unlockCerr();
           }
         }
@@ -3524,7 +3524,7 @@ OFCondition DVInterface::startPrintSpooler()
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << endl;
+            logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << OFendl;
             logstream->unlockCerr();
           }
         }
@@ -3558,7 +3558,7 @@ OFCondition DVInterface::startPrintSpooler()
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << spooler_application << "'" << OFendl;
         logstream->unlockCerr();
       }
       result = EC_IllegalCall;
@@ -3619,7 +3619,7 @@ OFCondition DVInterface::terminatePrintSpooler()
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << endl;
+          logstream->lockCerr() << "error: unable to activate spooler termination request '" << spoolFilename.c_str() << "'" << OFendl;
           logstream->unlockCerr();
         }
         return EC_IllegalCall;
@@ -3627,7 +3627,7 @@ OFCondition DVInterface::terminatePrintSpooler()
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << endl;
+        logstream->lockCerr() << "error: unable to create spooler termination request '" << tempFilename.c_str() << "'" << OFendl;
         logstream->unlockCerr();
       }
       return EC_IllegalCall;
@@ -3670,7 +3670,7 @@ OFCondition DVInterface::startPrintServer()
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+            logstream->lockCerr() << "error: unable to execute '" << application << "'" << OFendl;
             logstream->unlockCerr();
           }
         }
@@ -3679,7 +3679,7 @@ OFCondition DVInterface::startPrintServer()
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+            logstream->lockCerr() << "error: unable to execute '" << application << "'" << OFendl;
             logstream->unlockCerr();
           }
         }
@@ -3711,7 +3711,7 @@ OFCondition DVInterface::startPrintServer()
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << application << "'" << OFendl;
         logstream->unlockCerr();
       }
       result = EC_IllegalCall;
@@ -3964,7 +3964,7 @@ OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << endl;
+        logstream->lockCerr() << "error: unable to activate print job '" << spoolFilename.c_str() << "'" << OFendl;
         logstream->unlockCerr();
       }
       return EC_IllegalCall;
@@ -3972,7 +3972,7 @@ OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   } else {
     if (verboseMode)
     {
-      logstream->lockCerr() << "error: unable to create print job '" << tempFilename.c_str() << "'" << endl;
+      logstream->lockCerr() << "error: unable to create print job '" << tempFilename.c_str() << "'" << OFendl;
       logstream->unlockCerr();
     }
     return EC_IllegalCall;
@@ -4098,7 +4098,7 @@ OFCondition DVInterface::startExternalApplication(const char *application, const
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << application << "'" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -4126,7 +4126,7 @@ OFCondition DVInterface::startExternalApplication(const char *application, const
   } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: unable to execute '" << application << "'" << endl;
+        logstream->lockCerr() << "error: unable to execute '" << application << "'" << OFendl;
         logstream->unlockCerr();
       }
   }
@@ -4388,7 +4388,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.154  2005-12-08 15:46:15  meichel
+ *  Revision 1.155  2006-08-15 16:57:01  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.154  2005/12/08 15:46:15  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.153  2005/11/23 16:10:34  meichel

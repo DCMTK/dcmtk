@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:14 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -318,7 +318,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: SOPClassUID absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: SOPClassUID absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -327,7 +327,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: SOPClassUID VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: SOPClassUID VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -337,7 +337,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: Modality absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: Modality absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -346,7 +346,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: Modality VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: Modality VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -357,7 +357,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << endl;
+      logstream->lockCerr() << "Error: SOP Class UID does not match GrayscaleSoftcopyPresentationStateStorage" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -368,7 +368,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: Modality does not match 'PR' for presentation state" << endl;
+      logstream->lockCerr() << "Error: Modality does not match 'PR' for presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -454,7 +454,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: Modality LUT SQ does not have exactly one item in presentation state" << endl;
+          logstream->lockCerr() << "Error: Modality LUT SQ does not have exactly one item in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -480,7 +480,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: patientName absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: patientName absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -489,7 +489,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: patientName VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: patientName VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -499,7 +499,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: studyInstanceUID absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: studyInstanceUID absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -508,7 +508,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: studyInstanceUID VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: studyInstanceUID VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -518,7 +518,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -528,7 +528,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: instanceNumber absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: instanceNumber absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -537,7 +537,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: instanceNumber VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: instanceNumber VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -547,7 +547,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentationLabel absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: presentationLabel absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -556,7 +556,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentationLabel VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: presentationLabel VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -566,7 +566,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentationCreationDate absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: presentationCreationDate absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -575,7 +575,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentationCreationDate VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: presentationCreationDate VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -585,7 +585,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentationCreationTime absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: presentationCreationTime absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -594,7 +594,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentationCreationTime VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: presentationCreationTime VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -604,7 +604,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: sOPInstanceUID absent or empty in presentation state" << endl;
+      logstream->lockCerr() << "Error: sOPInstanceUID absent or empty in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -613,7 +613,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in presentation state" << endl;
+      logstream->lockCerr() << "Error: sOPInstanceUID VM != 1 in presentation state" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -624,7 +624,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << endl;
+        logstream->lockCerr() << "Error: imageRotation present but imageHorizontalFlip absent or empty in presentation state" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -634,7 +634,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << endl;
+        logstream->lockCerr() << "Error: imageHorizontalFlip present but imageRotation absent or empty in presentation state" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -649,7 +649,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << endl;
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope absent or empty in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -658,7 +658,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleSlope VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -667,7 +667,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << endl;
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType absent or empty in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -676,7 +676,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rescaleIntercept present but rescaleType VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -685,7 +685,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rescaleIntercept present but VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rescaleIntercept present but VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -699,7 +699,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << endl;
+          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor absent or empty in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -708,7 +708,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << endl;
+          logstream->lockCerr() << "Error: modalityLUTData present but modalityLUTDescriptor VM != 3 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -720,7 +720,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: both modality rescale and LUT present in presentation state" << endl;
+        logstream->lockCerr() << "Error: both modality rescale and LUT present in presentation state" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -749,7 +749,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: unknown shutter type '" << aString << "'" << endl;
+          logstream->lockCerr() << "Error: unknown shutter type '" << aString << "'" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -762,7 +762,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterLeftVerticalEdge absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -771,7 +771,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterRightVerticalEdge absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -780,7 +780,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterUpperHorizontalEdge absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -789,7 +789,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: rectangular shutter used but shutterLowerHorizontalEdge absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -801,7 +801,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << endl;
+          logstream->lockCerr() << "Error: circular shutter used but centerOfCircularShutter absent or VM != 2 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -810,7 +810,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: circular shutter used but radiusOfCircularShutter absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -825,7 +825,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << endl;
+          logstream->lockCerr() << "Error: polygonal shutter used but verticesOfThePolygonalShutter absent or VM != 2-2n in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -837,7 +837,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: bitmap shutter used but shutterOverlayGroup absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -849,7 +849,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << endl;
+          logstream->lockCerr() << "Error: shutter used but shutterPresentationValue absent or VM != 1 in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -860,7 +860,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << endl;
+        logstream->lockCerr() << "Error: both bitmap and rect/circ/poly shutter specified in presentation state" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -878,7 +878,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << endl;
+          logstream->lockCerr() << "Error: bitmap shutter specified but referenced overlay group missing in presentation state" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -886,7 +886,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: wrong overlay group specified for bitmap shutter in presentation state" << endl;
+          logstream->lockCerr() << "Error: wrong overlay group specified for bitmap shutter in presentation state" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -910,7 +910,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << endl;
+        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << OFendl;
         logstream->unlockCerr();
       }
   }
@@ -920,7 +920,7 @@ OFCondition DcmPresentationState::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << endl;
+        logstream->lockCerr() << "Error: mask module present in presentation state, but unsupported" << OFendl;
         logstream->unlockCerr();
       }
   }
@@ -1128,7 +1128,7 @@ OFCondition DcmPresentationState::createFromImage(
       result = EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << endl;
+        logstream->lockCerr() << "Error: Wrong image photometric interpretation - not MONOCHROME1/2" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -1178,7 +1178,7 @@ OFCondition DcmPresentationState::createFromImage(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "Warning LIN OD found in prsentation state; set to IDENTITY" << endl;
+          logstream->lockCerr() << "Warning LIN OD found in prsentation state; set to IDENTITY" << OFendl;
           logstream->unlockCerr();
         }
         presentationLUT.setType(DVPSP_identity);
@@ -1507,7 +1507,7 @@ OFCondition DcmPresentationState::addImageReference(
   {
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot add reference to image with different Study Instance UID." << endl;
+      logstream->lockCerr() << "Error: cannot add reference to image with different Study Instance UID." << OFendl;
       logstream->unlockCerr();
     }
     return EC_IllegalCall;
@@ -2162,7 +2162,11 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.8  2005-12-08 15:46:14  meichel
+ *  Revision 1.9  2006-08-15 16:57:01  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.8  2005/12/08 15:46:14  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.7  2004/08/03 11:43:18  meichel

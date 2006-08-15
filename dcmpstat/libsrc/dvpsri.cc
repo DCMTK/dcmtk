@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:43 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -98,7 +98,7 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPClassUID VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -108,7 +108,7 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -117,7 +117,7 @@ OFCondition DVPSReferencedImage::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a referenced image SQ item with referencedSOPInstanceUID VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -150,7 +150,7 @@ OFBool DVPSReferencedImage::validateSOPClassUID(OFString& sopclassuid)
       result = OFFalse;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: images of different SOP classes referenced in presentation state" << endl;
+        logstream->lockCerr() << "Error: images of different SOP classes referenced in presentation state" << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -303,7 +303,11 @@ void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.16  2005-12-08 15:46:43  meichel
+ *  Revision 1.17  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.16  2005/12/08 15:46:43  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.15  2003/10/15 16:57:14  meichel

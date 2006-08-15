@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:15 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,7 +171,7 @@ private:
    * @param stack search stack, as returned by DcmSignature::findFirstSignatureItem() etc.
    * @param os output stream
    */
-  static void printSignatureItemPosition(DcmStack& stack, ostream& os);
+  static void printSignatureItemPosition(DcmStack& stack, STD_NAMESPACE ostream& os);
 
   /** replaces the current HTML page for the given object type by the new string.
    *  @param objtype object type
@@ -236,7 +236,11 @@ private:
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.9  2005-12-08 16:04:15  meichel
+ *  Revision 1.10  2006-08-15 16:57:01  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.9  2005/12/08 16:04:15  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.8  2004/02/04 15:49:09  joergr

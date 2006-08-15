@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:32 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ void DVPSHelper::cleanChildren(OFConsole *logconsole)
           {
             if (logconsole)
             {
-              logconsole->lockCerr() << "wait for child failed: " << strerror(errno) << endl;
+              logconsole->lockCerr() << "wait for child failed: " << strerror(errno) << OFendl;
               logconsole->unlockCerr();
             }
           }
@@ -237,7 +237,11 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.14  2005-12-08 15:46:32  meichel
+ *  Revision 1.15  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.14  2005/12/08 15:46:32  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.13  2002/11/27 15:48:11  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:23 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -108,7 +108,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner VM != 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaTopLeftHandCorner VM != 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -118,7 +118,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -127,7 +127,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner VM != 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with displayedAreaBottomRightHandCorner VM != 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -137,7 +137,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationSizeMode absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationSizeMode absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -146,7 +146,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationSizeMode VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationSizeMode VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   } else {
@@ -159,7 +159,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with mode 'TRUE SIZE' but presentationPixelSpacing VM != 2" << endl;
+          logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with mode 'TRUE SIZE' but presentationPixelSpacing VM != 2" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -170,7 +170,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
         result=EC_IllegalCall;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with mode 'MAGNIFY' but presentationPixelSpacing VM != 1" << endl;
+          logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with mode 'MAGNIFY' but presentationPixelSpacing VM != 1" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -179,7 +179,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with unknown presentation size mode: " << aString << endl;
+        logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with unknown presentation size mode: " << aString << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -190,7 +190,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelSpacing VM != 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelSpacing VM != 2" << OFendl;
       logstream->unlockCerr();
     }
 }
@@ -200,7 +200,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelAspectRatio VM != 2" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelAspectRatio VM != 2" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -210,7 +210,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelMagnificationRatio VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with presentationPixelMagnificationRatio VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -220,7 +220,7 @@ OFCondition DVPSDisplayedArea::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with both presentationPixelSpacing and presentationPixelAspectRatio missing/incorrect" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a display area selection SQ item with both presentationPixelSpacing and presentationPixelAspectRatio missing/incorrect" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -520,7 +520,11 @@ void DVPSDisplayedArea::rotateAndFlip(
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.13  2005-12-08 15:46:23  meichel
+ *  Revision 1.14  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.13  2005/12/08 15:46:23  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.12  2003/09/05 14:30:08  meichel

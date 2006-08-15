@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:51 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -562,7 +562,7 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
+        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << OFendl;
         logstream->unlockCerr();
       }
       slope = 1.0;
@@ -571,7 +571,7 @@ OFCondition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
     {
       if (verboseMode)
       {
-        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << endl;
+        logstream->lockCerr() << "warning: unable to evaluate Modality Rescale Slope, ignoring." << OFendl;
         logstream->unlockCerr();
       }
       intercept = 0.0;
@@ -1549,7 +1549,7 @@ void DVPresentationState::renderPixelData(OFBool display)
      }
      if ((!result) && verboseMode)
      {
-       logstream->lockCerr() << "warning: unable to set VOI transformation, ignoring." << endl;
+       logstream->lockCerr() << "warning: unable to set VOI transformation, ignoring." << OFendl;
        logstream->unlockCerr();
      }
   } /* VOI transform */
@@ -1597,7 +1597,7 @@ void DVPresentationState::renderPixelData(OFBool display)
       if (previewImage != NULL) previewImage->flipImage();
       if ((!result) && verboseMode)
       {
-        logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << endl;
+        logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << OFendl;
         logstream->unlockCerr();
       }
       currentImageFlip = OFFalse;
@@ -1617,7 +1617,7 @@ void DVPresentationState::renderPixelData(OFBool display)
         previewImage->rotateImage(srot);
       if ((!result) && verboseMode)
       {
-        logstream->lockCerr() << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
+        logstream->lockCerr() << "warning: unable to rotate image by " << srot << " degrees, ignoring." << OFendl;
         logstream->unlockCerr();
       }
     }
@@ -1627,7 +1627,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     result = currentImage->removeAllOverlays();
     if ((!result) && verboseMode)
     {
-      logstream->lockCerr() << "warning: unable to disable external overlays, ignoring." << endl;
+      logstream->lockCerr() << "warning: unable to disable external overlays, ignoring." << OFendl;
       logstream->unlockCerr();
     }
 
@@ -1647,7 +1647,7 @@ void DVPresentationState::renderPixelData(OFBool display)
             if ((!result) && verboseMode)
             {
               logstream->lockCerr() << "warning: unable to set external overlay group 0x"
-                << hex << ovgroup << dec << ", ignoring." << endl;
+                << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring." << OFendl;
               logstream->unlockCerr();
             }
           }
@@ -1660,7 +1660,7 @@ void DVPresentationState::renderPixelData(OFBool display)
             if ((!result) && verboseMode)
             {
               logstream->lockCerr() << "warning: unable to activate bitmap shutter 0x"
-                << hex << ovgroup << dec << ", ignoring." << endl;
+                << STD_NAMESPACE hex << ovgroup << STD_NAMESPACE dec << ", ignoring." << OFendl;
               logstream->unlockCerr();
             }
           }
@@ -1789,7 +1789,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (previewImage != NULL) previewImage->rotateImage(rot);
     if ((!result) && verboseMode)
     {
-      logstream->lockCerr() << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
+      logstream->lockCerr() << "warning: unable to rotate image by " << rot << " degrees, ignoring." << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -1800,7 +1800,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (previewImage != NULL) previewImage->flipImage();
     if ((!result) && verboseMode)
     {
-      logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << endl;
+      logstream->lockCerr() << "warning: unable to flip image horizontally, ignoring." << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -1966,7 +1966,7 @@ DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
   {
       if (verboseMode)
       {
-        logstream->lockCerr() << "Warning: no displayed area selection item for current image found, creating default." << endl;
+        logstream->lockCerr() << "Warning: no displayed area selection item for current image found, creating default." << OFendl;
         logstream->unlockCerr();
       }
       if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
@@ -2224,7 +2224,11 @@ OFCondition DVPresentationState::createFromImage(
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.81  2005-12-08 15:46:51  meichel
+ *  Revision 1.82  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.81  2005/12/08 15:46:51  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.80  2004/08/03 11:43:18  meichel

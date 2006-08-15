@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:28 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayer absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayer absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -95,7 +95,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayer VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayer VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -105,7 +105,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder absent or empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -114,7 +114,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerOrder VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -124,7 +124,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -134,7 +134,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -144,7 +144,7 @@ OFCondition DVPSGraphicLayer::read(DcmItem &dset)
     result=EC_IllegalCall;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1" << endl;
+      logstream->lockCerr() << "Error: presentation state contains a graphic layer SQ item with graphicLayerDescription VM > 1" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -306,7 +306,11 @@ void DVPSGraphicLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.13  2005-12-08 15:46:28  meichel
+ *  Revision 1.14  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.13  2005/12/08 15:46:28  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.12  2002/11/27 15:48:10  meichel

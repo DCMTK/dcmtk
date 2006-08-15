@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:33 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,7 +190,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: found ReferencedImageSequence in Stored Print Image Box with number of items != 1" << endl;
+          logstream->lockCerr() << "Error: found ReferencedImageSequence in Stored Print Image Box with number of items != 1" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -218,7 +218,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
              result=EC_IllegalCall;
              if (verboseMode)
              {
-               logstream->lockCerr() << "Error: ImageBoxContentSequence presentation LUT reference cannot be resolved" << endl;
+               logstream->lockCerr() << "Error: ImageBoxContentSequence presentation LUT reference cannot be resolved" << OFendl;
                logstream->unlockCerr();
              }
            }
@@ -227,7 +227,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: found ImageBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1" << endl;
+          logstream->lockCerr() << "Error: found ImageBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1" << OFendl;
           logstream->unlockCerr();
         }
       }
@@ -244,7 +244,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
       result=EC_IllegalCall;
       if (verboseMode)
       {
-        logstream->lockCerr() << "Error: Stored Print: retired ReferencedImageOverlayBoxSequence not supported" << endl;
+        logstream->lockCerr() << "Error: Stored Print: retired ReferencedImageOverlayBoxSequence not supported" << OFendl;
         logstream->unlockCerr();
       }
 
@@ -260,7 +260,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: SOPInstanceUID missing or incorrect in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -269,7 +269,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: ImageBoxPosition missing or incorrect in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: ImageBoxPosition missing or incorrect in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -278,7 +278,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: RetrieveAETitle missing in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: RetrieveAETitle missing in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -287,7 +287,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: ReferencedSOPClassUID missing or incorrect in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: ReferencedSOPClassUID missing or incorrect in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -296,7 +296,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: ReferencedSOPInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: ReferencedSOPInstanceUID missing or incorrect in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -305,7 +305,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: StudyInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: StudyInstanceUID missing or incorrect in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -314,7 +314,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: SeriesInstanceUID missing or incorrect in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: SeriesInstanceUID missing or incorrect in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -323,7 +323,7 @@ OFCondition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& 
         result=EC_TagNotFound;
         if (verboseMode)
         {
-          logstream->lockCerr() << "Error: ReferencedFrameNumber VM>1 in Stored Print Image Box" << endl;
+          logstream->lockCerr() << "Error: ReferencedFrameNumber VM>1 in Stored Print Image Box" << OFendl;
           logstream->unlockCerr();
         }
     }
@@ -345,7 +345,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: SOPInstanceUID empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: SOPInstanceUID empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -354,7 +354,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: ImageBoxPosition empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: ImageBoxPosition empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -363,7 +363,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: RetrieveAETitle empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: RetrieveAETitle empty" << OFendl;
       logstream->unlockCerr();
     }    
   }
@@ -372,7 +372,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: ReferencedSOPClassUID empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: ReferencedSOPClassUID empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -381,7 +381,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: ReferencedSOPInstanceUID empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: ReferencedSOPInstanceUID empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -390,7 +390,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: StudyInstanceUID empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: StudyInstanceUID empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -399,7 +399,7 @@ OFCondition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     result=EC_TagNotFound;
     if (verboseMode)
     {
-      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: SeriesInstanceUID empty" << endl;
+      logstream->lockCerr() << "Error: cannot write Stored Print Image Box: SeriesInstanceUID empty" << OFendl;
       logstream->unlockCerr();
     }
   }
@@ -773,7 +773,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: attribute (2020,0010) Image Position missing." << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: attribute (2020,0010) Image Position missing." << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -806,7 +806,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal magnification type: '" << theMagnification.c_str() << "'" << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal magnification type: '" << theMagnification.c_str() << "'" << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -843,7 +843,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: smoothing type requested but not supported." << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: smoothing type requested but not supported." << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -853,7 +853,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -878,7 +878,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: configuration information requested but not supported." << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: configuration information requested but not supported." << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -899,7 +899,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << endl;
+            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << OFendl;
             logstream->unlockCerr();
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -926,7 +926,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal polarity: '" << thePolarity.c_str() << "'" << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal polarity: '" << thePolarity.c_str() << "'" << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -947,7 +947,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested image size not supported." << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested image size not supported." << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -972,7 +972,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested decimate/crop behaviour not supported." << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: requested decimate/crop behaviour not supported." << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -988,7 +988,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal decimate/crop behaviour: '" << theBehaviour.c_str() << "'" << endl;
+            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal decimate/crop behaviour: '" << theBehaviour.c_str() << "'" << OFendl;
             logstream->unlockCerr();
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1014,7 +1014,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: basic grayscale image sequence number of items != 1" << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: basic grayscale image sequence number of items != 1" << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1023,7 +1023,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: basic grayscale image sequence missing." << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: basic grayscale image sequence missing." << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1053,8 +1053,8 @@ OFBool DVPSImageBoxContent::printSCPSet(
       {
         if (verboseMode)
         {
-          ostream &mycerr = logstream->lockCerr();
-          mycerr << "cannot update Basic Grayscale Image Box: unsupported attribute received:" << endl;
+          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+          mycerr << "cannot update Basic Grayscale Image Box: unsupported attribute received:" << OFendl;
           (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
@@ -1127,7 +1127,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal samples per pixel value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal samples per pixel value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1136,7 +1136,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: samples per pixel missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: samples per pixel missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1158,7 +1158,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal rows value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal rows value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1167,7 +1167,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: rows missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: rows missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1189,7 +1189,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal columns value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal columns value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1198,7 +1198,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: columns missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: columns missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1225,7 +1225,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         {
           if (verboseMode)
           {
-            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: image transmission with 12 bits/pixel not supported." << endl;
+            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: image transmission with 12 bits/pixel not supported." << OFendl;
             logstream->unlockCerr();
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1235,7 +1235,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           {
             if (verboseMode)
             {
-              logstream->lockCerr() << "cannot update Basic Grayscale Image Box: image data with " << bitsStoredValue << " bits/pixel does not match characteristics of active Presentation LUT." << endl;
+              logstream->lockCerr() << "cannot update Basic Grayscale Image Box: image data with " << bitsStoredValue << " bits/pixel does not match characteristics of active Presentation LUT." << OFendl;
               logstream->unlockCerr();
             }
             rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1247,7 +1247,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal bits stored value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal bits stored value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1256,7 +1256,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: bits stored missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: bits stored missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1278,7 +1278,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal bits allocated value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal bits allocated value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1287,7 +1287,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: bits allocated missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: bits allocated missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1309,7 +1309,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal high bit value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal high bit value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1318,7 +1318,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: high bit missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: high bit missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1340,7 +1340,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal pixel representation value: " << val << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal pixel representation value: " << val << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1349,7 +1349,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: pixel representation missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: pixel representation missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1370,7 +1370,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal photometric interpretation: '" << theColorModel.c_str() << "'" << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal photometric interpretation: '" << theColorModel.c_str() << "'" << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1381,7 +1381,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: photometric interpretation missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: photometric interpretation missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1400,7 +1400,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         if (verboseMode)
         {
-          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal pixel aspect ratio, VM=: '" << pixelAspectRatio.getVM() << endl;
+          logstream->lockCerr() << "cannot update Basic Grayscale Image Box: illegal pixel aspect ratio, VM=: '" << pixelAspectRatio.getVM() << OFendl;
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -1435,7 +1435,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         } else {
           if (verboseMode)
           {
-            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: cannot access pixel data" << endl;
+            logstream->lockCerr() << "cannot update Basic Grayscale Image Box: cannot access pixel data" << OFendl;
             logstream->unlockCerr();
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_ProcessingFailure;
@@ -1445,7 +1445,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: pixel data missing in basic grayscale image sequence" << endl;
+        logstream->lockCerr() << "cannot update Basic Grayscale Image Box: pixel data missing in basic grayscale image sequence" << OFendl;
         logstream->unlockCerr();
       }
       rsp.msg.NSetRSP.DimseStatus = STATUS_N_MissingAttribute;
@@ -1477,8 +1477,8 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
       {
         if (verboseMode)
         {
-          ostream &mycerr = logstream->lockCerr();
-          mycerr << "cannot update Basic Grayscale Image Box: unsupported attribute in basic grayscale image sequence:" << endl;
+          STD_NAMESPACE ostream& mycerr = logstream->lockCerr();
+          mycerr << "cannot update Basic Grayscale Image Box: unsupported attribute in basic grayscale image sequence:" << OFendl;
           (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
@@ -1551,7 +1551,11 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.33  2005-12-08 15:46:33  meichel
+ *  Revision 1.34  2006-08-15 16:57:02  meichel
+ *  Updated the code in module dcmpstat to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.33  2005/12/08 15:46:33  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.32  2003/06/04 12:30:28  meichel
