@@ -21,9 +21,9 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:01:53 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:09 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
             if (cmd.findOption("--version"))
             {
                 app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-                CERR << endl << "External libraries used: none" << endl;
+                CERR << OFendl << "External libraries used: none" << OFendl;
                 return 0;
            }
         }
@@ -245,13 +245,13 @@ int main(int argc, char *argv[])
     if (opt_outputMode > 0)
     {
         if ((opt_verboseMode > 1) && (opt_ifname != NULL))
-            OUTPUT << "reading LUT file: " << opt_ifname << endl;
+            OUTPUT << "reading LUT file: " << opt_ifname << OFendl;
 
         /* Grayscale Standard Display Function */
         if (cmd.findOption("--gsdf"))
         {
             if (opt_verboseMode > 1)
-                OUTPUT << "creating GSDF display curve ..." << endl;
+                OUTPUT << "creating GSDF display curve ..." << OFendl;
             app.checkValue(cmd.getValue(opt_ofname));
             DiGSDFunction *disp = NULL;
             if (opt_ifname != NULL)
@@ -264,13 +264,13 @@ int main(int argc, char *argv[])
                 if (opt_ambLight >= 0)
                 {
                     if (opt_verboseMode > 1)
-                        OUTPUT << "setting ambient light value ..." << endl;
+                        OUTPUT << "setting ambient light value ..." << OFendl;
                     disp->setAmbientLightValue(opt_ambLight);
                 }
                 if (opt_illum >= 0)
                 {
                     if (opt_verboseMode > 1)
-                        OUTPUT << "setting illumination value ..." << endl;
+                        OUTPUT << "setting illumination value ..." << OFendl;
                     disp->setIlluminationValue(opt_illum);
                 }
                 /* Dmin/max only suppoted for printers */
@@ -279,18 +279,18 @@ int main(int argc, char *argv[])
                     if (opt_Dmin >= 0)
                     {
                         if (opt_verboseMode > 1)
-                            OUTPUT << "setting minimum optical density value ..." << endl;
+                            OUTPUT << "setting minimum optical density value ..." << OFendl;
                         disp->setMinDensityValue(opt_Dmin);
                     }
                     if (opt_Dmax >= 0)
                     {
                         if (opt_verboseMode > 1)
-                            OUTPUT << "setting maximum optical density value ..." << endl;
+                            OUTPUT << "setting maximum optical density value ..." << OFendl;
                         disp->setMaxDensityValue(opt_Dmax);
                     }
                 }
                 if (opt_verboseMode > 1)
-                    OUTPUT << "writing output file: " << opt_ofname << endl;
+                    OUTPUT << "writing output file: " << opt_ofname << OFendl;
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
                     app.printError("can't write output file");
             } else
@@ -302,7 +302,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--cielab"))
         {
             if (opt_verboseMode > 1)
-                OUTPUT << "creating CIELAB display curve ..." << endl;
+                OUTPUT << "creating CIELAB display curve ..." << OFendl;
             app.checkValue(cmd.getValue(opt_ofname));
             DiCIELABFunction *disp = NULL;
             if (opt_ifname != NULL)
@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
                 if (opt_ambLight >= 0)
                 {
                     if (opt_verboseMode > 1)
-                        OUTPUT << "setting ambient light value ..." << endl;
+                        OUTPUT << "setting ambient light value ..." << OFendl;
                     disp->setAmbientLightValue(opt_ambLight);
                 }
                 /* Dmin/max only suppoted for printers */
@@ -324,18 +324,18 @@ int main(int argc, char *argv[])
                     if (opt_Dmin >= 0)
                     {
                         if (opt_verboseMode > 1)
-                            OUTPUT << "setting minimum optical density value ..." << endl;
+                            OUTPUT << "setting minimum optical density value ..." << OFendl;
                         disp->setMinDensityValue(opt_Dmin);
                     }
                     if (opt_Dmax >= 0)
                     {
                         if (opt_verboseMode > 1)
-                            OUTPUT << "setting maximum optical density value ..." << endl;
+                            OUTPUT << "setting maximum optical density value ..." << OFendl;
                         disp->setMaxDensityValue(opt_Dmax);
                     }
                 }
                 if (opt_verboseMode > 1)
-                    OUTPUT << "writing output file: " << opt_ofname << endl;
+                    OUTPUT << "writing output file: " << opt_ofname << OFendl;
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
                     app.printError("can't write output file");
             } else
@@ -343,7 +343,7 @@ int main(int argc, char *argv[])
         }
     } else {
         if (opt_verboseMode > 0)
-            OUTPUT << "nothing to do, no output file specified" << endl;
+            OUTPUT << "nothing to do, no output file specified" << OFendl;
     }
     return 0;
 }
@@ -353,7 +353,11 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.20  2006-07-27 14:01:53  joergr
+ * Revision 1.21  2006-08-15 16:30:09  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.20  2006/07/27 14:01:53  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Option "--help" is no longer an exclusive option
  * by default.

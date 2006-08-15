@@ -21,9 +21,9 @@
  *
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:01:23 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,13 +56,13 @@ int main(int argc, char *argv[])
     if (argc == 3)
     {
 #ifdef HAVE_IOS_NOCREATE
-        ifstream input(argv[1], ios::in|ios::nocreate);
+        STD_NAMESPACE ifstream input(argv[1], STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-        ifstream input(argv[1], ios::in);
+        STD_NAMESPACE ifstream input(argv[1], STD_NAMESPACE ios::in);
 #endif
         if (input)
         {
-            ofstream output(argv[2]);
+            STD_NAMESPACE ofstream output(argv[2]);
             if (output)
             {
                 char c;
@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
                 int order = -1;
                 double amb = 0;
                 double lum = 0;
-                output << "# Softcopy characteristic curve file (converted from hardcopy format)" << endl;
+                output << "# Softcopy characteristic curve file (converted from hardcopy format)" << OFendl;
                 while (input.get(c) && !error)
                 {
                     if (c == '#')                                               // comment character
@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
                                 input >> maxddl;
                                 if (maxddl > 0)
                                 {
-                                    output << endl << "# maximum DDL value" << endl;
-                                    output << "max " << maxddl << endl;
+                                    output << OFendl << "# maximum DDL value" << OFendl;
+                                    output << "max " << maxddl << OFendl;
                                 } else
                                     error = 1;
                             } else
@@ -106,8 +106,8 @@ int main(int argc, char *argv[])
                                 input >> amb;
                                 if (amb >= 0)
                                 {
-                                    output << endl << "# reflected ambient light (already included)" << endl;
-                                    output << "# amb " << amb << endl;
+                                    output << OFendl << "# reflected ambient light (already included)" << OFendl;
+                                    output << "# amb " << amb << OFendl;
                                 } else
                                     error = 1;
                             } else
@@ -122,8 +122,8 @@ int main(int argc, char *argv[])
                                 input >> lum;
                                 if (lum >= 0)
                                 {
-                                    output << endl << "# illumination (already included)" << endl;
-                                    output << "# lum " << lum << endl;
+                                    output << OFendl << "# illumination (already included)" << OFendl;
+                                    output << "# lum " << lum << OFendl;
                                 } else
                                     error = 1;
                             } else
@@ -138,8 +138,8 @@ int main(int argc, char *argv[])
                                 input >> order;
                                 if (order >= 0)
                                 {
-                                    output << endl << "# order of the polynomial curve fitting algorithm (optional)" << endl;
-                                    output << "ord " << order << endl;
+                                    output << OFendl << "# order of the polynomial curve fitting algorithm (optional)" << OFendl;
+                                    output << "ord " << order << OFendl;
                                 } else
                                     error = 1;
                             } else
@@ -152,10 +152,10 @@ int main(int argc, char *argv[])
                             if (input.good() && (ddlval <= maxddl))
                             {
                                 if (i == 0)
-                                    output << endl << "# DDL   LumVal" << endl;
+                                    output << OFendl << "# DDL   LumVal" << OFendl;
                                 output << ddlval << "\t";
-                                output.setf(ios::fixed, ios::floatfield);
-                                output << DiDisplayFunction::convertODtoLum(odval, amb, lum) << endl;
+                                output.setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
+                                output << DiDisplayFunction::convertODtoLum(odval, amb, lum) << OFendl;
                                 ++i;
                             } else
                                 error = 1;
@@ -164,22 +164,22 @@ int main(int argc, char *argv[])
                 }
                 if (error)
                 {
-                    output << endl << "# error: corrupted input file" << endl;
-                    CERR << "ERROR: corrupted input file !" << endl;
+                    output << OFendl << "# error: corrupted input file" << OFendl;
+                    CERR << "ERROR: corrupted input file !" << OFendl;
                 } else
-                    output << endl << "# end of file" << endl;
+                    output << OFendl << "# end of file" << OFendl;
              } else
-                CERR << "ERROR: can't create output file !" << endl;
+                CERR << "ERROR: can't create output file !" << OFendl;
         } else
-            CERR << "ERROR: can't open input file !" << endl;
+            CERR << "ERROR: can't open input file !" << OFendl;
     } else {
         /* print usage */
-        CERR << rcsid << endl << endl;
-        CERR << OFFIS_CONSOLE_APPLICATION << ": Convert hardcopy characteristic curve file to softcopy format" << endl;
-        CERR << "usage: " << OFFIS_CONSOLE_APPLICATION << " in-file out-file" << endl << endl;
-        CERR << "parameters:" << endl;
-        CERR << "  in-file   hardcopy characteristic curve file to be converted" << endl;
-        CERR << "  out-file  softcopy characteristic curve file to be written" << endl;
+        CERR << rcsid << OFendl << OFendl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": Convert hardcopy characteristic curve file to softcopy format" << OFendl;
+        CERR << "usage: " << OFFIS_CONSOLE_APPLICATION << " in-file out-file" << OFendl << OFendl;
+        CERR << "parameters:" << OFendl;
+        CERR << "  in-file   hardcopy characteristic curve file to be converted" << OFendl;
+        CERR << "  out-file  softcopy characteristic curve file to be written" << OFendl;
     }
     return error;
 }
@@ -188,7 +188,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcod2lum.cc,v $
- * Revision 1.6  2006-07-27 14:01:23  joergr
+ * Revision 1.7  2006-08-15 16:30:09  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.6  2006/07/27 14:01:23  joergr
  * Updated copyright date.
  *
  * Revision 1.5  2005/12/08 15:42:40  meichel

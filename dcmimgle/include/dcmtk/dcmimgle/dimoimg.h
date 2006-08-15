@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:52:27 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -744,7 +744,7 @@ class DiMonoImage
      *
      ** @return true if successful, false otherwise
      */
-    int writePPM(ostream &stream,
+    int writePPM(STD_NAMESPACE ostream& stream,
                  const unsigned long frame,
                  const int bits);
 
@@ -1143,7 +1143,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.47  2006-07-10 10:52:27  joergr
+ * Revision 1.48  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.47  2006/07/10 10:52:27  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.46  2005/12/08 16:47:50  meichel

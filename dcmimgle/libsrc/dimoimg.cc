@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:54:26 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -558,7 +558,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
 {
     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
     {
-        ofConsole.lockCerr() << "ERROR in DiMonoImage copy-constructor !!!" << endl;
+        ofConsole.lockCerr() << "ERROR in DiMonoImage copy-constructor !!!" << OFendl;
         ofConsole.unlockCerr();
     }
     abort();
@@ -700,7 +700,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: unknown value for 'PresentationLUTShape' ("
-                                             << str << ") ... ignoring !" << endl;
+                                             << str << ") ... ignoring !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -895,7 +895,7 @@ int DiMonoImage::checkInterData(const int mode)
             ImageStatus = EIS_MemoryFailure;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
+                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
                 ofConsole.unlockCerr();
             }
         } else
@@ -912,7 +912,7 @@ int DiMonoImage::checkInterData(const int mode)
             {
                 ofConsole.lockCerr() << "WARNING: computed (" << count
                                      << ") and stored (" << InterData->getInputCount() << ") "
-                                     << "pixel count differ !" << endl;
+                                     << "pixel count differ !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -1478,8 +1478,8 @@ const void *DiMonoImage::getData(void *buffer,
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                       ofConsole.lockCerr() << "WARNING: could not create presentation LUT for LinOD conversion" << endl
-                                            << "         ... ignoring presentation LUT shape LinOD !" << endl;
+                       ofConsole.lockCerr() << "WARNING: could not create presentation LUT for LinOD conversion" << OFendl
+                                            << "         ... ignoring presentation LUT shape LinOD !" << OFendl;
                        ofConsole.unlockCerr();
                     }
                 }
@@ -1496,7 +1496,7 @@ const void *DiMonoImage::getData(void *buffer,
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                    ofConsole.lockCerr() << "WARNING: selected display function doesn't fit to requested output depth ("
-                                        << bits << ")" << endl << "         ... ignoring display transformation !" << endl;
+                                        << bits << ")" << OFendl << "         ... ignoring display transformation !" << OFendl;
                    ofConsole.unlockCerr();
                 }
                 disp = NULL;
@@ -1528,7 +1528,7 @@ const void *DiMonoImage::getData(void *buffer,
                 ImageStatus = EIS_MemoryFailure;
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
-                    ofConsole.lockCerr() << "ERROR: can't allocate memory for output-representation !" << endl;
+                    ofConsole.lockCerr() << "ERROR: can't allocate memory for output-representation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -1537,7 +1537,7 @@ const void *DiMonoImage::getData(void *buffer,
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
+                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -2029,7 +2029,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
  *   write output data of 'frame' with depth of 'bits' to C++-output 'stream' (format is PGM - portable gray map)
  */
 
-int DiMonoImage::writePPM(ostream &stream,
+int DiMonoImage::writePPM(STD_NAMESPACE ostream& stream,
                           const unsigned long frame,
                           const int bits)
 {
@@ -2038,13 +2038,13 @@ int DiMonoImage::writePPM(ostream &stream,
     {
         if (bits == MI_PastelColor)
         {
-            stream << "P3" << endl;
-            stream << Columns << " " << Rows << endl;
-            stream << "255" << endl;
+            stream << "P3" << OFendl;
+            stream << Columns << " " << Rows << OFendl;
+            stream << "255" << OFendl;
         } else {
-            stream << "P2" << endl;
-            stream << Columns << " " << Rows << endl;
-            stream << DicomImageClass::maxval(bits) << endl;
+            stream << "P2" << OFendl;
+            stream << Columns << " " << Rows << OFendl;
+            stream << DicomImageClass::maxval(bits) << OFendl;
         }
         int ok = OutputData->writePPM(stream);
         deleteOutputData();
@@ -2124,7 +2124,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.63  2006-07-10 10:54:26  joergr
+ * Revision 1.64  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.63  2006/07/10 10:54:26  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.62  2005/12/08 15:42:56  meichel

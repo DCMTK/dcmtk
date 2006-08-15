@@ -21,9 +21,9 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:52:27 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1644,7 +1644,7 @@ class DicomImage
      *
      ** @return true if successful, false otherwise
      */
-    int writePPM(ostream &stream,
+    int writePPM(STD_NAMESPACE ostream& stream,
                  const int bits = 0,
                  const unsigned long frame = 0);
 
@@ -1824,7 +1824,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.55  2006-07-10 10:52:27  joergr
+ * Revision 1.56  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.55  2006/07/10 10:52:27  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.54  2005/12/08 16:47:31  meichel

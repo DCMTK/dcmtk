@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-01-17 18:35:42 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
             {
-                ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << this->isSigned() << endl;
+                ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << this->isSigned() << OFendl;
                 ofConsole.unlockCerr();
             }
 #endif
@@ -378,7 +378,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
-                        ofConsole.lockCerr() << "convert pixelData: case 1a (single copy)" << endl;
+                        ofConsole.lockCerr() << "convert pixelData: case 1a (single copy)" << OFendl;
                         ofConsole.unlockCerr();
                     }
 #endif
@@ -400,7 +400,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "convert pixelData: case 1b (mask & sign)" << endl;
+                            ofConsole.lockCerr() << "convert pixelData: case 1b (mask & sign)" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
@@ -412,7 +412,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "convert pixelData: case 1c (shift & mask & sign)" << endl;
+                            ofConsole.lockCerr() << "convert pixelData: case 1c (shift & mask & sign)" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
@@ -436,7 +436,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "convert pixelData: case 2a (simple mask)" << endl;
+                            ofConsole.lockCerr() << "convert pixelData: case 2a (simple mask)" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
@@ -451,7 +451,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "convert pixelData: case 2b (mask)" << endl;
+                            ofConsole.lockCerr() << "convert pixelData: case 2b (mask)" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
@@ -471,7 +471,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
-                        ofConsole.lockCerr() << "convert pixelData: case 2c (shift & mask & sign)" << endl;
+                        ofConsole.lockCerr() << "convert pixelData: case 2c (shift & mask & sign)" << OFendl;
                         ofConsole.unlockCerr();
                     }
 #endif
@@ -497,7 +497,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "convert pixelData: case 3 (multi copy)" << endl;
+                    ofConsole.lockCerr() << "convert pixelData: case 3 (multi copy)" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -522,7 +522,7 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "convert pixelData: case 4 (general)" << endl;
+                    ofConsole.lockCerr() << "convert pixelData: case 4 (general)" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -599,7 +599,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.31  2006-01-17 18:35:42  joergr
+ * Revision 1.32  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.31  2006/01/17 18:35:42  joergr
  * Fixed compilation problem with gcc 4.0 on Linux x86_64.
  *
  * Revision 1.30  2005/12/08 16:47:44  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFLUT (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:41 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ class DiGSDFLUT
               const double amb,
               const double illum,
               const OFBool inverse = OFFalse,
-              ostream *stream = NULL,
+              STD_NAMESPACE ostream *stream = NULL,
               const OFBool printMode = OFTrue);
 
     /** destructor
@@ -125,7 +125,7 @@ class DiGSDFLUT
                   const double lum_min,
                   const double lum_max,
                   const OFBool inverse = OFFalse,
-                  ostream *stream = NULL,
+                  STD_NAMESPACE ostream *stream = NULL,
                   const OFBool printMode = OFTrue);
 };
 
@@ -137,7 +137,11 @@ class DiGSDFLUT
  *
  * CVS/RCS Log:
  * $Log: digsdlut.h,v $
- * Revision 1.11  2005-12-08 16:47:41  meichel
+ * Revision 1.12  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.11  2005/12/08 16:47:41  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.10  2003/12/08 18:21:48  joergr

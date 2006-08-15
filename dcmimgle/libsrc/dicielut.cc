@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:45 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
                          const double lum_max,
                          const double amb,
                          const OFBool inverse,
-                         ostream *stream,
+                         STD_NAMESPACE ostream *stream,
                          const OFBool printMode)
   : DiDisplayLUT(count, max, amb /*, 'illum' not used*/)
 {
@@ -65,7 +65,7 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: new CIELAB LUT with " << Bits << " bits output and "
-                                 << Count << " entries created !" << endl;
+                                 << Count << " entries created !" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -74,7 +74,7 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: invalid value range for CIELAB LUT creation ("
-                                     << val_min << " - " << val_max << ") !" << endl;
+                                     << val_min << " - " << val_max << ") !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -105,7 +105,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                            const double lum_min,
                            const double lum_max,
                            const OFBool inverse,
-                           ostream *stream,
+                           STD_NAMESPACE ostream *stream,
                            const OFBool printMode)
 {
     int status = 0;
@@ -196,7 +196,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         for (i = 0; i < ddl_cnt; ++i)
                         {
                             (*stream) << ddl_tab[i];                               // DDL
-                            stream->setf(ios::fixed, ios::floatfield);
+                            stream->setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
                             if (printMode)
                                 (*stream) << "\t" << val_tab[i] + amb;             // CC
                             (*stream) << "\t" << cielab[i];                        // CIELAB
@@ -207,12 +207,12 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                                 else
                                     (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
                             }
-                            (*stream) << endl;
+                            (*stream) << OFendl;
                         }
                     } else {
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                         {
-                            ofConsole.lockCerr() << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << endl;
+                            ofConsole.lockCerr() << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << OFendl;
                             ofConsole.unlockCerr();
                         }
                     }
@@ -230,7 +230,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.22  2005-12-08 15:42:45  meichel
+ * Revision 1.23  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.22  2005/12/08 15:42:45  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.21  2004/04/14 11:58:29  joergr

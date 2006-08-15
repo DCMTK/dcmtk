@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:00 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,14 +77,14 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: processing XA or XRF image ... ignoring possible modality transform !" << endl;
+                    ofConsole.lockCerr() << "INFO: processing XA or XRF image ... ignoring possible modality transform !" << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
             {
-                ofConsole.lockCerr() << "INFO: configuration flag set ... ignoring possible modality transform !" << endl;
+                ofConsole.lockCerr() << "INFO: configuration flag set ... ignoring possible modality transform !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -189,7 +189,7 @@ int DiMonoModality::Init(const DiDocument *docu,
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << endl;
+                ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -224,7 +224,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
                 ofConsole.lockCerr() << "WARNING: redundant values for 'RescaleSlope/Intercept'"
-                                     << " ... using modality LUT transformation !" << endl;
+                                     << " ... using modality LUT transformation !" << OFendl;
                 ofConsole.unlockCerr();
             }
             Rescaling = 0;
@@ -234,7 +234,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope
-                                         << ") ... ignoring modality transformation !" << endl;
+                                         << ") ... ignoring modality transformation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 Rescaling = 0;
@@ -265,7 +265,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.21  2005-12-08 15:43:00  meichel
+ * Revision 1.22  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.21  2005/12/08 15:43:00  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.20  2005/03/09 17:37:08  joergr

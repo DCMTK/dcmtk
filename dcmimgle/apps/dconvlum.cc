@@ -21,9 +21,9 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:01:23 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:09 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,30 +55,30 @@ int main(int argc, char *argv[])
     if ((argc >= 3) && (argc <= 4))
     {
 #ifdef HAVE_IOS_NOCREATE
-        ifstream input(argv[1], ios::in|ios::nocreate);
+        STD_NAMESPACE ifstream input(argv[1], STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-        ifstream input(argv[1], ios::in);
+        STD_NAMESPACE ifstream input(argv[1], STD_NAMESPACE ios::in);
 #endif
         if (input)
         {
-            ofstream output(argv[2]);
+            STD_NAMESPACE ofstream output(argv[2]);
             if (output)
             {
                 const unsigned int maxddl = 255;                                    // maximum DDL value (8 bits)
-                output << "# Monitor characteristic file (converted from VeriLUM to DCMTK)" << endl << "# ";
+                output << "# Monitor characteristic file (converted from VeriLUM to DCMTK)" << OFendl << "# ";
                 char c;
                 while (input.get(c) && (c != '\n') && (c != '\r'))                  // read description
                     output << c;                                                    // ... and write it to output file
-                output << endl << endl;
-                output << "# maximum DDL value" << endl << endl;
-                output << "  max   " << maxddl << endl << endl;
+                output << OFendl << OFendl;
+                output << "# maximum DDL value" << OFendl << OFendl;
+                output << "  max   " << maxddl << OFendl << OFendl;
                 if (argc == 4)
                 {
                     double ambient = OFStandard::atof(argv[3]);
-                    output << "# ambient light value" << endl << endl;
-                    output << "  amb   " << ambient << endl << endl;
+                    output << "# ambient light value" << OFendl << OFendl;
+                    output << "  amb   " << ambient << OFendl << OFendl;
                 }
-                output << "# DDL   LumVal" << endl << endl;
+                output << "# DDL   LumVal" << OFendl << OFendl;
                 double lum;
                 unsigned int ddl;
                 unsigned int i = 0;
@@ -93,29 +93,29 @@ int main(int argc, char *argv[])
                     output.width(5);
                     output << ddl;                                                  // write DDL value
                     output.width(12);
-                    output.setf(ios::fixed, ios::floatfield);
-                    output << lum << endl;                                          // write luminance value
+                    output.setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
+                    output << lum << OFendl;                                          // write luminance value
                     ++i;
                 }
                 if (i <= maxddl)
-                    CERR << "ERROR: can't convert input file ... error in line #" << i << " !" << endl;
+                    CERR << "ERROR: can't convert input file ... error in line #" << i << " !" << OFendl;
                 else {
-                    output << endl << "# eof of file";
+                    output << OFendl << "# eof of file";
                     return 0;                                                       // everything is OK
                 }
              } else
-                CERR << "ERROR: can't create output file !" << endl;
+                CERR << "ERROR: can't create output file !" << OFendl;
         } else
-            CERR << "ERROR: can't open input file !" << endl;
+            CERR << "ERROR: can't open input file !" << OFendl;
     } else {
         /* print usage */
-        CERR << rcsid << endl << endl;
-        CERR << OFFIS_CONSOLE_APPLICATION << ": Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files" << endl;
-        CERR << "usage: " << OFFIS_CONSOLE_APPLICATION << " in-file out-file [ambient]" << endl << endl;
-        CERR << "parameters:" << endl;
-        CERR << "  in-file   VeriLUM characteristic curve file to be converted" << endl;
-        CERR << "  out-file  DCMTK display file to be written" << endl;
-        CERR << "  ambient   ambient light (cd/m^2, floating point value)" << endl;
+        CERR << rcsid << OFendl << OFendl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": Convert VeriLUM \"CCx_xx.dat\" files to DCMTK display files" << OFendl;
+        CERR << "usage: " << OFFIS_CONSOLE_APPLICATION << " in-file out-file [ambient]" << OFendl << OFendl;
+        CERR << "parameters:" << OFendl;
+        CERR << "  in-file   VeriLUM characteristic curve file to be converted" << OFendl;
+        CERR << "  out-file  DCMTK display file to be written" << OFendl;
+        CERR << "  ambient   ambient light (cd/m^2, floating point value)" << OFendl;
     }
     return 1;                                                                       // an error has happened
 }
@@ -124,7 +124,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.21  2006-07-27 14:01:23  joergr
+ * Revision 1.22  2006-08-15 16:30:09  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.21  2006/07/27 14:01:23  joergr
  * Updated copyright date.
  *
  * Revision 1.20  2005/12/08 15:42:41  meichel

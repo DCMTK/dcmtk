@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:04 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
+                        ofConsole.lockCerr() << "WARNING: different number of overlay planes for scaled and unscaled image !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -609,7 +609,11 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.25  2005-12-08 15:43:04  meichel
+ * Revision 1.26  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.25  2005/12/08 15:43:04  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.24  2003/12/23 16:03:18  joergr

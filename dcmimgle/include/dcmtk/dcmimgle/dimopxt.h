@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:56 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -284,7 +284,7 @@ class DiMonoPixelTemplate
                     else if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: invalid value (" << Data[i] << ") in "
-                                             << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
+                                             << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << OFendl;
                         ofConsole.unlockCerr();
                     }
 #endif
@@ -439,7 +439,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.27  2005-12-08 16:47:56  meichel
+ * Revision 1.28  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.27  2005/12/08 16:47:56  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.26  2004/10/19 12:58:24  joergr

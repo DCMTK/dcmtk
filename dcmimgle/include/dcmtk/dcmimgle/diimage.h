@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:52:27 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -466,7 +466,7 @@ class DiImage
      *
      ** @return true if successful, false otherwise
      */
-    virtual int writePPM(ostream &stream,
+    virtual int writePPM(STD_NAMESPACE ostream& stream,
                          const unsigned long frame,
                          const int bits) = 0;
 
@@ -652,7 +652,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.39  2006-07-10 10:52:27  joergr
+ * Revision 1.40  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.39  2006/07/10 10:52:27  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.38  2005/12/08 16:47:42  meichel

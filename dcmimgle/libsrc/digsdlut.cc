@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:50 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
                      const double amb,
                      const double illum,
                      const OFBool inverse,
-                     ostream *stream,
+                     STD_NAMESPACE ostream *stream,
                      const OFBool printMode)
   : DiDisplayLUT(count, max, amb, illum)
 {
@@ -70,7 +70,7 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: new GSDF LUT with " << Bits << " bits output and "
-                                 << Count << " entries created !" << endl;
+                                 << Count << " entries created !" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -79,7 +79,7 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: invalid JND range for GSDF LUT creation ("
-                                     << jnd_min << " - " << jnd_max << ") !" << endl;
+                                     << jnd_min << " - " << jnd_max << ") !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -113,7 +113,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                          const double lum_min,
                          const double lum_max,
                          const OFBool inverse,
-                         ostream *stream,
+                         STD_NAMESPACE ostream *stream,
                          const OFBool printMode)
 {
     /* check for valid parameters */
@@ -210,7 +210,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                     for (i = 0; i < ddl_cnt; ++i)
                                     {
                                         (*stream) << ddl_tab[i];                               // DDL
-                                        stream->setf(ios::fixed, ios::floatfield);
+                                        stream->setf(STD_NAMESPACE ios::fixed, STD_NAMESPACE ios::floatfield);
                                         if (printMode)
                                             (*stream) << "\t" << val_tab[i] + amb;             // CC
                                         (*stream) << "\t" << gsdf[i];                          // GSDF
@@ -221,13 +221,13 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                             else
                                                 (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
                                         }
-                                        (*stream) << endl;
+                                        (*stream) << OFendl;
                                     }
                                 } else {
                                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                     {
                                         ofConsole.lockCerr() << "WARNING: can't write curve data, "
-                                                             << "wrong DISPLAY file or GSDF LUT !" << endl;
+                                                             << "wrong DISPLAY file or GSDF LUT !" << OFendl;
                                         ofConsole.unlockCerr();
                                     }
                                 }
@@ -251,7 +251,11 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.21  2005-12-08 15:42:50  meichel
+ * Revision 1.22  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.21  2005/12/08 15:42:50  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.20  2004/04/14 11:58:29  joergr

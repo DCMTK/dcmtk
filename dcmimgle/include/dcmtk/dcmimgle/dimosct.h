@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:58 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ class DiMonoScaleTemplate
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                   ofConsole.lockCerr() << "WARNING: could not scale image ... corrupted data." << endl;
+                   ofConsole.lockCerr() << "WARNING: could not scale image ... corrupted data." << OFendl;
                    ofConsole.unlockCerr();
                 }
             }
@@ -144,7 +144,11 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.14  2005-12-08 16:47:58  meichel
+ * Revision 1.15  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.14  2005/12/08 16:47:58  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2004/04/21 10:00:36  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:09 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,10 +184,10 @@ class DiScaleTemplate
 #ifdef DEBUG
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_DebugMessages))
             {
-                ofConsole.lockCout() << "C/R: " << Columns << " " << Rows << endl
-                                     << "L/T: " << Left << " " << Top << endl
-                                     << "SX/Y: " << this->Src_X << " " << this->Src_Y << endl
-                                     << "DX/Y: " << this->Dest_X << " " << this->Dest_Y << endl;
+                ofConsole.lockCout() << "C/R: " << Columns << " " << Rows << OFendl
+                                     << "L/T: " << Left << " " << Top << OFendl
+                                     << "SX/Y: " << this->Src_X << " " << this->Src_Y << OFendl
+                                     << "DX/Y: " << this->Dest_X << " " << this->Dest_Y << OFendl;
                 ofConsole.unlockCout();
             }
 #endif
@@ -197,7 +197,7 @@ class DiScaleTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: clipping area is fully outside the image boundaries !" << endl;
+                    ofConsole.lockCerr() << "INFO: clipping area is fully outside the image boundaries !" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -522,8 +522,8 @@ class DiScaleTemplate
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-               ofConsole.lockCerr() << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl
-                                    << "       ... ignoring clipping region !" << endl;
+               ofConsole.lockCerr() << "ERROR: interpolated scaling and clipping at the same time not implemented" << OFendl
+                                    << "       ... ignoring clipping region !" << OFendl;
                ofConsole.unlockCerr();
             }
             this->Src_X = Columns;            // temporarily removed 'const' for 'Src_X' in class 'DiTransTemplate'
@@ -555,7 +555,7 @@ class DiScaleTemplate
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
+                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffers for interpolation scaling !" << OFendl;
                 ofConsole.unlockCerr();
             }
 
@@ -695,7 +695,7 @@ class DiScaleTemplate
 #ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: expandPixel with interpolated c't algorithm" << endl;
+            ofConsole.lockCerr() << "INFO: expandPixel with interpolated c't algorithm" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -798,7 +798,7 @@ class DiScaleTemplate
 #ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
         {
-            ofConsole.lockCerr() << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
+            ofConsole.lockCerr() << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -889,7 +889,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.25  2005-12-08 16:48:09  meichel
+ * Revision 1.26  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.25  2005/12/08 16:48:09  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.24  2004/04/21 10:00:36  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:54 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ class DiMonoOutputPixelTemplate
                 color(buffer, pixel, frame, frames);
 #else
             {
-                ofConsole.lockCerr() << "WARNING: pastel color output not supported !" << endl;
+                ofConsole.lockCerr() << "WARNING: pastel color output not supported !" << OFendl;
                 ofConsole.unlockCerr();
             }
 #endif
@@ -199,7 +199,7 @@ class DiMonoOutputPixelTemplate
      *
      ** @return status, true if successful, false otherwise
      */
-    inline int writePPM(ostream &stream) const
+    inline int writePPM(STD_NAMESPACE ostream& stream) const
     {
         if (Data != NULL)
         {
@@ -276,14 +276,14 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: using display transformation" << endl;
+                    ofConsole.lockCerr() << "INFO: using display transformation" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: can't create display LUT ... ignoring display transformation !" << endl;
+                    ofConsole.lockCerr() << "WARNING: can't create display LUT ... ignoring display transformation !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 dlut = NULL;
@@ -308,7 +308,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
+                    ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -327,7 +327,7 @@ class DiMonoOutputPixelTemplate
         ColorData = new DiMonoColorOutputPixelTemplate<T1, T3>(buffer, inter, frame, frames);
         if (ColorData != NULL)
         {
-            ofConsole.lockCout() << "COLOR" << endl;
+            ofConsole.lockCout() << "COLOR" << OFendl;
             ofConsole.unlockCout();
         }
     }
@@ -361,7 +361,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: using VOI routine 'voilut()'" << endl;
+                    ofConsole.lockCerr() << "INFO: using VOI routine 'voilut()'" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -377,7 +377,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                            ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
@@ -420,7 +420,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                            ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
@@ -654,7 +654,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: using VOI routine 'nowindow()'" << endl;
+                    ofConsole.lockCerr() << "INFO: using VOI routine 'nowindow()'" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -671,7 +671,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
-                        ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                        ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << OFendl;
                         ofConsole.unlockCerr();
                     }
 #endif
@@ -820,7 +820,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-                    ofConsole.lockCerr() << "INFO: using VOI routine 'window()'" << endl;
+                    ofConsole.lockCerr() << "INFO: using VOI routine 'window()'" << OFendl;
                     ofConsole.unlockCerr();
                 }
 #endif
@@ -841,7 +841,7 @@ class DiMonoOutputPixelTemplate
 #ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
-                        ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
+                        ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << OFendl;
                         ofConsole.unlockCerr();
                     }
 #endif
@@ -1138,7 +1138,7 @@ class DiMonoOutputPixelTemplate
                                 default: /* e.g. EMO_Default */
                                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                     {
-                                        ofConsole.lockCerr() << "WARNING: unhandled overlay mode (" << OFstatic_cast(int, plane->getMode()) << ") !" << endl;
+                                        ofConsole.lockCerr() << "WARNING: unhandled overlay mode (" << OFstatic_cast(int, plane->getMode()) << ") !" << OFendl;
                                         ofConsole.unlockCerr();
                                     }
                             }
@@ -1176,7 +1176,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.46  2005-12-08 16:47:54  meichel
+ * Revision 1.47  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.46  2005/12/08 16:47:54  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.45  2005/03/09 17:30:42  joergr

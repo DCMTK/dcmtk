@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:06 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             if (docu->getValue(tag, Top, 1) < 2)
             {
                 ofConsole.lockCerr() << "WARNING: missing second value for 'OverlayOrigin' ... "
-                                     << "assuming 'Top' = " << Top << " !" << endl;
+                                     << "assuming 'Top' = " << Top << " !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -120,7 +120,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             if (docu->getValue(tag, Left, 1) < 2)
             {
                 ofConsole.lockCerr() << "WARNING: missing second value for 'OverlayOrigin' ... "
-                                     << "assuming 'Left' = " << Left << " !" << endl;
+                                     << "assuming 'Left' = " << Left << " !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -158,7 +158,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for 'OverlayBitsAllocated' (" << BitsAllocated
-                                         << ") ... assuming " << alloc << " !" << endl;
+                                         << ") ... assuming " << alloc << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 BitsAllocated = alloc;
@@ -169,7 +169,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for 'OverlayBitPosition' (" << BitPosition
-                                         << ") ... assuming " << (BitsAllocated - 1) << " !" << endl;
+                                         << ") ... assuming " << (BitsAllocated - 1) << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 BitPosition = BitsAllocated - 1;
@@ -181,7 +181,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
-                    ofConsole.lockCerr() << "ERROR: overlay data length is too short !" << endl;
+                    ofConsole.lockCerr() << "ERROR: overlay data length is too short !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 Valid = 0;
@@ -242,7 +242,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: overlay data length is too short !" << endl;
+                ofConsole.lockCerr() << "ERROR: overlay data length is too short !" << OFendl;
                 ofConsole.unlockCerr();
             }
             /* Valid = 0;  =>  This is the default. */
@@ -603,7 +603,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.29  2005-12-08 15:43:06  meichel
+ * Revision 1.30  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.29  2005/12/08 15:43:06  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.28  2003/12/23 16:03:18  joergr

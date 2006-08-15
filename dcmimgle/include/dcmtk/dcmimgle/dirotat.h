@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:08 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiRotateTemplate
             } else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                   ofConsole.lockCerr() << "WARNING: could not rotate image ... corrupted data." << endl;
+                   ofConsole.lockCerr() << "WARNING: could not rotate image ... corrupted data." << OFendl;
                    ofConsole.unlockCerr();
                 }
             }
@@ -367,7 +367,11 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.16  2005-12-08 16:48:08  meichel
+ * Revision 1.17  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.16  2005/12/08 16:48:08  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.15  2005/06/15 08:23:54  joergr

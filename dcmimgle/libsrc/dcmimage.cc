@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:54:26 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,15 +248,15 @@ void DicomImage::Init()
                             ImageStatus = EIS_InvalidValue;
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
-                                ofConsole.lockCerr() << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << endl;
+                                ofConsole.lockCerr() << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
-                                ofConsole.lockCerr() << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << endl
-                                                     << "       library 'dcmimage' required to handle color images !" << endl;
+                                ofConsole.lockCerr() << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << OFendl
+                                                     << "       library 'dcmimage' required to handle color images !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                         }
@@ -273,7 +273,7 @@ void DicomImage::Init()
             ImageStatus = EIS_MissingAttribute;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
+                ofConsole.lockCerr() << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -292,7 +292,7 @@ int DicomImage::checkDataDictionary()
         ImageStatus = EIS_NoDataDictionary;
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: can't load data dictionary !" << endl;
+            ofConsole.lockCerr() << "ERROR: can't load data dictionary !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -461,7 +461,7 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << endl;
+                ofConsole.lockCerr() << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -690,7 +690,7 @@ int DicomImage::writePPM(const char *filename,
 
 // --- same for C++ 'ostream'
 
-int DicomImage::writePPM(ostream &stream,
+int DicomImage::writePPM(STD_NAMESPACE ostream& stream,
                          const int bits,
                          const unsigned long frame)
 {
@@ -824,7 +824,11 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.27  2006-07-10 10:54:26  joergr
+ * Revision 1.28  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.27  2006/07/10 10:54:26  joergr
  * Added support for 32-bit BMP images.
  *
  * Revision 1.26  2005/12/08 15:42:42  meichel

@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-03 14:23:57 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ DiDocument::DiDocument(const char *filename,
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: can't read file '" << filename << "' !" << endl;
+                ofConsole.lockCerr() << "ERROR: can't read file '" << filename << "' !" << OFendl;
                 ofConsole.unlockCerr();
             }
             delete FileFormat;
@@ -129,14 +129,14 @@ void DiDocument::convertPixelData()
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
+                ofConsole.lockCerr() << "ERROR: cannot change to unencapsulated representation for pixel data !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
     } else {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: no pixel data found in DICOM dataset !" << endl;
+            ofConsole.lockCerr() << "ERROR: no pixel data found in DICOM dataset !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -374,7 +374,11 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.18  2006-07-03 14:23:57  joergr
+ * Revision 1.19  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.18  2006/07/03 14:23:57  joergr
  * Fixed issue with handling of LUT data in DICOM objects with implicit VR.
  *
  * Revision 1.17  2006/02/03 16:53:14  joergr

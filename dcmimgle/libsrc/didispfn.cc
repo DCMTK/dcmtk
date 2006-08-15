@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:47 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -347,9 +347,9 @@ int DiDisplayFunction::readConfigFile(const char *filename)
     if ((filename != NULL) && (strlen(filename) > 0))
     {
 #ifdef HAVE_IOS_NOCREATE
-        ifstream file(filename, ios::in|ios::nocreate);
+        STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-        ifstream file(filename, ios::in);
+        STD_NAMESPACE ifstream file(filename, STD_NAMESPACE ios::in);
 #endif
         if (file)
         {
@@ -379,7 +379,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             } else {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                                 {
-                                    ofConsole.lockCerr() << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
+                                    ofConsole.lockCerr() << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
                                 return 0;                                   // abort
@@ -387,7 +387,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                         } else {
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
-                                ofConsole.lockCerr() << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
+                                ofConsole.lockCerr() << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                             return 0;                                       // abort
@@ -404,7 +404,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
-                                    ofConsole.lockCerr() << "WARNING: invalid value for ambient light in DISPLAY file ... ignoring !" << endl;
+                                    ofConsole.lockCerr() << "WARNING: invalid value for ambient light in DISPLAY file ... ignoring !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
                                 AmbientLight = 0;
@@ -412,7 +412,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                         } else {
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
-                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                             return 0;                                       // abort
@@ -429,7 +429,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
-                                    ofConsole.lockCerr() << "WARNING: invalid value for illumination in DISPLAY file ... ignoring !" << endl;
+                                    ofConsole.lockCerr() << "WARNING: invalid value for illumination in DISPLAY file ... ignoring !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
                                 Illumination = 0;
@@ -437,7 +437,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                         } else {
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
-                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                             return 0;                                       // abort
@@ -454,7 +454,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
-                                    ofConsole.lockCerr() << "WARNING: invalid value for polynomial order in DISPLAY file ... ignoring !" << endl;
+                                    ofConsole.lockCerr() << "WARNING: invalid value for polynomial order in DISPLAY file ... ignoring !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
                                 Order = 0;
@@ -462,7 +462,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                         } else {
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
-                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+                                ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                             return 0;                                       // abort
@@ -477,7 +477,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
                                     ofConsole.lockCerr() << "WARNING: missing luminance/OD value in DISPLAY file ... "
-                                                         << "ignoring last entry !" << endl;
+                                                         << "ignoring last entry !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
                             }
@@ -487,8 +487,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 {
                                     ofConsole.lockCerr() << "WARNING: DDL value (" << DDLValue[ValueCount]
                                                          << ") exceeds maximum value ("
-                                                         << MaxDDLValue << ") in DISPLAY file ..." << endl
-                                                         << "         ... ignoring value !" << endl;
+                                                         << MaxDDLValue << ") in DISPLAY file ..." << OFendl
+                                                         << "         ... ignoring value !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
                             } else
@@ -497,7 +497,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                             {
                                 ofConsole.lockCerr() << "WARNING: too many values in DISPLAY file ... "
-                                                     << "ignoring last line(s) !" << endl;
+                                                     << "ignoring last line(s) !" << OFendl;
                                 ofConsole.unlockCerr();
                             }
                             return 2;
@@ -510,14 +510,14 @@ int DiDisplayFunction::readConfigFile(const char *filename)
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid DISPLAY file ... ignoring !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid DISPLAY file ... ignoring !" << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
+                ofConsole.lockCerr() << "WARNING: can't open DISPLAY file ... ignoring !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -567,7 +567,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: OD values (ordered by DDLs) don't descend monotonously !" << endl;
+                        ofConsole.lockCerr() << "WARNING: OD values (ordered by DDLs) don't descend monotonously !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -579,7 +579,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                 {
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
-                        ofConsole.lockCerr() << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
+                        ofConsole.lockCerr() << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -689,7 +689,7 @@ int DiDisplayFunction::checkMinMaxDensity() const
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
         {
             ofConsole.lockCerr() << "WARNING: invalid optical density range (Dmin = " << MinDensity
-                                 << ", Dmax = " << MaxDensity << ") !" << endl;
+                                 << ", Dmax = " << MaxDensity << ") !" << OFendl;
             ofConsole.unlockCerr();
         }
         return 0;
@@ -762,7 +762,11 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.44  2005-12-08 15:42:47  meichel
+ * Revision 1.45  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.44  2005/12/08 15:42:47  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.43  2005/06/24 10:02:16  joergr

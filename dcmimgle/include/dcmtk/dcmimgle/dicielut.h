@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:34 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ class DiCIELABLUT
                 const double lum_max,
                 const double amb,
                 const OFBool inverse = OFFalse,
-                ostream *stream = NULL,
+                STD_NAMESPACE ostream *stream = NULL,
                 const OFBool printMode = OFTrue);
 
     /** destructor
@@ -111,7 +111,7 @@ class DiCIELABLUT
                   const double lum_min,
                   const double lum_max,
                   const OFBool inverse = OFFalse,
-                  ostream *stream = NULL,
+                  STD_NAMESPACE ostream *stream = NULL,
                   const OFBool printMode = OFTrue);
 };
 
@@ -123,7 +123,11 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.10  2005-12-08 16:47:34  meichel
+ * Revision 1.11  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.10  2005/12/08 16:47:34  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.9  2003/12/08 18:16:55  joergr

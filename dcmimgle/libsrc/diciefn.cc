@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:44 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ DiCIELABFunction::DiCIELABFunction(const char *filename,
     {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -71,7 +71,7 @@ DiCIELABFunction::DiCIELABFunction(const double *val_tab,             // UNTESTE
     {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -90,7 +90,7 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
     {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -108,7 +108,7 @@ DiCIELABFunction::DiCIELABFunction(const double val_min,
     {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
+            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -161,24 +161,24 @@ int DiCIELABFunction::writeCurveData(const char *filename,
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
-        ofstream file(filename);
+        STD_NAMESPACE ofstream file(filename);
         if (file)
         {
             const OFBool inverseLUT = (DeviceType == EDT_Scanner) || (DeviceType == EDT_Camera);
             /* comment header */
-            file << "# Display function       : CIELAB" << endl;
+            file << "# Display function       : CIELAB" << OFendl;
             if (DeviceType == EDT_Printer)
-                file << "# Type of output device  : Printer (hardcopy)" << endl;
+                file << "# Type of output device  : Printer (hardcopy)" << OFendl;
             else if (DeviceType == EDT_Scanner)
-                file << "# Type of output device  : Scanner (hardcopy)" << endl;
+                file << "# Type of output device  : Scanner (hardcopy)" << OFendl;
             else if (DeviceType == EDT_Camera)
-                file << "# Type of output device  : Camera (softcopy)" << endl;
+                file << "# Type of output device  : Camera (softcopy)" << OFendl;
             else
-                file << "# Type of output device  : Monitor (softcopy)" << endl;
-            file << "# Device driving levels  : " << ValueCount << endl;
+                file << "# Type of output device  : Monitor (softcopy)" << OFendl;
+            file << "# Device driving levels  : " << ValueCount << OFendl;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
-                file << "# Illumination  [cd/m^2] : " << Illumination << endl;
-            file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
+                file << "# Illumination  [cd/m^2] : " << Illumination << OFendl;
+            file << "# Ambient light [cd/m^2] : " << AmbientLight << OFendl;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
             {
                 const double min_lum = getMinLuminanceValue();
@@ -199,7 +199,7 @@ int DiCIELABFunction::writeCurveData(const char *filename,
                         file << "n/s";
                     file << ")";
                 }
-                file << endl;
+                file << OFendl;
                 file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue;
                 if ((MinDensity >= 0) || (MaxDensity >= 0))
                 {
@@ -215,28 +215,28 @@ int DiCIELABFunction::writeCurveData(const char *filename,
                         file << "n/s";
                     file << ")";
                 }
-                file << endl;
+                file << OFendl;
             } else
-                file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << endl;
+                file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << OFendl;
             file << "# Interpolation method   : ";
             if (getPolynomialOrder() > 0)
-                file << "Curve fitting algorithm with order " << getPolynomialOrder() << endl << endl;
+                file << "Curve fitting algorithm with order " << getPolynomialOrder() << OFendl << OFendl;
             else
-                file << "Cubic spline interpolation" << endl << endl;
+                file << "Cubic spline interpolation" << OFendl << OFendl;
             /* print headings of the table */
             if (mode)
             {
                 file << "# NB: values for CC, CIELAB and PSC";
                 if (inverseLUT)
                     file << "'";                // add ' to PSC
-                file << " are specified in cd/m^2" << endl << endl;
+                file << " are specified in cd/m^2" << OFendl << OFendl;
                 file << "DDL\tCC\tCIELAB\tPSC";
                 if (inverseLUT)
                     file << "'";                // add ' to PSC
-                file << endl;
+                file << OFendl;
             } else {
-                file << "# NB: values for CC and CIELAB are specified in cd/m^2" << endl << endl;
-                file << "DDL\tCIELAB" << endl;
+                file << "# NB: values for CC and CIELAB are specified in cd/m^2" << OFendl << OFendl;
+                file << "DDL\tCIELAB" << OFendl;
             }
             /* create CIELAB LUT and write curve data to file */
             DiCIELABLUT *lut = NULL;
@@ -271,7 +271,11 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.21  2005-12-08 15:42:44  meichel
+ * Revision 1.22  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.21  2005/12/08 15:42:44  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.20  2004/01/05 14:58:42  joergr

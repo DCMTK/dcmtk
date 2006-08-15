@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayImage (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:05 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-08-15 16:30:11 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                     ImageStatus = EIS_MemoryFailure;
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                     {
-                        ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
+                        ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
                         ofConsole.unlockCerr();
                     }
                 }
@@ -91,7 +91,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or "
-                                         << "'Columns' (" << Columns << ") !" << endl;
+                                         << "'Columns' (" << Columns << ") !" << OFendl;
                     ofConsole.unlockCerr();
                 }
             }
@@ -102,7 +102,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
         ImageStatus = EIS_InvalidDocument;
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
-            ofConsole.lockCerr() << "ERROR: this DICOM document is invalid !" << endl;
+            ofConsole.lockCerr() << "ERROR: this DICOM document is invalid !" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -122,7 +122,11 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
- * Revision 1.13  2005-12-08 15:43:05  meichel
+ * Revision 1.14  2006-08-15 16:30:11  meichel
+ * Updated the code in module dcmimgle to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.13  2005/12/08 15:43:05  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2003/12/23 16:03:18  joergr
