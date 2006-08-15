@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:50:20 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 16:42:34 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,7 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
     return 1; // tag key;
   }
   dcmDataDict.unlock();
-  CERR << "error: attribute name '" << aString.c_str() << "' unknown." << endl;
+  CERR << "error: attribute name '" << aString.c_str() << "' unknown." << OFendl;
   return 0; // parse error
 }
 
@@ -194,7 +194,7 @@ static char *readTextFile(const char *filename)
     fseek(file, 0, SEEK_SET);
     if (numBytes > 65536)
     {
-      CERR << "warning: text file too large, ignoring everything beyond 64K." << endl;
+      CERR << "warning: text file too large, ignoring everything beyond 64K." << OFendl;
       numBytes = 65536;
     }
     result = new char[numBytes];
@@ -202,14 +202,14 @@ static char *readTextFile(const char *filename)
     {
       if ((size_t)numBytes != fread(result, 1, (size_t)numBytes, file))
       {
-        CERR << "warning: read error in file " << filename << endl;
+        CERR << "warning: read error in file " << filename << OFendl;
         delete[] result;
         result = NULL;
       }
     }
     fclose(file);
   } else {
-    CERR << "error: file not found: " << filename << endl;
+    CERR << "error: file not found: " << filename << OFendl;
   }
   return result;
 }
@@ -243,7 +243,7 @@ static int parseTextFile(const char *filename, DcmAttributeTag& tagList)
     }
     else if (token >= 0)
     {
-      CERR << "parse error in text file '" << filename << "'" << endl;
+      CERR << "parse error in text file '" << filename << "'" << OFendl;
       result = 10;
       token = -1;
     }
@@ -276,14 +276,14 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
     token = readNextToken(location, pos, key, idx);
     if ((token != expected)&&(token != -1))
     {
-      CERR << "parse error in item location string '" << location << "'" << endl;
+      CERR << "parse error in item location string '" << location << "'" << OFendl;
       return NULL;
     }
     if (token == -1)
     {
       if (! finished)
       {
-        CERR << "error: item location string '" << location << "' incomplete." << endl;
+        CERR << "error: item location string '" << location << "' incomplete." << OFendl;
         return NULL;
       }
       return result;
@@ -294,14 +294,14 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
       stack.clear();
       if (EC_Normal != result->search(key, stack, ESM_fromHere, OFFalse))
       {
-        CERR << "error: attribute " << key << " not found in dataset (item location string is '" << location << "')" << endl;
+        CERR << "error: attribute " << key << " not found in dataset (item location string is '" << location << "')" << OFendl;
         return NULL;
       }
       if (stack.top()->ident() == EVR_SQ)
       {
         sq = (DcmSequenceOfItems *)(stack.top());
       } else {
-        CERR << "error: attribute " << key << " is not a sequence (item location string is '" << location << "')" << endl;
+        CERR << "error: attribute " << key << " is not a sequence (item location string is '" << location << "')" << OFendl;
         return NULL;
       }
       expected = 2;
@@ -312,19 +312,19 @@ static DcmItem *locateItemforSignatureCreation(DcmItem& dataset, const char *loc
       // we have read an index
       if (sq == NULL)
       {
-        CERR << "error: sequence not found in item location string '" << location << "'" <<endl;
+        CERR << "error: sequence not found in item location string '" << location << "'" << OFendl;
         return NULL;
       }
       if (idx >= sq->card())
       {
         CERR << "error: sequence " << sq->getTag() << " only has " << sq->card() << " items, cannot locate item " << idx
-             << " (item location string is '" << location << "')" <<endl;
+             << " (item location string is '" << location << "')" << OFendl;
         return NULL;
       }
       result = sq->getItem(idx);
       if (result == NULL)
       {
-        CERR << "error: item not found in item location string '" << location << "'" <<endl;
+        CERR << "error: item not found in item location string '" << location << "'" << OFendl;
         return NULL;
       }
       expected = 3;
@@ -366,7 +366,7 @@ static int do_sign(
   sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList);
   if (sicond != EC_Normal)
   {
-    CERR << "Error: " << sicond.text() << ": while creating signature in main dataset" << endl;
+    CERR << "Error: " << sicond.text() << ": while creating signature in main dataset" << OFendl;
     return 1;
   }
   return 0;
@@ -463,7 +463,7 @@ static int do_sign_item(
   sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, opt_signatureXfer, opt_tagList);
   if (sicond != EC_Normal)
   {
-    CERR << "Error: " << sicond.text() << ": while creating signature in item '" << opt_location << "'" << endl;
+    CERR << "Error: " << sicond.text() << ": while creating signature in item '" << opt_location << "'" << OFendl;
     return 1;
   }
   signer.detach();
@@ -504,22 +504,22 @@ static int do_verify(
       {
         ++counter;
         COUT <<   "Signature #" << counter << " UID=";
-        if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+        if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << OFendl; else COUT << "(unknown)" << OFendl;
         printSignatureItemPosition(stack, aString);
-        COUT <<   "  Location                    : " << aString.c_str() << endl;
+        COUT <<   "  Location                    : " << aString.c_str() << OFendl;
         if (opt_verbose)
         {
           COUT << "  MAC ID                      : ";
-          if (EC_Normal == signer.getCurrentMacID(macID)) COUT << macID << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentMacID(macID)) COUT << macID << OFendl; else COUT << "(unknown)" << OFendl;
           COUT << "  MAC algorithm               : ";
-          if (EC_Normal == signer.getCurrentMacName(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentMacName(aString)) COUT << aString.c_str() << OFendl; else COUT << "(unknown)" << OFendl;
           COUT << "  MAC calculation xfer syntax : ";
-          if (EC_Normal == signer.getCurrentMacXferSyntaxName(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentMacXferSyntaxName(aString)) COUT << aString.c_str() << OFendl; else COUT << "(unknown)" << OFendl;
           // data elements signed
           COUT << "  Data elements signed        : ";
           if (EC_Normal == signer.getCurrentDataElementsSigned(at))
           {
-            COUT << endl;
+            COUT << OFendl;
             unsigned long atVM = at.getVM();
             for (unsigned long n=0; n<atVM; n++)
             {
@@ -528,43 +528,43 @@ static int do_verify(
                 COUT << "      " << tagkey << " ";
                 tag = tagkey;
                 tagName = tag.getTagName();
-                if (tagName) COUT << tagName << endl; else COUT << endl;
+                if (tagName) COUT << tagName << OFendl; else COUT << OFendl;
               }
             }
-          } else COUT << "all elements" << endl;
+          } else COUT << "all elements" << OFendl;
 
           COUT << "  Signature date/time         : ";
-          if (EC_Normal == signer.getCurrentSignatureDateTime(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentSignatureDateTime(aString)) COUT << aString.c_str() << OFendl; else COUT << "(unknown)" << OFendl;
           COUT << "  Certificate of signer       : ";
           SiCertificate *cert = signer.getCurrentCertificate();
-          if ((cert == NULL)||(cert->getKeyType()==EKT_none)) COUT << "none" << endl; else
+          if ((cert == NULL)||(cert->getKeyType()==EKT_none)) COUT << "none" << OFendl; else
           {
-            COUT << "X.509v" << cert->getX509Version() << endl;
+            COUT << "X.509v" << cert->getX509Version() << OFendl;
             cert->getCertSubjectName(aString);
-            COUT << "      Subject                 : " << aString.c_str() << endl;
+            COUT << "      Subject                 : " << aString.c_str() << OFendl;
 
             cert->getCertIssuerName(aString);
-            COUT << "      Issued by               : " << aString.c_str() << endl
-                 << "      Serial no.              : " << cert->getCertSerialNo() << endl
+            COUT << "      Issued by               : " << aString.c_str() << OFendl
+                 << "      Serial no.              : " << cert->getCertSerialNo() << OFendl
                  << "      Validity                : not before ";
             cert->getCertValidityNotBefore(aString);
             COUT << aString.c_str() << ", not after ";
             cert->getCertValidityNotAfter(aString);
-            COUT << aString.c_str() << endl
+            COUT << aString.c_str() << OFendl
                  << "      Public key              : ";
             switch (cert->getKeyType())
             {
               case EKT_RSA:
-                COUT << "RSA, " << cert->getCertKeyBits() << " bits" << endl;
+                COUT << "RSA, " << cert->getCertKeyBits() << " bits" << OFendl;
                 break;
               case EKT_DSA:
-                COUT << "DSA, " << cert->getCertKeyBits() << " bits" << endl;
+                COUT << "DSA, " << cert->getCertKeyBits() << " bits" << OFendl;
                 break;
               case EKT_DH:
-                COUT << "DH, " << cert->getCertKeyBits() << " bits" << endl;
+                COUT << "DH, " << cert->getCertKeyBits() << " bits" << OFendl;
                 break;
               case EKT_none: // should never happen
-                COUT << "none" << endl;
+                COUT << "none" << OFendl;
                 break;
             }
           }
@@ -573,18 +573,18 @@ static int do_verify(
         sicond = signer.verifyCurrent();
         if (sicond.good())
         {
-          COUT << "OK" << endl << endl;
+          COUT << "OK" << OFendl << OFendl;
         } else {
           corrupt_counter++;
-          COUT << sicond.text() << endl << endl;
+          COUT << sicond.text() << OFendl << OFendl;
   }
       }
     }
     signer.detach();
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
-  if (counter == 0) COUT << "no signatures found in dataset." << endl;
-  else if (opt_verbose) COUT << counter << " signatures verified in dataset, " << corrupt_counter << " corrupted." << endl;
+  if (counter == 0) COUT << "no signatures found in dataset." << OFendl;
+  else if (opt_verbose) COUT << counter << " signatures verified in dataset, " << corrupt_counter << " corrupted." << OFendl;
   return 0;
 }
 
@@ -612,14 +612,14 @@ static int do_remove_all(
       if (EC_Normal == signer.selectSignature(0))
       {
         COUT <<   "Signature #" << counter << " UID=";
-        if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+        if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << OFendl; else COUT << "(unknown)" << OFendl;
         printSignatureItemPosition(stack, aString);
-        COUT <<   "  Location                    : " << aString.c_str() << endl;
+        COUT <<   "  Location                    : " << aString.c_str() << OFendl;
       }
       sicond = signer.removeSignature(0);
       if (sicond != EC_Normal)
       {
-        CERR << "Error: " << sicond.text() << ": while removing signature" << endl;
+        CERR << "Error: " << sicond.text() << ": while removing signature" << OFendl;
         return 1;
       }
     }
@@ -628,7 +628,7 @@ static int do_remove_all(
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
 
-  if (opt_verbose) COUT << counter << " signatures found and removed from dataset." << endl;
+  if (opt_verbose) COUT << counter << " signatures found and removed from dataset." << OFendl;
   return 0;
 }
 
@@ -660,14 +660,14 @@ static int do_remove(
         {
           if (aString == opt_location)
           {
-            COUT <<   "Signature UID=" << aString.c_str() << endl;
+            COUT <<   "Signature UID=" << aString.c_str() << OFendl;
             printSignatureItemPosition(stack, aString);
-            COUT <<   "  Location                    : " << aString.c_str() << endl;
+            COUT <<   "  Location                    : " << aString.c_str() << OFendl;
 
             sicond = signer.removeSignature(i);
             if (sicond != EC_Normal)
             {
-              CERR << "Error: " << sicond.text() << ": while removing signature" << endl;
+              CERR << "Error: " << sicond.text() << ": while removing signature" << OFendl;
               return 1;
             } else {
               return 0;
@@ -679,7 +679,7 @@ static int do_remove(
     signer.detach();
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
-  CERR << "Error: signature with UID '" << opt_location << "' not found." << endl;
+  CERR << "Error: signature with UID '" << opt_location << "' not found." << OFendl;
   return 1;
 }
 
@@ -809,17 +809,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #else
-            CERR << endl;
+            CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
         }
@@ -969,7 +969,7 @@ int main(int argc, char *argv[])
       result = parseTextFile(opt_tagFile, *opt_tagList);
       if (result > 0)
       {
-        CERR << "error while reading tag file '" << opt_tagFile << "', giving up." << endl;
+        CERR << "error while reading tag file '" << opt_tagFile << "', giving up." << OFendl;
         return result;
       }
     }
@@ -983,7 +983,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (! addTag(current, *opt_tagList))
         {
-          CERR << "error: unknown attribute tag '" << current << "'" << endl;
+          CERR << "error: unknown attribute tag '" << current << "'" << OFendl;
           return 10;
         }
       } while (cmd.findOption("--tag", 0, OFCommandLine::FOM_Next));
@@ -1009,7 +1009,7 @@ int main(int argc, char *argv[])
       opt_dumpFile = fopen(fileName, "wb");
       if (opt_dumpFile == NULL)
       {
-        CERR << "error: unable to create dump file '" << fileName << "'" << endl;
+        CERR << "error: unable to create dump file '" << fileName << "'" << OFendl;
         return 10;
       }
     }
@@ -1028,24 +1028,24 @@ int main(int argc, char *argv[])
   {
     CERR << "Warning: no data dictionary loaded, "
          << "check environment variable: "
-         << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+         << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
   }
 
   // open inputfile
   if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
   {
-      CERR << "invalid filename: <empty string>" << endl;
+      CERR << "invalid filename: <empty string>" << OFendl;
       return 1;
   }
 
-  if (opt_verbose) COUT << "open input file " << opt_ifname << endl;
+  if (opt_verbose) COUT << "open input file " << opt_ifname << OFendl;
 
   DcmFileFormat *fileformat = new DcmFileFormat;
 
   OFCondition sicond = fileformat->loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
   if (sicond.bad())
   {
-    CERR << "Error: " << sicond.text() << ": reading file: " <<  opt_ifname << endl;
+    CERR << "Error: " << sicond.text() << ": reading file: " <<  opt_ifname << OFendl;
     return 1;
   }
 
@@ -1059,7 +1059,7 @@ int main(int argc, char *argv[])
     sicond = cert.loadCertificate(opt_certfile, opt_keyFileFormat);
     if (sicond != EC_Normal)
     {
-      CERR << "Error: " << sicond.text() << ": while loading certificate file '" << opt_certfile << "'" << endl;
+      CERR << "Error: " << sicond.text() << ": while loading certificate file '" << opt_certfile << "'" << OFendl;
       return 1;
     }
   }
@@ -1070,7 +1070,7 @@ int main(int argc, char *argv[])
     sicond = key.loadPrivateKey(opt_keyfile, opt_keyFileFormat);
     if (sicond != EC_Normal)
     {
-      CERR << "Error: " << sicond.text() << ": while loading private key file '" << opt_keyfile << "'" << endl;
+      CERR << "Error: " << sicond.text() << ": while loading private key file '" << opt_keyfile << "'" << OFendl;
       return 1;
     }
   }
@@ -1087,27 +1087,27 @@ int main(int argc, char *argv[])
   switch (opt_operation)
   {
     case DSO_verify:
-      if (opt_verbose) COUT << "verifying all signatures." << endl;
+      if (opt_verbose) COUT << "verifying all signatures." << OFendl;
       result = do_verify(dataset, opt_verbose);
       if (result != 0) return result;
       break;
     case DSO_sign:
-      if (opt_verbose) COUT << "create signature in main object." << endl;
+      if (opt_verbose) COUT << "create signature in main object." << OFendl;
       result = do_sign(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_signatureXfer, opt_dumpFile);
       if (result != 0) return result;
       break;
     case DSO_signItem:
-      if (opt_verbose) COUT << "create signature in sequence item." << endl;
+      if (opt_verbose) COUT << "create signature in sequence item." << OFendl;
       result = do_sign_item(dataset, key, cert, opt_mac, opt_profile, opt_tagList, opt_location, opt_signatureXfer, opt_dumpFile);
       if (result != 0) return result;
       break;
     case DSO_remove:
-      if (opt_verbose) COUT << "removing signature from sequence item." << endl;
+      if (opt_verbose) COUT << "removing signature from sequence item." << OFendl;
       result = do_remove(dataset, opt_location);
       if (result != 0) return result;
       break;
     case DSO_removeAll:
-      if (opt_verbose) COUT << "removing all signatures." << endl;
+      if (opt_verbose) COUT << "removing all signatures." << OFendl;
       result = do_remove_all(dataset, opt_verbose);
       if (result != 0) return result;
       break;
@@ -1117,14 +1117,14 @@ int main(int argc, char *argv[])
   {
     if (0 != fclose(opt_dumpFile))
     {
-      CERR << "Warning: error while closing dump file, content may be incomplete." << endl;
+      CERR << "Warning: error while closing dump file, content may be incomplete." << OFendl;
     }
     opt_dumpFile = NULL;
   }
 
   if (opt_ofname)
   {
-    if (opt_verbose) COUT << "create output file " << opt_ofname << endl;
+    if (opt_verbose) COUT << "create output file " << opt_ofname << OFendl;
 
     if (opt_oxfer == EXS_Unknown) opt_oxfer = dataset->getOriginalXfer();
     DcmXfer opt_oxferSyn(opt_oxfer);
@@ -1139,7 +1139,7 @@ int main(int argc, char *argv[])
     sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
     if (sicond.bad())
     {
-      CERR << "Error: " << sicond.text() << ": writing file: " <<  opt_ofname << endl;
+      CERR << "Error: " << sicond.text() << ": writing file: " <<  opt_ofname << OFendl;
       return 1;
     }
   }
@@ -1154,10 +1154,10 @@ int main(int argc, char *argv[])
 
 int main(int, char *[])
 {
-  CERR << rcsid << endl << APPLICATION_ABSTRACT << endl << endl
-       << OFFIS_CONSOLE_APPLICATION " requires the OpenSSL library." << endl
-       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without OpenSSL." << endl
-       << "Please reconfigure your system and recompile if appropriate." << endl;
+  CERR << rcsid << OFendl << APPLICATION_ABSTRACT << OFendl << OFendl
+       << OFFIS_CONSOLE_APPLICATION " requires the OpenSSL library." << OFendl
+       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without OpenSSL." << OFendl
+       << "Please reconfigure your system and recompile if appropriate." << OFendl;
   return 0;
 }
 
@@ -1165,7 +1165,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.24  2006-07-27 14:50:20  joergr
+ *  Revision 1.25  2006-08-15 16:42:34  meichel
+ *  Updated the code in module dcmsign to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.24  2006/07/27 14:50:20  joergr
  *  Changed parameter "exclusive" of method addOption() from type OFBool into an
  *  integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  *  Option "--help" is no longer an exclusive option by default.
