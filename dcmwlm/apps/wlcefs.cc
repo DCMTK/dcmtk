@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-14 15:30:40 $
+ *  Update Date:      $Date: 2006-08-15 11:32:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,13 +114,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     cmd->addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
     cmd->addOption("--verbose",                   "-v",        "verbose mode, print processing details");
     cmd->addOption("--debug",                     "-d",        "debug mode, print debug information");
-#if defined(HAVE_FORK) || defined(_WIN32)
-    cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--single-process",            "-s",        "single process mode");
-#ifdef _WIN32
-    cmd->addOption("--forked-child",                             "process is forked child, internal use only");
-#endif
-#endif
     cmd->addOption("--no-sq-expansion",       "-nse",    "disable expansion of empty sequences\nin C-FIND request messages");
     OFString opt5 = "[p]ath: string (default: ";
     opt5 += opt_dfPath;
@@ -128,6 +121,14 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     cmd->addOption("--data-files-path",       "-dfp", 1, opt5.c_str(), "path to worklist data files" );
     cmd->addOption("--enable-file-reject",    "-efr",    "enable rejection of incomplete worklist-files\n(default)");
     cmd->addOption("--disable-file-reject",   "-dfr",    "disable rejection of incomplete worklist-files");
+
+#if defined(HAVE_FORK) || defined(_WIN32)
+    cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
+    cmd->addOption("--single-process",            "-s",        "single process mode");
+#ifdef _WIN32
+    cmd->addOption("--forked-child",                           "process is forked child, internal use only");
+#endif
+#endif
 
   cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
     cmd->addOption("--return-no-char-set",    "-cs0",    "return no specific character set (default)");
@@ -421,7 +422,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.13  2006-08-14 15:30:40  onken
+** Revision 1.14  2006-08-15 11:32:06  onken
+** Added WIN32 multiprocess mode capabilities to wlmscpfs
+**
+** Revision 1.13  2006/08/14 15:30:40  onken
 ** Added WIN32 multiprocess mode to wlmscpfs.
 **
 ** Revision 1.12  2006/07/27 14:53:49  joergr

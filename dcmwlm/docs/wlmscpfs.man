@@ -45,9 +45,6 @@ port  tcp/ip port number to listen on
   -d    --debug
           debug mode, print debug information
 
-  -s    --single-process
-          single process mode
-
   -nse  --no-sq-expansion
           disable expansion of empty sequences
           in C-FIND request messages
@@ -60,6 +57,15 @@ port  tcp/ip port number to listen on
 
   -dfr  --disable-file-reject
           disable rejection of incomplete worklist-files
+\endverbatim
+
+\subsection multiprocess_options multi-process options
+\verbatim
+  -s    --single-process
+          single process mode
+
+        --forked-child
+          process is forked child, internal use only
 \endverbatim
 
 \subsection returned_character_set_options returned character set options
