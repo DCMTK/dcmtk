@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmUnsignedLong
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:07 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ unsigned long DcmUnsignedLong::getVM()
 // ********************************
 
 
-void DcmUnsignedLong::print(ostream &out,
+void DcmUnsignedLong::print(STD_NAMESPACE ostream&out,
                             const size_t flags,
                             const int level,
                             const char * /*pixelFileName*/,
@@ -299,7 +299,11 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.27  2005-12-08 15:42:07  meichel
+** Revision 1.28  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.27  2005/12/08 15:42:07  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.26  2004/02/04 16:05:43  joergr

@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress RLE-compressed DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,11 +158,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -267,13 +267,13 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "Error: invalid filename: <empty string>" << endl;
+        CERR << "Error: invalid filename: <empty string>" << OFendl;
         return 1;
     }
 
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
     DcmDataset * dataset = fileformat.getDataset();
 
     if (opt_verbose)
-        COUT << "open input file " << opt_ifname << endl;
+        COUT << "open input file " << opt_ifname << OFendl;
 
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
 
@@ -289,12 +289,12 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": reading file: " <<  opt_ifname << endl;
+             << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "decompressing file" << endl;
+        COUT << "decompressing file" << OFendl;
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
@@ -303,19 +303,19 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": decompressing file: " <<  opt_ifname << endl;
+             << ": decompressing file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
     if (! dataset->canWriteXfer(opt_oxfer))
     {
         CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible" << endl;
+             << " possible" << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "create output file " << opt_ofname << endl;
+        COUT << "create output file " << opt_ofname << OFendl;
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
@@ -325,12 +325,12 @@ int main(int argc, char *argv[])
     {
         CERR << "Error: "
              << error.text()
-             << ": writing file: " <<  opt_ofname << endl;
+             << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "conversion successful" << endl;
+        COUT << "conversion successful" << OFendl;
 
     // deregister RLE codec
     DcmRLEDecoderRegistration::cleanup();
@@ -342,7 +342,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
- * Revision 1.13  2006-07-27 13:52:42  joergr
+ * Revision 1.14  2006-08-15 15:50:56  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.13  2006/07/27 13:52:42  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

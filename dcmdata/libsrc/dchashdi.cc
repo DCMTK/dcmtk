@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:11 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -429,7 +429,7 @@ DcmHashDict::put(DcmDictEntry* e)
     if (old != NULL) {
         /* an old entry has been replaced */
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-        ofConsole.lockCerr() << "replacing " << *old << endl;
+        ofConsole.lockCerr() << "replacing " << *old << OFendl;
         ofConsole.unlockCerr();
 #endif
         delete old;
@@ -488,11 +488,11 @@ DcmHashDict::del(const DcmTagKey& k, const char *privCreator)
     }
 }
 
-ostream&
-DcmHashDict::loadSummary(ostream& out)
+STD_NAMESPACE ostream&
+DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 {
     out << "DcmHashDict: size=" << hashTabLength <<
-        ", total entries=" << size() << endl;
+        ", total entries=" << size() << OFendl;
     DcmDictEntryList* bucket = NULL;
     int largestBucket = 0;
     for (int i=0; i<hashTabLength; i++) {
@@ -508,12 +508,12 @@ DcmHashDict::loadSummary(ostream& out)
         out << "    hashTab[" << j << "]: ";
         bucket = hashTab[j];
         if (bucket == NULL) {
-            out << "0 entries" << endl;
+            out << "0 entries" << OFendl;
         } else {
-            out << bucket->size() << " entries" << endl;
+            out << bucket->size() << " entries" << OFendl;
         }
     }
-    out << "Bucket Sizes" << endl;
+    out << "Bucket Sizes" << OFendl;
     int n, x, k, l_size;
     for (x=0; x<=largestBucket; x++) {
         n = 0;
@@ -527,7 +527,7 @@ DcmHashDict::loadSummary(ostream& out)
                 n++;
             }
         }
-        out << "    entries{" << x << "}: " << n << " buckets" << endl;
+        out << "    entries{" << x << "}: " << n << " buckets" << OFendl;
     }
 
     return out;
@@ -537,7 +537,11 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.20  2005-12-08 15:41:11  meichel
+** Revision 1.21  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.20  2005/12/08 15:41:11  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.19  2004/02/04 16:33:02  joergr

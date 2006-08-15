@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:03 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,7 @@ DcmDictEntry::~DcmDictEntry()
 ** DcmDictEntry friend functions
 */
 
-ostream& operator<<(ostream& s, const DcmDictEntry& e) {
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& e) {
 
     const DcmDictEntry* ep = &e;
     if (ep == NULL) {
@@ -188,7 +188,11 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.14  2005-12-08 15:41:03  meichel
+** Revision 1.15  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.14  2005/12/08 15:41:03  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.13  2004/02/04 16:26:07  joergr

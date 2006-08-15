@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2005-12-16 09:08:33 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -439,7 +439,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     if (debug_option)
     {
         ofConsole.lockCerr() << "Found " << result_stack.card()
-                             << " occurences" << endl;
+                             << " occurences" << OFendl;
         ofConsole.unlockCerr();
     }
     //as long there are matching elements left on the stack
@@ -952,7 +952,7 @@ void MdfDatasetManager::debugMsg(const OFBool &condition,
 {
     if (condition)
     {
-        ofConsole.lockCerr() << s1 << s2 << s3 << endl;
+        ofConsole.lockCerr() << s1 << s2 << s3 << OFendl;
         ofConsole.unlockCerr();
     }
 }
@@ -973,7 +973,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.20  2005-12-16 09:08:33  onken
+** Revision 1.21  2006-08-15 15:50:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.20  2005/12/16 09:08:33  onken
 ** - Added variable initialization to avoid compiler warning
 **
 ** Revision 1.19  2005/12/15 10:23:41  joergr

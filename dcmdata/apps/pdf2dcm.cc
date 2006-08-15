@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,14 +157,14 @@ OFCondition insertPDFFile(
     if (0 == stat(filename, &fileStat)) fileSize = OFstatic_cast(size_t, fileStat.st_size);
     else
     {
-      ofConsole.lockCerr() << "file " << filename << " not found" << endl;
+      ofConsole.lockCerr() << "file " << filename << " not found" << OFendl;
       ofConsole.unlockCerr();
       return EC_IllegalCall;
     }
 
     if (fileSize == 0)
     {
-      ofConsole.lockCerr() << "file " << filename << " is empty" << endl;
+      ofConsole.lockCerr() << "file " << filename << " is empty" << OFendl;
       ofConsole.unlockCerr();
       return EC_IllegalCall;
     }
@@ -172,7 +172,7 @@ OFCondition insertPDFFile(
     FILE *pdffile = fopen(filename, "rb");
     if (pdffile == NULL)
     {
-      ofConsole.lockCerr() << "unable to read file " << filename << endl;
+      ofConsole.lockCerr() << "unable to read file " << filename << OFendl;
       ofConsole.unlockCerr();
       return EC_IllegalCall;
     }
@@ -181,7 +181,7 @@ OFCondition insertPDFFile(
     if (fileSize < buflen) buflen = fileSize;
     if (buflen != fread(buf, 1, buflen, pdffile))
     {
-      ofConsole.lockCerr() << "read error in file " << filename << endl;
+      ofConsole.lockCerr() << "read error in file " << filename << OFendl;
       ofConsole.unlockCerr();
       fclose(pdffile);
       return EC_IllegalCall;
@@ -190,7 +190,7 @@ OFCondition insertPDFFile(
     // check magic word for PDF file
     if (0 != strncmp("%PDF-", buf, 5))
     {
-      ofConsole.lockCerr() << "file " << filename << " is not a PDF file." << endl;
+      ofConsole.lockCerr() << "file " << filename << " is not a PDF file." << OFendl;
       ofConsole.unlockCerr();
       fclose(pdffile);
       return EC_IllegalCall;
@@ -211,7 +211,7 @@ OFCondition insertPDFFile(
 
     if (! found)
     {
-      ofConsole.lockCerr() << "file " << filename << ": unable to decode PDF version number." << endl;
+      ofConsole.lockCerr() << "file " << filename << ": unable to decode PDF version number." << OFendl;
       ofConsole.unlockCerr();
       fclose(pdffile);
       return EC_IllegalCall;
@@ -219,13 +219,13 @@ OFCondition insertPDFFile(
 
     if (opt_verbose)
     {
-      ofConsole.lockCout() << "file " << filename << ": PDF " << version << ", " << (fileSize+1023)/1024 << "kB" << endl;
+      ofConsole.lockCout() << "file " << filename << ": PDF " << version << ", " << (fileSize+1023)/1024 << "kB" << OFendl;
       ofConsole.unlockCout();
     }
 
     if (0 != fseek(pdffile, 0, SEEK_SET))
     {
-      ofConsole.lockCerr() << "file " << filename << ": seek error." << endl;
+      ofConsole.lockCerr() << "file " << filename << ": seek error." << OFendl;
       ofConsole.unlockCerr();
       fclose(pdffile);
       return EC_IllegalCall;
@@ -247,7 +247,7 @@ OFCondition insertPDFFile(
         // read PDF content
         if (fileSize != fread(bytes, 1, fileSize, pdffile))
         {
-          ofConsole.lockCerr() << "read error in file " << filename << endl;
+          ofConsole.lockCerr() << "read error in file " << filename << OFendl;
           ofConsole.unlockCerr();
           result = EC_IllegalCall;
         }
@@ -282,7 +282,7 @@ void createIdentifiers(
     OFCondition cond = dfile.loadFile(opt_seriesFile, EXS_Unknown, EGL_noChange);
     if (cond.bad())
     {
-      ofConsole.lockCerr() << "warning: " << cond.text() << ": reading file: "<< opt_seriesFile << endl;
+      ofConsole.lockCerr() << "warning: " << cond.text() << ": reading file: "<< opt_seriesFile << OFendl;
       ofConsole.unlockCerr();
     }
     else
@@ -426,13 +426,13 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              ofConsole.lockCerr() << endl << "External libraries used:";
+              ofConsole.lockCerr() << OFendl << "External libraries used:";
               ofConsole.unlockCerr();
 #ifdef WITH_ZLIB
-              ofConsole.lockCerr() << endl << "- ZLIB, Version " << zlibVersion() << endl;
+              ofConsole.lockCerr() << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
               ofConsole.unlockCerr();
 #else
-              ofConsole.lockCerr() << " none" << endl;
+              ofConsole.lockCerr() << " none" << OFendl;
               ofConsole.unlockCerr();
 #endif
               return 0;
@@ -540,14 +540,14 @@ int main(int argc, char *argv[])
     {
         ofConsole.lockCerr() << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
         ofConsole.unlockCerr();
     }
 
     // read raw file
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        ofConsole.lockCerr() << "invalid filename: <empty string>" << endl;
+        ofConsole.lockCerr() << "invalid filename: <empty string>" << OFendl;
         ofConsole.unlockCerr();
         return 1;
     }
@@ -571,7 +571,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-      ofConsole.lockCout() << "creating encapsulated PDF object" << endl;
+      ofConsole.lockCout() << "creating encapsulated PDF object" << OFendl;
       ofConsole.unlockCout();
     }
 
@@ -580,7 +580,7 @@ int main(int argc, char *argv[])
     OFCondition result = insertPDFFile(fileformat.getDataset(), opt_ifname, opt_verbose);
     if (result.bad())
     {
-         ofConsole.lockCerr() << "unable to create PDF DICOM encapsulation" << endl;
+         ofConsole.lockCerr() << "unable to create PDF DICOM encapsulation" << OFendl;
          ofConsole.unlockCerr();
     	 return 10;
     }
@@ -594,15 +594,15 @@ int main(int argc, char *argv[])
 
     if (result.bad())
     {
-         ofConsole.lockCerr() << "unable to create DICOM header" << endl
-             << "Error: " << result.text() << endl;
+         ofConsole.lockCerr() << "unable to create DICOM header" << OFendl
+             << "Error: " << result.text() << OFendl;
          ofConsole.unlockCerr();
     	 return 10;
     }
 
     if (opt_verbose)
     {
-      ofConsole.lockCout() << "writing encapsulated PDF object as file " << opt_ofname << endl;
+      ofConsole.lockCout() << "writing encapsulated PDF object as file " << opt_ofname << OFendl;
       ofConsole.unlockCout();
     }
 
@@ -644,7 +644,7 @@ int main(int argc, char *argv[])
     if (error.bad())
     {
         ofConsole.lockCerr() << "Error: " << error.text()
-             << ": writing file: " << opt_ofname << endl;
+             << ": writing file: " << opt_ofname << OFendl;
         ofConsole.unlockCerr();
         return 1;
     }
@@ -662,7 +662,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
-** Revision 1.5  2006-07-27 13:52:42  joergr
+** Revision 1.6  2006-08-15 15:50:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.5  2006/07/27 13:52:42  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

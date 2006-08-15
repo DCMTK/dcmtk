@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #include <SIOUX.h>
 #endif
 
-static int dumpFile(ostream & out,
+static int dumpFile(STD_NAMESPACE ostream& out,
             const char *ifname,
             const E_FileReadMode readMode,
             const E_TransferSyntax xfer,
@@ -81,7 +81,7 @@ static OFCmdUnsignedInt maxReadLength = 4096; // default is 4 KB
 static OFBool addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-        CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << endl;
+        CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
         return OFFalse;
     }
 
@@ -93,7 +93,7 @@ static OFBool addPrintTagName(const char* tagName)
         const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
         const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
         if( dicent == NULL ) {
-            CERR << "error: unrecognised tag name: '" << tagName << "'" << endl;
+            CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
             dcmDataDict.unlock();
             return OFFalse;
         } else {
@@ -224,11 +224,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -414,9 +414,9 @@ int main(int argc, char *argv[])
       {
         /* a newline separates two consecutive "dumps" */
         if (i > 1)
-            COUT << endl;
+            COUT << OFendl;
         /* print header with filename */
-        COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl;
+        COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl;
       }
       errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors,
         writePixelData, pixelDirectory);
@@ -425,7 +425,7 @@ int main(int argc, char *argv[])
     return errorCount;
 }
 
-static void printResult(ostream& out, DcmStack& stack, size_t printFlags)
+static void printResult(STD_NAMESPACE ostream& out, DcmStack& stack, size_t printFlags)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -454,7 +454,7 @@ static void printResult(ostream& out, DcmStack& stack, size_t printFlags)
     dobj->print(out, printFlags);
 }
 
-static int dumpFile(ostream & out,
+static int dumpFile(STD_NAMESPACE ostream& out,
             const char *ifname,
             const E_FileReadMode readMode,
             const E_TransferSyntax xfer,
@@ -468,7 +468,7 @@ static int dumpFile(ostream & out,
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
         return 1;
     }
 
@@ -479,7 +479,7 @@ static int dumpFile(ostream & out,
     if (! cond.good())
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile.error().text()
-             << ": reading file: "<< ifname << endl;
+             << ": reading file: "<< ifname << OFendl;
 
         result = 1;
         if (stopOnErrors) return result;
@@ -516,8 +516,8 @@ static int dumpFile(ostream & out,
             else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
             else {
                 CERR << "Internal ERROR in File " << __FILE__ << ", Line "
-                     << __LINE__ << endl
-                    << "-- Named tag inconsistency" << endl;
+                     << __LINE__ << OFendl
+                    << "-- Named tag inconsistency" << OFendl;
                 abort();
             }
 
@@ -541,7 +541,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.56  2006-07-27 13:52:42  joergr
+ * Revision 1.57  2006-08-15 15:50:56  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.56  2006/07/27 13:52:42  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

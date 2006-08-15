@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:21 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DcmOutputBufferStream::~DcmOutputBufferStream()
 #ifdef DEBUG
   if (! isFlushed())
   {
-    ofConsole.lockCerr() << "Warning: closing unflushed DcmOutputBufferStream, loss of data!" << endl;
+    ofConsole.lockCerr() << "Warning: closing unflushed DcmOutputBufferStream, loss of data!" << OFendl;
     ofConsole.unlockCerr();
   }
 #endif
@@ -124,7 +124,11 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, Uint32& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
- * Revision 1.4  2005-12-08 15:41:21  meichel
+ * Revision 1.5  2006-08-15 15:49:54  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.4  2005/12/08 15:41:21  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2004/02/04 16:36:47  joergr

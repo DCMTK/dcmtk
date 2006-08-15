@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,11 +121,11 @@ static OFCondition checkNode(xmlNodePtr current,
         /* check whether node has expected name */
         if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, name)) != 0)
         {
-            CERR << "Error: document of the wrong type, was '" << current->name << "', '" << name << "' expected" << endl;
+            CERR << "Error: document of the wrong type, was '" << current->name << "', '" << name << "' expected" << OFendl;
             result = EC_IllegalCall;
         }
     } else {
-        CERR << "Error: document of the wrong type, '" << name << "' expected" << endl;
+        CERR << "Error: document of the wrong type, '" << name << "' expected" << OFendl;
         result = EC_IllegalCall;
     }
     return result;
@@ -156,7 +156,7 @@ static OFCondition createNewElement(xmlNodePtr current,
             if (dcmEVR == EVR_UNKNOWN)
             {
                 CERR << "Warning: invalid 'vr' attribute (" << elemVR
-                     << ") for " << dcmTag << ", using unknown VR" << endl;
+                     << ") for " << dcmTag << ", using unknown VR" << OFendl;
             }
             /* check for correct vr */
             const DcmEVR tagEVR = dcmTag.getEVR();
@@ -166,14 +166,14 @@ static OFCondition createNewElement(xmlNodePtr current,
                 ((tagEVR != EVR_ox) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
             {
                 CERR << "Warning: tag " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
-                     << "), correct is " << dcmTag.getVR().getVRName() << endl;
+                     << "), correct is " << dcmTag.getVR().getVRName() << OFendl;
             }
             if (dcmEVR != EVR_UNKNOWN)
                 dcmTag.setVR(dcmVR);
             /* create DICOM element */
             result = newDicomElement(newElem, dcmTag);
         } else {
-            CERR << "Warning: invalid 'tag' attribute (" << elemTag << "), ignoring node" << endl;
+            CERR << "Warning: invalid 'tag' attribute (" << elemTag << "), ignoring node" << OFendl;
             result = EC_InvalidTag;
         }
         if (result.bad())
@@ -203,7 +203,7 @@ static OFCondition putElementContent(xmlNodePtr current,
         xmlChar *attrVal = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "binary"));
         /* check whether node content is present */
         if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "hidden")) == 0)
-            CERR << "Warning: content of node " << element->getTag() << " is 'hidden', empty element inserted" << endl;
+            CERR << "Warning: content of node " << element->getTag() << " is 'hidden', empty element inserted" << OFendl;
         /* check whether node content is base64 encoded */
         else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
         {
@@ -280,7 +280,7 @@ static OFCondition parseElement(DcmItem *dataset,
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
                 encString = "ISO-8859-8";
             else if (xmlStrlen(elemVal) > 0)
-                CERR << "Warning: character set '" << elemVal << "' not supported" << endl;
+                CERR << "Warning: character set '" << elemVal << "' not supported" << OFendl;
             if (encString != NULL)
             {
                 /* find appropriate encoding handler */
@@ -333,7 +333,7 @@ static OFCondition parseSequence(DcmSequenceOfItems *sequence,
                     parseDataSet(newItem, current->xmlChildrenNode, xfer);
                 }
             } else if (!xmlIsBlankNode(current))
-                CERR << "Warning: unexpected node '" << current->name << "', 'item' expected, skipping" << endl;
+                CERR << "Warning: unexpected node '" << current->name << "', 'item' expected, skipping" << OFendl;
             /* proceed with next node */
             current = current->next;
         }
@@ -366,7 +366,7 @@ static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
                     putElementContent(current, newItem);
                 }
             } else if (!xmlIsBlankNode(current))
-                CERR << "Warning: unexpected node '" << current->name << "', 'pixel-item' expected, skipping" << endl;
+                CERR << "Warning: unexpected node '" << current->name << "', 'pixel-item' expected, skipping" << OFendl;
             /* proceed with next node */
             current = current->next;
         }
@@ -392,7 +392,7 @@ static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
             if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
                 parseElement(metainfo, current);
             else if (!xmlIsBlankNode(current))
-                CERR << "Warning: unexpected node '" << current->name << "', 'element' expected, skipping" << endl;
+                CERR << "Warning: unexpected node '" << current->name << "', 'element' expected, skipping" << OFendl;
             /* proceed with next node */
             current = current->next;
         }
@@ -445,7 +445,7 @@ static OFCondition parseDataSet(DcmItem *dataset,
                 }
             }
         } else if (!xmlIsBlankNode(current))
-            CERR << "Warning: unexpected node '" << current->name << "', skipping" << endl;
+            CERR << "Warning: unexpected node '" << current->name << "', skipping" << OFendl;
         /* proceed with next node */
         current = current->next;
     }
@@ -459,7 +459,7 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
 {
     OFCondition result = EC_Normal;
     if (verbose)
-        COUT << "validating XML document ..." << endl;
+        COUT << "validating XML document ..." << OFendl;
     xmlGenericError(xmlGenericErrorContext, "--- libxml validating ---\n");
     /* create context for document validation */
     xmlValidCtxt cvp;
@@ -483,7 +483,7 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
     xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
     if (!valid)
     {
-        CERR << "Error: document does not validate" << endl;
+        CERR << "Error: document does not validate" << OFendl;
         result = EC_IllegalCall;
     }
     return result;
@@ -524,11 +524,11 @@ static OFCondition readXmlFile(const char *ifname,
                     {
                         if (verbose)
                         {
-                            COUT << "parsing file-format ..." << endl;
+                            COUT << "parsing file-format ..." << OFendl;
                             if (metaInfo)
-                                COUT << "parsing meta-header ..." << endl;
+                                COUT << "parsing meta-header ..." << OFendl;
                             else
-                                COUT << "skipping meta-header ..." << endl;
+                                COUT << "skipping meta-header ..." << OFendl;
                         }
                         current = current->xmlChildrenNode;
                         /* ignore blank (empty or whitespace only) nodes */
@@ -548,7 +548,7 @@ static OFCondition readXmlFile(const char *ifname,
                     if (result.good())
                     {
                         if (verbose)
-                            COUT << "parsing data-set ..." << endl;
+                            COUT << "parsing data-set ..." << OFendl;
                         /* parse "data-set" */
                         result = checkNode(current, "data-set");
                         if (result.good())
@@ -570,16 +570,16 @@ static OFCondition readXmlFile(const char *ifname,
                             xmlDocDump(stderr, doc);
                     }
                 } else {
-                    CERR << "Error: document has wrong type, dcmtk namespace not found" << endl;
+                    CERR << "Error: document has wrong type, dcmtk namespace not found" << OFendl;
                     result = EC_IllegalCall;
                 }
             } else {
-                CERR << "Error: document is empty: " << ifname << endl;
+                CERR << "Error: document is empty: " << ifname << OFendl;
                 result = EC_IllegalCall;
             }
         }
     } else {
-        CERR << "Error: could not parse document: " << ifname << endl;
+        CERR << "Error: could not parse document: " << ifname << OFendl;
         result = EC_IllegalCall;
     }
     /* free allocated memory */
@@ -670,11 +670,11 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:" << endl;
+              CERR << OFendl << "External libraries used:" << OFendl;
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-              CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << endl;
+              CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
               return 0;
            }
         }
@@ -776,7 +776,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     /* check for compatible libxml version */
@@ -805,12 +805,12 @@ int main(int argc, char *argv[])
     /* check filenames */
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>" << OFendl;
         result = EC_IllegalParameter;
     }
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>" << OFendl;
         result = EC_IllegalParameter;
     }
 
@@ -819,14 +819,14 @@ int main(int argc, char *argv[])
         DcmFileFormat fileformat;
         E_TransferSyntax xfer;
         if (opt_verbose)
-            COUT << "reading XML input file: " << opt_ifname << endl;
+            COUT << "reading XML input file: " << opt_ifname << OFendl;
         /* read XML file and feed data into DICOM fileformat */
         result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace,
                              opt_validate, opt_verbose, opt_debug != 0);
         if (result.good())
         {
             if (opt_verbose)
-                COUT << "writing DICOM output file: " << opt_ofname << endl;
+                COUT << "writing DICOM output file: " << opt_ofname << OFendl;
             /* determine transfer syntax to write the file */
             if ((opt_xfer == EXS_Unknown) && (xfer != EXS_Unknown))
                 opt_xfer = xfer;
@@ -836,17 +836,17 @@ int main(int argc, char *argv[])
                 /* check whether pixel data is compressed */
                 if (opt_dataset && DcmXfer(xfer).isEncapsulated())
                 {
-                    CERR << "Warning: encapsulated pixel data require file format, ignoring --write-dataset" << endl;
+                    CERR << "Warning: encapsulated pixel data require file format, ignoring --write-dataset" << OFendl;
                     opt_dataset = OFFalse;
                 }
                 /* write DICOM file */
                 result = fileformat.saveFile(opt_ofname, opt_xfer, opt_enctype, opt_glenc, opt_padenc,
                     OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_dataset);
                 if (result.bad())
-                    CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << endl;
+                    CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << OFendl;
             } else {
                 CERR << "Error: no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
-                     << " possible!" << endl;
+                     << " possible!" << OFendl;
                 result = EC_CannotChangeRepresentation;
             }
         }
@@ -862,10 +862,10 @@ int main(int argc, char *argv[])
 
 int main(int, char *[])
 {
-  CERR << rcsid << endl << OFFIS_CONSOLE_DESCRIPTION << endl << endl
-       << OFFIS_CONSOLE_APPLICATION " requires the libxml library." << endl
-       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without libxml." << endl
-       << "Please reconfigure your system and recompile if appropriate." << endl;
+  CERR << rcsid << OFendl << OFFIS_CONSOLE_DESCRIPTION << OFendl << OFendl
+       << OFFIS_CONSOLE_APPLICATION " requires the libxml library." << OFendl
+       << "This " OFFIS_CONSOLE_APPLICATION " has been configured and compiled without libxml." << OFendl
+       << "Please reconfigure your system and recompile if appropriate." << OFendl;
   return 0;
 }
 
@@ -875,7 +875,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.18  2006-07-27 13:52:42  joergr
+ * Revision 1.19  2006-08-15 15:50:56  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.18  2006/07/27 13:52:42  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

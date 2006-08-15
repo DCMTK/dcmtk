@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:37:47 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -682,7 +682,7 @@ void MdfConsoleEngine::debugMsg(const OFBool &condition,
 {
     if (condition)
     {
-        ofConsole.lockCerr() << s1 << s2 << s3 << endl;
+        ofConsole.lockCerr() << s1 << s2 << s3 << OFendl;
         ofConsole.unlockCerr();
     }
 }
@@ -706,7 +706,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.19  2006-07-27 13:37:47  joergr
+** Revision 1.20  2006-08-15 15:50:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.19  2006/07/27 13:37:47  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.

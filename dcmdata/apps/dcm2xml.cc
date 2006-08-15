@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 // ********************************************
 
-static OFCondition writeFile(ostream &out,
+static OFCondition writeFile(STD_NAMESPACE ostream&out,
                              const char *ifname,
                              const E_FileReadMode readMode,
                              const E_TransferSyntax xfer,
@@ -67,7 +67,7 @@ static OFCondition writeFile(ostream &out,
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
         return EC_IllegalParameter;
     }
 
@@ -78,7 +78,7 @@ static OFCondition writeFile(ostream &out,
     if (result.bad())
     {
         CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-             << ") reading file: "<< ifname << endl;
+             << ") reading file: "<< ifname << OFendl;
     } else {
         DcmDataset *dset = dfile.getDataset();
         /* write content to XML format */
@@ -112,7 +112,7 @@ static OFCondition writeFile(ostream &out,
             else if (csetString == "ISO_IR 138")
                 encString = "ISO-8859-8";
             else if (!csetString.empty())
-                CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << endl;
+                CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << OFendl;
         } else {
             /* SpecificCharacterSet is not present in the dataset */
             if (dset->containsExtendedCharacters())
@@ -121,7 +121,7 @@ static OFCondition writeFile(ostream &out,
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
                     CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                         << "but extended characters used in file: " << ifname << endl;
+                         << "but extended characters used in file: " << ifname << OFendl;
                     return EC_IllegalCall;
                 } else {
                     OFString charset(defaultCharset);
@@ -180,7 +180,7 @@ static OFCondition writeFile(ostream &out,
         /* optional character set */
         if (encString.length() > 0)
             out << " encoding=\"" << encString << "\"";
-        out << "?>" << endl;
+        out << "?>" << OFendl;
         /* add document type definition (DTD) */
         if (writeFlags & DCMTypes::XF_addDocumentType)
         {
@@ -192,12 +192,12 @@ static OFCondition writeFile(ostream &out,
             /* embed DTD */
             if (writeFlags & DCMTypes::XF_embedDocumentType)
             {
-                out << " [" << endl;
+                out << " [" << OFendl;
                 /* copy content from DTD file */
 #ifdef HAVE_IOS_NOCREATE
-                ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, ios::in|ios::nocreate);
+                STD_NAMESPACE ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-                ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, ios::in);
+                STD_NAMESPACE ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, STD_NAMESPACE ios::in);
 #endif
                 if (dtdFile)
                 {
@@ -210,7 +210,7 @@ static OFCondition writeFile(ostream &out,
             } else { /* reference DTD */
                 out << " SYSTEM \"" << DOCUMENT_TYPE_DEFINITION_FILE << "\"";
             }
-            out << ">" << endl;
+            out << ">" << OFendl;
         }
         /* write XML document content */
         if (readMode == ERM_dataset)
@@ -296,11 +296,11 @@ int main(int argc, char *argv[])
           if (cmd.findOption("--version"))
           {
               app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:";
+              CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-              CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+              CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-              CERR << " none" << endl;
+              CERR << " none" << OFendl;
 #endif
               return 0;
            }
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     /* make sure document type definition file exists */
@@ -418,7 +418,7 @@ int main(int argc, char *argv[])
         !OFStandard::fileExists(DOCUMENT_TYPE_DEFINITION_FILE))
     {
         CERR << "Warning: DTD file \"" << DOCUMENT_TYPE_DEFINITION_FILE
-             << "\" does not exist ... adding reference instead" << endl;
+             << "\" does not exist ... adding reference instead" << OFendl;
         opt_writeFlags &= ~DCMTypes::XF_embedDocumentType;
     }
 
@@ -431,7 +431,7 @@ int main(int argc, char *argv[])
     {
         const char *ofname = NULL;
         cmd.getParam(2, ofname);
-        ofstream stream(ofname);
+        STD_NAMESPACE ofstream stream(ofname);
         if (stream.good())
         {
             if (writeFile(stream, ifname, opt_readMode, opt_ixfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags).bad())
@@ -450,7 +450,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.25  2006-07-27 13:52:42  joergr
+ * Revision 1.26  2006-08-15 15:50:56  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.25  2006/07/27 13:52:42  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

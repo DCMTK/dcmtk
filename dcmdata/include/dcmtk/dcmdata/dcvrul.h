@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedLong
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:29:13 $
+ *  Update Date:      $Date: 2006-08-15 15:49:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrul.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ class DcmUnsignedLong
      *  @param pixelFileName not used
      *  @param pixelCounter not used
      */
-    virtual void print(ostream &out,
+    virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -166,7 +166,11 @@ class DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
-** Revision 1.19  2005-12-08 16:29:13  meichel
+** Revision 1.20  2006-08-15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.19  2005/12/08 16:29:13  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.18  2004/07/01 12:28:25  meichel

@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-30 15:00:19 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,8 +151,8 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                             default:
                                 newDO = new DcmItem(oldDO->getTag());
                                 ofConsole.lockCerr() << "DcmSequenceOfItems: Non-item element ("
-                                     << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                                     << dec << ") found" << endl;
+                                     << STD_NAMESPACE hex << oldDO->getGTag() << "," << oldDO->getETag()
+                                     << STD_NAMESPACE dec << ") found" << OFendl;
                                 ofConsole.unlockCerr();
                                 break;
                         }
@@ -175,7 +175,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
 // ********************************
 
 
-void DcmSequenceOfItems::print(ostream &out,
+void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
                                const size_t flags,
                                const int level,
                                const char *pixelFileName,
@@ -233,7 +233,7 @@ void DcmSequenceOfItems::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::writeXML(ostream &out,
+OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
                                          const size_t flags)
 {
     OFString xmlString;
@@ -242,10 +242,10 @@ OFCondition DcmSequenceOfItems::writeXML(ostream &out,
     out << "<sequence";
     /* attribute tag = (gggg,eeee) */
     out << " tag=\"";
-    out << hex << setfill('0')
-        << setw(4) << Tag.getGTag() << ","
-        << setw(4) << Tag.getETag() << "\""
-        << dec << setfill(' ');
+    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+        << STD_NAMESPACE setw(4) << Tag.getGTag() << ","
+        << STD_NAMESPACE setw(4) << Tag.getETag() << "\""
+        << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
     /* cardinality (number of items) = 1..n */
@@ -256,7 +256,7 @@ OFCondition DcmSequenceOfItems::writeXML(ostream &out,
     /* tag name (if known and not suppressed) */
     if (!(flags & DCMTypes::XF_omitDataElementName))
         out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
-    out << ">" << endl;
+    out << ">" << OFendl;
     /* write sequence content */
     if (!itemList->empty())
     {
@@ -270,7 +270,7 @@ OFCondition DcmSequenceOfItems::writeXML(ostream &out,
         } while (itemList->seek(ELP_next));
     }
     /* XML end tag for "sequence" */
-    out << "</sequence>" << endl;
+    out << "</sequence>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -434,7 +434,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
         {
-            ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << Tag << " is odd" << endl;
+            ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << Tag << " is odd" << OFendl;
             ofConsole.unlockCerr();
         }
         length = valueLength;
@@ -470,14 +470,14 @@ OFCondition DcmSequenceOfItems::readSubItem(DcmInputStream &inStream,
     else if (l_error == EC_InvalidTag)  // try to recover parsing
     {
         inStream.putback();
-        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of item tag" << endl;
+        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of item tag" << OFendl;
         ofConsole.unlockCerr();
         DCM_dcmdataDebug(1, ("Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
             " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
     }
     else if (l_error != EC_SequEnd)
     {
-        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of a sequence delimiter" << endl;
+        ofConsole.lockCerr() << "DcmSequenceOfItems: Parse error in sequence, found " << newTag << " instead of a sequence delimiter" << OFendl;
         ofConsole.unlockCerr();
         DCM_dcmdataDebug(1, ("Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
             " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag()));
@@ -1259,7 +1259,11 @@ OFBool DcmSequenceOfItems::containsExtendedCharacters()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.63  2006-05-30 15:00:19  joergr
+** Revision 1.64  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.63  2006/05/30 15:00:19  joergr
 ** Added missing method containsExtendedCharacters().
 **
 ** Revision 1.62  2006/05/11 08:51:05  joergr

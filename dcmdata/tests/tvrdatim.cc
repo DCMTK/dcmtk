@@ -22,8 +22,8 @@
  *  Purpose: test program for classes DcmDate, DcmTime and DcmDateTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:14 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2006-08-15 15:50:10 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,68 +54,68 @@ int main()
     dcmDate.setCurrentDate();
     dcmDate.print(COUT);
     if (dcmDate.getOFDate(dateVal).good())
-        COUT << "current date: " << dateVal << endl;
+        COUT << "current date: " << dateVal << OFendl;
     else
-        COUT << "current date: <invalid>" << endl;
+        COUT << "current date: <invalid>" << OFendl;
 
     dcmTime.setCurrentTime();
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
-        COUT << "current time: " << timeVal << endl;
+        COUT << "current time: " << timeVal << OFendl;
     else
-        COUT << "current time: <invalid>" << endl;
+        COUT << "current time: <invalid>" << OFendl;
 
     dcmTime.putString("12");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
-        COUT << "valid time: " << timeVal << endl;
+        COUT << "valid time: " << timeVal << OFendl;
     dcmTime.putString("1203");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
-        COUT << "valid time: " << timeVal << endl;
+        COUT << "valid time: " << timeVal << OFendl;
     dcmTime.putString("120315");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
-        COUT << "valid time: " << timeVal << endl;
+        COUT << "valid time: " << timeVal << OFendl;
     dcmTime.putString("120301.99");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
     {
         timeVal.getISOFormattedTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);
-        COUT << "valid local time: " << string << endl;
+        COUT << "valid local time: " << string << OFendl;
     }
 
     dcmTime.putString("12:03");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
-        COUT << "valid time: " << timeVal << endl;
+        COUT << "valid time: " << timeVal << OFendl;
     dcmTime.putString("12:03:15");
     dcmTime.print(COUT);
     if (dcmTime.getOFTime(timeVal).good())
-        COUT << "valid time: " << timeVal << endl;
+        COUT << "valid time: " << timeVal << OFendl;
 
     if (DcmTime::getTimeZoneFromString("+1130", timeZone).good())
-        COUT << "time zone: " << timeZone << endl;
+        COUT << "time zone: " << timeZone << OFendl;
     if (DcmTime::getTimeZoneFromString("-0100", timeZone).good())
-        COUT << "time zone: " << timeZone << endl;
+        COUT << "time zone: " << timeZone << OFendl;
 
     dcmDateTime.putString("200204101203+0500");
     dcmDateTime.print(COUT);
     if (dcmDateTime.getOFDateTime(dateTime).good())
-        COUT << "valid date/time: " << dateTime << endl;
+        COUT << "valid date/time: " << dateTime << OFendl;
     dcmDateTime.setCurrentDateTime(OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);
     dcmDateTime.print(COUT);
     if (dcmDateTime.getOFDateTime(dateTime).good())
-        COUT << "current date/time: " << dateTime << endl;
+        COUT << "current date/time: " << dateTime << OFendl;
     if (dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/, OFFalse /*delimiter*/))
-        COUT << "current date/time: " << string << endl;
+        COUT << "current date/time: " << string << OFendl;
 
     dcmDateTime.putString("20020410");
     dcmDateTime.print(COUT);
     if (dcmDateTime.getOFDateTime(dateTime).good())
     {
         dateTime.getISOFormattedDateTime(string, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/);
-        COUT << "valid local date/time: " << string << endl;
+        COUT << "valid local date/time: " << string << OFendl;
     }
 
     return 0;
@@ -126,7 +126,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tvrdatim.cc,v $
- * Revision 1.6  2005-12-08 15:42:14  meichel
+ * Revision 1.7  2006-08-15 15:50:10  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.6  2005/12/08 15:42:14  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2004/02/04 16:53:23  joergr

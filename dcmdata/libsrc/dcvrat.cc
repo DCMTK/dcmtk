@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmAttributeTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:47 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ unsigned long DcmAttributeTag::getVM()
 // ********************************
 
 
-void DcmAttributeTag::print(ostream &out,
+void DcmAttributeTag::print(STD_NAMESPACE ostream& out,
                             const size_t flags,
                             const int level,
                             const char * /*pixelFileName*/,
@@ -113,17 +113,17 @@ void DcmAttributeTag::print(ostream &out,
             /* print multiple values */
             if (printCount > 0)
             {
-                out << hex << setfill('0');
+                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
                 /* print tag values (group,element) in hex mode */
-                out << '(' << setw(4) << (*(uintVals++));
-                out << ',' << setw(4) << (*(uintVals++)) << ')';
+                out << '(' << STD_NAMESPACE setw(4) << (*(uintVals++));
+                out << ',' << STD_NAMESPACE setw(4) << (*(uintVals++)) << ')';
                 for (unsigned long i = 1; i < printCount; i++)
                 {
-                    out << "\\" << '(' << setw(4) << (*(uintVals++));
-                    out << ',' << setw(4) << (*(uintVals++)) << ')';
+                    out << "\\" << '(' << STD_NAMESPACE setw(4) << (*(uintVals++));
+                    out << ',' << STD_NAMESPACE setw(4) << (*(uintVals++)) << ')';
                 }
                 /* reset i/o manipulators */
-                out << dec << setfill(' ');
+                out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
             }
             /* print trailing "..." if data has been truncated */
             if (printCount < count)
@@ -288,7 +288,11 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.27  2005-12-08 15:41:47  meichel
+** Revision 1.28  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.27  2005/12/08 15:41:47  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.26  2004/02/04 16:48:43  joergr

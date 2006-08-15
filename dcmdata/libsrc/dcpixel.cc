@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:25 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -591,7 +591,7 @@ DcmPixelData::insertRepresentationEntry(
 }
 
 void
-DcmPixelData::print(ostream &out,
+DcmPixelData::print(STD_NAMESPACE ostream&out,
                     const size_t flags,
                     const int level,
                     const char *pixelFileName,
@@ -966,7 +966,7 @@ OFCondition DcmPixelData::write(
 }
 
 OFCondition DcmPixelData::writeXML(
-    ostream &out,
+    STD_NAMESPACE ostream&out,
     const size_t flags)
 {
     if (current == repListEnd)
@@ -1037,7 +1037,11 @@ void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.37  2005-12-08 15:41:25  meichel
+** Revision 1.38  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.37  2005/12/08 15:41:25  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.36  2005/05/26 09:06:55  meichel

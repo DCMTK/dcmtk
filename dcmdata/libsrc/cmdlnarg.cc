@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:55 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     int fderr = dup(fileno(stdout));
     if (fderr != fileno(stderr))
     {
-        ofConsole.lockCerr() << "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno) << endl;
+        ofConsole.lockCerr() << "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno) << OFendl;
         ofConsole.unlockCerr();
     }
 
@@ -128,12 +128,12 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
-        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno) << endl;
+        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno) << OFendl;
         ofConsole.unlockCerr();
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
-        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << endl;
+        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << OFendl;
         ofConsole.unlockCerr();
     }
 #endif /* __BORLANDC__ */
@@ -150,7 +150,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.18  2005-12-08 15:40:55  meichel
+** Revision 1.19  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.18  2005/12/08 15:40:55  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.17  2004/01/16 13:51:38  joergr

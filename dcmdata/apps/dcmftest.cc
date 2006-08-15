@@ -21,10 +21,10 @@
  *
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:34:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,9 +85,9 @@ int main(int argc, char *argv[])
             fclose(f);
         }
         if (ok) {
-            COUT << "yes: " << fname << endl;
+            COUT << "yes: " << fname << OFendl;
         } else {
-            COUT << "no: " << fname << endl;
+            COUT << "no: " << fname << OFendl;
             badCount++;
         }
     }
@@ -102,7 +102,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.19  2006-07-27 13:34:18  joergr
+** Revision 1.20  2006-08-15 15:50:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.19  2006/07/27 13:34:18  joergr
 ** Prepended prefix "PF_" to parseLine() flags.
 **
 ** Revision 1.18  2005/12/08 15:40:47  meichel

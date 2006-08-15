@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:42 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -948,7 +948,7 @@ static long gethostid(void)
 {
     char buf[128];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-       ofConsole.lockCerr() << "sysinfo: " << strerror(errno) << endl;
+       ofConsole.lockCerr() << "sysinfo: " << strerror(errno) << OFendl;
        ofConsole.unlockCerr();
        exit(1);
     }
@@ -1396,7 +1396,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.62  2005-12-08 15:41:42  meichel
+** Revision 1.63  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.62  2005/12/08 15:41:42  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.61  2005/11/17 14:25:12  meichel

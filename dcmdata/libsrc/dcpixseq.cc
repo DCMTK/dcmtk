@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:26 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 // ********************************
 
 
-void DcmPixelSequence::print(ostream &out,
+void DcmPixelSequence::print(STD_NAMESPACE ostream&out,
                              const size_t flags,
                              const int level,
                              const char *pixelFileName,
@@ -375,7 +375,11 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.36  2005-12-08 15:41:26  meichel
+** Revision 1.37  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.36  2005/12/08 15:41:26  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.35  2005/11/28 15:53:13  meichel

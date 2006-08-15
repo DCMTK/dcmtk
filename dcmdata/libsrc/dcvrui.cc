@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:06 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ DcmEVR DcmUniqueIdentifier::ident() const
 // ********************************
 
 
-void DcmUniqueIdentifier::print(ostream &out,
+void DcmUniqueIdentifier::print(STD_NAMESPACE ostream&out,
                                 const size_t flags,
                                 const int level,
                                 const char * /*pixelFileName*/,
@@ -175,7 +175,11 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.23  2005-12-08 15:42:06  meichel
+** Revision 1.24  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.23  2005/12/08 15:42:06  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.22  2004/01/16 13:46:03  joergr

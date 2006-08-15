@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:59 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,18 +130,18 @@ OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
 // ********************************
 
 
-void DcmDataset::print(ostream &out,
+void DcmDataset::print(STD_NAMESPACE ostream&out,
                        const size_t flags,
                        const int level,
                        const char *pixelFileName,
                        size_t *pixelCounter)
 {
-    out << endl;
+    out << OFendl;
     printNestingLevel(out, flags, level);
-    out << "# Dicom-Data-Set" << endl;
+    out << "# Dicom-Data-Set" << OFendl;
     printNestingLevel(out, flags, level);
     out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName();
-    out << endl;
+    out << OFendl;
     if (!elementList->empty())
     {
         DcmObject *dO;
@@ -157,7 +157,7 @@ void DcmDataset::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmDataset::writeXML(ostream &out,
+OFCondition DcmDataset::writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags)
 {
     OFString xmlString;
@@ -167,7 +167,7 @@ OFCondition DcmDataset::writeXML(ostream &out,
     out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\"";
     if (flags & DCMTypes::XF_useDcmtkNamespace)
         out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
-    out << ">" << endl;
+    out << ">" << OFendl;
     if (!elementList->empty())
     {
         /* write content of all children */
@@ -179,7 +179,7 @@ OFCondition DcmDataset::writeXML(ostream &out,
         } while (elementList->seek(ELP_next));
     }
     /* XML end tag for "data-set" */
-    out << "</data-set>" << endl;
+    out << "</data-set>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -221,7 +221,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                         if( xfer != EXS_Unknown && Xfer != xfer )
                         {
                             ofConsole.lockCerr() << "Warning: dcdatset: wrong transfer syntax specified, "
-                                                 << "detecting from dataset" << endl;
+                                                 << "detecting from dataset" << OFendl;
                             ofConsole.unlockCerr();
                         }
                         break;
@@ -595,7 +595,11 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.40  2005-12-08 15:40:59  meichel
+** Revision 1.41  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.40  2005/12/08 15:40:59  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.39  2005/12/02 08:51:44  joergr

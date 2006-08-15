@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: zlib compression filter for input streams
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:15 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,7 +320,7 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
             * (where PDVs always have even length).
             * Everything else generates a warning.
             */
-           ofConsole.lockCerr() << "zlib: " << count-1 << " pending input bytes in buffer." << endl;
+           ofConsole.lockCerr() << "zlib: " << count-1 << " pending input bytes in buffer." << OFendl;
            ofConsole.unlockCerr();
          }
        }
@@ -366,7 +366,7 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
                 * (where PDVs always have even length).
                 * Everything else generates a warning.
                 */
-               ofConsole.lockCerr() << "zlib: " << count-1 << " pending input bytes in buffer." << endl;
+               ofConsole.lockCerr() << "zlib: " << count-1 << " pending input bytes in buffer." << OFendl;
                ofConsole.unlockCerr();
              }
           }
@@ -436,7 +436,11 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
- * Revision 1.6  2005-12-08 15:41:15  meichel
+ * Revision 1.7  2006-08-15 15:49:54  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.6  2005/12/08 15:41:15  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2004/04/07 12:19:14  joergr

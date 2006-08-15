@@ -45,9 +45,9 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -233,17 +233,17 @@ int main(int argc, char *argv[])
             if (cmd.findOption("--version"))
             {
                 app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-                CERR << endl << "External libraries used:";
+                CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_DCMGPDIR_AS_DCMMKDIR)
-                CERR << " none" << endl;
+                CERR << " none" << OFendl;
 #else
-                CERR << endl;
+                CERR << OFendl;
 #endif
 #ifdef WITH_ZLIB
-                CERR << "- ZLIB, Version " << zlibVersion() << endl;
+                CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
@@ -470,7 +470,7 @@ int main(int argc, char *argv[])
     const char *param = NULL;
     const int count = cmd.getParamCount();
     if (opt_recurse && ddir.verboseMode())
-        COUT << "determining input files ..." << endl;
+        COUT << "determining input files ..." << OFendl;
     /* no parameters? */
     if (count == 0)
     {
@@ -550,7 +550,7 @@ int main(int argc, char *argv[])
                 last = badFiles.end();
                 while (iter != last)
                 {
-                    oss << endl << OFString(strlen(OFFIS_CONSOLE_APPLICATION) + 2, ' ') << (*iter);
+                    oss << OFendl << OFString(strlen(OFFIS_CONSOLE_APPLICATION) + 2, ' ') << (*iter);
                     ++iter;
                 }
                 oss << OFStringStream_ends;
@@ -581,7 +581,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.82  2006-07-27 13:52:42  joergr
+ * Revision 1.83  2006-08-15 15:50:56  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.82  2006/07/27 13:52:42  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

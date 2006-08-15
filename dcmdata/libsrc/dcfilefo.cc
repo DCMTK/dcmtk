@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:10 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,15 +122,15 @@ DcmEVR DcmFileFormat::ident() const
 // ********************************
 
 
-void DcmFileFormat::print(ostream &out,
+void DcmFileFormat::print(STD_NAMESPACE ostream&out,
                           const size_t flags,
                           const int level,
                           const char *pixelFileName,
                           size_t *pixelCounter)
 {
-    out << endl;
+    out << OFendl;
     printNestingLevel(out, flags, level);
-    out << "# Dicom-File-Format" << endl;
+    out << "# Dicom-File-Format" << OFendl;
     if (!itemList->empty())
     {
         DcmObject *dO;
@@ -142,7 +142,7 @@ void DcmFileFormat::print(ostream &out,
     } else {
         printNestingLevel(out, flags, level);
         out << "# Dicom-File-Format has been erased";
-        out << endl;
+        out << OFendl;
     }
 }
 
@@ -150,7 +150,7 @@ void DcmFileFormat::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmFileFormat::writeXML(ostream &out,
+OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream&out,
                                     const size_t flags)
 {
     OFCondition result = EC_CorruptedData;
@@ -158,7 +158,7 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
     out << "<file-format";
     if (flags & DCMTypes::XF_useDcmtkNamespace)
         out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
-    out << ">" << endl;
+    out << ">" << OFendl;
     if (!itemList->empty())
     {
         /* write content of all children */
@@ -171,7 +171,7 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
         result = EC_Normal;
     }
     /* XML end tag for "file-format" */
-    out << "</file-format>" << endl;
+    out << "</file-format>" << OFendl;
     return result;
 }
 
@@ -248,14 +248,14 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
             } else {
                 currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
                 currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
-                ostream& localCerr = ofConsole.lockCerr();
+                STD_NAMESPACE ostream& localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
-                localCerr << hex << setfill('0')
-                          << setw(2) << OFstatic_cast(int, currVers[1])
-                          << setw(2) << OFstatic_cast(int, currVers[0]) << " supported: 0x"
-                          << setw(2) << OFstatic_cast(int, version[1])
-                          << setw(2) << OFstatic_cast(int, version[0])
-                          << dec << setfill(' ') << endl;
+                localCerr << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
+                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]) << " supported: 0x"
+                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
+                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0])
+                          << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ') << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -361,7 +361,7 @@ DCM_dcmdataCDebug(2,  uidtmp != NULL,
                 elem = new DcmApplicationEntity(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_SourceApplicationEntityTitle!" << endl;
+            ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_SourceApplicationEntityTitle!" << OFendl;
             ofConsole.unlockCerr();
         }
         else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
@@ -371,7 +371,7 @@ DCM_dcmdataCDebug(2,  uidtmp != NULL,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_PrivateInformationCreatorUID!" << endl;
+            ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_PrivateInformationCreatorUID!" << OFendl;
             ofConsole.unlockCerr();
         }
         else if (xtag == DCM_PrivateInformation)            // (0002,0102)
@@ -381,10 +381,10 @@ DCM_dcmdataCDebug(2,  uidtmp != NULL,
                 elem = new DcmOtherByteOtherWord(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle DCM_PrivateInformation!" << endl;
+            ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle DCM_PrivateInformation!" << OFendl;
             ofConsole.unlockCerr();
         } else {
-            ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle " << tag.getTagName() << endl;
+            ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle " << tag.getTagName() << OFendl;
             ofConsole.unlockCerr();
         }
 
@@ -462,7 +462,7 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
             META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
         {
-            ofConsole.lockCerr() << "Error: DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted." << endl;
+            ofConsole.lockCerr() << "Error: DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted." << OFendl;
             ofConsole.unlockCerr();
         }
     } else {
@@ -691,7 +691,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
         /* BigEndianImplicit transfer syntax dump some error information */
         if (outxfer == EXS_BigEndianImplicit)
         {
-            ofConsole.lockCerr() << "Error: DcmFileFormat::write() illegal TransferSyntax(BI) used" << endl;
+            ofConsole.lockCerr() << "Error: DcmFileFormat::write() illegal TransferSyntax(BI) used" << OFendl;
             ofConsole.unlockCerr();
         }
     }
@@ -783,7 +783,7 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
 OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
                                       const unsigned long /*where*/)
 {
-    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)" << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)" << OFendl;
     ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -795,7 +795,7 @@ OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
 
 DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
 {
-    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << OFendl;
     ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
     return NULL;
@@ -807,7 +807,7 @@ DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
 
 DcmItem *DcmFileFormat::remove(DcmItem* /*item*/)
 {
-    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(DcmItem*)" << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(DcmItem*)" << OFendl;
     ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
     return NULL;
@@ -876,7 +876,11 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.42  2005-12-08 15:41:10  meichel
+** Revision 1.43  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.42  2005/12/08 15:41:10  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.41  2005/12/02 11:57:44  joergr

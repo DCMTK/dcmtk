@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:14 $
+ *  Update Date:      $Date: 2006-08-15 15:49:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,7 +254,7 @@ public:
         { DcmHashDictIterator iter(this, OFTrue); return iter; }
 
     /// prints some information about hash table bucket utilization
-    ostream& loadSummary(ostream& out);
+    STD_NAMESPACE ostream& loadSummary(STD_NAMESPACE ostream& out);
 
 private:
 
@@ -320,7 +320,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.17  2005-12-08 16:28:14  meichel
+** Revision 1.18  2006-08-15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.17  2005/12/08 16:28:14  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.16  2003/07/03 15:38:10  meichel

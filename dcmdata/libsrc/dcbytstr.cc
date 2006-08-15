@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:56 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,7 @@ Uint32 DcmByteString::getLength(const E_TransferSyntax /*xfer*/,
 // ********************************
 
 
-void DcmByteString::print(ostream &out,
+void DcmByteString::print(STD_NAMESPACE ostream&out,
                           const size_t flags,
                           const int level,
                           const char * /*pixelFileName*/,
@@ -583,7 +583,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.40  2005-12-08 15:40:56  meichel
+** Revision 1.41  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.40  2005/12/08 15:40:56  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.39  2005/11/28 15:53:13  meichel

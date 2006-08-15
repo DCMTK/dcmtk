@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:53 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ unsigned long DcmFloatingPointSingle::getVM()
 // ********************************
 
 
-void DcmFloatingPointSingle::print(ostream &out,
+void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
                                    const size_t flags,
                                    const int level,
                                    const char * /*pixelFileName*/,
@@ -297,7 +297,11 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.29  2005-12-08 15:41:53  meichel
+** Revision 1.30  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.29  2005/12/08 15:41:53  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.28  2004/02/04 16:17:03  joergr

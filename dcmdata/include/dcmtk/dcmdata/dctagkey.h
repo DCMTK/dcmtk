@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:45 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2006-08-15 15:49:56 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ public:
     int operator <= (const DcmTagKey& key) const;
     int operator >= (const DcmTagKey& key) const;
 
-    friend ostream& operator<<(ostream& s, const DcmTagKey& k);
+    friend STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
     OFString toString() const;
 
@@ -101,7 +101,7 @@ public:
  *  @param k tag key
  *  @return reference to output stream
  */
-ostream& operator<<(ostream& s, const DcmTagKey& k);
+STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
 /*
 ** inline versions of functions
@@ -266,7 +266,11 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.16  2005-12-08 16:28:45  meichel
+** Revision 1.17  2006-08-15 15:49:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.16  2005/12/08 16:28:45  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.15  2004/01/16 14:08:00  joergr

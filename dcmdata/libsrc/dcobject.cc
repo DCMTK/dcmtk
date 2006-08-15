@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:50:19 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,7 +152,7 @@ OFCondition DcmObject::searchErrors(DcmStack &resultStack)
 // ********************************
 
 
-OFCondition DcmObject::writeXML(ostream & /*out*/,
+OFCondition DcmObject::writeXML(STD_NAMESPACE ostream& /*out*/,
                                 const size_t /*flags*/)
 {
     return EC_IllegalCall;
@@ -164,7 +164,7 @@ OFCondition DcmObject::writeXML(ostream & /*out*/,
 // ***********************************************************
 
 
-void DcmObject::printNestingLevel(ostream &out,
+void DcmObject::printNestingLevel(STD_NAMESPACE ostream&out,
                                   const size_t flags,
                                   const int level)
 {
@@ -192,7 +192,7 @@ void DcmObject::printNestingLevel(ostream &out,
 }
 
 
-void DcmObject::printInfoLineStart(ostream &out,
+void DcmObject::printInfoLineStart(STD_NAMESPACE ostream&out,
                                    const size_t flags,
                                    const int level,
                                    DcmTag *tag)
@@ -213,16 +213,16 @@ void DcmObject::printInfoLineStart(ostream &out,
             out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {
         /* print line start: tag and VR */
-        out << hex << setfill('0') << "("
-            << setw(4) << tag->getGTag() << ","
-            << setw(4) << tag->getETag() << ") "
-            << dec << setfill(' ')
+        out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "("
+            << STD_NAMESPACE setw(4) << tag->getGTag() << ","
+            << STD_NAMESPACE setw(4) << tag->getETag() << ") "
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
             << vr.getVRName() << " ";
     }
 }
 
 
-void DcmObject::printInfoLineEnd(ostream &out,
+void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream&out,
                                  const size_t flags,
                                  const unsigned long printedLength,
                                  DcmTag *tag)
@@ -239,7 +239,7 @@ void DcmObject::printInfoLineEnd(ostream &out,
     if (flags & DCMTypes::PF_showTreeStructure)
     {
         /* finish the current line */
-        out << endl;
+        out << OFendl;
     } else {
         /* fill with spaces if necessary */
         if (printedLength < DCM_OptPrintValueLength)
@@ -249,15 +249,15 @@ void DcmObject::printInfoLineEnd(ostream &out,
         if (length == DCM_UndefinedLength)
             out << "u/l";   // means "undefined/length"
         else
-            out << setw(3) << length;
+            out << STD_NAMESPACE setw(3) << length;
         out << ","
-            << setw(2) << vm << " "
-            << tag->getTagName() << endl;
+            << STD_NAMESPACE setw(2) << vm << " "
+            << tag->getTagName() << OFendl;
     }
 }
 
 
-void DcmObject::printInfoLine(ostream &out,
+void DcmObject::printInfoLine(STD_NAMESPACE ostream&out,
                               const size_t flags,
                               const int level,
                               const char *info,
@@ -478,7 +478,11 @@ OFBool DcmObject::containsExtendedCharacters()
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.46  2006-05-11 08:50:19  joergr
+ * Revision 1.47  2006-08-15 15:49:54  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.46  2006/05/11 08:50:19  joergr
  * Moved checkForNonASCIICharacters() from application to library.
  *
  * Revision 1.45  2005/12/08 15:41:19  meichel

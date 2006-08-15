@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:48:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -858,7 +858,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
                              ofConsole.lockCerr() << "DcmElement: " << Tag.getTagName() << Tag.getXTag() << " larger ("
-                                 << Length << ") that remaining bytes in file" << endl;
+                                 << Length << ") that remaining bytes in file" << OFendl;
                              ofConsole.unlockCerr();
                         }
                     }
@@ -1007,7 +1007,7 @@ OFCondition DcmElement::writeSignatureFormat(DcmOutputStream &outStream,
 // ********************************
 
 
-void DcmElement::writeXMLStartTag(ostream &out,
+void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream&out,
                                   const size_t flags,
                                   const char *attrText)
 {
@@ -1017,10 +1017,10 @@ void DcmElement::writeXMLStartTag(ostream &out,
     out << "<element";
     /* attribute tag = (gggg,eeee) */
     out << " tag=\"";
-    out << hex << setfill('0')
-        << setw(4) << Tag.getGTag() << ","
-        << setw(4) << Tag.getETag() << "\""
-        << dec << setfill(' ');
+    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+        << STD_NAMESPACE setw(4) << Tag.getGTag() << ","
+        << STD_NAMESPACE setw(4) << Tag.getETag() << "\""
+        << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
     /* value multiplicity = 1..n */
@@ -1040,15 +1040,15 @@ void DcmElement::writeXMLStartTag(ostream &out,
 }
 
 
-void DcmElement::writeXMLEndTag(ostream &out,
+void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream&out,
                                 const size_t /*flags*/)
 {
     /* write standardized XML end tag for all element types */
-    out << "</element>" << endl;
+    out << "</element>" << OFendl;
 }
 
 
-OFCondition DcmElement::writeXML(ostream &out,
+OFCondition DcmElement::writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags)
 {
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
@@ -1070,7 +1070,11 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.52  2006-05-11 08:48:35  joergr
+** Revision 1.53  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.52  2006/05/11 08:48:35  joergr
 ** Added new option that allows to omit the element name in the XML output.
 **
 ** Revision 1.51  2005/12/08 15:41:08  meichel

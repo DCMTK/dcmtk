@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:01 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcdebug.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ void DCM_dcmdata_debug_print(const char* text, ... )
     vsprintf(buf, text, argptr );  // vsnprintf is better but not available everywhere
     va_end( argptr );
     // we don't lock or unlock the console because this is already done by the calling debug or Cdebug macro.
-    ofConsole.getCerr() << buf << endl;
+    ofConsole.getCerr() << buf << OFendl;
 #else
 #error Need vprintf to compile this code
 #endif
@@ -65,7 +65,11 @@ void DCM_dcmdata_debug_print(const char* text, ... )
 /*
 ** CVS/RCS Log:
 ** $Log: dcdebug.cc,v $
-** Revision 1.12  2005-12-08 15:41:01  meichel
+** Revision 1.13  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.12  2005/12/08 15:41:01  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.11  2005/11/28 15:53:13  meichel

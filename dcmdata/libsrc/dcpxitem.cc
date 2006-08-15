@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:27 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ OFCondition DcmPixelItem::writeTagAndLength(DcmOutputStream &outStream,
 }
 
 
-void DcmPixelItem::print(ostream &out,
+void DcmPixelItem::print(STD_NAMESPACE ostream&out,
                          const size_t flags,
                          const int level,
                          const char *pixelFileName,
@@ -144,7 +144,7 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
 }
 
 
-OFCondition DcmPixelItem::writeXML(ostream &out,
+OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
                                    const size_t flags)
 {
     /* XML start tag for "item" */
@@ -178,7 +178,7 @@ OFCondition DcmPixelItem::writeXML(ostream &out,
         }
     }
     /* XML end tag for "item" */
-    out << "</pixel-item>" << endl;
+    out << "</pixel-item>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -274,7 +274,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.29  2005-12-08 15:41:27  meichel
+** Revision 1.30  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.29  2005/12/08 15:41:27  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.28  2005/11/24 12:50:59  meichel

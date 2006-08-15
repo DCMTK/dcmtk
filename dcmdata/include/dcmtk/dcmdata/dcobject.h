@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:54:23 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:49:56 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,7 @@ class DcmObject
      *  @param pixelFileName not used
      *  @param pixelCounter not used
      */
-    virtual void print(ostream &out,
+    virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -224,7 +224,7 @@ class DcmObject
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, always returns EC_Illegal Call
      */
-    virtual OFCondition writeXML(ostream &out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures (abstract)
@@ -278,7 +278,7 @@ class DcmObject
      *  @param flags used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
      */
-    void printNestingLevel(ostream &out,
+    void printNestingLevel(STD_NAMESPACE ostream&out,
                            const size_t flags,
                            const int level);
 
@@ -290,7 +290,7 @@ class DcmObject
      *  @param level current level of nested items. Used for indentation.
      *  @param tag optional tag used to print the data element information
      */
-    void printInfoLineStart(ostream &out,
+    void printInfoLineStart(STD_NAMESPACE ostream&out,
                             const size_t flags,
                             const int level,
                             DcmTag *tag = NULL);
@@ -304,7 +304,7 @@ class DcmObject
      *    Used for padding purposes.
      *  @param tag optional tag used to print the data element information
      */
-    void printInfoLineEnd(ostream &out,
+    void printInfoLineEnd(STD_NAMESPACE ostream&out,
                           const size_t flags,
                           const unsigned long printedLength = 0xffffffff /*no padding*/,
                           DcmTag *tag = NULL);
@@ -318,7 +318,7 @@ class DcmObject
      *  @param info text to be printed
      *  @param tag optional tag used to print the data element information
      */
-    virtual void printInfoLine(ostream &out,
+    virtual void printInfoLine(STD_NAMESPACE ostream&out,
                                const size_t flags,
                                const int level = 0,
                                const char *info = NULL,
@@ -356,7 +356,11 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.42  2006-05-11 08:54:23  joergr
+ * Revision 1.43  2006-08-15 15:49:56  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.42  2006/05/11 08:54:23  joergr
  * Moved checkForNonASCIICharacters() from application to library.
  *
  * Revision 1.41  2005/12/08 16:28:22  meichel

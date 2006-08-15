@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:04 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -294,7 +294,7 @@ parseTagPart(char *s, unsigned int& l, unsigned int& h,
             r = DcmDictRange_Unspecified;
             break;
         default:
-            ofConsole.lockCerr() << "DcmDataDictionary: Unknown range restrictor: " << restrictor << endl;
+            ofConsole.lockCerr() << "DcmDataDictionary: Unknown range restrictor: " << restrictor << OFendl;
             ofConsole.unlockCerr();
             ok = OFFalse;
             break;
@@ -452,7 +452,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     /* first, check whether 'fileName' really points to a file (and not to a directory or the like) */
     if (!OFStandard::fileExists(fileName) || (f = fopen(fileName, "r")) == NULL) {
         if (errorIfAbsent) {
-            ofConsole.lockCerr() << "DcmDataDictionary: Cannot open file: " << fileName << endl;
+            ofConsole.lockCerr() << "DcmDataDictionary: Cannot open file: " << fileName << OFendl;
             ofConsole.unlockCerr();
         }
         return OFFalse;
@@ -488,14 +488,14 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 2:
             ofConsole.lockCerr() << "DcmDataDictionary: "<< fileName << ": "
                  << "too few fields (line "
-                 << lineNumber << ")" << endl;
+                 << lineNumber << ")" << OFendl;
             ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
         default:
             ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                  << "too many fields (line "
-                 << lineNumber << "): " << endl;
+                 << lineNumber << "): " << OFendl;
             ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
@@ -508,7 +508,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             if (!parseVMField(lineFields[3], vmMin, vmMax)) {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad VM field (line "
-                     << lineNumber << "): " << lineFields[3] << endl;
+                     << lineNumber << "): " << lineFields[3] << OFendl;
                 ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             }
@@ -519,7 +519,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad Tag field (line "
-                     << lineNumber << "): " << lineFields[0] << endl;
+                     << lineNumber << "): " << lineFields[0] << OFendl;
                 ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             } else {
@@ -539,7 +539,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             if (vr.getEVR() == EVR_UNKNOWN) {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad VR field (line "
-                     << lineNumber << "): " << vrName << endl;
+                     << lineNumber << "): " << vrName << OFendl;
                 ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             }
@@ -660,7 +660,7 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
                 DcmDictEntry *old = *iter;
                 *iter = e;
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-                ofConsole.lockCerr() << "replacing " << *old << endl;
+                ofConsole.lockCerr() << "replacing " << *old << OFendl;
                 ofConsole.unlockCerr();
 #endif
                 delete old;
@@ -839,7 +839,11 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.36  2005-12-08 15:41:04  meichel
+** Revision 1.37  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.36  2005/12/08 15:41:04  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.35  2005/11/28 16:13:57  meichel

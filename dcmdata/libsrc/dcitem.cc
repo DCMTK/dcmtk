@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:49:18 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -285,7 +285,7 @@ unsigned long DcmItem::getVM()
 // ********************************
 
 
-void DcmItem::print(ostream &out,
+void DcmItem::print(STD_NAMESPACE ostream&out,
                     const size_t flags,
                     const int level,
                     const char *pixelFileName,
@@ -348,7 +348,7 @@ void DcmItem::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmItem::writeXML(ostream &out,
+OFCondition DcmItem::writeXML(STD_NAMESPACE ostream&out,
                               const size_t flags)
 {
     /* XML start tag for "item" */
@@ -358,7 +358,7 @@ OFCondition DcmItem::writeXML(ostream &out,
     /* value length in bytes = 0..max (if not undefined) */
     if (Length != DCM_UndefinedLength)
         out << " len=\"" << Length << "\"";
-    out << ">" << endl;
+    out << ">" << OFendl;
     /* write item content */
     if (!elementList->empty())
     {
@@ -371,7 +371,7 @@ OFCondition DcmItem::writeXML(ostream &out,
         } while (elementList->seek(ELP_next));
     }
     /* XML end tag for "item" */
-    out << "</item>" << endl;
+    out << "</item>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -536,7 +536,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
-                            ofConsole.lockCerr() << "DcmItem: Group Length with VR other than UL found, corrected." << endl;
+                            ofConsole.lockCerr() << "DcmItem: Group Length with VR other than UL found, corrected." << OFendl;
                             ofConsole.unlockCerr();
                         }
                         /* if the above mentioned condition is not met but the caller specified */
@@ -722,13 +722,13 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* if the VR which was read is not a standard VR, print a warning */
         if (!vr.isStandard())
         {
-            ostream &localCerr = ofConsole.lockCerr();
+            STD_NAMESPACE ostream&localCerr = ofConsole.lockCerr();
             localCerr << "DcmItem: Non-standard VR '" << vrstr
                       << "' encountered while parsing attribute " << newTag.getXTag() << ", assuming ";
             if (vr.usesExtendedLengthEncoding())
-                localCerr << "4 byte length field" << endl;
+                localCerr << "4 byte length field" << OFendl;
             else
-                localCerr << "2 byte length field" << endl;
+                localCerr << "2 byte length field" << OFendl;
             ofConsole.unlockCerr();
         }
 
@@ -798,7 +798,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* if the value in length is odd, print an error message */
     if ((valueLength & 1)&&(valueLength != OFstatic_cast(Uint32, -1)))
     {
-        ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << endl;
+        ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << OFendl;
         ofConsole.unlockCerr();
     }
     /* assign values to out parameter */
@@ -850,7 +850,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         {
             // produce diagnostics
             ofConsole.lockCerr() << "DcmItem: Element " << newTag
-               << " found twice in one dataset/item, ignoring second entry" << endl;
+               << " found twice in one dataset/item, ignoring second entry" << OFendl;
             ofConsole.unlockCerr();
             delete subElem;
         }
@@ -862,13 +862,13 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
         inStream.putback();
-        ofConsole.lockCerr() << "DcmItem: Parse error while parsing attribute " <<  newTag << endl;
+        ofConsole.lockCerr() << "DcmItem: Parse error while parsing attribute " <<  newTag << OFendl;
         ofConsole.unlockCerr();
     }
     else if (l_error != EC_ItemEnd)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-        ofConsole.lockCerr() << "DcmItem: Parse error in sequence item, found " << newTag << " instead of an item delimiter" << endl;
+        ofConsole.lockCerr() << "DcmItem: Parse error in sequence item, found " << newTag << " instead of an item delimiter" << OFendl;
         ofConsole.unlockCerr();
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
@@ -1191,7 +1191,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                     // produce diagnostics
                     ofConsole.lockCerr()
                        << "DcmItem: Dataset not in ascending tag order, at element "
-                       << elem->getTag() << endl;
+                       << elem->getTag() << OFendl;
                     ofConsole.unlockCerr();
                   }
                 }
@@ -1215,7 +1215,7 @@ OFCondition DcmItem::insert(DcmElement *elem,
                     // produce diagnostics
                     ofConsole.lockCerr()
                        << "DcmItem: Dataset not in ascending tag order, at element "
-                       << elem->getTag() << endl;
+                       << elem->getTag() << OFendl;
                     ofConsole.unlockCerr();
                   }
                 }
@@ -3292,7 +3292,11 @@ OFBool DcmItem::containsExtendedCharacters()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.99  2006-05-11 08:49:18  joergr
+** Revision 1.100  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.99  2006/05/11 08:49:18  joergr
 ** Moved checkForNonASCIICharacters() from application to library.
 **
 ** Revision 1.98  2006/01/18 13:44:03  joergr

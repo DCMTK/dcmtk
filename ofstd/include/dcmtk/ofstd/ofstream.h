@@ -22,8 +22,8 @@
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:02 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2006-08-15 15:52:23 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ typedef STD_NAMESPACE istringstream OFIStringStream;
 // declared between xxx_GETSTR and xxx_FREESTR are only valid within this scope.
 #define OFSTRINGSTREAM_GETSTR(oss, chptr) \
 { \
-    string chptr##__ = (oss).str(); \
+    STD_NAMESPACE string chptr##__ = (oss).str(); \
     const char *chptr = chptr##__.c_str();
 #define OFSTRINGSTREAM_FREESTR(chptr) \
 }
@@ -136,7 +136,11 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
- * Revision 1.8  2006-08-14 16:42:02  meichel
+ * Revision 1.9  2006-08-15 15:52:23  meichel
+ * Updated all code in module dcmdata to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.8  2006/08/14 16:42:02  meichel
  * Defined two new macros: STD_NAMESPACE is defined to std:: if the standard
  *   namespace exists and empty otherwise. OFendl is defined as std::endl if
  *   the standard namespace exists and as endl otherwise.

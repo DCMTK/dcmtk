@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:09:25 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1160,7 +1160,7 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
         {
             /* create error message */
             OFOStringStream oss;
-            oss << "invalid character(s) in filename: " << filename << endl;
+            oss << "invalid character(s) in filename: " << filename << OFendl;
             oss << OFString(7 /*Error: */ + 34 /*message*/ + invalidChar, ' ') << "^" << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             printErrorMessage(tmpString);
@@ -1624,7 +1624,7 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
         {
             /* create error message */
             OFOStringStream oss;
-            oss << "embedded overlay data present in group 0x" << hex << grp
+            oss << "embedded overlay data present in group 0x" << STD_NAMESPACE hex << grp
                 << ", file: " << filename << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             printErrorMessage(tmpString);
@@ -1696,7 +1696,7 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
             {
                 /* create error message */
                 OFOStringStream oss;
-                oss << "overlay group 0x" << hex << grp
+                oss << "overlay group 0x" << STD_NAMESPACE hex << grp
                     << " present in file: " << filename << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                 printErrorMessage(tmpString);
@@ -4164,7 +4164,7 @@ void DicomDirInterface::printMessage(const char *message,
         LogStream->lockCout() << message;
         if (suffix != NULL)
             LogStream->getCout() << suffix;
-        LogStream->getCout() << endl;
+        LogStream->getCout() << OFendl;
         LogStream->unlockCout();
     }
 }
@@ -4179,7 +4179,7 @@ void DicomDirInterface::printWarningMessage(const char *message,
         LogStream->lockCerr() << "Warning: " << message;
         if (suffix != NULL)
             LogStream->getCerr() << suffix;
-        LogStream->getCerr() << endl;
+        LogStream->getCerr() << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4194,7 +4194,7 @@ void DicomDirInterface::printErrorMessage(const char *message,
         LogStream->lockCerr() << "Error: " << message;
         if (suffix != NULL)
             LogStream->getCerr() << suffix;
-        LogStream->getCerr() << endl;
+        LogStream->getCerr() << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4216,7 +4216,7 @@ void DicomDirInterface::printUnexpectedValueMessage(const DcmTagKey &key,
                              << " has other value than expected";
         if (filename != NULL)
             LogStream->getCerr() << " in file: " << filename;
-        LogStream->getCerr() << endl;
+        LogStream->getCerr() << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4236,7 +4236,7 @@ void DicomDirInterface::printRequiredAttributeMessage(const DcmTagKey &key,
             LogStream->getCerr() << "missing";
         if (filename != NULL)
             LogStream->getCerr() << " in file: " << filename;
-        LogStream->getCerr() << endl;
+        LogStream->getCerr() << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4252,7 +4252,7 @@ void DicomDirInterface::printAttributeErrorMessage(const DcmTagKey &key,
         LogStream->lockCerr() << "Error: " << error.text() << ": ";
         if (operation != NULL)
             LogStream->getCerr() << "cannot " << operation << " ";
-        LogStream->getCerr() << DcmTag(key).getTagName() << " " << key << endl;
+        LogStream->getCerr() << DcmTag(key).getTagName() << " " << key << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4268,7 +4268,7 @@ void DicomDirInterface::printRecordErrorMessage(const OFCondition &error,
         LogStream->lockCerr() << "Error: " << error.text() << ": ";
         if (operation != NULL)
             LogStream->getCerr() << "cannot " << operation << " ";
-        LogStream->getCerr() << recordTypeToName(recordType) << " directory record" << endl;
+        LogStream->getCerr() << recordTypeToName(recordType) << " directory record" << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4286,7 +4286,7 @@ void DicomDirInterface::printFileErrorMessage(const OFCondition &error,
             LogStream->getCerr() << operation << " ";  /* "reading", "writing", etc. */
         if (filename != NULL)
             LogStream->getCerr() << "file: " << filename;
-        LogStream->getCerr() << endl;
+        LogStream->getCerr() << OFendl;
         LogStream->unlockCerr();
     }
 }
@@ -4463,7 +4463,7 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
         {
             /* create error message */
             OFOStringStream oss;
-            oss << "invalid character(s) in fileset ID: " << filesetID << endl;
+            oss << "invalid character(s) in fileset ID: " << filesetID << OFendl;
             oss << OFString(7 /*Error: */ + 36 /*message*/ + invalidChar, ' ') << "^" << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             printErrorMessage(tmpString);
@@ -4736,13 +4736,13 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
             getStringFromDataset(record, uniqueKey, uniqueString);
             /* create warning message */
             OFOStringStream oss;
-            oss << "file inconsistent with existing DICOMDIR record" << endl;
+            oss << "file inconsistent with existing DICOMDIR record" << OFendl;
             oss << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
-                << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << endl;
-            oss << "    Existing Record (origin: " << record->getRecordsOriginFile() << ") defines: " << endl;
-            oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << recordString << "\"" << endl;
-            oss << "    File (" << sourceFilename << ") defines:" << endl;
-            oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << datasetString << "\"" << endl;
+                << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl;
+            oss << "    Existing Record (origin: " << record->getRecordsOriginFile() << ") defines: " << OFendl;
+            oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << recordString << "\"" << OFendl;
+            oss << "    File (" << sourceFilename << ") defines:" << OFendl;
+            oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << datasetString << "\"" << OFendl;
             oss << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             printWarningMessage(tmpString);
@@ -4777,13 +4777,13 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
                 getStringFromDataset(record, uniqueKey, uniqueString);
                 /* create warning message */
                 OFOStringStream oss;
-                oss << "file inconsistent with existing DICOMDIR record" << endl;
+                oss << "file inconsistent with existing DICOMDIR record" << OFendl;
                 oss << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
-                    << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << endl;
-                oss << "    Reason: " << reason << endl;
-                oss << "    Existing Record (origin: " << record->getRecordsOriginFile() << ") defines: " << endl;
+                    << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl;
+                oss << "    Reason: " << reason << OFendl;
+                oss << "    Existing Record (origin: " << record->getRecordsOriginFile() << ") defines: " << OFendl;
                 seq1->print(oss, 0, 4 /*indent*/);
-                oss << "    File (" << sourceFilename << ") defines:" << endl;
+                oss << "    File (" << sourceFilename << ") defines:" << OFendl;
                 seq2->print(oss, 0, 4 /*indent*/);
                 oss << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
@@ -4831,7 +4831,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.17  2006-07-27 13:09:25  joergr
+ *  Revision 1.18  2006-08-15 15:49:54  meichel
+ *  Updated all code in module dcmdata to correctly compile when
+ *    all standard C++ classes remain in namespace std.
+ *
+ *  Revision 1.17  2006/07/27 13:09:25  joergr
  *  Added support for DICOMDIR record type "STEREOMETRIC" (CP 628).
  *  Added full support for X-Ray Radiation Dose SR documents and Real World Value
  *  Mapping objects to DICOMDIR. Renamed ERT_StructReport to ERT_SRDocument.

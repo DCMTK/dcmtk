@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:18 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,18 +100,18 @@ E_TransferSyntax DcmMetaInfo::getOriginalXfer() const
 // ********************************
 
 
-void DcmMetaInfo::print(ostream &out,
+void DcmMetaInfo::print(STD_NAMESPACE ostream&out,
                         const size_t flags,
                         const int level,
                         const char *pixelFileName,
                         size_t *pixelCounter)
 {
-    out << endl;
+    out << OFendl;
     printNestingLevel(out, flags, level);
-    out << "# Dicom-Meta-Information-Header" << endl;
+    out << "# Dicom-Meta-Information-Header" << OFendl;
     printNestingLevel(out, flags, level);
     out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName();
-    out << endl;
+    out << OFendl;
     if (!elementList->empty())
     {
         DcmObject *dO;
@@ -127,14 +127,14 @@ void DcmMetaInfo::print(ostream &out,
 // ********************************
 
 
-OFCondition DcmMetaInfo::writeXML(ostream &out,
+OFCondition DcmMetaInfo::writeXML(STD_NAMESPACE ostream&out,
                                   const size_t flags)
 {
     OFString xmlString;
     DcmXfer xfer(Xfer);
     /* XML start tag for "meta-header" */
     out << "<meta-header xfer=\"" << xfer.getXferID() << "\"";
-    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << endl;
+    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << OFendl;
     if (!elementList->empty())
     {
         /* write content of all children */
@@ -147,7 +147,7 @@ OFCondition DcmMetaInfo::writeXML(ostream &out,
         } while (elementList->seek(ELP_next));
     }
     /* XML end tag for "meta-header" */
-    out << "</meta-header>" << endl;
+    out << "</meta-header>" << OFendl;
     /* always report success */
     return EC_Normal;
 }
@@ -219,7 +219,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             newxfer = tmpxferSyn.getXfer();   // use determined xfer
             if (xferSyn.getXfer() != EXS_Unknown)
             {
-                ofConsole.lockCerr() << "DcmMetaInfo: TransferSyntax of MetaInfo is other than expected." << endl;
+                ofConsole.lockCerr() << "DcmMetaInfo: TransferSyntax of MetaInfo is other than expected." << OFendl;
                 ofConsole.unlockCerr();
             }
         } else
@@ -292,7 +292,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
                 DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
             } else {
                 l_error = EC_CorruptedData;
-                ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << endl;
+                ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -402,7 +402,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             {
                 if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
                 {
-                    ofConsole.lockCerr() << "DcmMetaInfo: Group Length of MetaInformation Header has incorrect value." << endl;
+                    ofConsole.lockCerr() << "DcmMetaInfo: Group Length of MetaInformation Header has incorrect value." << OFendl;
                     ofConsole.unlockCerr();
                 }
                 fTransferState = ERW_ready;          // MetaInfo ist komplett
@@ -520,7 +520,11 @@ OFCondition DcmMetaInfo::write(DcmOutputStream &outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.37  2005-12-08 15:41:18  meichel
+** Revision 1.38  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.37  2005/12/08 15:41:18  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.36  2005/11/28 15:53:13  meichel

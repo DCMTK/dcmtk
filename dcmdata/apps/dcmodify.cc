@@ -21,9 +21,9 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:34:35 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,14 +41,18 @@ int main(int argc, char *argv[])
     MdfConsoleEngine engine(argc,argv,OFFIS_CONSOLE_APPLICATION);
     error_count=engine.startProvidingService();
     if (error_count > 0)
-	    CERR << "There were " << error_count << " error(s)" << endl;
+	    CERR << "There were " << error_count << " error(s)" << OFendl;
     return(error_count);
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.7  2006-07-27 13:34:35  joergr
+** Revision 1.8  2006-08-15 15:50:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.7  2006/07/27 13:34:35  joergr
 ** Updated copyright date.
 **
 ** Revision 1.6  2005/12/08 15:40:49  meichel

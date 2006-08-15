@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:57 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ OFCondition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 // ********************************
 
 
-void DcmOtherByteOtherWord::print(ostream &out,
+void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
                                   const size_t flags,
                                   const int level,
                                   const char * /*pixelFileName*/,
@@ -131,21 +131,21 @@ void DcmOtherByteOtherWord::print(ostream &out,
             /* print multiple values */
             if (printCount > 0)
             {
-                out << hex << setfill('0');
+                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
                 if (evr == EVR_OW || evr == EVR_lt)
                 {
                     /* print word values in hex mode */
-                    out << setw(vrSize) << (*(wordValues++));
+                    out << STD_NAMESPACE setw(vrSize) << (*(wordValues++));
                     for (unsigned long i = 1; i < printCount; i++)
-                        out << "\\" << setw(vrSize) << (*(wordValues++));
+                        out << "\\" << STD_NAMESPACE setw(vrSize) << (*(wordValues++));
                 } else {
                     /* print byte values in hex mode */
-                    out << setw(vrSize) << OFstatic_cast(int, *(byteValues++));
+                    out << STD_NAMESPACE setw(vrSize) << OFstatic_cast(int, *(byteValues++));
                     for (unsigned long i = 1; i < printCount; i++)
-                        out << "\\" << setw(vrSize) << OFstatic_cast(int, *(byteValues++));
+                        out << "\\" << STD_NAMESPACE setw(vrSize) << OFstatic_cast(int, *(byteValues++));
                 }
                 /* reset i/o manipulators */
-                out << dec << setfill(' ');
+                out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
             }
             /* print trailing "..." if data has been truncated */
             if (printCount < count)
@@ -162,7 +162,7 @@ void DcmOtherByteOtherWord::print(ostream &out,
 }
 
 
-void DcmOtherByteOtherWord::printPixel(ostream &out,
+void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
                                        const size_t flags,
                                        const int level,
                                        const char *pixelFileName,
@@ -210,11 +210,11 @@ void DcmOtherByteOtherWord::printPixel(ostream &out,
                 }
                 fclose(file);
             } else {
-                ofConsole.lockCerr() << "Warning: can't open output file for pixel data: " << fname << endl;
+                ofConsole.lockCerr() << "Warning: can't open output file for pixel data: " << fname << OFendl;
                 ofConsole.unlockCerr();
             }
         } else {
-            ofConsole.lockCerr() << "Warning: output file for pixel data already exists: " << fname << endl;
+            ofConsole.lockCerr() << "Warning: output file for pixel data already exists: " << fname << OFendl;
             ofConsole.unlockCerr();
         }
     } else
@@ -573,7 +573,7 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmOutputStream &outStre
 // ********************************
 
 
-OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
+OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream&out,
                                             const size_t flags)
 {
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
@@ -613,7 +613,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.45  2005-12-08 15:41:57  meichel
+** Revision 1.46  2006-08-15 15:49:54  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.45  2005/12/08 15:41:57  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.44  2005/11/15 16:59:25  meichel

@@ -21,9 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:52:42 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
         int c = fgetc(f);
         while(c != '\n' && c != EOF)
             c = fgetc(f);
-        CERR << "line " << lineNumber << " too long." << endl;
+        CERR << "line " << lineNumber << " too long." << OFendl;
     }
 
     /* strip any trailing white space */
@@ -436,7 +436,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     OFCondition ec = EC_Normal;
 
     if ((f = fopen(filename, "rb")) == NULL) {
-        CERR << "ERROR: cannot open binary data file: " << filename << endl;
+        CERR << "ERROR: cannot open binary data file: " << filename << OFendl;
         return EC_InvalidTag;
     }
 
@@ -446,7 +446,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
 
     Uint8* buf = new Uint8[buflen];
     if (buf == NULL) {
-        CERR << "ERROR: out of memory reading binary data file: " << filename << endl;
+        CERR << "ERROR: out of memory reading binary data file: " << filename << OFendl;
         ec = EC_MemoryExhausted;
     } else if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len) {
         CERR << "ERROR: error reading binary data file: " << filename << ": ";
@@ -501,7 +501,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
         {
             CERR << "Warning: Tag " << tag << " with wrong VR "
                  << dcmvr.getVRName() << " found, correct is "
-                 << tag.getVR().getVRName() << endl;
+                 << tag.getVR().getVRName() << OFendl;
         }
 
         if (vr != EVR_UNKNOWN)
@@ -662,7 +662,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         if (!parseTag(parse, tagkey))
         {
             CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "no Tag found (line " << lineNumber << ")"<< endl;
+                 << "no Tag found (line " << lineNumber << ")"<< OFendl;
             errorOnThisLine = OFTrue;
         }
 
@@ -674,7 +674,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
         if (!errorOnThisLine && !parseValue(parse, value, vr))
         {
             CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "incorrect value specification (line " << lineNumber << ")"<< endl;
+                 << "incorrect value specification (line " << lineNumber << ")"<< OFendl;
             errorOnThisLine = OFTrue;
         }
 
@@ -700,7 +700,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
             {
                 errorOnThisLine = OFTrue;
                 CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
-                     << l_error.text() << " (line " << lineNumber << ")"<< endl;
+                     << l_error.text() << " (line " << lineNumber << ")"<< OFendl;
             }
 
         }
@@ -713,13 +713,13 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     // test blocking structure
     if (metaheader && metaheaderStack.card() != 1)
     {
-        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader" << OFendl;
         errorsEncountered++;
     }
 
     if (datasetStack.card() != 1)
     {
-        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset" << endl;
+        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset" << OFendl;
         errorsEncountered++;
     }
 
@@ -727,7 +727,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
     if (errorsEncountered)
     {
-        CERR << errorsEncountered << " Errors found in " <<  ifname << endl;
+        CERR << errorsEncountered << " Errors found in " <<  ifname << OFendl;
         return !stopOnErrors;
     }
     else
@@ -816,11 +816,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
             app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:";
+            CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << endl;
+            CERR << " none" << OFendl;
 #endif
             return 0;
          }
@@ -906,22 +906,22 @@ int main(int argc, char *argv[])
     if (!dcmDataDict.isDictionaryLoaded()) {
     CERR << "Warning: no data dictionary loaded, "
          << "check environment variable: "
-         << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+         << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     if (verbosemode)
-        COUT << "reading dump file: " << ifname << endl;
+        COUT << "reading dump file: " << ifname << OFendl;
 
     // open input dump file
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        CERR << "invalid input filename: <empty string>" << endl;
+        CERR << "invalid input filename: <empty string>" << OFendl;
         return 1;
     }
     FILE * dumpfile = fopen(ifname, "r");
     if (!dumpfile)
     {
-        CERR << "input file does not exist: " << ifname << endl;
+        CERR << "input file does not exist: " << ifname << OFendl;
         return 1;
     }
 
@@ -932,17 +932,17 @@ int main(int argc, char *argv[])
     {
         // write into file format or dataset
         if (verbosemode)
-            COUT << "writing DICOM file" << endl;
+            COUT << "writing DICOM file" << OFendl;
 
         OFCondition l_error = fileformat.saveFile(ofname, oxfer, oenctype, oglenc, opadenc,
             OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), !createFileFormat);
 
         if (l_error == EC_Normal)
-            COUT << "dump successfully converted." << endl;
+            COUT << "dump successfully converted." << OFendl;
         else
         {
             CERR << "Error: " << l_error.text()
-                 << ": writing file: "  << ofname << endl;
+                 << ": writing file: "  << ofname << OFendl;
             status = 1;
         }
     }
@@ -956,7 +956,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.53  2006-07-27 13:52:42  joergr
+** Revision 1.54  2006-08-15 15:50:56  meichel
+** Updated all code in module dcmdata to correctly compile when
+**   all standard C++ classes remain in namespace std.
+**
+** Revision 1.53  2006/07/27 13:52:42  joergr
 ** Changed parameter "exclusive" of method addOption() from type OFBool into an
 ** integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
 ** Option "--help" is no longer an exclusive option by default.
