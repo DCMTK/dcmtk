@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-03-29 15:58:52 $
+ *  Update Date:      $Date: 2006-08-16 16:30:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -437,7 +437,7 @@ void DJDecompressIJG16Bit::outputMessage() const
   {
     char buffer[JMSG_LENGTH_MAX];
     (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
-    ofConsole.lockCerr() << buffer << endl;
+    ofConsole.lockCerr() << buffer << OFendl;
     ofConsole.unlockCerr();
   }
 }
@@ -445,7 +445,11 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.14  2006-03-29 15:58:52  meichel
+ * Revision 1.15  2006-08-16 16:30:21  meichel
+ * Updated all code in module dcmjpeg to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.14  2006/03/29 15:58:52  meichel
  * Added support for decompressing images with 16 bits/pixel compressed with
  *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.
  *

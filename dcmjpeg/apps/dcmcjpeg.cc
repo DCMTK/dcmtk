@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 14:05:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-16 16:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -270,11 +270,11 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
           app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-          CERR << endl << "External libraries used:" << endl;
+          CERR << OFendl << "External libraries used:" << OFendl;
 #ifdef WITH_ZLIB
-          CERR << "- ZLIB, Version " << zlibVersion() << endl;
+          CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+          CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
           return 0;
         }
       }
@@ -645,18 +645,18 @@ int main(int argc, char *argv[])
     {
       CERR << "Warning: no data dictionary loaded, "
            << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-      CERR << "invalid filename: <empty string>" << endl;
+      CERR << "invalid filename: <empty string>" << OFendl;
       return 1;
     }
 
     if (opt_verbose)
-      COUT << "reading input file " << opt_ifname << endl;
+      COUT << "reading input file " << opt_ifname << OFendl;
 
     DcmFileFormat fileformat;
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
@@ -664,7 +664,7 @@ int main(int argc, char *argv[])
     {
       CERR << "Error: "
            << error.text()
-           << ": reading file: " <<  opt_ifname << endl;
+           << ": reading file: " <<  opt_ifname << OFendl;
       return 1;
     }
     DcmDataset *dataset = fileformat.getDataset();
@@ -716,7 +716,7 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verbose)
-      COUT << "creating output file " << opt_ofname << endl;
+      COUT << "creating output file " << opt_ofname << OFendl;
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
@@ -726,7 +726,7 @@ int main(int argc, char *argv[])
     {
       CERR << "Error: "
            << error.text()
-           << ": writing file: " <<  opt_ofname << endl;
+           << ": writing file: " <<  opt_ofname << OFendl;
       return 1;
     }
 
@@ -744,7 +744,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.18  2006-07-27 14:05:02  joergr
+ * Revision 1.19  2006-08-16 16:30:20  meichel
+ * Updated all code in module dcmjpeg to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.18  2006/07/27 14:05:02  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags". Prepended prefix "PF_" to parseLine() flags.
  * Option "--help" is no longer an exclusive option by default.

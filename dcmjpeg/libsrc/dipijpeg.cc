@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:25 $
+ *  Update Date:      $Date: 2006-08-16 16:30:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ void DiJPEGPlugin::outputMessage(void *arg) const
     {
         char buffer[JMSG_LENGTH_MAX];
         (*cinfo->err->format_message)(cinfo, buffer); /* Create the message */
-        ofConsole.lockCerr() << buffer << endl;
+        ofConsole.lockCerr() << buffer << OFendl;
         ofConsole.unlockCerr();
     }
 }
@@ -257,7 +257,11 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.9  2005-12-08 15:43:25  meichel
+ * Revision 1.10  2006-08-16 16:30:21  meichel
+ * Updated all code in module dcmjpeg to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.9  2005/12/08 15:43:25  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.8  2004/02/06 11:20:59  joergr

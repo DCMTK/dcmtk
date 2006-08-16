@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-02 10:17:42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-08-16 16:30:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,7 +481,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.bad())
     {
-      CERR << "True lossless encoder: Unable to get relevant attributes from dataset" << endl;
+      CERR << "True lossless encoder: Unable to get relevant attributes from dataset" << OFendl;
       return result;
     }
 
@@ -492,14 +492,14 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       bytesAllocated = 2;
     else
     {
-      CERR << "True lossless encoder: Only 8 or 16 bits allocated supported" << endl;
+      CERR << "True lossless encoder: Only 8 or 16 bits allocated supported" << OFendl;
       return EC_IllegalParameter;
     }
 
     // make sure that all the descriptive attributes have sensible values
     if ((columns < 1)||(rows < 1)||(samplesPerPixel < 1))
     {
-      CERR << "True lossless encoder: Invalid attribute values in pixel module" << endl;
+      CERR << "True lossless encoder: Invalid attribute values in pixel module" << OFendl;
       return EC_CannotChangeRepresentation;
     }
 
@@ -520,7 +520,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
               (photometricInterpretation == "YBR_ICT")         ||
               (photometricInterpretation == "YBR_RCT") )
     {
-      CERR << "True lossless encoder: Photometric interpretation not supported: " << photometricInterpretation << endl;
+      CERR << "True lossless encoder: Photometric interpretation not supported: " << photometricInterpretation << OFendl;
       return EC_IllegalParameter;
     }
     else    // Palette, HSV, ARGB, CMYK
@@ -541,14 +541,14 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.bad())
     {
-        CERR << "True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding" << endl;
+        CERR << "True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding" << OFendl;
         return result;
     }
 
     //check whether enough raw data is available for encoding
     if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned long,numberOfFrames) > length)
     {
-      CERR << "True lossless encoder: Can not change representation, not enough data" << endl;
+      CERR << "True lossless encoder: Can not change representation, not enough data" << OFendl;
       return EC_CannotChangeRepresentation;
     }
 
@@ -606,7 +606,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         framePointer+=frameSize;
         if (jpegLen == 0)
         {
-          CERR << "True lossless encoder: Error encoding frame" << endl;
+          CERR << "True lossless encoder: Error encoding frame" << OFendl;
           result = EC_CannotChangeRepresentation;
         }
         else
@@ -619,7 +619,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     else
     {
-      CERR << "True lossless encoder: Cannot allocate encoder instance" << endl;
+      CERR << "True lossless encoder: Cannot allocate encoder instance" << OFendl;
       result = EC_IllegalCall;
     }
     if (result.good())
@@ -665,7 +665,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       }
       else
       {
-        CERR << "True lossless encoder: Error switching back original pixeldata's planar configuration" << endl;
+        CERR << "True lossless encoder: Error switching back original pixeldata's planar configuration" << OFendl;
         result = EC_CannotChangeRepresentation;
       }
     }
@@ -1450,7 +1450,11 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.23  2006-08-02 10:17:42  onken
+ * Revision 1.24  2006-08-16 16:30:21  meichel
+ * Updated all code in module dcmjpeg to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.23  2006/08/02 10:17:42  onken
  * Fixed segfault in true lossless encoder in case of not enough pixel data.
  * Minor corrections and enhancements regarding error handling and messages.
  *

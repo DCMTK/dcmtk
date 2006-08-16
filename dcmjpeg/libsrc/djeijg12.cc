@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:39 $
+ *  Update Date:      $Date: 2006-08-16 16:30:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -539,7 +539,7 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
   {
     char buffer[JMSG_LENGTH_MAX];    
     (*cinfo->err->format_message)(cinfo, buffer); /* Create the message */
-    ofConsole.lockCerr() << buffer << endl;
+    ofConsole.lockCerr() << buffer << OFendl;
     ofConsole.unlockCerr();
   }
 }
@@ -548,7 +548,11 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
- * Revision 1.8  2005-12-08 15:43:39  meichel
+ * Revision 1.9  2006-08-16 16:30:21  meichel
+ * Updated all code in module dcmjpeg to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.8  2005/12/08 15:43:39  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2005/11/28 17:09:52  meichel
