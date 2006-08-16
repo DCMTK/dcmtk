@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:15:47 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-08-16 13:14:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
     cmd->addOption("--single-process",            "-s",        "single process mode");
 #ifdef _WIN32
-    cmd->addOption("--forked-child",                           "process is forked child, internal use only");
+    cmd->addOption("--forked-child",                           "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
 #endif
 
@@ -422,7 +422,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.15  2006-08-15 16:15:47  meichel
+** Revision 1.16  2006-08-16 13:14:35  onken
+** Hid (internal) "--forked-child" option from user
+**
+** Revision 1.15  2006/08/15 16:15:47  meichel
 ** Updated the code in module dcmwlm to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
