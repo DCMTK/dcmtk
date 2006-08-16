@@ -63,9 +63,6 @@ port  tcp/ip port number to listen on
 \verbatim
   -s    --single-process
           single process mode
-
-        --forked-child
-          process is forked child, internal use only
 \endverbatim
 
 \subsection returned_character_set_options returned character set options
