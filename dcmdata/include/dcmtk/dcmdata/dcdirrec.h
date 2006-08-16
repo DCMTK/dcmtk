@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-08-16 09:41:26 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -239,12 +239,16 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.33  2006-08-15 15:49:56  meichel
+** Revision 1.34  2006-08-16 09:41:26  joergr
+** Added missing CVS log entry.
+**
+** Revision 1.33  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
 ** Revision 1.32  2006/07/27 13:05:05  joergr
 ** Added support for DICOMDIR record type "STEREOMETRIC" (CP 628).
+** Renamed ERT_StructReport to ERT_SRDocument.
 **
 ** Revision 1.31  2006/05/11 17:48:53  joergr
 ** Fixed wrong CVS log entry.
