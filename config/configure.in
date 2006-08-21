@@ -215,6 +215,7 @@ AC_CHECK_FUNCS(getuid geteuid setuid getpwnam getgrnam)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
+AC_FUNC_FSEEKO
 
 dnl -------------------------------------------------------
 dnl Checks for libm library functions.
@@ -289,6 +290,38 @@ AC_ARG_ENABLE(threads,
   no)
     AC_MSG_RESULT(no)
     THREADSUPPORT="no"
+    ;;
+  *)
+    AC_MSG_RESULT([yes - type $enableval is unknown - using automatic detection])
+    ;;
+  esac ],
+  AC_MSG_RESULT(automatic detection)
+)
+
+dnl -------------------------------------------------------
+dnl Check for long file support
+dnl -------------------------------------------------------
+
+LFSSUPPORT="auto"
+AC_MSG_CHECKING(whether to enable long file support)
+AC_ARG_ENABLE(lfs,
+[  --enable-lfs=TYPE       compile with LFS support (lfs/lfs64/auto=default)
+  --disable-lfs           compile without LFS support],
+[ case "$enableval" in
+  yes|auto)
+    AC_MSG_RESULT(automatic detection)
+    ;;
+  lfs)
+    AC_MSG_RESULT([yes, type=LFS])
+    LFSSUPPORT="lfs"
+    ;;
+  lfs64)
+    AC_MSG_RESULT([yes, type=LFS64])
+    LFSSUPPORT="lfs64"
+    ;;
+  no)
+    AC_MSG_RESULT(no)
+    LFSSUPPORT="no"
     ;;
   *)
     AC_MSG_RESULT([yes - type $enableval is unknown - using automatic detection])
@@ -596,6 +629,22 @@ case "$THREADSUPPORT" in
 esac
 
 dnl -------------------------------------------------------
+dnl Check for LFS support
+dnl -------------------------------------------------------
+
+
+if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs64; then
+  AC_LFS64
+  if test $ac_cv_lfs64_support = yes ; then
+    LFSSUPPORT="lfs64"
+  fi  
+fi
+
+if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs; then
+  MY_AC_SYS_LARGEFILE
+fi
+
+dnl -------------------------------------------------------
 dnl Checks for typedefs, structures, and compiler characteristics.
 dnl -------------------------------------------------------
 
@@ -637,6 +686,7 @@ AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
+AC_CHECK_PROTOTYPE(strerror_r, string.h)
 if test $ac_cv_prototype_getsockopt = yes ; then
 AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
 fi
@@ -727,6 +777,7 @@ AC_CHECK_EXPLICIT_TEMPLATE_SPECIALIZATION
 AC_CHECK_CXX_BOOL
 AC_CHECK_CXX_VOLATILE
 AC_CXX_TYPENAME
+AC_STDIO_NAMESPACE
 
 dnl -------------------------------------------------------
 dnl Check for Private Tag support

@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.38 $
+dnl Revision:     $Revision: 1.39 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -864,7 +864,9 @@ ac_cv_declaration=ac_cv_declaration_ios_nocreate
 AC_CACHE_VAL($ac_cv_declaration,
 [AC_TRY_COMPILE([
 #include <$2>
-], [ifstream file("name", $1::nocreate)] ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
+], [namespace std { }
+using namespace std;
+ifstream file("name", $1::nocreate)] ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   AC_MSG_RESULT(yes)
 changequote(, )dnl
@@ -1489,9 +1491,161 @@ AC_TYPEDEF_HELPER2([$1],[$2],AC_TYPEDEF_TEMP)
 AC_TYPEDEF_HELPER([$1],[],[AC_DEFINE_UNQUOTED(AC_TYPEDEF_TEMP)])
 ])# AC_TYPEDEF
 
+
+# 
+# AC_LFS64
+# 
+# This macro checks with the C compiler whether fopen64 is declared in <stdio.h> 
+# when _LARGEFILE64_SOURCE is defined
+#
+AC_DEFUN([AC_LFS64],
+[ AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (long file support) is available])
+  AH_TEMPLATE([_LARGEFILE64_SOURCE], [Define to enable LFS64 (explicit long file support) if available])
+  ac_cv_lfs64_support=no
+  AC_LANG_SAVE
+  AC_LANG_C
+  AC_TRY_COMPILE([#define _LARGEFILE64_SOURCE
+    #include <stdio.h>],[FILE *f = fopen64("name", "r");],
+  ac_cv_lfs64_support=yes, ac_cv_lfs64_support=no)
+  AC_LANG_RESTORE
+
+  if test "$ac_cv_lfs64_support" = yes; then
+    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (long file support) is available])
+    AC_DEFINE(_LARGEFILE64_SOURCE,, [Define to enable LFS64 (explicit long file support) if available])
+  fi
+])
+
+
+# MY_AC_SYS_LARGEFILE_TEST_INCLUDES
+# Copied from autoconf 2.60 repository of specific tests and renamed
+# -------------------------------
+m4_define([MY_AC_SYS_LARGEFILE_TEST_INCLUDES],
+[@%:@include <sys/types.h>
+ /* Check that off_t can represent 2**63 - 1 correctly.
+    We can't simply define LARGE_OFF_T to be 9223372036854775807,
+    since some C++ compilers masquerading as C compilers
+    incorrectly reject 9223372036854775807.  */
+@%:@define LARGE_OFF_T (((off_t) 1 << 62) - 1 + ((off_t) 1 << 62))
+  int off_t_is_large[[(LARGE_OFF_T % 2147483629 == 721
+		       && LARGE_OFF_T % 2147483647 == 1)
+		      ? 1 : -1]];[]dnl
+])
+
+
+# MY_AC_SYS_LARGEFILE_MACRO_VALUE(C-MACRO, VALUE,
+#				CACHE-VAR,
+#				DESCRIPTION,
+#				PROLOGUE, [FUNCTION-BODY])
+# Copied from autoconf 2.60 repository of specific tests and renamed
+# ----------------------------------------------------------
+m4_define([MY_AC_SYS_LARGEFILE_MACRO_VALUE],
+[AC_CACHE_CHECK([for $1 value needed for large files], [$3],
+[while :; do
+  $3=no
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([$5], [$6])],
+		    [ac_cv_lfs_support=yes; break])
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([@%:@define $1 $2
+$5], [$6])],
+		    [$3=$2; ac_cv_lfs_support=yes; break])
+  break
+done])
+if test "$$3" != no; then
+  AC_DEFINE_UNQUOTED([$1], [$$3], [$4])
+fi
+rm -f conftest*[]dnl
+])# MY_AC_SYS_LARGEFILE_MACRO_VALUE
+
+
+# MY_AC_SYS_LARGEFILE
+# ----------------
+# Copied from autoconf 2.60 repository of specific tests and modified
+#
+# By default, many hosts won't let programs access large files;
+# one must use special compiler options to get large-file access to work.
+# For more details about this brain damage please see:
+# http://www.unix-systems.org/version2/whatsnew/lfs20mar.html
+AC_DEFUN([MY_AC_SYS_LARGEFILE],
+[AC_CACHE_CHECK([for special C compiler options needed for large files],
+    ac_cv_sys_largefile_CC,
+    [ac_cv_sys_largefile_CC=no
+     if test "$GCC" != yes; then
+       AC_LANG_SAVE
+       AC_LANG_C
+       ac_save_CC=$CC
+       while :; do
+	 # IRIX 6.2 and later do not support large files by default,
+	 # so use the C compiler's -n32 option if that helps.
+	 AC_LANG_CONFTEST([AC_LANG_PROGRAM([MY_AC_SYS_LARGEFILE_TEST_INCLUDES])])
+	 AC_COMPILE_IFELSE([], [break])
+	 CC="$CC -n32"
+	 AC_COMPILE_IFELSE([], [ac_cv_sys_largefile_CC=' -n32'; break])
+	 break
+       done
+       CC=$ac_save_CC
+       rm -f conftest.$ac_ext
+       AC_LANG_RESTORE
+    fi])
+  if test "$ac_cv_sys_largefile_CC" != no; then
+    CC=$CC$ac_cv_sys_largefile_CC
+    CXX=$CXX$ac_cv_sys_largefile_CC    
+  fi
+
+  ac_cv_lfs64_support=no
+  AH_TEMPLATE([HAVE_LFS_SUPPORT], [Define if LFS (long file support) is available])
+  MY_AC_SYS_LARGEFILE_MACRO_VALUE(_FILE_OFFSET_BITS, 64,
+    ac_cv_sys_file_offset_bits,
+    [Number of bits in a file offset, on hosts where this is settable.],
+    [MY_AC_SYS_LARGEFILE_TEST_INCLUDES])
+  MY_AC_SYS_LARGEFILE_MACRO_VALUE(_LARGE_FILES, 1,
+    ac_cv_sys_large_files,
+    [Define for large files, on AIX-style hosts.],
+    [MY_AC_SYS_LARGEFILE_TEST_INCLUDES])
+
+  if test "$ac_cv_lfs_support" = yes; then
+    AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (long file support) is available])
+  fi
+  
+])# MY_AC_SYS_LARGEFILE
+
+
+# 
+# AC_STDIO_NAMESPACE
+# 
+# This macro checks with the C++ compiler whether fopen() in <cstdio> is
+# in namespace standard or in global namespace.
+#
+AC_DEFUN([AC_STDIO_NAMESPACE],
+[ AH_TEMPLATE([STDIO_NAMESPACE], [Namespace for ANSI C functions in standard C++ headers])
+  ac_cv_stdio_namespace_is_std=no
+  AC_LANG_SAVE
+  AC_LANG_CPLUSPLUS
+  AC_TRY_COMPILE([
+#ifdef USE_STD_CXX_INCLUDES
+#include <cstdio>
+#else
+#include <stdio.h>
+#endif
+],[FILE *f = ::fopen("name", "r");],
+  ac_cv_stdio_namespace_is_std=no, ac_cv_stdio_namespace_is_std=yes)
+  AC_LANG_RESTORE
+
+  if test "$ac_cv_stdio_namespace_is_std" = yes; then
+    AC_DEFINE(STDIO_NAMESPACE,[std::])
+  else
+    AC_DEFINE(STDIO_NAMESPACE,[::])
+  fi
+])
+
+
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.38  2006-06-15 15:28:41  meichel
+dnl Revision 1.39  2006-08-21 12:32:11  meichel
+dnl Added configure tests and command line options to enable/disable
+dnl   long file support (LFS). Also added test that checks whether or not
+dnl   stdio functions like fopen are in namespace std when cstdio is included
+dnl   and one test that checks for the presence of strerror_r in string.h
+dnl
+dnl Revision 1.38  2006/06/15 15:28:41  meichel
 dnl Updated configure test AC_CHECK_POINTER_TYPE to use a static_cast if available
 dnl   when trying to assign from an unknown type to unsigned long. Needed for Mac OS
 dnl   X 10.3 with gcc 3.3.

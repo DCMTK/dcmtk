@@ -164,6 +164,9 @@
 /* Define to 1 if you have the `fork' function. */
 /* #undef  HAVE_FORK */
 
+/* Define to 1 if fseeko (and presumably ftello) exists and is declared. */
+/* #undef HAVE_FSEEKO */
+
 /* Define to 1 if you have the <fstream> header file. */
 #define HAVE_FSTREAM 1
 
@@ -265,6 +268,9 @@
 
 /* Define to 1 if you have the `itoa' function. */
 #define HAVE_ITOA 1
+
+/* Define if LFS (long file support) is available */
+#define HAVE_LFS_SUPPORT 
 
 /* Define to 1 if you have the <libc.h> header file. */
 /* #undef  HAVE_LIBC_H */
@@ -482,6 +488,9 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for strcasecmp in string.h */
 /* #undef  HAVE_PROTOTYPE_STRCASECMP */
 
+/* Define if your system has a prototype for strerror_r in string.h */
+/* #undef  HAVE_PROTOTYPE_STRERROR_R */
+
 /* Define if your system has a prototype for strncasecmp in string.h */
 /* #undef  HAVE_PROTOTYPE_STRNCASECMP */
 
@@ -662,9 +671,6 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <sys/utime.h> header file. */
 #define HAVE_SYS_UTIME_H 1
 
-/* Define if variable-length arrays are supported in C */
-/* #undef HAVE_VLA */
-
 /* Define to 1 if you have the <sys/utsname.h> header file. */
 /* #undef  HAVE_SYS_UTSNAME_H */
 
@@ -706,6 +712,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the <utime.h> header file. */
 /* #undef  HAVE_UTIME_H */
+
+/* Define if variable-length arrays are supported in C */
+/* #undef  HAVE_VLA */
 
 /* Define to 1 if you have the `vprintf' function. */
 #define HAVE_VPRINTF 1
@@ -777,6 +786,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
+/* Namespace for ANSI C functions in standard C++ headers */
+#define STDIO_NAMESPACE ::
+
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 /* #undef  TM_IN_SYS_TIME */
 
@@ -813,6 +825,18 @@ typedef unsigned short ushort;
 #ifndef _ALL_SOURCE
 /* #undef _ALL_SOURCE */
 #endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+/* #undef _FILE_OFFSET_BITS */
+
+/* Define to enable LFS64 (explicit long file support) if available */
+/* #undef _LARGEFILE64_SOURCE */
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+/* #undef _LARGEFILE_SOURCE 1 */
+
+/* Define for large files, on AIX-style hosts. */
+/* #undef _LARGE_FILES */
 
 /* Define to 1 if type `char' is unsigned and you are not using gcc.  */
 #ifndef __CHAR_UNSIGNED__
