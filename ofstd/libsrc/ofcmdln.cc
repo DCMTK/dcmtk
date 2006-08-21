@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:46 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2006-08-21 12:41:52 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ struct OFCmdOption
 #ifdef DEBUG
         if (!Checked && !(Flags & OFCommandLine::AF_Exclusive) && (LongOption.length() > 0))
         {
-            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has possibly never been checked !" << endl;
+            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has possibly never been checked !" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -285,14 +285,14 @@ OFBool OFCommandLine::addOption(const char *longOpt,
             {
                 if ((*iter)->LongOption == longOpt)
                 {
-                    ofConsole.lockCerr() << "WARNING: long option " << longOpt << " already defined ... not added !" << endl;
+                    ofConsole.lockCerr() << "WARNING: long option " << longOpt << " already defined ... not added !" << OFendl;
                     ofConsole.unlockCerr();
                     return OFFalse;
                 }
                 if ((strlen(shortOpt) > 0) && ((*iter)->ShortOption == shortOpt))
                 {
                     ofConsole.lockCerr() << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption
-                                         << " ..." << endl << "         option " << longOpt << " not added !" << endl;
+                                         << " ..." << OFendl << "         option " << longOpt << " not added !" << OFendl;
                     ofConsole.unlockCerr();
                     return OFFalse;
                 }
@@ -308,7 +308,7 @@ OFBool OFCommandLine::addOption(const char *longOpt,
         }
     }
 #ifdef DEBUG
-    ofConsole.lockCerr() << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << endl;
+    ofConsole.lockCerr() << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << OFendl;
     ofConsole.unlockCerr();
 #endif
     return OFFalse;
@@ -371,7 +371,7 @@ OFBool OFCommandLine::addParam(const char *param,
                 if (mode != OFCmdParam::PM_Optional)
                 {
                     ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is optional => hides "
-                                         << param << " !" << endl;
+                                         << param << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 break;
@@ -379,7 +379,7 @@ OFBool OFCommandLine::addParam(const char *param,
             case OFCmdParam::PM_MultiMandatory:
                 {
                     ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides "
-                                         << param << " !" << endl;
+                                         << param << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 break;
@@ -387,7 +387,7 @@ OFBool OFCommandLine::addParam(const char *param,
             case OFCmdParam::PM_MultiOptional:
                 {
                     ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides "
-                                         << param << " !" << endl;
+                                         << param << " !" << OFendl;
                     ofConsole.unlockCerr();
                 }
                 break;
@@ -663,7 +663,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     }
     if (iter == last)
     {
-        ofConsole.lockCerr() << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << endl;
+        ofConsole.lockCerr() << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << OFendl;
         ofConsole.unlockCerr();
         return OFFalse;
     }
@@ -1474,7 +1474,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.39  2006-08-14 16:42:46  meichel
+ * Revision 1.40  2006-08-21 12:41:52  meichel
+ * Updated code to correctly compile when
+ *   all standard C++ classes remain in namespace std.
+ *
+ * Revision 1.39  2006/08/14 16:42:46  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.
  *
