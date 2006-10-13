@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:07:02 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,11 +166,11 @@ void DcmByteString::print(STD_NAMESPACE ostream&out,
     if (valueLoaded())
     {
         /* get string data */
-        char *string = NULL;
-        getString(string);
-        if (string != NULL)
+        char *stringVal = NULL;
+        getString(stringVal);
+        if (stringVal != NULL)
         {
-            unsigned long printedLength = strlen(string) + 2 /* for enclosing brackets */;
+            unsigned long printedLength = strlen(stringVal) + 2 /* for enclosing brackets */;
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
             out << '[';
@@ -179,12 +179,12 @@ void DcmByteString::print(STD_NAMESPACE ostream&out,
             {
                 char output[DCM_OptPrintLineLength - 1 /* for "[" */ + 1];
                 /* truncate value text and append "..." */
-                OFStandard::strlcpy(output, string, OFstatic_cast(size_t, DCM_OptPrintLineLength) - 4 /* for "[" and "..." */ + 1);
+                OFStandard::strlcpy(output, stringVal, OFstatic_cast(size_t, DCM_OptPrintLineLength) - 4 /* for "[" and "..." */ + 1);
                 OFStandard::strlcat(output, "...", OFstatic_cast(size_t, DCM_OptPrintLineLength) - 1 /* for "[" */ + 1);
                 out << output;
                 printedLength = DCM_OptPrintLineLength;
             } else
-                out << string << ']';
+                out << stringVal << ']';
             /* print line end with length, VM and tag name */
             printInfoLineEnd(out, flags, printedLength);
         } else
@@ -583,7 +583,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.41  2006-08-15 15:49:54  meichel
+** Revision 1.42  2006-10-13 10:07:02  joergr
+** Renamed variable "string" to "stringVal".
+**
+** Revision 1.41  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

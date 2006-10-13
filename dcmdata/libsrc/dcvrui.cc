@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +86,7 @@ DcmEVR DcmUniqueIdentifier::ident() const
 // ********************************
 
 
-void DcmUniqueIdentifier::print(STD_NAMESPACE ostream&out,
+void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
                                 const size_t flags,
                                 const int level,
                                 const char * /*pixelFileName*/,
@@ -96,12 +95,12 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream&out,
     if (valueLoaded())
     {
         /* get string data (possibly multi-valued) */
-        char *string = NULL;
-        getString(string);
-        if (string != NULL)
+        char *stringVal = NULL;
+        getString(stringVal);
+        if (stringVal != NULL)
         {
             /* check whether UID number can be mapped to a UID name */
-            const char *symbol = dcmFindNameOfUID(string);
+            const char *symbol = dcmFindNameOfUID(stringVal);
             if ((symbol != NULL) && (strlen(symbol) > 0))
             {
                 const size_t bufSize = strlen(symbol) + 1 /* for "=" */ + 1;
@@ -175,7 +174,10 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.24  2006-08-15 15:49:54  meichel
+** Revision 1.25  2006-10-13 10:08:44  joergr
+** Renamed variable "string" to "stringVal".
+**
+** Revision 1.24  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
@@ -266,5 +268,3 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 ** - better and unique print methods
 **
 */
-
-
