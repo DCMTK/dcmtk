@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDecimalString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:50 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:08:19 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,10 +113,45 @@ OFCondition DcmDecimalString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
+                                       const size_t flags)
+{
+    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+    writeXMLStartTag(out, flags);
+    /* write element value (if loaded) */
+    if (valueLoaded())
+    {
+        /* get string data (without normalization) */
+        char *value = NULL;
+        getString(value);
+        if (value != NULL)
+        {
+            /* check whether conversion to XML markup string is required */
+            if (OFStandard::checkForMarkupConversion(value))
+            {
+                OFString xmlString;
+                out << OFStandard::convertToMarkupString(value, xmlString);
+            } else
+                out << value;
+        }
+    }
+    /* XML end tag: </element> */
+    writeXMLEndTag(out, flags);
+    /* always report success */
+    return EC_Normal;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.18  2005-12-08 15:41:50  meichel
+** Revision 1.19  2006-10-13 10:08:19  joergr
+** Enhanced performance of writeXML() for large multi-valued DS elements.
+**
+** Revision 1.18  2005/12/08 15:41:50  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.17  2004/01/16 13:49:00  joergr

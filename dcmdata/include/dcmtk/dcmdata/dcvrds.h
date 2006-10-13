@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmDecimalString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrds.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:12:28 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +101,14 @@ class DcmDecimalString
     virtual OFCondition getOFString(OFString &stringVal,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
+
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
+                                 const size_t flags = 0);
 };
 
 
@@ -111,7 +118,10 @@ class DcmDecimalString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.h,v $
-** Revision 1.15  2005-12-08 16:28:56  meichel
+** Revision 1.16  2006-10-13 10:12:28  joergr
+** Enhanced performance of writeXML() for large multi-valued DS elements.
+**
+** Revision 1.15  2005/12/08 16:28:56  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.14  2004/07/01 12:28:25  meichel
