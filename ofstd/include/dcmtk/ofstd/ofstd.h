@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2005, OFFIS
+ *  Copyright (C) 2000-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:06:04 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:04:03 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,6 +207,17 @@ class OFStandard
                                              const OFString &dirPrefix /*= ""*/);   // supported by Sun CC 2.0.1 :-/
 
     // --- other functions ---
+
+    /** check whether conversion to HTML/XML mnenonic string is required.
+     *  This check can be performed before convertToMarkupString() is called in order to
+     *  speed up the process in case the conversion it not required.
+     ** @param sourceString source string to be checked
+     *  @param convertNonASCII convert non-ASCII characters (> #127) to numeric value (&#nnn;)
+     *    if OFTrue
+     ** @return OFTrue if markup conversion is required, OFFalse otherwise
+     */
+    static OFBool checkForMarkupConversion(const OFString &sourceString,
+                                           const OFBool convertNonASCII = OFFalse);
 
     /** convert character string to HTML/XML mnenonic string.
      *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replaced by the
@@ -425,7 +436,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.23  2005-12-08 16:06:04  meichel
+ * Revision 1.24  2006-10-13 10:04:03  joergr
+ * Added new helper function that allows to check whether the conversion to an
+ * HTML/XML markup string is required.
+ *
+ * Revision 1.23  2005/12/08 16:06:04  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.22  2004/08/03 11:45:42  meichel

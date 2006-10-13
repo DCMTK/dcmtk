@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:07:49 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1007,7 +1006,7 @@ OFCondition DcmElement::writeSignatureFormat(DcmOutputStream &outStream,
 // ********************************
 
 
-void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream&out,
+void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                                   const size_t flags,
                                   const char *attrText)
 {
@@ -1040,7 +1039,7 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream&out,
 }
 
 
-void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream&out,
+void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream &out,
                                 const size_t /*flags*/)
 {
     /* write standardized XML end tag for all element types */
@@ -1048,7 +1047,7 @@ void DcmElement::writeXMLEndTag(STD_NAMESPACE ostream&out,
 }
 
 
-OFCondition DcmElement::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags)
 {
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
@@ -1058,7 +1057,13 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream&out,
     {
         OFString value, xmlString;
         if (getOFStringArray(value).good())
-            out << OFStandard::convertToMarkupString(value, xmlString);
+        {
+            /* check whether conversion to XML markup string is required */
+            if (OFStandard::checkForMarkupConversion(value))
+                out << OFStandard::convertToMarkupString(value, xmlString);
+            else
+                out << value;
+        }
     }
     /* XML end tag: </element> */
     writeXMLEndTag(out, flags);
@@ -1070,7 +1075,11 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream&out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.53  2006-08-15 15:49:54  meichel
+** Revision 1.54  2006-10-13 10:07:49  joergr
+** Added new helper function that allows to check whether the conversion to an
+** HTML/XML markup string is required.
+**
+** Revision 1.53  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

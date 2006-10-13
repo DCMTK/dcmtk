@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:49:00 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:01:36 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -551,13 +551,34 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 }
 
 
+OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
+                                            const OFBool convertNonASCII)
+{
+    OFBool result = OFFalse;
+    /* char pointer allows faster access to the string */
+    const char *str = sourceString.c_str();
+    unsigned char c;
+    /* check for characters to be converted */
+    do {
+        c = OFstatic_cast(unsigned char, *(str++));
+        if ((c == '<') || (c == '>') || (c == '&') || (c == '"') || (c == '\'') ||
+            (c == 10) || (c == 13) || (convertNonASCII && (c > 127)))
+        {
+            result = OFTrue;
+            c = 0;
+        }
+    } while (c != 0);
+    return result;
+}
+
+
 const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                                                   OFString &markupString,
                                                   const OFBool convertNonASCII,
                                                   const OFBool xmlMode,
                                                   const OFBool newlineAllowed)
 {
-    /* char ptr allows fastest access to the string */
+    /* char pointer allows faster access to the string */
     const char *str = sourceString.c_str();
     /* start with empty string */
     markupString.clear();
@@ -616,7 +637,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                 markupString += *str;
             }
         }
-        str++;
+        ++str;
     }
     return markupString;
 }
@@ -1624,7 +1645,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.34  2005-12-08 15:49:00  meichel
+ *  Revision 1.35  2006-10-13 10:01:36  joergr
+ *  Added new helper function that allows to check whether the conversion to an
+ *  HTML/XML markup string is required.
+ *
+ *  Revision 1.34  2005/12/08 15:49:00  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.33  2004/08/04 12:11:52  joergr
