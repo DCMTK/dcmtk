@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:12:02 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +145,7 @@ class DcmElement
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
@@ -297,7 +296,7 @@ class DcmElement
      *  @param flags flag used to customize the output (not yet used)
      *  @param attrText extra attribute text to be added to the element tag
      */
-    virtual void writeXMLStartTag(STD_NAMESPACE ostream&out,
+    virtual void writeXMLStartTag(STD_NAMESPACE ostream &out,
                                   const size_t flags,
                                   const char *attrText = NULL);
 
@@ -305,7 +304,7 @@ class DcmElement
      *  @param out output stream to which the XML end tag is written
      *  @param flags flag used to customize the output (not yet used)
      */
-    virtual void writeXMLEndTag(STD_NAMESPACE ostream&out,
+    virtual void writeXMLEndTag(STD_NAMESPACE ostream &out,
                                 const size_t flags);
 
 
@@ -325,7 +324,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.30  2006-08-15 15:49:56  meichel
+** Revision 1.31  2006-10-13 10:12:02  joergr
+** Fixed wrong formatting.
+**
+** Revision 1.30  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
@@ -471,4 +473,3 @@ class DcmElement
 ** - merged read / write methods for block and file transfer
 **
 */
-

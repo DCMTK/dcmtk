@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-13 10:11:30 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -573,7 +573,7 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmOutputStream &outStre
 // ********************************
 
 
-OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                                             const size_t flags)
 {
     /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
@@ -613,7 +613,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream&out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.46  2006-08-15 15:49:54  meichel
+** Revision 1.47  2006-10-13 10:11:30  joergr
+** Fixed wrong formatting.
+**
+** Revision 1.46  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
