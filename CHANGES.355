@@ -31,7 +31,16 @@ Changes between releases are documented here.
   the specification of the return value in case the SOP Class is unknown.
   Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
            dcmdata/libsrc/dcuid.cc
-  
+
+- Fixed possible integer overflow for images with very large pixel data.
+  Thanks to Peter Klotz <p.klotz@icoserve.com> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Fixed wrong warning message about length of pixel data.
+  Affects: dcmimage/libsrc/dicoimg.cc
+           dcmimgle/libsrc/dimoimg.cc
+
 **** Changes from 2006.10.13 (riesmeier)
 
 - Enhanced performance of writeXML() for large multi-valued DS elements.
