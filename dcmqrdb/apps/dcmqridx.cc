@@ -21,10 +21,10 @@
  *
  *  Purpose: This test program registers image files in the image database.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:09:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 09:16:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "dbregimg"
+#define OFFIS_CONSOLE_APPLICATION "dcmqridx"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -209,7 +209,10 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.7  2006-08-15 16:09:33  meichel
+ * Revision 1.8  2006-10-27 09:16:59  joergr
+ * Fixed wrong name of the command line tool "dcmqridx".
+ *
+ * Revision 1.7  2006/08/15 16:09:33  meichel
  * Updated the code in module dcmqrdb to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

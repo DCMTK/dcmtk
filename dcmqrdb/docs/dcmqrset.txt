@@ -61,7 +61,7 @@ performed on a read-only database storage area since sending images to such a
 storage area (AE title) might cause your original images to be deleted if the 
 quota specifications (4th column of the AETable in dcmqrscp.cfg) are exceeded.
 e.g.
-	dbregimg -v /home/dicom/db/COMMON /home/dicom/images/rsna95/*/*/*
+	dcmqridx -v /home/dicom/db/COMMON /home/dicom/images/rsna95/*/*/*
 
 would register the "rsna95" images in the COMMON storage area (which is defined 
 as read-only in dcmqrscp.cfg).  The "rsna95" images are available via ftp from 
