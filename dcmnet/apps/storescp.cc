@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 11:59:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2009,7 +2009,8 @@ static OFCondition storeSCP(
       // create unique filename by generating a temporary UID and using ".X." as an infix
       char buf[70];
       dcmGenerateUniqueIdentifier(buf);
-      sprintf(imageFileName, "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), buf, opt_fileNameExtension.c_str());
+      sprintf(imageFileName, "%s%c%s.X.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+        buf, opt_fileNameExtension.c_str());
     }
     else if (opt_timeNames)
     {
@@ -2026,7 +2027,7 @@ static OFCondition storeSCP(
         sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u.%s%s",
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-          dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+          dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
       }
       else
       {
@@ -2034,7 +2035,7 @@ static OFCondition storeSCP(
         sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", //millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-          timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+          timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
       }
       if ( (outputFileNameArray.size()!=0) && (outputFileNameArray.back() == cmpFileName) )
       {
@@ -2042,17 +2043,17 @@ static OFCondition storeSCP(
         // generate one with a serial number (incremented by 1)
         timeNameCounter++;
         sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, //millisecond version
-        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-        dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-        timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+          dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+          dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+          timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
       }
       else
       {
         //first run or filenames are different: create filename without serial number
         sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, //millisecond version
-        dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-        dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
-        dcmSOPClassUIDToModality(req->AffectedSOPClassUID), opt_fileNameExtension.c_str());
+          dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+          dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
+          dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
         // reset counter, because timestamp and therefore filename has changed
         timeNameCounter = -1;
       }
@@ -2060,7 +2061,8 @@ static OFCondition storeSCP(
     else
     {
       // don't create new UID, use the study instance UID as found in object
-      sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID), req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
+      sprintf(imageFileName, "%s%c%s.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"),
+        req->AffectedSOPInstanceUID, opt_fileNameExtension.c_str());
     }
   }
 
@@ -2604,7 +2606,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.96  2006-08-15 16:04:28  meichel
+** Revision 1.97  2006-10-27 11:59:53  joergr
+** Fixed problem with unknown (e.g. private) SOP Classes.
+**
+** Revision 1.96  2006/08/15 16:04:28  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
