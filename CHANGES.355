@@ -16,6 +16,13 @@ Changes between releases are documented here.
 - Created new change log.
   Added:   CHANGES.355
 
+- Fixed layout and formatting issue.
+  Affects: dcmnet/docs/storescp.man
+
+- Fixed wrong name of the command line tool "dcmqridx".
+  Affects: dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/docs/dcmqrset.txt
+
 **** Changes from 2006.10.13 (riesmeier)
 
 - Enhanced performance of writeXML() for large multi-valued DS elements.
