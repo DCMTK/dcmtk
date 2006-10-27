@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 15:00:16 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -905,7 +905,7 @@ int DiMonoImage::checkInterData(const int mode)
         ImageStatus = EIS_InvalidImage;
     else if (mode && (ImageStatus == EIS_Normal))
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * TotalNumberOfFrames;
+        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -1812,50 +1812,57 @@ void *DiMonoImage::createPackedBitmap(const void *buffer,
 {
     if ((buffer != NULL) && (size > 0) && (alloc > 0) && (stored > 0) && (stored < alloc))
     {
-        if ((alloc == 16) && (stored == 12) && ((size * 8 + alloc - 1) / alloc == count))
+        if ((alloc == 16) && (stored == 12))
         {
-            Uint16 *data = NULL;
-            data = new Uint16[((count + 1) * stored - 1) / 16];     // create new memory buffer
-            if (data != NULL)
+            /* need to split 'size' in order to avoid integer overflow for large pixel data */
+            const unsigned long size_1 = size / alloc; 
+            const unsigned long size_2 = size % alloc;
+//          # old code: if ((size * 8 + alloc - 1) / alloc == count)
+            if (8 * size_1 + (8 * size_2 + alloc - 1) / alloc == count)
             {
-                register const Uint16 *p = OFstatic_cast(const Uint16 *, buffer);
-                register Uint16 *q = data;
-                register unsigned long i;
-                register Uint16 value1;
-                register Uint16 value2;
-                for (i = 0; i < count - 3; i += 4)                  // make 3 items out of 4
+                Uint16 *data = NULL;
+                data = new Uint16[((count + 1) * stored - 1) / 16];     // create new memory buffer
+                if (data != NULL)
                 {
-                    value1 = *(p++);
-                    value2 = *(p++);
-                    *(q++) = OFstatic_cast(Uint16, (value1 & 0x0fff) | (value2 << 12));
-                    value1 = *(p++);
-                    *(q++) = OFstatic_cast(Uint16, ((value2 >> 4) & 0x00ff) | (value1 << 8));
-                    value2 = *(p++);
-                    *(q++) = OFstatic_cast(Uint16, ((value1 >> 8) & 0x000f) | (value2 << 4));
-                }
-                switch (count - i)                                  // add remaining pixels
-                {
-                    case 1:                                         // add 1 pixel
-                        *(q++) = OFstatic_cast(Uint16, *(p++) & 0x0fff);
-                        break;
-                    case 2:                                         // add 2 pixels
-                        value1 = *(p++);
-                        value2 = *(p++);
-                        *(q++) = OFstatic_cast(Uint16, (value1 & 0x0fff) | (value2 << 12));
-                        *(q++) = OFstatic_cast(Uint16, (value2 >> 4) & 0x00ff);
-                        break;
-                    case 3:                                         // add 3 pixels
+                    register const Uint16 *p = OFstatic_cast(const Uint16 *, buffer);
+                    register Uint16 *q = data;
+                    register unsigned long i;
+                    register Uint16 value1;
+                    register Uint16 value2;
+                    for (i = 0; i < count - 3; i += 4)                  // make 3 items out of 4
+                    {
                         value1 = *(p++);
                         value2 = *(p++);
                         *(q++) = OFstatic_cast(Uint16, (value1 & 0x0fff) | (value2 << 12));
                         value1 = *(p++);
                         *(q++) = OFstatic_cast(Uint16, ((value2 >> 4) & 0x00ff) | (value1 << 8));
-                        *(q++) = OFstatic_cast(Uint16, (value1 >> 8) & 0x000f);
-                        break;
-                    default:                                        // add no pixel
-                        ;
+                        value2 = *(p++);
+                        *(q++) = OFstatic_cast(Uint16, ((value1 >> 8) & 0x000f) | (value2 << 4));
+                    }
+                    switch (count - i)                                  // add remaining pixels
+                    {
+                        case 1:                                         // add 1 pixel
+                            *(q++) = OFstatic_cast(Uint16, *(p++) & 0x0fff);
+                            break;
+                        case 2:                                         // add 2 pixels
+                            value1 = *(p++);
+                            value2 = *(p++);
+                            *(q++) = OFstatic_cast(Uint16, (value1 & 0x0fff) | (value2 << 12));
+                            *(q++) = OFstatic_cast(Uint16, (value2 >> 4) & 0x00ff);
+                            break;
+                        case 3:                                         // add 3 pixels
+                            value1 = *(p++);
+                            value2 = *(p++);
+                            *(q++) = OFstatic_cast(Uint16, (value1 & 0x0fff) | (value2 << 12));
+                            value1 = *(p++);
+                            *(q++) = OFstatic_cast(Uint16, ((value2 >> 4) & 0x00ff) | (value1 << 8));
+                            *(q++) = OFstatic_cast(Uint16, (value1 >> 8) & 0x000f);
+                            break;
+                        default:                                        // add no pixel
+                            ;
+                    }
+                    return OFstatic_cast(void *, data);
                 }
-                return OFstatic_cast(void *, data);
             }
         }
     }
@@ -2124,7 +2131,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.64  2006-08-15 16:30:11  meichel
+ * Revision 1.65  2006-10-27 15:00:16  joergr
+ * Fixed possible integer overflow for images with very large pixel data.
+ * Fixed wrong warning message about length of pixel data.
+ *
+ * Revision 1.64  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
