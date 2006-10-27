@@ -17,13 +17,13 @@
  *
  *  Module:  dcmimage
  *
- *  Authors: Marco Eichelberg, Joerg Riesmeier, Alexander Haderer
+ *  Authors: Marco Eichelberg, Joerg Riesmeier
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:00 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 15:02:58 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,19 +47,19 @@
 #include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcrledrg.h"      /* for DcmRLEDecoderRegistration */
 
-#include "dcmtk/dcmimgle/dcmimage.h"      /* for DicomImage */
-#include "dcmtk/dcmimgle/digsdfn.h"       /* for DiGSDFunction */
-#include "dcmtk/dcmimgle/diciefn.h"       /* for DiCIELABFunction */
+#include "dcmtk/dcmimgle/dcmimage.h"     /* for DicomImage */
+#include "dcmtk/dcmimgle/digsdfn.h"      /* for DiGSDFunction */
+#include "dcmtk/dcmimgle/diciefn.h"      /* for DiCIELABFunction */
 
-#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
-#include "dcmtk/ofstd/ofcmdln.h"       /* for OFCommandLine */
+#include "dcmtk/ofstd/ofconapp.h"        /* for OFConsoleApplication */
+#include "dcmtk/ofstd/ofcmdln.h"         /* for OFCommandLine */
 
-#include "dcmtk/dcmimage/diregist.h"      /* include to support color images */
-#include "dcmtk/ofstd/ofstd.h"         /* for OFStandard */
+#include "dcmtk/dcmimage/diregist.h"     /* include to support color images */
+#include "dcmtk/ofstd/ofstd.h"           /* for OFStandard */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-#include "dcmtk/dcmjpeg/djdecode.h"     /* for dcmjpeg decoders */
-#include "dcmtk/dcmjpeg/dipijpeg.h"     /* for dcmimage JPEG plugin */
+#include "dcmtk/dcmjpeg/djdecode.h"      /* for dcmjpeg decoders */
+#include "dcmtk/dcmjpeg/dipijpeg.h"      /* for dcmimage JPEG plugin */
 #endif
 
 #ifdef WITH_LIBTIFF
@@ -71,7 +71,7 @@
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>         /* for zlibVersion() */
+#include <zlib.h>                        /* for zlibVersion() */
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -1518,7 +1518,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.86  2006-08-15 16:35:00  meichel
+ * Revision 1.87  2006-10-27 15:02:58  joergr
+ * Fixed layout and formatting issue.
+ *
+ * Revision 1.86  2006/08/15 16:35:00  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
