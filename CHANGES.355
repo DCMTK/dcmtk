@@ -23,6 +23,15 @@ Changes between releases are documented here.
   Affects: dcmqrdb/apps/dcmqridx.cc
            dcmqrdb/docs/dcmqrset.txt
 
+- Fixed problem with unknown (e.g. private) SOP Classes.
+  Thanks to Anders Israelsson <anders@nud.se> for the original report.
+  Affects: dcmnet/apps/storescp.cc
+
+- Added new default parameter to dcmSOPClassUIDToModality() that allows for
+  the specification of the return value in case the SOP Class is unknown.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+  
 **** Changes from 2006.10.13 (riesmeier)
 
 - Enhanced performance of writeXML() for large multi-valued DS elements.
