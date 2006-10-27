@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-20 16:24:59 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 11:58:49 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +65,7 @@ const char* dcmFindUIDFromName(const char * name);
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
  *  model, i.e. everything a Storage SCP might want to store in a PACS.
  *  Special cases such as hanging protocol storage or the Storage SOP Class
- *  are not included in this list. 
+ *  are not included in this list.
  *  WARNING: This list contains more than 64 entries, i.e. it is not possible
  *  to use this list to configure the association negotiation behaviour of
  *  a Storage SCU that always proposes two presentation contexts for each
@@ -142,9 +141,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix=NULL);
  * performs a table lookup and returns a short modality identifier
  * that can be used for building file names etc.
  * Identifiers are defined for all storage SOP classes.
- * Returns NULL if no modality identifier found or sopClassUID==NULL.
+ * Returns 'defaultValue' if no modality identifier found or sopClassUID==NULL.
  */
-const char *dcmSOPClassUIDToModality(const char *sopClassUID);
+const char *dcmSOPClassUIDToModality(const char *sopClassUID, const char *defaultValue = NULL);
 
 /*
  * dcmGuessModalityBytes
@@ -286,8 +285,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
 
 /* MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
-   refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored 
-   on a DICOM storage medium. It is never used for network communication 
+   refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
+   on a DICOM storage medium. It is never used for network communication
    or encoding of DICOM objects. */
 #define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
 
@@ -457,45 +456,45 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ProceduralEventLoggingSOPInstance                      "1.2.840.10008.1.40.1"
 
 // Configuration Management LDAP UIDs
-#define UID_LDAP_dicomDeviceName                                   "1.2.840.10008.15.0.3.1" 
-#define UID_LDAP_dicomDescription                                  "1.2.840.10008.15.0.3.2" 
-#define UID_LDAP_dicomManufacturer                                 "1.2.840.10008.15.0.3.3" 
-#define UID_LDAP_dicomManufacturerModelName                        "1.2.840.10008.15.0.3.4" 
-#define UID_LDAP_dicomSoftwareVersion                              "1.2.840.10008.15.0.3.5" 
-#define UID_LDAP_dicomVendorData                                   "1.2.840.10008.15.0.3.6" 
-#define UID_LDAP_dicomAETitle                                      "1.2.840.10008.15.0.3.7" 
-#define UID_LDAP_dicomNetworkConnectionReference                   "1.2.840.10008.15.0.3.8" 
-#define UID_LDAP_dicomApplicationCluster                           "1.2.840.10008.15.0.3.9" 
-#define UID_LDAP_dicomAssociationInitiator                         "1.2.840.10008.15.0.3.10" 
-#define UID_LDAP_dicomAssociationAcceptor                          "1.2.840.10008.15.0.3.11" 
-#define UID_LDAP_dicomHostname                                     "1.2.840.10008.15.0.3.12" 
-#define UID_LDAP_dicomPort                                         "1.2.840.10008.15.0.3.13" 
-#define UID_LDAP_dicomSOPClass                                     "1.2.840.10008.15.0.3.14" 
-#define UID_LDAP_dicomTransferRole                                 "1.2.840.10008.15.0.3.15" 
-#define UID_LDAP_dicomTransferSyntax                               "1.2.840.10008.15.0.3.16" 
-#define UID_LDAP_dicomPrimaryDeviceType                            "1.2.840.10008.15.0.3.17" 
-#define UID_LDAP_dicomRelatedDeviceReference                       "1.2.840.10008.15.0.3.18" 
-#define UID_LDAP_dicomPreferredCalledAETitle                       "1.2.840.10008.15.0.3.19" 
-#define UID_LDAP_dicomTLSCyphersuite                               "1.2.840.10008.15.0.3.20" 
-#define UID_LDAP_dicomAuthorizedNodeCertificateReference           "1.2.840.10008.15.0.3.21" 
-#define UID_LDAP_dicomThisNodeCertificateReference                 "1.2.840.10008.15.0.3.22" 
-#define UID_LDAP_dicomInstalled                                    "1.2.840.10008.15.0.3.23" 
-#define UID_LDAP_dicomStationName                                  "1.2.840.10008.15.0.3.24" 
-#define UID_LDAP_dicomDeviceSerialNumber                           "1.2.840.10008.15.0.3.25" 
-#define UID_LDAP_dicomInstitutionName                              "1.2.840.10008.15.0.3.26" 
-#define UID_LDAP_dicomInstitutionAddress                           "1.2.840.10008.15.0.3.27" 
-#define UID_LDAP_dicomInstitutionDepartmentName                    "1.2.840.10008.15.0.3.28" 
-#define UID_LDAP_dicomIssuerOfPatientID                            "1.2.840.10008.15.0.3.29" 
-#define UID_LDAP_dicomPreferredCallingAETitle                      "1.2.840.10008.15.0.3.30" 
-#define UID_LDAP_dicomSupportedCharacterSet                        "1.2.840.10008.15.0.3.31" 
-#define UID_LDAP_dicomConfigurationRoot                            "1.2.840.10008.15.0.4.1" 
-#define UID_LDAP_dicomDevicesRoot                                  "1.2.840.10008.15.0.4.2" 
-#define UID_LDAP_dicomUniqueAETitlesRegistryRoot                   "1.2.840.10008.15.0.4.3" 
-#define UID_LDAP_dicomDevice                                       "1.2.840.10008.15.0.4.4" 
-#define UID_LDAP_dicomNetworkAE                                    "1.2.840.10008.15.0.4.5" 
-#define UID_LDAP_dicomNetworkConnection                            "1.2.840.10008.15.0.4.6" 
-#define UID_LDAP_dicomUniqueAETitle                                "1.2.840.10008.15.0.4.7" 
-#define UID_LDAP_dicomTransferCapability                           "1.2.840.10008.15.0.4.8" 
+#define UID_LDAP_dicomDeviceName                                   "1.2.840.10008.15.0.3.1"
+#define UID_LDAP_dicomDescription                                  "1.2.840.10008.15.0.3.2"
+#define UID_LDAP_dicomManufacturer                                 "1.2.840.10008.15.0.3.3"
+#define UID_LDAP_dicomManufacturerModelName                        "1.2.840.10008.15.0.3.4"
+#define UID_LDAP_dicomSoftwareVersion                              "1.2.840.10008.15.0.3.5"
+#define UID_LDAP_dicomVendorData                                   "1.2.840.10008.15.0.3.6"
+#define UID_LDAP_dicomAETitle                                      "1.2.840.10008.15.0.3.7"
+#define UID_LDAP_dicomNetworkConnectionReference                   "1.2.840.10008.15.0.3.8"
+#define UID_LDAP_dicomApplicationCluster                           "1.2.840.10008.15.0.3.9"
+#define UID_LDAP_dicomAssociationInitiator                         "1.2.840.10008.15.0.3.10"
+#define UID_LDAP_dicomAssociationAcceptor                          "1.2.840.10008.15.0.3.11"
+#define UID_LDAP_dicomHostname                                     "1.2.840.10008.15.0.3.12"
+#define UID_LDAP_dicomPort                                         "1.2.840.10008.15.0.3.13"
+#define UID_LDAP_dicomSOPClass                                     "1.2.840.10008.15.0.3.14"
+#define UID_LDAP_dicomTransferRole                                 "1.2.840.10008.15.0.3.15"
+#define UID_LDAP_dicomTransferSyntax                               "1.2.840.10008.15.0.3.16"
+#define UID_LDAP_dicomPrimaryDeviceType                            "1.2.840.10008.15.0.3.17"
+#define UID_LDAP_dicomRelatedDeviceReference                       "1.2.840.10008.15.0.3.18"
+#define UID_LDAP_dicomPreferredCalledAETitle                       "1.2.840.10008.15.0.3.19"
+#define UID_LDAP_dicomTLSCyphersuite                               "1.2.840.10008.15.0.3.20"
+#define UID_LDAP_dicomAuthorizedNodeCertificateReference           "1.2.840.10008.15.0.3.21"
+#define UID_LDAP_dicomThisNodeCertificateReference                 "1.2.840.10008.15.0.3.22"
+#define UID_LDAP_dicomInstalled                                    "1.2.840.10008.15.0.3.23"
+#define UID_LDAP_dicomStationName                                  "1.2.840.10008.15.0.3.24"
+#define UID_LDAP_dicomDeviceSerialNumber                           "1.2.840.10008.15.0.3.25"
+#define UID_LDAP_dicomInstitutionName                              "1.2.840.10008.15.0.3.26"
+#define UID_LDAP_dicomInstitutionAddress                           "1.2.840.10008.15.0.3.27"
+#define UID_LDAP_dicomInstitutionDepartmentName                    "1.2.840.10008.15.0.3.28"
+#define UID_LDAP_dicomIssuerOfPatientID                            "1.2.840.10008.15.0.3.29"
+#define UID_LDAP_dicomPreferredCallingAETitle                      "1.2.840.10008.15.0.3.30"
+#define UID_LDAP_dicomSupportedCharacterSet                        "1.2.840.10008.15.0.3.31"
+#define UID_LDAP_dicomConfigurationRoot                            "1.2.840.10008.15.0.4.1"
+#define UID_LDAP_dicomDevicesRoot                                  "1.2.840.10008.15.0.4.2"
+#define UID_LDAP_dicomUniqueAETitlesRegistryRoot                   "1.2.840.10008.15.0.4.3"
+#define UID_LDAP_dicomDevice                                       "1.2.840.10008.15.0.4.4"
+#define UID_LDAP_dicomNetworkAE                                    "1.2.840.10008.15.0.4.5"
+#define UID_LDAP_dicomNetworkConnection                            "1.2.840.10008.15.0.4.6"
+#define UID_LDAP_dicomUniqueAETitle                                "1.2.840.10008.15.0.4.7"
+#define UID_LDAP_dicomTransferCapability                           "1.2.840.10008.15.0.4.8"
 
 // Spatial Registration Frame of Reference UIDs
 #define UID_TalairachBrainAtlasFrameOfReference                    "1.2.840.10008.1.4.1.1"
@@ -520,21 +519,21 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 
 // Relevant Patient Information Query
-#define UID_GeneralRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.1" 
-#define UID_BreastImagingRelevantPatientInformationQuery           "1.2.840.10008.5.1.4.37.2" 
-#define UID_CardiacRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.3" 
+#define UID_GeneralRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.1"
+#define UID_BreastImagingRelevantPatientInformationQuery           "1.2.840.10008.5.1.4.37.2"
+#define UID_CardiacRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.3"
 
 // Media Creation Management
-#define UID_MediaCreationManagementSOPClass                        "1.2.840.10008.5.1.1.33" 
+#define UID_MediaCreationManagementSOPClass                        "1.2.840.10008.5.1.1.33"
 
 // SOP Class Relationship Negotiation
-#define UID_StorageServiceClass                                    "1.2.840.10008.4.2" 
+#define UID_StorageServiceClass                                    "1.2.840.10008.4.2"
 
 // Instance Availability Notification
-#define UID_InstanceAvailabilityNotificationSOPClass               "1.2.840.10008.5.1.4.33" 
+#define UID_InstanceAvailabilityNotificationSOPClass               "1.2.840.10008.5.1.4.33"
 
 // UTC Synchronization Frame of Reference (CP 432)
-#define UID_UniversalCoordinatedTimeSynchronizationFrameOfReference "1.2.840.10008.15.1.1" 
+#define UID_UniversalCoordinatedTimeSynchronizationFrameOfReference "1.2.840.10008.15.1.1"
 
 // Hanging Protocols
 #define UID_FINDHangingProtocolInformationModel                    "1.2.840.10008.5.1.4.38.2"
@@ -574,7 +573,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.72  2005-12-20 16:24:59  meichel
+** Revision 1.73  2006-10-27 11:58:49  joergr
+** Added new default parameter to dcmSOPClassUIDToModality() that allows for
+** the specification of the return value in case the SOP Class is unknown.
+**
+** Revision 1.72  2005/12/20 16:24:59  meichel
 ** Updated version name and implementation name to reflect release 3.5.4.
 **
 ** Revision 1.71  2005/12/08 16:28:48  meichel
