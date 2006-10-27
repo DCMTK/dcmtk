@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 14:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -356,8 +356,12 @@ class DiInputPixelTemplate
         const Uint16 bitsof_T2 = bitsof(T2);
         T1 *pixel;
         const Uint32 length_Bytes = getPixelData(pixelData, pixel);
+        /* need to split 'length' in order to avoid integer overflow for large pixel data */
+        const Uint32 length_B1 = length_Bytes / bitsAllocated;
+        const Uint32 length_B2 = length_Bytes % bitsAllocated;
         const Uint32 length_T1 = length_Bytes / sizeof(T1);
-        Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
+//      # old code: Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
+        Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
         register unsigned long i;
         Data = new T2[Count];
         if (Data != NULL)
@@ -599,7 +603,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.32  2006-08-15 16:30:11  meichel
+ * Revision 1.33  2006-10-27 14:59:26  joergr
+ * Fixed possible integer overflow for images with very large pixel data.
+ *
+ * Revision 1.32  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
