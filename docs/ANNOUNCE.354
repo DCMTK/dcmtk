@@ -1,0 +1,143 @@
+
+ANNOUNCEMENT
+
+Version 3.5.4 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes
+over the previous version (Version 3.5.3):
+
+- DCMTK 3.5.4 builds correctly with GNU gcc 4.0 and Visual Studio 2005.
+
+- Newly supported platforms:
+  - Linux on x86_64
+  - FreeBSD 5.x, 6.x on x86
+  - Solaris 10 on x86
+  - QNX 6.2.1 on x86
+
+- The use of CMake to generate project files on Windows is now required.
+
+- New schema for include files. All includes files are now included as
+  #include "dcmtk/module/file.h", e.g. #include "dcmtk/dcmdata/dctk.h".
+  This allows the DCMTK header files to be installed in a public directory
+  such as /usr/local/include and eliminates the risk of name clashes.
+
+- New tool pdf2dcm allows to convert PDF files to DICOM Encapsulated PDF
+  Storage SOP instances.
+
+- The former "imagectn" tool has been renamed to "dcmqrscp" (Q/R SCP)
+  and has been refactored into a simple class structure that offers a clean
+  API for exchanging the index file back-end. Minimal support for compressed
+  transfer syntaxes has been added. The tool can now also be started by root
+  and change privileges to a different user and group specified in the config
+  file.
+
+- New lossless JPEG encoder that guarantees "true lossless" compression
+  in contrast to the old implementation which could cause rounding errors
+  in certain cases.
+
+- StoreSCP now supports multi-process mode both on Posix and Win32 platforms
+  where a separate client process is forked for each incoming association.
+  On Posix platforms, the tool can also be started from inetd.
+
+- DcmFileFormat::loadFile can now be prevented from attempting to load
+  non-part 10 files as DICOM datasets. Many tools support a corresponding
+  command line option "--read-file-only".
+
+- Many tools support a new command line option that ignores the transfer
+  syntax specified in the meta header and tries to detect the transfer syntax
+  automatically from the dataset.
+
+- Added support for X-Ray Radiation Dose SR and Procedure Log SR documents in
+  dcmsr module.
+
+- TLS module now supports AES ciphersuites if compiled with OpenSSL 0.9.7 or
+  newer. All TLS-enabled tools now support the "AES TLS Secure Transport
+  Connection Profile".
+
+- Changed names of OpenSSL DLLs for Win32 release build - there are just too
+  many tools that install "their" version of libeay32.dll and ssleay32.dll in
+  c:\windows\system32 and cause DLL conflicts. We now call our versions of the
+  OpenSSL DLLs dcmtkssl.dll and dcmtkeay.dll.
+
+- Added command line options for separate DIMSE and ACSE timeouts to many
+  tools.
+
+- The dcmdata module now supports an automatic re-conversion of defined length
+  UN elements read in an explicit VR transfer syntax, if the real VR is defined
+  in the data dictionary. A corresponding command line option "--convert-un"
+  is available in dcmdump and dcmconv.
+
+- Compilation with OpenSSL 0.9.8, which introduces an incompatible API change,
+  is now supported.
+
+- Network tools support transmission and receipt of JPEG 2000 transfer
+  syntaxes.
+
+- DICOMDIR tools and classes now support Encapsulated Document, Real World
+  Value Mapping, Hanging Protocol and Color Presentation State objects.
+
+- The toolkit can now read DICOM files in which the meta header group length
+  attribute (0002,0000) is absent, based on a heuristic that checks for group
+  0002 attribute tags.
+
+- Added option --read-dataset to dcmdjpeg that allows to decompress JPEG
+  compressed DICOM objects that have been stored as dataset without
+  meta-header.
+
+- Added support for reading UN elements with undefined length according to CP
+  246. A flag allows to revert to the prior behaviour in which UN elements with
+  undefined length were parsed like a normal explicit VR SQ element.
+
+- Added support for new Media Storage Application Profiles according to DICOM
+  PS 3.12-2004. Removed support for non-standard conformant "No profile".
+
+- The DICOM data dictionary has been re-worked based on the latest supplements
+  and correction proposals, as usual.
+
+- Many bug fixes and minor improvements as usual - see the CHANGES.354 file for
+  more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here in
+alphabetical order.  Thank you very much for your support!
+
+  Michael Albert <albertm@uphs.upenn.edu>
+  Stefan Allers <stefan.allers@gmx.de>
+  Dennis Ballance <dwballan@pacbell.net>
+  Jesper Bojesen <jbb@medical-insight.com>
+  Sean Chen <chen@cs.queensu.ca>
+  Andre M. Descombes <andre@descombes.info>
+  Michael Doppler <m.doppler@icoserve.com>
+  Alexander Fedotov <fedotov@elektron.ru>
+  Attila Gelle <attila.gelle@siemens.com>
+  Indrajit Ghosh <indrajit_ghosh@hotmail.com>
+  Firas Haj-Husein <fmhmhh@hotmail.com>
+  Michael Heber <mheber.aup@t-online.de>
+  Andrew Hewett <andrew.hewett@siemens.com>
+  Anibal Jodorcovsky <anibal@intelerad.com>
+  Alexander Karaivanov <adk@medical-insight.com>
+  Karl Kiniger <karl.kiniger@med.ge.com>
+  Bernd Kuemmerlen <bkuemmer@mevis.de>
+  Mitchell Laks <mlaks2000@yahoo.com>
+  John A. Meinel <john@arbash-meinel.com>
+  Markus Mertens <markus.mertens@uni-muenster.de>
+  Heiko Muench <H.Muench@CHILI-Radiology.com>
+  Clay Nordquist <cnordquist@nbmedical.com>
+  Igor Okulist <okigan@hotmail.com>
+  Daniel Patel <daniel@cmr.no>
+  A. M. Raportirenko <ram@sunct1.jinr.dubna.su>
+  Alain Runa <alain.runa@rad.ma.uni-heidelberg.de>
+  Markus Sabin <sabin@convis.de>
+  Juergen Salk <juergen.salk@gmx.de>
+  Erik Sanner <erik.sanner@elekta.com>
+  Kent Tse <kent@intelerad.com>
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <eichelberg@offis.de>
+  Joerg Riesmeier <riesmeier@offis.de>
+  Thomas Wilkens <wilkens@offis.de>
+  Michael Onken <onken@offis.de>
+
+The DCMTK software can be downloaded via:
+  http://dicom.offis.de/dcmtk
+
+Kuratorium OFFIS e.V., Oldenburg, Germany, 2005-12-20
