@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 11:42:24 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -853,14 +853,17 @@ static const int numberOfDcmModalityTableEntries = (sizeof(modalities) / sizeof(
  */
 
 
-const char *dcmSOPClassUIDToModality(const char *sopClassUID)
+const char *dcmSOPClassUIDToModality(const char *sopClassUID,
+                                     const char *defaultValue)
 {
     if (sopClassUID == NULL) return NULL;
+    /* check for known SOP class */
     for (int i = 0; i < numberOfDcmModalityTableEntries; i++)
     {
       if (strcmp(modalities[i].sopClass, sopClassUID) == 0) return modalities[i].modality;
     }
-    return NULL;
+    /* SOP class not found */
+    return defaultValue;
 }
 
 unsigned long dcmGuessModalityBytes(const char *sopClassUID)
@@ -1396,7 +1399,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.63  2006-08-15 15:49:54  meichel
+** Revision 1.64  2006-10-27 11:42:24  joergr
+** Added new default parameter to dcmSOPClassUIDToModality() that allows for
+** the specification of the return value in case the SOP Class is unknown.
+**
+** Revision 1.63  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
