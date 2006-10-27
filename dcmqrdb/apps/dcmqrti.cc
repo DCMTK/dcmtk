@@ -21,10 +21,10 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:09:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 09:01:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ int main( int argc, char *argv[] )
   OFBool debug = OFFalse;
   const char *remoteDBTitles[ MAXREMOTEDBTITLES ];
   int remoteDBTitlesCount = 0;
-  const char *configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrdb.cfg";
+  const char *configFileName = DEFAULT_CONFIGURATION_DIR "dcmqrscp.cfg";
   E_TransferSyntax networkTransferSyntax = EXS_Unknown;
   int opt_acse_timeout = 30;
 
@@ -420,7 +420,10 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
- * Revision 1.9  2006-08-15 16:09:33  meichel
+ * Revision 1.10  2006-10-27 09:01:30  joergr
+ * Fixed wrong name of configuration file.
+ *
+ * Revision 1.9  2006/08/15 16:09:33  meichel
  * Updated the code in module dcmqrdb to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
@@ -433,7 +436,7 @@ int main( int argc, char *argv[] )
  * Option "--help" is no longer an exclusive option by default.
  *
  * Revision 1.6  2006/07/17 11:38:03  joergr
- * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
+ * Modified behaviour of option "--config": By default, the file "dcmqrscp.cfg"
  * in the configuration directory (e.g. "/usr/local/etc") is used.
  *
  * Revision 1.5  2005/12/08 15:47:03  meichel

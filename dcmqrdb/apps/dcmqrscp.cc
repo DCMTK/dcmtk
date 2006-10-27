@@ -21,10 +21,10 @@
  *
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:09:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-10-27 09:01:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -681,7 +681,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.11  2006-08-15 16:09:33  meichel
+ * Revision 1.12  2006-10-27 09:01:30  joergr
+ * Fixed wrong name of configuration file.
+ *
+ * Revision 1.11  2006/08/15 16:09:33  meichel
  * Updated the code in module dcmqrdb to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
@@ -692,7 +695,7 @@ main(int argc, char *argv[])
  * Added optional library "LIBWRAP" to output of option "--version".
  *
  * Revision 1.9  2006/07/17 11:38:53  joergr
- * Modified behaviour of option "--config": By default, the file "dcmqrdb.cfg"
+ * Modified behaviour of option "--config": By default, the file "dcmqrscp.cfg"
  * in the configuration directory (e.g. "/usr/local/etc") is used.
  * Corrected documentation of option "--max-pdu" (by default, the value from the
  * configuration file is used).
