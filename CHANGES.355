@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.11.08 (eichelberg)
+
+- Added DcmByteString::containsExtendedCharacters().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/libsrc/dcbytstr.cc
+
 **** Changes from 2006.10.27 (riesmeier)
 
 - Fixed wrong name of configuration file.

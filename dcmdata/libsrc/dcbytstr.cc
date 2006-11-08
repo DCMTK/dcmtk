@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:07:02 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2006-11-08 17:00:04 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,6 +481,22 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
 }
 
 
+OFBool DcmByteString::containsExtendedCharacters()
+{
+    char *c = NULL;
+    if (getString(c).good() && c)
+    {
+        while (*c)
+        {
+            if (OFstatic_cast(unsigned char, *c) > 127)
+                return OFTrue;
+            ++c;
+        }
+    }
+    return OFFalse;
+}
+
+
 // ********************************
 
 
@@ -583,7 +599,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.42  2006-10-13 10:07:02  joergr
+** Revision 1.43  2006-11-08 17:00:04  meichel
+** Added DcmByteString::containsExtendedCharacters
+**
+** Revision 1.42  2006/10/13 10:07:02  joergr
 ** Renamed variable "string" to "stringVal".
 **
 ** Revision 1.41  2006/08/15 15:49:54  meichel

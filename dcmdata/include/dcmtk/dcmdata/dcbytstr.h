@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
+ *  Update Date:      $Date: 2006-11-08 17:00:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -197,6 +197,10 @@ class DcmByteString
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
+    /** check if this element contains non-ASCII characters
+     *  @return true if element contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters();
 
  protected:
 
@@ -295,7 +299,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.31  2006-08-15 15:49:56  meichel
+** Revision 1.32  2006-11-08 17:00:06  meichel
+** Added DcmByteString::containsExtendedCharacters
+**
+** Revision 1.31  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
