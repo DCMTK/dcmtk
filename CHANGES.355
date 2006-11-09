@@ -8,6 +8,9 @@ Changes between releases are documented here.
   Thanks to cfremgen <c.fremgen@icoserve.com> for the bug report and fix.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
 
+- Added private tags from Siemens AXIOM Artis VB30 conformance statement.
+  Affects: dcmdata/libsrc/private.dic
+
 **** Changes from 2006.11.08 (eichelberg)
 
 - Added DcmByteString::containsExtendedCharacters().
