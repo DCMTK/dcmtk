@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2006-01-1716:36:55
+**   Date: 2006-11-0919:17:53
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/joergr/source/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2006-01-1716:36:55";
+const char* dcmBuiltinDictBuildDate = "2006-11-0919:17:53";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -4901,6 +4901,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "INTEGRIS 1.0" }
   , { 0x0019, 0x0000, 0x0019, 0x0000,
+      EVR_US, "ReviewMode", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0000, 0x0019, 0x0000,
       EVR_UN, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
@@ -4924,6 +4928,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0001, 0x0019, 0x0001,
+      EVR_US, "AnatomicalBackgroundPercent", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0001, 0x0019, 0x0001,
       EVR_UN, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -4961,6 +4969,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0002, 0x0019, 0x0002,
+      EVR_US, "NumberOfPhases", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0002, 0x0019, 0x0002,
       EVR_UN, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
@@ -4993,6 +5005,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0003, 0x0019, 0x0003,
+      EVR_US, "ApplyAnatomicalBackground", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0003, 0x0019, 0x0003,
       EVR_US, "SampleBitsStored", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5017,6 +5033,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0004, 0x0019, 0x0004,
+      EVR_SS, "PixelShiftArray", 4, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0004, 0x0019, 0x0004,
       EVR_US, "SampleHighBit", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5036,6 +5056,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0005, 0x0019, 0x0005,
+      EVR_US, "Brightness", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0005, 0x0019, 0x0005,
       EVR_US, "SampleRepresentation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5061,6 +5085,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
   , { 0x0019, 0x0006, 0x0019, 0x0006,
+      EVR_US, "Contrast", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0006, 0x0019, 0x0006,
       EVR_UN, "SmallestSampleValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5076,6 +5104,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0007, 0x0019, 0x0007,
+      EVR_US, "Enabled", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0007, 0x0019, 0x0007,
       EVR_UN, "LargestSampleValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5096,6 +5128,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0008, 0x0019, 0x0008,
+      EVR_US, "NativeEdgeEnhancementPercentGain", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0008, 0x0019, 0x0008,
       EVR_UN, "NumberOfSamples", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5121,6 +5157,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0019, 0x0009, 0x0019, 0x0009,
+      EVR_SS, "NativeEdgeEnhancementLUTIndex", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0009, 0x0019, 0x0009,
       EVR_UN, "SampleData", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5137,6 +5177,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "DLX_SERIE_01" }
   , { 0x0019, 0x000a, 0x0019, 0x000a,
+      EVR_SS, "NativeEdgeEnhancementKernelSize", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x000a, 0x0019, 0x000a,
       EVR_UN, "SampleRate", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5149,13 +5193,25 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
   , { 0x0019, 0x000b, 0x0019, 0x000b,
+      EVR_US, "SubtrEdgeEnhancementPercentGain", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x000b, 0x0019, 0x000b,
       EVR_DS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
   , { 0x0019, 0x000c, 0x0019, 0x000c,
+      EVR_SS, "SubtrEdgeEnhancementLUTIndex", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x000c, 0x0019, 0x000c,
       EVR_US, "Unknown", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
+  , { 0x0019, 0x000d, 0x0019, 0x000d,
+      EVR_SS, "SubtrEdgeEnhancementKernelSize", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x000d, 0x0019, 0x000d,
       EVR_TM, "Time", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5169,6 +5225,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR/LAST" }
   , { 0x0019, 0x000e, 0x0019, 0x000e,
+      EVR_US, "FadePercent", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x000e, 0x0019, 0x000e,
       EVR_DS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "TOSHIBA_MEC_CT_1.0" }
@@ -5176,6 +5236,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "HorizontalFrameOfReference", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACQU_01" }
+  , { 0x0019, 0x000f, 0x0019, 0x000f,
+      EVR_US, "FlippedBeforeLateralityApplied", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
       EVR_ST, "CRImageParamsCommon", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5216,6 +5280,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "TotalMeasurementTimeNominal", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0010, 0x0019, 0x0010,
+      EVR_US, "ApplyFade", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0010, 0x0019, 0x0010,
       EVR_US, "MainsFrequency", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5321,6 +5389,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0012, 0x0019, 0x0012,
+      EVR_US, "Zoom", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0012, 0x0019, 0x0012,
       EVR_US, "SampleBitsAllocated2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5352,6 +5424,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "DwellTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0019, 0x0013, 0x0019, 0x0013,
+      EVR_SS, "PanX", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0013, 0x0019, 0x0013,
       EVR_US, "SampleBitsStored2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5389,6 +5465,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0014, 0x0019, 0x0014,
+      EVR_SS, "PanY", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0014, 0x0019, 0x0014,
       EVR_US, "SampleHighBit2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5425,6 +5505,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0015, 0x0019, 0x0015,
+      EVR_SS, "NativeEdgeEnhancementAdvPercGain", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0015, 0x0019, 0x0015,
       EVR_US, "SampleRepresentation2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5453,6 +5537,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
   , { 0x0019, 0x0016, 0x0019, 0x0016,
+      EVR_SS, "SubtrEdgeEnhancementAdvPercGain", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x0016, 0x0019, 0x0016,
       EVR_UN, "SmallestSampleValue2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5472,6 +5560,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "PHILIPS MR SPECTRO;1" }
+  , { 0x0019, 0x0017, 0x0019, 0x0017,
+      EVR_US, "InvertFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x0017, 0x0019, 0x0017,
       EVR_UN, "LargestSampleValue2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5549,6 +5641,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
   , { 0x0019, 0x001a, 0x0019, 0x001a,
+      EVR_OB, "Quant1KOverlay", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
+  , { 0x0019, 0x001a, 0x0019, 0x001a,
       EVR_UN, "SampleRate2", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1;1" }
@@ -5568,6 +5664,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "Internal", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x001b, 0x0019, 0x001b,
+      EVR_US, "OriginalResolution", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x001c, 0x0019, 0x001c,
       EVR_CS, "Dose", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5580,6 +5680,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "Internal", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x001c, 0x0019, 0x001c,
+      EVR_DS, "AutoWindowCenter", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x001d, 0x0019, 0x001d,
       EVR_IS, "SideMark", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -5592,6 +5696,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "Internal", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE B" }
+  , { 0x0019, 0x001d, 0x0019, 0x001d,
+      EVR_DS, "AutoWindowWidth", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  VIEW 1.0" }
   , { 0x0019, 0x001e, 0x0019, 0x001e,
       EVR_IS, "PercentageLandscape", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9371,6 +9479,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0000, 0x0021, 0x0000,
+      EVR_US, "AcquisitionType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0000, 0x0021, 0x0000,
       EVR_LT, "WindowOfImagesID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-CWS Release 1" }
@@ -9386,6 +9498,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "VectorSizeOriginal", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0001, 0x0021, 0x0001,
+      EVR_US, "AcquisitionMode", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0001, 0x0021, 0x0001,
       EVR_CS, "WindowOfImagesType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9407,6 +9523,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0002, 0x0021, 0x0002,
+      EVR_US, "FootswitchIndex", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0002, 0x0021, 0x0002,
       EVR_IS, "WindowOfImagesScope", 1, -1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-Private-CWS Release 1" }
@@ -9427,6 +9547,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0003, 0x0021, 0x0003,
+      EVR_US, "AcquisitionRoom", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0003, 0x0021, 0x0003,
       EVR_DS, "LatitudeReduction", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
@@ -9438,6 +9562,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "VOIPosition", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0004, 0x0021, 0x0004,
+      EVR_SL, "CurrentTimeProduct", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0005, 0x0021, 0x0005,
       EVR_SH, "GenesisVersionNow", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9446,10 +9574,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "VOISize", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0005, 0x0021, 0x0005,
+      EVR_SL, "Dose", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0006, 0x0021, 0x0006,
       EVR_IS, "CSIMatrixSizeOriginal", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0006, 0x0021, 0x0006,
+      EVR_SL, "SkinDosePercent", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0007, 0x0021, 0x0007,
       EVR_UL, "SeriesRecordChecksum", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9458,14 +9594,46 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "CSIMatrixSizeExtended", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0007, 0x0021, 0x0007,
+      EVR_SL, "SkinDoseAccumulation", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0008, 0x0021, 0x0008,
       EVR_DS, "SpatialGridShift", 3, 3, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0008, 0x0021, 0x0008,
+      EVR_SL, "SkinDoseRate", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0009, 0x0021, 0x0009,
       EVR_DS, "SignalLimitsMinimum", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x000a, 0x0021, 0x000a,
+      EVR_UL, "CopperFilter", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x000b, 0x0021, 0x000b,
+      EVR_US, "MeasuringField", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x000c, 0x0021, 0x000c,
+      EVR_SS, "PostBlankingCircle", 3, 3, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x000d, 0x0021, 0x000d,
+      EVR_SS, "DynaAngles", 2, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x000e, 0x0021, 0x000e,
+      EVR_SS, "TotalSteps", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x000f, 0x0021, 0x000f,
+      EVR_SL, "DynaXRayInfo", 3, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0010, 0x0021, 0x0010,
       EVR_CS, "FCRImageID", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9491,6 +9659,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0010, 0x0021, 0x0010,
+      EVR_US, "ModalityLUTInputGamma", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0010, 0x0021, 0x0010,
       EVR_LO, "FindRangeAlgorithm", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
@@ -9506,6 +9678,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "SpecInfoMask", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0011, 0x0021, 0x0011,
+      EVR_US, "ModalityLUTOutputGamma", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0011, 0x0021, 0x0011,
       EVR_DS, "ThresholdCAlgorithm", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9523,6 +9699,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
   , { 0x0021, 0x0012, 0x0021, 0x0012,
+      EVR_OB, "SH_STPAR", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0012, 0x0021, 0x0012,
       EVR_LT, "SeriesUniqueIdentifier", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P Release 1" }
@@ -9534,10 +9714,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EPITimeRateOfChangeOfXComponent", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0013, 0x0021, 0x0013,
+      EVR_US, "AcquisitionZoom", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0014, 0x0021, 0x0014,
       EVR_DS, "EPITimeRateOfChangeOfYComponent", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0014, 0x0021, 0x0014,
+      EVR_SS, "DynaAngulationStepWidth", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0014, 0x0021, 0x0014,
       EVR_LT, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9554,6 +9742,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "ImagesInStudy", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
+  , { 0x0021, 0x0015, 0x0021, 0x0015,
+      EVR_US, "Harmonization", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0016, 0x0021, 0x0016,
       EVR_SS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9562,10 +9754,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EPITimeRateOfChangeLegalLimit1", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0016, 0x0021, 0x0016,
+      EVR_US, "DRSingleFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0017, 0x0021, 0x0017,
       EVR_DS, "EPIOperationModeFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0017, 0x0021, 0x0017,
+      EVR_SL, "SourceToIsocenter", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0018, 0x0021, 0x0018,
       EVR_SH, "GenesisVersionNow", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9574,6 +9774,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EPIFieldCalculationSafetyFactor", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0018, 0x0021, 0x0018,
+      EVR_US, "PressureData", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0019, 0x0021, 0x0019,
       EVR_UL, "AcqReconRecordChecksum", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9582,6 +9786,34 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EPILegalLimit1OfChangeValue", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0019, 0x0021, 0x0019,
+      EVR_SL, "ECGIndexArray", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x001a, 0x0021, 0x001a,
+      EVR_US, "FDFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x001b, 0x0021, 0x001b,
+      EVR_OB, "SH_ZOOM", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x001c, 0x0021, 0x001c,
+      EVR_OB, "SH_COLPAR", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x001d, 0x0021, 0x001d,
+      EVR_US, "K_Factor", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x001e, 0x0021, 0x001e,
+      EVR_US, "EVE", 8, 8, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x001f, 0x0021, 0x001f,
+      EVR_SL, "TotalSceneTime", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0020, 0x0021, 0x0020,
       EVR_DS, "TableStartLocation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9619,6 +9851,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0021, 0x0020, 0x0021, 0x0020,
+      EVR_US, "RestoreFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0020, 0x0021, 0x0020,
       EVR_LO, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SPI-P-GV-CT Release 1" }
@@ -9638,6 +9874,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_DS, "EPIRiseTime", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  RAW" }
+  , { 0x0021, 0x0021, 0x0021, 0x0021,
+      EVR_US, "StandMovementFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0022, 0x0021, 0x0022,
       EVR_DS, "StackRadialAngle", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9650,6 +9890,14 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "PhaseCorrectionRowsReconstruction", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0021, 0x0022, 0x0021, 0x0022,
+      EVR_US, "FDRows", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
+  , { 0x0021, 0x0023, 0x0021, 0x0023,
+      EVR_US, "FDColumns", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0024, 0x0021, 0x0024,
       EVR_DS, "ImageScrollOffset", 2, 2, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -9658,14 +9906,26 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_IS, "PhaseCorrectionColumnsReconstruction", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MR VA0  GEN" }
+  , { 0x0021, 0x0024, 0x0021, 0x0024,
+      EVR_US, "TableMovementFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0025, 0x0021, 0x0025,
       EVR_SS, "ImagesInPhotofile", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
+  , { 0x0021, 0x0025, 0x0021, 0x0025,
+      EVR_LO, "OriginalOrganProgramName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0026, 0x0021, 0x0026,
       EVR_IS, "ImagePixelOffset", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS CM VA0  CMS" }
+  , { 0x0021, 0x0026, 0x0021, 0x0026,
+      EVR_DS, "CrispyXPIFilter", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ACQ 1.0" }
   , { 0x0021, 0x0027, 0x0021, 0x0027,
       EVR_SS, "PlaneBImagesExist", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10485,6 +10745,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
   , { 0x0023, 0x0000, 0x0023, 0x0000,
+      EVR_DS, "HorizontalCalibrationPixelSize", 2, 2, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0000, 0x0023, 0x0000,
       EVR_LO, "ImageLaterality", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
@@ -10492,6 +10756,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "NumberOfSeriesInStudy", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_STDY_01" }
+  , { 0x0023, 0x0001, 0x0023, 0x0001,
+      EVR_DS, "VerticalCalibrationPixelSize", 2, 2, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
   , { 0x0023, 0x0001, 0x0023, 0x0001,
       EVR_IS, "LetterPosition", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10501,13 +10769,41 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_STDY_01" }
   , { 0x0023, 0x0002, 0x0023, 0x0002,
+      EVR_LO, "CalibrationObject", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0002, 0x0023, 0x0002,
       EVR_IS, "BurnedInAnnotation", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0023, 0x0003, 0x0023, 0x0003,
+      EVR_DS, "CalibrationObjectSize", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0003, 0x0023, 0x0003,
       EVR_LO, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0023, 0x0004, 0x0023, 0x0004,
+      EVR_LO, "CalibrationMethod", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0005, 0x0023, 0x0005,
+      EVR_ST, "Filename", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0006, 0x0023, 0x0006,
+      EVR_IS, "FrameNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0007, 0x0023, 0x0007,
+      EVR_IS, "CalibrationFactorMultiplicity", 2, 2, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
+  , { 0x0023, 0x0008, 0x0023, 0x0008,
+      EVR_IS, "CalibrationTODValue", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  QUANT 1.0" }
   , { 0x0023, 0x000d, 0x0023, 0x000d,
       EVR_UI, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10777,25 +11073,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_ACRQA_2.0 BLOCK3" }
   , { 0x0025, 0x0000, 0x0025, 0x0000,
+      EVR_US, "ViewNative", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0000, 0x0025, 0x0000,
       EVR_IS, "OriginalImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0025, 0x0001, 0x0025, 0x0001,
+      EVR_US, "OriginalSeriesNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0001, 0x0025, 0x0001,
       EVR_IS, "NotProcessedImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0025, 0x0002, 0x0025, 0x0002,
+      EVR_US, "OriginalImageNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0002, 0x0025, 0x0002,
       EVR_IS, "CutOutImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0025, 0x0003, 0x0025, 0x0003,
+      EVR_US, "WinCenter", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0003, 0x0025, 0x0003,
       EVR_IS, "DuplicatedImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0025, 0x0004, 0x0025, 0x0004,
+      EVR_US, "WinWidth", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0004, 0x0025, 0x0004,
       EVR_IS, "StoredImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0025, 0x0005, 0x0025, 0x0005,
+      EVR_US, "WinBrightness", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0005, 0x0025, 0x0005,
       EVR_IS, "RetrievedImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10805,6 +11125,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
   , { 0x0025, 0x0006, 0x0025, 0x0006,
+      EVR_US, "WinContrast", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0006, 0x0025, 0x0006,
       EVR_IS, "RemoteImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
@@ -10813,13 +11137,49 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
   , { 0x0025, 0x0007, 0x0025, 0x0007,
+      EVR_US, "OriginalFrameNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0007, 0x0025, 0x0007,
       EVR_IS, "MediaStoredImage", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
   , { 0x0025, 0x0008, 0x0025, 0x0008,
+      EVR_US, "OriginalMaskFrameNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x0008, 0x0025, 0x0008,
       EVR_IS, "ImageState", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0025, 0x0009, 0x0025, 0x0009,
+      EVR_US, "Opac", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x000a, 0x0025, 0x000a,
+      EVR_US, "OriginalNumberOfFrames", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x000b, 0x0025, 0x000b,
+      EVR_DS, "OriginalSceneDuration", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x000c, 0x0025, 0x000c,
+      EVR_LO, "IdentifierLOID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x000d, 0x0025, 0x000d,
+      EVR_SS, "OriginalSceneVFRInfo", 1, -1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x000e, 0x0025, 0x000e,
+      EVR_SS, "OriginalFrameECGPosition", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
+  , { 0x0025, 0x000f, 0x0025, 0x000f,
+      EVR_SS, "OriginalECG1stFrameOffset_retired", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0010, 0x0025, 0x0010,
       EVR_US, "RelativeLightEmissionAmountSk", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10828,6 +11188,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SL, "LandmarkCounter", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
+  , { 0x0025, 0x0010, 0x0025, 0x0010,
+      EVR_SS, "ZoomFlag", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0011, 0x0025, 0x0011,
       EVR_US, "TermOfCorrectionForEachIPTypeSt", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -10836,22 +11200,42 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SS, "NumberOfAcquisitions", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
+  , { 0x0025, 0x0011, 0x0025, 0x0011,
+      EVR_US, "Flex", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0012, 0x0025, 0x0012,
       EVR_US, "ReadingGainGp", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
+  , { 0x0025, 0x0012, 0x0025, 0x0012,
+      EVR_US, "NumberOfMaskFrames", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0013, 0x0025, 0x0013,
       EVR_US, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
+  , { 0x0025, 0x0013, 0x0025, 0x0013,
+      EVR_US, "NumberOfFillFrames", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0014, 0x0025, 0x0014,
       EVR_SL, "IndicatesNumberOfUpdatesToHeader", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
+  , { 0x0025, 0x0014, 0x0025, 0x0014,
+      EVR_US, "SeriesNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0015, 0x0025, 0x0015,
       EVR_CS, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
+  , { 0x0025, 0x0015, 0x0025, 0x0015,
+      EVR_IS, "ImageNumber", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0017, 0x0025, 0x0017,
       EVR_SL, "SeriesCompleteFlag", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -13062,6 +13446,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_US, "ListOfTextPosition", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS MED MG" }
+  , { 0x0029, 0x0060, 0x0029, 0x0060,
+      EVR_LO, "SeriesWorkflowStatus", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SIEMENS MEDCOM HEADER2" }
   , { 0x0029, 0x0060, 0x0029, 0x0060,
       EVR_LT, "CompressionAlgorithm", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -20104,5 +20492,3 @@ DcmDataDictionary::loadBuiltinDictionary()
         addEntry(e);
     }
 }
-
-
