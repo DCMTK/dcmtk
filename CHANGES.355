@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.11.09 (riesmeier)
+
+- Fixed possible program crash when processing multi-frame overlay data stored
+  in data element OverlayData (60xx,3000).
+  Thanks to cfremgen <c.fremgen@icoserve.com> for the bug report and fix.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+
 **** Changes from 2006.11.08 (eichelberg)
 
 - Added DcmByteString::containsExtendedCharacters().
