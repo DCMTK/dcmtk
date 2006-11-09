@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2006, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:03 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-11-09 11:03:51 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,7 +520,11 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
             OFstatic_cast(unsigned long, Columns) + frame * OFstatic_cast(unsigned long, Rows) *
             OFstatic_cast(unsigned long, Columns)) * OFstatic_cast(unsigned long, BitsAllocated);
         StartBitPos = BitPos = OFstatic_cast(unsigned long, BitPosition) + bits;
-        StartPtr = Ptr = Data + (bits >> 4);
+        /* distinguish between embedded and separate overlay data */
+        if (BitsAllocated == 16)
+            StartPtr = Ptr = Data + (bits >> 4);
+        else
+            StartPtr = Data;
         result = (getRight() > 0) && (getBottom() > 0);
     }
     return result;
@@ -561,7 +565,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.26  2005-12-08 16:48:03  meichel
+ * Revision 1.27  2006-11-09 11:03:51  joergr
+ * Fixed possible program crash when processing multi-frame overlay data stored in
+ * data element OverlayData (60xx,3000).
+ *
+ * Revision 1.26  2005/12/08 16:48:03  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.25  2004/01/05 14:52:20  joergr
