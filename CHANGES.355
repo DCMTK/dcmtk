@@ -10,6 +10,7 @@ Changes between releases are documented here.
 
 - Added private tags from Siemens AXIOM Artis VB30 conformance statement.
   Affects: dcmdata/libsrc/private.dic
+           dcmdata/libsrc/dcdictzz.cc
 
 **** Changes from 2006.11.08 (eichelberg)
 
