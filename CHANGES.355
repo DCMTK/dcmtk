@@ -8,6 +8,12 @@ Changes between releases are documented here.
   Affects: dcmimage/libsrc/dicoimg.cc
            dcmimgle/libsrc/dimoimg.cc
 
+- Mask out the upper 32 bits gethostid()'s return value since on 64-bit Linux
+  it is sign-extended to a 64-bit long.
+  Thanks to Kevin Jamieson <kjamieson@bycast.com> for the report and suggested
+  fix.
+  Affects: dcmdata/libsrc/dcuid.cc
+
 **** Changes from 2006.11.09 (riesmeier)
 
 - Fixed possible program crash when processing multi-frame overlay data stored

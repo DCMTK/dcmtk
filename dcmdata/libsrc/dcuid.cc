@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 11:42:24 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2006-11-17 15:37:32 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1367,7 +1367,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
     uidCounterMutex.lock();
 #endif
     if (hostIdentifier == 0)
-        hostIdentifier = OFstatic_cast(unsigned long, gethostid());
+    {
+        /* On 64-bit Linux, the "32-bit identifier" returned by gethostid() is
+           sign-extended to a 64-bit long, so we need to blank the upper 32 bits */
+        hostIdentifier = OFstatic_cast(unsigned long, gethostid() & 0xffffffff);
+    }
     unsigned int counter = counterOfCurrentUID++;
 #ifdef _REENTRANT
     uidCounterMutex.unlock();
@@ -1399,7 +1403,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.64  2006-10-27 11:42:24  joergr
+** Revision 1.65  2006-11-17 15:37:32  joergr
+** Mask out the upper 32 bits gethostid()'s return value since on 64-bit Linux
+** it is sign-extended to a 64-bit long.
+**
+** Revision 1.64  2006/10/27 11:42:24  joergr
 ** Added new default parameter to dcmSOPClassUIDToModality() that allows for
 ** the specification of the return value in case the SOP Class is unknown.
 **
