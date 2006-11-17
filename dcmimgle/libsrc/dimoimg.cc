@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 15:00:16 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2006-11-17 15:09:54 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -903,7 +903,7 @@ int DiMonoImage::checkInterData(const int mode)
     }
     else if (InterData->getData() == NULL)
         ImageStatus = EIS_InvalidImage;
-    else if (mode && (ImageStatus == EIS_Normal))
+    else if (mode && (ImageStatus == EIS_Normal) && isOriginal /* do not check derived images */)
     {
         const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
@@ -2131,7 +2131,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.65  2006-10-27 15:00:16  joergr
+ * Revision 1.66  2006-11-17 15:09:54  joergr
+ * Only compare stored and computed pixel count for "original" images that are
+ * directly loaded from DICOM files or datasets.
+ *
+ * Revision 1.65  2006/10/27 15:00:16  joergr
  * Fixed possible integer overflow for images with very large pixel data.
  * Fixed wrong warning message about length of pixel data.
  *

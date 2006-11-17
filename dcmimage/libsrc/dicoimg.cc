@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 15:00:49 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2006-11-17 15:10:59 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -242,7 +242,7 @@ int DiColorImage::checkInterData(const int mode)
     }
     else if (InterData->getData() == NULL)
         ImageStatus = EIS_InvalidImage;
-    else if (mode && (ImageStatus == EIS_Normal))
+    else if (mode && (ImageStatus == EIS_Normal) && isOriginal /* do not check derived images */)
     {
         const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
@@ -742,7 +742,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.38  2006-10-27 15:00:49  joergr
+ * Revision 1.39  2006-11-17 15:10:59  joergr
+ * Only compare stored and computed pixel count for "original" images that are
+ * directly loaded from DICOM files or datasets.
+ *
+ * Revision 1.38  2006/10/27 15:00:49  joergr
  * Fixed wrong warning message about length of pixel data.
  *
  * Revision 1.37  2006/08/15 16:35:01  meichel

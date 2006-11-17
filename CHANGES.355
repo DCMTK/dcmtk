@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.11.17 (riesmeier)
+
+- Only compare stored and computed pixel count for "original" images that are
+  directly loaded from DICOM files or datasets.
+  Affects: dcmimage/libsrc/dicoimg.cc
+           dcmimgle/libsrc/dimoimg.cc
+
 **** Changes from 2006.11.09 (riesmeier)
 
 - Fixed possible program crash when processing multi-frame overlay data stored
