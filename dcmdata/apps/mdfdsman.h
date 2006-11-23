@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:50 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-11-23 15:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -252,17 +252,19 @@ protected:
                   const OFString &s1,
                   const OFString &s2,
                   const OFString &s3);
+private:
 
     ///name of file, that is loaded currently
     OFString act_file;
+
     ///will hold file to modify
     DcmFileFormat *dfile;
+
     ///will hold the dataset, that should be modified
     DcmDataset *dset;
+
     ///enable debug messages
     OFBool debug_option;
-
-private:
 
     /** private undefined assignment operator
      */
@@ -279,7 +281,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.16  2005-12-08 15:46:50  meichel
+** Revision 1.17  2006-11-23 15:32:58  onken
+** Made member variables private (before: protected)
+**
+** Revision 1.16  2005/12/08 15:46:50  meichel
 ** Updated Makefiles to correctly install header files
 **
 ** Revision 1.15  2005/12/02 09:21:47  joergr

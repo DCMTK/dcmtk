@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:50 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-11-23 15:32:58 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,44 +91,6 @@ public:
     int startProvidingService();
 
 protected:
-    ///helper class for console applications
-    OFConsoleApplication *app;
-    ///helper class for commandline parsing
-    OFCommandLine *cmd;
-    ///ds_man holds dataset manager, that is used for modify operations
-    MdfDatasetManager *ds_man;
-    ///verbose mode
-    OFBool verbose_option;
-    ///debug mode
-    OFBool debug_option;
-    ///ignore errors option
-    OFBool ignore_errors_option;
-    //if false, metaheader UIDs are not updated when related dataset UIDs change
-    OFBool update_metaheader_uids_option;
-    ///read file with or without metaheader
-    E_FileReadMode read_mode_option;
-    ///denotes the expected transfersyntax
-    E_TransferSyntax input_xfer_option;
-
-    ///decides whether to with/without metaheader
-    OFBool output_dataset_option;
-    ///denotes the transfer syntax that should be written
-    E_TransferSyntax output_xfer_option;
-    ///option for group length recalcing
-    E_GrpLenEncoding glenc_option;
-    ///write explicit or implicit length encoding
-    E_EncodingType enctype_option;
-    ///padding output
-    E_PaddingEncoding padenc_option;
-    ///internal padding variables
-    OFCmdUnsignedInt filepad_option;
-    OFCmdUnsignedInt itempad_option;
-
-    ///list of jobs to be executed
-    OFList<MdfJob> *jobs;
-    ///list of files to be modified
-    OFList<OFString> *files;
-
     /** Checks for non-job commandline options like --debug etc. and
      *  sets corresponding internal flags
      */
@@ -190,6 +152,58 @@ protected:
 
 private:
 
+    ///helper class for console applications
+    OFConsoleApplication *app;
+
+    ///helper class for commandline parsing
+    OFCommandLine *cmd;
+
+    ///ds_man holds dataset manager, that is used for modify operations
+    MdfDatasetManager *ds_man;
+
+    ///verbose mode
+    OFBool verbose_option;
+
+    ///debug mode
+    OFBool debug_option;
+
+    ///ignore errors option
+    OFBool ignore_errors_option;
+
+    //if false, metaheader UIDs are not updated when related dataset UIDs change
+    OFBool update_metaheader_uids_option;
+
+    ///read file with or without metaheader
+    E_FileReadMode read_mode_option;
+
+    ///denotes the expected transfersyntax
+    E_TransferSyntax input_xfer_option;
+
+    ///decides whether to with/without metaheader
+    OFBool output_dataset_option;
+
+    ///denotes the transfer syntax that should be written
+    E_TransferSyntax output_xfer_option;
+
+    ///option for group length recalcing
+    E_GrpLenEncoding glenc_option;
+
+    ///write explicit or implicit length encoding
+    E_EncodingType enctype_option;
+
+    ///padding output
+    E_PaddingEncoding padenc_option;
+
+    ///internal padding variables
+    OFCmdUnsignedInt filepad_option;
+    OFCmdUnsignedInt itempad_option;
+
+    ///list of jobs to be executed
+    OFList<MdfJob> *jobs;
+
+    ///list of files to be modified
+    OFList<OFString> *files;
+
     /** private undefined assignment operator
      */
     MdfConsoleEngine &operator=(const MdfConsoleEngine &);
@@ -205,7 +219,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.12  2005-12-08 15:46:50  meichel
+** Revision 1.13  2006-11-23 15:32:58  onken
+** Made member variables private (before: protected)
+**
+** Revision 1.12  2005/12/08 15:46:50  meichel
 ** Updated Makefiles to correctly install header files
 **
 ** Revision 1.11  2005/12/02 09:19:26  joergr
