@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.11.23 (onken)
+
+- Made member variables private (before: protected)
+  Affects: dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.h
+
 **** Changes from 2006.11.17 (riesmeier)
 
 - Only compare stored and computed pixel count for "original" images that are
