@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.12.06 (onken)
+
+- Added "--no-backup" option to prevent dcmodify from creating backup file.
+  Affects: dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfconen.cc
+           dcmdata/docs/dcmodify.man
+
 **** Changes from 2006.11.23 (onken)
 
 - Made member variables private (before: protected)
