@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-06 11:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,7 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(STD_NAMESPACE ostream& stream,
+    OFCondition print(STD_NAMESPACE ostream &stream,
                       const size_t flags = 0);
 
     /** read SR document from DICOM dataset.
@@ -172,7 +172,7 @@ class DSRDocument
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeXML(STD_NAMESPACE ostream& stream,
+    OFCondition writeXML(STD_NAMESPACE ostream &stream,
                          const size_t flags = 0);
 
     /** render current SR document in HTML format.
@@ -182,7 +182,7 @@ class DSRDocument
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(STD_NAMESPACE ostream& stream,
+    OFCondition renderHTML(STD_NAMESPACE ostream &stream,
                            const size_t flags = 0,
                            const char *styleSheet = NULL);
 
@@ -295,11 +295,11 @@ class DSRDocument
      *  A document can have more than one (direct) predecessor document.  This is e.g. the case
      *  when two or more documents have been merged to create it.  The corresponding method
      *  createRevisedVersion() automatically adds a reference to the current document.
-     *  PS 3.3-2004 states: "[The Predecessor Documents Sequence] Shall refer to SR SOP Instances
-     *  (e.g. prior or provisional reports) whose content has been wholly or partially included in
-     *  this document with or without modification." and "[...] the use of the Predecessor Document
-     *  Sequence allows tracing back to the input SR Document, which in this case is the previous
-     *  version."
+     *  The DICOM standard states: "[The Predecessor Documents Sequence] Shall refer to SR SOP
+     *  Instances (e.g. prior or provisional reports) whose content has been wholly or partially
+     *  included in this document with or without modification." and "[...] the use of the
+     *  Predecessor Document Sequence allows tracing back to the input SR Document, which in this
+     *  case is the previous version."
      *  Not applicable to Key Object Selection Documents.
      ** @return reference to list object
      */
@@ -311,36 +311,36 @@ class DSRDocument
      *  a revised version of the current document).  Possibly, there will be a createDuplicate()
      *  method or the like in the future which creates an identical copy of the current document in
      *  a new study/series.
-     *  PS 3.3-2004 states: "If identical copies of an SR Document are to be included in multiple
-     *  Studies then the entire SR Document shall be duplicated with appropriate changes for
-     *  inclusion into the different Studies (i.e. Study Instance UID, Series Instance UID, SOP
-     *  Instance UID, Identical Documents Sequence etc.). The Identical Documents Sequence Attribute
+     *  The DICOM standard states: "If identical copies of an SR Document are to be included in
+     *  multiple Studies then the entire SR Document shall be duplicated with appropriate changes
+     *  for inclusion into the different Studies (i.e. Study Instance UID, Series Instance UID, SOP
+     *  Instance UID, Identical Documents Sequence etc.).  The Identical Documents Sequence Attribute
      *  in each SOP Instance shall contain references to all other duplicate SOP Instances."
      ** @return reference to list object
      */
     DSRSOPInstanceReferenceList &getIdenticalDocuments();
 
     /** get list of referenced SOP instances (Current Requested Procedure Evidence).
-     *  PS 3.3-2004 states: "The intent of the Current Requested Procedure Evidence Sequence
+     *  The DICOM standard states: "The intent of the Current Requested Procedure Evidence Sequence
      *  is to reference all evidence created in order to satisfy the current Requested Procedure(s)
-     *  for this SR Document. This shall include, but is not limited to, all current evidence
-     *  referenced in the content tree." and "In the context of the Key Object Selection, the
-     *  current evidence is considered to be only the set of instances referenced within the Key
-     *  Object Selection."  Supplement 66 (FT) adds: "For a completed SR Document satisfying (i.e.,
-     *  being the final report for) the current Requested Procedure(s), this sequence shall list the
-     *  full set of Composite SOP Instances created for the current Requested Procedure(s). For other
+     *  for this SR Document.  This shall include, but is not limited to, all current evidence
+     *  referenced in the content tree." and "For a completed SR Document satisfying (i.e., being
+     *  the final report for) the current Requested Procedure(s), this sequence shall list the full
+     *  set of Composite SOP Instances created for the current Requested Procedure(s).  For other
      *  SOP Instances that include the SR Document General Module, this sequence shall contain at
      *  minimum the set of Composite SOP Instances from the current Requested Procedure(s) that are
-     *  referenced in the content tree."
+     *  referenced in the content tree." and "In the context of the Key Object Selection, the
+     *  current evidence is considered to be only the set of instances referenced within the Key
+     *  Object Selection."
      ** @return reference to list object
      */
     DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
 
     /** get list of referenced SOP instances (Pertinent Other Evidence).
-     *  PS 3.3-2004 states: "The Pertinent Other Evidence Sequence attribute is used to reference
-     *  all other evidence considered pertinent for this SR Document that is not listed in the Current
-     *  Requested Procedure Evidence Sequence. This requires that the same SOP Instance shall not be
-     *  referenced in both of these Sequences."
+     *  The DICOM standard states: "The Pertinent Other Evidence Sequence attribute is used to
+     *  reference all other evidence considered pertinent for this SR Document that is not listed
+     *  in the Current Requested Procedure Evidence Sequence.  This requires that the same SOP
+     *  Instance shall not be referenced in both of these Sequences."
      *  Not applicable to Key Object Selection Documents.
      ** @return reference to list object
      */
@@ -1017,7 +1017,7 @@ class DSRDocument
      ** @param  stream  output stream to which the HTML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
      */
-    void renderHTMLPatientData(STD_NAMESPACE ostream& stream,
+    void renderHTMLPatientData(STD_NAMESPACE ostream &stream,
                                const size_t flags);
 
     /** render list of referenced SOP instances in HTML format
@@ -1025,7 +1025,7 @@ class DSRDocument
      *  @param  refList  list of referenced SOP instances to be rendered
      *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
      */
-    void renderHTMLReferenceList(STD_NAMESPACE ostream& stream,
+    void renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                  DSRSOPInstanceReferenceList &refList,
                                  const size_t flags);
 
@@ -1184,7 +1184,12 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.42  2006-08-15 16:40:03  meichel
+ *  Revision 1.43  2006-12-06 11:50:42  joergr
+ *  Updated various citations according to the latest version of the DICOM
+ *  standard (incl. CP 584). Removed references to a particular edition of the
+ *  standard.
+ *
+ *  Revision 1.42  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
@@ -1227,7 +1232,7 @@ class DSRDocument
  *  comment.
  *
  *  Revision 1.30  2003/09/10 13:16:13  joergr
- *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
+ *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdentificationSequence as
  *  required by CP 324.
  *
  *  Revision 1.29  2003/08/07 18:01:42  joergr
@@ -1310,7 +1315,7 @@ class DSRDocument
  *  Enhanced rendered HTML output of date, time, datetime and pname.
  *
  *  Revision 1.7  2000/11/01 16:16:33  joergr
- *  dded support for conversion to XML.
+ *  Added support for conversion to XML.
  *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
  *  rendering.
  *  Enhanced support for specific character sets.

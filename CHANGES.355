@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.12.06 (riesmeier)
+
+- Updated various citations according to the latest version of the DICOM
+  standard (incl. CP 584). Removed references to a particular edition of the
+  standard.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+
 **** Changes from 2006.12.06 (onken)
 
 - Added "--no-backup" option to prevent dcmodify from creating backup file.
@@ -21,8 +28,8 @@ Changes between releases are documented here.
   Affects: dcmimage/libsrc/dicoimg.cc
            dcmimgle/libsrc/dimoimg.cc
 
-- Mask out the upper 32 bits gethostid()'s return value since on 64-bit Linux
-  it is sign-extended to a 64-bit long.
+- Mask out the upper 32 bits of gethostid()'s return value since on 64-bit
+  Linux it is sign-extended to a 64-bit long.
   Thanks to Kevin Jamieson <kjamieson@bycast.com> for the report and suggested
   fix.
   Affects: dcmdata/libsrc/dcuid.cc
