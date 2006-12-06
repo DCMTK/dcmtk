@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-11-23 15:32:58 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2006-12-06 09:31:49 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,8 +170,11 @@ private:
     ///ignore errors option
     OFBool ignore_errors_option;
 
-    //if false, metaheader UIDs are not updated when related dataset UIDs change
+    ///if false, metaheader UIDs are not updated when related dataset UIDs change
     OFBool update_metaheader_uids_option;
+
+    ///if true, no backup is made before modifying a file
+    OFBool no_backup_option;
 
     ///read file with or without metaheader
     E_FileReadMode read_mode_option;
@@ -219,7 +222,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.13  2006-11-23 15:32:58  onken
+** Revision 1.14  2006-12-06 09:31:49  onken
+** Added "--no-backup" option to prevent dcmodify from creating backup files
+**
+** Revision 1.13  2006/11/23 15:32:58  onken
 ** Made member variables private (before: protected)
 **
 ** Revision 1.12  2005/12/08 15:46:50  meichel

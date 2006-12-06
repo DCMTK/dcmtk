@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-06 09:31:49 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,11 +70,12 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
                                    const char *application_name)
   : app(NULL), cmd(NULL), ds_man(NULL), verbose_option(OFFalse),
     debug_option(OFFalse), ignore_errors_option(OFFalse),
-    update_metaheader_uids_option(OFTrue), read_mode_option(ERM_autoDetect),
-    input_xfer_option(EXS_Unknown), output_dataset_option(OFFalse),
-    output_xfer_option(EXS_Unknown), glenc_option(EGL_recalcGL),
-    enctype_option(EET_ExplicitLength), padenc_option(EPD_withoutPadding),
-    filepad_option(0), itempad_option(0), jobs(NULL), files(NULL)
+    update_metaheader_uids_option(OFTrue), no_backup_option(OFFalse),
+    read_mode_option(ERM_autoDetect), input_xfer_option(EXS_Unknown),
+    output_dataset_option(OFFalse), output_xfer_option(EXS_Unknown),
+    glenc_option(EGL_recalcGL), enctype_option(EET_ExplicitLength),
+    padenc_option(EPD_withoutPadding), filepad_option(0),
+    itempad_option(0), jobs(NULL), files(NULL)
 // Date         : May 13th, 2003
 // Author       : Michael Onken
 // Task         : Constructor.
@@ -103,7 +104,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         cmd->addOption("--debug",                 "-d",       "debug mode, print debug information");
         cmd->addOption("--verbose",               "-v",       "verbose mode, print verbose output");
         cmd->addOption("--ignore-errors",         "-ie",      "continue with file, if modify error occurs");
-
+        cmd->addOption("--no-backup",             "-nb",      "don't backup files (DANGEROUS)");
     cmd->addGroup("input options:", LONGCOL, SHORTCOL);
         cmd->addSubGroup("input file format:", LONGCOL, SHORTCOL);
             cmd->addOption("--read-file",          "+f",      "read file format or data set (default)");
@@ -235,7 +236,8 @@ void MdfConsoleEngine::parseNonJobOptions()
         ignore_errors_option=OFTrue;
     if (cmd->findOption("--no-meta-uid"))
         update_metaheader_uids_option=OFFalse;
-
+    if (cmd->findOption("--no-backup"))
+        no_backup_option = OFTrue;
     //input options:
     cmd->beginOptionBlock();
     if (cmd->findOption("--read-file"))
@@ -539,17 +541,20 @@ int MdfConsoleEngine::startProvidingService()
                     debugMsg(OFTrue, "error: couldn't save file: ",
                         result.text(),"");
                     errors++;
-                    result=restoreFile((*file_it).c_str());
-                    if (result.bad())
+                    if (!no_backup_option)
                     {
-                        debugMsg(OFTrue,
-                            "error: couldnt restore file!","","");
-                        errors++;
+                      result=restoreFile((*file_it).c_str());
+                      if (result.bad())
+                      {
+                          debugMsg(OFTrue,
+                              "error: couldnt restore file!","","");
+                          errors++;
+                      }
                     }
                 }
             }
             //errors occured and user doesn't want to ignore them:
-            else
+            else if (!no_backup_option)
             {
                 result=restoreFile((*file_it).c_str());
                 if (result.bad())
@@ -589,7 +594,7 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     debugMsg(verbose_option,"Processing file: ", filename, "");
     //load file into dataset manager
     result=ds_man->loadFile(filename, read_mode_option, input_xfer_option);
-    if (result.good())
+    if (result.good() && !no_backup_option)
         result=backupFile(filename);
     return result;
 }
@@ -706,7 +711,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.20  2006-08-15 15:50:56  meichel
+** Revision 1.21  2006-12-06 09:31:49  onken
+** Added "--no-backup" option to prevent dcmodify from creating backup files
+**
+** Revision 1.20  2006/08/15 15:50:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

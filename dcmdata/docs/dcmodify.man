@@ -77,6 +77,9 @@ dcmfile-in  DICOM input filename(s) to be modified
 
   -ie   --ignore-errors
           continue with file, if modify error occurs
+
+  -nb   --no-backup
+          don't backup files (DANGEROUS)
 \endverbatim
 
 \subsection input_options input options
