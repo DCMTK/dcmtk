@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.12.12 (riesmeier)
+
+- Fixed wrong default value for the "dateTimeSeparator" parameter.
+  Thanks to Jacob Foshee <jacobf@gmail.com> for the report and suggested fix.
+  Affects: ofstd/libsrc/ofdatime.cc
+
 **** Changes from 2006.12.06 (riesmeier)
 
 - Updated various citations according to the latest version of the DICOM

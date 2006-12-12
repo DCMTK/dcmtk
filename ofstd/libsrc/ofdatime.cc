@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:46 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-12 11:56:05 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,7 +209,7 @@ OFBool OFDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
                                            const OFBool showDelimiter) const
 {
     /* call the real function, required to make Sun CC 2.0.1 happy (see header file) */
-    return getISOFormattedDateTime(formattedDateTime, showSeconds, showFraction, showTimeZone, showDelimiter, "" /*showDelimiter*/);
+    return getISOFormattedDateTime(formattedDateTime, showSeconds, showFraction, showTimeZone, showDelimiter, " " /*dateTimeSeparator*/);
 }
 
 
@@ -265,7 +265,10 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTim
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
- * Revision 1.9  2006-08-14 16:42:46  meichel
+ * Revision 1.10  2006-12-12 11:56:05  joergr
+ * Fixed wrong default value for the "dateTimeSeparator" parameter.
+ *
+ * Revision 1.9  2006/08/14 16:42:46  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.
  *
