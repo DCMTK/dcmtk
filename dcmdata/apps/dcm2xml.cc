@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:55:38 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2006-12-13 14:21:56 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -371,10 +371,7 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
         if (cmd.findOption("--charset-check-all"))
-        {
             opt_checkAllStrings = OFTrue;
-            app.checkDependence("--charset-check-all", "--charset-assume", opt_defaultCharset != NULL);
-        }
 
         /* output options */
         cmd.beginOptionBlock();
@@ -458,7 +455,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.27  2006-12-13 13:55:38  joergr
+ * Revision 1.28  2006-12-13 14:21:56  joergr
+ * Removed dependence of the new command line option "--charset-check-all" from
+ * option "--charset-assume".
+ *
+ * Revision 1.27  2006/12/13 13:55:38  joergr
  * Added new command line option that allows to check all data elements with
  * string values for extended characters, not only those affected by Specific
  * CharacterSet (0008,0005).
