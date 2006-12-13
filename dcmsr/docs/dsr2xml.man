@@ -65,6 +65,9 @@ character set:
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
          assume charset c if no extended charset found
 
+  +Cc  --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
 \endverbatim
 
 \subsection input_options input options

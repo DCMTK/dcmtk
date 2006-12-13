@@ -86,7 +86,7 @@ long tag values:
   -M   --load-short
          do not load very long values (default)
 
-  +R   --max-read-length  [k]bytes: integer [4..4194302] (default: 4)
+  +R   --max-read-length  [k]bytes : integer [4..4194302] (default: 4)
          set threshold for long values to k kbytes
 \endverbatim
 
@@ -97,9 +97,13 @@ character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset: string constant
+  +Ca  --charset-assume  [c]harset : string constant
          (latin-1 to -5, cyrillic, arabic, greek, hebrew)
          assume charset c if no extended charset declared
+
+  +Cc  --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
 \endverbatim
 
 \subsection output_options output options
