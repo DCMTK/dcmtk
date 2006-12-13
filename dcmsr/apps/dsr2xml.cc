@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:02 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 14:16:15 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream& out,
                              const size_t readFlags,
                              const size_t writeFlags,
                              const char *defaultCharset,
-                             const OFBool debugMode)
+                             const OFBool debugMode,
+                             const OFBool checkAllStrings)
 {
     OFCondition result = EC_Normal;
 
@@ -101,7 +102,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream& out,
                 // check extended character set
 
                 const char *charset = dsrdoc->getSpecificCharacterSet();
-                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters())
+                if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters(checkAllStrings))
                 {
                     // we have an unspecified extended character set
                     if (defaultCharset == NULL)
@@ -159,6 +160,7 @@ int main(int argc, char *argv[])
     const char *opt_defaultCharset = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
+    OFBool opt_checkAllStrings = OFFalse;
 
     SetDebugLevel(( 0 ));
 
@@ -194,6 +196,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset : string constant (latin-1 to -5,",
                                                           "greek, cyrillic, arabic, hebrew)\n"
                                                           "assume charset c if no extended charset found");
+        cmd.addOption("--charset-check-all",    "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
         cmd.addOption("--attr-all",             "+Ea",    "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
@@ -283,6 +286,8 @@ int main(int argc, char *argv[])
             }
         }
         cmd.endOptionBlock();
+        if (cmd.findOption("--charset-check-all"))
+            opt_checkAllStrings = OFTrue;
 
         /* output options */
         if (cmd.findOption("--attr-all"))
@@ -345,12 +350,12 @@ int main(int argc, char *argv[])
         STD_NAMESPACE ofstream stream(ofname);
         if (stream.good())
         {
-            if (writeFile(stream, ifname, opt_readMode, opt_ixfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0).bad())
+            if (writeFile(stream, ifname, opt_readMode, opt_ixfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (writeFile(COUT, ifname, opt_readMode, opt_ixfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0).bad())
+        if (writeFile(COUT, ifname, opt_readMode, opt_ixfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
             result = 3;
     }
 
@@ -361,7 +366,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.33  2006-08-15 16:40:02  meichel
+ * Revision 1.34  2006-12-13 14:16:15  joergr
+ * Added new command line option that allows to check all data elements with
+ * string values for extended characters, not only those affected by Specific
+ * CharacterSet (0008,0005).
+ *
+ * Revision 1.33  2006/08/15 16:40:02  meichel
  * Updated the code in module dcmsr to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
