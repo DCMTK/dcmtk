@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:58:14 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,9 +177,11 @@ class DcmItem
     virtual OFBool containsUnknownVR() const;
 
     /** check if this object contains non-ASCII characters at any nesting level
+     *  @param checkAllStrings if true, also check elements with string values not affected
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
      *  @return true if object contains non-ASCII characters, false otherwise
      */
-    virtual OFBool containsExtendedCharacters();
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -279,7 +281,7 @@ class DcmItem
      *  This functions always performs a deep search (i.e. searches into sequence of items).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param resultStack stack where references to the elements are stored (added to).
-     * 	  If no element is found, the stack is not modified (e.g. cleared).
+     *    If no element is found, the stack is not modified (e.g. cleared).
      *  @return EC_Normal if at least one matching tag is found, an error code otherwise.
      */
     OFCondition findAndGetElements(const DcmTagKey &tagKey,
@@ -916,7 +918,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.56  2006-08-15 15:49:56  meichel
+** Revision 1.57  2006-12-13 13:58:14  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.56  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

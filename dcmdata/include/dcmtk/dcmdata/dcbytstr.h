@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-11-08 17:00:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:58:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -198,9 +198,11 @@ class DcmByteString
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
     /** check if this element contains non-ASCII characters
+     *  @param checkAllStrings if true, also check elements with string values not affected
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
      *  @return true if element contains non-ASCII characters, false otherwise
      */
-    virtual OFBool containsExtendedCharacters();
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
  protected:
 
@@ -299,7 +301,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.32  2006-11-08 17:00:06  meichel
+** Revision 1.33  2006-12-13 13:58:15  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.32  2006/11/08 17:00:06  meichel
 ** Added DcmByteString::containsExtendedCharacters
 **
 ** Revision 1.31  2006/08/15 15:49:56  meichel

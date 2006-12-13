@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:58:15 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,9 +248,11 @@ class DcmObject
     virtual OFBool containsUnknownVR() const;
 
     /** check if this object contains non-ASCII characters
+     *  @param checkAllStrings if true, also check elements with string values not affected
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
      *  @return always returns false, i.e. no extended characters used
      */
-    virtual OFBool containsExtendedCharacters();
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
     virtual OFCondition clear() = 0;
     virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
@@ -356,7 +358,11 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.43  2006-08-15 15:49:56  meichel
+ * Revision 1.44  2006-12-13 13:58:15  joergr
+ * Added new optional parameter "checkAllStrings" to method containsExtended
+ * Characters().
+ *
+ * Revision 1.43  2006/08/15 15:49:56  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

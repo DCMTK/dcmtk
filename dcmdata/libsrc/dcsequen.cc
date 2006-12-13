@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:59:49 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1242,13 +1242,13 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 }
 
 
-OFBool DcmSequenceOfItems::containsExtendedCharacters()
+OFBool DcmSequenceOfItems::containsExtendedCharacters(const OFBool checkAllStrings)
 {
     if (!itemList->empty())
     {
         itemList->seek(ELP_first);
         do {
-            if (itemList->get()->containsExtendedCharacters())
+            if (itemList->get()->containsExtendedCharacters(checkAllStrings))
                 return OFTrue;
         } while (itemList->seek(ELP_next));
     }
@@ -1259,7 +1259,11 @@ OFBool DcmSequenceOfItems::containsExtendedCharacters()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.64  2006-08-15 15:49:54  meichel
+** Revision 1.65  2006-12-13 13:59:49  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.64  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

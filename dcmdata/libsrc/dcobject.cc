@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:59:49 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -469,7 +469,7 @@ OFBool DcmObject::containsUnknownVR() const
 }
 
 
-OFBool DcmObject::containsExtendedCharacters()
+OFBool DcmObject::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
 {
     return OFFalse;
 }
@@ -478,7 +478,11 @@ OFBool DcmObject::containsExtendedCharacters()
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.47  2006-08-15 15:49:54  meichel
+ * Revision 1.48  2006-12-13 13:59:49  joergr
+ * Added new optional parameter "checkAllStrings" to method containsExtended
+ * Characters().
+ *
+ * Revision 1.47  2006/08/15 15:49:54  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

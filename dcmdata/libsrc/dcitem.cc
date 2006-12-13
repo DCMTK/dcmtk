@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:59:49 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3275,13 +3275,13 @@ OFBool DcmItem::containsUnknownVR() const
 }
 
 
-OFBool DcmItem::containsExtendedCharacters()
+OFBool DcmItem::containsExtendedCharacters(const OFBool checkAllStrings)
 {
     if (!elementList->empty())
     {
         elementList->seek(ELP_first);
         do {
-            if (elementList->get()->containsExtendedCharacters())
+            if (elementList->get()->containsExtendedCharacters(checkAllStrings))
                 return OFTrue;
         } while (elementList->seek(ELP_next));
     }
@@ -3292,7 +3292,11 @@ OFBool DcmItem::containsExtendedCharacters()
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.100  2006-08-15 15:49:54  meichel
+** Revision 1.101  2006-12-13 13:59:49  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.100  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

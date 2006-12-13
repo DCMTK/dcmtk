@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-11-08 17:00:04 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:59:49 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,16 +481,21 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
 }
 
 
-OFBool DcmByteString::containsExtendedCharacters()
+OFBool DcmByteString::containsExtendedCharacters(const OFBool checkAllStrings)
 {
-    char *c = NULL;
-    if (getString(c).good() && c)
+    /* only check if parameter is true since derived VRs are not affected
+       by the attribute SpecificCharacterSet (0008,0005) */
+    if (checkAllStrings)
     {
-        while (*c)
+        char *c = NULL;
+        if (getString(c).good() && c)
         {
-            if (OFstatic_cast(unsigned char, *c) > 127)
-                return OFTrue;
-            ++c;
+            while (*c)
+            {
+                if (OFstatic_cast(unsigned char, *c) > 127)
+                    return OFTrue;
+                ++c;
+            }
         }
     }
     return OFFalse;
@@ -599,7 +604,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.43  2006-11-08 17:00:04  meichel
+** Revision 1.44  2006-12-13 13:59:49  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.43  2006/11/08 17:00:04  meichel
 ** Added DcmByteString::containsExtendedCharacters
 **
 ** Revision 1.42  2006/10/13 10:07:02  joergr

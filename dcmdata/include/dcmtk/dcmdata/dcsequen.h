@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-13 13:58:15 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,9 +160,11 @@ public:
     virtual OFBool containsUnknownVR() const;
 
     /** check if this object contains non-ASCII characters at any nesting level
+     *  @param checkAllStrings if true, also check elements with string values not affected
+     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
      *  @return true if object contains non-ASCII characters, false otherwise
      */
-    virtual OFBool containsExtendedCharacters();
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
     virtual unsigned long card();
 
@@ -226,7 +228,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.34  2006-08-15 15:49:56  meichel
+** Revision 1.35  2006-12-13 13:58:15  joergr
+** Added new optional parameter "checkAllStrings" to method containsExtended
+** Characters().
+**
+** Revision 1.34  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

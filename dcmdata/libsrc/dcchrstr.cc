@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:47:05 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2006-12-13 13:59:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ DcmCharString &DcmCharString::operator=(const DcmCharString &obj)
 }
 
 
-OFBool DcmCharString::containsExtendedCharacters()
+OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
 {
     char *c = NULL;
     if (getString(c).good() && c)
@@ -92,7 +92,11 @@ OFBool DcmCharString::containsExtendedCharacters()
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
- * Revision 1.10  2006-05-11 08:47:05  joergr
+ * Revision 1.11  2006-12-13 13:59:49  joergr
+ * Added new optional parameter "checkAllStrings" to method containsExtended
+ * Characters().
+ *
+ * Revision 1.10  2006/05/11 08:47:05  joergr
  * Moved checkForNonASCIICharacters() from application to library.
  *
  * Revision 1.9  2005/12/08 15:40:57  meichel

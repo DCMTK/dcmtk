@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:52:09 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-12-13 13:58:15 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,9 +92,10 @@ class DcmCharString
     }
 
     /** check if this element contains non-ASCII characters
+     *  @param checkAllStrings not used in this class
      *  @return true if element contains non-ASCII characters, false otherwise
      */
-    virtual OFBool containsExtendedCharacters();
+    virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 };
 
 
@@ -104,7 +105,11 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
- * Revision 1.11  2006-05-11 08:52:09  joergr
+ * Revision 1.12  2006-12-13 13:58:15  joergr
+ * Added new optional parameter "checkAllStrings" to method containsExtended
+ * Characters().
+ *
+ * Revision 1.11  2006/05/11 08:52:09  joergr
  * Moved checkForNonASCIICharacters() from application to library.
  *
  * Revision 1.10  2005/12/08 16:28:00  meichel
