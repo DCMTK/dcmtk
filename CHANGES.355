@@ -17,7 +17,7 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcsequen.cc
 
 - Added new option that allows to update existing entries in a DICOMDIR. This
-  also adds support for mixed media stored application profiles.
+  also adds support for mixed media storage application profiles.
   Affects: dcmdata/apps/dcmgpdir.cc
            dcmdata/docs/dcmgpdir.man
            dcmdata/include/dcmtk/dcmdata/dcddirif.h
