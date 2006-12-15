@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:15:48 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-15 14:49:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ WlmActivityManager::WlmActivityManager(
     cmd_argv( argvv ), opt_maxAssociations( opt_maxAssociationsv ),
     opt_blockMode(opt_blockModev), opt_dimse_timeout(opt_dimse_timeoutv), opt_acse_timeout(opt_acse_timeoutv),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
-    logStream( logStreamv ), processTable( processTable )
+    logStream( logStreamv ), processTable( )
 {
   // initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
@@ -172,9 +172,6 @@ WlmActivityManager::WlmActivityManager(
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  // initialize table that manages subprocesses.
-  processTable.pcnt = 0;
-  processTable.plist = NULL;
 }
 
 // ----------------------------------------------------------------------------
@@ -393,7 +390,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     timeout = 1000;
   else
   {
-    if( CountChildProcesses() > 0 )
+    if( processTable.size() > 0 )
       timeout = 1;
     else
       timeout = 1000;
@@ -475,7 +472,7 @@ OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 
   // Condition 4: if there are too many concurrent associations
   // we want to refuse the association request
-  if( CountChildProcesses() >= opt_maxAssociations )
+  if( (int)processTable.size() >= opt_maxAssociations )
   {
     RefuseAssociation( &assoc, WLM_TOO_MANY_ASSOCIATIONS );
     if( !opt_singleProcess )
@@ -895,7 +892,7 @@ void WlmActivityManager::AddProcessToTable( int pid, T_ASC_Association *assoc )
   WlmProcessSlotType *ps;
 
   // Allocate some memory for a new item in the list of processes.
-  ps = (WlmProcessSlotType*)malloc( sizeof( WlmProcessSlotType ) );
+  ps = new WlmProcessSlotType ();
 
   // Remember process information in the new item.
   ASC_getPresentationAddresses( assoc->params, ps->peerName, NULL );
@@ -905,33 +902,7 @@ void WlmActivityManager::AddProcessToTable( int pid, T_ASC_Association *assoc )
   ps->hasStorageAbility = OFFalse;
 
   // Add new item to the beginning of the list.
-  processTable.pcnt++;
-  ps->next = processTable.plist;
-  processTable.plist = ps;
-}
-
-// ----------------------------------------------------------------------------
-
-int WlmActivityManager::CountChildProcesses()
-// Date         : December 10, 2001
-// Author       : Thomas Wilkens
-// Task         : This function counts all child processes which are still referenced in the process table.
-// Parameters   : none.
-// Return Value : The current amount of child processes.
-{
-  int n=0;
-  WlmProcessSlotType *ps;
-
-  // Go through the table/list and count all items.
-  ps = processTable.plist;
-  while( ps )
-  {
-    n++;
-    ps = ps->next;
-  }
-
-  // Return amount of items.
-  return n;
+  processTable.push_back(ps);
 }
 
 // ----------------------------------------------------------------------------
@@ -944,42 +915,28 @@ void WlmActivityManager::RemoveProcessFromTable( int pid )
 // Parameters   : pid - [in] process id.
 // Return Value : none.
 {
-  WlmProcessSlotType *ps, *pps;
-  OFBool found = OFFalse;
-  pps = NULL;
-  ps = processTable.plist;
-  char msg[200];
+  WlmProcessSlotType *ps = NULL;
 
   // try to find item that corresponds to the given process id
-  while( ps && !found )
+  OFListIterator(WlmProcessSlotType*) it = processTable.begin();
+  while ( it != processTable.end() )
   {
-    found = (ps->processId == pid);
-    if( !found )
-    {
-      pps = ps;
-      ps = ps->next;
+    ps = *it;
+    // if process can be found, delete it from list and free memory
+    if ( ps->processId == pid ) 
+    { 
+      processTable.remove(*it);
+      delete ps;
+      return;
     }
+    it++;
   }
+  
+  // dump a warning if process could not be found in process table
+  char msg[200];
+  sprintf( msg, "WlmActivityManager::RemoveProcessFromTable : Could not find process %d.", pid );
+  DumpMessage( msg );
 
-  // dump a warning if item could not be found
-  if( !found )
-  {
-    sprintf( msg, "WlmActivityManager::RemoveProcessFromTable : Could not find process %d.", pid );
-    DumpMessage( msg );
-    return;
-  }
-
-  // update list pointer
-  if( pps == NULL )
-    processTable.plist = ps->next;      // (item is first in list)
-  else
-    pps->next = ps->next;
-
-  // delete item
-  free(ps);
-
-  // decrease counter that counts subprocesses
-  processTable.pcnt--;
 }
 
 // ----------------------------------------------------------------------------
@@ -1094,13 +1051,13 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
 //                logStream    - [in] A stream messages can be dumped to.
 // Return Value : none.
 {
-  DcmAttributeTag *at;
-  DcmLongString *lo;
-  char msg[200];
-
   // If no element was passed, return to the caller.
   if( elem == NULL )
     return;
+  
+  DcmAttributeTag *at;
+  DcmLongString *lo;
+  char msg[200];
 
   // Create the container object if necessary
   if( *statusDetail == NULL )
@@ -1323,7 +1280,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.23  2006-08-15 16:15:48  meichel
+** Revision 1.24  2006-12-15 14:49:28  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.23  2006/08/15 16:15:48  meichel
 ** Updated the code in module dcmwlm to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

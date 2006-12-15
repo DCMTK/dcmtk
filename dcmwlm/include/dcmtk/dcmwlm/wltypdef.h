@@ -21,10 +21,10 @@
  *
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:44 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-15 14:49:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,17 +89,6 @@ struct WlmProcessSlotType
   time_t startTime;
   /// indicator if process has storage ability
   OFBool hasStorageAbility;
-  /// pointer to next link
-  WlmProcessSlotType *next;
-};
-
-  /// structure for non-single process mode
-struct WlmProcessTableType
-{
-  /// counter
-  int pcnt;
-  /// list of processes
-  WlmProcessSlotType *plist;
 };
 
   /// Reason for refusing association types
@@ -155,7 +144,11 @@ struct WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.11  2005-12-08 16:05:44  meichel
+** Revision 1.12  2006-12-15 14:49:22  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.11  2005/12/08 16:05:44  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.10  2005/09/23 12:56:40  wilkens

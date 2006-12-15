@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:40 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-15 14:49:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,16 +35,7 @@
 #define WlmDataSource_h
 
 #include "dcmtk/config/osconfig.h"
-
-class DcmDataset;
-class DcmList;
-class DcmAttributeTag;
-class DcmLongString;
-class DcmTagKey;
-class DcmElement;
-class OFConsole;
-class OFCondition;
-class DcmSequenceOfItems;
+#include "dcmtk/dcmdata/dctk.h"
 
 /** This class encapsulates data structures and operations for connecting to an arbitrary
  *  data source in the framework of the DICOM basic worklist management service.
@@ -52,10 +43,11 @@ class DcmSequenceOfItems;
 class WlmDataSource
 {
   protected:
+
     /// indicates if the application shall fail on an invalid C-Find RQ message
     OFBool failOnInvalidQuery;
     /// called AE title
-    char *calledApplicationEntityTitle;
+    OFString calledApplicationEntityTitle;
     /// indicates if the application is run in verbose mode or not
     OFBool verbose;
     /// indicates if the application is run in debug mode or not
@@ -79,9 +71,7 @@ class WlmDataSource
     /// returned character set type
     WlmReturnedCharacterSetType returnedCharacterSet;
     /// array of matching datasets
-    DcmDataset **matchingDatasets;
-    /// number of array fields
-    unsigned long numOfMatchingDatasets;
+    OFList<DcmDataset*> matchingDatasets;
     /// potentially specified specific character set (in search mask)
     OFString specificCharacterSet;
     /// information about superior sequence elements; necessary for inserting values into resultDataset
@@ -262,14 +252,14 @@ class WlmDataSource
        *  tained in this variable.
        *  @param tag The tag that shall be inserted.
        */
-    void PutOffendingElements( DcmTagKey &tag );
+    void PutOffendingElements( const DcmTagKey &tag );
 
       /** This function inserts the tag of an error element into the
        *  corresponding member variable, without checking if it is already
        *  contained in this variable.
        *  @param tag The tag that shall be inserted.
        */
-    void PutErrorElements( DcmTagKey &tag );
+    void PutErrorElements( const DcmTagKey &tag );
 
       /** This function checks if the passed matching key's value only uses characters
        *  which are part of its data type's character repertoire. Note that at the moment
@@ -298,7 +288,7 @@ class WlmDataSource
        *          the element's data type's character repertoire. OFFalse in case the given element's value
        *          does not only use characters which are part of the element's data type's character repertoire.
        */
-    OFBool CheckMatchingKey( DcmElement *elem );
+    OFBool CheckMatchingKey( const DcmElement *elem );
 
       /** This function returns OFTrue if all the characters of s can be found
        *  in the string charset.
@@ -313,7 +303,7 @@ class WlmDataSource
        *  @param value The value which shall be checked.
        *  @return OFTrue in case the given value is a valid date or date range, OFFalse otherwise.
        */
-    OFBool IsValidDateOrDateRange( const char *value );
+    OFBool IsValidDateOrDateRange( const OFString& value );
 
       /** This function checks if the given date value is valid.
        *  According to the 2001 DICOM standard, part 5, Table 6.2-1, a date
@@ -322,13 +312,13 @@ class WlmDataSource
        *  @param value The value which shall be checked.
        *  @return OFTrue in case the Date is valid, OFFalse otherwise.
        */
-    OFBool IsValidDate( const char *value );
+    OFBool IsValidDate( const OFString& value );
 
       /** This function checks if the given value is a valid time or time range.
        *  @param value The value which shall be checked.
        *  @return OFTrue in case the given value is a valid time or time range, OFFalse otherwise.
        */
-    OFBool IsValidTimeOrTimeRange( const char *value );
+    OFBool IsValidTimeOrTimeRange( const OFString& value );
 
       /** This function checks if the given time value is valid.
        *  According to the 2001 DICOM standard, part 5, Table 6.2-1, a time
@@ -343,14 +333,18 @@ class WlmDataSource
        *  @param value The value which shall be checked.
        *  @return OFTrue in case the time is valid, OFFalse otherwise.
        */
-    OFBool IsValidTime( const char *value );
+    OFBool IsValidTime( const OFString& value );
 
-      /** This function returns the value of the given DICOM string element (attribute).
-       *  If the element does not refer to a string attribute, a NULL pointer is returned.
+      /** This function returns the value of the given DICOM string element (attribute)
+       *  in the parameter resultVal and returns OFTrue if successful.
+       *  If the element does not refer to a string attribute or contains an empty value,
+       *  OFFalse is returned.
        *  @param elem The DICOM element.
+       *  @param resultVal The resulting string value
        *  @return The value of the given DICOM (string) element or NULL.
        */
-    char *GetStringValue( DcmElement *elem );
+    OFBool GetStringValue( const DcmElement *elem,
+                           OFString& resultVal );
 
       /** This function dumps the given information on a stream.
        *  Used for dumping information in normal, debug and verbose mode.
@@ -362,7 +356,7 @@ class WlmDataSource
        *  @param value The source string.
        *  @return A copy of the given string without leading and trailing blanks.
        */
-    char *DeleteLeadingAndTrailingBlanks( const char *value );
+    OFString DeleteLeadingAndTrailingBlanks( const OFString& value );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.
@@ -398,7 +392,7 @@ class WlmDataSource
       /** Set value in member variable.
        *  @param value The value to set.
        */
-    void SetCalledApplicationEntityTitle( char *value );
+    void SetCalledApplicationEntityTitle( const OFString& value );
 
       /** Set value in member variable.
        *  @param value The value to set.
@@ -451,7 +445,7 @@ class WlmDataSource
        *          WLM_PENDING_WARNING: Matching records found, not all return keys supported by this application;
        *          WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS: Error in the search mask encountered.
        */
-    virtual WlmDataSourceStatusType StartFindRequest( DcmDataset &findRequestIdentifiers ) = 0;
+    virtual WlmDataSourceStatusType StartFindRequest( const DcmDataset &findRequestIdentifiers ) = 0;
 
       /** This function will return the next dataset that matches the given search mask, if
        *  there is one more resulting dataset to return. In such a case, rstatus will be set
@@ -485,23 +479,23 @@ class WlmDataSource
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetDbDsn( const char * /*value*/ ) {}
+    virtual void SetDbDsn( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetDbUserName( const char * /*value*/ ) {}
+    virtual void SetDbUserName( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetDbUserPassword( const char * /*value*/ ) {}
+    virtual void SetDbUserPassword( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetCfgFileMatchRecords( const char * /*value*/ ) {}
+    virtual void SetCfgFileMatchRecords( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetCfgFileSelectValues( const char * /*value*/ ) {}
+    virtual void SetCfgFileSelectValues( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
@@ -519,7 +513,7 @@ class WlmDataSource
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetDfPath( const char * /*value*/ ) {}
+    virtual void SetDfPath( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
@@ -531,11 +525,11 @@ class WlmDataSource
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetPfFileName( const char * /*value*/ ) {}
+    virtual void SetPfFileName( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
-    virtual void SetModalityToReturn( const char * /*value*/ ) {}
+    virtual void SetModalityToReturn( const OFString& /*value*/ ) {}
 
       /** Set value in a member variable in a derived class.
        */
@@ -551,7 +545,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.23  2005-12-08 16:05:40  meichel
+** Revision 1.24  2006-12-15 14:49:21  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.23  2005/12/08 16:05:40  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.22  2005/09/23 12:56:40  wilkens

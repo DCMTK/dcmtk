@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: meichel $
-*  Update Date:      $Date: 2006-08-15 16:15:48 $
+*  Last Update:      $Author: onken $
+*  Update Date:      $Date: 2006-12-15 14:49:28 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.18 $
+*  CVS/RCS Revision: $Revision: 1.19 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -78,8 +78,8 @@ WlmFileSystemInteractionManager::WlmFileSystemInteractionManager()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : verboseMode( OFFalse ), debugMode( OFFalse ), logStream( NULL ), dfPath( NULL ),
-    enableRejectionOfIncompleteWlFiles( OFTrue ), calledApplicationEntityTitle( NULL ),
+  : verboseMode( OFFalse ), debugMode( OFFalse ), logStream( NULL ), dfPath( "" ),
+    enableRejectionOfIncompleteWlFiles( OFTrue ), calledApplicationEntityTitle( "" ),
     matchingRecords( NULL ), numOfMatchingRecords( 0 )
 {
 }
@@ -93,7 +93,6 @@ WlmFileSystemInteractionManager::~WlmFileSystemInteractionManager()
 // Parameters   : none.
 // Return Value : none.
 {
-  if( dfPath != NULL ) delete dfPath;
 }
 
 // ----------------------------------------------------------------------------
@@ -146,7 +145,7 @@ void WlmFileSystemInteractionManager::SetEnableRejectionOfIncompleteWlFiles( OFB
 
 // ----------------------------------------------------------------------------
 
-OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( char *dfPathv )
+OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( const OFString& dfPathv )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : Connects to the worklist file system database.
@@ -154,18 +153,17 @@ OFCondition WlmFileSystemInteractionManager::ConnectToFileSystem( char *dfPathv 
 // Return Value : Indicates if the connection could be established or not.
 {
   // check parameter
-  if( dfPathv == NULL )
+  if( dfPathv.length() == 0 )
   {
     DumpMessage("Invalid parameters, cannot connect to worklist file system database...");
     return( WLM_EC_CannotConnectToDataSource );
   }
 
   // copy value
-  dfPath = new char[ strlen( dfPathv ) + 1 ];
-  strcpy( dfPath, dfPathv );
+  dfPath = dfPathv;
 
   // check if the specified path is existent and accessible for reading
-  if( !OFStandard::dirExists( OFString( dfPath ) ) || !OFStandard::isReadable( OFString( dfPath ) ) )
+  if( !OFStandard::dirExists( dfPath ) || !OFStandard::isReadable( dfPath ) )
     return( WLM_EC_CannotConnectToDataSource );
   else
     return( EC_Normal );
@@ -203,7 +201,7 @@ void WlmFileSystemInteractionManager::DumpMessage( const char *message )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported( char *calledApplicationEntityTitlev )
+OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : Checks if the given called application entity title is supported. If this is the case,
@@ -214,8 +212,7 @@ OFBool WlmFileSystemInteractionManager::IsCalledApplicationEntityTitleSupported(
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
   // copy value
-  calledApplicationEntityTitle = new char[ strlen( calledApplicationEntityTitlev ) + 1 ];
-  strcpy( calledApplicationEntityTitle, calledApplicationEntityTitlev );
+  calledApplicationEntityTitle = calledApplicationEntityTitlev;
 
   // Determine complete path to the files that make up the data source.
   OFString fullPath( dfPath );
@@ -2228,7 +2225,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.18  2006-08-15 16:15:48  meichel
+** Revision 1.19  2006-12-15 14:49:28  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.18  2006/08/15 16:15:48  meichel
 ** Updated the code in module dcmwlm to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:41 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-15 14:49:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,10 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmwlm/wlds.h"
+#include "dcmtk/dcmwlm/wlfsim.h"
 
-class WlmFileSystemInteractionManager;
+//class WlmFileSystemInteractionManager;
+class DcmItem;
 class DcmDataset;
 class OFCondition;
 class DcmElement;
@@ -50,9 +52,9 @@ class WlmDataSourceFileSystem : public WlmDataSource
 {
   protected:
     /// manager for file system interaction
-    WlmFileSystemInteractionManager *fileSystemInteractionManager;
+    WlmFileSystemInteractionManager fileSystemInteractionManager;
     /// path to database files
-    char *dfPath;
+    OFString dfPath;
     /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
     OFBool enableRejectionOfIncompleteWlFiles;
     /// handle to the read lock file
@@ -125,7 +127,7 @@ class WlmDataSourceFileSystem : public WlmDataSource
       /** Set value in member variable.
        *  @param value The value to set.
        */
-    void SetDfPath( const char *value );
+    void SetDfPath( const OFString& value );
 
       /** Set value in member variable.
        *  @param value The value to set.
@@ -184,7 +186,7 @@ class WlmDataSourceFileSystem : public WlmDataSource
        *          WLM_PENDING_WARNING: Matching records found, not all return keys supported by this application;
        *          WLM_FAILED_IDENTIFIER_DOES_NOT_MATCH_SOP_CLASS: Error in the search mask encountered.
        */
-    WlmDataSourceStatusType StartFindRequest( DcmDataset &findRequestIdentifiers );
+    WlmDataSourceStatusType StartFindRequest( const DcmDataset &findRequestIdentifiers );
 
       /** This function will return the next dataset that matches the given search mask, if
        *  there is one more resulting dataset to return. In such a case, rstatus will be set
@@ -204,7 +206,11 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.15  2005-12-08 16:05:41  meichel
+** Revision 1.16  2006-12-15 14:49:21  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.15  2005/12/08 16:05:41  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.14  2005/05/04 11:33:17  wilkens

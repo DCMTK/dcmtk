@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:15:48 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-15 14:49:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,10 +62,9 @@ WlmDataSourceFileSystem::WlmDataSourceFileSystem()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : fileSystemInteractionManager( NULL ), dfPath( NULL ), enableRejectionOfIncompleteWlFiles( OFTrue ),
+  : fileSystemInteractionManager( ), dfPath( "" ), enableRejectionOfIncompleteWlFiles( OFTrue ),
     handleToReadLockFile( 0 )
 {
-  fileSystemInteractionManager = new WlmFileSystemInteractionManager();
 }
 
 // ----------------------------------------------------------------------------
@@ -80,9 +79,6 @@ WlmDataSourceFileSystem::~WlmDataSourceFileSystem()
   // release read lock on data source if it is set
   if( readLockSetOnDataSource ) ReleaseReadlock();
 
-  //free memory
-  delete fileSystemInteractionManager;
-  if( dfPath != NULL ) delete dfPath;
 }
 
 // ----------------------------------------------------------------------------
@@ -95,13 +91,13 @@ OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
 // Return Value : Indicates if the connection was established succesfully.
 {
   // set variables in fileSystemInteractionManager object
-  fileSystemInteractionManager->SetLogStream( logStream );
-  fileSystemInteractionManager->SetVerbose( verbose );
-  fileSystemInteractionManager->SetDebug( debug );
-  fileSystemInteractionManager->SetEnableRejectionOfIncompleteWlFiles( enableRejectionOfIncompleteWlFiles );
+  fileSystemInteractionManager.SetLogStream( logStream );
+  fileSystemInteractionManager.SetVerbose( verbose );
+  fileSystemInteractionManager.SetDebug( debug );
+  fileSystemInteractionManager.SetEnableRejectionOfIncompleteWlFiles( enableRejectionOfIncompleteWlFiles );
 
   // connect to file system
-  OFCondition cond = fileSystemInteractionManager->ConnectToFileSystem( dfPath );
+  OFCondition cond = fileSystemInteractionManager.ConnectToFileSystem( dfPath );
 
   // return result
   return( cond );
@@ -117,7 +113,7 @@ OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
 // Return Value : Indicates if the disconnection was completed succesfully.
 {
   // disconnect from file system
-  OFCondition cond = fileSystemInteractionManager->DisconnectFromFileSystem();
+  OFCondition cond = fileSystemInteractionManager.DisconnectFromFileSystem();
 
   // return result
   return( cond );
@@ -125,19 +121,14 @@ OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSourceFileSystem::SetDfPath( const char *value )
+void WlmDataSourceFileSystem::SetDfPath( const OFString& value )
 // Date         : March 14, 2002
 // Author       : Thomas Wilkens
 // Task         : Set member variable.
 // Parameters   : value - Value for member variable.
 // Return Value : none.
 {
-  if( value != NULL )
-  {
-    if( dfPath != NULL ) delete dfPath;
-    dfPath = new char[ strlen(value) + 1 ];
-    strcpy( dfPath, value );
-  }
+  dfPath = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -166,10 +157,10 @@ OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
   // Check if calledApplicationEntityTitle does not have a valid value
-  if( calledApplicationEntityTitle == NULL )
+  if( calledApplicationEntityTitle.length() == 0 )
     return( OFFalse );
   else
-    return( fileSystemInteractionManager->IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
+    return( fileSystemInteractionManager.IsCalledApplicationEntityTitleSupported( calledApplicationEntityTitle ) );
 }
 
 // ----------------------------------------------------------------------------
@@ -262,7 +253,7 @@ void WlmDataSourceFileSystem::HandleExistentButEmptyReferencedStudyOrPatientSequ
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &findRequestIdentifiers )
+WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmDataset &findRequestIdentifiers )
 // Date         : July 11, 2002
 // Author       : Thomas Wilkens
 // Task         : Based on the search mask which was passed, this function determines all the records in the
@@ -299,16 +290,13 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   // Remove group length and padding elements from the search mask.
   identifiers->computeGroupLengthAndPadding( EGL_withoutGL, EPD_withoutPadding );
 
-  // Actually there should be no elements in array matchingDatasets. But just to make sure,
-  // remove all elements in the array and the array itself, if the array is not NULL; note
-  // that this variable will in the end contain all records (datasets) that match the search mask.
-  if( matchingDatasets != NULL )
+  // Actually there should be no elements in array matchingDatasets. Delete them to be sure.
+  // matchingDatasets will in the end contain all records (datasets) that match the search mask.
+  while (!matchingDatasets.empty())
   {
-    for( i=0 ; i<numOfMatchingDatasets ; i++ )
-      delete matchingDatasets[i];
-    delete[] matchingDatasets;
-    matchingDatasets = NULL;
-    numOfMatchingDatasets = 0;
+    DcmDataset *dset = matchingDatasets.front();
+    delete dset; dset = NULL;
+    matchingDatasets.pop_front();
   }
 
   // This member variable indicates if we encountered an unsupported
@@ -344,7 +332,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
     DumpMessage( "Determining matching records from worklist files." );
 
   // Determine records from worklist files which match the search mask
-  unsigned long numOfMatchingRecords = fileSystemInteractionManager->DetermineMatchingRecords( identifiers );
+  unsigned long numOfMatchingRecords = fileSystemInteractionManager.DetermineMatchingRecords( identifiers );
 
   // dump some information if required
   if( verbose )
@@ -361,13 +349,13 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   // If that is the case, do the following:
   if( numOfMatchingRecords != 0 )
   {
-    // create a container array that captures all result DcmDatasets
-    numOfMatchingDatasets = numOfMatchingRecords;
-    matchingDatasets = new DcmDataset*[ numOfMatchingDatasets ];
-
     // for each matching record do the following
     for( i=0 ; i<numOfMatchingRecords ; i++ )
     {
+      // For every matching record ID, add one result dataset to result list and
+      // initialize it with search mask
+      DcmDataset *resultRecord = new DcmDataset(*identifiers);
+      matchingDatasets.push_back(resultRecord);
       // this variable is needed later, it must be initialized with NULL
       DcmElement *specificCharacterSetElement = NULL;
 
@@ -378,17 +366,14 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
         DumpMessage( msg );
       }
 
-      // copy the search mask into matchingDatasets[i]
-      matchingDatasets[i] = new DcmDataset( *identifiers );
-
       // Determine the number of elements in matchingDatasets[i].
-      unsigned long numOfElementsInDataset = matchingDatasets[i]->card();
+      unsigned long numOfElementsInDataset = resultRecord->card();
 
       // Go through all the elements in matchingDatasets[i].
       for( j=0 ; j < numOfElementsInDataset ; j++ )
       {
         // Determine the current element.
-        DcmElement *element = matchingDatasets[i]->getElement(j);
+        DcmElement *element = resultRecord->getElement(j);
 
         // Depending on if the current element is a sequence or not, process this element.
         if( element->ident() != EVR_SQ )
@@ -408,7 +393,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
         // and it is already included, delete it
         if( specificCharacterSetElement != NULL )
         {
-          DcmElement *elem = matchingDatasets[i]->remove( specificCharacterSetElement );
+          DcmElement *elem = resultRecord->remove( specificCharacterSetElement );
           delete elem;
         }
       }
@@ -419,7 +404,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
         {
           // if it is not included in the returned dataset, create a new element and insert it
           specificCharacterSetElement = new DcmCodeString( DcmTag( DCM_SpecificCharacterSet ) );
-          if( matchingDatasets[i]->insert( specificCharacterSetElement ) != EC_Normal )
+          if( resultRecord->insert( specificCharacterSetElement ) != EC_Normal )
           {
             delete specificCharacterSetElement;
             specificCharacterSetElement = NULL;
@@ -440,17 +425,17 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
 
       // if the ScheduledProcedureStepSequence can be found in the current dataset, handle
       // existent but empty ScheduledProcedureStepDescription and ScheduledProtocolCodeSequence
-      if( matchingDatasets[i]->findAndGetElement( DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequenceAttribute, OFFalse ).good() )
+      if( resultRecord->findAndGetElement( DCM_ScheduledProcedureStepSequence, scheduledProcedureStepSequenceAttribute, OFFalse ).good() )
         HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( ((DcmDataset*)((DcmSequenceOfItems*)scheduledProcedureStepSequenceAttribute)->getItem(0)), DCM_ScheduledProcedureStepDescription, DCM_ScheduledProtocolCodeSequence );
 
       // handle existent but empty RequestedProcedureDescription and RequestedProcedureCodeSequence
-      HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( matchingDatasets[i], DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence );
+      HandleExistentButEmptyDescriptionAndCodeSequenceAttributes( resultRecord, DCM_RequestedProcedureDescription, DCM_RequestedProcedureCodeSequence );
 
       // handle existent but empty ReferencedStudySequence
-      HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( matchingDatasets[i], DCM_ReferencedStudySequence );
+      HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedStudySequence );
 
       // handle existent but empty ReferencedPatientSequence
-      HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( matchingDatasets[i], DCM_ReferencedPatientSequence );
+      HandleExistentButEmptyReferencedStudyOrPatientSequenceAttributes( resultRecord, DCM_ReferencedPatientSequence );
     }
 
     // Determine a corresponding return value: If matching records were found, WLM_PENDING or
@@ -463,7 +448,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   }
 
   // forget the matching records in the fileSystemInteractionManager (free memory)
-  fileSystemInteractionManager->ClearMatchingRecords();
+  fileSystemInteractionManager.ClearMatchingRecords();
 
   // Now all the resulting data sets are contained in the member array matchingDatasets.
   // The variable numOfMatchingDatasets specifies the number of array fields.
@@ -493,7 +478,7 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
   DcmDataset *resultDataset = NULL;
 
   // If there are no more datasets that can be returned, do the following
-  if( numOfMatchingDatasets == 0 )
+  if( matchingDatasets.empty() )
   {
     // Set the return status to WLM_SUCCESS and return an empty dataset.
     rStatus = WLM_SUCCESS;
@@ -501,21 +486,11 @@ DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &
   }
   else
   {
-    // We want to return the last array element.
-    resultDataset = matchingDatasets[ numOfMatchingDatasets - 1 ];
+    // We want to return the last array element and forget the pointer to this dataset here
+    resultDataset = matchingDatasets.back();
+    matchingDatasets.pop_back();
 
-    // Forget the pointer to this dataset here.
-    matchingDatasets[ numOfMatchingDatasets - 1 ] = NULL;
-    numOfMatchingDatasets--;
-
-    // If there are no more elements to return, delete the array itself.
-    if( numOfMatchingDatasets == 0 )
-    {
-      delete[] matchingDatasets;
-      matchingDatasets = NULL;
-    }
-
-    // Determine a return status.
+     // Determine a return status.
     if( foundUnsupportedOptionalKey )
       rStatus = WLM_PENDING_WARNING;
     else
@@ -555,7 +530,7 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
     // get a value for the current element from database; note that all values for return key
     // attributes are returned as strings by GetAttributeValueForMatchingRecord().
     char *value = NULL;
-    fileSystemInteractionManager->GetAttributeValueForMatchingRecord( tag, superiorSequenceArray, numOfSuperiorSequences, idx, value );
+    fileSystemInteractionManager.GetAttributeValueForMatchingRecord( tag, superiorSequenceArray, numOfSuperiorSequences, idx, value );
 
     // put value in element
     // (note that there is currently one attribute (DCM_PregnancyStatus) for which the value must not
@@ -615,7 +590,7 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
     DcmTagKey sequenceTag( sequenceOfItemsElement->getTag().getXTag() );
 
     // determine how many items this sequence has in the matching record in the data source
-    numOfItemsInResultSequence = fileSystemInteractionManager->GetNumberOfSequenceItemsForMatchingRecord( sequenceTag, superiorSequenceArray, numOfSuperiorSequences, idx );
+    numOfItemsInResultSequence = fileSystemInteractionManager.GetNumberOfSequenceItemsForMatchingRecord( sequenceTag, superiorSequenceArray, numOfSuperiorSequences, idx );
 
     // remember all relevant information about this and all
     // superior sequence elements in superiorSequenceArray
@@ -715,7 +690,7 @@ OFBool WlmDataSourceFileSystem::SetReadlock()
   int result;
 
   // if no path or no calledApplicationEntityTitle is specified, return
-  if( dfPath == NULL || calledApplicationEntityTitle == NULL )
+  if( dfPath.length() == 0 || calledApplicationEntityTitle.length() == 0 )
   {
     DumpMessage("WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified.");
     return OFFalse;
@@ -849,7 +824,11 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.20  2006-08-15 16:15:48  meichel
+** Revision 1.21  2006-12-15 14:49:28  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.20  2006/08/15 16:15:48  meichel
 ** Updated the code in module dcmwlm to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

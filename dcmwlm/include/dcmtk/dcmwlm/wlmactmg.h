@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-14 15:30:58 $
+ *  Update Date:      $Date: 2006-12-15 14:49:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ class WlmActivityManager
     /// stream log information will be dumped to
     OFConsole *logStream;
     /// table of processes for non-single process mode
-    WlmProcessTableType processTable;
+    OFList<WlmProcessSlotType*> processTable;
 
       /** This function dumps the given information on a stream. Used for dumping information in normal, debug and verbose mode.
        *  @param message The message to dump.
@@ -124,11 +124,6 @@ class WlmActivityManager
        *  @param assoc The association (network connection to another DICOM application).
        */
     void AddProcessToTable( int pid, T_ASC_Association *assoc );
-
-      /** This function counts all child processes which are still referenced in the process table.
-       *  @return The current amount of child processes.
-       */
-    int CountChildProcesses();
 
       /** This function removes one particular item from the table which stores all subprocess
        *  information. The item which shall be deleted will be identified by its process id.
@@ -251,7 +246,11 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.14  2006-08-14 15:30:58  onken
+** Revision 1.15  2006-12-15 14:49:21  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.14  2006/08/14 15:30:58  onken
 ** Added WIN32 multiprocess mode to wlmscpfs.
 **
 ** Revision 1.13  2005/12/08 16:05:43  meichel

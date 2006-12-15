@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:15:48 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2006-12-15 14:49:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,11 +61,11 @@ WlmDataSource::WlmDataSource()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ), verbose( OFFalse ), debug( OFFalse ),
+  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle(""), verbose( OFFalse ), debug( OFFalse ),
     identifiers( NULL ), errorElements( NULL ), offendingElements( NULL ), errorComment( NULL ),
     foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ), logStream( NULL ),
-    noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets( NULL ),
-    numOfMatchingDatasets( 0 ), specificCharacterSet( "" ), superiorSequenceArray( NULL ),
+    noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET ), matchingDatasets(),
+    specificCharacterSet( "" ), superiorSequenceArray( NULL ),
     numOfSuperiorSequences( 0 )
 {
   char msg[200];
@@ -94,7 +94,6 @@ WlmDataSource::~WlmDataSource()
 // Return Value : none.
 {
   // free memory
-  if( calledApplicationEntityTitle != NULL ) delete calledApplicationEntityTitle;
   ClearDataset(identifiers);
   delete identifiers;
   delete offendingElements;
@@ -104,19 +103,14 @@ WlmDataSource::~WlmDataSource()
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSource::SetCalledApplicationEntityTitle( char *value )
+void WlmDataSource::SetCalledApplicationEntityTitle( const OFString& value )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Sets the member variable that specifies called application entity title.
 // Parameters   : value - Value for calledApplicationEntityTitle.
 // Return Value : none.
 {
-  if( value != NULL )
-  {
-    if( calledApplicationEntityTitle != NULL ) delete calledApplicationEntityTitle;
-    calledApplicationEntityTitle = new char[ strlen( value ) + 1 ];
-    strcpy( calledApplicationEntityTitle, value );
-  }
+  calledApplicationEntityTitle = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -603,7 +597,7 @@ void WlmDataSource::ClearDataset( DcmDataset *idents )
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSource::PutOffendingElements( DcmTagKey &tag )
+void WlmDataSource::PutOffendingElements( const DcmTagKey &tag )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function inserts the tag of an offending element into the
@@ -641,7 +635,7 @@ void WlmDataSource::PutOffendingElements( DcmTagKey &tag )
 
 // ----------------------------------------------------------------------------
 
-void WlmDataSource::PutErrorElements( DcmTagKey &tag )
+void WlmDataSource::PutErrorElements( const DcmTagKey &tag )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function inserts the tag of an error element into the
@@ -656,7 +650,7 @@ void WlmDataSource::PutErrorElements( DcmTagKey &tag )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
+OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
 // Date         : March 18, 2002
 // Author       : Thomas Wilkens
 // Task         : This function checks if the passed matching key's value only uses characters
@@ -688,100 +682,107 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
 //                          the element's data type's character repertoire.
 {
   OFBool ok = OFTrue;
-  char *val = NULL;
+  OFString val;
 
   switch( elem->ident() )
   {
     case EVR_DA:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // if there is a value and if the value is not a date or a date range, return invalid value
-      if( val != NULL && !IsValidDateOrDateRange( val ) )
+      if( ok && !IsValidDateOrDateRange( val ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid value for an attribute of datatype DA");
         ok = OFFalse;
       }
-      break;
+      else 
+        return OFTrue;
 
     case EVR_TM:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // if there is a value and if the value is not a time or a time range, return invalid value
-      if( val != NULL && !IsValidTimeOrTimeRange( val ) )
+      if( ok && !IsValidTimeOrTimeRange( val ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid value for an attribute of datatype TM");
         ok = OFFalse;
       }
-      break;
+      else
+        return OFTrue;
 
     case EVR_CS:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, "*?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _" ) )
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 _" ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid Character Repertoire for datatype CS");
         ok = OFFalse;
       }
-      break;
+      else
+        return OFTrue;
 
     case EVR_AE:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" ) )
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), " !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~" ) )
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid Character Repertoire for datatype AE");
         ok = OFFalse;
       }
-      break;
+      else
+        return OFTrue;
 
     case EVR_PN:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033" ) && specificCharacterSet == "" )  // ESC=\033
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033" ) && specificCharacterSet == "" )  // ESC=\033
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid Character Repertoire for datatype PN");
         ok = OFFalse;
       }
-      break;
+      else
+        return OFTrue;
 
     case EVR_LO:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid Character Repertoire for datatype LO");
         ok = OFFalse;
       }
-      break;
+      else
+        return OFTrue;
 
     case EVR_SH:
       // get string value
-      val = GetStringValue( elem );
+      ok = GetStringValue( elem, val );
       // check if value contains only valid characters
-      if( val != NULL && !ContainsOnlyValidCharacters( val, "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
+      if( ok && !ContainsOnlyValidCharacters( val.c_str(), "*? !\"#$%%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\033\012\014\015" ) && specificCharacterSet == "" )  // ESC=\033, LF=\012, FF=\014, CR=\015
       {
         DcmTag tag( elem->getTag() );
         PutOffendingElements( tag );
         errorComment->putString("Invalid Character Repertoire for datatype SH");
         ok = OFFalse;
       }
-      break;
+      else
+        return OFTrue;
 
     default:
       break;
@@ -792,7 +793,7 @@ OFBool WlmDataSource::CheckMatchingKey( DcmElement *elem )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::IsValidDateOrDateRange( const char *value )
+OFBool WlmDataSource::IsValidDateOrDateRange( const OFString& value )
 // Date         : March 19, 2002
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given value is a valid date or date range.
@@ -800,77 +801,44 @@ OFBool WlmDataSource::IsValidDateOrDateRange( const char *value )
 // Return Value : OFTrue  - The given value is a valid date or date range.
 //                OFFalse - The given value is not a valid date or date range.
 {
-  char *tmp;
-
-  // check parameter
-  if( value == NULL )
-    return( OFFalse );
-
-  // create new string without leading or trailing blanks
-  char *dateRange = DeleteLeadingAndTrailingBlanks( value );
-
-  // check if string is empty now
-  if( strlen( dateRange ) == 0 )
-  {
-    delete dateRange;
-    return( OFFalse );
-  }
+  // create new string without leading or trailing blanks  
+  OFString dateRange = DeleteLeadingAndTrailingBlanks( value );
+  
+  if (dateRange.length() == 0)
+    return OFFalse;
 
   // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( dateRange, "0123456789.-" ) )
-  {
-    delete dateRange;
+  if( !ContainsOnlyValidCharacters( dateRange.c_str(), "0123456789.-" ) )
     return( OFFalse );
-  }
 
   // initialize return value
   OFBool isValidDateRange = OFFalse;
 
   // Determine if a hyphen occurs in the date range
-  char *hyphen = strchr( dateRange, '-' );
-  if( hyphen != NULL )
+  size_t hyphen = dateRange.find('-');
+  if( hyphen != OFString_npos )
   {
     // determine if two date values are given or not
     if( dateRange[0] == '-' )
     {
       // if the hyphen occurs at the beginning, there is just one date value which has to be checked for validity
-      tmp = dateRange;
-      tmp++;
-      isValidDateRange = IsValidDate( tmp );
+      isValidDateRange = IsValidDate( dateRange.substr(1) );
     }
-    else if( dateRange[ strlen( dateRange ) - 1 ] == '-' )
+    else if( dateRange[ dateRange.length() - 1 ] == '-' )
     {
       // if the hyphen occurs at the end, there is just one date value which has to be checked for validity
-      char *newDateRange = new char[ strlen( dateRange ) - 1 + 1 ];
-      strncpy( newDateRange, dateRange, strlen( dateRange ) - 1 );
-      newDateRange[ strlen( dateRange ) - 1 ] = '\0';
-      isValidDateRange = IsValidDate( newDateRange );
-      delete newDateRange;
+      isValidDateRange = IsValidDate( dateRange.substr(0, dateRange.length() -1 ));
     }
     else
     {
       // in this case the hyphen occurs somewhere in between beginning and end; hence there are two date values
       // which have to be checked for validity. Determine where the hyphen occurs exactly
-      int indexval = hyphen - dateRange;
-
-      // determine the first date
-      char *date1 = new char[ indexval + 1 ];
-      strncpy( date1, dateRange, indexval );
-      date1[indexval] = '\0';
-
-      // determine the second date
-      tmp = hyphen;
-      tmp++;
-      char *date2 = new char[ strlen( tmp ) + 1 ];
-      strcpy( date2, tmp );
-
       // check both dates for validity
-      if( IsValidDate( date1 ) && IsValidDate( date2 ) )
+      if( IsValidDate( dateRange.substr(0, dateRange.length()-hyphen-1 )) && 
+          IsValidDate( dateRange.substr(        hyphen + 1             )) )
+      {   
         isValidDateRange = OFTrue;
-
-      // free memory
-      delete date1;
-      delete date2;
+      }
     }
   }
   else
@@ -879,16 +847,13 @@ OFBool WlmDataSource::IsValidDateOrDateRange( const char *value )
     isValidDateRange = IsValidDate( dateRange );
   }
 
-  // free memory
-  delete dateRange;
-
   // return result
   return( isValidDateRange );
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::IsValidDate( const char *value )
+OFBool WlmDataSource::IsValidDate( const OFString& value )
 // Date         : March 19, 2002
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given date value is valid.
@@ -900,49 +865,36 @@ OFBool WlmDataSource::IsValidDate( const char *value )
 //                OFFalse - Date is not valid.
 {
   int year=0, month=0, day=0;
-
-  // check parameter
-  if( value == NULL )
-    return( OFFalse );
-
+  
   // create new string without leading or trailing blanks
-  char *date = DeleteLeadingAndTrailingBlanks( value );
-
-  // check if string is empty now
-  if( strlen( date ) == 0 )
-  {
-    delete date;
+  OFString date = DeleteLeadingAndTrailingBlanks( value );
+  // check parameter
+  
+  if( value.length() == 0 )
     return( OFFalse );
-  }
 
   // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( date, "0123456789." ) )
-  {
-    delete date;
+  if( !ContainsOnlyValidCharacters( date.c_str(), "0123456789." ) )
     return( OFFalse );
-  }
 
   // initialize return value
   OFBool isValidDate = OFFalse;
 
   // check which of the two formats applies to the given string
-  if( strlen( date ) == 8 )
+  if( date.length() == 8 )
   {
     // scan given date string
-    sscanf( date, "%4d%2d%2d", &year, &month, &day );
+    sscanf( date.c_str(), "%4d%2d%2d", &year, &month, &day );
     if( year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31 )
       isValidDate = OFTrue;
   }
-  else if( strlen( date ) == 10 )
+  else if( date.length() == 10 )
   {
     // scan given date string
-    sscanf( date, "%4d.%2d.%2d", &year, &month, &day );
+    sscanf( date.c_str(), "%4d.%2d.%2d", &year, &month, &day );
     if( year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 31 )
       isValidDate = OFTrue;
   }
-
-  // free memory
-  delete date;
 
   // return result
   return( isValidDate );
@@ -950,7 +902,7 @@ OFBool WlmDataSource::IsValidDate( const char *value )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::IsValidTimeOrTimeRange( const char *value )
+OFBool WlmDataSource::IsValidTimeOrTimeRange( const OFString& value )
 // Date         : March 19, 2002
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given value is a valid time or time range.
@@ -958,95 +910,54 @@ OFBool WlmDataSource::IsValidTimeOrTimeRange( const char *value )
 // Return Value : OFTrue  - The given value is a valid time or time range.
 //                OFFalse - The given value is not a valid time or time range.
 {
-  char *tmp;
-
-  // check parameter
-  if( value == NULL )
-    return( OFFalse );
-
   // create new string without leading or trailing blanks
-  char *timeRange = DeleteLeadingAndTrailingBlanks( value );
+  OFString timeRange = DeleteLeadingAndTrailingBlanks( value );
 
   // check if string is empty now
-  if( strlen( timeRange ) == 0 )
-  {
-    delete timeRange;
+  if( timeRange.length() == 0 )
     return( OFFalse );
-  }
 
   // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( timeRange, "0123456789.:-" ) )
-  {
-    delete timeRange;
+  if( !ContainsOnlyValidCharacters( timeRange.c_str(), "0123456789.:-" ) )
     return( OFFalse );
-  }
-
-  // initialize return value
-  OFBool isValidTimeRange = OFFalse;
 
   // Determine if a hyphen occurs in the time range
-  char *hyphen = strchr( timeRange, '-' );
-  if( hyphen != NULL )
+  size_t hyphen = timeRange.find('-');
+  if( hyphen != OFString_npos )
   {
     // determine if two time values are given or not
     if( timeRange[0] == '-' )
     {
       // if the hyphen occurs at the beginning, there is just one time value which has to be checked for validity
-      tmp = timeRange;
-      tmp++;
-      isValidTimeRange = IsValidTime( tmp );
+      return IsValidTime( timeRange.substr(1) );
     }
-    else if( timeRange[ strlen( timeRange ) - 1 ] == '-' )
+    else if( timeRange[ timeRange.length() - 1 ] == '-' )
     {
       // if the hyphen occurs at the end, there is just one time value which has to be checked for validity
-      char *newTimeRange = new char[ strlen( timeRange ) - 1 + 1 ];
-      strncpy( newTimeRange, timeRange, strlen( timeRange ) - 1 );
-      newTimeRange[ strlen( timeRange ) - 1 ] = '\0';
-      isValidTimeRange = IsValidTime( newTimeRange );
-      delete newTimeRange;
+      return IsValidTime( timeRange.substr(0, timeRange.length()-1) );
     }
     else
     {
       // in this case the hyphen occurs somewhere in between beginning and end; hence there are two time values
-      // which have to be checked for validity. Determine where the hyphen occurs exactly
-      int indexval = hyphen - timeRange;
-
-      // determine the first time
-      char *time1 = new char[ indexval + 1 ];
-      strncpy( time1, timeRange, indexval );
-      time1[indexval] = '\0';
-
-      // determine the second time
-      tmp = hyphen;
-      tmp++;
-      char *time2 = new char[ strlen( tmp ) + 1 ];
-      strcpy( time2, tmp );
+      // which have to be checked for validity.
 
       // check both times for validity
-      if( IsValidTime( time1 ) && IsValidTime( time2 ) )
-        isValidTimeRange = OFTrue;
-
-      // free memory
-      delete time1;
-      delete time2;
+      if( IsValidTime( timeRange.substr(0, timeRange.length() - hyphen -1 )) && 
+          IsValidTime( timeRange.substr( hyphen + 1 )                     ))
+        return OFTrue;
     }
   }
   else
   {
     // if there is no hyphen, there is just one date value which has to be checked for validity
-    isValidTimeRange = IsValidTime( timeRange );
+    return IsValidTime( timeRange );
   }
-
-  // free memory
-  delete timeRange;
-
-  // return result
-  return( isValidTimeRange );
+  return OFFalse;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::IsValidTime( const char *value )
+OFBool WlmDataSource::IsValidTime( const OFString& value )
 // Date         : March 19, 2002
 // Author       : Thomas Wilkens
 // Task         : This function checks if the given time value is valid.
@@ -1064,58 +975,44 @@ OFBool WlmDataSource::IsValidTime( const char *value )
 //                OFFalse - Time is not valid.
 {
   int hour=0, min=0, sec=0, frac=0, fieldsRead=0;
-
-  // check parameter
-  if( value == NULL )
-    return( OFFalse );
-
   // create new string without leading or trailing blanks
-  char *timevalue = DeleteLeadingAndTrailingBlanks( value );
+  OFString timevalue = DeleteLeadingAndTrailingBlanks( value );
 
   // check if string is empty now
-  if( strlen( timevalue ) == 0 )
-  {
-    delete timevalue;
+  if( timevalue.length() == 0)
     return( OFFalse );
-  }
 
   // check if only allowed characters occur in the string
-  if( !ContainsOnlyValidCharacters( timevalue, "0123456789.:" ) )
-  {
-    delete timevalue;
+  if( !ContainsOnlyValidCharacters( timevalue.c_str(), "0123456789.:" ) )
     return( OFFalse );
-  }
-
-  // initialize return value
-  OFBool isValidTime = OFFalse;
 
   // check which of the two formats applies to the given string
-  char *colon = strchr( timevalue, ':' );
-  if( colon != NULL )
+  size_t colon = timevalue.find(':');
+  if( colon != OFString_npos )
   {
     // time format is "hh:mm:ss.fracxx"
 
     // check which components are missing
-    if( strlen( timevalue ) == 5 )
+    if( timevalue.length() == 5 )
     {
       // scan given time string "hh:mm"
-      fieldsRead = sscanf( timevalue, "%2d:%2d", &hour, &min );
+      fieldsRead = sscanf( timevalue.c_str(), "%2d:%2d", &hour, &min );
       if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
-        isValidTime = OFTrue;
+        return OFTrue;
     }
-    else if( strlen( timevalue ) == 8 )
+    else if( timevalue.length() == 8 )
     {
       // scan given time string "hh:mm:ss"
-      fieldsRead = sscanf( timevalue, "%2d:%2d:%2d", &hour, &min, &sec );
+      fieldsRead = sscanf( timevalue.c_str(), "%2d:%2d:%2d", &hour, &min, &sec );
       if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
-        isValidTime = OFTrue;
+        return OFTrue;
     }
-    else if( strlen( timevalue ) > 8 && strlen( timevalue ) < 16 )
+    else if( timevalue.length() > 8 && timevalue.length() < 16 )
     {
       // scan given time string "hh:mm:ss.fracxx"
-      fieldsRead = sscanf( timevalue, "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
+      fieldsRead = sscanf( timevalue.c_str(), "%2d:%2d:%2d.%6d", &hour, &min, &sec, &frac );
       if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
-        isValidTime = OFTrue;
+        return OFTrue;
     }
   }
   else
@@ -1123,34 +1020,30 @@ OFBool WlmDataSource::IsValidTime( const char *value )
     // time format is "hhmmss.fracxx"
 
     // check which components are missing
-    if( strlen( timevalue ) == 4 )
+    if( timevalue.length() == 4 )
     {
       // scan given time string "hhmm"
-      fieldsRead = sscanf( timevalue, "%2d%2d", &hour, &min );
+      fieldsRead = sscanf( timevalue.c_str(), "%2d%2d", &hour, &min );
       if( fieldsRead == 2 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 )
-        isValidTime = OFTrue;
+        return OFTrue;
     }
-    else if( strlen( timevalue ) == 6 )
+    else if( timevalue.length() == 6 )
     {
       // scan given time string "hhmmss"
-      fieldsRead = sscanf( timevalue, "%2d%2d%2d", &hour, &min, &sec );
+      fieldsRead = sscanf( timevalue.c_str(), "%2d%2d%2d", &hour, &min, &sec );
       if( fieldsRead == 3 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 )
-        isValidTime = OFTrue;
+        return OFTrue;
     }
-    else if( strlen( timevalue ) > 6 && strlen( timevalue ) < 14 )
+    else if( timevalue.length() > 6 && timevalue.length() < 14 )
     {
       // scan given time string "hhmmss.fracxx"
-      fieldsRead = sscanf( timevalue, "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
+      fieldsRead = sscanf( timevalue.c_str(), "%2d%2d%2d.%6d", &hour, &min, &sec, &frac );
       if( fieldsRead == 4 && hour >= 0 && hour <= 23 && min >= 0 && min <= 59 && sec >= 0 && sec <= 59 && frac >= 0 && frac <= 999999 )
-        isValidTime = OFTrue;
+        return OFTrue;
     }
   }
 
-  // free memory
-  delete timevalue;
-
-  // return result
-  return( isValidTime );
+ return OFFalse;
 }
 
 // ----------------------------------------------------------------------------
@@ -1194,58 +1087,51 @@ OFBool WlmDataSource::ContainsOnlyValidCharacters( const char *s, const char *ch
 
 // ----------------------------------------------------------------------------
 
-char *WlmDataSource::DeleteLeadingAndTrailingBlanks( const char *value )
+OFString WlmDataSource::DeleteLeadingAndTrailingBlanks( const OFString& value )
 // Date         : March 19, 2002
 // Author       : Thomas Wilkens
 // Task         : This function makes a copy of value without leading and trailing blanks.
 // Parameters   : value - [in] The source string.
 // Return Value : A copy of the given string without leading and trailing blanks.
 {
-  char *returnValue;
+  OFString returnValue = value;
+  size_t pos = 0;
+  
+  // delete leading blanks
+  while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
+    pos++; // count blanks
+  if (pos > 0)
+    returnValue.erase(0, pos);
 
-  unsigned int i;
-  OFBool stop = OFFalse;
-  for( i=0 ; i<strlen(value) && !stop ; )
-  {
-    if( value[i] == ' ' )
-      value++;
-    else
-      stop = OFTrue;
-  }
-  returnValue = new char[ strlen( value ) + 1 ];
-  strcpy( returnValue, value );
-
-  if( strlen( returnValue ) > 0 )
-  {
-    stop = OFFalse;
-    for( i=strlen(returnValue)-1 ; i>0 && !stop ; i-- )
-    {
-      if( returnValue[i] == ' ' )
-        returnValue[i] = '\0';
-      else
-        stop = OFTrue;
-    }
-  }
-
-  return( returnValue );
+  // delete trailing blanks, start from end of string
+  pos = returnValue.length() - 1;
+  while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
+    pos--;
+  if (pos < returnValue.length() -1)
+    returnValue.erase(pos);
+  
+  return returnValue;
 }
 
 // ----------------------------------------------------------------------------
 
-char *WlmDataSource::GetStringValue( DcmElement *elem )
+OFBool WlmDataSource::GetStringValue( const DcmElement *elem, 
+                                      OFString& resultVal )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
-// Task         : This function returns the value of the given DICOM string element (attribute).
-//                If the element does not refer to a string attribute, a NULL pointer is returned.
+// Task         : This function returns the value of the given DICOM string element (attribute)
+//                in the parameter resultVal and returns OFTrue if successful.
+//                If the element does not refer to a string attribute or contains no value,
+//                OFFalse is returned.
 // Parameters   : elem - [in] The DICOM element.
-// Return Value : The value of the given DICOM (string) element or NULL.
+//                resultVal - [out] The resulting string value
+// Return Value : OFTrue if string value could be accessed, OFFalse else
 {
-  char *val = NULL;
-
-  if( elem && elem->isaString() )
-    elem->getString( val );
-
-  return val;
+  DcmElement *elemNonConst = OFconst_cast(DcmElement*, elem);
+  OFCondition result = elemNonConst->getOFStringArray( resultVal ); 
+  if (result.bad() || resultVal.length() == 0)
+    return OFFalse;
+  return OFTrue;
 }
 
 // ----------------------------------------------------------------------------
@@ -1292,14 +1178,12 @@ WlmDataSourceStatusType WlmDataSource::CancelFindRequest()
 // Parameters   : none.
 // Return Value : WLM_CANCEL.
 {
-  // remove all remaining elements in the array and the array itself, if the array is not NULL
-  if( matchingDatasets != NULL )
+  // remove all remaining datasets from result list
+  while (!matchingDatasets.empty())
   {
-    for( unsigned long i=0 ; i<numOfMatchingDatasets ; i++ )
-      delete matchingDatasets[i];
-    delete[] matchingDatasets;
-    matchingDatasets = NULL;
-    numOfMatchingDatasets = 0;
+    DcmDataset *dset = matchingDatasets.front();
+    delete dset; dset = NULL;
+    matchingDatasets.pop_front();
   }
 
   // return WLM_CANCEL
@@ -1617,7 +1501,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.20  2006-08-15 16:15:48  meichel
+** Revision 1.21  2006-12-15 14:49:28  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.20  2006/08/15 16:15:48  meichel
 ** Updated the code in module dcmwlm to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

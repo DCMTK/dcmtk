@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2006-01-27 15:06:32 $
+*  Last Update:      $Author: onken $
+*  Update Date:      $Date: 2006-12-15 14:49:21 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.12 $
+*  CVS/RCS Revision: $Revision: 1.13 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@ template <class T> class OFOrderedSet;
 class DcmTagKey;
 class OFConsole;
 class OFCondition;
+class DcmItem;
 
 /** This class encapsulates data structures and operations for managing
  *  data base interaction in the framework of the DICOM basic worklist
@@ -66,11 +67,11 @@ class WlmFileSystemInteractionManager
     /// stream logging information will be dumped to
     OFConsole *logStream;
     /// path to database files
-    char *dfPath;
+    OFString dfPath;
     /// indicates if wl-files which are lacking return type 1 attributes or information in such attributes shall be rejected or not
     OFBool enableRejectionOfIncompleteWlFiles;
     /// called AE title
-    char *calledApplicationEntityTitle;
+    OFString calledApplicationEntityTitle;
     /// array of matching records
     DcmDataset **matchingRecords;
     /// number of array fields
@@ -415,7 +416,7 @@ class WlmFileSystemInteractionManager
        *  @param dfPathv Path to worklist file system database.
        *  @return Indicates if the connection could be established or not.
        */
-    OFCondition ConnectToFileSystem( char *dfPathv );
+    OFCondition ConnectToFileSystem( const OFString& dfPathv );
 
       /** Disconnects from the worklist file system database..
        *  @return Indicates if the connection was disconnected successfully.
@@ -429,7 +430,7 @@ class WlmFileSystemInteractionManager
        *  @return OFTrue, if the called application entity title is supported,
        *          OFFalse, if the called application entity title is not supported or it is not given.
        */
-    OFBool IsCalledApplicationEntityTitleSupported( char *calledApplicationEntityTitlev );
+    OFBool IsCalledApplicationEntityTitleSupported( const OFString& calledApplicationEntityTitlev );
 
       /** This function determines the records from the worklist files which match
        *  the given search mask and returns the number of matching records. Also,
@@ -480,7 +481,11 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.12  2006-01-27 15:06:32  joergr
+** Revision 1.13  2006-12-15 14:49:21  onken
+** Removed excessive use char* and C-array in favour of OFString and
+** OFList. Simplified some implementation details.
+**
+** Revision 1.12  2006/01/27 15:06:32  joergr
 ** Fixed issue with missing type 2 attributes in worklist files being reported
 ** as incomplete.  Now, the attributes are inserted automatically if required.
 ** Removed email address from CVS log.
