@@ -1,6 +1,56 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.12.15 (riesmeier)
+
+- Added new method that checks whether a DICOM object or element is affected
+  by SpecificCharacterSet (0008,0005).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcchrstr.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Added new option that allows to update existing entries in a DICOMDIR. This
+  also adds support for mixed media stored application profiles.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmjpeg/docs/dcmmkdir.man
+
+- Fixed wrong spelling of command line option which prevented the MPEG2-DVD
+  application profile from working.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Changed name of enum value for the MPEG2-DVD application profile in order to
+  be more consistent with other names.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
+- Slightly revised handling of type 1, 1C and 2 elements in directory records.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
+- Fixed bug in cardiac application profiles when checking the ImageType
+  (0008,0008) for BIPLANE images.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
+- Added check whether the SpecificCharacterSet (0008,0005) is really required
+  for a particular directory record.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
+- Fixed bug that prevented Key Object Selection Documents from being added to
+  a DICOMDIR.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2006.12.15 (onken)
 
 - Changed member variable from char* to OFString and reintegrated correct
