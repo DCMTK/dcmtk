@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:59:49 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2006-12-15 14:14:44 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -475,10 +475,20 @@ OFBool DcmObject::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
 }
 
 
+OFBool DcmObject::isAffectedBySpecificCharacterSet() const
+{
+    return OFFalse;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.48  2006-12-13 13:59:49  joergr
+ * Revision 1.49  2006-12-15 14:14:44  joergr
+ * Added new method that checks whether a DICOM object or element is affected
+ * by SpecificCharacterSet (0008,0005).
+ *
+ * Revision 1.48  2006/12/13 13:59:49  joergr
  * Added new optional parameter "checkAllStrings" to method containsExtended
  * Characters().
  *

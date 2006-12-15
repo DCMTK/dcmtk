@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:58:15 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2006-12-15 14:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,11 +248,15 @@ class DcmObject
     virtual OFBool containsUnknownVR() const;
 
     /** check if this object contains non-ASCII characters
-     *  @param checkAllStrings if true, also check elements with string values not affected
-     *    by SpecificCharacterSet (0008,0005), default: only check PN, LO, LT, SH, ST, UT
+     *  @param checkAllStrings not used in this class
      *  @return always returns false, i.e. no extended characters used
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+
+    /** check if this object is affected by SpecificCharacterSet
+     *  @return always returns false, i.e. not affected by SpecificCharacterSet
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
 
     virtual OFCondition clear() = 0;
     virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
@@ -358,7 +362,11 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.44  2006-12-13 13:58:15  joergr
+ * Revision 1.45  2006-12-15 14:18:07  joergr
+ * Added new method that checks whether a DICOM object or element is affected
+ * by SpecificCharacterSet (0008,0005).
+ *
+ * Revision 1.44  2006/12/13 13:58:15  joergr
  * Added new optional parameter "checkAllStrings" to method containsExtended
  * Characters().
  *

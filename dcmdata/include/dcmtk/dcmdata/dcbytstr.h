@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:58:15 $
+ *  Update Date:      $Date: 2006-12-15 14:18:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,6 +204,11 @@ class DcmByteString
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
 
+    /** check if this element is affected by SpecificCharacterSet
+     *  @return always returns false
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
+
  protected:
 
     /** create a new value field (string buffer) of the previously defined size
@@ -301,7 +306,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.33  2006-12-13 13:58:15  joergr
+** Revision 1.34  2006-12-15 14:18:07  joergr
+** Added new method that checks whether a DICOM object or element is affected
+** by SpecificCharacterSet (0008,0005).
+**
+** Revision 1.33  2006/12/13 13:58:15  joergr
 ** Added new optional parameter "checkAllStrings" to method containsExtended
 ** Characters().
 **

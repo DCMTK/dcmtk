@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:58:15 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2006-12-15 14:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,11 @@ class DcmCharString
      *  @return true if element contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+
+    /** check if this element is affected by SpecificCharacterSet
+     *  @return always returns true
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
 };
 
 
@@ -105,7 +110,11 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
- * Revision 1.12  2006-12-13 13:58:15  joergr
+ * Revision 1.13  2006-12-15 14:18:07  joergr
+ * Added new method that checks whether a DICOM object or element is affected
+ * by SpecificCharacterSet (0008,0005).
+ *
+ * Revision 1.12  2006/12/13 13:58:15  joergr
  * Added new optional parameter "checkAllStrings" to method containsExtended
  * Characters().
  *

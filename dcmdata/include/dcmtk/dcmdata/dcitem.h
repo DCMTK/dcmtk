@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:58:14 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2006-12-15 14:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +182,14 @@ class DcmItem
      *  @return true if object contains non-ASCII characters, false otherwise
      */
     virtual OFBool containsExtendedCharacters(const OFBool checkAllStrings = OFFalse);
+
+    /** check if this object is affected by SpecificCharacterSet at any nesting level.
+     *  In detail, it is checked whether this object contains any data elements that
+     *  according to their VR are affected by the SpecificCharacterSet (0008,0005)
+     *  element. This is true for the following VRs: PN, LO, LT, SH, ST and UT
+     *  @return true if object is affected by SpecificCharacterSet, false otherwise
+     */
+    virtual OFBool isAffectedBySpecificCharacterSet() const;
 
     /** insert a new element into the list of elements maintained by this item.
      *  The list of elements is always kept in ascending tag order.
@@ -918,7 +926,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.57  2006-12-13 13:58:14  joergr
+** Revision 1.58  2006-12-15 14:18:07  joergr
+** Added new method that checks whether a DICOM object or element is affected
+** by SpecificCharacterSet (0008,0005).
+**
+** Revision 1.57  2006/12/13 13:58:14  joergr
 ** Added new optional parameter "checkAllStrings" to method containsExtended
 ** Characters().
 **

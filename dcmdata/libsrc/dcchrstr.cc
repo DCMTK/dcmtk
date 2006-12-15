@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmCharString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 13:59:49 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2006-12-15 14:14:44 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +80,7 @@ OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*
     {
         while (*c)
         {
+            /* check for 8 bit characters */
             if (OFstatic_cast(unsigned char, *c) > 127)
                 return OFTrue;
             ++c;
@@ -89,10 +90,20 @@ OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*
 }
 
 
+OFBool DcmCharString::isAffectedBySpecificCharacterSet() const
+{
+    return OFTrue;
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
- * Revision 1.11  2006-12-13 13:59:49  joergr
+ * Revision 1.12  2006-12-15 14:14:44  joergr
+ * Added new method that checks whether a DICOM object or element is affected
+ * by SpecificCharacterSet (0008,0005).
+ *
+ * Revision 1.11  2006/12/13 13:59:49  joergr
  * Added new optional parameter "checkAllStrings" to method containsExtended
  * Characters().
  *
