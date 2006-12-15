@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-14 15:30:40 $
+ *  Update Date:      $Date: 2006-12-15 14:44:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ class WlmConsoleEngineFileSystem
     /// returned character set type
     WlmReturnedCharacterSetType opt_returnedCharacterSet;
     /// path to database files
-    const char *opt_dfPath;
+    OFString opt_dfPath;
     /// port on which this application is listening
     OFCmdUnsignedInt opt_port;
     /// indicates if incoming associations shall be refused or not
@@ -117,7 +117,6 @@ class WlmConsoleEngineFileSystem
        *  @return Reference to this.
        */
     WlmConsoleEngineFileSystem &operator=( const WlmConsoleEngineFileSystem &Src );
-
 
   public:
       /** constructor.

@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-08-16 13:14:35 $
+ *  Update Date:      $Date: 2006-12-15 14:44:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 //                dataSourcev     - [in] Pointer to the dataSource object.
 // Return Value : none.
   : opt_returnedCharacterSet( RETURN_NO_CHARACTER_SET ),
-    opt_dfPath( NULL ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
+    opt_dfPath( "" ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ),
     opt_verbose( OFFalse ), opt_debug( OFFalse ), opt_failInvalidQuery( OFTrue ), opt_singleProcess( OFTrue ),
@@ -110,10 +110,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   cmd->setOptionColumns(LONGCOL, SHORTCOL);
   cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--help",                      "-h",        "print this help text and exit");
-    cmd->addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
-    cmd->addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-    cmd->addOption("--debug",                     "-d",        "debug mode, print debug information");
+    cmd->addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd->addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
+    cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
     cmd->addOption("--no-sq-expansion",       "-nse",    "disable expansion of empty sequences\nin C-FIND request messages");
     OFString opt5 = "[p]ath: string (default: ";
     opt5 += opt_dfPath;
@@ -124,9 +124,9 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
 #if defined(HAVE_FORK) || defined(_WIN32)
     cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--single-process",            "-s",        "single process mode");
+    cmd->addOption("--single-process",        "-s",      "single process mode");
 #ifdef _WIN32
-    cmd->addOption("--forked-child",                           "process is forked child, internal use only", OFCommandLine::AF_Internal);
+    cmd->addOption("--forked-child",                     "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
 #endif
 
@@ -174,13 +174,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       opt4 += "]";
       cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd->addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
-    cmd->addSubGroup("group length encoding (when sending C-FIND response data):");
-      cmd->addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
-      cmd->addOption("--group-length-create", "+g",      "always write with group length elements");
-      cmd->addOption("--group-length-remove", "-g",      "always write without group length elements");
-    cmd->addSubGroup("length encoding in sequences and items (when sending C-FIND response data):");
-      cmd->addOption("--length-explicit",     "+e",      "write with explicit lengths (default)");
-      cmd->addOption("--length-undefined",    "-e",      "write with undefined lengths");
 
   cmd->addGroup("encoding options:");
     cmd->addSubGroup("post-1993 value representations:");
@@ -422,7 +415,13 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.16  2006-08-16 13:14:35  onken
+** Revision 1.17  2006-12-15 14:44:09  onken
+** Changed member variable from char* to OFString and reintegrated correct
+** intending of command line options, that were lost in of of last revisions.
+** Removed (unchecked) command line options for group / sequence length
+** calculations.
+**
+** Revision 1.16  2006/08/16 13:14:35  onken
 ** Hid (internal) "--forked-child" option from user
 **
 ** Revision 1.15  2006/08/15 16:15:47  meichel
