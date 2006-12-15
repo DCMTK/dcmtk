@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2006.12.15 (onken)
+
+- Changed member variable from char* to OFString and reintegrated correct
+  intending of command line options, that were lost in of of last revisions.
+  Removed (unchecked) command line options for group / sequence length
+  calculations
+  Affects: dcmwlm/apps/wlmscefs.cc
+           dcmwlm/apps/wlmscefs.h
+           dcmwlm/docs/wlmscpfs.man
+
 **** Changes from 2006.12.13 (riesmeier)
 
 - Added new command line option that allows to check all data elements with
