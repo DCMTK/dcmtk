@@ -14,8 +14,9 @@ dcmmkdir [options] dcmfile-in...
 
 \section description DESCRIPTION
 
-The \b dcmmkdir utility creates a DICOMDIR file from the specified referenced
-DICOM files according to the DICOM Part 11 Media Storage Application Profiles.
+The \b dcmmkdir utility creates a \e DICOMDIR file from the specified
+referenced DICOM files according to the DICOM Part 11 Media Storage Application
+Profiles.
 
 Currently the following profiles are supported (others might be added later):
 
@@ -42,7 +43,7 @@ Currently the following profiles are supported (others might be added later):
 \li 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
 \li Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
 
-This tool extends \b dcmgpdir which can only create General Purpose DICOMDIR
+This tool extends \b dcmgpdir which can only create General Purpose \e DICOMDIR
 files.  The default behaviour of \b dcmmkdir (with \e --general-purpose) is
 equivalent to that of \b dcmgpdir.
 
@@ -251,6 +252,9 @@ writing:
   +A    --append
           append to existing DICOMDIR
 
+  +U    --update
+          update existing DICOMDIR
+
   -w    --discard
           do not write out DICOMDIR
 
@@ -292,11 +296,19 @@ will be accepted.  Files having invalid filenames will be rejected (the rules
 can be relaxed via the \e +m option).  Files missing required attributes will
 be rejected (the \e +I option can relax this behaviour).
 
-A DICOMDIR file will only be constructed if all files have passed initial
+A \e DICOMDIR file will only be constructed if all files have passed initial
 tests.
 
+The \b dcmmkdir utility also allows to append new entries to and to update
+existing entries in a \e DICOMDIR file.  Using option \e +A new entries are
+only appended to the DICOMDIR, i.e. existing records like the ones for PATIENT
+information are not updated.  Using option \e +U also existing records are
+updated according to the information found in the referenced DICOM files.
+Please note that this update process might be slower that just appending new
+entries.
+
 The support for icon images is currently restricted to monochrome images.  This
-will probably change in the future.  Till then color images are automatically
+will probably change in the future.  Till then, color images are automatically
 converted to grayscale mode.  The icon size is 128*128 pixels for the cardiac
 profiles (as required by the DICOM standard) and 64*64 for all others.
 

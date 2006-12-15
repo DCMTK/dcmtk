@@ -127,8 +127,12 @@ writing:
 
   -A    --replace
           replace existing DICOMDIR (default)
+
   +A    --append
           append to existing DICOMDIR
+
+  +U    --update
+          update existing DICOMDIR
 
   -w    --discard
           do not write out DICOMDIR
@@ -174,6 +178,14 @@ this behaviour).
 
 A \e DICOMDIR file will only be constructed if all files have passed initial
 tests.
+
+The \b dcmgpdir utility also allows to append new entries to and to update
+existing entries in a \e DICOMDIR file.  Using option \e +A new entries are
+only appended to the DICOMDIR, i.e. existing records like the ones for PATIENT
+information are not updated.  Using option \e +U also existing records are
+updated according to the information found in the referenced DICOM files.
+Please note that this update process might be slower that just appending new
+entries.
 
 \section command_line COMMAND LINE
 
