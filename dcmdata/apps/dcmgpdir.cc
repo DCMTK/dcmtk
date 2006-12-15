@@ -45,9 +45,9 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-15 14:26:14 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
     int opt_debug = 0;
     OFBool opt_write = OFTrue;
     OFBool opt_append = OFFalse;
+    OFBool opt_update = OFFalse;
     OFBool opt_recurse = OFFalse;
     E_EncodingType opt_enctype = EET_ExplicitLength;
     E_GrpLenEncoding opt_glenc = EGL_withoutGL;
@@ -207,6 +208,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("writing:");
         cmd.addOption("--replace",               "-A",     "replace existing DICOMDIR (default)");
         cmd.addOption("--append",                "+A",     "append to existing DICOMDIR");
+        cmd.addOption("--update",                "+U",     "update existing DICOMDIR");
         cmd.addOption("--discard",               "-w",     "do not write out DICOMDIR");
         cmd.addOption("--no-backup",             "-nb",    "do not create a backup of existing DICOMDIR");
       cmd.addSubGroup("post-1993 value representations:");
@@ -360,8 +362,8 @@ int main(int argc, char *argv[])
             opt_profile = DicomDirInterface::AP_GeneralPurposeMIME;
         if (cmd.findOption("--usb-and-flash"))
             opt_profile = DicomDirInterface::AP_USBandFlash;
-        if (cmd.findOption("--mpeg2-mp-at-ml"))
-            opt_profile = DicomDirInterface::AP_MPEG2MPatML;
+        if (cmd.findOption("--mpeg2-mpml-dvd"))
+            opt_profile = DicomDirInterface::AP_MPEG2MPatMLDVD;
         if (cmd.findOption("--basic-cardiac"))
             opt_profile = DicomDirInterface::AP_BasicCardiac;
         if (cmd.findOption("--xray-angiographic"))
@@ -396,16 +398,25 @@ int main(int argc, char *argv[])
         {
             opt_write = OFTrue;
             opt_append = OFFalse;
+            opt_update = OFFalse;
         }
         if (cmd.findOption("--append"))
         {
             opt_write = OFTrue;
             opt_append = OFTrue;
+            opt_update = OFFalse;
+        }
+        if (cmd.findOption("--update"))
+        {
+            opt_write = OFTrue;
+            opt_append = OFFalse;
+            opt_update = OFTrue;
         }
         if (cmd.findOption("--discard"))
         {
             opt_write = OFFalse;
             opt_append = OFFalse;
+            opt_update = OFFalse;
         }
         cmd.endOptionBlock();
         if (cmd.findOption("--no-backup"))
@@ -503,9 +514,11 @@ int main(int argc, char *argv[])
 #endif
 
     OFCondition result;
-    /* create new general purpose DICOMDIR or append to existing one */
+    /* create new general purpose DICOMDIR, append to or update existing one */
     if (opt_append)
         result = ddir.appendToDicomDir(opt_profile, opt_output);
+    else if (opt_update)
+        result = ddir.updateDicomDir(opt_profile, opt_output);
     else
         result = ddir.createNewDicomDir(opt_profile, opt_output, opt_fileset);
     if (result.good())
@@ -581,7 +594,15 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.83  2006-08-15 15:50:56  meichel
+ * Revision 1.84  2006-12-15 14:26:14  joergr
+ * Added new option that allows to update existing entries in a DICOMDIR. This
+ * also adds support for mixed media stored application profiles.
+ * Fixed wrong spelling of command line option which prevented the MPEG2-DVD
+ * application profile from working.
+ * Changed name of enum value for the MPEG2-DVD application profile in order to
+ * be more consistent with other names.
+ *
+ * Revision 1.83  2006/08/15 15:50:56  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
