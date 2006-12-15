@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2006-12-15 16:27:44 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -919,6 +919,7 @@ DicomDirInterface::DicomDirInterface()
     TransferSyntaxCheck(OFTrue),
     ConsistencyCheck(OFTrue),
     IconImageMode(OFFalse),
+    FilesetUpdateMode(OFFalse),
     BackupFilename(),
     BackupCreated(OFFalse),
     IconSize(64),
@@ -952,7 +953,6 @@ DicomDirInterface::~DicomDirInterface()
 // cleanup the object, i.e. free all memory
 void DicomDirInterface::cleanup()
 {
-    deleteDicomDirBackup();
     /* free all allocated memory */
     delete DicomDir;
     /* invalidate references */
@@ -1019,6 +1019,7 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
     OFCondition result = EC_IllegalParameter;
     if ((filename != NULL) && checkFilesetID(filesetID))
     {
+        FilesetUpdateMode = OFFalse;
         /* first remove any existing DICOMDIR from memory */
         cleanup();
         /* then create a backup if a DICOMDIR file already exists */
@@ -1063,9 +1064,15 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
     OFCondition result = EC_IllegalParameter;
     if (filename != NULL)
     {
-        /* first check whether DICOMDIR file already exists */
+        FilesetUpdateMode = OFFalse;
+        /* first remove any existing DICOMDIR from memory */
+        cleanup();
+        /* then check whether DICOMDIR file already exists */
         if (OFStandard::fileExists(filename))
         {
+            /* then create a backup if required */
+            if (BackupMode)
+                createDicomDirBackup(filename);
             /* select new application profile */
             result = selectApplicationProfile(profile);
             if (result.good())
@@ -1080,9 +1087,6 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
                     printMessage(tmpString);
                     OFSTRINGSTREAM_FREESTR(tmpString)
                 }
-                /* then create a backup if required */
-                if (BackupMode)
-                    createDicomDirBackup(filename);
                 /* finally, create a DICOMDIR object based on the existing file */
                 DicomDir = new DcmDicomDir(filename);
                 if (DicomDir != NULL)
@@ -1109,6 +1113,68 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
             /* report an error */
             printFileErrorMessage(result, "cannot append to", filename);
+        }
+    }
+    return result;
+}
+
+
+// create a DICOMDIR based on an existing one, i.e. append new and update existing entries
+OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile,
+                                              const char *filename)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (filename != NULL)
+    {
+        FilesetUpdateMode = OFTrue;
+        /* first remove any existing DICOMDIR from memory */
+        cleanup();
+        /* then check whether DICOMDIR file already exists */
+        if (OFStandard::fileExists(filename))
+        {
+            /* then create a backup if required */
+            if (BackupMode)
+                createDicomDirBackup(filename);
+            /* select new application profile */
+            result = selectApplicationProfile(profile);
+            if (result.good())
+            {
+                if (VerboseMode)
+                {
+                    /* create message */
+                    OFOStringStream oss;
+                    oss << "updating DICOMDIR file using " << getProfileName(ApplicationProfile)
+                        << " profile: " << filename << OFStringStream_ends;
+                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                    printMessage(tmpString);
+                    OFSTRINGSTREAM_FREESTR(tmpString)
+                }
+                /* finally, create a DICOMDIR object based on the existing file */
+                DicomDir = new DcmDicomDir(filename);
+                if (DicomDir != NULL)
+                    result = DicomDir->error();
+                else
+                    result = EC_MemoryExhausted;
+            }
+        } else {
+            /* create error message "No such file or directory" from error code */
+            const char *text = NULL;
+#if defined(_REENTRANT) && defined(HAVE_STRERROR_R)
+            /* # tbd: HAVE_STRERROR_R not yet defined/tested */
+            char buffer[255];
+            if (strerror_r(ENOENT, buffer, sizeof(buffer)) == 0)
+                text = buffer;
+            else
+#else
+                /* warning: function call is not thread-safe */
+                text = strerror(ENOENT);
+            if (text == NULL)
+#endif
+                text = "(unknown error code)";
+            /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
+            result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
+            /* report an error */
+            printFileErrorMessage(result, "cannot update", filename);
         }
     }
     return result;
@@ -1243,7 +1309,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
             OFString expectedTransferSyntax = UID_LittleEndianExplicitTransferSyntax;
             switch (ApplicationProfile)
             {
-                case AP_MPEG2MPatML:
+                case AP_MPEG2MPatMLDVD:
                     expectedTransferSyntax = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
                     /* multi-frame composite IODs only! */
                     found = compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage) ||
@@ -1355,7 +1421,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = found || compare(mediaSOPClassUID, UID_ComprehensiveSR);
                     found = found || compare(mediaSOPClassUID, UID_MammographyCADSR);
                     found = found || compare(mediaSOPClassUID, UID_ChestCADSR);
-                    found = found || compare(mediaSOPClassUID, UID_ProcedureLogStorage);
+                    found = found || compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
                     found = found || compare(mediaSOPClassUID, UID_ProcedureLogStorage);
                     found = found || compare(mediaSOPClassUID, UID_XRayRadiationDoseSR);
                     /* is it one of the waveform SOP Classes? */
@@ -1552,7 +1618,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             }
                             break;
                         case AP_GeneralPurpose:
-                        case AP_MPEG2MPatML:
+                        case AP_MPEG2MPatMLDVD:
                         case AP_DentalRadiograph:
                         default:
                         {
@@ -1600,18 +1666,6 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
         result = EC_ApplicationProfileViolated;
     if (!checkExistsWithIntegerValue(dataset, DCM_BitsStored, 8, filename, EncodingCheck))
         result = EC_ApplicationProfileViolated;
-    if (checkExistsWithStringValue(dataset, DCM_ImageType, "BIPLANE A", NULL /*no message*/) ||
-        checkExistsWithStringValue(dataset, DCM_ImageType, "BIPLANE B", NULL /*no message*/))
-    {
-        /* create error message */
-        OFOStringStream oss;
-        oss << "BIPLANE images not allowed for " << getProfileName(ApplicationProfile)
-            << " profile: " << filename << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-        printErrorMessage(tmpString);
-        OFSTRINGSTREAM_FREESTR(tmpString)
-        result = EC_ApplicationProfileViolated;
-    }
     /* overlay data, if present, shall be encoded in OverlayData (60XX,3000) */
     for (unsigned int grp = 0x6000; grp < 0x601f; grp += 2)
     {
@@ -2253,7 +2307,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     /* check profile specific requirements */
                     if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                         (ApplicationProfile == AP_USBandFlash) ||
-                        (ApplicationProfile == AP_MPEG2MPatML))
+                        (ApplicationProfile == AP_MPEG2MPatMLDVD))
                     {
                         /* check presence of type 1 elements */
                         if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
@@ -2486,36 +2540,40 @@ DcmDirectoryRecord *DicomDirInterface::findExistingRecord(DcmDirectoryRecord *pa
 }
 
 
-// create new patient record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmItem *dataset,
+// create or update patient record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *record,
+                                                          DcmItem *dataset,
                                                           const OFString &sourceFilename)
 {
     /* create new patient record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Patient, NULL, sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Patient, NULL, sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_PatientID, record);
-            copyElement(dataset, DCM_PatientsName, record);
+            copyElementType1(dataset, DCM_PatientID, record);
+            copyElementType2(dataset, DCM_PatientsName, record);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
-                (ApplicationProfile == AP_MPEG2MPatML))
+                (ApplicationProfile == AP_MPEG2MPatMLDVD))
             {
                 /* additional type 1C keys specified by specific profiles */
-                copyElement(dataset, DCM_PatientsBirthDate, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
-                copyElement(dataset, DCM_PatientsSex, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
+                copyElementType1C(dataset, DCM_PatientsBirthDate, record);
+                copyElementType1C(dataset, DCM_PatientsSex, record);
             }
             else if ((ApplicationProfile == AP_BasicCardiac) ||
                      (ApplicationProfile == AP_XrayAngiographic) ||
                      (ApplicationProfile == AP_XrayAngiographicDVD))
             {
                 /* additional type 2 keys specified by specific profiles */
-                copyStringWithDefault(dataset, DCM_PatientsBirthDate, record);
-                copyStringWithDefault(dataset, DCM_PatientsSex, record);
+                copyElementType2(dataset, DCM_PatientsBirthDate, record);
+                copyElementType2(dataset, DCM_PatientsSex, record);
             }
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Patient, "create");
             /* free memory */
@@ -2528,12 +2586,14 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmItem *dataset,
 }
 
 
-// create new study record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmItem *dataset,
+// create or update study record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *record,
+                                                        DcmItem *dataset,
                                                         const OFString &sourceFilename)
 {
     /* create new study record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Study, NULL, sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Study, NULL, sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -2541,13 +2601,15 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmItem *dataset,
         {
             OFString tmpString;
             /* copy attribute values from dataset to study record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyStringWithDefault(dataset, DCM_StudyDate, record, alternativeStudyDate(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
             copyStringWithDefault(dataset, DCM_StudyTime, record, alternativeStudyTime(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
-            copyElement(dataset, DCM_StudyDescription, record);
-            copyElement(dataset, DCM_StudyInstanceUID, record);
-            copyElement(dataset, DCM_StudyID, record);
-            copyElement(dataset, DCM_AccessionNumber, record);
+            copyElementType2(dataset, DCM_StudyDescription, record);
+            copyElementType1(dataset, DCM_StudyInstanceUID, record);
+            copyElementType1(dataset, DCM_StudyID, record);
+            copyElementType2(dataset, DCM_AccessionNumber, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Study, "create");
             /* free memory */
@@ -2560,40 +2622,44 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmItem *dataset,
 }
 
 
-// create new series record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmItem *dataset,
+// create or update series record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *record,
+                                                         DcmItem *dataset,
                                                          const OFString &sourceFilename)
 {
     /* create new series record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Series, NULL, sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Series, NULL, sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to series record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_Modality, record);
-            copyElement(dataset, DCM_SeriesInstanceUID, record);
-            copyElement(dataset, DCM_SeriesNumber, record);
+            copyElementType1(dataset, DCM_Modality, record);
+            copyElementType1(dataset, DCM_SeriesInstanceUID, record);
+            copyElementType1(dataset, DCM_SeriesNumber, record);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
-                (ApplicationProfile == AP_MPEG2MPatML))
+                (ApplicationProfile == AP_MPEG2MPatMLDVD))
             {
                 /* additional type 1C keys specified by specific profiles */
-                copyElement(dataset, DCM_InstitutionName, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
-                copyElement(dataset, DCM_InstitutionAddress, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
-                copyElement(dataset, DCM_PerformingPhysiciansName, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
+                copyElementType1C(dataset, DCM_InstitutionName, record);
+                copyElementType1C(dataset, DCM_InstitutionAddress, record);
+                copyElementType1C(dataset, DCM_PerformingPhysiciansName, record);
             }
             else if ((ApplicationProfile == AP_BasicCardiac) ||
                      (ApplicationProfile == AP_XrayAngiographic) ||
                      (ApplicationProfile == AP_XrayAngiographicDVD))
             {
-                /* additional type 2 keys specified by specific profiles */
+                /* additional type 2 keys specified by specific profiles (type 1C or 3 in file) */
                 copyStringWithDefault(dataset, DCM_InstitutionName, record);
                 copyStringWithDefault(dataset, DCM_InstitutionAddress, record);
                 copyStringWithDefault(dataset, DCM_PerformingPhysiciansName, record);
             }
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Series, "create");
             /* free memory */
@@ -2606,21 +2672,25 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmItem *dataset,
 }
 
 
-// create new overlay record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmItem *dataset,
+// create or update overlay record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *record,
+                                                          DcmItem *dataset,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new overlay record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Overlay, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Overlay, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to overlay record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_OverlayNumber, record);
+            copyElementType1(dataset, DCM_OverlayNumber, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Overlay, "create");
             /* free memory */
@@ -2633,21 +2703,25 @@ DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmItem *dataset,
 }
 
 
-// create new modality lut record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmItem *dataset,
+// create or update modality lut record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord *record,
+                                                              DcmItem *dataset,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new modality lut record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_ModalityLut, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_ModalityLut, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to modality lut record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_LookupTableNumber, record);
+            copyElementType1(dataset, DCM_LookupTableNumber, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_ModalityLut, "create");
             /* free memory */
@@ -2660,21 +2734,25 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmItem *dataset,
 }
 
 
-// create new voi lut record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmItem *dataset,
+// create or update voi lut record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *record,
+                                                         DcmItem *dataset,
                                                          const OFString &referencedFileID,
                                                          const OFString &sourceFilename)
 {
     /* create new voi lut record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_VoiLut, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_VoiLut, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to voi lut record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_LookupTableNumber, record);
+            copyElementType1(dataset, DCM_LookupTableNumber, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_VoiLut, "create");
             /* free memory */
@@ -2687,21 +2765,25 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmItem *dataset,
 }
 
 
-// create new curve record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmItem *dataset,
+// create or update curve record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *record,
+                                                        DcmItem *dataset,
                                                         const OFString &referencedFileID,
                                                         const OFString &sourceFilename)
 {
     /* create new curve record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Curve, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Curve, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to curve record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_CurveNumber, record);
+            copyElementType1(dataset, DCM_CurveNumber, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Curve, "create");
             /* free memory */
@@ -2714,13 +2796,15 @@ DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmItem *dataset,
 }
 
 
-// create new structure reporting record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmItem *dataset,
+// create or update structure reporting record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new struct report record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_SRDocument, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -2728,22 +2812,27 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmItem *dataset,
         {
             OFString tmpString;
             /* copy attribute values from dataset to struct report record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_CompletionFlag, record);
-            copyElement(dataset, DCM_VerificationFlag, record);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_CompletionFlag, record);
+            copyElementType1(dataset, DCM_VerificationFlag, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
             if (compare(getStringFromDataset(dataset, DCM_VerificationFlag, tmpString), "VERIFIED"))
             {
                 /* VerificationDateTime is required if verification flag is VERIFIED,
                    retrieve most recent (= last) entry from VerifyingObserverSequence */
                 DcmItem *ditem = NULL;
-                if (dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/).good())
-                    copyElement(ditem, DCM_VerificationDateTime, record);
+                OFCondition status = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
+                if (status.good())
+                    copyElementType1(ditem, DCM_VerificationDateTime, record);
+                else
+                    printAttributeErrorMessage(DCM_VerifyingObserverSequence, status, "retrieve");
             }
-            copyElement(dataset, DCM_ConceptNameCodeSequence, record);
+            copyElementType1(dataset, DCM_ConceptNameCodeSequence, record);
             addConceptModContentItems(record, dataset);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_SRDocument, "create");
             /* free memory */
@@ -2756,27 +2845,31 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmItem *dataset,
 }
 
 
-// create new presentation state record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmItem *dataset,
+// create or update presentation state record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new presentation record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Presentation, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Presentation, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to presentation record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ContentLabel, record);
-            copyElement(dataset, DCM_PresentationCreationDate, record);
-            copyElement(dataset, DCM_PresentationCreationTime, record);
-            copyElement(dataset, DCM_ContentCreatorsName, record);
-            copyElement(dataset, DCM_ReferencedSeriesSequence, record);
-            copyStringWithDefault(dataset, DCM_ContentDescription, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_ContentLabel, record);
+            copyElementType2(dataset, DCM_ContentDescription, record);
+            copyElementType1(dataset, DCM_PresentationCreationDate, record);
+            copyElementType1(dataset, DCM_PresentationCreationTime, record);
+            copyElementType2(dataset, DCM_ContentCreatorsName, record);
+            copyElementType1(dataset, DCM_ReferencedSeriesSequence, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
             /* free memory */
@@ -2789,23 +2882,27 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmItem *dataset,
 }
 
 
-// create new waveform record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmItem *dataset,
+// create or update waveform record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmDirectoryRecord *record,
+                                                           DcmItem *dataset,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new waveform record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Waveform, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Waveform, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to waveform record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Waveform, "create");
             /* free memory */
@@ -2818,24 +2915,28 @@ DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmItem *dataset,
 }
 
 
-// create new rt dose record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmItem *dataset,
+// create or update rt dose record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *record,
+                                                         DcmItem *dataset,
                                                          const OFString &referencedFileID,
                                                          const OFString &sourceFilename)
 {
     /* create new rt dose record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RTDose, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_RTDose, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to rt dose record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_DoseSummationType, record);
-            copyElement(dataset, DCM_DoseComment, record);
-            copyElement(dataset, DCM_IconImageSequence, record, OFTrue /*optional*/);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_DoseSummationType, record);
+            copyElementType3(dataset, DCM_DoseComment, record);
+            copyElementType3(dataset, DCM_IconImageSequence, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTDose, "create");
             /* free memory */
@@ -2848,24 +2949,28 @@ DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmItem *dataset,
 }
 
 
-// create new rt structure set record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmItem *dataset,
+// create or update rt structure set record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmDirectoryRecord *record,
+                                                                 DcmItem *dataset,
                                                                  const OFString &referencedFileID,
                                                                  const OFString &sourceFilename)
 {
     /* create new rt structure set record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RTStructureSet, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_RTStructureSet, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to rt structure set record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_StructureSetLabel, record);
-            copyElement(dataset, DCM_StructureSetDate, record);
-            copyElement(dataset, DCM_StructureSetTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_StructureSetLabel, record);
+            copyElementType2(dataset, DCM_StructureSetDate, record);
+            copyElementType2(dataset, DCM_StructureSetTime, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTStructureSet, "create");
             /* free memory */
@@ -2878,24 +2983,28 @@ DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmItem *datase
 }
 
 
-// create new rt plan record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmItem *dataset,
+// create or update rt plan record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmDirectoryRecord *record,
+                                                         DcmItem *dataset,
                                                          const OFString &referencedFileID,
                                                          const OFString &sourceFilename)
 {
     /* create new rt plan record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RTPlan, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_RTPlan, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to rt plan record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_RTPlanLabel, record);
-            copyElement(dataset, DCM_RTPlanDate, record);
-            copyElement(dataset, DCM_RTPlanTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_RTPlanLabel, record);
+            copyElementType2(dataset, DCM_RTPlanDate, record);
+            copyElementType2(dataset, DCM_RTPlanTime, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTPlan, "create");
             /* free memory */
@@ -2908,23 +3017,27 @@ DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmItem *dataset,
 }
 
 
-// create new rt treatment record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmItem *dataset,
+// create or update rt treatment record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmDirectoryRecord *record,
+                                                              DcmItem *dataset,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new rt treatment record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RTTreatRecord, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_RTTreatRecord, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to rt treatment record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_TreatmentDate, record);
-            copyElement(dataset, DCM_TreatmentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType2(dataset, DCM_TreatmentDate, record);
+            copyElementType2(dataset, DCM_TreatmentTime, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTTreatRecord, "create");
             /* free memory */
@@ -2937,22 +3050,26 @@ DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmItem *dataset,
 }
 
 
-// create new stored print record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmItem *dataset,
+// create or update stored print record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord *record,
+                                                              DcmItem *dataset,
                                                               const OFString &referencedFileID,
                                                               const OFString &sourceFilename)
 {
     /* create new stored print record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_StoredPrint, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_StoredPrint, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to stored print record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_IconImageSequence, record, OFTrue /*optional*/);
+            copyElementType2(dataset, DCM_InstanceNumber, record);
+            copyElementType3(dataset, DCM_IconImageSequence, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_StoredPrint, "create");
             /* free memory */
@@ -2965,25 +3082,29 @@ DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmItem *dataset,
 }
 
 
-// create new key object doc record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmItem *dataset,
+// create or update key object doc record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new key object doc record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_KeyObjectDoc, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_KeyObjectDoc, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to key object doc record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
-            copyElement(dataset, DCM_ConceptNameCodeSequence, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_ConceptNameCodeSequence, record);
             addConceptModContentItems(record, dataset);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_KeyObjectDoc, "create");
             /* free memory */
@@ -2996,26 +3117,30 @@ DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmItem *dataset,
 }
 
 
-// create new registration record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmItem *dataset,
+// create or update registration record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new registration record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to registration record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ContentLabel, record);
-            copyStringWithDefault(dataset, DCM_ContentDescription, record);
-            copyStringWithDefault(dataset, DCM_ContentCreatorsName, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_ContentLabel, record);
+            copyElementType2(dataset, DCM_ContentDescription, record);
+            copyElementType2(dataset, DCM_ContentCreatorsName, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Registration, "create");
             /* free memory */
@@ -3028,26 +3153,30 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmItem *dataset,
 }
 
 
-// create new fiducial record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmItem *dataset,
+// create or update fiducial record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *record,
+                                                           DcmItem *dataset,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new fiducial record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to fiducial record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ContentLabel, record);
-            copyStringWithDefault(dataset, DCM_ContentDescription, record);
-            copyStringWithDefault(dataset, DCM_ContentCreatorsName, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_ContentLabel, record);
+            copyElementType2(dataset, DCM_ContentDescription, record);
+            copyElementType2(dataset, DCM_ContentCreatorsName, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Fiducial, "create");
             /* free memory */
@@ -3060,25 +3189,27 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmItem *dataset,
 }
 
 
-// create new raw data record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmItem *dataset,
+// create or update raw data record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *record,
+                                                          DcmItem *dataset,
                                                           const OFString &referencedFileID,
                                                           const OFString &sourceFilename)
 {
     /* create new raw data record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_RawData, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to raw data record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
-            /* InstanceNumber is type 2 in IOD and directory record! */
-            copyStringWithDefault(dataset, DCM_InstanceNumber, record);
-            /* IconImageSequence (type 3) not supported */
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            copyElementType2(dataset, DCM_InstanceNumber, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RawData, "create");
             /* free memory */
@@ -3091,51 +3222,51 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmItem *dataset,
 }
 
 
-// create new spectroscopy record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmItem *dataset,
+// create or update spectroscopy record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new spectroscopy record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Spectroscopy, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to spectroscopy record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ImageType, record);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ReferencedImageEvidenceSequence, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_NumberOfFrames, record);
-            copyElement(dataset, DCM_Rows, record);
-            copyElement(dataset, DCM_Columns, record);
-            copyElement(dataset, DCM_DataPointRows, record);
-            copyElement(dataset, DCM_DataPointColumns, record);
-            /* IconImageSequence (type 3) not supported */
-
+            copyElementType1(dataset, DCM_ImageType, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1C(dataset, DCM_ReferencedImageEvidenceSequence, record);
+            copyElementType1(dataset, DCM_NumberOfFrames, record);
+            copyElementType1(dataset, DCM_Rows, record);
+            copyElementType1(dataset, DCM_Columns, record);
+            copyElementType1(dataset, DCM_DataPointRows, record);
+            copyElementType1(dataset, DCM_DataPointColumns, record);
             /* application profile specific attributes */
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash))
             {
-                /* type 1 */
-                copyElement(dataset, DCM_Rows, record);
-                copyElement(dataset, DCM_Columns, record);
-                /* type 1C */
-                copyElement(dataset, DCM_FrameOfReferenceUID, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_SynchronizationFrameOfReferenceUID, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_NumberOfFrames, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_AcquisitionTimeSynchronized, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_AcquisitionDatetime, record, OFTrue /*optional*/);
+                copyElementType1(dataset, DCM_Rows, record);
+                copyElementType1(dataset, DCM_Columns, record);
+                copyElementType1C(dataset, DCM_FrameOfReferenceUID, record);
+                copyElementType1C(dataset, DCM_SynchronizationFrameOfReferenceUID, record);
+                copyElementType1C(dataset, DCM_NumberOfFrames, record);
+                copyElementType1C(dataset, DCM_AcquisitionTimeSynchronized, record);
+                copyElementType1C(dataset, DCM_AcquisitionDatetime, record);
                 // tbd: need to examine functional groups for the following attributes
-                copyElement(dataset, DCM_ReferencedImageSequence, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_ImagePositionPatient, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_ImageOrientationPatient, record, OFTrue /*optional*/);
-                copyElement(dataset, DCM_PixelSpacing, record, OFTrue /*optional*/);
+                copyElementType1C(dataset, DCM_ReferencedImageSequence, record);
+                copyElementType1C(dataset, DCM_ImagePositionPatient, record);
+                copyElementType1C(dataset, DCM_ImageOrientationPatient, record);
+                copyElementType1C(dataset, DCM_PixelSpacing, record);
             }
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Spectroscopy, "create");
             /* free memory */
@@ -3148,26 +3279,31 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmItem *dataset,
 }
 
 
-// create new encap doc record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmItem *dataset,
+// create or update encap doc record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *record,
+                                                           DcmItem *dataset,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new encap doc record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_EncapDoc, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to encap doc record */
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_MIMETypeOfEncapsulatedDocument, record);
-            copyStringWithDefault(dataset, DCM_ContentDate, record);
-            copyStringWithDefault(dataset, DCM_ContentTime, record);
-            copyStringWithDefault(dataset, DCM_DocumentTitle, record);
+            copyElementType2(dataset, DCM_ContentDate, record);
+            copyElementType2(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType2(dataset, DCM_DocumentTitle, record);
+            copyElementType1(dataset, DCM_MIMETypeOfEncapsulatedDocument, record);
             /* baseline context group 7020 is not checked */
-            copyElement(dataset, DCM_ConceptNameCodeSequence, record, OFTrue /*optional*/);
+            copyElementType2(dataset, DCM_ConceptNameCodeSequence, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_EncapDoc, "create");
             /* free memory */
@@ -3180,26 +3316,30 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmItem *dataset,
 }
 
 
-// create new value map record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmItem *dataset,
+// create or update value map record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *record,
+                                                           DcmItem *dataset,
                                                            const OFString &referencedFileID,
                                                            const OFString &sourceFilename)
 {
     /* create new value map record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_ValueMap, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
             /* copy attribute values from dataset to value map record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_ContentDate, record);
-            copyElement(dataset, DCM_ContentTime, record);
-            copyElement(dataset, DCM_InstanceNumber, record);
-            copyElement(dataset, DCM_ContentLabel, record);
-            copyStringWithDefault(dataset, DCM_ContentDescription, record);
-            copyStringWithDefault(dataset, DCM_ContentCreatorsName, record);
+            copyElementType1(dataset, DCM_ContentDate, record);
+            copyElementType1(dataset, DCM_ContentTime, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_ContentLabel, record);
+            copyElementType2(dataset, DCM_ContentDescription, record);
+            copyElementType2(dataset, DCM_ContentCreatorsName, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_ValueMap, "create");
             /* free memory */
@@ -3212,20 +3352,23 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmItem *dataset,
 }
 
 
-// create new stereometric record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmItem *dataset,
+// create or update stereometric record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecord *record,
+                                                               DcmItem *dataset,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
     /* create new value map record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Stereometric, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* copy attribute values from dataset to stereometric record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Stereometric, "create");
             /* free memory */
@@ -3238,13 +3381,15 @@ DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmItem *dataset,
 }
 
 
-// create new image record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
+// create or update image record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *record,
+                                                        DcmItem *dataset,
                                                         const OFString &referencedFileID,
                                                         const OFString &sourceFilename)
 {
     /* create new image record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_Image, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
@@ -3255,59 +3400,56 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
             /* Icon Image Sequence required for particular profiles */
             OFBool iconRequired = OFFalse;
             /* copy attribute values from dataset to image record */
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_InstanceNumber, record);
+            copyElementType1(dataset, DCM_InstanceNumber, record);
             /* application profile specific attributes */
             switch (ApplicationProfile)
             {
                 case AP_GeneralPurpose:
-                    /* type 1C */
-                    copyElement(dataset, DCM_ImageType, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_ReferencedImageSequence, record, OFTrue /*optional*/);
+                    copyElementType1C(dataset, DCM_ImageType, record);
+                    copyElementType1C(dataset, DCM_ReferencedImageSequence, record);
                     break;
                 case AP_GeneralPurposeDVD:
                 case AP_USBandFlash:
-                    /* type 1 */
-                    copyElement(dataset, DCM_Rows, record);
-                    copyElement(dataset, DCM_Columns, record);
-                    /* type 1C */
-                    copyElement(dataset, DCM_ImageType, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_CalibrationImage, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
-                    copyElement(dataset, DCM_LossyImageCompressionRatio, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
-                    copyElement(dataset, DCM_FrameOfReferenceUID, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_SynchronizationFrameOfReferenceUID, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_NumberOfFrames, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_AcquisitionTimeSynchronized, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_AcquisitionDatetime, record, OFTrue /*optional*/);
+                    copyElementType1(dataset, DCM_Rows, record);
+                    copyElementType1(dataset, DCM_Columns, record);
+                    copyElementType1C(dataset, DCM_ImageType, record);
+                    copyElementType1C(dataset, DCM_CalibrationImage, record);
+                    copyElementType1C(dataset, DCM_LossyImageCompressionRatio, record);
+                    copyElementType1C(dataset, DCM_FrameOfReferenceUID, record);
+                    copyElementType1C(dataset, DCM_SynchronizationFrameOfReferenceUID, record);
+                    copyElementType1C(dataset, DCM_NumberOfFrames, record);
+                    copyElementType1C(dataset, DCM_AcquisitionTimeSynchronized, record);
+                    copyElementType1C(dataset, DCM_AcquisitionDatetime, record);
                     // tbd: need to examine functional groups for the following attributes
-                    copyElement(dataset, DCM_ReferencedImageSequence, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_ImagePositionPatient, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_ImageOrientationPatient, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_PixelSpacing, record, OFTrue /*optional*/);
+                    copyElementType1C(dataset, DCM_ReferencedImageSequence, record);
+                    copyElementType1C(dataset, DCM_ImagePositionPatient, record);
+                    copyElementType1C(dataset, DCM_ImageOrientationPatient, record);
+                    copyElementType1C(dataset, DCM_PixelSpacing, record);
                     break;
-                case AP_MPEG2MPatML:
-                    /* type 1 */
-                    copyElement(dataset, DCM_Rows, record);
-                    copyElement(dataset, DCM_Columns, record);
-                    /* type 1C */
-                    copyElement(dataset, DCM_ImageType, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_LossyImageCompressionRatio, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
+                case AP_MPEG2MPatMLDVD:
+                    copyElementType1(dataset, DCM_Rows, record);
+                    copyElementType1(dataset, DCM_Columns, record);
+                    copyElementType1C(dataset, DCM_ImageType, record);
+                    copyElementType1C(dataset, DCM_LossyImageCompressionRatio, record);
                     break;
                 case AP_XrayAngiographic:
                 case AP_XrayAngiographicDVD:
-                    copyElement(dataset, DCM_LossyImageCompressionRatio, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
+                    copyElementType1C(dataset, DCM_LossyImageCompressionRatio, record);
                 case AP_BasicCardiac:
                     {
                         OFString tmpString;
                         OFBool xaImage = compare(getStringFromDataset(dataset, DCM_SOPClassUID, tmpString), UID_XRayAngiographicImageStorage);
-                        /* type 1C: required for XA images (type 1 for Basic Cardiac Profile) */
-                        copyElement(dataset, DCM_ImageType, record, !xaImage /*optional*/);
-                        /* additional type 2 keys specified by specific profiles */
+                        if (xaImage)
+                        {
+                            /* type 1C: required for XA images (type 1 for Basic Cardiac Profile) */
+                            copyElementType1(dataset, DCM_ImageType, record);
+                            /* type 1C: required if ImageType value 3 is "BIPLANE A" or "BIPLANE B" */
+                            getStringComponentFromDataset(dataset, DCM_ImageType, tmpString, 2);
+                            if (compare(tmpString, "BIPLANE A") || compare(tmpString, "BIPLANE B"))
+                                copyElementType1(dataset, DCM_ReferencedImageSequence, record);
+                        }
+                        /* additional type 2 keys specified by specific profiles (type 3 in image IOD) */
                         copyStringWithDefault(dataset, DCM_CalibrationImage, record);
-                        /* type 1C: required if ImageType is "BIPLANE A" or "BIPLANE B" */
-                        getStringFromDataset(dataset, DCM_ImageType, tmpString);
-                        OFBool bpImage = compare(tmpString, "BIPLANE A") || compare(tmpString, "BIPLANE B");
-                        copyElement(dataset, DCM_ReferencedImageSequence, record, !bpImage /*optional*/);
                         /* icon images */
                         iconImage = OFTrue;
                         iconRequired = OFTrue;
@@ -3315,15 +3457,13 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
                     }
                     break;
                 case AP_CTandMR:
-                    /* type 1 */
-                    copyElement(dataset, DCM_Rows, record);
-                    copyElement(dataset, DCM_Columns, record);
-                    /* type 1C */
-                    copyElement(dataset, DCM_ReferencedImageSequence, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_ImagePositionPatient, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_ImageOrientationPatient, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_FrameOfReferenceUID, record, OFTrue /*optional*/);
-                    copyElement(dataset, DCM_PixelSpacing, record, OFTrue /*optional*/);
+                    copyElementType1(dataset, DCM_Rows, record);
+                    copyElementType1(dataset, DCM_Columns, record);
+                    copyElementType1C(dataset, DCM_ReferencedImageSequence, record);
+                    copyElementType1C(dataset, DCM_ImagePositionPatient, record);
+                    copyElementType1C(dataset, DCM_ImageOrientationPatient, record);
+                    copyElementType1C(dataset, DCM_FrameOfReferenceUID, record);
+                    copyElementType1C(dataset, DCM_PixelSpacing, record);
                     /* icon images */
                     iconImage = OFTrue;
                     iconSize = 64;
@@ -3345,6 +3485,9 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
                         printWarningMessage("cannot create IconImageSequence");
                 }
             }
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Series, "create");
             /* free memory */
@@ -3357,27 +3500,31 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmItem *dataset,
 }
 
 
-// create new hanging protocol record and copy required values from dataset
-DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmItem *dataset,
+// create or update hanging protocol record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRecord *record,
+                                                                  DcmItem *dataset,
                                                                   const OFString &referencedFileID,
                                                                   const OFString &sourceFilename)
 {
     /* create new hanging protocol record */
-    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record == NULL)
+        record = new DcmDirectoryRecord(ERT_HangingProtocol, referencedFileID.c_str(), sourceFilename.c_str());
     if (record != NULL)
     {
         /* check whether new record is ok */
         if (record->error().good())
         {
-            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
-            copyElement(dataset, DCM_HangingProtocolName, record);
-            copyElement(dataset, DCM_HangingProtocolDescription, record);
-            copyElement(dataset, DCM_HangingProtocolLevel, record);
-            copyElement(dataset, DCM_HangingProtocolCreator, record);
-            copyElement(dataset, DCM_HangingProtocolCreationDatetime, record);
-            copyElement(dataset, DCM_HangingProtocolDefinitionSequence, record);
-            copyElement(dataset, DCM_NumberOfPriorsReferenced, record);
-            copyElement(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record, OFTrue /*optional*/);
+            copyElementType1(dataset, DCM_HangingProtocolName, record);
+            copyElementType1(dataset, DCM_HangingProtocolDescription, record);
+            copyElementType1(dataset, DCM_HangingProtocolLevel, record);
+            copyElementType1(dataset, DCM_HangingProtocolCreator, record);
+            copyElementType1(dataset, DCM_HangingProtocolCreationDatetime, record);
+            copyElementType1(dataset, DCM_HangingProtocolDefinitionSequence, record);
+            copyElementType1(dataset, DCM_NumberOfPriorsReferenced, record);
+            copyElementType2(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record);
+            /* type 1C: required if an extended character set is used in one of the keys */
+            if (record->isAffectedBySpecificCharacterSet())
+                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_HangingProtocol, "create");
             /* free memory */
@@ -3619,101 +3766,104 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
     if (parent != NULL)
     {
         /* check whether record already exists */
-        record = findExistingRecord(parent, recordType, dataset);
-        if (record == NULL)
+        DcmDirectoryRecord *oldRecord = record = findExistingRecord(parent, recordType, dataset);
+        if ((record == NULL) || FilesetUpdateMode)
         {
-            /* if not, create a new one */
-            switch (recordType)
-            {
-                case ERT_Patient:
-                    record = buildPatientRecord(dataset, sourceFilename);
-                    break;
-                case ERT_Study:
-                    record = buildStudyRecord(dataset, sourceFilename);
-                    break;
-                case ERT_Series:
-                    record = buildSeriesRecord(dataset, sourceFilename);
-                    break;
-                case ERT_Overlay:
-                    record = buildOverlayRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_ModalityLut:
-                    record = buildModalityLutRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_VoiLut:
-                    record = buildVoiLutRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Curve:
-                    record = buildCurveRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_SRDocument:
-                    record = buildStructReportRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Presentation:
-                    record = buildPresentationRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Waveform:
-                    record = buildWaveformRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_RTDose:
-                    record = buildRTDoseRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_RTStructureSet:
-                    record = buildRTStructureSetRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_RTPlan:
-                    record = buildRTPlanRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_RTTreatRecord:
-                    record = buildRTTreatmentRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_StoredPrint:
-                    record = buildStoredPrintRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_KeyObjectDoc:
-                    record = buildKeyObjectDocRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Registration:
-                    record = buildRegistrationRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Fiducial:
-                    record = buildFiducialRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_RawData:
-                    record = buildRawDataRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Spectroscopy:
-                    record = buildSpectroscopyRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_EncapDoc:
-                    record = buildEncapDocRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_ValueMap:
-                    record = buildValueMapRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_HangingProtocol:
-                    record = buildHangingProtocolRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                case ERT_Stereometric:
-                    record = buildStereometricRecord(dataset, referencedFileID, sourceFilename);
-                    break;
-                default:
-                    /* it can only be an image */
-                    record = buildImageRecord(dataset, referencedFileID, sourceFilename);
-            }
+            /* in case an existing record is updated */
             if (record != NULL)
             {
-                OFCondition status = EC_Normal;
                 /* perform consistency check */
                 if (ConsistencyCheck)
                 {
                     /* abort on any inconsistancy */
                     if (warnAboutInconsistentAttributes(record, dataset, sourceFilename, AbortMode) && AbortMode)
-                        status = EC_CorruptedData;
+                        return NULL;
                 }
-                /* and insert it below parent record */
-                if (status.good())
-                    status = insertSortedUnder(parent, record);
+            }
+            /* create a new one or update existing record */
+            switch (recordType)
+            {
+                case ERT_Patient:
+                    record = buildPatientRecord(record, dataset, sourceFilename);
+                    break;
+                case ERT_Study:
+                    record = buildStudyRecord(record, dataset, sourceFilename);
+                    break;
+                case ERT_Series:
+                    record = buildSeriesRecord(record, dataset, sourceFilename);
+                    break;
+                case ERT_Overlay:
+                    record = buildOverlayRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_ModalityLut:
+                    record = buildModalityLutRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_VoiLut:
+                    record = buildVoiLutRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Curve:
+                    record = buildCurveRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_SRDocument:
+                    record = buildStructReportRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Presentation:
+                    record = buildPresentationRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Waveform:
+                    record = buildWaveformRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_RTDose:
+                    record = buildRTDoseRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_RTStructureSet:
+                    record = buildRTStructureSetRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_RTPlan:
+                    record = buildRTPlanRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_RTTreatRecord:
+                    record = buildRTTreatmentRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_StoredPrint:
+                    record = buildStoredPrintRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_KeyObjectDoc:
+                    record = buildKeyObjectDocRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Registration:
+                    record = buildRegistrationRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Fiducial:
+                    record = buildFiducialRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_RawData:
+                    record = buildRawDataRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Spectroscopy:
+                    record = buildSpectroscopyRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_EncapDoc:
+                    record = buildEncapDocRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_ValueMap:
+                    record = buildValueMapRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_HangingProtocol:
+                    record = buildHangingProtocolRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Stereometric:
+                    record = buildStereometricRecord(record, dataset, referencedFileID, sourceFilename);
+                    break;
+                default:
+                    /* it can only be an image */
+                    record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
+            }
+            /* in case a new record has been created */
+            if ((record != NULL) && (record != oldRecord))
+            {
+                /* insert it below parent record */
+                OFCondition status = insertSortedUnder(parent, record);
                 if (status.bad())
                 {
                     printRecordErrorMessage(status, recordType, "insert");
@@ -3721,6 +3871,14 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                     delete record;
                     record = NULL;
                 }
+            }
+        } else {
+            /* perform consistency check */
+            if (ConsistencyCheck)
+            {
+                /* abort on any inconsistancy */
+                if (warnAboutInconsistentAttributes(record, dataset, sourceFilename, AbortMode) && AbortMode)
+                    return NULL;
             }
         }
         if (record != NULL)
@@ -4310,7 +4468,7 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
         case AP_USBandFlash:
             result = "STD-GEN-USB/MMC/CF/SD-JPEG/J2K";
             break;
-        case AP_MPEG2MPatML:
+        case AP_MPEG2MPatMLDVD:
             result = "STD-DVD-MPEG2-MPML";
             break;
         case AP_BasicCardiac:
@@ -4630,6 +4788,29 @@ OFString &DicomDirInterface::getStringFromDataset(DcmItem *dataset,
 }
 
 
+// get string value component from dataset and report an error (if any)
+OFString &DicomDirInterface::getStringComponentFromDataset(DcmItem *dataset,
+                                                           const DcmTagKey &key,
+                                                           OFString &result,
+                                                           const unsigned long pos,
+                                                           OFBool searchIntoSub)
+{
+    result.clear();
+    if (dataset != NULL)
+    {
+        /* get string value component from dataset and report if tag or component is missing */
+        OFCondition status = dataset->findAndGetOFString(key, result, pos, searchIntoSub);
+        if ((LogStream != NULL) && (status.bad()))
+        {
+            LogStream->lockCerr() << "Error: " << status.text() << ": cannot retrieve value " << (pos + 1);
+            LogStream->getCerr() << " of " << DcmTag(key).getTagName() << " " << key << OFendl;
+            LogStream->unlockCerr();
+        }
+    }
+    return result;
+}
+
+
 // get string value from file and report an error (if any)
 OFString &DicomDirInterface::getStringFromFile(const char *filename,
                                                const DcmTagKey &key,
@@ -4732,14 +4913,17 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
         if (!result)
         {
             OFString uniqueString;
+            OFString originFilename = record->getRecordsOriginFile();
             DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
             getStringFromDataset(record, uniqueKey, uniqueString);
+            if (originFilename.empty())
+                originFilename = "<unknown>";
             /* create warning message */
             OFOStringStream oss;
             oss << "file inconsistent with existing DICOMDIR record" << OFendl;
             oss << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
                 << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl;
-            oss << "    Existing Record (origin: " << record->getRecordsOriginFile() << ") defines: " << OFendl;
+            oss << "    Existing Record (origin: " << originFilename << ") defines: " << OFendl;
             oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << recordString << "\"" << OFendl;
             oss << "    File (" << sourceFilename << ") defines:" << OFendl;
             oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << datasetString << "\"" << OFendl;
@@ -4831,7 +5015,20 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.18  2006-08-15 15:49:54  meichel
+ *  Revision 1.19  2006-12-15 16:27:44  joergr
+ *  Added new option that allows to update existing entries in a DICOMDIR. This
+ *  also adds support for mixed media stored application profiles.
+ *  Changed name of enum value for the MPEG2-DVD application profile in order to
+ *  be more consistent with other names.
+ *  Slightly revised handling of type 1, 1C and 2 elements in directory records.
+ *  Fixed bug in cardiac application profiles when checking the ImageType
+ *  (0008,0008) for BIPLANE images.
+ *  Added check whether the SpecificCharacterSet (0008,0005) is really required
+ *  for a particular directory record.
+ *  Fixed bug that prevented Key Object Selection Documents from being added to
+ *  a DICOMDIR.
+ *
+ *  Revision 1.18  2006/08/15 15:49:54  meichel
  *  Updated all code in module dcmdata to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
