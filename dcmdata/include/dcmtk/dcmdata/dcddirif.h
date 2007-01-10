@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:56:57 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2007-01-10 13:02:59 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ class DicomDirInterface
                               const E_GrpLenEncoding groupLength = EGL_withoutGL);
 
     /** check whether specified filename is valid. i.e. conforms to the DICOM standard
-     *  requirements (length, number of component and proper characters).  This function
+     *  requirements (length, number of components and proper characters).  This function
      *  is called automatically for the following methods: checkDicomFile(), addDicomFile()
      *  and setFilesetDescriptor().  So usually there's no need to call it manually
      *  (especially not in addition to the above mentioned methods).
@@ -362,6 +362,15 @@ class DicomDirInterface
         return InventPatientIDMode;
     }
 
+    /** get current status of the "retired SOP class support" mode.
+     *  See enableRetiredSOPClassSupport() for more details.
+     *  @return OFTrue if support is enabled, OFFalse otherwise
+     */
+    OFBool retiredSOPClassSupport() const
+    {
+        return RetiredSOPClassSupport;
+    }
+
     /** get current status of the "create icon images" mode.
      *  See enableIconImageMode() for more details.
      *  @return OFTrue if mode is enabled, OFFalse otherwise
@@ -461,6 +470,15 @@ class DicomDirInterface
      *  @return previously stored value
      */
     OFBool enableInventPatientIDMode(const OFBool newMode = OFTrue);
+
+    /** enable/disable the "retired SOP class support" mode.
+     *  If the mode is enabled retired SOP classes defined in previous editions
+     *  of the DICOM standard are also accepted.
+     *  Default: off, do not accept retired SOP classes
+     *  @param newMode enable mode if OFTrue, disable if OFFalse
+     *  @return previously stored value
+     */
+    OFBool enableRetiredSOPClassSupport(const OFBool newMode = OFTrue);
 
     /** enable/disable the "create icon images" mode.
      *  If the mode is enabled icon images are created for each IMAGE record.
@@ -1382,6 +1400,8 @@ class DicomDirInterface
     OFBool InventMode;
     /// invent missing patient ID mode
     OFBool InventPatientIDMode;
+    /// support retired SOP classes
+    OFBool RetiredSOPClassSupport;
     /// check pixel encoding
     OFBool EncodingCheck;
     /// check image resolution
@@ -1442,7 +1462,10 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.10  2006-12-15 14:56:57  joergr
+ * Revision 1.11  2007-01-10 13:02:59  joergr
+ * Added new option that enables support for retired SOP classes.
+ *
+ * Revision 1.10  2006/12/15 14:56:57  joergr
  * Added new option that allows to update existing entries in a DICOMDIR. This
  * also adds support for mixed media stored application profiles.
  * Changed name of enum value for the MPEG2-DVD application profile in order to
