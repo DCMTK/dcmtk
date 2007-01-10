@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:26:14 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2007-01-10 13:05:18 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,9 +151,6 @@ int main(int argc, char *argv[])
                                                            "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
         cmd.addOption("--char-set",              "+C",  1, "[c]har-set : string",
                                                            "add a specific character set for descriptor\n(default: \"" DEFAULT_DESCRIPTOR_CHARSET "\" if descriptor present)");
-      cmd.addSubGroup("type 1 attributes:");
-        cmd.addOption("--strict",                "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
-        cmd.addOption("--invent",                "+I",     "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
       cmd.addSubGroup("reading:");
         cmd.addOption("--input-directory",       "+id", 1, "[d]irectory : string",
                                                            "read referenced DICOM files from directory d\n(default for --recurse: current directory)");
@@ -165,15 +162,21 @@ int main(int argc, char *argv[])
         cmd.addOption("--pattern",               "+p",  1, "[p]attern : string (only with --recurse)",
                                                            "pattern for filename matching (wildcards)");
 #endif
-      cmd.addSubGroup("checking:");
+    cmd.addGroup("processing options:");
+      cmd.addSubGroup("consistency check:");
         cmd.addOption("--no-consistency-check",  "-W",     "do not check files for consistency");
         cmd.addOption("--warn-inconsist-files",  "+W",     "warn about inconsistent files (default)");
         cmd.addOption("--abort-inconsist-file",  "-a",     "abort on first inconsistent file");
+      cmd.addSubGroup("type 1 attributes:");
+        cmd.addOption("--strict",                "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
+        cmd.addOption("--invent",                "+I",     "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
         cmd.addOption("--invent-patient-id",     "+Ipi",   "invent new PatientID in case of inconsistent\nPatientsName attributes");
+      cmd.addSubGroup("other checks:");
+        cmd.addOption("--allow-retired-sop",     "+Nrs",   "allow retired SOP classes defined in previous\neditions of the DICOM standard");
+        cmd.addOption("--no-xfer-check",         "-Nxc",   "do not reject images with non-standard\ntransfer syntax (just warn)");
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
         cmd.addOption("--no-encoding-check",     "-Nec",   "do not reject images with non-standard\npixel encoding (just warn)");
         cmd.addOption("--no-resolution-check",   "-Nrc",   "do not reject images with non-standard\nspatial resolution (just warn)");
-        cmd.addOption("--no-xfer-check",         "-Nxc",   "do not reject images with non-standard\ntransfer syntax (just warn)");
       cmd.addSubGroup("icon images:");
         cmd.addOption("--add-icon-image",        "+X",     "add monochrome icon image on IMAGE level\n(default for cardiac profiles)");
         cmd.addOption("--icon-image-size",       "-Xs", 1, "[s]ize : integer (1..128)",
@@ -275,13 +278,6 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--char-set"))
             app.checkValue(cmd.getValue(opt_charset));
 
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--strict"))
-            ddir.enableInventMode(OFFalse);
-        if (cmd.findOption("--invent"))
-            ddir.enableInventMode(OFTrue);
-        cmd.endOptionBlock();
-
         if (cmd.findOption("--input-directory"))
             app.checkValue(cmd.getValue(opt_directory));
 
@@ -311,6 +307,7 @@ int main(int argc, char *argv[])
         }
 #endif
 
+        /* processing options */
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-consistency-check"))
             ddir.disableConsistencyCheck();
@@ -319,16 +316,27 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--abort-inconsist-file"))
             ddir.enableAbortMode(OFTrue);
         cmd.endOptionBlock();
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--strict"))
+            ddir.enableInventMode(OFFalse);
+        if (cmd.findOption("--invent"))
+            ddir.enableInventMode(OFTrue);
+        cmd.endOptionBlock();
+
         if (cmd.findOption("--invent-patient-id"))
             ddir.enableInventPatientIDMode();
+
+        if (cmd.findOption("--allow-retired-sop"))
+            ddir.enableRetiredSOPClassSupport();
+        if (cmd.findOption("--no-xfer-check"))
+            ddir.disableTransferSyntaxCheck();
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
         if (cmd.findOption("--no-encoding-check"))
             ddir.disableEncodingCheck();
         if (cmd.findOption("--no-resolution-check"))
             ddir.disableResolutionCheck();
-        if (cmd.findOption("--no-xfer-check"))
-            ddir.disableTransferSyntaxCheck();
         if (cmd.findOption("--add-icon-image"))
             ddir.enableIconImageMode();
         if (cmd.findOption("--icon-image-size"))
@@ -594,7 +602,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.84  2006-12-15 14:26:14  joergr
+ * Revision 1.85  2007-01-10 13:05:18  joergr
+ * Added new option that enables support for retired SOP classes.
+ * Re-ordered and re-structured command line options.
+ *
+ * Revision 1.84  2006/12/15 14:26:14  joergr
  * Added new option that allows to update existing entries in a DICOMDIR. This
  * also adds support for mixed media stored application profiles.
  * Fixed wrong spelling of command line option which prevented the MPEG2-DVD

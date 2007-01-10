@@ -72,15 +72,6 @@ DICOMDIR identifiers:
           add a specific character set for descriptor
           (default: "ISO_IR 100" if descriptor present)
 
-type 1 attributes:
-
-  -I    --strict
-          exit with error if DICOMDIR type 1 attributes
-          are missing in DICOM file (default)
-
-  +I    --invent
-          invent DICOMDIR type 1 attributes if missing in DICOM file
-
 reading:
 
   +id   --input-directory  [d]irectory : string
@@ -104,8 +95,11 @@ reading:
           pattern for filename matching (wildcards)
 
           # possibly not available on all systems
+\endverbatim
 
-checking:
+\subsection processing_options processing options
+\verbatim
+consistency check:
 
   -W    --no-consistency-check
           do not check files for consistency
@@ -116,9 +110,28 @@ checking:
   -a    --abort-inconsist-file
           abort on first inconsistent file
 
+type 1 attributes:
+
+  -I    --strict
+          exit with error if DICOMDIR type 1 attributes
+          are missing in DICOM file (default)
+
+  +I    --invent
+          invent DICOMDIR type 1 attributes if missing in DICOM file
+
   +Ipi  --invent-patient-id
           invent new PatientID in case of inconsistent
           PatientsName attributes
+
+other checks:
+
+  +Nrs  --allow-retired-sop
+          allow retired SOP classes defined in previous editions
+          of the DICOM standard
+
+  -Nxc  --no-xfer-check
+          do not reject images with non-standard transfer syntax
+          (just warn)
 \endverbatim
 
 \subsection output_options output options
@@ -185,7 +198,8 @@ only appended to the DICOMDIR, i.e. existing records like the ones for PATIENT
 information are not updated.  Using option \e +U also existing records are
 updated according to the information found in the referenced DICOM files.
 Please note that this update process might be slower that just appending new
-entries.
+entries.  However, it makes sure that additional information that is required
+for the selected application profile is also added to existing records.
 
 \section command_line COMMAND LINE
 
@@ -230,7 +244,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1996-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
