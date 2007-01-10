@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 16:27:44 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2007-01-10 13:09:23 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,17 +42,17 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dccodec.h"
-#include "dcmtk/dcmdata/dcmetinf.h"    /* for class DcmMetaInfo */
-#include "dcmtk/dcmdata/dcpixel.h"     /* for class DcmPixelData */
-#include "dcmtk/dcmdata/dcpxitem.h"    /* for class DcmPixelItem */
-#include "dcmtk/dcmdata/dcpixseq.h"    /* for class DcmPixelSequence */
-#include "dcmtk/dcmdata/dcvrcs.h"      /* for class DcmCodeString */
-#include "dcmtk/dcmdata/dcvrda.h"      /* for class DcmDate */
-#include "dcmtk/dcmdata/dcvrtm.h"      /* for class DcmTime */
+#include "dcmtk/dcmdata/dcmetinf.h"   /* for class DcmMetaInfo */
+#include "dcmtk/dcmdata/dcpixel.h"    /* for class DcmPixelData */
+#include "dcmtk/dcmdata/dcpxitem.h"   /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/dcpixseq.h"   /* for class DcmPixelSequence */
+#include "dcmtk/dcmdata/dcvrcs.h"     /* for class DcmCodeString */
+#include "dcmtk/dcmdata/dcvrda.h"     /* for class DcmDate */
+#include "dcmtk/dcmdata/dcvrtm.h"     /* for class DcmTime */
 
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofbmanip.h"    /* for class OFBitmanipTemplate */
+#include "dcmtk/ofstd/ofbmanip.h"     /* for class OFBitmanipTemplate */
 #include "dcmtk/ofstd/ofcast.h"
 
 
@@ -240,12 +240,12 @@ static OFBool locateDicomFile(const OFString &dicomFilename,
         /* lowercase */
         dicomToHostFilename(dicomFilename, hostFilename, OFTrue /*mapToLower*/);
         result = OFStandard::fileExists(hostFilename);
-    }
-    if (!result)
-    {
-        /* lowercase with trailing period */
-        hostFilename += '.';
-        result = OFStandard::fileExists(hostFilename);
+        if (!result)
+        {
+            /* lowercase with trailing period */
+            hostFilename += '.';
+            result = OFStandard::fileExists(hostFilename);
+        }
     }
     if (!result)
     {
@@ -395,9 +395,9 @@ static OFBool compareAttributes(DcmElement *elem1,
                          + constructTagNameWithSQ(elem1, fromSequence, itemNumber, tmpString) + " != "
                          + constructTagNameWithSQ(elem2, fromSequence, itemNumber, tmpString);
         } else
-            reason = "missing attribute: " +  constructTagNameWithSQ(elem2, fromSequence, itemNumber, tmpString);
+            reason = "missing attribute: " + constructTagNameWithSQ(elem2, fromSequence, itemNumber, tmpString);
     } else
-        reason = "missing attribute: " +  constructTagNameWithSQ(elem1, fromSequence, itemNumber, tmpString);
+        reason = "missing attribute: " + constructTagNameWithSQ(elem1, fromSequence, itemNumber, tmpString);
     /* non-empty reason variable indicates an error */
     return reason.empty();
 }
@@ -914,6 +914,7 @@ DicomDirInterface::DicomDirInterface()
     MapFilenamesMode(OFFalse),
     InventMode(OFFalse),
     InventPatientIDMode(OFFalse),
+    RetiredSOPClassSupport(OFFalse),
     EncodingCheck(OFTrue),
     ResolutionCheck(OFTrue),
     TransferSyntaxCheck(OFTrue),
@@ -963,7 +964,7 @@ void DicomDirInterface::cleanup()
 // check whether the current DICOMDIR object is valid
 OFBool DicomDirInterface::isDicomDirValid() const
 {
-    /* might add more sophisticated checks later on,
+    /* tbd: might add more sophisticated checks later on,
        e.g. require at least one referenced DICOM file */
     return (DicomDir != NULL);
 }
@@ -1328,14 +1329,19 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             compare(mediaSOPClassUID, UID_VideoMicroscopicImageStorage) ||
                             compare(mediaSOPClassUID, UID_VideoPhotographicImageStorage) ||
                             compare(mediaSOPClassUID, UID_OphthalmicPhotography8BitImageStorage) ||
-                            compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage);
+                            compare(mediaSOPClassUID, UID_OphthalmicPhotography16BitImageStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedXAImageStorage) ||
+                            compare(mediaSOPClassUID, UID_EnhancedXRFImageStorage);
                     break;
                 case AP_BasicCardiac:
                     if (compare(mediaSOPClassUID, UID_XRayAngiographicImageStorage))
                     {
                         expectedTransferSyntax = UID_JPEGProcess14SV1TransferSyntax;
                         found = OFTrue;
-                    } else {
+                    }
+                    else if (RetiredSOPClassSupport)
+                    {
+                        /* the following SOP class has been retired with DICOM 2006: */
                         found = compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
                     }
                     break;
@@ -1350,11 +1356,13 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     } else {
                         found = compare(mediaSOPClassUID, UID_SecondaryCaptureImageStorage) ||
                                 compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
-/* NB: the following SOP classes have been retired with Supplement 80:
-                                compare(mediaSOPClassUID, UID_StandaloneOverlayStorage) ||
-                                compare(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
-                                compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
-*/
+                        if (!found && RetiredSOPClassSupport)
+                        {
+                            /* the following SOP classes have been retired with DICOM 2004: */
+                            found = compare(mediaSOPClassUID, UID_StandaloneOverlayStorage) ||
+                                    compare(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
+                                    compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                        }
                     }
                     break;
                 case AP_DentalRadiograph:
@@ -1370,9 +1378,11 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             compare(mediaSOPClassUID, UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage) ||
                             compare(mediaSOPClassUID, UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage) ||
                             compare(mediaSOPClassUID, UID_MultiframeTrueColorSecondaryCaptureImageStorage);
-/* NB: the following SOP class has been retired with Supplement 80:
-                            compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
-*/
+                    if (!found && RetiredSOPClassSupport)
+                    {
+                        /* the following SOP class has been retired with DICOM 2004: */
+                        found = compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                    }
                     break;
                 case AP_UltrasoundIDSF:
                 case AP_UltrasoundSCSF:
@@ -1402,54 +1412,73 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     /* is it an image ? */
                     for (int i = 0; i < numberOfDcmImageSOPClassUIDs && !found; i++)
                         found = compare(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
-                    /* is it an overlay/curve/modality_lut/voi_lut etc. ? */
-                    found = found || compare(mediaSOPClassUID, UID_StandaloneOverlayStorage);
-                    found = found || compare(mediaSOPClassUID, UID_StandaloneCurveStorage);
-                    found = found || compare(mediaSOPClassUID, UID_StandaloneModalityLUTStorage);
-                    found = found || compare(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
-                    found = found || compare(mediaSOPClassUID, UID_PETCurveStorage);
                     /* is it one of the RT SOP Classes? */
-                    found = found || compare(mediaSOPClassUID, UID_RTDoseStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RTStructureSetStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RTPlanStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage);
-                    /* is it one of the structured reporting SOP Classes? */
-                    found = found || compare(mediaSOPClassUID, UID_BasicTextSR);
-                    found = found || compare(mediaSOPClassUID, UID_EnhancedSR);
-                    found = found || compare(mediaSOPClassUID, UID_ComprehensiveSR);
-                    found = found || compare(mediaSOPClassUID, UID_MammographyCADSR);
-                    found = found || compare(mediaSOPClassUID, UID_ChestCADSR);
-                    found = found || compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
-                    found = found || compare(mediaSOPClassUID, UID_ProcedureLogStorage);
-                    found = found || compare(mediaSOPClassUID, UID_XRayRadiationDoseSR);
-                    /* is it one of the waveform SOP Classes? */
-                    found = found || compare(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
-                    found = found || compare(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
-                    found = found || compare(mediaSOPClassUID, UID_AmbulatoryECGWaveformStorage);
-                    found = found || compare(mediaSOPClassUID, UID_HemodynamicWaveformStorage);
-                    found = found || compare(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage);
-                    found = found || compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage);
-                    /* is it one of the spatial registration SOP Classes? */
-                    found = found || compare(mediaSOPClassUID, UID_SpatialRegistrationStorage);
-                    found = found || compare(mediaSOPClassUID, UID_SpatialFiducialsStorage);
-                    /* is it any other SOP class? */
-                    found = found || compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
-                    found = found || compare(mediaSOPClassUID, UID_ColorSoftcopyPresentationStateStorage);
-                    found = found || compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage);
-                    found = found || compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage);
-                    found = found || compare(mediaSOPClassUID, UID_StoredPrintStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RawDataStorage);
-                    found = found || compare(mediaSOPClassUID, UID_MRSpectroscopyStorage);
-                    found = found || compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage);
-                    found = found || compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage);
-                    found = found || compare(mediaSOPClassUID, UID_HangingProtocolStorage);
-                    found = found || compare(mediaSOPClassUID, UID_StereometricRelationshipStorage);
-                    if (ApplicationProfile == AP_GeneralPurpose)
+                    if (!found)
                     {
-                        /* a detached patient mgmt sop class is also ok */
-                        found = found || compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                        found = compare(mediaSOPClassUID, UID_RTDoseStorage) ||
+                                compare(mediaSOPClassUID, UID_RTStructureSetStorage) ||
+                                compare(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTPlanStorage) ||
+                                compare(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage) ||
+                                compare(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage);
+                    }
+                    /* is it one of the structured reporting SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_BasicTextSR) ||
+                                compare(mediaSOPClassUID, UID_EnhancedSR) ||
+                                compare(mediaSOPClassUID, UID_ComprehensiveSR) ||
+                                compare(mediaSOPClassUID, UID_MammographyCADSR) ||
+                                compare(mediaSOPClassUID, UID_ChestCADSR) ||
+                                compare(mediaSOPClassUID, UID_ProcedureLogStorage) ||
+                                compare(mediaSOPClassUID, UID_XRayRadiationDoseSR);
+                     }
+                    /* is it one of the waveform SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_GeneralECGWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_AmbulatoryECGWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_HemodynamicWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage) ||
+                                compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage);
+                    }
+                    /* is it one of the spatial registration SOP Classes? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_SpatialRegistrationStorage) ||
+                                compare(mediaSOPClassUID, UID_SpatialFiducialsStorage);
+                    }
+                    /* is it any other SOP class? */
+                    if (!found)
+                    {
+                        found = compare(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_ColorSoftcopyPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_PseudoColorSoftcopyPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_BlendingSoftcopyPresentationStateStorage) ||
+                                compare(mediaSOPClassUID, UID_StoredPrintStorage) ||
+                                compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument) ||
+                                compare(mediaSOPClassUID, UID_RawDataStorage) ||
+                                compare(mediaSOPClassUID, UID_MRSpectroscopyStorage) ||
+                                compare(mediaSOPClassUID, UID_EncapsulatedPDFStorage) ||
+                                compare(mediaSOPClassUID, UID_RealWorldValueMappingStorage) ||
+                                compare(mediaSOPClassUID, UID_HangingProtocolStorage) ||
+                                compare(mediaSOPClassUID, UID_StereometricRelationshipStorage);
+                    }
+                    /* the following SOP classes have been retired with DICOM 2006: */
+                    if (!found && RetiredSOPClassSupport)
+                    {
+                        /* is it an overlay/curve/modality_lut/voi_lut etc.? */
+                        found = compare(mediaSOPClassUID, UID_StandaloneOverlayStorage) ||
+                                compare(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
+                                compare(mediaSOPClassUID, UID_StandaloneModalityLUTStorage) ||
+                                compare(mediaSOPClassUID, UID_StandaloneVOILUTStorage) ||
+                                compare(mediaSOPClassUID, UID_PETCurveStorage);
+                        if (!found && (ApplicationProfile == AP_GeneralPurpose))
+                        {
+                            /* a detached patient mgmt sop class is also ok */
+                            found = compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+                        }
                     }
                 }
             }
@@ -1546,15 +1575,17 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             {
                                 /* need to check multiple transfer syntaxes */
                                 found = compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax) ||
-                                        compare(transferSyntax, UID_JPEGProcess1TransferSyntax);
+                                        compare(transferSyntax, UID_JPEGProcess1TransferSyntax) ||
+                                        compare(transferSyntax, UID_JPEGProcess2_4TransferSyntax);
                                 if (!found)
                                 {
                                     OFString xferName1 = dcmFindNameOfUID(UID_JPEGProcess14SV1TransferSyntax);
                                     OFString xferName2 = dcmFindNameOfUID(UID_JPEGProcess1TransferSyntax);
+                                    OFString xferName3 = dcmFindNameOfUID(UID_JPEGProcess2_4TransferSyntax);
                                     /* create error message */
                                     OFOStringStream oss;
-                                    oss << xferName1 << " or " << xferName2 << " expected: "
-                                         << filename << OFStringStream_ends;
+                                    oss << xferName1 << ", " << xferName2 << " or " << xferName3
+                                        << " expected: " << filename << OFStringStream_ends;
                                     OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                     if (TransferSyntaxCheck)
                                     {
@@ -1577,7 +1608,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 /* create error message */
                                 OFOStringStream oss;
                                 oss << xferName1 << " or " << xferName2 << " expected: "
-                                     << filename << OFStringStream_ends;
+                                    << filename << OFStringStream_ends;
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
@@ -1619,7 +1650,11 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                             break;
                         case AP_GeneralPurpose:
                         case AP_MPEG2MPatMLDVD:
+                        case AP_BasicCardiac:
+                        case AP_XrayAngiographic:
                         case AP_DentalRadiograph:
+                        case AP_TwelveLeadECG:
+                        case AP_HemodynamicWaveform:
                         default:
                         {
                             /* compare with expected transfer syntax */
@@ -1708,7 +1743,8 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
             result = EC_ApplicationProfileViolated;
         if (!checkExistsWithValue(dataset, DCM_BitsStored, filename))
             result = EC_InvalidTag;
-        else {
+        else
+        {
             long bs;
             dataset->findAndGetLongInt(DCM_BitsStored, bs);
             if ((bs != 8) && (bs != 10) && (bs != 12))
@@ -2059,7 +2095,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
         {
             /* nothing to check since all type 1 and 2 attributes are identical */
         } else {
-            /* PatientID is type 1 in DICOMDIR and type 2 in images. */
+            /* PatientID is type 1 in DICOMDIR and type 2 in images */
             if (!InventMode)
             {
                 if (!checkExistsWithValue(dataset, DCM_PatientID, filename))
@@ -2297,6 +2333,7 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 case ERT_Stereometric:
                     /* nothing to check */
                     break;
+                case ERT_Image:
                 default:
                     /* it can only be an image */
                     if (!InventMode)
@@ -2571,9 +2608,6 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
                 copyElementType2(dataset, DCM_PatientsBirthDate, record);
                 copyElementType2(dataset, DCM_PatientsSex, record);
             }
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Patient, "create");
             /* free memory */
@@ -2607,9 +2641,6 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *reco
             copyElementType1(dataset, DCM_StudyInstanceUID, record);
             copyElementType1(dataset, DCM_StudyID, record);
             copyElementType2(dataset, DCM_AccessionNumber, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Study, "create");
             /* free memory */
@@ -2657,9 +2688,6 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
                 copyStringWithDefault(dataset, DCM_InstitutionAddress, record);
                 copyStringWithDefault(dataset, DCM_PerformingPhysiciansName, record);
             }
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Series, "create");
             /* free memory */
@@ -2688,9 +2716,6 @@ DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *re
         {
             /* copy attribute values from dataset to overlay record */
             copyElementType1(dataset, DCM_OverlayNumber, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Overlay, "create");
             /* free memory */
@@ -2719,9 +2744,6 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord
         {
             /* copy attribute values from dataset to modality lut record */
             copyElementType1(dataset, DCM_LookupTableNumber, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_ModalityLut, "create");
             /* free memory */
@@ -2750,9 +2772,6 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *rec
         {
             /* copy attribute values from dataset to voi lut record */
             copyElementType1(dataset, DCM_LookupTableNumber, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_VoiLut, "create");
             /* free memory */
@@ -2781,9 +2800,6 @@ DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *reco
         {
             /* copy attribute values from dataset to curve record */
             copyElementType1(dataset, DCM_CurveNumber, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Curve, "create");
             /* free memory */
@@ -2830,9 +2846,6 @@ DcmDirectoryRecord *DicomDirInterface::buildStructReportRecord(DcmDirectoryRecor
             }
             copyElementType1(dataset, DCM_ConceptNameCodeSequence, record);
             addConceptModContentItems(record, dataset);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_SRDocument, "create");
             /* free memory */
@@ -2867,9 +2880,6 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_PresentationCreationTime, record);
             copyElementType2(dataset, DCM_ContentCreatorsName, record);
             copyElementType1(dataset, DCM_ReferencedSeriesSequence, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Presentation, "create");
             /* free memory */
@@ -2900,9 +2910,6 @@ DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmDirectoryRecord *r
             copyElementType1(dataset, DCM_InstanceNumber, record);
             copyElementType1(dataset, DCM_ContentDate, record);
             copyElementType1(dataset, DCM_ContentTime, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Waveform, "create");
             /* free memory */
@@ -2934,9 +2941,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmDirectoryRecord *rec
             copyElementType1(dataset, DCM_DoseSummationType, record);
             copyElementType3(dataset, DCM_DoseComment, record);
             copyElementType3(dataset, DCM_IconImageSequence, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTDose, "create");
             /* free memory */
@@ -2968,9 +2972,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmDirectoryRec
             copyElementType1(dataset, DCM_StructureSetLabel, record);
             copyElementType2(dataset, DCM_StructureSetDate, record);
             copyElementType2(dataset, DCM_StructureSetTime, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTStructureSet, "create");
             /* free memory */
@@ -3002,9 +3003,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmDirectoryRecord *rec
             copyElementType1(dataset, DCM_RTPlanLabel, record);
             copyElementType2(dataset, DCM_RTPlanDate, record);
             copyElementType2(dataset, DCM_RTPlanTime, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTPlan, "create");
             /* free memory */
@@ -3035,9 +3033,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmDirectoryRecord
             copyElementType1(dataset, DCM_InstanceNumber, record);
             copyElementType2(dataset, DCM_TreatmentDate, record);
             copyElementType2(dataset, DCM_TreatmentTime, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RTTreatRecord, "create");
             /* free memory */
@@ -3067,9 +3062,6 @@ DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmDirectoryRecord
             /* copy attribute values from dataset to stored print record */
             copyElementType2(dataset, DCM_InstanceNumber, record);
             copyElementType3(dataset, DCM_IconImageSequence, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_StoredPrint, "create");
             /* free memory */
@@ -3102,9 +3094,6 @@ DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_ContentTime, record);
             copyElementType1(dataset, DCM_ConceptNameCodeSequence, record);
             addConceptModContentItems(record, dataset);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_KeyObjectDoc, "create");
             /* free memory */
@@ -3138,9 +3127,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmDirectoryRecor
             copyElementType1(dataset, DCM_ContentLabel, record);
             copyElementType2(dataset, DCM_ContentDescription, record);
             copyElementType2(dataset, DCM_ContentCreatorsName, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Registration, "create");
             /* free memory */
@@ -3174,9 +3160,6 @@ DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmDirectoryRecord *r
             copyElementType1(dataset, DCM_ContentLabel, record);
             copyElementType2(dataset, DCM_ContentDescription, record);
             copyElementType2(dataset, DCM_ContentCreatorsName, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Fiducial, "create");
             /* free memory */
@@ -3207,9 +3190,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRawDataRecord(DcmDirectoryRecord *re
             copyElementType1(dataset, DCM_ContentDate, record);
             copyElementType1(dataset, DCM_ContentTime, record);
             copyElementType2(dataset, DCM_InstanceNumber, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_RawData, "create");
             /* free memory */
@@ -3264,9 +3244,6 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
                 copyElementType1C(dataset, DCM_ImageOrientationPatient, record);
                 copyElementType1C(dataset, DCM_PixelSpacing, record);
             }
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Spectroscopy, "create");
             /* free memory */
@@ -3301,9 +3278,6 @@ DcmDirectoryRecord *DicomDirInterface::buildEncapDocRecord(DcmDirectoryRecord *r
             copyElementType1(dataset, DCM_MIMETypeOfEncapsulatedDocument, record);
             /* baseline context group 7020 is not checked */
             copyElementType2(dataset, DCM_ConceptNameCodeSequence, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_EncapDoc, "create");
             /* free memory */
@@ -3337,9 +3311,6 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *r
             copyElementType1(dataset, DCM_ContentLabel, record);
             copyElementType2(dataset, DCM_ContentDescription, record);
             copyElementType2(dataset, DCM_ContentCreatorsName, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_ValueMap, "create");
             /* free memory */
@@ -3366,9 +3337,7 @@ DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecor
         /* check whether new record is ok */
         if (record->error().good())
         {
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
+            /* nothing to do */
         } else {
             printRecordErrorMessage(record->error(), ERT_Stereometric, "create");
             /* free memory */
@@ -3485,9 +3454,6 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                         printWarningMessage("cannot create IconImageSequence");
                 }
             }
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Series, "create");
             /* free memory */
@@ -3522,9 +3488,6 @@ DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRe
             copyElementType1(dataset, DCM_HangingProtocolDefinitionSequence, record);
             copyElementType1(dataset, DCM_NumberOfPriorsReferenced, record);
             copyElementType2(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record);
-            /* type 1C: required if an extended character set is used in one of the keys */
-            if (record->isAffectedBySpecificCharacterSet())
-                copyElement(dataset, DCM_SpecificCharacterSet, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_HangingProtocol, "create");
             /* free memory */
@@ -3859,17 +3822,23 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                     /* it can only be an image */
                     record = buildImageRecord(record, dataset, referencedFileID, sourceFilename);
             }
-            /* in case a new record has been created */
-            if ((record != NULL) && (record != oldRecord))
+            if (record != NULL)
             {
-                /* insert it below parent record */
-                OFCondition status = insertSortedUnder(parent, record);
-                if (status.bad())
+                /* type 1C: required if an extended character set is used in one of the record keys */
+                if (record->isAffectedBySpecificCharacterSet())
+                    copyElement(dataset, DCM_SpecificCharacterSet, record);
+                /* in case a new record has been created */
+                if (record != oldRecord)
                 {
-                    printRecordErrorMessage(status, recordType, "insert");
-                    /* free memory */
-                    delete record;
-                    record = NULL;
+                    /* insert it below parent record */
+                    OFCondition status = insertSortedUnder(parent, record);
+                    if (status.bad())
+                    {
+                        printRecordErrorMessage(status, recordType, "insert");
+                        /* free memory */
+                        delete record;
+                        record = NULL;
+                    }
                 }
             }
         } else {
@@ -4215,6 +4184,18 @@ OFBool DicomDirInterface::enableInventPatientIDMode(const OFBool newMode)
     OFBool oldMode = InventPatientIDMode;
     /* set new mode */
     InventPatientIDMode = newMode;
+    /* return old mode */
+    return oldMode;
+}
+
+
+// enable/disable retired SOP class support, i.e. whether retired SOP classes are supported
+OFBool DicomDirInterface::enableRetiredSOPClassSupport(const OFBool newMode)
+{
+    /* save current mode */
+    OFBool oldMode = RetiredSOPClassSupport;
+    /* set new mode */
+    RetiredSOPClassSupport = newMode;
     /* return old mode */
     return oldMode;
 }
@@ -4663,7 +4644,7 @@ OFBool DicomDirInterface::checkExists(DcmItem *dataset,
 // check whether specified tag exists with a value in the dataset
 OFBool DicomDirInterface::checkExistsWithValue(DcmItem *dataset,
                                                const DcmTagKey &key,
-                                                  const char *filename)
+                                               const char *filename)
 {
     /* first, check whether tag exists, and report an error if not */
     OFBool result = checkExists(dataset, key, filename);
@@ -5015,7 +4996,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.19  2006-12-15 16:27:44  joergr
+ *  Revision 1.20  2007-01-10 13:09:23  joergr
+ *  Added new option that enables support for retired SOP classes.
+ *  Added missing transfer syntax to X-ray Angiographic DVD profile.
+ *
+ *  Revision 1.19  2006/12/15 16:27:44  joergr
  *  Added new option that allows to update existing entries in a DICOMDIR. This
  *  also adds support for mixed media stored application profiles.
  *  Changed name of enum value for the MPEG2-DVD application profile in order to
