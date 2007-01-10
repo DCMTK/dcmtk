@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.01.10 (riesmeier)
+
+- Added new option that enables support for retired SOP classes.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           dcmjpeg/docs/dcmmkdir.man
+
+- Re-ordered and re-structured command line options.
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.man
+           dcmjpeg/docs/dcmmkdir.man
+
+- Added missing transfer syntax to X-ray Angiographic DVD profile.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2006.12.15 (riesmeier)
 
 - Added new method that checks whether a DICOM object or element is affected
