@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.01.12 (riesmeier)
+
+- Removed ANNOUNCE.354 file from list of installation files. Changed default
+  installation path to "dcmtk-3.5.4-cvs-win32-i386".
+  Affects: CMakeLists.txt
+
 **** Changes from 2007.01.10 (riesmeier)
 
 - Added new option that enables support for retired SOP classes.

@@ -23,7 +23,7 @@ MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 # define user configurable options and paths to external libraries which might be used
 
 # installation path prefix
-GET_FILENAME_COMPONENT(INSTALL_DIR "${dcmtk_SOURCE_DIR}/../dcmtk-3.5.4-win32-i386" ABSOLUTE)
+GET_FILENAME_COMPONENT(INSTALL_DIR "${dcmtk_SOURCE_DIR}/../dcmtk-3.5.4-cvs-win32-i386" ABSOLUTE)
 SET(INSTALL_PREFIX "${INSTALL_DIR}" CACHE PATH "Installation path prefix.")
 
 # shared libraries (option not yet available)
@@ -183,7 +183,7 @@ SET(INSTALL_LIBDIR "/lib")
 SET(INSTALL_MANDIR "/man")
 
 # declare installation files
-INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY CHANGES.354 ANNOUNCE.354)
+INSTALL_FILES(${INSTALL_DOCDIR} FILES COPYRIGHT FAQ HISTORY CHANGES.355) # ANNOUNCE.355
 
 # declare include directories which hold for all subdirectories and subsubdirectories
 INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
