@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.01.16 (riesmeier)
+
+- Now treating PatientID, StudyID and SeriesNumber as type 1C elements instead
+  of 1 in order to avoid unwanted overwriting with empty value in update mode.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2007.01.12 (riesmeier)
 
 - Removed ANNOUNCE.354 file from list of installation files. Changed default

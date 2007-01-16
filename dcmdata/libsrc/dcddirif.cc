@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-01-10 13:09:23 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2007-01-16 12:47:42 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2590,7 +2590,8 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
         /* check whether new record is ok */
         if (record->error().good())
         {
-            copyElementType1(dataset, DCM_PatientID, record);
+            /* use type 1C instead of 1 in order to avoid unwanted overwriting */
+            copyElementType1C(dataset, DCM_PatientID, record);
             copyElementType2(dataset, DCM_PatientsName, record);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
@@ -2639,7 +2640,8 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *reco
             copyStringWithDefault(dataset, DCM_StudyTime, record, alternativeStudyTime(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
             copyElementType2(dataset, DCM_StudyDescription, record);
             copyElementType1(dataset, DCM_StudyInstanceUID, record);
-            copyElementType1(dataset, DCM_StudyID, record);
+            /* use type 1C instead of 1 in order to avoid unwanted overwriting */
+            copyElementType1C(dataset, DCM_StudyID, record);
             copyElementType2(dataset, DCM_AccessionNumber, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Study, "create");
@@ -2669,7 +2671,8 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
             /* copy attribute values from dataset to series record */
             copyElementType1(dataset, DCM_Modality, record);
             copyElementType1(dataset, DCM_SeriesInstanceUID, record);
-            copyElementType1(dataset, DCM_SeriesNumber, record);
+            /* use type 1C instead of 1 in order to avoid unwanted overwriting */
+            copyElementType1C(dataset, DCM_SeriesNumber, record);
             if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
                 (ApplicationProfile == AP_USBandFlash) ||
                 (ApplicationProfile == AP_MPEG2MPatMLDVD))
@@ -4996,7 +4999,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.20  2007-01-10 13:09:23  joergr
+ *  Revision 1.21  2007-01-16 12:47:42  joergr
+ *  Now treating PatientID, StudyID and SeriesNumber as type 1C elements instead
+ *  of 1 in order to avoid unwanted overwriting with empty value in update mode.
+ *
+ *  Revision 1.20  2007/01/10 13:09:23  joergr
  *  Added new option that enables support for retired SOP classes.
  *  Added missing transfer syntax to X-ray Angiographic DVD profile.
  *
