@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-01-16 12:47:42 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2007-02-02 15:59:53 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2636,8 +2636,8 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *reco
         {
             OFString tmpString;
             /* copy attribute values from dataset to study record */
-            copyStringWithDefault(dataset, DCM_StudyDate, record, alternativeStudyDate(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
-            copyStringWithDefault(dataset, DCM_StudyTime, record, alternativeStudyTime(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
+            copyStringWithDefault(dataset, DCM_StudyDate, record, sourceFilename, alternativeStudyDate(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
+            copyStringWithDefault(dataset, DCM_StudyTime, record, sourceFilename, alternativeStudyTime(dataset, tmpString).c_str(), OFTrue /*printWarning*/);
             copyElementType2(dataset, DCM_StudyDescription, record);
             copyElementType1(dataset, DCM_StudyInstanceUID, record);
             /* use type 1C instead of 1 in order to avoid unwanted overwriting */
@@ -2687,9 +2687,9 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
                      (ApplicationProfile == AP_XrayAngiographicDVD))
             {
                 /* additional type 2 keys specified by specific profiles (type 1C or 3 in file) */
-                copyStringWithDefault(dataset, DCM_InstitutionName, record);
-                copyStringWithDefault(dataset, DCM_InstitutionAddress, record);
-                copyStringWithDefault(dataset, DCM_PerformingPhysiciansName, record);
+                copyStringWithDefault(dataset, DCM_InstitutionName, record, sourceFilename);
+                copyStringWithDefault(dataset, DCM_InstitutionAddress, record, sourceFilename);
+                copyStringWithDefault(dataset, DCM_PerformingPhysiciansName, record, sourceFilename);
             }
         } else {
             printRecordErrorMessage(record->error(), ERT_Series, "create");
@@ -3421,7 +3421,7 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                                 copyElementType1(dataset, DCM_ReferencedImageSequence, record);
                         }
                         /* additional type 2 keys specified by specific profiles (type 3 in image IOD) */
-                        copyStringWithDefault(dataset, DCM_CalibrationImage, record);
+                        copyStringWithDefault(dataset, DCM_CalibrationImage, record, sourceFilename);
                         /* icon images */
                         iconImage = OFTrue;
                         iconRequired = OFTrue;
@@ -3738,11 +3738,10 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
             /* in case an existing record is updated */
             if (record != NULL)
             {
-                /* perform consistency check */
-                if (ConsistencyCheck)
+                /* perform some consistency checks for instance records */
+                if ((recordType != ERT_Patient) && (recordType != ERT_Study) && (recordType != ERT_Series))
                 {
-                    /* abort on any inconsistancy */
-                    if (warnAboutInconsistentAttributes(record, dataset, sourceFilename, AbortMode) && AbortMode)
+                    if (!checkReferencedSOPInstance(record, dataset, referencedFileID, sourceFilename))
                         return NULL;
                 }
             }
@@ -3845,6 +3844,17 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 }
             }
         } else {
+            /* instance record is already referenced by the DICOMDIR */
+            if ((recordType != ERT_Patient) && (recordType != ERT_Study) && (recordType != ERT_Series))
+            {
+                /* create warning message */
+                OFOStringStream oss;
+                oss << "file " << sourceFilename << ": directory record for this "
+                    << "SOP instance already exists" << OFStringStream_ends;
+                OFSTRINGSTREAM_GETSTR(oss, tmpString)
+                printWarningMessage(tmpString);
+                OFSTRINGSTREAM_FREESTR(tmpString)
+            }
             /* perform consistency check */
             if (ConsistencyCheck)
             {
@@ -3861,6 +3871,37 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
         }
     }
     return record;
+}
+
+
+// check referenced SOP instance for consistency with a new directory record
+OFBool DicomDirInterface::checkReferencedSOPInstance(DcmDirectoryRecord *record,
+                                                     DcmItem *dataset,
+                                                     const OFString &referencedFileID,
+                                                     const OFString &sourceFilename)
+{
+    OFBool result = OFTrue;
+    if ((record != NULL) && (dataset != NULL))
+    {
+        OFString refFileID;
+        /* check referenced file ID */
+        if (record->findAndGetOFStringArray(DCM_ReferencedFileID, refFileID).good() &&
+            !compare(refFileID, referencedFileID))
+        {
+            /* create error message */
+            OFOStringStream oss;
+            oss << "file " << sourceFilename << ": SOP instance already referenced "
+                << "with different file ID (" << refFileID << ")" << OFStringStream_ends;
+            OFSTRINGSTREAM_GETSTR(oss, tmpString)
+            printErrorMessage(tmpString);
+            OFSTRINGSTREAM_FREESTR(tmpString)
+            result = OFFalse;
+        }
+        /* check SOP class UID */
+        if (!compareStringAttributes(dataset, DCM_SOPClassUID, record, DCM_ReferencedSOPClassUIDInFile, sourceFilename, OFTrue /*errorMsg*/))
+            result = OFFalse;
+    }
+    return result;
 }
 
 
@@ -4268,7 +4309,7 @@ OFBool DicomDirInterface::disableTransferSyntaxCheck(const OFBool newMode)
 
 
 // enable/disable consistency check, i.e. whether the file is checked for consistency
-// with the DICOMDIR record
+// with the directory record
 OFBool DicomDirInterface::disableConsistencyCheck(const OFBool newMode)
 {
     /* save current mode */
@@ -4579,7 +4620,7 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
                             result &= compareSequenceAttributes(dataset, tag, record, sourceFilename);
                     } else {
                         /* everything else can be compared as a string */
-                        result &= compareStringAttributes(dataset, tag, record, sourceFilename);
+                        result &= compareStringAttributes(dataset, tag, record, tag, sourceFilename);
                     }
                 }
             }
@@ -4850,6 +4891,7 @@ void DicomDirInterface::copyElement(DcmItem *dataset,
 void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
                                               const DcmTagKey &key,
                                               DcmDirectoryRecord *record,
+                                              const OFString &sourceFilename,
                                               const char *defaultValue,
                                               const OFBool printWarning)
 {
@@ -4866,7 +4908,7 @@ void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
             {
                 /* create warning message */
                 OFOStringStream oss;
-                oss << "file " << record->getRecordsOriginFile() << ": " << DcmTag(key).getTagName()
+                oss << "file " << sourceFilename << ": " << DcmTag(key).getTagName()
                     << " missing, using alternative: " << defaultValue << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                 printWarningMessage(tmpString);
@@ -4882,9 +4924,11 @@ void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
 
 // compare string attributes from dataset and record and report any deviation
 OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
-                                                  DcmTagKey &key,
+                                                  const DcmTagKey &datKey,
                                                   DcmDirectoryRecord *record,
-                                                  const OFString &sourceFilename)
+                                                  const DcmTagKey &recKey,
+                                                  const OFString &sourceFilename,
+                                                  const OFBool errorMsg)
 {
     OFBool result = OFFalse;
     /* check parameters first */
@@ -4892,13 +4936,13 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
     {
         OFString datasetString, recordString;
         /* compare string value from dataset and record */
-        result = compare(getStringFromDataset(dataset, key, datasetString),
-                         getStringFromDataset(record, key, recordString));
+        result = compare(getStringFromDataset(dataset, datKey, datasetString),
+                         getStringFromDataset(record, recKey, recordString));
         if (!result)
         {
             OFString uniqueString;
             OFString originFilename = record->getRecordsOriginFile();
-            DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
+            const DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
             getStringFromDataset(record, uniqueKey, uniqueString);
             if (originFilename.empty())
                 originFilename = "<unknown>";
@@ -4908,12 +4952,15 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
             oss << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
                 << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl;
             oss << "    Existing Record (origin: " << originFilename << ") defines: " << OFendl;
-            oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << recordString << "\"" << OFendl;
+            oss << "      " << DcmTag(recKey).getTagName() << " " << recKey << "=\"" << recordString << "\"" << OFendl;
             oss << "    File (" << sourceFilename << ") defines:" << OFendl;
-            oss << "      " << DcmTag(key).getTagName() << " " << key << "=\"" << datasetString << "\"" << OFendl;
+            oss << "      " << DcmTag(datKey).getTagName() << " " << datKey << "=\"" << datasetString << "\"" << OFendl;
             oss << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printWarningMessage(tmpString);
+            if (errorMsg)
+                printErrorMessage(tmpString);
+            else
+                printWarningMessage(tmpString);
             OFSTRINGSTREAM_FREESTR(tmpString)
         }
     }
@@ -4941,15 +4988,18 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
             if (!result)
             {
                 OFString uniqueString;
-                DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
+                OFString originFilename = record->getRecordsOriginFile();
+                const DcmTagKey uniqueKey = getRecordUniqueKey(record->getRecordType());
                 getStringFromDataset(record, uniqueKey, uniqueString);
+                if (originFilename.empty())
+                    originFilename = "<unknown>";
                 /* create warning message */
                 OFOStringStream oss;
                 oss << "file inconsistent with existing DICOMDIR record" << OFendl;
                 oss << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
                     << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl;
                 oss << "    Reason: " << reason << OFendl;
-                oss << "    Existing Record (origin: " << record->getRecordsOriginFile() << ") defines: " << OFendl;
+                oss << "    Existing Record (origin: " << originFilename << ") defines: " << OFendl;
                 seq1->print(oss, 0, 4 /*indent*/);
                 oss << "    File (" << sourceFilename << ") defines:" << OFendl;
                 seq2->print(oss, 0, 4 /*indent*/);
@@ -4999,7 +5049,14 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.21  2007-01-16 12:47:42  joergr
+ *  Revision 1.22  2007-02-02 15:59:53  joergr
+ *  Added warning message when existing SOP instance is added to DICOMDIR in
+ *  create or append mode.
+ *  Added error message when existing SOP instance is inconsistent with new
+ *  directory record in update mode (e.g. different SOP class UID).
+ *  Fixed incomplete warning message in update mode (filename was missing).
+ *
+ *  Revision 1.21  2007/01/16 12:47:42  joergr
  *  Now treating PatientID, StudyID and SeriesNumber as type 1C elements instead
  *  of 1 in order to avoid unwanted overwriting with empty value in update mode.
  *
