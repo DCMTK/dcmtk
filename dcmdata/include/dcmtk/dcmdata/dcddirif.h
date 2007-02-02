@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-01-10 13:02:59 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2007-02-02 16:01:51 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -651,21 +651,21 @@ class DicomDirInterface
                                          DcmItem *dataset,
                                          const char *filename);
 
-    /** check whether given DICOMDIR record matches dataset.
+    /** check whether given directory record matches dataset.
      *  The check depends on the record type and is performed mainly based on
      *  the unique key defined for the particular record type (e.g. SOPInstanceUID
      *  for IMAGE records).  For PATIENT records the PatientsName may also be used
      *  if the PatientID is absent.
-     *  @param record DICOMDIR record to be checked
+     *  @param record directory record to be checked
      *  @param dataset DICOM dataset of the current file
      *  @return OFTrue if record matches, OFFalse otherwise
      */
     OFBool recordMatchesDataset(DcmDirectoryRecord *record,
                                 DcmItem *dataset);
 
-    /** search for a given DICOMDIR record
+    /** search for a given directory record
      *  @param parent higher-level structure where the records are stored
-     *  @param recordType type of DICOMDIR record to be searched for
+     *  @param recordType type of directory record to be searched for
      *  @param dataset DICOM dataset of the current file
      *  @return pointer to record if found, NULL otherwise
      */
@@ -998,11 +998,11 @@ class DicomDirInterface
                               const unsigned int width,
                               const unsigned int height);
 
-    /** add icon image sequence to DICOMDIR record.
+    /** add icon image sequence to directory record.
      *  If the icon image cannot be created from the DICOM dataset and there is no
      *  PGM file specified (neither for the particular image not a default one) a
      *  black image is used instead.
-     *  @param record DICOMDIR record where the icon image is stored
+     *  @param record directory record where the icon image is stored
      *  @param dataset DICOM dataset from which the icon image is possibly created
      *  @param size resolution of the icon image to be created (width and height)
      *  @param sourceFilename name of the source DICOM file
@@ -1016,7 +1016,7 @@ class DicomDirInterface
     /** add child record to a given parent record.
      *  A new record is only added if it does not already exist.
      *  @param parent parent record (add new record as a child of this one)
-     *  @param recordType type of DICOMDIR record to be created
+     *  @param recordType type of directory record to be created
      *  @param dataset DICOM dataset containing data of the new record
      *  @param referencedFileID value of the Referenced File ID attribute
      *  @param sourceFilename name of the source DICOM file
@@ -1027,6 +1027,17 @@ class DicomDirInterface
                                   DcmItem *dataset,
                                   const OFString &referencedFileID,
                                   const OFString &sourceFilename);
+
+    /** check referenced SOP instance for consistency with a new directory record
+     *  @param record directory record to be checked
+     *  @param dataset DICOM dataset containing data of the new record
+     *  @param referencedFileID value of the Referenced File ID attribute
+     *  @param sourceFilename name of the source DICOM file
+     */
+    OFBool checkReferencedSOPInstance(DcmDirectoryRecord *record,
+                                      DcmItem *dataset,
+                                      const OFString &referencedFileID,
+                                      const OFString &sourceFilename);
 
     /** invent missing type 1 attributes for all child records (from patient level)
      *  @param parent invent missing attributes for all children of this record (root)
@@ -1120,7 +1131,7 @@ class DicomDirInterface
      *  The output format is: "Error: <error.text()>: [cannot <operation> ]<recordType>
      *  directory record"
      *  @param error status to be reported (only if ".bad()")
-     *  @param recordType type of DICOMDIR record which caused the error
+     *  @param recordType type of directory record which caused the error
      *  @param operation name of the operation that failed (optional, might be NULL)
      */
     void printRecordErrorMessage(const OFCondition &error,
@@ -1328,6 +1339,7 @@ class DicomDirInterface
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element value to be copied
      *  @param record directory record to which the element value is to be copied
+     *  @param sourceFilename name of the source DICOM file
      *  @param defaultValue default string value used in case the element is missing
      *  @param printWarning print warning message if element does not exist (with a value)
      *    and no default value is given
@@ -1335,20 +1347,25 @@ class DicomDirInterface
     void copyStringWithDefault(DcmItem *dataset,
                                const DcmTagKey &key,
                                DcmDirectoryRecord *record,
+                               const OFString &sourceFilename,
                                const char *defaultValue = "",
                                const OFBool printWarning = OFFalse);
 
     /** compare string attribute from dataset and record and report any deviation
      *  @param dataset DICOM dataset where the string value is stored
-     *  @param key tag of the string value to be compared
+     *  @param datKey tag of the string value to be compared (dataset)
      *  @param record directory record where the string value is stored
+     *  @param recKey tag of the string value to be compared (record)
      *  @param sourceFilename name of the source DICOM file
+     *  @param errorMsg report error if true, warning message otherwise (default)
      *  @return OFTrue if string values are identical, OFFalse otherwise
      */
     OFBool compareStringAttributes(DcmItem *dataset,
-                                   DcmTagKey &key,
+                                   const DcmTagKey &datKey,
                                    DcmDirectoryRecord *record,
-                                   const OFString &sourceFilename);
+                                   const DcmTagKey &recKey,
+                                   const OFString &sourceFilename,
+                                   const OFBool errorMsg = OFFalse);
 
     /** compare sequence attribute from dataset and record and report any deviation
      *  @param dataset DICOM dataset where the sequence value is stored
@@ -1462,7 +1479,12 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.11  2007-01-10 13:02:59  joergr
+ * Revision 1.12  2007-02-02 16:01:51  joergr
+ * Added error message when existing SOP instance is inconsistent with new
+ * directory record in update mode (e.g. different SOP class UID).
+ * Fixed incomplete warning message in update mode (filename was missing).
+ *
+ * Revision 1.11  2007/01/10 13:02:59  joergr
  * Added new option that enables support for retired SOP classes.
  *
  * Revision 1.10  2006/12/15 14:56:57  joergr
