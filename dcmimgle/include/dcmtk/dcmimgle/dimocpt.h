@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:48 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-02-08 17:10:27 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,8 @@ class DiMonoCopyTemplate
         {
             if ((pixel->getCount() > fstart * fsize) && (pixel->getCount() >= (fstart + fcount) * fsize))
                 copy(OFstatic_cast(const T *, pixel->getData()) + fstart * fsize);
+            /* need to determine the global min/max value */
+            determineMinMax();
         }
     }
 
@@ -107,7 +109,10 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.11  2005-12-08 16:47:48  meichel
+ * Revision 1.12  2007-02-08 17:10:27  joergr
+ * Need to determine global min/max value after copying pixel data.
+ *
+ * Revision 1.11  2005/12/08 16:47:48  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.10  2004/04/21 10:00:36  meichel
