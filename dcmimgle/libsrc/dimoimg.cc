@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-11-17 15:09:54 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2007-02-08 17:08:21 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1815,7 +1815,7 @@ void *DiMonoImage::createPackedBitmap(const void *buffer,
         if ((alloc == 16) && (stored == 12))
         {
             /* need to split 'size' in order to avoid integer overflow for large pixel data */
-            const unsigned long size_1 = size / alloc; 
+            const unsigned long size_1 = size / alloc;
             const unsigned long size_2 = size % alloc;
 //          # old code: if ((size * 8 + alloc - 1) / alloc == count)
             if (8 * size_1 + (8 * size_2 + alloc - 1) / alloc == count)
@@ -1975,7 +1975,10 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
             {
                 double minValue, maxValue;
                 InterData->getMinMaxValues(minValue, maxValue);
-                bits = DicomImageClass::rangeToBits(minValue, maxValue);
+                if (minValue < maxValue)
+                    bits = DicomImageClass::rangeToBits(minValue, maxValue);
+                else
+                    bits = 1;
             }
             /* set color model */
             if (getInternalColorModel() == EPI_Monochrome1)
@@ -2131,7 +2134,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.66  2006-11-17 15:09:54  joergr
+ * Revision 1.67  2007-02-08 17:08:21  joergr
+ * Added lower limit check in DiMonoImage::writeImageToDataset() calculating
+ * the value for bits stored.
+ *
+ * Revision 1.66  2006/11/17 15:09:54  joergr
  * Only compare stored and computed pixel count for "original" images that are
  * directly loaded from DICOM files or datasets.
  *
