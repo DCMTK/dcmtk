@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.02.08 (riesmeier)
+
+- Need to determine global min/max value after copying pixel data.
+  Thanks to Marc Schlimbach <marcschlimbach@gmx.de> for the original report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimocpt.h
+
+- Added lower limit check in DiMonoImage::writeImageToDataset() calculating
+  the value for bits stored.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
 **** Changes from 2007.02.02 (riesmeier)
 
 - Added warning message when existing SOP instance is added to DICOMDIR in
