@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:14:44 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-02-19 15:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1177,29 +1177,6 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::searchErrors(DcmStack &resultStack)
-{
-    OFCondition l_error = errorFlag;
-    DcmObject *dO = NULL;
-    if (errorFlag.bad())
-        resultStack.push(this);
-    if (!itemList->empty())
-    {
-        itemList->seek(ELP_first);
-        do {
-            OFCondition err = EC_Normal;
-            dO = itemList->get();
-            if ((err = dO->searchErrors(resultStack)).bad())
-                l_error = err;
-        } while (itemList->seek(ELP_next));
-    }
-    return l_error;
-}
-
-
-// ********************************
-
-
 OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 {
     OFCondition l_error = EC_Normal;
@@ -1273,7 +1250,11 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.66  2006-12-15 14:14:44  joergr
+** Revision 1.67  2007-02-19 15:04:16  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.66  2006/12/15 14:14:44  joergr
 ** Added new method that checks whether a DICOM object or element is affected
 ** by SpecificCharacterSet (0008,0005).
 **

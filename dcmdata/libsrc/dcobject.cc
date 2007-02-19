@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:14:44 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-02-19 15:04:16 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,14 +138,6 @@ OFCondition DcmObject::search(const DcmTagKey &/*tag*/,
                               OFBool /*searchIntoSub*/)
 {
    return EC_TagNotFound;
-}
-
-
-OFCondition DcmObject::searchErrors(DcmStack &resultStack)
-{
-    if (errorFlag.bad())
-        resultStack.push(this);
-    return errorFlag;
 }
 
 
@@ -484,7 +476,11 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.49  2006-12-15 14:14:44  joergr
+ * Revision 1.50  2007-02-19 15:04:16  meichel
+ * Removed searchErrors() methods that are not used anywhere and added
+ *   error() methods only in the DcmObject subclasses where really used.
+ *
+ * Revision 1.49  2006/12/15 14:14:44  joergr
  * Added new method that checks whether a DICOM object or element is affected
  * by SpecificCharacterSet (0008,0005).
  *

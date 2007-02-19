@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2007-02-19 15:04:15 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1206,22 +1206,6 @@ OFCondition DcmDirectoryRecord::search(const DcmTagKey &tag,
 // ********************************
 
 
-OFCondition DcmDirectoryRecord::searchErrors(DcmStack &resultStack)
-{
-    OFCondition err1 = EC_Normal;
-    OFCondition err2 = EC_Normal;
-    OFCondition l_error = EC_Normal;
-    err1 = DcmItem::searchErrors(resultStack);
-    err2 = lowerLevelList->searchErrors(resultStack);
-    if (err1.bad() || err2.bad())
-        l_error = EC_CorruptedData;
-    return l_error;
-}
-
-
-// ********************************
-
-
 E_DirRecType DcmDirectoryRecord::getRecordType()
 {
     return DirRecordType;
@@ -1470,7 +1454,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.58  2006-08-15 15:49:54  meichel
+ * Revision 1.59  2007-02-19 15:04:15  meichel
+ * Removed searchErrors() methods that are not used anywhere and added
+ *   error() methods only in the DcmObject subclasses where really used.
+ *
+ * Revision 1.58  2006/08/15 15:49:54  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

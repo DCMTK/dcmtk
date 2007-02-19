@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:18:07 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-02-19 15:04:34 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,7 +225,7 @@ class DcmItem
                                DcmStack &resultStack,              // inout
                                E_SearchMode mode = ESM_fromHere,   // in
                                OFBool searchIntoSub = OFTrue );    // in
-    virtual OFCondition searchErrors( DcmStack &resultStack );     // inout
+
     virtual OFCondition loadAllDataIntoMemory();
 
     /** This function takes care of group length and padding elements
@@ -926,7 +926,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.58  2006-12-15 14:18:07  joergr
+** Revision 1.59  2007-02-19 15:04:34  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.58  2006/12/15 14:18:07  joergr
 ** Added new method that checks whether a DICOM object or element is affected
 ** by SpecificCharacterSet (0008,0005).
 **

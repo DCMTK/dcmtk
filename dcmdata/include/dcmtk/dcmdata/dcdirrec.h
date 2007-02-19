@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-08-16 09:41:26 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-02-19 15:04:34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,6 +163,8 @@ public:
 
     virtual DcmEVR ident() const;
 
+    inline OFCondition error() const { return errorFlag; }
+
     virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
@@ -187,7 +189,6 @@ public:
                                DcmStack &resultStack,               // inout
                                E_SearchMode mode = ESM_fromHere,    // in
                                OFBool searchIntoSub = OFTrue);      // in
-    virtual OFCondition searchErrors(DcmStack &resultStack);        // inout
 
     virtual E_DirRecType getRecordType();
     virtual DcmDirectoryRecord* getReferencedMRDR();
@@ -239,7 +240,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.34  2006-08-16 09:41:26  joergr
+** Revision 1.35  2007-02-19 15:04:34  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.34  2006/08/16 09:41:26  joergr
 ** Added missing CVS log entry.
 **
 ** Revision 1.33  2006/08/15 15:49:56  meichel

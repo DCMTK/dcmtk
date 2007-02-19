@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:18:07 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-02-19 15:04:34 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,13 +78,14 @@ protected:
                                           DcmStack &resultStack,              // inout
                                           const OFBool searchIntoSub);        // in
 
-
 public:
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0, OFBool readAsUN = OFFalse);
     DcmSequenceOfItems(const DcmSequenceOfItems& oldSeq);
     virtual ~DcmSequenceOfItems();
 
     DcmSequenceOfItems &operator=(const DcmSequenceOfItems &obj);
+
+    inline OFCondition error() const { return errorFlag; }
 
     /** clone method
      *  @return deep copy of this object
@@ -203,7 +204,6 @@ public:
                                DcmStack &resultStack,             // inout
                                E_SearchMode mode = ESM_fromHere,  // in
                                OFBool searchIntoSub = OFTrue);    // in
-    virtual OFCondition searchErrors(DcmStack &resultStack);      // inout
     virtual OFCondition loadAllDataIntoMemory(void);
 
 private:
@@ -236,7 +236,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.36  2006-12-15 14:18:07  joergr
+** Revision 1.37  2007-02-19 15:04:34  meichel
+** Removed searchErrors() methods that are not used anywhere and added
+**   error() methods only in the DcmObject subclasses where really used.
+**
+** Revision 1.36  2006/12/15 14:18:07  joergr
 ** Added new method that checks whether a DICOM object or element is affected
 ** by SpecificCharacterSet (0008,0005).
 **

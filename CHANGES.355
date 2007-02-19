@@ -18,6 +18,20 @@ Changes between releases are documented here.
 - Removed calls to DcmObject::error()
   Affects: dcmnet/apps/movescu.cc
 
+- Declaration of copy assignment operator now private, as it should be
+  Affects: dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+  
+- Removed searchErrors() methods that are not used anywhere and added
+  error() methods only in the DcmObject subclasses where really used.
+  Completed doxygen documentation of class DcmObject.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
   
 **** Changes from 2007.02.08 (riesmeier)
 
