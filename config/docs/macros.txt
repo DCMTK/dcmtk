@@ -6,8 +6,7 @@ The behaviour of several DCMTK tools and libraries can be modified by a
 number of compile time flags (macros), which are explained below.
 Most of these macros enable experimental or rarely needed features
 in DCMTK, others disable certain functions. Use with care.
-
-
+    
 ALLOW_ILLUMINATION_OVERRIDE
   Affected: dcmpstat/apps/dcmprscu.cc
   Type of modification: Activates experimental or rarely used feature
@@ -227,3 +226,13 @@ USE__LOCKING
     platforms using _locking().  This version should only be used on
     compilers where _get_osfhandle() is not available since it does not
     implement shared locks.
+
+USING_STD_NAMESPACE
+  Affected: all modules
+  Type of modification: Re-activated behaviour of earlier DCMTK releases.
+  Explanation: DCMTK by default does not anymore pollute the default namespace 
+    by importing namespace std. Earlier releases did this to simplify 
+    compatibility with older compilers where STL classes were not consistently 
+    defined in namespace std. We now have configure macros which should care for 
+    this. If user code still relies on namespace std to be included, compile 
+    with this macro defined.

@@ -22,8 +22,8 @@
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:52:23 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2007-02-19 15:16:16 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,15 @@
 #else
 #error DCMTK needs stringstream or strstream type
 #endif
-#ifdef HAVE_STD_NAMESPACE
+
+/* DCMTK by default does not anymore pollute the default namespace by 
+ * importing namespace std. Earlier releases did this to simplify compatibility
+ * with older compilers where STL classes were not consistently defined
+ * in namespace std. We now have configure macros which should care for this.
+ * If user code still relies on namespace std to be included, compile with
+ * macro USING_STD_NAMESPACE defined.
+ */
+#ifdef USING_STD_NAMESPACE
 namespace std { }
 using namespace std;
 #endif
@@ -136,7 +144,11 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
- * Revision 1.9  2006-08-15 15:52:23  meichel
+ * Revision 1.10  2007-02-19 15:16:16  meichel
+ * Namespace std is not imported into the default namespace anymore,
+ *   unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.
+ *
+ * Revision 1.9  2006/08/15 15:52:23  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

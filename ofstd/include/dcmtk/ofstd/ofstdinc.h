@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:02 $
+ *  Update Date:      $Date: 2007-02-19 15:16:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,14 @@
 
 #include "dcmtk/config/osconfig.h"
 
-#ifdef HAVE_STD_NAMESPACE
+/* DCMTK by default does not anymore pollute the default namespace by 
+ * importing namespace std. Earlier releases did this to simplify compatibility
+ * with older compilers where STL classes were not consistently defined
+ * in namespace std. We now have configure macros which should care for this.
+ * If user code still relies on namespace std to be included, compile with
+ * macro USING_STD_NAMESPACE defined.
+ */
+#ifdef USING_STD_NAMESPACE
 namespace std { }
 using namespace std;
 #endif
@@ -348,7 +355,11 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.12  2006-08-14 16:42:02  meichel
+ * Revision 1.13  2007-02-19 15:16:16  meichel
+ * Namespace std is not imported into the default namespace anymore,
+ *   unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.
+ *
+ * Revision 1.12  2006/08/14 16:42:02  meichel
  * Defined two new macros: STD_NAMESPACE is defined to std:: if the standard
  *   namespace exists and empty otherwise. OFendl is defined as std::endl if
  *   the standard namespace exists and as endl otherwise.

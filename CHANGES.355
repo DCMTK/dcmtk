@@ -32,7 +32,13 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcitem.cc
            dcmdata/libsrc/dcobject.cc
            dcmdata/libsrc/dcsequen.cc
-  
+
+- Namespace std is not imported into the default namespace anymore,
+  unless DCMTK is compiled with macro USING_STD_NAMESPACE defined.
+  Affects: config/docs/macros.txt
+           ofstd/include/dcmtk/ofstd/ofstdinc.h
+           ofstd/include/dcmtk/ofstd/ofstream.h
+
 **** Changes from 2007.02.08 (riesmeier)
 
 - Need to determine global min/max value after copying pixel data.
