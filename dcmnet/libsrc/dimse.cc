@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2006-08-15 16:04:29 $
+** Update Date:         $Date: 2007-02-19 16:51:37 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.45 $
+** CVS/RCS Revision:    $Revision: 1.46 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -668,7 +668,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     unsigned long bufLen;
     OFBool last = OFFalse;
     OFBool written = OFFalse;
-    Uint32 rtnLength;
+    offile_off_t rtnLength;
     Uint32 bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
@@ -768,7 +768,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
             }
 
             /* initialize a DUL_PDV variable with the buffer's data */
-            pdv.fragmentLength = rtnLength;
+            pdv.fragmentLength = OFstatic_cast(unsigned long, rtnLength);
             pdv.presentationContextID = presID;
             pdv.pdvType = pdvType;
             pdv.lastPDV = last;
@@ -1775,7 +1775,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.45  2006-08-15 16:04:29  meichel
+** Revision 1.46  2007-02-19 16:51:37  meichel
+** Class DcmOutputStream and related classes are now safe for use with
+**   large files (2 GBytes or more) if supported by compiler and operating system.
+**
+** Revision 1.45  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

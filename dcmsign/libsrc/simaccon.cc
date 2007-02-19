@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:24 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2007-02-19 16:53:45 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
 {
   OFCondition result = EC_Normal;
   void *bufptr = NULL;
-  Uint32 bufLen = 0;
+  offile_off_t bufLen = 0;
   stream.flushBuffer(bufptr, bufLen);
   if (bufLen > 0) 
   {
@@ -204,7 +204,11 @@ int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.8  2005-12-08 15:47:24  meichel
+ *  Revision 1.9  2007-02-19 16:53:45  meichel
+ *  Class DcmOutputStream and related classes are now safe for use with
+ *    large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ *  Revision 1.8  2005/12/08 15:47:24  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.7  2002/12/16 12:57:51  meichel
