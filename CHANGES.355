@@ -72,6 +72,8 @@ Changes between releases are documented here.
            dcmdata/dcmdata/libsrc/dcostrmb.cc
            dcmdata/dcmdata/libsrc/dcostrmf.cc
            dcmdata/dcmdata/libsrc/dcostrmz.cc
+           dcmnet/libsrc/dimse.cc
+           dcmsign/libsrc/simaccon.cc
 
 **** Changes from 2007.02.08 (riesmeier)
 
