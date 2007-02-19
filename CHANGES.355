@@ -58,7 +58,10 @@ Changes between releases are documented here.
            dcmdata/dcmdata/libsrc/dcistrmb.cc
            dcmdata/dcmdata/libsrc/dcistrmf.cc
            dcmdata/dcmdata/libsrc/dcistrmz.cc
-  
+ 
+- Added constructor to class OFFile that takes FILE * as argument.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2007.02.08 (riesmeier)
 
 - Need to determine global min/max value after copying pixel data.

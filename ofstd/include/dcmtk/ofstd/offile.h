@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-21 12:40:44 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2007-02-19 16:03:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +102,11 @@ public:
   /// default constructor, creates an object that is not associated with any file.
   OFFile(): file_(NULL), popened_(OFFalse), lasterror_(0) {}
 
+  /** create object for given stdio FILE
+   *  @param f stdio FILE
+   */
+  OFFile(FILE *f): file_(f), popened_(OFFalse), lasterror_(0) {}
+   
   /// destructor. Closes file if still open.
   ~OFFile()
   {
@@ -799,7 +804,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
- * Revision 1.1  2006-08-21 12:40:44  meichel
+ * Revision 1.2  2007-02-19 16:03:47  meichel
+ * Added constructor to class OFFile that takes FILE * as argument.
+ *
+ * Revision 1.1  2006/08/21 12:40:44  meichel
  * Added new class OFFile that provides a simple encapsulation layer for
  *   FILE based stream I/O and, in particular, provides long file support
  *   (LFS) if available on the underlying operating system platform through
