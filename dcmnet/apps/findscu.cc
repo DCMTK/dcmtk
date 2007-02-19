@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:28 $
+ *  Update Date:      $Date: 2007-02-19 13:13:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,34 +32,11 @@
  */
 
 #include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
-
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CSTRING
-#define INCLUDE_CSTDARG
-#define INCLUDE_CERRNO
-#include "dcmtk/ofstd/ofstdinc.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_SYS_FILE_H
-#include <sys/file.h>
-#endif
-END_EXTERN_C
-
-#ifdef HAVE_GUSI_H
-#include <GUSI.h>
-#endif
-
-#include "dcmtk/dcmnet/dimse.h"
-#include "dcmtk/dcmnet/diutil.h"
-#include "dcmtk/dcmdata/dcfilefo.h"
-#include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmnet/dfindscu.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
-#include "dcmtk/dcmdata/dcdicent.h"
+#include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -79,152 +56,46 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define APPLICATIONTITLE        "FINDSCU"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
-
-static OFBool           opt_verbose = OFFalse;
-static OFBool           opt_debug = OFFalse;
-static OFBool           opt_abortAssociation = OFFalse;
-static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
-static OFCmdUnsignedInt opt_repeatCount = 1;
-static OFBool           opt_extractResponsesToFile = OFFalse;
-static const char *     opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
-static OFCmdSignedInt   opt_cancelAfterNResponses = -1;
-static DcmDataset *     overrideKeys = NULL;
-static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
-T_DIMSE_BlockingMode    opt_blockMode = DIMSE_BLOCKING;
-int                     opt_dimse_timeout = 0;
-int                     opt_acse_timeout = 30;
-
-typedef struct {
-    T_ASC_Association *assoc;
-    T_ASC_PresentationContextID presId;
-} MyCallbackInfo;
-
-static void
-errmsg(const char *msg,...)
-{
-    va_list args;
-
-    fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
-    va_start(args, msg);
-    vfprintf(stderr, msg, args);
-    va_end(args);
-    fprintf(stderr, "\n");
-}
-
-static void
-addOverrideKey(OFConsoleApplication& app, const char* s)
-{
-    unsigned int g = 0xffff;
-    unsigned int e = 0xffff;
-    int n = 0;
-    char val[1024];
-    OFString dicName, valStr;
-    OFString msg;
-    char msg2[200];
-    val[0] = '\0';
-
-    // try to parse group and element number
-    n = sscanf(s, "%x,%x=%s", &g, &e, val);
-    if (n < 2) {
-      // try to parse dictionary name and value instead
-      OFString toParse = s;
-      size_t eqPos = toParse.find('=');
-      if (eqPos != OFString_npos)
-      {
-        dicName = toParse.substr(0,eqPos).c_str();
-        valStr = toParse.substr(eqPos+1,toParse.length());
-      }
-      else
-        dicName = s; // only dictionary name given (without value)
-      // try to lookup in dictionary
-      DcmTagKey key(0xffff,0xffff);
-      const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-      const DcmDictEntry *dicent = globalDataDict.findEntry(dicName.c_str());
-      dcmDataDict.unlock();
-      if (dicent!=NULL) {
-        // found dictionary name, copy group and element number
-        key = dicent->getKey();
-        g = key.getGroup();
-        e = key.getElement();
-      }
-      else {
-        // not found in dictionary
-        msg = "bad key format or dictionary name not found in dictionary: ";
-        msg += dicName;
-        app.printError(msg.c_str());
-      }
-    }
-    else
-      valStr = val;
-    DcmTag tag(g,e);
-    if (tag.error() != EC_Normal) {
-        sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
-        app.printError(msg2);
-    }
-    DcmElement *elem = newDicomElement(tag);
-    if (elem == NULL) {
-        sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
-        app.printError(msg2);
-    }
-    if (valStr.length() > 0) {
-        elem->putString(valStr.c_str());
-        if (elem->error() != EC_Normal)
-        {
-            sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
-            msg = msg2;
-            msg += valStr;
-            msg += "\"";
-            app.printError(msg.c_str());
-        }
-    }
-
-    if (overrideKeys == NULL) overrideKeys = new DcmDataset;
-    overrideKeys->insert(elem, OFTrue);
-    if (overrideKeys->error() != EC_Normal) {
-        sprintf(msg2, "cannot insert tag: (%04x,%04x)", g, e);
-        app.printError(msg2);
-    }
-}
-
-
-static OFCondition addPresentationContext(T_ASC_Parameters *params);
-
-static OFCondition
-cfind(T_ASC_Association *assoc, const char* fname);
-
 #define SHORTCOL 4
 #define LONGCOL 16
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    T_ASC_Network *net;
-    T_ASC_Parameters *params;
-    const char *opt_peer;
-    OFCmdUnsignedInt opt_port = 104;
-    DIC_NODENAME localHost;
-    DIC_NODENAME peerHost;
-    T_ASC_Association *assoc;
-    const char *opt_peerTitle = PEERAPPLICATIONTITLE;
-    const char *opt_ourTitle = APPLICATIONTITLE;
-    OFList<OFString> fileNameList;
-    OFBool      opt_secureConnection    = OFFalse; /* default: no secure connection */
+    OFList<OFString>      fileNameList;
+    OFBool                opt_abortAssociation = OFFalse;
+    const char *          opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
+    int                   opt_acse_timeout = 30;
+    T_DIMSE_BlockingMode  opt_blockMode = DIMSE_BLOCKING;
+    OFCmdSignedInt        opt_cancelAfterNResponses = -1;
+    OFBool                opt_debug = OFFalse;
+    int                   opt_dimse_timeout = 0;
+    OFBool                opt_extractResponsesToFile = OFFalse;
+    OFCmdUnsignedInt      opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
+    E_TransferSyntax      opt_networkTransferSyntax = EXS_Unknown;
+    const char *          opt_ourTitle = APPLICATIONTITLE;
+    const char *          opt_peer;
+    const char *          opt_peerTitle = PEERAPPLICATIONTITLE;
+    OFCmdUnsignedInt      opt_port = 104;
+    OFCmdUnsignedInt      opt_repeatCount = 1;
+    OFBool                opt_secureConnection = OFFalse; /* default: no secure connection */
+    OFBool                opt_verbose = OFFalse;
+    DcmDataset *          overrideKeys = NULL;
 
 #ifdef WITH_OPENSSL
-    int         opt_keyFileFormat = SSL_FILETYPE_PEM;
-    OFBool      opt_doAuthenticate = OFFalse;
-    const char *opt_privateKeyFile = NULL;
-    const char *opt_certificateFile = NULL;
-    const char *opt_passwd = NULL;
+    const char *          opt_certificateFile = NULL;
+    OFBool                opt_doAuthenticate = OFFalse;
+    int                   opt_keyFileFormat = SSL_FILETYPE_PEM;
+    const char *          opt_passwd = NULL;
+    const char *          opt_privateKeyFile = NULL;
 #if OPENSSL_VERSION_NUMBER >= 0x0090700fL
-    OFString    opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
+    OFString              opt_ciphersuites(TLS1_TXT_RSA_WITH_AES_128_SHA ":" SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #else
-    OFString    opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+    OFString              opt_ciphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
 #endif
-    const char *opt_readSeedFile = NULL;
-    const char *opt_writeSeedFile = NULL;
-    DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
-    const char *opt_dhparam = NULL;
+    const char *          opt_dhparam = NULL;
+    const char *          opt_readSeedFile = NULL;
+    const char *          opt_writeSeedFile = NULL;
+    DcmCertificateVerification  opt_certVerification = DCV_requireCertificate;
 #endif
 
     /*
@@ -245,7 +116,6 @@ main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-
   char tempstr[20];
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM query (C-FIND) SCU", rcsid);
   OFCommandLine cmd;
@@ -265,8 +135,6 @@ main(int argc, char *argv[])
     cmd.addSubGroup("override matching keys:");
       cmd.addOption("--key",               "-k",   1, "key: gggg,eeee=\"str\" or data dictionary name=\"str\"",
                                                       "override matching key");
-
-
     cmd.addSubGroup("query information model:");
       cmd.addOption("--worklist",          "-W",      "use modality worklist information model (default)");
       cmd.addOption("--patient",           "-P",      "use patient root information model");
@@ -376,7 +244,6 @@ main(int argc, char *argv[])
       }
 
       /* command line parameters */
-
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
@@ -394,7 +261,7 @@ main(int argc, char *argv[])
         const char *ovKey = NULL;
         do {
           app.checkValue(cmd.getValue(ovKey));
-          addOverrideKey(app, ovKey);
+          DcmFindSCU::addOverrideKey(overrideKeys, app, ovKey);
         } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
       }
 
@@ -585,13 +452,14 @@ main(int argc, char *argv[])
                 DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    /* initialize network, i.e. create an instance of T_ASC_Network*. */
-    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, opt_acse_timeout, &net);
+    // declare findSCU handler and initialize network
+    DcmFindSCU findscu(opt_verbose, opt_debug);
+    OFCondition cond = findscu.initializeNetwork(opt_acse_timeout);
     if (cond.bad()) {
         DimseCondition::dump(cond);
-        exit(1);
+        return 1;
     }
-
+    
 #ifdef WITH_OPENSSL
 
     DcmTLSTransportLayer *tLayer = NULL;
@@ -664,7 +532,7 @@ main(int argc, char *argv[])
       tLayer->setCertificateVerification(opt_certVerification);
 
 
-      cond = ASC_setTransportLayer(net, tLayer, 0);
+      cond = findscu.setTransportLayer(tLayer);
       if (cond.bad())
       {
           DimseCondition::dump(cond);
@@ -674,172 +542,32 @@ main(int argc, char *argv[])
 
 #endif
 
-    /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
-    cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-        exit(1);
-    }
+    // do the main work: negotiate network association, perform C-FIND transaction,
+    // process results, and finally tear down the association.
+    cond = findscu.performQuery(
+      opt_peer,
+      opt_port,
+      opt_ourTitle,
+      opt_peerTitle,
+      opt_abstractSyntax,
+      opt_networkTransferSyntax,
+      opt_blockMode,
+      opt_dimse_timeout,
+      opt_maxReceivePDULength,
+      opt_secureConnection,
+      opt_abortAssociation,
+      opt_repeatCount,
+      opt_extractResponsesToFile, 
+      opt_cancelAfterNResponses, 
+      overrideKeys,
+      NULL, /* we want to use the default callback */
+      &fileNameList);
 
-    /* sets this application's title and the called application's title in the params */
-    /* structure. The default values to be set here are "STORESCU" and "ANY-SCP". */
-    ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
+    if (cond.bad()) DimseCondition::dump(cond);
 
-    /* Set the transport layer type (type of network connection) in the params */
-    /* structure. The default is an insecure connection; where OpenSSL is  */
-    /* available the user is able to request an encrypted,secure connection. */
-    cond = ASC_setTransportLayerType(params, opt_secureConnection);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-        return 1;
-    }
-
-    /* Figure out the presentation addresses and copy the */
-    /* corresponding values into the association parameters.*/
-    gethostname(localHost, sizeof(localHost) - 1);
-    sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
-    ASC_setPresentationAddresses(params, localHost, peerHost);
-
-    /* Set the presentation contexts which will be negotiated */
-    /* when the network connection will be established */
-    cond = addPresentationContext(params);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-        exit(1);
-    }
-
-    /* dump presentation contexts if required */
-    if (opt_debug) {
-        printf("Request Parameters:\n");
-        ASC_dumpParameters(params, COUT);
-    }
-
-    /* create association, i.e. try to establish a network connection to another */
-    /* DICOM application. This call creates an instance of T_ASC_Association*. */
-    if (opt_verbose)
-        printf("Requesting Association\n");
-    cond = ASC_requestAssociation(net, params, &assoc);
-    if (cond.bad()) {
-        if (cond == DUL_ASSOCIATIONREJECTED) {
-            T_ASC_RejectParameters rej;
-
-            ASC_getRejectParameters(params, &rej);
-            errmsg("Association Rejected:");
-            ASC_printRejectParameters(stderr, &rej);
-            exit(1);
-        } else {
-            errmsg("Association Request Failed:");
-            DimseCondition::dump(cond);
-            exit(1);
-        }
-    }
-
-    /* dump the presentation contexts which have been accepted/refused */
-    if (opt_debug) {
-        printf("Association Parameters Negotiated:\n");
-        ASC_dumpParameters(params, COUT);
-    }
-
-    /* count the presentation contexts which have been accepted by the SCP */
-    /* If there are none, finish the execution */
-    if (ASC_countAcceptedPresentationContexts(params) == 0) {
-        errmsg("No Acceptable Presentation Contexts");
-        exit(1);
-    }
-
-    /* dump general information concerning the establishment of the network connection if required */
-    if (opt_verbose) {
-        printf("Association Accepted (Max Send PDV: %lu)\n",
-                assoc->sendPDVLength);
-    }
-
-    /* do the real work, i.e. for all files which were specified in the command line, send a */
-    /* C-FIND-RQ to the other DICOM application and receive corresponding response messages. */
-    cond = EC_Normal;
-    if (fileNameList.empty())
-    {
-        /* no files provided on command line */
-        cond = cfind(assoc, NULL);
-    } else {
-      OFListIterator(OFString) iter = fileNameList.begin();
-      OFListIterator(OFString) enditer = fileNameList.end();
-      while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
-      {
-          cond = cfind(assoc, (*iter).c_str());
-          ++iter;
-      }
-    }
-
-    /* tear down association, i.e. terminate network connection to SCP */
-    if (cond == EC_Normal)
-    {
-        if (opt_abortAssociation) {
-            if (opt_verbose)
-                printf("Aborting Association\n");
-            cond = ASC_abortAssociation(assoc);
-            if (cond.bad()) {
-                errmsg("Association Abort Failed:");
-                DimseCondition::dump(cond);
-                exit(1);
-            }
-        } else {
-            /* release association */
-            if (opt_verbose)
-                printf("Releasing Association\n");
-            cond = ASC_releaseAssociation(assoc);
-            if (cond.bad())
-            {
-                errmsg("Association Release Failed:");
-                DimseCondition::dump(cond);
-                exit(1);
-            }
-        }
-    }
-    else if (cond == DUL_PEERREQUESTEDRELEASE)
-    {
-        errmsg("Protocol Error: peer requested release (Aborting)");
-        if (opt_verbose)
-            printf("Aborting Association\n");
-        cond = ASC_abortAssociation(assoc);
-        if (cond.bad()) {
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
-            exit(1);
-        }
-    }
-    else if (cond == DUL_PEERABORTEDASSOCIATION)
-    {
-        if (opt_verbose) printf("Peer Aborted Association\n");
-    }
-    else
-    {
-        errmsg("SCU Failed:");
-        DimseCondition::dump(cond);
-        if (opt_verbose)
-            printf("Aborting Association\n");
-        cond = ASC_abortAssociation(assoc);
-        if (cond.bad()) {
-            errmsg("Association Abort Failed:");
-            DimseCondition::dump(cond);
-            exit(1);
-        }
-    }
-
-    /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
-    /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
-    cond = ASC_destroyAssociation(&assoc);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-        exit(1);
-    }
-
-    /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
-    /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
-    cond = ASC_dropNetwork(&net);
-    if (cond.bad()) {
-        DimseCondition::dump(cond);
-        exit(1);
-    }
+    // destroy network structure
+    cond = findscu.dropNetwork();
+    if (cond.bad()) DimseCondition::dump(cond);
 
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
@@ -859,310 +587,23 @@ main(int argc, char *argv[])
       }
     }
     delete tLayer;
+
 #endif
 
     delete overrideKeys;
     return 0;
 }
 
-
-static OFCondition
-addPresentationContext(T_ASC_Parameters *params)
-{
-    /*
-    ** We prefer to use Explicitly encoded transfer syntaxes.
-    ** If we are running on a Little Endian machine we prefer
-    ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-    ** Some SCP implementations will just select the first transfer
-    ** syntax they support (this is not part of the standard) so
-    ** organise the proposed transfer syntaxes to take advantage
-    ** of such behaviour.
-    **
-    ** The presentation contexts proposed here are only used for
-    ** C-FIND and C-MOVE, so there is no need to support compressed
-    ** transmission.
-    */
-
-    const char* transferSyntaxes[] = { NULL, NULL, NULL };
-    int numTransferSyntaxes = 0;
-
-    switch (opt_networkTransferSyntax) {
-    case EXS_LittleEndianImplicit:
-        /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 1;
-        break;
-    case EXS_LittleEndianExplicit:
-        /* we prefer Little Endian Explicit */
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    case EXS_BigEndianExplicit:
-        /* we prefer Big Endian Explicit */
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    default:
-        /* We prefer explicit transfer syntaxes.
-         * If we are running on a Little Endian machine we prefer
-         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-         */
-        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
-        {
-            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        } else {
-            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        }
-        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 3;
-        break;
-    }
-
-    return ASC_addPresentationContext(
-        params, 1, opt_abstractSyntax,
-        transferSyntaxes, numTransferSyntaxes);
-}
-
-static void
-substituteOverrideKeys(DcmDataset *dset)
-{
-    if (overrideKeys == NULL) {
-        return; /* nothing to do */
-    }
-
-    /* copy the override keys */
-    DcmDataset keys(*overrideKeys);
-
-    /* put the override keys into dset replacing existing tags */
-    unsigned long elemCount = keys.card();
-    for (unsigned long i=0; i<elemCount; i++) {
-        DcmElement *elem = keys.remove((unsigned long)0);
-
-        dset->insert(elem, OFTrue);
-    }
-}
-
-static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
-{
-    /* write out as a file format */
-
-    DcmFileFormat fileformat(dataset); // copies dataset
-    OFCondition ec = fileformat.error();
-    if (ec.bad()) {
-        errmsg("error writing file: %s: %s", ofname, ec.text());
-        return OFFalse;
-    }
-
-    ec = fileformat.saveFile(ofname, dataset->getOriginalXfer());
-    if (ec.bad()) {
-        errmsg("error writing file: %s: %s", ofname, ec.text());
-        return OFFalse;
-    }
-
-    return OFTrue;
-}
-
-static void
-progressCallback(
-        void *callbackData,
-        T_DIMSE_C_FindRQ *request,
-        int responseCount,
-        T_DIMSE_C_FindRSP *rsp,
-        DcmDataset *responseIdentifiers
-        )
-    /*
-     * This function.is used to indicate progress when findscu receives search results over the
-     * network. This function will simply cause some information to be dumped to stdout.
-     *
-     * Parameters:
-     *   callbackData        - [in] data for this callback function
-     *   request             - [in] The original find request message.
-     *   responseCount       - [in] Specifies how many C-FIND-RSP were received including the current one.
-     *   rsp                 - [in] the C-FIND-RSP message which was received shortly before the call to
-     *                              this function.
-     *   responseIdentifiers - [in] Contains the record which was received. This record matches the search
-     *                              mask of the C-FIND-RQ which was sent.
-     */
-{
-    /* dump response number */
-    printf("RESPONSE: %d (%s)\n", responseCount,
-        DU_cfindStatusString(rsp->DimseStatus));
-
-    /* dump data set which was received */
-    responseIdentifiers->print(COUT);
-
-    /* dump delimiter */
-    printf("--------\n");
-
-    /* in case opt_extractResponsesToFile is set the responses shall be extracted to a certain file */
-    if (opt_extractResponsesToFile) {
-        char rspIdsFileName[1024];
-        sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
-        writeToFile(rspIdsFileName, responseIdentifiers);
-    }
-
-    MyCallbackInfo *myCallbackData = OFstatic_cast(MyCallbackInfo *, callbackData);
-
-    /* should we send a cancel back ?? */
-    if (opt_cancelAfterNResponses == responseCount)
-    {
-        if (opt_verbose)
-        {
-            printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n", request->MessageID, myCallbackData->presId);
-        }
-        OFCondition cond = DIMSE_sendCancelRequest(myCallbackData->assoc, myCallbackData->presId, request->MessageID);
-        if (cond.bad())
-        {
-            errmsg("Cancel RQ Failed:");
-            DimseCondition::dump(cond);
-        }
-    }
-
-}
-
-static OFCondition
-findSCU(T_ASC_Association * assoc, const char *fname)
-    /*
-     * This function will read all the information from the given file
-     * (this information specifies a search mask), figure out a corresponding
-     * presentation context which will be used to transmit a C-FIND-RQ message
-     * over the network to the SCP, and it will finally initiate the transmission
-     * of data to the SCP.
-     *
-     * Parameters:
-     *   assoc - [in] The association (network connection to another DICOM application).
-     *   fname - [in] Name of the file which shall be processed.
-     */
-{
-    DIC_US msgId = assoc->nextMsgID++;
-    T_ASC_PresentationContextID presId;
-    T_DIMSE_C_FindRQ req;
-    T_DIMSE_C_FindRSP rsp;
-    DcmDataset *statusDetail = NULL;
-    MyCallbackInfo callbackData;
-    DcmFileFormat dcmff;
-
-    /* if there is a valid filename */
-    if (fname != NULL) {
-
-        /* read information from file (this information specifies a search mask). After the */
-        /* call to DcmFileFormat::read(...) the information which is encapsulated in the file */
-        /* will be available through the DcmFileFormat object. In detail, it will be available */
-        /* through calls to DcmFileFormat::getMetaInfo() (for meta header information) and */
-        /* DcmFileFormat::getDataset() (for data set information). */
-        OFCondition cond = dcmff.loadFile(fname);
-
-        /* figure out if an error occured while the file was read*/
-        if (cond.bad()) {
-            errmsg("Bad DICOM file: %s: %s", fname, cond.text());
-            return cond;
-        }
-    }
-
-    /* replace specific keys by those in overrideKeys */
-    substituteOverrideKeys(dcmff.getDataset());
-
-    /* figure out which of the accepted presentation contexts should be used */
-    presId = ASC_findAcceptedPresentationContextID(
-        assoc, opt_abstractSyntax);
-    if (presId == 0) {
-        errmsg("No presentation context");
-        return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
-    }
-
-    /* prepare the transmission of data */
-    bzero((char*)&req, sizeof(req));
-    req.MessageID = msgId;
-    strcpy(req.AffectedSOPClassUID, opt_abstractSyntax);
-    req.DataSetType = DIMSE_DATASET_PRESENT;
-    req.Priority = DIMSE_PRIORITY_LOW;
-
-    /* prepare the callback data */
-    callbackData.assoc = assoc;
-    callbackData.presId = presId;
-
-    /* if required, dump some more general information */
-    if (opt_verbose) {
-        printf("Find SCU RQ: MsgID %d\n", msgId);
-        printf("REQUEST:\n");
-        dcmff.getDataset()->print(COUT);
-        printf("--------\n");
-    }
-
-    /* finally conduct transmission of data */
-    OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(),
-                          progressCallback, &callbackData,
-                          opt_blockMode, opt_dimse_timeout,
-                          &rsp, &statusDetail);
-
-
-    /* dump some more general information */
-    if (cond == EC_Normal) {
-        if (opt_verbose) {
-            DIMSE_printCFindRSP(stdout, &rsp);
-        } else {
-            if (rsp.DimseStatus != STATUS_Success) {
-                printf("Response: %s\n", DU_cfindStatusString(rsp.DimseStatus));
-            }
-        }
-    } else {
-        if (fname) {
-            errmsg("Find Failed, file: %s:", fname);
-        } else {
-            errmsg("Find Failed, query keys:");
-            dcmff.getDataset()->print(COUT);
-        }
-        DimseCondition::dump(cond);
-    }
-
-    /* dump status detail information if there is some */
-    if (statusDetail != NULL) {
-        printf("  Status Detail:\n");
-        statusDetail->print(COUT);
-        delete statusDetail;
-    }
-
-    /* return */
-    return cond;
-}
-
-
-static OFCondition
-cfind(T_ASC_Association * assoc, const char *fname)
-    /*
-     * This function will process the given file as often as is specified by opt_repeatCount.
-     * "Process" in this case means "read file, send C-FIND-RQ, receive C-FIND-RSP messages".
-     *
-     * Parameters:
-     *   assoc - [in] The association (network connection to another DICOM application).
-     *   fname - [in] Name of the file which shall be processed (contains search mask information).
-     */
-{
-    OFCondition cond = EC_Normal;
-
-    /* opt_repeatCount specifies how many times a certain file shall be processed */
-    int n = (int)opt_repeatCount;
-
-    /* as long as no error occured and the counter does not equal 0 */
-    while (cond == EC_Normal && n--) {
-        /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
-        cond = findSCU(assoc, fname);
-    }
-
-    /* return result value */
-    return cond;
-}
-
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.50  2006-08-15 16:04:28  meichel
+** Revision 1.51  2007-02-19 13:13:26  meichel
+** Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet
+**   library, and a short command line tool that only evaluates command line
+**   parameters and then makes use of this class. This facilitates re-use of the
+**   findscu code in other applications.
+**
+** Revision 1.50  2006/08/15 16:04:28  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

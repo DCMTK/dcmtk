@@ -15,15 +15,17 @@ include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
+dcmtlsdir = $(top_srcdir)/../dcmtls
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include
 LOCALDEFS =
 
 objs = assoc.o cond.o dcompat.o dimcancl.o dimcmd.o dimdump.o dimecho.o \
 	dimfind.o dimmove.o dimse.o dimstore.o diutil.o dulconst.o dulextra.o \
 	dulfsm.o dulparse.o dulpres.o dul.o lst.o extneg.o dimget.o dcmlayer.o \
 	dcmtrans.o dcasccfg.o dcasccff.o dccfuidh.o dccftsmp.o dccfpcmp.o \
-	dccfrsmp.o dccfenmp.o dccfprmp.o
+	dccfrsmp.o dccfenmp.o dccfprmp.o dfindscu.o
+
 library = libdcmnet.$(LIBEXT)
 
 
