@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2007-02-19 15:35:55 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,35 @@ Uint32 DcmFileConsumer::write(const void *buf, Uint32 buflen)
   Uint32 result = 0;
   if (status_.good() && file_ && buf && buflen)
   {
+#ifdef WRITE_VERY_LARGE_CHUNKS
+    /* This is the old behaviour prior to DCMTK 3.5.5 */
     result = OFstatic_cast(Uint32, fwrite(buf, 1, OFstatic_cast(size_t, buflen), file_));
+#else
+    /* On Windows (at least for some versions of MSVC), calls to fwrite() for more than
+     * 67,076,095 bytes (a bit less than 64 MByte) fail if we're writing to a network
+     * share. See MSDN KB899149. As a workaround, we always write in chunks of 
+     * 32M which should hardly negatively affect performance. 
+     */
+#define DcmFileConsumer_MAX_CHUNK_SIZE 33554432 /* 32 MByte */
+    Uint32 written;
+    const char *buf2 = OFstatic_cast(const char *, buf);
+    while (buflen > DcmFileConsumer_MAX_CHUNK_SIZE)
+    {
+      written = OFstatic_cast(Uint32, fwrite(buf2, 1, DcmFileConsumer_MAX_CHUNK_SIZE, file_));
+      result += written;
+      buf2 += written;
+
+      // if we have not written a complete chunk, there is problem; bail out
+      if (written == DcmFileConsumer_MAX_CHUNK_SIZE) buflen -= DcmFileConsumer_MAX_CHUNK_SIZE; else buflen = 0;
+    }
+
+    // last call to fwrite if the file size is not a multiple of DcmFileConsumer_MAX_CHUNK_SIZE
+    if (buflen)
+    {
+      written = OFstatic_cast(Uint32, fwrite(buf2, 1, OFstatic_cast(size_t, buflen), file_));
+      result += written;
+    }
+#endif
   }
   return result;
 }
@@ -133,7 +161,14 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.7  2006-08-15 15:49:54  meichel
+ * Revision 1.8  2007-02-19 15:35:55  meichel
+ * When writing DICOM data to file, we now by default split fwrite() calls for
+ *   very large attributes into multiple calls, none of which writes more than
+ *   32 MBytes. This is a workaround to a bug in most MSVC environments (MSDN
+ *   KB899149) and is hardly relevant performance-wise. Previous behaviour can
+ *   be enforced by compiling with WRITE_VERY_LARGE_CHUNKS defined.
+ *
+ * Revision 1.7  2006/08/15 15:49:54  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

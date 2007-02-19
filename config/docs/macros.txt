@@ -236,3 +236,16 @@ USING_STD_NAMESPACE
     defined in namespace std. We now have configure macros which should care for 
     this. If user code still relies on namespace std to be included, compile 
     with this macro defined.
+
+WRITE_VERY_LARGE_CHUNKS
+  Affects: dcmdata (writing of DICOM datasets)
+  Type of modification: Re-activated behaviour of earlier DCMTK releases.
+  Explanation: On Windows (at least for some versions of MSVC), calls to 
+    fwrite() for more than 67,076,095 bytes (a bit less than 64 MByte) fail if 
+    we're writing to a network share. See MSDN KB899149. As a workaround, we 
+    always write in chunks of 32M which should hardly negatively affect 
+    performance. This macro enables the behaviour of earlier DCMTK releases,
+    i.e. to always call fwrite with as much data as possible, which is known
+    not to work correctly on Win32 but might offer very minor performance 
+    benefits on other platforms.
+

@@ -39,6 +39,14 @@ Changes between releases are documented here.
            ofstd/include/dcmtk/ofstd/ofstdinc.h
            ofstd/include/dcmtk/ofstd/ofstream.h
 
+- When writing DICOM data to file, we now by default split fwrite() calls for 
+  very large attributes into multiple calls, none of which writes more than 
+  32 MBytes. This is a workaround to a bug in most MSVC environments (MSDN 
+  KB899149) and is hardly relevant performance-wise. Previous behaviour can
+  be enforced by compiling with WRITE_VERY_LARGE_CHUNKS defined.
+  Affects: config/docs/macros.txt
+           dcmdata/libsrc/dcostrmf.cc  
+
 **** Changes from 2007.02.08 (riesmeier)
 
 - Need to determine global min/max value after copying pixel data.
