@@ -62,6 +62,17 @@ Changes between releases are documented here.
 - Added constructor to class OFFile that takes FILE * as argument.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
+- Class DcmOutputStream and related classes are now safe for use with
+  large files (2 GBytes or more) if supported by compiler and operating system.
+  Affects: dcmdata/dcmdata/include/dcmtk/dcmdata/dcostrma.h
+           dcmdata/dcmdata/include/dcmtk/dcmdata/dcostrmb.h
+           dcmdata/dcmdata/include/dcmtk/dcmdata/dcostrmf.h
+           dcmdata/dcmdata/include/dcmtk/dcmdata/dcostrmz.h
+           dcmdata/dcmdata/libsrc/dcostrma.cc
+           dcmdata/dcmdata/libsrc/dcostrmb.cc
+           dcmdata/dcmdata/libsrc/dcostrmf.cc
+           dcmdata/dcmdata/libsrc/dcostrmz.cc
+
 **** Changes from 2007.02.08 (riesmeier)
 
 - Need to determine global min/max value after copying pixel data.

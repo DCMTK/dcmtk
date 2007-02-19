@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: base classes for output streams
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:20 $
+ *  Update Date:      $Date: 2007-02-19 16:06:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrma.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,14 +92,14 @@ OFBool DcmOutputStream::isFlushed() const
   return current_->isFlushed();
 }
 
-Uint32 DcmOutputStream::avail() const
+offile_off_t DcmOutputStream::avail() const
 {
   return current_->avail();
 }
 
-Uint32 DcmOutputStream::write(const void *buf, Uint32 buflen)
+offile_off_t DcmOutputStream::write(const void *buf, offile_off_t buflen)
 {
-  Uint32 result = current_->write(buf, buflen);
+  offile_off_t result = current_->write(buf, buflen);
   tell_ += result;
   return result;
 }
@@ -109,7 +109,7 @@ void DcmOutputStream::flush()
   current_->flush();
 }
 
-Uint32 DcmOutputStream::tell() const
+offile_off_t DcmOutputStream::tell() const
 {
   return tell_;
 }
@@ -118,7 +118,11 @@ Uint32 DcmOutputStream::tell() const
 /*
  * CVS/RCS Log:
  * $Log: dcostrma.cc,v $
- * Revision 1.2  2005-12-08 15:41:20  meichel
+ * Revision 1.3  2007-02-19 16:06:10  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.2  2005/12/08 15:41:20  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2002/08/27 16:55:52  meichel

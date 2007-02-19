@@ -23,8 +23,8 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:35:55 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2007-02-19 16:06:10 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,11 +43,11 @@
 
 DcmFileConsumer::DcmFileConsumer(const char *filename)
 : DcmConsumer()
-, file_(NULL)
+, file_()
 , status_(EC_Normal)
 {
-  file_ = fopen(filename, "wb");
-  if (!file_)
+  
+  if (!file_.fopen(filename, "wb"))
   {
     const char *text = strerror(errno);
     if (text == NULL) text = "(unknown error code)";
@@ -64,7 +64,7 @@ DcmFileConsumer::DcmFileConsumer(FILE *file)
 
 DcmFileConsumer::~DcmFileConsumer()
 {
-  if (file_) fclose(file_);
+  file_.fclose();
 }
 
 OFBool DcmFileConsumer::good() const
@@ -82,19 +82,19 @@ OFBool DcmFileConsumer::isFlushed() const
   return OFTrue;
 }
 
-Uint32 DcmFileConsumer::avail() const
+offile_off_t DcmFileConsumer::avail() const
 {
-  return OFstatic_cast(Uint32, -1); // assume unlimited file size
+  return OFstatic_cast(offile_off_t, -1); // assume unlimited file size
 }
 
-Uint32 DcmFileConsumer::write(const void *buf, Uint32 buflen)
+offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
 {
-  Uint32 result = 0;
-  if (status_.good() && file_ && buf && buflen)
+  offile_off_t result = 0;
+  if (status_.good() && file_.open() && buf && buflen)
   {
 #ifdef WRITE_VERY_LARGE_CHUNKS
     /* This is the old behaviour prior to DCMTK 3.5.5 */
-    result = OFstatic_cast(Uint32, fwrite(buf, 1, OFstatic_cast(size_t, buflen), file_));
+    result = OFstatic_cast(offile_off_t, file_.fwrite(buf, 1, OFstatic_cast(size_t, buflen)));
 #else
     /* On Windows (at least for some versions of MSVC), calls to fwrite() for more than
      * 67,076,095 bytes (a bit less than 64 MByte) fail if we're writing to a network
@@ -102,11 +102,11 @@ Uint32 DcmFileConsumer::write(const void *buf, Uint32 buflen)
      * 32M which should hardly negatively affect performance. 
      */
 #define DcmFileConsumer_MAX_CHUNK_SIZE 33554432 /* 32 MByte */
-    Uint32 written;
+    offile_off_t written;
     const char *buf2 = OFstatic_cast(const char *, buf);
     while (buflen > DcmFileConsumer_MAX_CHUNK_SIZE)
     {
-      written = OFstatic_cast(Uint32, fwrite(buf2, 1, DcmFileConsumer_MAX_CHUNK_SIZE, file_));
+      written = OFstatic_cast(offile_off_t, file_.fwrite(buf2, 1, DcmFileConsumer_MAX_CHUNK_SIZE));
       result += written;
       buf2 += written;
 
@@ -117,7 +117,7 @@ Uint32 DcmFileConsumer::write(const void *buf, Uint32 buflen)
     // last call to fwrite if the file size is not a multiple of DcmFileConsumer_MAX_CHUNK_SIZE
     if (buflen)
     {
-      written = OFstatic_cast(Uint32, fwrite(buf2, 1, OFstatic_cast(size_t, buflen), file_));
+      written = OFstatic_cast(offile_off_t, file_.fwrite(buf2, 1, OFstatic_cast(size_t, buflen)));
       result += written;
     }
 #endif
@@ -161,7 +161,11 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.8  2007-02-19 15:35:55  meichel
+ * Revision 1.9  2007-02-19 16:06:10  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.8  2007/02/19 15:35:55  meichel
  * When writing DICOM data to file, we now by default split fwrite() calls for
  *   very large attributes into multiple calls, none of which writes more than
  *   32 MBytes. This is a workaround to a bug in most MSVC environments (MSDN

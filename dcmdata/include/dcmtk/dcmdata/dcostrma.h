@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-20075, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: base classes for output streams
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:24 $
+ *  Update Date:      $Date: 2007-02-19 16:06:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcostrma.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "dcmtk/ofstd/oftypes.h"  /* for OFBool */
 #include "dcmtk/ofstd/ofcond.h"   /* for OFCondition */
 #include "dcmtk/dcmdata/dcxfer.h"   /* for E_StreamCompression */
-
+#include "dcmtk/ofstd/offile.h"   /* for offile_off_t */
 
 /** pure virtual abstract base class for consumers, i.e. the final node 
  *  of a filter chain in an output stream.
@@ -78,14 +78,14 @@ public:
    *  or nothing.
    *  @return minimum of space available in consumer
    */
-  virtual Uint32 avail() const = 0;
+  virtual offile_off_t avail() const = 0;
 
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually processed. 
    */
-  virtual Uint32 write(const void *buf, Uint32 buflen) = 0;
+  virtual offile_off_t write(const void *buf, offile_off_t buflen) = 0;
 
   /** instructs the consumer to flush its internal content until
    *  either the consumer becomes "flushed" or I/O suspension occurs.
@@ -154,14 +154,14 @@ public:
    *  or nothing.
    *  @return minimum of space available in stream
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail() const;
 
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually processed. 
    */
-  virtual Uint32 write(const void *buf, Uint32 buflen);
+  virtual offile_off_t write(const void *buf, offile_off_t buflen);
 
   /** instructs the stream to flush its internal content until
    *  either the stream becomes "flushed" or I/O suspension occurs.
@@ -173,7 +173,7 @@ public:
   /** returns the total number of bytes written to the stream so far
    *  @return total number of bytes written to the stream
    */
-  virtual Uint32 tell() const;
+  virtual offile_off_t tell() const;
 
   /** installs a compression filter for the given stream compression type,
    *  which should be neither ESC_none nor ESC_unsupported. Once a compression
@@ -209,7 +209,7 @@ private:
   DcmOutputFilter *compressionFilter_;
 
   /// counter for number of bytes written so far
-  Uint32 tell_;
+  offile_off_t tell_;
 };
 
 
@@ -219,7 +219,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrma.h,v $
- * Revision 1.2  2005-12-08 16:28:24  meichel
+ * Revision 1.3  2007-02-19 16:06:09  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.2  2005/12/08 16:28:24  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2002/08/27 16:55:36  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2007-02-19 16:06:10 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 #include "dcmtk/dcmdata/dcerror.h"
 
 
-DcmBufferConsumer::DcmBufferConsumer(void *buf, Uint32 bufLen)
+DcmBufferConsumer::DcmBufferConsumer(void *buf, offile_off_t bufLen)
 : DcmConsumer()
 , buffer_(OFstatic_cast(unsigned char *, buf))
 , bufSize_(bufLen)
@@ -66,14 +66,14 @@ OFBool DcmBufferConsumer::isFlushed() const
   return (filled_ == 0);
 }
 
-Uint32 DcmBufferConsumer::avail() const
+offile_off_t DcmBufferConsumer::avail() const
 {
   return bufSize_ - filled_;
 }
 
-Uint32 DcmBufferConsumer::write(const void *buf, Uint32 buflen)
+offile_off_t DcmBufferConsumer::write(const void *buf, offile_off_t buflen)
 {
-  Uint32 result = 0;
+  offile_off_t result = 0;
   if (status_.good() && buf && buflen)
   {
     result = bufSize_ - filled_;
@@ -89,7 +89,7 @@ void DcmBufferConsumer::flush()
   // nothing to flush
 }
 
-void DcmBufferConsumer::flushBuffer(void *& buffer, Uint32& length)
+void DcmBufferConsumer::flushBuffer(void *& buffer, offile_off_t& length)
 {
   buffer = buffer_;
   length = filled_;
@@ -98,7 +98,7 @@ void DcmBufferConsumer::flushBuffer(void *& buffer, Uint32& length)
 
 /* ======================================================================= */
 
-DcmOutputBufferStream::DcmOutputBufferStream(void *buf, Uint32 bufLen)
+DcmOutputBufferStream::DcmOutputBufferStream(void *buf, offile_off_t bufLen)
 : DcmOutputStream(&consumer_) // safe because DcmOutputStream only stores pointer
 , consumer_(buf, bufLen)
 {
@@ -115,7 +115,7 @@ DcmOutputBufferStream::~DcmOutputBufferStream()
 #endif
 }
 
-void DcmOutputBufferStream::flushBuffer(void *& buffer, Uint32& length)
+void DcmOutputBufferStream::flushBuffer(void *& buffer, offile_off_t& length)
 {
   consumer_.flushBuffer(buffer, length);
 }
@@ -124,7 +124,11 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, Uint32& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
- * Revision 1.5  2006-08-15 15:49:54  meichel
+ * Revision 1.6  2007-02-19 16:06:10  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.5  2006/08/15 15:49:54  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

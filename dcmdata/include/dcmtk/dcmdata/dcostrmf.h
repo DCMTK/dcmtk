@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:26 $
+ *  Update Date:      $Date: 2007-02-19 16:06:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcostrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,14 +86,14 @@ public:
    *  or nothing.
    *  @return minimum of space available in consumer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail() const;
 
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually processed. 
    */
-  virtual Uint32 write(const void *buf, Uint32 buflen);
+  virtual offile_off_t write(const void *buf, offile_off_t buflen);
 
   /** instructs the consumer to flush its internal content until
    *  either the consumer becomes "flushed" or I/O suspension occurs.
@@ -111,7 +111,7 @@ private:
   DcmFileConsumer& operator=(const DcmFileConsumer&);
 
   /// the file we're actually writing to
-  FILE *file_;
+  OFFile file_;
 
   /// status
   OFCondition status_;
@@ -155,7 +155,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.h,v $
- * Revision 1.4  2005-12-08 16:28:26  meichel
+ * Revision 1.5  2007-02-19 16:06:09  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.4  2005/12/08 16:28:26  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2003/11/07 13:49:08  meichel

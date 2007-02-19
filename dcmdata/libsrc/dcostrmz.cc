@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: zlib compression filter for output streams
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:23 $
+ *  Update Date:      $Date: 2007-02-19 16:06:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,7 @@ OFBool DcmZLibOutputFilter::isFlushed() const
 }
 
 
-Uint32 DcmZLibOutputFilter::avail() const
+offile_off_t DcmZLibOutputFilter::avail() const
 {
   // compute number of bytes available in input buffer
   if (status_.good() ) return DCMZLIBOUTPUTFILTER_BUFSIZE - inputBufCount_;
@@ -133,10 +133,10 @@ void DcmZLibOutputFilter::flushOutputBuffer()
   if (outputBufCount_)
   {
     // flush from outputBufStart_ to end of data or end of buffer, whatever comes first
-    Uint32 numBytes = (outputBufStart_ + outputBufCount_ > DCMZLIBOUTPUTFILTER_BUFSIZE) ?
+    offile_off_t numBytes = (outputBufStart_ + outputBufCount_ > DCMZLIBOUTPUTFILTER_BUFSIZE) ?
       (DCMZLIBOUTPUTFILTER_BUFSIZE - outputBufStart_) : outputBufCount_ ;
 
-    Uint32 written = current_->write(outputBuf_ + outputBufStart_, numBytes);
+    offile_off_t written = current_->write(outputBuf_ + outputBufStart_, numBytes);
 
     // adjust counters
     outputBufCount_ -= written;
@@ -163,9 +163,9 @@ void DcmZLibOutputFilter::flushOutputBuffer()
   }
 }
 
-Uint32 DcmZLibOutputFilter::fillInputBuffer(const void *buf, Uint32 buflen)
+offile_off_t DcmZLibOutputFilter::fillInputBuffer(const void *buf, offile_off_t buflen)
 {
-  Uint32 result = 0;
+  offile_off_t result = 0;
   if (buf && buflen && inputBufCount_ < DCMZLIBOUTPUTFILTER_BUFSIZE)
   {
 
@@ -187,7 +187,7 @@ Uint32 DcmZLibOutputFilter::fillInputBuffer(const void *buf, Uint32 buflen)
     if (buflen && (inputBufCount_ < DCMZLIBOUTPUTFILTER_BUFSIZE) &&
         inputBufStart_ + inputBufCount_ >= DCMZLIBOUTPUTFILTER_BUFSIZE)
     {
-      Uint32 len = DCMZLIBOUTPUTFILTER_BUFSIZE - inputBufCount_;
+      offile_off_t len = DCMZLIBOUTPUTFILTER_BUFSIZE - inputBufCount_;
       if (len > buflen) len = buflen;
 
       memcpy(inputBuf_ + (inputBufStart_ + inputBufCount_ - DCMZLIBOUTPUTFILTER_BUFSIZE), data, OFstatic_cast(size_t, len));
@@ -204,10 +204,10 @@ void DcmZLibOutputFilter::compressInputBuffer(OFBool finalize)
   if (inputBufCount_ || finalize)
   {
     // flush from inputBufStart_ to end of data or end of buffer, whatever comes first
-    Uint32 numBytes = (inputBufStart_ + inputBufCount_ > DCMZLIBOUTPUTFILTER_BUFSIZE) ?
+    offile_off_t numBytes = (inputBufStart_ + inputBufCount_ > DCMZLIBOUTPUTFILTER_BUFSIZE) ?
       (DCMZLIBOUTPUTFILTER_BUFSIZE - inputBufStart_) : inputBufCount_ ;
 
-    Uint32 written = compress(inputBuf_ + inputBufStart_, numBytes, finalize);
+    offile_off_t written = compress(inputBuf_ + inputBufStart_, numBytes, finalize);
 
     // adjust counters
     inputBufCount_ -= written;
@@ -234,9 +234,9 @@ void DcmZLibOutputFilter::compressInputBuffer(OFBool finalize)
   }
 }
 
-Uint32 DcmZLibOutputFilter::compress(const void *buf, Uint32 buflen, OFBool finalize)
+offile_off_t DcmZLibOutputFilter::compress(const void *buf, offile_off_t buflen, OFBool finalize)
 {
-  Uint32 result = 0;
+  offile_off_t result = 0;
   if (outputBufCount_ < DCMZLIBOUTPUTFILTER_BUFSIZE)
   {
     zstream_->next_in = OFstatic_cast(Bytef *, OFconst_cast(void *, buf));
@@ -259,7 +259,7 @@ Uint32 DcmZLibOutputFilter::compress(const void *buf, Uint32 buflen, OFBool fina
         status_ = makeOFCondition(OFM_dcmdata, 16, OF_error, etext.c_str());
       }
 
-      outputBufCount_ = DCMZLIBOUTPUTFILTER_BUFSIZE - outputBufStart_ - OFstatic_cast(Uint32, zstream_->avail_out);
+      outputBufCount_ = DCMZLIBOUTPUTFILTER_BUFSIZE - outputBufStart_ - OFstatic_cast(offile_off_t, zstream_->avail_out);
     }
 
     // use second part of output buffer
@@ -279,15 +279,15 @@ Uint32 DcmZLibOutputFilter::compress(const void *buf, Uint32 buflen, OFBool fina
         status_ = makeOFCondition(OFM_dcmdata, 16, OF_error, etext.c_str());
       }
 
-      outputBufCount_ =  DCMZLIBOUTPUTFILTER_BUFSIZE - OFstatic_cast(Uint32, zstream_->avail_out);
+      outputBufCount_ =  DCMZLIBOUTPUTFILTER_BUFSIZE - OFstatic_cast(offile_off_t, zstream_->avail_out);
     }
 
-    result = (buflen - OFstatic_cast(Uint32, zstream_->avail_in));
+    result = (buflen - OFstatic_cast(offile_off_t, zstream_->avail_in));
   }
   return result;
 }
 
-Uint32 DcmZLibOutputFilter::write(const void *buf, Uint32 buflen)
+offile_off_t DcmZLibOutputFilter::write(const void *buf, offile_off_t buflen)
 {
   if (status_.bad() || (current_ == NULL)) return 0;
 
@@ -302,7 +302,7 @@ Uint32 DcmZLibOutputFilter::write(const void *buf, Uint32 buflen)
   }
 
   const unsigned char *data = OFstatic_cast(const unsigned char *, buf);
-  Uint32 result = 0;
+  offile_off_t result = 0;
 
   // compress user data only if input buffer is empty
   if (inputBufCount_ == 0)
@@ -369,7 +369,11 @@ void dcostrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmz.cc,v $
- * Revision 1.5  2005-12-08 15:41:23  meichel
+ * Revision 1.6  2007-02-19 16:06:10  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.5  2005/12/08 15:41:23  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.4  2004/04/07 12:19:14  joergr

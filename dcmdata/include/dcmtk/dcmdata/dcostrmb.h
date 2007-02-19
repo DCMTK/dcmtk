@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:25 $
+ *  Update Date:      $Date: 2007-02-19 16:06:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcostrmb.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ public:
    *    by caller and remain valid during the lifetime of this object.
    *  @param bufLen buffer length, must be even number > 0.
    */
-  DcmBufferConsumer(void *buf, Uint32 bufLen);
+  DcmBufferConsumer(void *buf, offile_off_t bufLen);
 
   /// destructor
   virtual ~DcmBufferConsumer();
@@ -81,14 +81,14 @@ public:
    *  or nothing.
    *  @return minimum of space available in consumer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail() const;
 
   /** processes as many bytes as possible from the given input block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually processed. 
    */
-  virtual Uint32 write(const void *buf, Uint32 buflen);
+  virtual offile_off_t write(const void *buf, offile_off_t buflen);
 
   /** instructs the consumer to flush its internal content until
    *  either the consumer becomes "flushed" or I/O suspension occurs.
@@ -104,7 +104,7 @@ public:
    *  @param buffer pointer to user provided buffer returned in this parameter
    *  @param length number of bytes in buffer returned in this parameter
    */
-  virtual void flushBuffer(void *& buffer, Uint32& length);
+  virtual void flushBuffer(void *& buffer, offile_off_t& length);
 
 private:
 
@@ -118,10 +118,10 @@ private:
   unsigned char *buffer_;
 
   /// size of the buffer, in bytes
-  Uint32 bufSize_;
+  offile_off_t bufSize_;
 
   /// number of bytes filled in buffer
-  Uint32 filled_;
+  offile_off_t filled_;
 
   /// status
   OFCondition status_;
@@ -139,7 +139,7 @@ public:
    *    by caller and remain valid during the lifetime of this object.
    *  @param bufLen buffer length, must be even number > 0.
    */
-  DcmOutputBufferStream(void *buf, Uint32 bufLen);
+  DcmOutputBufferStream(void *buf, offile_off_t bufLen);
 
   /// destructor
   virtual ~DcmOutputBufferStream();
@@ -151,7 +151,7 @@ public:
    *  @param buffer pointer to user provided buffer returned in this parameter
    *  @param length number of bytes in buffer returned in this parameter
    */
-  virtual void flushBuffer(void *& buffer, Uint32& length);
+  virtual void flushBuffer(void *& buffer, offile_off_t& length);
 
 private:
 
@@ -172,7 +172,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.h,v $
- * Revision 1.2  2005-12-08 16:28:25  meichel
+ * Revision 1.3  2007-02-19 16:06:09  meichel
+ * Class DcmOutputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.2  2005/12/08 16:28:25  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2002/08/27 16:55:36  meichel
