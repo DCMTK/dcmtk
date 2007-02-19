@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:28 $
+ *  Update Date:      $Date: 2007-02-19 14:51:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,8 +199,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
         app.printError(msg2);
     }
     if (valStr.length() > 0) {
-        elem->putString(valStr.c_str());
-        if (elem->error() != EC_Normal)
+        if (elem->putString(valStr.c_str()).bad())
         {
             sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
             msg = msg2;
@@ -211,8 +210,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     }
 
     if (overrideKeys == NULL) overrideKeys = new DcmDataset;
-    overrideKeys->insert(elem, OFTrue);
-    if (overrideKeys->error() != EC_Normal) {
+    if (overrideKeys->insert(elem, OFTrue).bad()) {
         sprintf(msg2, "cannot insert tag: (%04x,%04x)", g, e);
         app.printError(msg2);
     }
@@ -1421,7 +1419,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.63  2006-08-15 16:04:28  meichel
+** Revision 1.64  2007-02-19 14:51:27  meichel
+** Removed calls to DcmObject::error()
+**
+** Revision 1.63  2006/08/15 16:04:28  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
