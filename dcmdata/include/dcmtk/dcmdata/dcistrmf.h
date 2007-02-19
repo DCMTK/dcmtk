@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    implements streamed input from files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:17 $
+ *  Update Date:      $Date: 2007-02-19 15:45:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ public:
    *  @param filename name of file to be opened, must not be NULL or empty
    *  @param offset byte offset to skip from the start of file
    */
-  DcmFileProducer(const char *filename, Uint32 offset = 0);
+  DcmFileProducer(const char *filename, offile_off_t offset = 0);
 
   /// destructor
   virtual ~DcmFileProducer();
@@ -71,7 +71,7 @@ public:
   /** returns true if the producer is at the end of stream.
    *  @return true if end of stream, false otherwise
    */
-  virtual OFBool eos() const;
+  virtual OFBool eos();
 
   /** returns the minimum number of bytes that can be read with the
    *  next call to read(). The DcmObject read methods rely on avail
@@ -80,26 +80,26 @@ public:
    *  or nothing.
    *  @return minimum of data available in producer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail();
 
   /** reads as many bytes as possible into the given block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually read. 
    */
-  virtual Uint32 read(void *buf, Uint32 buflen);
+  virtual offile_off_t read(void *buf, offile_off_t buflen);
 
   /** skips over the given number of bytes (or less)
    *  @param skiplen number of bytes to skip
    *  @return number of bytes actually skipped. 
    */
-  virtual Uint32 skip(Uint32 skiplen);
+  virtual offile_off_t skip(offile_off_t skiplen);
 
   /** resets the stream to the position by the given number of bytes.
    *  @param num number of bytes to putback. If the putback operation
    *    fails, the producer status becomes bad. 
    */
-  virtual void putback(Uint32 num);
+  virtual void putback(offile_off_t num);
 
 private:
 
@@ -110,13 +110,13 @@ private:
   DcmFileProducer& operator=(const DcmFileProducer&);
 
   /// the file we're actually reading from
-  FILE *file_;
+  OFFile file_;
 
   /// status
   OFCondition status_;
 
   /// number of bytes in file
-  Uint32 size_;
+  offile_off_t size_;
 };
 
 
@@ -130,7 +130,7 @@ public:
    *  @param filename name of file to be opened, must not be NULL or empty
    *  @param offset byte offset to skip from the start of file
    */
-  DcmInputFileStreamFactory(const char *filename, Uint32 offset);
+  DcmInputFileStreamFactory(const char *filename, offile_off_t offset);
 
   /// copy constructor
   DcmInputFileStreamFactory(const DcmInputFileStreamFactory &arg);
@@ -160,7 +160,7 @@ private:
   OFString filename_;
 
   /// offset in file
-  Uint32 offset_;
+  offile_off_t offset_;
   
 };
 
@@ -174,7 +174,7 @@ public:
    *  @param filename name of file to be opened, must not be NULL or empty
    *  @param offset byte offset to skip from the start of file
    */
-  DcmInputFileStream(const char *filename, Uint32 offset = 0);
+  DcmInputFileStream(const char *filename, offile_off_t offset = 0);
 
   /// destructor
   virtual ~DcmInputFileStream();
@@ -211,7 +211,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
- * Revision 1.3  2005-12-08 16:28:17  meichel
+ * Revision 1.4  2007-02-19 15:45:41  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.3  2005/12/08 16:28:17  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2002/11/27 12:07:21  meichel

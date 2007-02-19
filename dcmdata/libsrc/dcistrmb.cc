@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2007-02-19 15:45:31 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ OFCondition DcmBufferProducer::status() const
   return status_;
 }
 
-OFBool DcmBufferProducer::eos() const
+OFBool DcmBufferProducer::eos() 
 {
   // end of stream is true if the user has called setEos() before
   // and there is no more data available in the current buffer.
@@ -78,7 +78,7 @@ OFBool DcmBufferProducer::eos() const
 }
 
 
-Uint32 DcmBufferProducer::avail() const
+offile_off_t DcmBufferProducer::avail()
 {
   if (status_.good())
   {
@@ -90,9 +90,9 @@ Uint32 DcmBufferProducer::avail() const
 }
 
 
-Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
+offile_off_t DcmBufferProducer::read(void *buf, offile_off_t buflen)
 {
-  Uint32 result = 0;
+  offile_off_t result = 0;
   if (status_.good() && buflen && buf)
   {
     unsigned char *target = OFstatic_cast(unsigned char *, buf);
@@ -110,7 +110,7 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
     if (buflen && bufSize_)
     {
       // read data from user buffer
-      Uint32 numbytes = bufSize_ - bufIndex_;
+      offile_off_t numbytes = bufSize_ - bufIndex_;
       if (numbytes > buflen) numbytes = buflen;
       memcpy(target, buffer_ + bufIndex_, OFstatic_cast(size_t, numbytes));
       bufIndex_ += numbytes;
@@ -121,9 +121,9 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
 }
 
 
-Uint32 DcmBufferProducer::skip(Uint32 skiplen)
+offile_off_t DcmBufferProducer::skip(offile_off_t skiplen)
 {
-  Uint32 result = 0;
+  offile_off_t result = 0;
   if (status_.good() && skiplen)
   {
     if (backupIndex_ < DCMBUFFERPRODUCER_BUFSIZE)
@@ -138,7 +138,7 @@ Uint32 DcmBufferProducer::skip(Uint32 skiplen)
     if (skiplen && bufSize_)
     {
       // skip data from user buffer
-      Uint32 skipbytes = bufSize_ - bufIndex_;
+      offile_off_t skipbytes = bufSize_ - bufIndex_;
       if (skipbytes > skiplen) skipbytes = skiplen;
       bufIndex_ += skipbytes;
       result += skipbytes;
@@ -147,7 +147,7 @@ Uint32 DcmBufferProducer::skip(Uint32 skiplen)
   return result;
 }
 
-void DcmBufferProducer::putback(Uint32 num)
+void DcmBufferProducer::putback(offile_off_t num)
 {
   if (status_.good() && num)
   {
@@ -195,7 +195,7 @@ void DcmBufferProducer::putback(Uint32 num)
   }
 }
 
-void DcmBufferProducer::setBuffer(const void *buf, Uint32 buflen)
+void DcmBufferProducer::setBuffer(const void *buf, offile_off_t buflen)
 {
   if (status_.good())
   {
@@ -220,7 +220,7 @@ void DcmBufferProducer::releaseBuffer()
   if (status_.good() && buffer_)
   {
     // compute the least number of bytes that we have to store in the backup buffer
-    Uint32 numBytes = bufSize_ - bufIndex_;
+    offile_off_t numBytes = bufSize_ - bufIndex_;
 
     if (numBytes > backupIndex_)
     {
@@ -318,7 +318,7 @@ DcmInputStreamFactory *DcmInputBufferStream::newFactory() const
   return NULL;
 }
 
-void DcmInputBufferStream::setBuffer(const void *buf, Uint32 buflen)
+void DcmInputBufferStream::setBuffer(const void *buf, offile_off_t buflen)
 {
   producer_.setBuffer(buf, buflen);
 
@@ -342,7 +342,11 @@ void DcmInputBufferStream::setEos()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.cc,v $
- * Revision 1.5  2006-08-15 15:49:54  meichel
+ * Revision 1.6  2007-02-19 15:45:31  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.5  2006/08/15 15:49:54  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    implements streamed input from files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:14 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2007-02-19 15:45:31 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,36 +40,34 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
-DcmFileProducer::DcmFileProducer(const char *filename, Uint32 offset)
+DcmFileProducer::DcmFileProducer(const char *filename, offile_off_t offset)
 : DcmProducer()
-, file_(NULL)
+, file_()
 , status_(EC_Normal)
 , size_(0)
 {
-  file_ = fopen(filename, "rb");
-  if (file_)
+  if (file_.fopen(filename, "rb"))
   {
      // Get number of bytes in file
-     fseek(file_, 0L, SEEK_END);
-     size_ = OFstatic_cast(Uint32, ftell(file_));
-     if (0 != fseek(file_, offset, SEEK_SET))
+     file_.fseek(0L, SEEK_END);
+     size_ =  file_.ftell();
+     if (0 != file_.fseek(offset, SEEK_SET))
      {
-       const char *text = strerror(errno);
-       if (text == NULL) text = "(unknown error code)";
-       status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
+       OFString s("(unknown error code)");
+       file_.getLastErrorString(s);
+       status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
      }
   }
   else
   {
-    const char *text = strerror(errno);
-    if (text == NULL) text = "(unknown error code)";
-    status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
+    OFString s("(unknown error code)");
+    file_.getLastErrorString(s);
+    status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
   }
 }
 
 DcmFileProducer::~DcmFileProducer()
 {
-  if (file_) fclose(file_);
 }
 
 OFBool DcmFileProducer::good() const
@@ -82,59 +80,59 @@ OFCondition DcmFileProducer::status() const
   return status_;
 }
 
-OFBool DcmFileProducer::eos() const
+OFBool DcmFileProducer::eos() 
 {
-  if (file_)
+  if (file_.open())
   {
-    return (feof(file_) || (size_ == OFstatic_cast(Uint32, ftell(file_))));
+    return (file_.eof() || (size_ == file_.ftell()));
   }
   else return OFTrue;
 }
 
-Uint32 DcmFileProducer::avail() const
+offile_off_t DcmFileProducer::avail()
 {
-  if (file_) return size_ - OFstatic_cast(Uint32, ftell(file_)); else return 0;
+  if (file_.open()) return size_ - file_.ftell(); else return 0;
 }
 
-Uint32 DcmFileProducer::read(void *buf, Uint32 buflen)
+offile_off_t DcmFileProducer::read(void *buf, offile_off_t buflen)
 {
-  Uint32 result = 0;
-  if (status_.good() && file_ && buf && buflen)
+  offile_off_t result = 0;
+  if (status_.good() && file_.open() && buf && buflen)
   {
-    result = OFstatic_cast(Uint32, fread(buf, 1, OFstatic_cast(size_t, buflen), file_));
+    result = file_.fread(buf, 1, OFstatic_cast(size_t, buflen));
   }
   return result;
 }
 
-Uint32 DcmFileProducer::skip(Uint32 skiplen)
+offile_off_t DcmFileProducer::skip(offile_off_t skiplen)
 {
-  Uint32 result = 0;
-  if (status_.good() && file_ && skiplen)
+  offile_off_t result = 0;
+  if (status_.good() && file_.open() && skiplen)
   {
-    Uint32 pos = OFstatic_cast(Uint32, ftell(file_));
+    offile_off_t pos = file_.ftell();
     result = (size_ - pos < skiplen) ? (size_ - pos) : skiplen;
-    if (fseek(file_, result, SEEK_CUR))
+    if (file_.fseek(result, SEEK_CUR))
     {
-       const char *text = strerror(errno);
-       if (text == NULL) text = "(unknown error code)";
-       status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
+      OFString s("(unknown error code)");
+      file_.getLastErrorString(s);
+      status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
     }
   }
   return result;
 }
 
-void DcmFileProducer::putback(Uint32 num)
+void DcmFileProducer::putback(offile_off_t num)
 {
-  if (status_.good() && file_ && num)
+  if (status_.good() && file_.open() && num)
   {
-    Uint32 pos = OFstatic_cast(Uint32, ftell(file_));
+    offile_off_t pos = file_.ftell();
     if (num <= pos)
     {
-      if (fseek(file_, -Sint32(num), SEEK_CUR))
+      if (file_.fseek(-num, SEEK_CUR))
       {
-         const char *text = strerror(errno);
-         if (text == NULL) text = "(unknown error code)";
-         status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
+        OFString s("(unknown error code)");
+        file_.getLastErrorString(s);
+        status_ = makeOFCondition(OFM_dcmdata, 18, OF_error, s.c_str());
       }
     }
     else status_ = EC_PutbackFailed; // tried to putback before start of file
@@ -144,7 +142,7 @@ void DcmFileProducer::putback(Uint32 num)
 
 /* ======================================================================= */
 
-DcmInputFileStreamFactory::DcmInputFileStreamFactory(const char *filename, Uint32 offset)
+DcmInputFileStreamFactory::DcmInputFileStreamFactory(const char *filename, offile_off_t offset)
 : DcmInputStreamFactory()
 , filename_()
 , offset_(offset)
@@ -170,7 +168,7 @@ DcmInputStream *DcmInputFileStreamFactory::create() const
 
 /* ======================================================================= */
 
-DcmInputFileStream::DcmInputFileStream(const char *filename, Uint32 offset)
+DcmInputFileStream::DcmInputFileStream(const char *filename, offile_off_t offset)
 : DcmInputStream(&producer_) // safe because DcmInputStream only stores pointer
 , producer_(filename, offset)
 , filename_()
@@ -197,7 +195,11 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
- * Revision 1.5  2005-12-08 15:41:14  meichel
+ * Revision 1.6  2007-02-19 15:45:31  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.5  2005/12/08 15:41:14  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.4  2004/02/04 16:34:09  joergr

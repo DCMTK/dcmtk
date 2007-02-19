@@ -48,6 +48,17 @@ Changes between releases are documented here.
   Affects: config/docs/macros.txt
            dcmdata/libsrc/dcostrmf.cc  
 
+- Class DcmInputStream and related classes are now safe for use with
+  large files (2 GBytes or more) if supported by compiler and operating system.
+  Affects: dcmdata/dcmdata/include/dcmtk/dcmdata/dcistrma.h
+           dcmdata/dcmdata/include/dcmtk/dcmdata/dcistrmb.h
+           dcmdata/dcmdata/include/dcmtk/dcmdata/dcistrmf.h
+           dcmdata/dcmdata/include/dcmtk/dcmdata/dcistrmz.h
+           dcmdata/dcmdata/libsrc/dcistrma.cc
+           dcmdata/dcmdata/libsrc/dcistrmb.cc
+           dcmdata/dcmdata/libsrc/dcistrmf.cc
+           dcmdata/dcmdata/libsrc/dcistrmz.cc
+  
 **** Changes from 2007.02.08 (riesmeier)
 
 - Need to determine global min/max value after copying pixel data.

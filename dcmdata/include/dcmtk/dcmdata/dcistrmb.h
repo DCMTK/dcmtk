@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:16 $
+ *  Update Date:      $Date: 2007-02-19 15:45:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmb.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ public:
   /** returns true if the producer is at the end of stream.
    *  @return true if end of stream, false otherwise
    */
-  virtual OFBool eos() const;
+  virtual OFBool eos();
 
   /** returns the minimum number of bytes that can be read with the
    *  next call to read(). The DcmObject read methods rely on avail
@@ -76,33 +76,33 @@ public:
    *  or nothing.
    *  @return minimum of data available in producer
    */
-  virtual Uint32 avail() const;
+  virtual offile_off_t avail();
 
   /** reads as many bytes as possible into the given block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
    *  @return number of bytes actually read. 
    */
-  virtual Uint32 read(void *buf, Uint32 buflen);
+  virtual offile_off_t read(void *buf, offile_off_t buflen);
 
   /** skips over the given number of bytes (or less)
    *  @param skiplen number of bytes to skip
    *  @return number of bytes actually skipped. 
    */
-  virtual Uint32 skip(Uint32 skiplen);
+  virtual offile_off_t skip(offile_off_t skiplen);
 
   /** resets the stream to the position by the given number of bytes.
    *  @param num number of bytes to putback. If the putback operation
    *    fails, the producer status becomes bad. 
    */
-  virtual void putback(Uint32 num);
+  virtual void putback(offile_off_t num);
 
   /** adds the content of the given buffer to the input stream.
    *  @param buf buffer from which data is read. Must be allocated
    *    by caller and remain valid until releaseBuffer() is called
    *  @param buflen buffer length, must be even number > 0.
    */
-  virtual void setBuffer(const void *buf, Uint32 buflen);
+  virtual void setBuffer(const void *buf, offile_off_t buflen);
 
   /** releases the current buffer. Should only be called when
    *  the content of the buffer has been read as far as possible.
@@ -132,16 +132,16 @@ private:
   unsigned char *backup_;
 
   /// size of the user buffer, in bytes
-  Uint32 bufSize_;
+  offile_off_t bufSize_;
 
   /// number of bytes read from the user buffer
-  Uint32 bufIndex_;
+  offile_off_t bufIndex_;
 
   /// number of bytes read from the backup buffer
-  Uint32 backupIndex_;
+  offile_off_t backupIndex_;
 
   /// index of first valid byte in backup buffer, for putback
-  Uint32 backupStart_;
+  offile_off_t backupStart_;
 
   /// status
   OFCondition status_;
@@ -184,7 +184,7 @@ public:
    *    by caller and remain valid until releaseBuffer() is called
    *  @param bufLen buffer length, must be even number > 0.
    */
-  virtual void setBuffer(const void *buf, Uint32 buflen);
+  virtual void setBuffer(const void *buf, offile_off_t buflen);
 
   /** releases the current buffer. Should only be called when
    *  the content of the buffer has been read as far as possible.
@@ -218,7 +218,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.h,v $
- * Revision 1.3  2005-12-08 16:28:16  meichel
+ * Revision 1.4  2007-02-19 15:45:41  meichel
+ * Class DcmInputStream and related classes are now safe for use with
+ *   large files (2 GBytes or more) if supported by compiler and operating system.
+ *
+ * Revision 1.3  2005/12/08 16:28:16  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2003/06/12 13:34:36  joergr
