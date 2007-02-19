@@ -22,9 +22,9 @@
  *  Purpose: Worklist Database Test Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-14 17:43:42 $
+ *  Update Date:      $Date: 2007-02-19 15:37:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/tests/wltest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,15 +130,13 @@ addOverrideKey(DcmDataset& overrideKeys, char* s)
         usage();
     }
     if (strlen(val) > 0) {
-        elem->putString(val);
-        if (elem->error() != EC_Normal) {
+        if (elem->putString(val).bad()) {
             errmsg("cannot put tag value: (%04x,%04x)=\"%s\"", g, e, val);
             usage();
         }
     }
 
-    overrideKeys.insert(elem, OFTrue);
-    if (overrideKeys.error() != EC_Normal) {
+   if (overrideKeys.insert(elem, OFTrue).bad()) {
         errmsg("cannot insert tag: (%04x,%04x)", g, e);
         usage();
     }
@@ -382,7 +380,10 @@ queryWorklistDB(WlmDataSourceFileSystem& wdb,
 /*
 ** CVS Log
 ** $Log: wltest.cc,v $
-** Revision 1.6  2005-12-14 17:43:42  meichel
+** Revision 1.7  2007-02-19 15:37:31  meichel
+** Removed calls to DcmObject::error()
+**
+** Revision 1.6  2005/12/14 17:43:42  meichel
 ** Adapted code for compilation with TCP wrappers to NetBSD
 **
 ** Revision 1.5  2005/12/12 15:14:34  meichel

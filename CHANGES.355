@@ -17,7 +17,8 @@ Changes between releases are documented here.
 
 - Removed calls to DcmObject::error()
   Affects: dcmnet/apps/movescu.cc
-
+           dcmwlm/tests/wltest.cc
+           
 - Declaration of copy assignment operator now private, as it should be
   Affects: dcmdata/include/dcmtk/dcmdata/dcmetinf.h
   
