@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
+ *  Update Date:      $Date: 2007-02-19 14:57:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,9 +64,6 @@ class DcmMetaInfo
      *  @param old item to be copied
      */
     DcmMetaInfo(const DcmMetaInfo &old);
-
-    /// copy assignment operator
-    DcmMetaInfo& operator=(const DcmMetaInfo&);
 
     /** destructor
      */
@@ -132,6 +129,9 @@ class DcmMetaInfo
 
   private:
 
+    /// private unimplemented copy assignment operator
+    DcmMetaInfo& operator=(const DcmMetaInfo&);
+
     void setPreamble();
 
     OFBool checkAndReadPreamble(DcmInputStream &inStream,
@@ -161,7 +161,10 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.23  2006-08-15 15:49:56  meichel
+** Revision 1.24  2007-02-19 14:57:22  meichel
+** Declaration of copy assignment operator now private, as it should be
+**
+** Revision 1.23  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
