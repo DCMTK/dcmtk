@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:07:49 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2007-02-20 13:19:25 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -856,9 +856,9 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                             errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
-                             ofConsole.lockCerr() << "DcmElement: " << Tag.getTagName() << Tag.getXTag() << " larger ("
-                                 << Length << ") that remaining bytes in file" << OFendl;
-                             ofConsole.unlockCerr();
+                            ofConsole.lockCerr() << "DcmElement: " << Tag.getTagName() << Tag.getXTag() << " larger ("
+                                                 << Length << ") than remaining bytes in file" << OFendl;
+                            ofConsole.unlockCerr();
                         }
                     }
                 }
@@ -1075,7 +1075,10 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.54  2006-10-13 10:07:49  joergr
+** Revision 1.55  2007-02-20 13:19:25  joergr
+** Fixed wrong spelling in error message.
+**
+** Revision 1.54  2006/10/13 10:07:49  joergr
 ** Added new helper function that allows to check whether the conversion to an
 ** HTML/XML markup string is required.
 **
