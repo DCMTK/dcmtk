@@ -1,11 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.02.20 (riesmeier)
+
+- Fixed wrong comment in compare() method.
+  Affects: ofstd/include/dcmtk/ofstd/ofstring.h
+
+- Added function that removes a given prefix from a pathname (e.g. root dir).
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc,
+
+- Fixed wrong spelling in error message.
+  Affects: dcmdata/libsrc/dcelem.cc
+
+- Fixed wrong example in documentation.
+  Affects: dcmnet/docs/asconfig.txt
+
 **** Changes from 2007.02.19 (eichelberg)
 
-- Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet 
-  library, and a short command line tool that only evaluates command line 
-  parameters and then makes use of this class. This facilitates re-use of the 
+- Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet
+  library, and a short command line tool that only evaluates command line
+  parameters and then makes use of this class. This facilitates re-use of the
   findscu code in other applications.
   Affects: dcmnet/apps/Makefile.dep
            dcmnet/apps/findscu.cc
@@ -18,10 +33,10 @@ Changes between releases are documented here.
 - Removed calls to DcmObject::error()
   Affects: dcmnet/apps/movescu.cc
            dcmwlm/tests/wltest.cc
-           
+
 - Declaration of copy assignment operator now private, as it should be
   Affects: dcmdata/include/dcmtk/dcmdata/dcmetinf.h
-  
+
 - Removed searchErrors() methods that are not used anywhere and added
   error() methods only in the DcmObject subclasses where really used.
   Completed doxygen documentation of class DcmObject.
@@ -40,13 +55,13 @@ Changes between releases are documented here.
            ofstd/include/dcmtk/ofstd/ofstdinc.h
            ofstd/include/dcmtk/ofstd/ofstream.h
 
-- When writing DICOM data to file, we now by default split fwrite() calls for 
-  very large attributes into multiple calls, none of which writes more than 
-  32 MBytes. This is a workaround to a bug in most MSVC environments (MSDN 
+- When writing DICOM data to file, we now by default split fwrite() calls for
+  very large attributes into multiple calls, none of which writes more than
+  32 MBytes. This is a workaround to a bug in most MSVC environments (MSDN
   KB899149) and is hardly relevant performance-wise. Previous behaviour can
   be enforced by compiling with WRITE_VERY_LARGE_CHUNKS defined.
   Affects: config/docs/macros.txt
-           dcmdata/libsrc/dcostrmf.cc  
+           dcmdata/libsrc/dcostrmf.cc
 
 - Class DcmInputStream and related classes are now safe for use with
   large files (2 GBytes or more) if supported by compiler and operating system.
@@ -58,7 +73,7 @@ Changes between releases are documented here.
            dcmdata/dcmdata/libsrc/dcistrmb.cc
            dcmdata/dcmdata/libsrc/dcistrmf.cc
            dcmdata/dcmdata/libsrc/dcistrmz.cc
- 
+
 - Added constructor to class OFFile that takes FILE * as argument.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
