@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:04:03 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2007-02-20 13:12:27 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/ofstd/oflist.h"     /* for class OFList */
 #include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
 #include "dcmtk/ofstd/oftypes.h"    /* for OFBool */
+#include "dcmtk/ofstd/ofcond.h"     /* for OFCondition */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -190,6 +191,21 @@ class OFStandard
                                            const OFString &fileName,
                                            const OFBool allowEmptyDirName = OFFalse);
 
+    /** remove root directory prefix from given path name.
+     *  In case 'pathName' starts with 'rootDir', the common prefix is removed.
+     *  Otherwise, an empty string is returned.
+     *  @param result string variable in which the resulting path name is stored
+     *  @param rootDir name of the root directory to be removed
+     *  @param pathName path name from which the root directory (prefix) is removed
+     *  @param allowLeadingPathSeparator flag indicating whether a leading path separator
+     *    is allowed for the resulting path name (automatically removed otherwise)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition removeRootDirFromPathname(OFString &result,
+                                                 const OFString &rootDir,
+                                                 const OFString &pathName,
+                                                 const OFBool allowLeadingPathSeparator = OFTrue);
+
     /** scan a given directory recursively and add all filenames found to a list
      *  @param directory name of the directory to be scanned
      *  @param fileList list to which the filenames are added.
@@ -203,7 +219,7 @@ class OFStandard
      */
     static size_t searchDirectoryRecursively(const OFString &directory,
                                              OFList<OFString> &fileList,
-                                             const OFString &pattern /*= ""*/,		// default parameter value not
+                                             const OFString &pattern /*= ""*/,      // default parameter value not
                                              const OFString &dirPrefix /*= ""*/);   // supported by Sun CC 2.0.1 :-/
 
     // --- other functions ---
@@ -436,7 +452,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.24  2006-10-13 10:04:03  joergr
+ * Revision 1.25  2007-02-20 13:12:27  joergr
+ * Added function that removes a given prefix from a pathname (e.g. root dir).
+ *
+ * Revision 1.24  2006/10/13 10:04:03  joergr
  * Added new helper function that allows to check whether the conversion to an
  * HTML/XML markup string is required.
  *

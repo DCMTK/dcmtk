@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2006, OFFIS
+ *  Copyright (C) 2001-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:01:36 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2007-02-20 13:13:38 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,6 +104,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofcond.h"
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
@@ -453,6 +454,37 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
         }
     }
     return result;
+}
+
+
+OFCondition OFStandard::removeRootDirFromPathname(OFString &result,
+                                                  const OFString &rootDir,
+                                                  const OFString &pathName,
+                                                  const OFBool allowLeadingPathSeparator)
+{
+    OFCondition status = EC_IllegalParameter;
+    const size_t rootLength = rootDir.length();
+    /* check for same length */
+    if (rootLength <= pathName.length())
+    {
+        /* check for same prefix */
+        if (pathName.compare(0, rootLength, rootDir) == 0)
+        {
+            /* remove root dir prefix from path name */
+            result = pathName.substr(rootLength);
+            if (!allowLeadingPathSeparator)
+            {
+                /* remove leading path separator (if present) */
+                if (!result.empty() && (result.at(0) = PATH_SEPARATOR))
+                    result.erase(0, 1);
+            }
+            status = EC_Normal;
+        }
+    }
+    /* return empty string in case of error */
+    if (status.bad())
+        result = "";
+    return status;
 }
 
 
@@ -1645,7 +1677,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.35  2006-10-13 10:01:36  joergr
+ *  Revision 1.36  2007-02-20 13:13:38  joergr
+ *  Added function that removes a given prefix from a pathname (e.g. root dir).
+ *
+ *  Revision 1.35  2006/10/13 10:01:36  joergr
  *  Added new helper function that allows to check whether the conversion to an
  *  HTML/XML markup string is required.
  *
