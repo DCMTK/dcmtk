@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:26 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-02-20 13:12:59 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #define OFSTRING_H
 
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
-#include "dcmtk/ofstd/oftypes.h"      /* for OFBool */
+#include "dcmtk/ofstd/oftypes.h"       /* for OFBool */
 #include "dcmtk/ofstd/ofcast.h"
 
 #ifdef HAVE_STD_STRING
@@ -498,11 +498,11 @@ public:
      */
     int compare(const OFString& str) const;
 
-    /** constructs a temporary string from the input and compares
-     *  it with the current string
-     *  @param pos1 position to start copying from in str
-     *  @param n1 maximum number of characters to copy from str
-     *  @param str string to copy from
+    /** constructs a temporary string from this object and compares
+     *  it with the input string
+     *  @param pos1 position to start copying from this object
+     *  @param n1 maximum number of characters to copy from this object
+     *  @param str string to compare to
      *  @return comparison result
      */
     int compare(size_t pos1, size_t n1, const OFString& str) const;
@@ -516,8 +516,7 @@ public:
      *  @param n2 maximum number of characters to copy from str
      *  @return comparison result
      */
-    int compare(size_t pos1, size_t n1, const OFString& str,
-         size_t pos2, size_t n2) const;
+    int compare(size_t pos1, size_t n1, const OFString& str, size_t pos2, size_t n2) const;
 
     /** constructs a temporary string from the input and compares
      *  it with the current string
@@ -527,15 +526,14 @@ public:
     int compare(const char* s) const;
 
     /** constructs a temporary string from this object and another
-     *  temporary from the input  and compares the two temporaries
+     *  temporary from the input and compares the two temporaries
      *  @param pos1 position to start copying from this object
      *  @param n1 maximum number of characters to copy from this object
      *  @param s pointer to an array of char of length n. Must not be NULL.
      *  @param n2 number of characters in array s
      *  @return comparison result
      */
-    int compare(size_t pos1, size_t n1,
-         const char* s, size_t n2 = OFString_npos) const;
+    int compare(size_t pos1, size_t n1, const char* s, size_t n2 = OFString_npos) const;
 
     /** determines the earliest occurrence of the
      *  input pattern in the current string object, starting from position
@@ -1077,7 +1075,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.21  2006-08-14 16:42:26  meichel
+** Revision 1.22  2007-02-20 13:12:59  joergr
+** Fixed wrong comment in compare() method.
+**
+** Revision 1.21  2006/08/14 16:42:26  meichel
 ** Updated all code in module ofstd to correctly compile if the standard
 **   namespace has not included into the global one with a "using" directive.
 **
