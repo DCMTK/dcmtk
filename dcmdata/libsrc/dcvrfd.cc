@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2007-02-21 09:26:19 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,11 +115,11 @@ void DcmFloatingPointDouble::print(STD_NAMESPACE ostream&out,
             {
                 /* check whether first value is printed (omit delimiter) */
                 if (i == 0)
-                    OFStandard::ftoa(buffer, sizeof(buffer), *doubleVals);
+                    OFStandard::ftoa(buffer, sizeof(buffer), *doubleVals, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
                 else
                 {
                     buffer[0] = '\\';
-                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *doubleVals);
+                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *doubleVals, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
                 }
                 /* check whether current value sticks to the length limit */
                 newLength = printedLength + strlen(buffer);
@@ -193,7 +193,7 @@ OFCondition DcmFloatingPointDouble::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[64];
-        OFStandard::ftoa(buffer, sizeof(buffer), doubleVal);
+        OFStandard::ftoa(buffer, sizeof(buffer), doubleVal, 0, 0, 17 /* DBL_DIG + 2 for DICOM FD */);
         /* assign result */
         stringVal = buffer;
     }
@@ -297,7 +297,10 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.28  2006-08-15 15:49:54  meichel
+** Revision 1.29  2007-02-21 09:26:19  meichel
+** Increased output precision to 17 (DBL_DIG+2) when converting an FD element to string.
+**
+** Revision 1.28  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
