@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:11 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-02-22 12:49:28 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,13 +53,13 @@ typedef struct
 } S_XferNames;
 
 
-#define ERROR_XferName "UnknownTransferSyntax"
+#define ERROR_XferName "Unknown Transfer Syntax"
 
 
 const S_XferNames XferNames[] =
 {
     { UID_LittleEndianImplicitTransferSyntax,
-      "LittleEndianImplicit",
+      "Little Endian Implicit",
       EXS_LittleEndianImplicit,
       EBO_LittleEndian,
       EVT_Implicit,
@@ -67,7 +67,7 @@ const S_XferNames XferNames[] =
       0L, 0L,
       ESC_none },
     { "",  // illegal type
-      "VirtualBigEndianImplicit",
+      "Virtual Big Endian Implicit",
       EXS_BigEndianImplicit,
       EBO_BigEndian,
       EVT_Implicit,
@@ -75,7 +75,7 @@ const S_XferNames XferNames[] =
       0L, 0L,
       ESC_none },
     { UID_LittleEndianExplicitTransferSyntax,
-      "LittleEndianExplicit",
+      "Little Endian Explicit",
       EXS_LittleEndianExplicit,
       EBO_LittleEndian,
       EVT_Explicit,
@@ -83,7 +83,7 @@ const S_XferNames XferNames[] =
       0L, 0L,
       ESC_none },
     { UID_BigEndianExplicitTransferSyntax,  // defined in dctypes.h
-      "BigEndianExplicit",
+      "Big Endian Explicit",
       EXS_BigEndianExplicit,
       EBO_BigEndian,
       EVT_Explicit,
@@ -542,7 +542,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.25  2005-12-08 15:42:11  meichel
+ * Revision 1.26  2007-02-22 12:49:28  joergr
+ * Fixed inconsistent naming of transfer syntaxes (added space characters).
+ *
+ * Revision 1.25  2005/12/08 15:42:11  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.24  2005/10/25 08:55:34  meichel
