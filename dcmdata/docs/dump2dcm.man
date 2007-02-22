@@ -17,8 +17,7 @@ dump2dcm [options] dumpfile-in dcmfile-out
 The \b dump2dcm utility converts an ASCII dumpfile to a dicom file.  The
 dumpfile has the same format as the output of \b dcmdump.  Thus it is possible
 to capture the output of \b dcmdump into a file, modify some attributes and
-create a new dicom file.  However, \b dump2dcm is not really suitable for
-generating dicom files containing pixel data.
+create a new DICOM file.
 
 \section parameters PARAMETERS
 
@@ -48,7 +47,7 @@ dcmfile-out  DICOM output filename
 \subsection input_options input options
 \verbatim
   +l   --line  [m]ax-length: integer
-         maximum line length m (default 4096)
+         maximum line length m (default: 4096)
 \endverbatim
 
 \subsection output_options output options
@@ -63,8 +62,11 @@ output file format:
 
 output transfer syntax:
 
+  +t=  --write-xfer-same
+         write with same TS as input (default)
+
   +te  --write-xfer-little
-         write with explicit VR little endian (default)
+         write with explicit VR little endian
 
   +tb  --write-xfer-big
          write with explicit VR big endian TS
@@ -134,7 +136,7 @@ The parts of a line have the following syntax:
 Tag:   (gggg,eeee)
        with gggg and eeee are 4 character hexadecimal values
        representing group and element tag.  Spaces and Tabs can be
-       anywhere in a Tag specification
+       anywhere in a Tag specification.
 VR:    Value Representation must be written as 2 characters as in
        Part 6 of the DICOM standard.  No Spaces or Tabs are allowed
        between the two characters.  If the VR can be determined from
@@ -145,7 +147,7 @@ Value: There are several rules for writing values:
        2. AT is written as '(gggg,eeee)' with additional spaces
           stripped off automatically and gggg and eeee being decimal
           strings that can be read by scanf.
-       3. OB, OW values are written as byte or word hexadecimal
+       3. OB and OW values are written as byte or word hexadecimal
           values separated by '\\' character.  Alternatively, OB or OW
           values can be read from a separate file by writing the
           filename prefixed by a '=' character (e.g. '=largepix.dat').
@@ -154,8 +156,11 @@ Value: There are several rules for writing values:
           necessary.  No checks will be made to ensure that the amount
           of data is reasonable in terms of other attributes such as
           Rows or Columns.
+          In case of compressed pixel data, the line should start with
+          '(7fe0,0010) OB (PixelSequence' in order to distinguish from
+          uncompressed pixel data.
        4. UI is written as '=Name' in data dictionary or as unique
-          identifer string (see 6.), e.g. '[1.2.840.....]'.
+          identifier string (see 6.), e.g. '[1.2.840.....]'.
        5. Strings without () <> [] spaces, tabs and # can be written
           directly.
        6. Other strings with must be surrounded by [ ].  No bracket
@@ -163,10 +168,10 @@ Value: There are several rules for writing values:
           line.  Anything after the ']' is interpreted as comment.
        7. '(' and '<' are interpreted special and may not be used when
           writing an input file by hand as beginning characters of a
-          string. Multiple Value are separated by '\\'.  The lines need
-          not be sorted into ascending tag order.  References in DICOM
-          Directories are not supported.  Semantic errors are not
-          detected.
+          string.  Multiple Value are separated by '\\'.  The lines
+          need not be sorted into ascending tag order.  References in
+          DICOM Directories are not supported.  Semantic errors are
+          not detected.
 \endverbatim
 
 \subsection notes_example Example
@@ -186,9 +191,6 @@ Value: There are several rules for writing values:
 Please note that \b dump2dcm currently does not fully support DICOMDIR files.
 Specifically, the value of the various offset data elements is not updated
 automatically by this tool.
-
-The \b dump2dcm utility also does not yet support compressed pixel data stored
-in a sequence of pixel items.
 
 \section command_line COMMAND LINE
 
@@ -233,7 +235,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1996-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
