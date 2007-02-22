@@ -1,12 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.02.22 (riesmeier)
+
+- Added support for compressed pixel data.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Added new command line option --write-xfer-same.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Fixed inconsistent naming of transfer syntaxes (added space characters).
+  Affects: dcmdata/libsrc/dcxfer.cc
+
 **** Changes from 2007.02.21 (eichelberg)
 
-- Increased output precision to 17 (DBL_DIG+2) when converting an FD element to string. 
-  Thanks to Forum user Niels Dekker (LUMC) for the suggestion.
+- Increased output precision to 17 (DBL_DIG+2) when converting an FD element to
+  string. Thanks to Forum user Niels Dekker (LUMC) for the suggestion.
   Affects: dcmdata/libsrc/dcvrfd.cc
-  
+
 **** Changes from 2007.02.20 (riesmeier)
 
 - Fixed wrong comment in compare() method.
