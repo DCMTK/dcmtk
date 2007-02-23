@@ -23,8 +23,8 @@
  *    implements streamed output to files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 16:06:10 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2007-02-23 16:30:12 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,9 @@ OFBool DcmFileConsumer::isFlushed() const
 
 offile_off_t DcmFileConsumer::avail() const
 {
-  return OFstatic_cast(offile_off_t, -1); // assume unlimited file size
+  // since we cannot report "unlimited", let's claim that we can still write 2GB.
+  // Note that offile_off_t is a signed type.
+  return 2147483647L; 
 }
 
 offile_off_t DcmFileConsumer::write(const void *buf, offile_off_t buflen)
@@ -161,7 +163,11 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.9  2007-02-19 16:06:10  meichel
+ * Revision 1.10  2007-02-23 16:30:12  meichel
+ * Fixed bug in DcmFileConsumer::avail introduced when converting
+ *   the return type to offile_off_t, which is signed.
+ *
+ * Revision 1.9  2007/02/19 16:06:10  meichel
  * Class DcmOutputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.
  *
