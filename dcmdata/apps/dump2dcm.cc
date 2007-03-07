@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-22 13:07:42 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2007-03-07 12:30:13 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -542,6 +542,9 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
                 l_error = EC_InvalidVR;
             else
             {
+                // check for uncompressed pixel data (i.e. no pixel sequence present)
+                if (tagkey == DCM_PixelData  && (newTagVR == EVR_OB || newTagVR == EVR_OW))
+                    OFstatic_cast(DcmPixelData *, newElement)->setNonEncapsulationFlag(OFTrue /*alwaysUnencapsulated*/);
                 // fill value
                 if (value)
                 {
@@ -1030,7 +1033,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.55  2007-02-22 13:07:42  joergr
+** Revision 1.56  2007-03-07 12:30:13  joergr
+** Fixed issue with uncompressed icon images in DICOM images with encapsulated
+** transfer syntax
+**
+** Revision 1.55  2007/02/22 13:07:42  joergr
 ** Added support for compressed pixel data.
 ** Added new command line option --write-xfer-same.
 **
