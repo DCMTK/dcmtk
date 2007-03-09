@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-20 13:12:27 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2007-03-09 14:54:59 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,7 +206,7 @@ class OFStandard
                                                  const OFString &pathName,
                                                  const OFBool allowLeadingPathSeparator = OFTrue);
 
-    /** scan a given directory recursively and add all filenames found to a list
+    /** scan a given directory (recursively) and add all filenames found to a list
      *  @param directory name of the directory to be scanned
      *  @param fileList list to which the filenames are added.
      *    Please note that the list is not not cleared automatically.
@@ -215,12 +215,14 @@ class OFStandard
      *    fnmatch() is required.
      *  @param dirPrefix optional prefix added to the directory name.
      *    This prefix will, however, not be part of the filenames added to the list.
+     *  @param recurse flag indicating whether to search recursively (default) or not
      *  @return number of new files added to the list
      */
     static size_t searchDirectoryRecursively(const OFString &directory,
                                              OFList<OFString> &fileList,
                                              const OFString &pattern /*= ""*/,      // default parameter value not
-                                             const OFString &dirPrefix /*= ""*/);   // supported by Sun CC 2.0.1 :-/
+                                             const OFString &dirPrefix /*= ""*/,    // supported by Sun CC 2.0.1 :-/
+                                             const OFBool recurse = OFTrue);
 
     // --- other functions ---
 
@@ -452,7 +454,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.25  2007-02-20 13:12:27  joergr
+ * Revision 1.26  2007-03-09 14:54:59  joergr
+ * Added optional parameter "recurse" to searchDirectoryRecursively().
+ *
+ * Revision 1.25  2007/02/20 13:12:27  joergr
  * Added function that removes a given prefix from a pathname (e.g. root dir).
  *
  * Revision 1.24  2006/10/13 10:04:03  joergr

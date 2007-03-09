@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-20 13:13:38 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2007-03-09 14:55:38 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,7 +491,8 @@ OFCondition OFStandard::removeRootDirFromPathname(OFString &result,
 size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                                               OFList<OFString> &fileList,
                                               const OFString &pattern,
-                                              const OFString &dirPrefix)
+                                              const OFString &dirPrefix,
+                                              const OFBool recurse)
 {
     const size_t initialSize = fileList.size();
     OFString dirname, pathname, tmpString;
@@ -536,8 +537,8 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                     else
                         combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
                     /* recursively search sub directories */
-                    if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix);
+                    if (recurse && dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
                     /* add filename to the list (if no pattern is given) */
                     else if (pattern.empty())
                         fileList.push_back(pathname);
@@ -563,8 +564,8 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                 else
                     combineDirAndFilename(pathname, directory, entry->d_name, OFTrue /*allowEmptyDirName*/);
                 /* recursively search sub directories */
-                if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                    searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix);
+                if (recurse && dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                    searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
                 /* check whether filename matches pattern */
                 else
 #ifdef HAVE_FNMATCH_H
@@ -1677,7 +1678,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.36  2007-02-20 13:13:38  joergr
+ *  Revision 1.37  2007-03-09 14:55:38  joergr
+ *  Added optional parameter "recurse" to searchDirectoryRecursively().
+ *
+ *  Revision 1.36  2007/02/20 13:13:38  joergr
  *  Added function that removes a given prefix from a pathname (e.g. root dir).
  *
  *  Revision 1.35  2006/10/13 10:01:36  joergr
