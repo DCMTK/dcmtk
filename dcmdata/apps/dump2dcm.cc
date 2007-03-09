@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-07 12:30:13 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2007-03-09 15:01:02 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,24 +32,24 @@
 
 /*
  * Input File Description:
- * The input file be an output of dcmdump.  One element (Tag, VR, value) must
- * be written into one line separated by arbitrary spaces or tab characters.
- * A # begins a comment that ends at the line end.  Empty lines are allowed.
- * This parts of a line have the following syntax:
+ * The input file can be an output of dcmdump.  One element (tag, VR, value)
+ * must be written into one line separated by arbitrary spaces or tab characters.
+ * A '#' begins a comment that ends at the line end.  Empty lines are allowed.
+ * The individual parts of a line have the following syntax:
  * Tag:   (gggg,eeee)
  *        with gggg and eeee are 4 character hexadecimal values representing
- *        group- and element-tag.  Spaces and Tabs can be anywhere in a Tag
+ *        group and element tag.  Spaces and tabs can be anywhere in a tag
  *        specification.
  * VR:    Value Representation must be written as 2 characters as in Part 6
- *        of the DICOM standard.  No Spaces or Tabs are allowed between the
- *        two characters.  If the VR can determined from the Tag, this part
+ *        of the DICOM standard.  No spaces or tabs are allowed between the
+ *        two characters.  If the VR can determined from the tag, this part
  *        of a line is optional.
  * Value: There are several rules for writing values:
  *        1. US, SS, SL, UL, FD, FL are written as decimal strings that can
- *           be read by scanf.
- *        2. AT is written as (gggg,eeee) with additional spaces stripped off
- *           automatically and gggg and eeee being decimal strings that
- *           can be read by scanf.
+ *           be read by scanf().
+ *        2. AT is written as '(gggg,eeee)' with additional spaces stripped
+ *           off automatically and gggg and eeee being decimal strings that
+ *           can be read by scanf().
  *        3. OB and OW values are written as byte or word hexadecimal values
  *           separated by '\' character.  Alternatively, OB or OW values can
  *           be read from a separate file by writing the filename prefixed
@@ -65,9 +65,9 @@
  *           identifier string (see 6.) , e.g. '[1.2.840.....]'
  *        5. Strings without () <> [] spaces, tabs and # can be written
  *           directly.
- *        6. Other strings with must be surrounded by [ ]. No bracket structure
- *           is passed. The value ends at the last ] in the line.  Anything
- *           after the ']' is interpreted as comment.
+ *        6. Other strings must be surrounded by '[' and ']'.  No bracket
+ *           structure is passed.  The value ends at the last ']' in the
+ *           line.  Anything after the ']' is interpreted as comment.
  *        7. '(' and '<' are interpreted special and may not be used when
  *           writing an input file by hand as beginning characters of a
  *           string.  Multiple Value are separated by '\'.  The sequence of
@@ -1033,7 +1033,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.56  2007-03-07 12:30:13  joergr
+** Revision 1.57  2007-03-09 15:01:02  joergr
+** Updated documentation of dump input format.
+**
+** Revision 1.56  2007/03/07 12:30:13  joergr
 ** Fixed issue with uncompressed icon images in DICOM images with encapsulated
 ** transfer syntax
 **
