@@ -8,6 +8,19 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/libsrc/dcitem.cc
 
+- Added optional parameter "recurse" to searchDirectoryRecursively().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Fixed wrong output of status variable after calling loadFile().
+  Affects: dcmdata/apps/dcmdump.cc
+
+- Updated documentation of dump input format.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Fixed issue with new parameter "recurse" in searchDirectoryRecursively().
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2007.03.07 (riesmeier)
 
 - Fixed issue with uncompressed icon images in DICOM images with encapsulated
