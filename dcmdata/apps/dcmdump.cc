@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-09 14:58:31 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,8 @@
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
-#include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcistrmz.h"   /* for dcmZlibExpectRFC1950Encoding */
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
@@ -53,12 +53,12 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
+/* needed for Macintosh */
 #include <GUSI.h>
 #include <SIOUX.h>
 #endif
 
-static int dumpFile(STD_NAMESPACE ostream& out,
+static int dumpFile(STD_NAMESPACE ostream &out,
             const char *ifname,
             const E_FileReadMode readMode,
             const E_TransferSyntax xfer,
@@ -74,11 +74,11 @@ static OFBool printAllInstances = OFTrue;
 static OFBool prependSequenceHierarchy = OFFalse;
 static int printTagCount = 0;
 static const int MAX_PRINT_TAG_NAMES = 1024;
-static const char* printTagNames[MAX_PRINT_TAG_NAMES];
-static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
+static const char *printTagNames[MAX_PRINT_TAG_NAMES];
+static const DcmTagKey *printTagKeys[MAX_PRINT_TAG_NAMES];
 static OFCmdUnsignedInt maxReadLength = 4096; // default is 4 KB
 
-static OFBool addPrintTagName(const char* tagName)
+static OFBool addPrintTagName(const char *tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
         CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
@@ -87,12 +87,12 @@ static OFBool addPrintTagName(const char* tagName)
 
     unsigned int group = 0xffff;
     unsigned int elem = 0xffff;
-    if (sscanf( tagName, "%x,%x", &group, &elem ) != 2 )
+    if (sscanf(tagName, "%x,%x", &group, &elem) != 2)
     {
-    /* it is a name */
-        const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
+        /* it is a name */
+        const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
         const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
-        if( dicent == NULL ) {
+        if (dicent == NULL) {
             CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
             dcmDataDict.unlock();
             return OFFalse;
@@ -365,12 +365,12 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--search-all"))
       {
-        app.checkDependence("--search-all", "--search", printTagCount>0);
+        app.checkDependence("--search-all", "--search", printTagCount > 0);
         printAllInstances = OFTrue;
       }
       if (cmd.findOption("--search-first"))
       {
-        app.checkDependence("--search-first", "--search", printTagCount>0);
+        app.checkDependence("--search-first", "--search", printTagCount > 0);
         printAllInstances = OFFalse;
       }
       cmd.endOptionBlock();
@@ -378,12 +378,12 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--prepend"))
       {
-        app.checkDependence("--prepend", "--search", printTagCount>0);
+        app.checkDependence("--prepend", "--search", printTagCount > 0);
         prependSequenceHierarchy = OFTrue;
       }
       if (cmd.findOption("--no-prepend"))
       {
-        app.checkDependence("--no-prepend", "--search", printTagCount>0);
+        app.checkDependence("--no-prepend", "--search", printTagCount > 0);
         prependSequenceHierarchy = OFFalse;
       }
       cmd.endOptionBlock();
@@ -407,7 +407,7 @@ int main(int argc, char *argv[])
 
     int errorCount = 0;
     int count = cmd.getParamCount();
-    for (int i=1; i<=count; i++)
+    for (int i = 1; i <= count; i++)
     {
       cmd.getParam(i, current);
       if (printFilename)
@@ -425,7 +425,7 @@ int main(int argc, char *argv[])
     return errorCount;
 }
 
-static void printResult(STD_NAMESPACE ostream& out, DcmStack& stack, size_t printFlags)
+static void printResult(STD_NAMESPACE ostream &out, DcmStack &stack, size_t printFlags)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -434,7 +434,7 @@ static void printResult(STD_NAMESPACE ostream& out, DcmStack& stack, size_t prin
 
     if (prependSequenceHierarchy) {
         /* print the path leading up to the top stack elem */
-        for (unsigned long i=n-1; i>=1; i--) {
+        for (unsigned long i = n - 1; i >= 1; i--) {
             DcmObject *dobj = stack.elem(i);
             /* do not print if a DCM_Item as this is not
              * very helpful to distinguish instances.
@@ -454,7 +454,7 @@ static void printResult(STD_NAMESPACE ostream& out, DcmStack& stack, size_t prin
     dobj->print(out, printFlags);
 }
 
-static int dumpFile(STD_NAMESPACE ostream& out,
+static int dumpFile(STD_NAMESPACE ostream &out,
             const char *ifname,
             const E_FileReadMode readMode,
             const E_TransferSyntax xfer,
@@ -476,9 +476,9 @@ static int dumpFile(STD_NAMESPACE ostream& out,
     DcmObject *dset = &dfile;
     if (readMode == ERM_dataset) dset = dfile.getDataset();
     OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
-    if (! cond.good())
+    if (cond.bad())
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << dfile.error().text()
+        CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << cond.text()
              << ": reading file: "<< ifname << OFendl;
 
         result = 1;
@@ -506,14 +506,16 @@ static int dumpFile(STD_NAMESPACE ostream& out,
             dset->print(out, printFlags);
     } else {
         /* only print specified tags */
-        for (int i=0; i<printTagCount; i++)
+        for (int i = 0; i < printTagCount; i++)
         {
             unsigned int group = 0xffff;
             unsigned int elem = 0xffff;
             DcmTagKey searchKey;
-            const char* tagName = printTagNames[i];
-            if (printTagKeys[i]) searchKey = *printTagKeys[i];
-            else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
+            const char *tagName = printTagNames[i];
+            if (printTagKeys[i])
+                searchKey = *printTagKeys[i];
+            else if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
+                searchKey.set(group, elem);
             else {
                 CERR << "Internal ERROR in File " << __FILE__ << ", Line "
                      << __LINE__ << OFendl
@@ -527,7 +529,7 @@ static int dumpFile(STD_NAMESPACE ostream& out,
                 printResult(out, stack, printFlags);
                 if (printAllInstances)
                 {
-                    while (dset->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal)
+                    while (dset->search(searchKey, stack, ESM_afterStackTop, OFTrue) == EC_Normal)
                       printResult(out, stack, printFlags);
                 }
             }
@@ -541,7 +543,10 @@ static int dumpFile(STD_NAMESPACE ostream& out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.57  2006-08-15 15:50:56  meichel
+ * Revision 1.58  2007-03-09 14:58:31  joergr
+ * Fixed wrong output of status variable after calling loadFile().
+ *
+ * Revision 1.57  2006/08/15 15:50:56  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
