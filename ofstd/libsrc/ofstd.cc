@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 14:55:38 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2007-03-09 16:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -536,12 +536,17 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                         pathname = data.cFileName;
                     else
                         combineDirAndFilename(pathname, directory, data.cFileName, OFTrue /*allowEmptyDirName*/);
-                    /* recursively search sub directories */
-                    if (recurse && dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
-                    /* add filename to the list (if no pattern is given) */
+                    if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                    {
+                        /* recursively search sub directories */
+                        if (recurse)
+                            searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
+                    }
                     else if (pattern.empty())
+                    {
+                        /* add filename to the list (if no pattern is given) */
                         fileList.push_back(pathname);
+                    }
                 }
             } while (FindNextFile(handle, &data));
             FindClose(handle);
@@ -563,17 +568,20 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
                     pathname = entry->d_name;
                 else
                     combineDirAndFilename(pathname, directory, entry->d_name, OFTrue /*allowEmptyDirName*/);
-                /* recursively search sub directories */
-                if (recurse && dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
-                    searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
-                /* check whether filename matches pattern */
-                else
+                if (dirExists(combineDirAndFilename(tmpString, dirPrefix, pathname, OFTrue /*allowEmptyDirName*/)))
+                {
+                    /* recursively search sub directories */
+                    if (recurse)
+                        searchDirectoryRecursively(pathname, fileList, pattern, dirPrefix, recurse);
+                } else {
 #ifdef HAVE_FNMATCH_H
-                if ((pattern.empty()) || (fnmatch(pattern.c_str(), entry->d_name, FNM_PATHNAME) == 0))
+                    /* check whether filename matches pattern */
+                    if ((pattern.empty()) || (fnmatch(pattern.c_str(), entry->d_name, FNM_PATHNAME) == 0))
 #else
-                    /* no pattern matching, sorry :-/ */
+                        /* no pattern matching, sorry :-/ */
 #endif
-                    fileList.push_back(pathname);
+                        fileList.push_back(pathname);
+                }
             }
         }
         closedir(dirPtr);
@@ -1678,7 +1686,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.37  2007-03-09 14:55:38  joergr
+ *  Revision 1.38  2007-03-09 16:35:49  joergr
+ *  Fixed issue with new parameter "recurse" in searchDirectoryRecursively().
+ *
+ *  Revision 1.37  2007/03/09 14:55:38  joergr
  *  Added optional parameter "recurse" to searchDirectoryRecursively().
  *
  *  Revision 1.36  2007/02/20 13:13:38  joergr
