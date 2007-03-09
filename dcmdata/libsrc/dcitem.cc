@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:16 $
- *  CVS/RCS Revision: $Revision: 1.103 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-09 10:36:09 $
+ *  CVS/RCS Revision: $Revision: 1.104 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1647,7 +1647,6 @@ OFCondition DcmItem::loadAllDataIntoMemory()
 
 
 
-
 // ********************************
 
 //
@@ -1672,6 +1671,7 @@ DcmElement *newDicomElement(const DcmTag &tag,
 
 
 // ********************************
+
 
 OFCondition newDicomElement(DcmElement *&newElement,
                             DcmTag &tag,
@@ -3184,21 +3184,8 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_FD:
             elem = new DcmFloatingPointDouble(tag);
             break;
-        case EVR_OF:
-            elem = new DcmOtherFloat(tag);
-            break;
         case EVR_IS:
             elem = new DcmIntegerString(tag);
-            break;
-        case EVR_OB:
-        case EVR_OW:
-            elem = new DcmOtherByteOtherWord(tag);
-            break;
-        case EVR_TM:
-            elem = new DcmTime(tag);
-            break;
-        case EVR_UI:
-            elem = new DcmUniqueIdentifier(tag);
             break;
         case EVR_LO:
             elem = new DcmLongString(tag);
@@ -3206,8 +3193,12 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_LT:
             elem = new DcmLongText(tag);
             break;
-        case EVR_UT:
-            elem = new DcmUnlimitedText(tag);
+        case EVR_OF:
+            elem = new DcmOtherFloat(tag);
+            break;
+        case EVR_OB:
+        case EVR_OW:
+            elem = new DcmOtherByteOtherWord(tag);
             break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
@@ -3215,11 +3206,32 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
         case EVR_SH:
             elem = new DcmShortString(tag);
             break;
-        case EVR_SQ :
+        case EVR_SL:
+            elem = new DcmSignedLong(tag);
+            break;
+        case EVR_SQ:
             elem = new DcmSequenceOfItems(tag);
+            break;
+        case EVR_SS:
+            elem = new DcmSignedShort(tag);
             break;
         case EVR_ST:
             elem = new DcmShortText(tag);
+            break;
+        case EVR_TM:
+            elem = new DcmTime(tag);
+            break;
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_UL:
+            elem = new DcmUnsignedLong(tag);
+            break;
+        case EVR_US:
+            elem = new DcmUnsignedShort(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -3283,7 +3295,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.103  2007-02-19 15:04:16  meichel
+** Revision 1.104  2007-03-09 10:36:09  joergr
+** Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
+**
+** Revision 1.103  2007/02/19 15:04:16  meichel
 ** Removed searchErrors() methods that are not used anywhere and added
 **   error() methods only in the DcmObject subclasses where really used.
 **

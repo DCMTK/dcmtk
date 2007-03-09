@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:34 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-09 10:38:13 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -774,8 +774,8 @@ class DcmItem
                                     const OFBool replaceOld = OFTrue);
 
     /** create a new element (with no value) and insert it into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, OB, OF, OW, LT,
-     *  PN, SH, SQ, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
+     *  PN, SH, SL, SQ, SS, ST, TM, UI, UL, US, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
@@ -926,7 +926,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.59  2007-02-19 15:04:34  meichel
+** Revision 1.60  2007-03-09 10:38:13  joergr
+** Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
+**
+** Revision 1.59  2007/02/19 15:04:34  meichel
 ** Removed searchErrors() methods that are not used anywhere and added
 **   error() methods only in the DcmObject subclasses where really used.
 **

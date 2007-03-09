@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.03.09 (riesmeier)
+
+- Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
+  Thanks to Razvan Costea-Barlutiu <cbrazvan@laitek.com> for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2007.03.07 (riesmeier)
 
 - Fixed issue with uncompressed icon images in DICOM images with encapsulated
