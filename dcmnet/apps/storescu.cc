@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-12 14:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,6 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
-#define INCLUDE_CSTDARG
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
 
@@ -63,6 +61,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
 #include "dcmtk/dcmnet/dicom.h"      /* for DICOM_APPLICATION_REQUESTOR */
 #include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
@@ -85,6 +84,10 @@ END_EXTERN_C
 #include <zlib.h>          /* for zlibVersion() */
 #endif
 
+#if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
+#define PATTERN_MATCHING_AVAILABLE
+#endif
+
 #define OFFIS_CONSOLE_APPLICATION "storescu"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
@@ -101,6 +104,11 @@ static OFBool opt_abortAssociation = OFFalse;
 static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static OFCmdUnsignedInt opt_maxSendPDULength = 0;
 static E_TransferSyntax opt_networkTransferSyntax = EXS_Unknown;
+static E_FileReadMode opt_readMode = ERM_autoDetect;
+
+static OFBool opt_scanDir = OFFalse;
+static OFBool opt_recurse = OFFalse;
+static const char *opt_pattern = NULL;
 
 static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
 static OFBool unsuccessfulStoreEncountered = OFFalse;
@@ -148,24 +156,14 @@ static const char *opt_dhparam = NULL;
 #endif
 
 
-static void
-errmsg(const char *msg,...)
-{
-  va_list args;
-
-  fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
-  va_start(args, msg);
-  vfprintf(stderr, msg, args);
-  va_end(args);
-  fprintf(stderr, "\n");
-}
-
+static OFCondition
+addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString> &sopClasses);
 
 static OFCondition
-addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopClasses);
+cstore(T_ASC_Association *assoc, const OFString &fname);
 
-static OFCondition
-cstore(T_ASC_Association *assoc, const OFString& fname);
+static OFBool
+findSOPClassAndInstanceInFile(const char *fname, char *sopClass, char *sopInstance);
 
 #define SHORTCOL 4
 #define LONGCOL 19
@@ -207,7 +205,7 @@ int main(int argc, char *argv[])
   cmd.setParamColumn(LONGCOL+SHORTCOL+4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
-  cmd.addParam("dcmfile-in", "DICOM file(s) to be transmitted", OFCmdParam::PM_MultiMandatory);
+  cmd.addParam("dcmfile-in", "DICOM file(s) or directories to be transmitted", OFCmdParam::PM_MultiMandatory);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
@@ -216,6 +214,19 @@ int main(int argc, char *argv[])
    cmd.addOption("--verbose",                 "-v",      "verbose mode, print processing details");
    cmd.addOption("--verbose-pc",              "+v",      "verbose mode and show presentation contexts");
    cmd.addOption("--debug",                   "-d",      "debug mode, print debug information");
+  cmd.addGroup("input options:");
+    cmd.addSubGroup("input file format:");
+      cmd.addOption("--read-file",            "+f",      "read file format or data set (default)");
+      cmd.addOption("--read-file-only",       "+fo",     "read file format only");
+      cmd.addOption("--read-dataset",         "-f",      "read data set without file meta information");
+    cmd.addSubGroup("input files:");
+      cmd.addOption("--scan-directories",     "+sd",     "scan directories for input files (dcmfile-in)");
+      cmd.addOption("--no-recurse",           "-r",      "do not recurse within directories (default)");
+      cmd.addOption("--recurse",              "+r",      "recurse within specified directories");
+#ifdef PATTERN_MATCHING_AVAILABLE
+      cmd.addOption("--pattern",              "+p",  1,  "[p]attern : string (only with --scan-directories)",
+                                                         "pattern for filename matching (wildcards)");
+#endif
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
@@ -275,7 +286,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--max-send-pdu",                 1, opt4.c_str(), "restrict max send pdu to n bytes");
       cmd.addOption("--repeat",                       1, "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                           "abort association instead of releasing it");
-      cmd.addOption("--no-halt",                         "do not halt if unsuccessful store encountered\n(default: do halt)");
+      cmd.addOption("--no-halt",              "-nh",     "do not halt if unsuccessful store encountered\n(default: do halt)");
       cmd.addOption("--uid-padding",          "-up",     "silently correct space-padded UIDs");
 
       cmd.addOption("--invent-instance",      "+II",     "invent a new SOP instance UID for every image\nsent");
@@ -364,11 +375,11 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
-      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--verbose-pc"))
       {
-        opt_verbose=OFTrue;
-        opt_showPresentationContexts=OFTrue;
+        opt_verbose = OFTrue;
+        opt_showPresentationContexts = OFTrue;
       }
       if (cmd.findOption("--debug"))
       {
@@ -377,6 +388,30 @@ int main(int argc, char *argv[])
         DIMSE_debug(OFTrue);
         SetDebugLevel(3);
       }
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
+      if (cmd.findOption("--read-file-only")) opt_readMode = ERM_fileOnly;
+      if (cmd.findOption("--read-dataset")) opt_readMode = ERM_dataset;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--scan-directories")) opt_scanDir = OFTrue;
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--no-recurse")) opt_recurse = OFFalse;
+      if (cmd.findOption("--recurse"))
+      {
+        app.checkDependence("--recurse", "--scan-directories", opt_scanDir);
+        opt_recurse = OFTrue;
+      }
+      cmd.endOptionBlock();
+#ifdef PATTERN_MATCHING_AVAILABLE
+      if (cmd.findOption("--pattern"))
+      {
+        app.checkDependence("--pattern", "--scan-directories", opt_scanDir);
+        app.checkValue(cmd.getValue(opt_pattern));
+      }
+#endif
+
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
@@ -596,10 +631,8 @@ int main(int argc, char *argv[])
           {
             CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-            for (unsigned long cs=0; cs < numSuites; cs++)
-            {
+            for (unsigned long cs = 0; cs < numSuites; cs++)
               CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
-            }
             return 1;
           } else {
             if (opt_ciphersuites.length() > 0) opt_ciphersuites += ":";
@@ -610,50 +643,71 @@ int main(int argc, char *argv[])
 
 #endif
 
-      /* finally parse filenames */
+      /* finally, create list of input files */
       int paramCount = cmd.getParamCount();
-      const char *currentFilename = NULL;
+      const char *paramString = NULL;
+      OFList<OFString> inputFiles;
+      if (opt_scanDir && opt_verbose)
+        COUT << "determining input files ..." << OFendl;
+      /* iterate over all input filenames */
+      for (int i = 3; i <= paramCount; i++)
+      {
+        cmd.getParam(i, paramString);
+        /* search directory recursively (if required) */
+        if (OFStandard::dirExists(paramString))
+        {
+          if (opt_scanDir)
+            OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_pattern, "" /*dirPrefix*/, opt_recurse);
+          else if (opt_debug)
+            CERR << "warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
+        } else
+          inputFiles.push_back(paramString);
+      }
+      /* check whether there are any input files at all */
+      if (inputFiles.empty())
+        app.printError("no input files to be sent");
+
+      /* check input files */
       OFString errormsg;
+      DcmFileFormat dfile;
       char sopClassUID[128];
       char sopInstanceUID[128];
       OFBool ignoreName;
-
-      for (int i=3; i <= paramCount; i++)
+      const char *currentFilename = NULL;
+      OFListIterator(OFString) if_iter = inputFiles.begin();
+      OFListIterator(OFString) if_last = inputFiles.end();
+      if (opt_verbose)
+        COUT << "checking input files ..." << OFendl;
+      /* iterate over all input filenames */
+      while (if_iter != if_last)
       {
         ignoreName = OFFalse;
-
-        cmd.getParam(i, currentFilename);
-        if (access(currentFilename, R_OK) < 0)
-        {
-          errormsg = "cannot access file: ";
-          errormsg += currentFilename;
-          if (opt_haltOnUnsuccessfulStore)
-            app.printError(errormsg.c_str());
-            else CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
-        }
-        else
+        currentFilename = (*if_iter).c_str();
+        if (OFStandard::fileExists(currentFilename))
         {
           if (opt_proposeOnlyRequiredPresentationContexts)
           {
-            if (!DU_findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
+            if (!findSOPClassAndInstanceInFile(currentFilename, sopClassUID, sopInstanceUID))
             {
               ignoreName = OFTrue;
               errormsg = "missing SOP class (or instance) in file: ";
               errormsg += currentFilename;
               if (opt_haltOnUnsuccessfulStore)
                 app.printError(errormsg.c_str());
-                else CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
+              else
+                CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
             }
             else if (!dcmIsaStorageSOPClassUID(sopClassUID))
             {
               ignoreName = OFTrue;
-              errormsg = "unknown storage sop class in file: ";
+              errormsg = "unknown storage SOP class in file: ";
               errormsg += currentFilename;
               errormsg += ": ";
               errormsg += sopClassUID;
               if (opt_haltOnUnsuccessfulStore)
                 app.printError(errormsg.c_str());
-                else CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
+              else
+                CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
             }
             else
             {
@@ -663,6 +717,16 @@ int main(int argc, char *argv[])
           }
           if (!ignoreName) fileNameList.push_back(currentFilename);
         }
+        else
+        {
+          errormsg = "cannot access file: ";
+          errormsg += currentFilename;
+          if (opt_haltOnUnsuccessfulStore)
+            app.printError(errormsg.c_str());
+          else
+            CERR << "warning: " << errormsg << ", ignoring file" << OFendl;
+        }
+        ++if_iter;
       }
    }
 
@@ -683,8 +747,8 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-      fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-              DCM_DICT_ENVIRONMENT_VARIABLE);
+      CERR << "Warning: no data dictionary loaded, check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
@@ -701,9 +765,7 @@ int main(int argc, char *argv[])
     {
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, opt_readSeedFile);
       if (tLayer == NULL)
-      {
         app.printError("unable to create TLS transport layer");
-      }
 
       if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First))
       {
@@ -712,9 +774,7 @@ int main(int argc, char *argv[])
         {
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
-          {
             CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
-          }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
 
@@ -725,16 +785,12 @@ int main(int argc, char *argv[])
         {
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
-          {
             CERR << "warning unable to load certificates from directory '" << current << "', ignoring" << OFendl;
-          }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
-      if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
-      {
+      if (opt_dhparam && !(tLayer->setTempDHParameters(opt_dhparam)))
         CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
-      }
 
       if (opt_doAuthenticate)
       {
@@ -829,25 +885,25 @@ int main(int argc, char *argv[])
 
     /* dump presentation contexts if required */
     if (opt_showPresentationContexts || opt_debug) {
-      printf("Request Parameters:\n");
+      COUT << "Request Parameters:" << OFendl;
       ASC_dumpParameters(params, COUT);
     }
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
     if (opt_verbose)
-        printf("Requesting Association\n");
+      COUT << "Requesting Association" << OFendl;
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
       if (cond == DUL_ASSOCIATIONREJECTED) {
         T_ASC_RejectParameters rej;
 
         ASC_getRejectParameters(params, &rej);
-        errmsg("Association Rejected:");
+        CERR << "Association Rejected:" << OFendl;
         ASC_printRejectParameters(stderr, &rej);
         return 1;
       } else {
-        errmsg("Association Request Failed:");
+        CERR << "Association Request Failed:" << OFendl;
         DimseCondition::dump(cond);
         return 1;
       }
@@ -856,29 +912,27 @@ int main(int argc, char *argv[])
     /* dump the connection parameters if in debug mode*/
     if (opt_debug)
     {
-      STD_NAMESPACE ostream& out = ofConsole.lockCout();
+      STD_NAMESPACE ostream &out = ofConsole.lockCout();
       ASC_dumpConnectionParameters(assoc, out);
       ofConsole.unlockCout();
     }
 
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_showPresentationContexts || opt_debug) {
-      printf("Association Parameters Negotiated:\n");
+      COUT << "Association Parameters Negotiated:" << OFendl;
       ASC_dumpParameters(params, COUT);
     }
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-      errmsg("No Acceptable Presentation Contexts");
+      CERR << "No Acceptable Presentation Contexts" << OFendl;
       return 1;
     }
 
     /* dump general information concerning the establishment of the network connection if required */
-    if (opt_verbose) {
-      printf("Association Accepted (Max Send PDV: %lu)\n",
-             assoc->sendPDVLength);
-    }
+    if (opt_verbose)
+      COUT << "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
 
     /* do the real work, i.e. for all files which were specified in the */
     /* command line, transmit the encapsulated DICOM objects to the SCP. */
@@ -897,21 +951,21 @@ int main(int argc, char *argv[])
     {
       if (opt_abortAssociation) {
         if (opt_verbose)
-          printf("Aborting Association\n");
+          COUT << "Aborting Association" << OFendl;
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-          errmsg("Association Abort Failed:");
+          CERR << "Association Abort Failed:" << OFendl;
           DimseCondition::dump(cond);
           return 1;
         }
       } else {
         /* release association */
         if (opt_verbose)
-          printf("Releasing Association\n");
+          COUT << "Releasing Association" << OFendl;
         cond = ASC_releaseAssociation(assoc);
         if (cond.bad())
         {
-          errmsg("Association Release Failed:");
+          CERR << "Association Release Failed:" << OFendl;
           DimseCondition::dump(cond);
           return 1;
         }
@@ -919,29 +973,30 @@ int main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-      errmsg("Protocol Error: peer requested release (Aborting)");
+      CERR << "Protocol Error: peer requested release (Aborting)" << OFendl;
       if (opt_verbose)
-        printf("Aborting Association\n");
+        COUT << "Aborting Association" << OFendl;
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
-        errmsg("Association Abort Failed:");
+        CERR << "Association Abort Failed:" << OFendl;
         DimseCondition::dump(cond);
         return 1;
       }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-      if (opt_verbose) printf("Peer Aborted Association\n");
+      if (opt_verbose)
+        COUT << "Peer Aborted Association" << OFendl;
     }
     else
     {
-      errmsg("SCU Failed:");
+      CERR << "SCU Failed:" << OFendl;
       DimseCondition::dump(cond);
       if (opt_verbose)
-        printf("Aborting Association\n");
+        COUT << "Aborting Association" << OFendl;
       cond = ASC_abortAssociation(assoc);
       if (cond.bad()) {
-        errmsg("Association Abort Failed:");
+        CERR << "Association Abort Failed:" << OFendl;
         DimseCondition::dump(cond);
         return 1;
       }
@@ -972,12 +1027,9 @@ int main(int argc, char *argv[])
       if (tLayer->canWriteRandomSeed())
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-        {
           CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
-        }
-      } else {
+      } else
         CERR << "Warning: cannot write random seed, ignoring." << OFendl;
-      }
     }
     delete tLayer;
 #endif
@@ -1010,7 +1062,7 @@ int main(int argc, char *argv[])
 
 
 static OFBool
-isaListMember(OFList<OFString>& lst, OFString& s)
+isaListMember(OFList<OFString> &lst, OFString &s)
 {
   OFListIterator(OFString) cur = lst.begin();
   OFListIterator(OFString) end = lst.end();
@@ -1026,11 +1078,12 @@ isaListMember(OFList<OFString>& lst, OFString& s)
 
 static OFCondition
 addPresentationContext(T_ASC_Parameters *params,
-  int presentationContextId, const OFString& abstractSyntax,
-  const OFString& transferSyntax,
+  int presentationContextId,
+  const OFString &abstractSyntax,
+  const OFString &transferSyntax,
   T_ASC_SC_ROLE proposedRole = ASC_SC_ROLE_DEFAULT)
 {
-  const char* c_p = transferSyntax.c_str();
+  const char *c_p = transferSyntax.c_str();
   OFCondition cond = ASC_addPresentationContext(params, presentationContextId,
     abstractSyntax.c_str(), &c_p, 1, proposedRole);
   return cond;
@@ -1038,12 +1091,13 @@ addPresentationContext(T_ASC_Parameters *params,
 
 static OFCondition
 addPresentationContext(T_ASC_Parameters *params,
-  int presentationContextId, const OFString& abstractSyntax,
-  const OFList<OFString>& transferSyntaxList,
+  int presentationContextId,
+  const OFString &abstractSyntax,
+  const OFList<OFString> &transferSyntaxList,
   T_ASC_SC_ROLE proposedRole = ASC_SC_ROLE_DEFAULT)
 {
   // create an array of supported/possible transfer syntaxes
-  const char** transferSyntaxes = new const char*[transferSyntaxList.size()];
+  const char **transferSyntaxes = new const char*[transferSyntaxList.size()];
   int transferSyntaxCount = 0;
   OFListConstIterator(OFString) s_cur = transferSyntaxList.begin();
   OFListConstIterator(OFString) s_end = transferSyntaxList.end();
@@ -1060,7 +1114,8 @@ addPresentationContext(T_ASC_Parameters *params,
 }
 
 static OFCondition
-addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopClasses)
+addStoragePresentationContexts(T_ASC_Parameters *params,
+  OFList<OFString> &sopClasses)
 {
   /*
    * Each SOP Class will be proposed in two presentation contexts (unless
@@ -1125,9 +1180,8 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
   if (!opt_proposeOnlyRequiredPresentationContexts) {
     // add the (short list of) known storage sop classes to the list
     // the array of Storage SOP Class UIDs comes from dcuid.h
-    for (int i=0; i<numberOfDcmShortSCUStorageSOPClassUIDs; i++) {
+    for (int i = 0; i < numberOfDcmShortSCUStorageSOPClassUIDs; i++)
       sopClasses.push_back(dcmShortSCUStorageSOPClassUIDs[i]);
-    }
   }
 
   // thin out the sop classes to remove any duplicates.
@@ -1149,7 +1203,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
   while (s_cur != s_end && cond.good()) {
 
     if (pid > 255) {
-      errmsg("Too many presentation contexts");
+      CERR << "Too many presentation contexts" << OFendl;
       return ASC_BADPRESENTATIONCONTEXTID;
     }
 
@@ -1164,13 +1218,13 @@ addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString>& sopCl
 
       if (fallbackSyntaxes.size() > 0) {
         if (pid > 255) {
-          errmsg("Too many presentation contexts");
+          CERR << "Too many presentation contexts" << OFendl;
           return ASC_BADPRESENTATIONCONTEXTID;
         }
 
         // sop class with fallback transfer syntax
         cond = addPresentationContext(params, pid, *s_cur, fallbackSyntaxes);
-        pid += 2;       /* only odd presentation context id's */
+        pid += 2; /* only odd presentation context id's */
       }
     }
     ++s_cur;
@@ -1204,7 +1258,7 @@ makeUID(OFString basePrefix, int counter)
 }
 
 static OFBool
-updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& value)
+updateStringAttributeValue(DcmItem *dataset, const DcmTagKey &key, OFString &value)
 {
   DcmStack stack;
   DcmTag tag(key);
@@ -1213,26 +1267,24 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
   cond = dataset->search(key, stack, ESM_fromHere, OFFalse);
   if (cond != EC_Normal) {
     CERR << "error: updateStringAttributeValue: cannot find: " << tag.getTagName()
-         << " " << key << ": "
-         << cond.text() << OFendl;
+         << " " << key << ": " << cond.text() << OFendl;
     return OFFalse;
   }
 
-  DcmElement* elem = (DcmElement*) stack.top();
+  DcmElement *elem = (DcmElement *)stack.top();
 
   DcmVR vr(elem->ident());
   if (elem->getLength() > vr.getMaxValueLength()) {
     CERR << "error: updateStringAttributeValue: INTERNAL ERROR: " << tag.getTagName()
-         << " " << key << ": value too large (max "
-        << vr.getMaxValueLength() << ") for " << vr.getVRName() << " value: " << value << OFendl;
+         << " " << key << ": value too large (max " << vr.getMaxValueLength()
+         << ") for " << vr.getVRName() << " value: " << value << OFendl;
     return OFFalse;
   }
 
   cond = elem->putOFStringArray(value);
   if (cond != EC_Normal) {
     CERR << "error: updateStringAttributeValue: cannot put string in attribute: " << tag.getTagName()
-         << " " << key << ": "
-         << cond.text() << OFendl;
+         << " " << key << ": " << cond.text() << OFendl;
     return OFFalse;
   }
 
@@ -1240,7 +1292,7 @@ updateStringAttributeValue(DcmItem* dataset, const DcmTagKey& key, OFString& val
 }
 
 static void
-replaceSOPInstanceInformation(DcmDataset* dataset)
+replaceSOPInstanceInformation(DcmDataset *dataset)
 {
   static OFCmdUnsignedInt patientCounter = 0;
   static OFCmdUnsignedInt studyCounter = 0;
@@ -1320,18 +1372,18 @@ progressCallback(void * /*callbackData*/,
   if (opt_verbose) {
     switch (progress->state) {
       case DIMSE_StoreBegin:
-        printf("XMIT:"); break;
+        COUT << "XMIT: "; break;
       case DIMSE_StoreEnd:
-        printf("\n"); break;
+        COUT << OFendl; break;
       default:
-        putchar('.'); break;
+        COUT << "."; break;
     }
-    fflush(stdout);
+    COUT.flush();
   }
 }
 
 static OFCondition
-storeSCU(T_ASC_Association * assoc, const char *fname)
+storeSCU(T_ASC_Association *assoc, const char *fname)
   /*
    * This function will read all the information from the given file,
    * figure out a corresponding presentation context which will be used
@@ -1354,8 +1406,8 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
   unsuccessfulStoreEncountered = OFTrue; // assumption
 
   if (opt_verbose) {
-    printf("--------------------------\n");
-    printf("Sending file: %s\n", fname);
+    COUT << "--------------------------" << OFendl;
+    COUT << "Sending file: " << fname << OFendl;
   }
 
   /* read information from file. After the call to DcmFileFormat::loadFile(...) the information */
@@ -1363,11 +1415,11 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
   /* In detail, it will be available through calls to DcmFileFormat::getMetaInfo() (for */
   /* meta header information) and DcmFileFormat::getDataset() (for data set information). */
   DcmFileFormat dcmff;
-  OFCondition cond = dcmff.loadFile(fname);
+  OFCondition cond = dcmff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, opt_readMode);
 
   /* figure out if an error occured while the file was read*/
   if (cond.bad()) {
-    errmsg("Bad DICOM file: %s: %s", fname, cond.text());
+    CERR << "Bad DICOM file: " << fname << ": " << cond.text() << OFendl;
     return cond;
   }
 
@@ -1379,7 +1431,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
   /* figure out which SOP class and SOP instance is encapsulated in the file */
   if (!DU_findSOPClassAndInstanceInDataSet(dcmff.getDataset(),
     sopClass, sopInstance, opt_correctUIDPadding)) {
-    errmsg("No SOP Class & Instance UIDs in file: %s", fname);
+      CERR << "No SOP Class or Instance UIDs in file: " << fname << OFendl;
       return DIMSE_BADDATA;
   }
 
@@ -1402,7 +1454,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     const char *modalityName = dcmSOPClassUIDToModality(sopClass);
     if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
     if (!modalityName) modalityName = "unknown SOP class";
-    errmsg("No presentation context for: (%s) %s", modalityName, sopClass);
+    CERR << "No presentation context for: (" << modalityName << ") " << sopClass << OFendl;
     return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
   }
 
@@ -1412,12 +1464,12 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     T_ASC_PresentationContext pc;
     ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
     DcmXfer netTransfer(pc.acceptedTransferSyntax);
-    printf("Transfer: %s -> %s\n",
-      dcmFindNameOfUID(fileTransfer.getXferID()), dcmFindNameOfUID(netTransfer.getXferID()));
+    COUT << "Transfer: " << dcmFindNameOfUID(fileTransfer.getXferID())
+         << " -> " << dcmFindNameOfUID(netTransfer.getXferID()) << OFendl;
   }
 
   /* prepare the transmission of data */
-  bzero((char*)&req, sizeof(req));
+  bzero((char *)&req, sizeof(req));
   req.MessageID = msgId;
   strcpy(req.AffectedSOPClassUID, sopClass);
   strcpy(req.AffectedSOPInstanceUID, sopInstance);
@@ -1425,9 +1477,8 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
   req.Priority = DIMSE_PRIORITY_LOW;
 
   /* if required, dump some more general information */
-  if (opt_verbose) {
-    printf("Store SCU RQ: MsgID %d, (%s)\n", msgId, dcmSOPClassUIDToModality(sopClass));
-  }
+  if (opt_verbose)
+    COUT << "Store SCU RQ: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")" << OFendl;
 
   /* finally conduct transmission of data */
   cond = DIMSE_storeUser(assoc, presId, &req,
@@ -1455,13 +1506,13 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
   }
   else
   {
-    errmsg("Store Failed, file: %s:", fname);
+    CERR << "Store Failed, file: " << fname << ":" << OFendl;
     DimseCondition::dump(cond);
   }
 
   /* dump status detail information if there is some */
   if (statusDetail != NULL) {
-    printf("  Status Detail:\n");
+    COUT << "  Status Detail:" << OFendl;
     statusDetail->print(COUT);
     delete statusDetail;
   }
@@ -1471,7 +1522,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 
 
 static OFCondition
-cstore(T_ASC_Association * assoc, const OFString& fname)
+cstore(T_ASC_Association *assoc, const OFString &fname)
   /*
    * This function will process the given file as often as is specified by opt_repeatCount.
    * "Process" in this case means "read file, send C-STORE-RQ, receive C-STORE-RSP".
@@ -1504,10 +1555,35 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 }
 
 
+static OFBool
+findSOPClassAndInstanceInFile(
+  const char *fname,
+  char *sopClass,
+  char *sopInstance)
+{
+    DcmFileFormat ff;
+    if (!ff.loadFile(fname, EXS_Unknown, EGL_noChange, DCM_MaxReadLength, opt_readMode).good())
+        return OFFalse;
+
+    /* look in the meta-header first */
+    OFBool found = DU_findSOPClassAndInstanceInDataSet(ff.getMetaInfo(), sopClass, sopInstance, opt_correctUIDPadding);
+
+    if (!found)
+      found = DU_findSOPClassAndInstanceInDataSet(ff.getDataset(), sopClass, sopInstance, opt_correctUIDPadding);
+
+    return found;
+}
+
+
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.67  2006-08-15 16:04:28  meichel
+** Revision 1.68  2007-03-12 14:29:05  joergr
+** Added support for searching directories recursively for DICOM files.
+** Added support for common "input file format" options.
+** Consistently use COUT and CERR instead of stdout and stderr.
+**
+** Revision 1.67  2006/08/15 16:04:28  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
@@ -1639,7 +1715,7 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 ** Updated copyright header.
 **
 ** Revision 1.31  2000/03/03 14:11:12  meichel
-** iImplemented library support for redirecting error messages into memory
+** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
 ** Revision 1.30  2000/02/29 11:49:50  meichel
