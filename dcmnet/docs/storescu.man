@@ -17,7 +17,7 @@ storescu [options] peer port dcmfile-in...
 The \b storescu application implements an SCU for the Storage Service Class.
 For each image file command line parameter it sends a C-STORE message to a
 Storage SCP and waits for a response.  The application can be used to transmit
-DICOM images.
+DICOM images and other DICOM composite objects.
 
 \section parameters PARAMETERS
 
@@ -26,7 +26,7 @@ peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
 
-dcmfile-in  DICOM file(s) to be transmitted
+dcmfile-in  DICOM file(s) or directories to be transmitted
 \endverbatim
 
 \section options OPTIONS
@@ -47,6 +47,36 @@ dcmfile-in  DICOM file(s) to be transmitted
 
   -d    --debug
           debug mode, print debug information
+\endverbatim
+
+\subsection input_options input options
+\verbatim
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input files:
+
+  +sd   --scan-directories
+          scan directories for input files (dcmfile-in)
+
+  -r    --no-recurse
+          do not recurse within directories (default)
+
+  +r    --recurse
+          recurse within specified directories
+
+  +p    --pattern  [p]attern : string (only with --scan-directories)
+          pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
 \endverbatim
 
 \subsection network_options network options
@@ -150,7 +180,7 @@ other network options:
         --abort
           abort association instead of releasing it
 
-        --no-halt
+  -nh   --no-halt
           do not halt if unsuccessful store encountered
           (default: do halt)
 
@@ -169,8 +199,8 @@ other network options:
           (default: 50)
 
   +IP   --invent-patient  [n]umber: integer (implies --invent-instance)
-          invent a new patient ID and name after n studies have
-          been sent (default: 25)
+          invent a new patient ID and name after n studies have been sent
+          (default: 25)
 \endverbatim
 
 \subsection tls_options transport layer security (TLS) options
@@ -386,7 +416,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
