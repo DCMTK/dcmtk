@@ -39,16 +39,16 @@
 **                 Mallinckrodt Institute of Radiology
 **              Washington University School of Medicine
 **
-** Module Name(s):      parseAssociate
-**                      parseDebug
-** Author, Date:        Stephen M. Moore, 15-Apr-93
-** Intent:              This file contains functions for parsing Dicom
-**                      Upper Layer (DUL) Protocol Data Units (PDUs)
-**                      into logical in-memory structures.
-** Last Update:         $Author: meichel $, $Date: 2006-08-15 16:04:29 $
-** Source File:         $RCSfile: dulparse.cc,v $
-** Revision:            $Revision: 1.25 $
-** Status:              $State: Exp $
+** Module Name(s):  parseAssociate
+**                  parseDebug
+** Author, Date:    Stephen M. Moore, 15-Apr-93
+** Intent:          This file contains functions for parsing Dicom
+**                  Upper Layer (DUL) Protocol Data Units (PDUs)
+**                  into logical in-memory structures.
+** Last Update:     $Author: joergr $, $Date: 2007-03-12 13:27:53 $
+** Source File:     $RCSfile: dulparse.cc,v $
+** Revision:        $Revision: 1.26 $
+** Status:          $State: Exp $
 */
 
 
@@ -179,9 +179,12 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 **      This function is only supposed to parse A-ASSOCIATE PDUs and
 **      expects its input to have been properly screened.
 */
-        DEBUG_DEVICE << "PDU type: " << hex << ((unsigned int)assoc->type) << dec
-        << " (" << s << "), PDU Length: " << assoc->length << OFendl
-            << "DICOM Protocol: " << hex << assoc->protocol << dec << OFendl
+        DEBUG_DEVICE << "PDU type: "
+            << STD_NAMESPACE hex << ((unsigned int)assoc->type)
+            << STD_NAMESPACE dec << " (" << s << "), PDU Length: " << assoc->length << OFendl
+            << "DICOM Protocol: "
+            << STD_NAMESPACE hex << assoc->protocol
+            << STD_NAMESPACE dec << OFendl
             << "Called AP Title:  " << assoc->calledAPTitle << OFendl
             << "Calling AP Title: " << assoc->callingAPTitle << OFendl;
     }
@@ -191,10 +194,10 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
         type = *buf;
 #ifdef DEBUG
         if (debug) {
-            DEBUG_DEVICE << "Parsing remaining " << pduLength
-            << " bytes of A-ASSOCIATE PDU" << OFendl
-            << "Next item type: ";
-        DEBUG_DEVICE << hex << setfill('0') << setw(2) << ((unsigned int)type) << dec << OFendl;
+            DEBUG_DEVICE << "Parsing remaining " << pduLength << " bytes of A-ASSOCIATE PDU" << OFendl
+                << "Next item type: "
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)type)
+                << STD_NAMESPACE dec << OFendl;
         }
 #endif
         switch (type) {
@@ -310,8 +313,10 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-        DEBUG_DEVICE << "Subitem parse: Type " << hex << setfill('0') << setw(2) << ((unsigned int)subItem->type) << dec << ", Length ";
-        DEBUG_DEVICE << setw(4) << (int)subItem->length << ", Content: " << subItem->data << OFendl;
+        DEBUG_DEVICE << "Subitem parse: Type "
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)subItem->type)
+            << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)subItem->length
+            << ", Content: " << subItem->data << OFendl;
     }
 #endif
     return EC_Normal;
@@ -369,10 +374,11 @@ parsePresentationContext(unsigned char type,
 #ifdef DEBUG
     if (debug) {
         DEBUG_DEVICE << "Parsing Presentation Context: ("
-            << hex << setfill('0') << setw(2) << (unsigned int)context->type << dec
-            << "), Length: " << (unsigned long)context->length << OFendl
-            << "Presentation Context ID: ";
-        DEBUG_DEVICE << hex << setfill('0') << setw(2) << (unsigned int)context->contextID << dec << OFendl;
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)context->type
+            << STD_NAMESPACE dec << "), Length: " << (unsigned long)context->length << OFendl
+            << "Presentation Context ID: "
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)context->contextID
+            << STD_NAMESPACE dec << OFendl;
     }
 #endif
     presentationLength = length - 4;
@@ -381,9 +387,10 @@ parsePresentationContext(unsigned char type,
         while (presentationLength > 0) {
 #ifdef DEBUG
             if (debug) {
-              DEBUG_DEVICE << "Parsing remaining " << presentationLength
-                << " bytes of Presentation Ctx" << OFendl;
-              DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << OFendl;
+                DEBUG_DEVICE << "Parsing remaining " << presentationLength << " bytes of Presentation Ctx" << OFendl
+                    << "Next item type: "
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf
+                    << STD_NAMESPACE dec << OFendl;
             }
 #endif
             switch (*buf) {
@@ -469,16 +476,17 @@ parseUserInfo(DUL_USERINFO * userInfo,
 #ifdef DEBUG
     if (debug) {
         DEBUG_DEVICE << "Parsing user info field ("
-            << hex << setfill('0') << setw(2) << (unsigned int)userInfo->type << dec << "), Length: "
-            << (unsigned long)userInfo->length << OFendl;
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)userInfo->type
+            << STD_NAMESPACE dec << "), Length: " << (unsigned long)userInfo->length << OFendl;
     }
 #endif
     while (userLength > 0) {
 #ifdef DEBUG
         if (debug) {
-            DEBUG_DEVICE << "Parsing remaining " << (long)userLength
-            << " bytes of User Information" << OFendl;
-            DEBUG_DEVICE << "Next item type: " << hex << setfill('0') << setw(2) << (unsigned int)*buf << dec << OFendl;
+            DEBUG_DEVICE << "Parsing remaining " << (long)userLength << " bytes of User Information" << OFendl
+                << "Next item type: "
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*buf
+                << STD_NAMESPACE dec << OFendl;
         }
 #endif
         switch (*buf) {
@@ -666,10 +674,10 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 
 #ifdef DEBUG
     if (debug) {
-      DEBUG_DEVICE << "Subitem parse: Type "
-        << hex << setfill('0') << setw(2) << (unsigned int)role->type << dec << ", Length ";
-      DEBUG_DEVICE << setw(4) << (int)role->length << ", Content: " << role->SOPClassUID
-        << " " << (int)role->SCURole << " " << (int)role->SCPRole << OFendl;
+        DEBUG_DEVICE << "Subitem parse: Type "
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)role->type
+            << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)role->length
+            << ", Content: " << role->SOPClassUID << " " << (int)role->SCURole << " " << (int)role->SCPRole << OFendl;
     }
 #endif
     return EC_Normal;
@@ -713,13 +721,15 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 #ifdef DEBUG
     if (debug) {
         DEBUG_DEVICE << "ExtNeg Subitem parse: Type "
-            << hex << setfill('0') << setw(2) << (unsigned int)extNeg->itemType << dec << ", Length ";
-        DEBUG_DEVICE << setw(4) << (int)extNeg->itemLength << ", SOP Class: "
-            << extNeg->sopClassUID.c_str() << OFendl;
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)extNeg->itemType
+            << STD_NAMESPACE dec << ", Length " << STD_NAMESPACE setw(4) << (int)extNeg->itemLength
+            << ", SOP Class: " << extNeg->sopClassUID.c_str() << OFendl;
 
         DEBUG_DEVICE << "   values: ";
         for (int j=0; j<extNeg->serviceClassAppInfoLength; j++) {
-            DEBUG_DEVICE << hex << setfill('0') << setw(2) << extNeg->serviceClassAppInfo[j] << dec << " ";
+            DEBUG_DEVICE
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << extNeg->serviceClassAppInfo[j]
+                << STD_NAMESPACE dec << " ";
         }
         DEBUG_DEVICE << OFendl;
     }
@@ -767,7 +777,11 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.25  2006-08-15 16:04:29  meichel
+** Revision 1.26  2007-03-12 13:27:53  joergr
+** Updated debug code to correctly compile when all standard C++ classes remain
+** in namespace std.
+**
+** Revision 1.25  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

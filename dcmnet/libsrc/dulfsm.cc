@@ -43,13 +43,13 @@
 **			PRV_StateMachine
 **			fsmDebug
 **
-** Author, Date:	Stephen M. Moore, 15-Apr-93
-** Intent:		Define tables and provide functions that implement
-**			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2006-08-15 16:04:29 $
-** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.60 $
-** Status:		$State: Exp $
+** Author, Date:  Stephen M. Moore, 15-Apr-93
+** Intent:		  Define tables and provide functions that implement
+**			      the DICOM Upper Layer (DUL) finite state machine.
+** Last Update:	  $Author: joergr $, $Date: 2007-03-12 13:27:53 $
+** Source File:	  $RCSfile: dulfsm.cc,v $
+** Revision:	  $Revision: 1.61 $
+** Status:		  $State: Exp $
 */
 
 
@@ -1969,7 +1969,7 @@ AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
         (*association)->modeCallback->callback(mode);
       }
     }
-    
+
     closeTransport(association);
     (*association)->protocolState = nextState;
     return DUL_PEERABORTEDASSOCIATION;
@@ -3335,7 +3335,7 @@ readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
 
     /* read PDU body information */
     cond = readPDUBodyTCP(association, block, timeout, buffer, maxLength,
-                              pduType, pduReserved, pduLength);
+                          pduType, pduReserved, pduLength);
 
     /* indicate that the association does not contain PDU information any more */
     /* (in detail we indicate that the association can be used to store new PDU */
@@ -3416,9 +3416,10 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
         DEBUG_DEVICE << "Read PDU HEAD TCP: ";
         for (idx = 0; idx < 6; idx++)
         {
-            DEBUG_DEVICE << hex << " " << setfill('0') << setw(2) << (unsigned short)(buffer[idx]);
+            DEBUG_DEVICE
+                << STD_NAMESPACE hex << " " << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned short)(buffer[idx]);
         }
-        DEBUG_DEVICE << dec << OFendl;
+        DEBUG_DEVICE << STD_NAMESPACE dec << OFendl;
     }
 #endif
 
@@ -3451,9 +3452,14 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 #ifdef DEBUG
     /* dump some information if required */
     if (debug) {
-            DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << setfill('0') << setw(2) << (unsigned short)(*type)
-            << ", length: " << dec << (*pduLength)
-            << " (" << hex << setfill('0') << setw(2) << (unsigned int)*pduLength << ")" << dec << OFendl;
+            DEBUG_DEVICE << "Read PDU HEAD TCP: type: "
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned short)(*type)
+                << ", length: "
+                << STD_NAMESPACE dec << (*pduLength)
+                << " ("
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << (unsigned int)*pduLength
+                << ")"
+                << STD_NAMESPACE dec << OFendl;
         }
 #endif
 
@@ -3585,8 +3591,8 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
     if (connection == NULL) return DUL_NULLKEY;
 
     int timeToWait = 0;
-    if (block == DUL_NOBLOCK) 
-    {       
+    if (block == DUL_NOBLOCK)
+    {
         /* figure out how long we want to wait: if timerStart equals 0 we want to wait exactly */
         /* timeout seconds starting from the call to select(...) within the below called function; */
         /* if timerStart does not equal 0 we want to substract the time which has already passed */
@@ -3597,27 +3603,27 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
 
     /* start a loop: since we want to receive l bytes of data over the network, */
     /* we won't stop waiting for data until we actually did receive l bytes. */
-    while (l > 0) 
+    while (l > 0)
     {
         /* receive data from the network connection; wait until */
         /* we actually did receive data or an error occured */
-        do 
+        do
         {
-            /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain 
-             * time for receiving data over the network. If no data was received during that time, 
-             * DUL_READTIMEOUT shall be returned. Note that if DUL_BLOCK is specified the application 
-             * will not stop waiting until data is actually received over the network. 
+            /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain
+             * time for receiving data over the network. If no data was received during that time,
+             * DUL_READTIMEOUT shall be returned. Note that if DUL_BLOCK is specified the application
+             * will not stop waiting until data is actually received over the network.
              */
-            if (block == DUL_NOBLOCK) 
+            if (block == DUL_NOBLOCK)
             {
                 /* determine remaining time to wait */
                 timeToWait = timeout - (int) (time(NULL) - timerStart);
-            
+
                 /* go ahead and see if within timeout seconds data will be received over the network. */
                 /* if not, return DUL_READTIMEOUT, if yes, stay in this function. */
                 if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
             }
-  
+
             /* data has become available, now call read(). */
             bytesRead = connection->read((char*)b, size_t(l));
 
@@ -3673,7 +3679,9 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
     p = (unsigned char*)buffer;
 
     while (length-- > 0) {
-        DEBUG_DEVICE << "  " << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)(*p++)) << STD_NAMESPACE dec;
+        DEBUG_DEVICE << "  "
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << ((unsigned int)(*p++))
+            << STD_NAMESPACE dec;
         if ((++position) % 16 == 0) DEBUG_DEVICE << OFendl;
     }
     DEBUG_DEVICE << OFendl;
@@ -3939,7 +3947,11 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.60  2006-08-15 16:04:29  meichel
+** Revision 1.61  2007-03-12 13:27:53  joergr
+** Updated debug code to correctly compile when all standard C++ classes remain
+** in namespace std.
+**
+** Revision 1.60  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
