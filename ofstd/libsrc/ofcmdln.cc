@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-21 12:41:52 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:20:44 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,6 +203,10 @@ OFCommandLine::~OFCommandLine()
     const OFListIterator(OFCmdOption *) last_o = ValidOptionList.end();
     while (first_o != last_o)
     {
+        /* avoid wrong warning message */
+        if (ExclusiveOption)
+            (*first_o)->Checked = OFTrue;
+        /* delete object and remove from list */
         delete (*first_o);
         first_o = ValidOptionList.erase(first_o);
     }
@@ -1032,7 +1036,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
     }
     if (getArgCount() == 0)
         return PS_NoArguments;
-    else if  (hasExclusiveOption())
+    else if (hasExclusiveOption())
         return PS_ExclusiveOption;
     else if (getParamCount() < MinParamCount)
         return PS_MissingParameter;
@@ -1474,7 +1478,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.40  2006-08-21 12:41:52  meichel
+ * Revision 1.41  2007-03-16 11:20:44  joergr
+ * Fixed wrong warning messge about unchecked options in debug mode.
+ *
+ * Revision 1.40  2006/08/21 12:41:52  meichel
  * Updated code to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

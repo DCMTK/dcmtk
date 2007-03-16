@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.03.16 (riesmeier)
+
+- Fixed wrong warning messge about unchecked options in debug mode.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2007.03.12 (riesmeier)
 
 - Consistently use COUT and CERR instead of stdout and stderr.
