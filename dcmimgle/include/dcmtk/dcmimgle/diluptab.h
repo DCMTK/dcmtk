@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomLookupTable (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:45 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:56:06 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,14 +70,14 @@ class DiLookupTable
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *  @param  status       pointer to image status variable (optional)
      */
     DiLookupTable(const DiDocument *docu,
                   const DcmTagKey &descriptor,
                   const DcmTagKey &data,
                   const DcmTagKey &explanation,
-                  const OFBool ignoreDepth = OFFalse,
+                  const EL_BitsPerTableEntry descripMode = ELM_UseValue,
                   EI_Status *status = NULL);
 
     /** constructor
@@ -87,7 +87,7 @@ class DiLookupTable
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *  @param  pos          position in the LUT sequence which should be used (optional)
      *  @param  card         pointer to storage area where the number of sequence entries
      *                       should be stored (optional)
@@ -97,7 +97,7 @@ class DiLookupTable
                   const DcmTagKey &descriptor,
                   const DcmTagKey &data,
                   const DcmTagKey &explanation,
-                  const OFBool ignoreDepth = OFFalse,
+                  const EL_BitsPerTableEntry descripMode = ELM_UseValue,
                   const unsigned long pos = 0,
                   unsigned long *card = NULL);
 
@@ -106,14 +106,14 @@ class DiLookupTable
      ** @param  data         element containing the LUT data
      *  @param  descriptor   element containing the LUT descriptor
      *  @param  explanation  element containing the LUT explanation (optional)
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *  @param  first        expected value for "first input value mapped" (optional)
      *  @param  status       pointer to image status variable (optional)
      */
     DiLookupTable(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
                   const DcmLongString *explanation = NULL,
-                  const OFBool ignoreDepth = OFFalse,
+                  const EL_BitsPerTableEntry descripMode = ELM_UseValue,
                   const signed long first = -1,
                   EI_Status *status = NULL);
 
@@ -206,7 +206,7 @@ class DiLookupTable
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *  @param  status       pointer to image status variable (optional)
      */
     void Init(const DiDocument *docu,
@@ -214,19 +214,19 @@ class DiLookupTable
               const DcmTagKey &descriptor,
               const DcmTagKey &data,
               const DcmTagKey &explanation,
-              const OFBool ignoreDepth = OFFalse,
+              const EL_BitsPerTableEntry descripMode = ELM_UseValue,
               EI_Status *status = NULL);
 
     /** check (and possibly correct) lookup table for consistency
      *
      ** @param  count        number of LUT entries
      *  @param  bits         bits per LUT entry
-     *  @param  ignoreDepth  ignore 'bits' value, determine depth automatically
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *  @param  status       pointer to image status variable (optional)
      */
     void checkTable(unsigned long count,
                     Uint16 bits,
-                    const OFBool ignoreDepth = OFFalse,
+                    const EL_BitsPerTableEntry descripMode = ELM_UseValue,
                     EI_Status *status = NULL);
 
     /** check (and possibly correct) value for bits per LUT entry.
@@ -237,12 +237,12 @@ class DiLookupTable
      ** @param  bits         actual value for bits per entry
      *  @param  rightBits    right value (8 or 16)
      *  @param  wrongBits    wrong value (8 or 16)
-     *  @param  ignoreDepth  ignore 'bits' value, determine depth automatically
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      */
     void checkBits(const Uint16 bits,
                    const Uint16 rightBits,
                    const Uint16 wrongBits = 0,
-                   const OFBool ignoreDepth = OFFalse);
+                   const EL_BitsPerTableEntry descripMode = ELM_UseValue);
 
  private:
 
@@ -265,7 +265,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.24  2005-12-08 16:47:45  meichel
+ * Revision 1.25  2007-03-16 11:56:06  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.24  2005/12/08 16:47:45  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.23  2003/12/17 16:17:29  joergr

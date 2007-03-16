@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-08 17:08:21 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2007-03-16 11:51:43 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1148,11 +1148,11 @@ int DiMonoImage::getWindow(double &center, double &width)
 int DiMonoImage::setVoiLut(const DcmUnsignedShort &data,
                            const DcmUnsignedShort &descriptor,
                            const DcmLongString *explanation,
-                           const OFBool ignoreDepth)
+                           const EL_BitsPerTableEntry descripMode)
 {
     if (VoiLutData != NULL)
         VoiLutData->removeReference();
-    VoiLutData = new DiLookupTable(data, descriptor, explanation, ignoreDepth);
+    VoiLutData = new DiLookupTable(data, descriptor, explanation, descripMode);
     if (VoiLutData != NULL)
     {
         VoiExplanation = VoiLutData->getExplanation();
@@ -1164,14 +1164,14 @@ int DiMonoImage::setVoiLut(const DcmUnsignedShort &data,
 
 
 int DiMonoImage::setVoiLut(const unsigned long pos,
-                           const OFBool ignoreDepth)
+                           const EL_BitsPerTableEntry descripMode)
 {
     if (!(Document->getFlags() & CIF_UsePresentationState))
     {
         if (VoiLutData != NULL)
             VoiLutData->removeReference();
         VoiLutData = new DiLookupTable(Document, DCM_VOILUTSequence, DCM_LUTDescriptor, DCM_LUTData,
-            DCM_LUTExplanation, ignoreDepth, pos, &VoiLutCount);
+            DCM_LUTExplanation, descripMode, pos, &VoiLutCount);
         if (VoiLutData != NULL)
         {
             VoiExplanation = VoiLutData->getExplanation();
@@ -1272,11 +1272,11 @@ int DiMonoImage::setPresentationLutShape(const ES_PresentationLut shape)
 int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
                                     const DcmUnsignedShort &descriptor,
                                     const DcmLongString *explanation,
-                                    const OFBool ignoreDepth)
+                                    const EL_BitsPerTableEntry descripMode)
 {
     if (PresLutData != NULL)
         PresLutData->removeReference();
-    PresLutData = new DiLookupTable(data, descriptor, explanation, ignoreDepth, 0);
+    PresLutData = new DiLookupTable(data, descriptor, explanation, descripMode, 0);
     if (PresLutData != NULL)
     {
         PresLutShape = ESP_Default;
@@ -1288,13 +1288,13 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
 
 int DiMonoImage::setInversePresentationLut(const DcmUnsignedShort &data,
                                            const DcmUnsignedShort &descriptor,
-                                           const OFBool ignoreDepth)
+                                           const EL_BitsPerTableEntry descripMode)
 {
     int status = 0;
     if (PresLutData != NULL)
         PresLutData->removeReference();
     PresLutData = NULL;
-    DiLookupTable *lut = new DiLookupTable(data, descriptor, NULL, ignoreDepth, 0);
+    DiLookupTable *lut = new DiLookupTable(data, descriptor, NULL, descripMode, 0);
     if ((lut != NULL) && (lut->isValid()))
     {
         PresLutData = lut->createInverseLUT();
@@ -2134,7 +2134,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.67  2007-02-08 17:08:21  joergr
+ * Revision 1.68  2007-03-16 11:51:43  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.67  2007/02/08 17:08:21  joergr
  * Added lower limit check in DiMonoImage::writeImageToDataset() calculating
  * the value for bits stored.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:56:06 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,27 +279,25 @@ class DiMonoImage
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
      *  @param  explanation  free form description of VOI LUT (optional)
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     int setVoiLut(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
                   const DcmLongString *explanation,
-                  const OFBool ignoreDepth = OFFalse);
+                  const EL_BitsPerTableEntry descripMode = ELM_UseValue);
 
     /** set VOI LUT (given by index to VOI LUT sequence stored in image file).
      *  possibly active window/center is implicitly disabled.
      *
      ** @param  pos          index to VOI LUT sequence
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     int setVoiLut(const unsigned long pos,
-                  const OFBool ignoreDepth = OFFalse);
+                  const EL_BitsPerTableEntry descripMode = ELM_UseValue);
 
     /** get number of VOI LUTs (stored in image file)
      *
@@ -391,15 +389,14 @@ class DiMonoImage
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
      *  @param  explanation  free form description of presentation LUT (optional)
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     int setPresentationLut(const DcmUnsignedShort &data,
                            const DcmUnsignedShort &descriptor,
                            const DcmLongString *explanation = NULL,
-                           const OFBool ignoreDepth = OFFalse);
+                           const EL_BitsPerTableEntry descripMode = ELM_UseValue);
 
     /** set inverse LUT for presentation transformation.
      *  this LUT transform is e.g. used for DICOM print (12->8, 8->12 bit)
@@ -407,14 +404,13 @@ class DiMonoImage
      *
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     int setInversePresentationLut(const DcmUnsignedShort &data,
                                   const DcmUnsignedShort &descriptor,
-                                  const OFBool ignoreDepth = OFFalse);
+                                  const EL_BitsPerTableEntry descripMode = ELM_UseValue);
 
     /** get description of active presentation LUT
      *
@@ -1143,7 +1139,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.48  2006-08-15 16:30:11  meichel
+ * Revision 1.49  2007-03-16 11:56:06  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.48  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeModality (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:51:15 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,8 +68,13 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) != 0) &&
                 (strcmp(sopClassUID, UID_XRayFluoroscopyImageStorage) != 0)))
             {
+                EL_BitsPerTableEntry descMode = ELM_UseValue;
+                if (docu->getFlags() & CIF_IgnoreModalityLutBitDepth)
+                    descMode = ELM_IgnoreValue;
+                else if (docu->getFlags() & CIF_CheckLutBitDepth)
+                    descMode = ELM_CheckValue;
                 TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData,
-                    DCM_LUTExplanation, (docu->getFlags() & CIF_IgnoreModalityLutBitDepth) > 0);
+                    DCM_LUTExplanation, descMode);
                 checkTable();
                 Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
                 Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
@@ -137,7 +142,12 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
 {
     if (Init(docu, pixel))
     {
-        TableData = new DiLookupTable(data, descriptor, explanation, (docu->getFlags() & CIF_IgnoreModalityLutBitDepth) > 0);
+        EL_BitsPerTableEntry descMode = ELM_UseValue;
+        if (docu->getFlags() & CIF_IgnoreModalityLutBitDepth)
+            descMode = ELM_IgnoreValue;
+        else if (docu->getFlags() & CIF_CheckLutBitDepth)
+            descMode = ELM_CheckValue;
+        TableData = new DiLookupTable(data, descriptor, explanation, descMode);
         checkTable();
         Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
@@ -253,7 +263,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                     MaxValue = MaxValue * RescaleSlope + RescaleIntercept;
                     AbsMinimum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
                     AbsMaximum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
-                }                
+                }
                 Bits = DicomImageClass::rangeToBits(AbsMinimum, AbsMaximum);
             }
         }
@@ -265,7 +275,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.22  2006-08-15 16:30:11  meichel
+ * Revision 1.23  2007-03-16 11:51:15  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.22  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

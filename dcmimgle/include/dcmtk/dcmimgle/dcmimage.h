@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:56:05 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -679,18 +679,17 @@ class DicomImage
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
      *  @param  explanation  free form description of VOI LUT (optional)
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     inline int setVoiLut(const DcmUnsignedShort &data,
                          const DcmUnsignedShort &descriptor,
                          const DcmLongString *explanation = NULL,
-                         const OFBool ignoreDepth = OFFalse)
+                         const EL_BitsPerTableEntry descripMode = ELM_UseValue)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setVoiLut(data, descriptor, explanation, ignoreDepth) : 0;
+            Image->getMonoImagePtr()->setVoiLut(data, descriptor, explanation, descripMode) : 0;
     }
 
     /** set VOI LUT (given by index to VOI LUT sequence stored in image file).
@@ -698,16 +697,15 @@ class DicomImage
      *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
      ** @param  table  index to VOI LUT sequence (0..n-1)
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
     inline int setVoiLut(const unsigned long table,
-                         const OFBool ignoreDepth = OFFalse)
+                         const EL_BitsPerTableEntry descripMode = ELM_UseValue)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setVoiLut(table, ignoreDepth) : 0;
+            Image->getMonoImagePtr()->setVoiLut(table, descripMode) : 0;
     }
 
     /** get number of VOI LUTs (stored in image file)
@@ -855,18 +853,17 @@ class DicomImage
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
      *  @param  explanation  free form description of presentation LUT (optional)
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     inline int setPresentationLut(const DcmUnsignedShort &data,
                                   const DcmUnsignedShort &descriptor,
                                   const DcmLongString *explanation = NULL,
-                                  const OFBool ignoreDepth = OFFalse)
+                                  const EL_BitsPerTableEntry descripMode = ELM_UseValue)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setPresentationLut(data, descriptor, explanation, ignoreDepth) : 0;
+            Image->getMonoImagePtr()->setPresentationLut(data, descriptor, explanation, descripMode) : 0;
     }
 
     /** get description of active presentation LUT
@@ -885,17 +882,16 @@ class DicomImage
      *
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
-     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
-     *                       Determine bits per table entry automatically from max value.
+     *  @param  descripMode  mode specifying the use of the bits per table entry value
      *
      ** @return true if successful, false otherwise
      */
     inline int setInversePresentationLut(const DcmUnsignedShort &data,
                                          const DcmUnsignedShort &descriptor,
-                                         const OFBool ignoreDepth = OFFalse)
+                                         const EL_BitsPerTableEntry descripMode = ELM_UseValue)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setInversePresentationLut(data, descriptor, ignoreDepth) : 0;
+            Image->getMonoImagePtr()->setInversePresentationLut(data, descriptor, descripMode) : 0;
     }
 
  // --- overlays: return true (!0) if successful (see also 'diovlay.cc')
@@ -1824,7 +1820,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.56  2006-08-15 16:30:11  meichel
+ * Revision 1.57  2007-03-16 11:56:05  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.56  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

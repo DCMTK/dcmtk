@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:12 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:56:06 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,9 @@ const unsigned long CIF_IgnoreModalityTransformation = 0x0000040;
 
 /// ignore third value of the modality LUT descriptor, determine bit depth automatically
 const unsigned long CIF_IgnoreModalityLutBitDepth    = 0x0000080;
+
+/// check third value of the LUT descriptor, compare with with expected bit depth based on LUT data
+const unsigned long CIF_CheckLutBitDepth             = 0x0000100;
 //@}
 
 
@@ -234,7 +237,7 @@ enum EM_Overlay
     EMO_Complement,
     /// invert the overlay bitmap
     EMO_InvertBitmap,
-    /// region of interest (ROI) 
+    /// region of interest (ROI)
     EMO_RegionOfInterest,
     /// bitmap shutter, used for GSPS objects
     EMO_BitmapShutter
@@ -264,6 +267,20 @@ enum EP_Polarity
     EPP_Normal,
     /// REVERSE (opposite polarity)
     EPP_Reverse
+};
+
+
+/** bits per table entry modes.
+ *  Specifies whether the given value in the LUT descriptor is used.
+ */
+enum EL_BitsPerTableEntry
+{
+    /// use given value
+    ELM_UseValue,
+    /// ignore given value, use auto detection
+    ELM_IgnoreValue,
+    /// check whether given value is consistent with LUT data
+    ELM_CheckValue
 };
 
 
@@ -425,7 +442,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.31  2005-12-08 16:48:12  meichel
+ * Revision 1.32  2007-03-16 11:56:06  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.31  2005/12/08 16:48:12  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.30  2005/03/09 17:29:42  joergr
