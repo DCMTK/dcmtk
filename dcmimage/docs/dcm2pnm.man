@@ -264,6 +264,10 @@ compatibility options:
           accept incorrect palette attribute tags
           (0028,111x) and (0028,121x)
 
+  +Mc   --check-lut-depth
+          check 3rd value of the LUT descriptor, compare
+          with expected bit depth based on LUT data
+
   +Mm   --ignore-mlut-depth
           ignore 3rd value of the modality LUT descriptor,
           determine bits per table entry automatically
@@ -423,7 +427,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1998-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
