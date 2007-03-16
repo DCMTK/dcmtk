@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomLookupTable (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:52:34 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,14 +51,14 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &descriptor,
                              const DcmTagKey &data,
                              const DcmTagKey &explanation,
-                             const OFBool ignoreDepth,
+                             const EL_BitsPerTableEntry descripMode,
                              EI_Status *status)
   : DiBaseLUT(),
     OriginalBitsAllocated(16),
     OriginalData(NULL)
 {
     if (docu != NULL)
-        Init(docu, NULL, descriptor, data, explanation, ignoreDepth, status);
+        Init(docu, NULL, descriptor, data, explanation, descripMode, status);
 }
 
 
@@ -67,7 +67,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &descriptor,
                              const DcmTagKey &data,
                              const DcmTagKey &explanation,
-                             const OFBool ignoreDepth,
+                             const EL_BitsPerTableEntry descripMode,
                              const unsigned long pos,
                              unsigned long *card)
   : DiBaseLUT(),
@@ -84,7 +84,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
         if ((seq != NULL) && (pos < count))
         {
             DcmItem *item = seq->getItem(pos);
-            Init(docu, item, descriptor, data, explanation, ignoreDepth);
+            Init(docu, item, descriptor, data, explanation, descripMode);
         }
     }
 }
@@ -93,7 +93,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
 DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                              const DcmUnsignedShort &descriptor,
                              const DcmLongString *explanation,
-                             const OFBool ignoreDepth,
+                             const EL_BitsPerTableEntry descripMode,
                              const signed long first,
                              EI_Status *status)
   : DiBaseLUT(),
@@ -120,7 +120,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));                             // store pointer to original data
         if (explanation != NULL)
             DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, explanation), Explanation); // explanation (free form text)
-        checkTable(count, us, ignoreDepth, status);
+        checkTable(count, us, descripMode, status);
      } else {
         if (status != NULL)
         {
@@ -169,7 +169,7 @@ void DiLookupTable::Init(const DiDocument *docu,
                          const DcmTagKey &descriptor,
                          const DcmTagKey &data,
                          const DcmTagKey &explanation,
-                         const OFBool ignoreDepth,
+                         const EL_BitsPerTableEntry descripMode,
                          EI_Status *status)
 {
     Uint16 us = 0;
@@ -182,7 +182,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         OriginalData = OFstatic_cast(void *, OFconst_cast(Uint16 *, Data));  // store pointer to original data
         if (explanation != DcmTagKey(0, 0))
             docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);     // explanation (free form text)
-        checkTable(count, us, ignoreDepth, status);
+        checkTable(count, us, descripMode, status);
     } else {
         if (status != NULL)
         {
@@ -205,7 +205,7 @@ void DiLookupTable::Init(const DiDocument *docu,
 
 void DiLookupTable::checkTable(unsigned long count,
                                Uint16 bits,
-                               const OFBool ignoreDepth,
+                               const EL_BitsPerTableEntry descripMode,
                                EI_Status *status)
 {
     if (count > 0)                                                            // valid LUT
@@ -275,7 +275,7 @@ void DiLookupTable::checkTable(unsigned long count,
                 if (value > MaxValue)                                         // get global maximum
                     MaxValue = value;
             }
-            checkBits(bits, 8, 0, ignoreDepth);                               // set 'Bits'
+            checkBits(bits, 8, 0, descripMode);                               // set 'Bits'
         } else {
             int cmp = 0;
             for (i = Count; i != 0; --i)
@@ -289,9 +289,9 @@ void DiLookupTable::checkTable(unsigned long count,
                     MaxValue = value;
             }
             if (cmp == 0)                                                     // lo-byte is always equal to hi-byte
-                checkBits(bits, MIN_TABLE_ENTRY_SIZE, MAX_TABLE_ENTRY_SIZE, ignoreDepth);  // set 'Bits'
+                checkBits(bits, MIN_TABLE_ENTRY_SIZE, MAX_TABLE_ENTRY_SIZE, descripMode);  // set 'Bits'
             else
-                checkBits(bits, MAX_TABLE_ENTRY_SIZE, MIN_TABLE_ENTRY_SIZE, ignoreDepth);
+                checkBits(bits, MAX_TABLE_ENTRY_SIZE, MIN_TABLE_ENTRY_SIZE, descripMode);
         }
         Uint16 mask = OFstatic_cast(Uint16, DicomImageClass::maxval(Bits));   // mask lo-byte (8) or full word (16)
         if (((MinValue & mask) != MinValue) || ((MaxValue & mask) != MaxValue))
@@ -336,10 +336,10 @@ void DiLookupTable::checkTable(unsigned long count,
 void DiLookupTable::checkBits(const Uint16 bits,
                               const Uint16 rightBits,
                               const Uint16 wrongBits,
-                              const OFBool ignoreDepth)
+                              const EL_BitsPerTableEntry descripMode)
 {
     /* is stored bit depth out of range? */
-    if (ignoreDepth || (bits < MIN_TABLE_ENTRY_SIZE) || (bits > MAX_TABLE_ENTRY_SIZE))
+    if ((descripMode == ELM_IgnoreValue) || (bits < MIN_TABLE_ENTRY_SIZE) || (bits > MAX_TABLE_ENTRY_SIZE))
     {
         /* check whether correct bit depth can be determined automatically */
         Bits = (MaxValue > 0) ? DicomImageClass::tobits(MaxValue, 0) : bits;
@@ -351,7 +351,7 @@ void DiLookupTable::checkBits(const Uint16 bits,
         /* check whether value has changed? */
         if (bits != Bits)
         {
-            if (ignoreDepth)
+            if (descripMode == ELM_IgnoreValue)
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
@@ -370,7 +370,7 @@ void DiLookupTable::checkBits(const Uint16 bits,
             }
         }
     }
-    else if (bits == wrongBits)
+    else if ((descripMode == ELM_CheckValue) && (bits == wrongBits))
     {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
         {
@@ -617,7 +617,14 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.32  2006-08-15 16:30:11  meichel
+ * Revision 1.33  2007-03-16 11:52:34  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ * Fixed problem with wrong interpretation of the palette descriptor in certain
+ * cases. Now the BitsPerTableEntry stored in the LUT descriptor is used by
+ * default. The previous behavior can be enabled using the ELM_CheckValue mode.
+ *
+ * Revision 1.32  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
