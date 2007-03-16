@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 15:02:58 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2007-03-16 11:44:54 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -344,6 +344,7 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("compatibility options:");
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
+      cmd.addOption("--check-lut-depth",    "+Mc",     "check 3rd value of the LUT descriptor, compare\nwith expected bit depth based on LUT data");
       cmd.addOption("--ignore-mlut-depth",  "+Mm",     "ignore 3rd value of the modality LUT descriptor\ndetermine bits per table entry automatically");
       cmd.addOption("--ignore-vlut-depth",  "+Mv",     "ignore 3rd value of the VOI LUT descriptor,\ndetermine bits per table entry automatically");
 
@@ -507,6 +508,8 @@ int main(int argc, char *argv[])
             opt_compatibilityMode |= CIF_AcrNemaCompatibility;
         if (cmd.findOption("--accept-palettes"))
             opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
+        if (cmd.findOption("--check-lut-depth"))
+            opt_compatibilityMode |= CIF_CheckLutBitDepth;
         if (cmd.findOption("--ignore-mlut-depth"))
             opt_compatibilityMode |= CIF_IgnoreModalityLutBitDepth;
         if (cmd.findOption("--ignore-vlut-depth"))
@@ -1136,7 +1139,7 @@ int main(int argc, char *argv[])
                 }
                 if (opt_verboseMode > 1)
                     OUTPUT << "activating VOI LUT " << opt_windowParameter << OFendl;
-                if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth))
+                if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth ? ELM_IgnoreValue : ELM_UseValue))
                 {
                     OFOStringStream oss;
                     oss << "cannot select VOI LUT no. " << opt_windowParameter << OFStringStream_ends;
@@ -1518,7 +1521,13 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.87  2006-10-27 15:02:58  joergr
+ * Revision 1.88  2007-03-16 11:44:54  joergr
+ * Added new command line option --check-lut-depth that can be used to re-enable
+ * the old behavior of how the third value of the LUT descriptor is treated.
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.87  2006/10/27 15:02:58  joergr
  * Fixed layout and formatting issue.
  *
  * Revision 1.86  2006/08/15 16:35:00  meichel
