@@ -3,6 +3,30 @@ Changes between releases are documented here.
 
 **** Changes from 2007.03.16 (riesmeier)
 
+- Introduced new flag that allows to select how to handle the BitsPerTableEntry
+  value in the LUT descriptor (use, ignore or check).
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diluptab.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+
+- Fixed problem with wrong interpretation of the palette descriptor in certain
+  cases. Now the BitsPerTableEntry stored in the LUT descriptor is used by
+  default. The previous behavior can be enabled using the ELM_CheckValue mode.
+  Thanks to Ewald de Vries <ewald.de.vries@medstreaming.com> for the report.
+  Affects: dcmimgle/libsrc/diluptab.cc
+
+- Added new command line option --check-lut-depth that can be used to re-enable
+  the old behavior of how the third value of the LUT descriptor is treated.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.man
+
 - Fixed wrong warning messge about unchecked options in debug mode.
   Affects: ofstd/libsrc/ofcmdln.cc
 
