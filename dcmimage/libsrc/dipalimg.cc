@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomPaletteImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:48:11 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,15 +56,16 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
         if (BitsStored <= MAX_TABLE_ENTRY_SIZE)
         {
             DiLookupTable *palette[3];
+            const EL_BitsPerTableEntry descMode = (docu->getFlags() & CIF_CheckLutBitDepth) ? ELM_CheckValue : ELM_UseValue;
             /* wrong palette attribute tags used */
             if (Document->getFlags() & CIF_WrongPaletteAttributeTags)
             {
                 palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211),
-                    DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212),
-                    DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213),
-                    DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
             } else {
                 const Uint16 *dummy = NULL;
                 /* check for (non-empty) segmented palette */
@@ -80,11 +81,11 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 }
                 /* read data from non-segmented palettes (if present) */
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
+                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
+                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
+                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, descMode, &ImageStatus);
             }
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
@@ -172,7 +173,11 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.19  2006-08-15 16:35:01  meichel
+ * Revision 1.20  2007-03-16 11:48:11  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.19  2006/08/15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

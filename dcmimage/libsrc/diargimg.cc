@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-03-16 11:48:11 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmimage/diargpxt.h"
 #include "dcmtk/dcmimgle/diluptab.h"
 #include "dcmtk/dcmimgle/diinpx.h"
+#include "dcmtk/dcmimgle/didocu.h"
 
 
 /*----------------*
@@ -54,12 +55,13 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
         if (BitsStored <= MAX_TABLE_ENTRY_SIZE)                         // color depth <= 16
         {
             DiLookupTable *palette[3];                                  // create color luts
+            const EL_BitsPerTableEntry descMode = (docu->getFlags() & CIF_CheckLutBitDepth) ? ELM_CheckValue : ELM_UseValue;
             palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), OFFalse /*ignoreDepth*/, &ImageStatus);
+                DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), descMode, &ImageStatus);
             palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), OFFalse /*ignoreDepth*/, &ImageStatus);
+                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), descMode, &ImageStatus);
             palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), OFFalse /*ignoreDepth*/, &ImageStatus);
+                DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), descMode, &ImageStatus);
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
@@ -145,7 +147,11 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
- * Revision 1.18  2006-08-15 16:35:01  meichel
+ * Revision 1.19  2007-03-16 11:48:11  joergr
+ * Introduced new flag that allows to select how to handle the BitsPerTableEntry
+ * value in the LUT descriptor (use, ignore or check).
+ *
+ * Revision 1.18  2006/08/15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
