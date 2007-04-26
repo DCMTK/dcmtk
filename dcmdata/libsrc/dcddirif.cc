@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-02 15:59:53 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2007-04-26 16:39:55 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3828,7 +3828,7 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
             {
                 /* type 1C: required if an extended character set is used in one of the record keys */
                 if (record->isAffectedBySpecificCharacterSet())
-                    copyElement(dataset, DCM_SpecificCharacterSet, record);
+                    copyElementType1C(dataset, DCM_SpecificCharacterSet, record);
                 /* in case a new record has been created */
                 if (record != oldRecord)
                 {
@@ -5049,7 +5049,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.22  2007-02-02 15:59:53  joergr
+ *  Revision 1.23  2007-04-26 16:39:55  joergr
+ *  Fixed issue with SpecificCharacterSet attribute (treat as type 1C instead of
+ *  type 1 when copying from the referenced DICOM file to the directory record).
+ *
+ *  Revision 1.22  2007/02/02 15:59:53  joergr
  *  Added warning message when existing SOP instance is added to DICOMDIR in
  *  create or append mode.
  *  Added error message when existing SOP instance is inconsistent with new

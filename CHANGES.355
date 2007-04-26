@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.04.26 (riesmeier)
+
+- Fixed issue with SpecificCharacterSet attribute (treat as type 1C instead of
+  type 1 when copying from the referenced DICOM file to the directory record).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2007.03.16 (riesmeier)
 
 - Introduced new flag that allows to select how to handle the BitsPerTableEntry
@@ -27,7 +33,7 @@ Changes between releases are documented here.
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/docs/dcm2pnm.man
 
-- Fixed wrong warning messge about unchecked options in debug mode.
+- Fixed wrong warning message about unchecked options in debug mode.
   Affects: ofstd/libsrc/ofcmdln.cc
 
 **** Changes from 2007.03.12 (riesmeier)
