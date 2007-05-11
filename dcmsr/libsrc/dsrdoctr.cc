@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-05-11 14:48:55 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream& stream,
     if (cursor.isValid())
     {
         /* check and update by-reference relationships (if applicable) */
-        checkByReferenceRelationships(OFTrue /*updateString*/,  OFFalse /*updateNodeID*/);
+        checkByReferenceRelationships(OFTrue /*updateString*/, OFFalse /*updateNodeID*/);
         OFString tmpString;
         size_t level = 0;
         const DSRDocumentTreeNode *node = NULL;
@@ -182,7 +182,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                         /* ... and let the node read the rest of the document */
                         result = node->read(dataset, ConstraintChecker, flags, LogStream);
                         /* check and update by-reference relationships (if applicable) */
-                        checkByReferenceRelationships(OFFalse /*updateString*/, OFTrue /*updateNodeID*/);
+                        checkByReferenceRelationships(OFFalse /*updateString*/, OFTrue /*updateNodeID*/, flags);
                     } else
                         result = SR_EC_InvalidDocumentTree;
                 } else
@@ -246,7 +246,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                     /* ... and let the node read the rest of the document */
                     result = node->readXML(doc, cursor, DocumentType, flags);
                     /* check and update by-reference relationships (if applicable) */
-                    checkByReferenceRelationships(OFTrue /*updateString*/,  OFFalse /*updateNodeID*/);
+                    checkByReferenceRelationships(OFTrue /*updateString*/, OFFalse /*updateNodeID*/);
                 } else
                     result = SR_EC_InvalidDocumentTree;
             } else
@@ -271,7 +271,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
         if (node != NULL)
         {
             /* check and update by-reference relationships (if applicable) */
-            checkByReferenceRelationships(OFTrue /*updateString*/,  OFFalse /*updateNodeID*/);
+            checkByReferenceRelationships(OFTrue /*updateString*/, OFFalse /*updateNodeID*/);
             /* start writing from root node */
             result = node->write(dataset, markedItems, LogStream);
         }
@@ -292,7 +292,7 @@ OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream& stream,
         if (node != NULL)
         {
             /* check by-reference relationships (if applicable) */
-            checkByReferenceRelationships(OFFalse /*updateString*/,  OFFalse /*updateNodeID*/);
+            checkByReferenceRelationships(OFFalse /*updateString*/, OFFalse /*updateNodeID*/);
             /* start writing from root node */
             result = node->writeXML(stream, flags, LogStream);
         }
@@ -314,7 +314,7 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream& docStream,
         if (node != NULL)
         {
             /* check by-reference relationships (if applicable) */
-            checkByReferenceRelationships(OFFalse /*updateString*/,  OFFalse /*updateNodeID*/);
+            checkByReferenceRelationships(OFFalse /*updateString*/, OFFalse /*updateNodeID*/);
             size_t annexNumber = 1;
             /* start rendering from root node */
             result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly, LogStream);
@@ -550,7 +550,8 @@ size_t DSRDocumentTree::removeNode()
 
 
 OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateString,
-                                                           const OFBool updateNodeID)
+                                                           const OFBool updateNodeID,
+                                                           const size_t flags)
 {
     OFCondition result = EC_IllegalParameter;
     /* the flags are mutually exclusive */
@@ -574,6 +575,12 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                             size_t refNodeID = 0;
                             /* type cast to directly access member variables of by-reference class */
                             DSRByReferenceTreeNode *refNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, node));
+                            if ((LogStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
+                            {
+                                OFString posString;
+                                LogStream->lockCerr() << "Updating by-reference relationship in content item " << cursor.getPosition(posString) << OFendl;
+                                LogStream->unlockCerr();
+                            }
                             /* start searching from root node (be careful with large trees, might be improved later on) */
                             DSRTreeNodeCursor refCursor(getRoot());
                             if (updateNodeID)
@@ -633,8 +640,16 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                                         printWarningMessage(LogStream, "By-reference relationship to ancestor content item (loop check)");
                                 } else
                                     printWarningMessage(LogStream, "Source and target content item of by-reference relationship are identical");
-                            } else
-                                printWarningMessage(LogStream, "Target content item of by-reference relationship does not exist");
+                            } else {
+                                if (updateNodeID)
+                                {
+                                    OFString message = "Target content item of by-reference relationship (";
+                                    message += refNode->ReferencedContentItem;
+                                    message += ") does not exist";
+                                    printWarningMessage(LogStream, message.c_str());
+                                } else
+                                    printWarningMessage(LogStream, "Target content item of by-reference relationship does not exist");
+                            }
                         }
                     } else
                         result = SR_EC_InvalidDocumentTree;
@@ -649,7 +664,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.29  2006-08-15 16:40:03  meichel
+ *  Revision 1.30  2007-05-11 14:48:55  joergr
+ *  Enhanced debug output when detecting by-reference relationships to non-
+ *  existing content items.
+ *
+ *  Revision 1.29  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

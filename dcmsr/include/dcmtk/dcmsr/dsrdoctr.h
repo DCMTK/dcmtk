@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-05-11 14:50:05 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -308,10 +308,12 @@ class DSRDocumentTree
      *  'updateNodeID' are mutually exclusive.
      ** @param  updateString  update the position string using the node ID if OFTrue
      *  @param  updateNodeID  update the node ID using the position string if OFTrue
+     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition checkByReferenceRelationships(const OFBool updateString = OFFalse,
-                                              const OFBool updateNodeID = OFFalse);
+                                              const OFBool updateNodeID = OFFalse,
+                                              const size_t flags = 0);
 
 
   private:
@@ -350,7 +352,11 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Revision 1.19  2007-05-11 14:50:05  joergr
+ *  Enhanced debug output when detecting by-reference relationships to non-
+ *  existing content items.
+ *
+ *  Revision 1.18  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

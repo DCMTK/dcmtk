@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.05.11 (riesmeier)
+
+- Enhanced debug output when detecting by-reference relationships to non-
+  existing content items.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/libsrc/dsrdoctr.cc
+
 **** Changes from 2007.04.26 (riesmeier)
 
 - Fixed issue with SpecificCharacterSet attribute (treat as type 1C instead of
@@ -115,7 +122,7 @@ Changes between releases are documented here.
 
 - Added function that removes a given prefix from a pathname (e.g. root dir).
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h
-           ofstd/libsrc/ofstd.cc,
+           ofstd/libsrc/ofstd.cc
 
 - Fixed wrong spelling in error message.
   Affects: dcmdata/libsrc/dcelem.cc
