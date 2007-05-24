@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2006-08-15 16:04:29 $
+** Last Update:         $Author: onken $, $Date: 2007-05-24 16:10:08 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.73 $
+** Revision:            $Revision: 1.74 $
 ** Status:              $State: Exp $
 */
 
@@ -1721,7 +1721,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 CloseHandle(hParentProcessHandle);
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
-                CloseHandle((HANDLE)sock);
 
                 // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
@@ -1747,7 +1746,6 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 CloseHandle(hParentProcessHandle);
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
-                CloseHandle((HANDLE)sock);
                 return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while duplicating socket handle");
             }
         }
@@ -2615,7 +2613,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.73  2006-08-15 16:04:29  meichel
+** Revision 1.74  2007-05-24 16:10:08  onken
+** Removed duplicate closing of socket handle in "windows multiprocess" code.
+**
+** Revision 1.73  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

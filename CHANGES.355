@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.05.24 (onken)
+
+- Removed duplicate closing of socket handle in "windows multiprocess" code.
+  Thanks to Vladimir Kharam <vladimir@rssdimed.com> for the report.
+  Affects: dcmnet/libsrc/dul.cc
+
 **** Changes from 2007.05.11 (riesmeier)
 
 - Enhanced debug output when detecting by-reference relationships to non-
