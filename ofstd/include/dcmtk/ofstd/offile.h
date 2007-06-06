@@ -21,9 +21,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 16:03:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2007-06-06 13:55:58 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,12 +60,22 @@ END_EXTERN_C
  * Yes, this is ugly.
  */
 
+/* Find out whether current operating system needs explicit function calls 
+ * to handle large file support
+ */
+#ifdef _LARGEFILE64_SOURCE
+// Mac OSX defines _LARGEFILE64_SOURCE but anyhow expects implicit 64 bit calls
+  #if !(defined(__MACH__) && defined(__APPLE__))
+    #define EXPLICIT_LFS_64
+#endif
+#endif
+
 #ifdef _WIN32
   // On Win32 systems, we use WIN32 specific definitions 
   typedef __int64 offile_off_t;  
   typedef fpos_t offile_fpos_t;
 #else
-  #ifdef _LARGEFILE64_SOURCE
+  #ifdef EXPLICIT_LFS_64
     // Explicit LFS (LFS64)
     typedef fpos64_t offile_fpos_t;
     typedef off64_t offile_off_t;
@@ -123,7 +133,7 @@ public:
   OFBool fopen(const char *filename, const char *modes)
   {
     if (file_) fclose();
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     file_ = :: fopen64(filename, modes);
 #else
     file_ = STDIO_NAMESPACE fopen(filename, modes);
@@ -200,7 +210,7 @@ public:
    */     
   OFBool freopen(const char *filename, const char *modes)
   {
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     file_ = :: freopen64(filename, modes, file_);
 #else
     file_ = STDIO_NAMESPACE freopen(filename, modes, file_);
@@ -217,7 +227,7 @@ public:
   OFBool tmpfile()
   {
     if (file_) fclose();
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     file_ = :: tmpfile64();
 #else
     file_ = STDIO_NAMESPACE tmpfile();
@@ -536,7 +546,7 @@ public:
     result =  :: _fseek(fp, offset, whence);
 #else
 #ifdef HAVE_FSEEKO
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     result =  :: fseeko64(file_, off, whence);
 #else
     result =  :: fseeko(file_, off, whence);
@@ -569,7 +579,7 @@ public:
     return pos;
 #else
 #ifdef HAVE_FSEEKO
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     result = :: ftello64(file_);
 #else
     result = :: ftello(file_);
@@ -592,7 +602,7 @@ public:
   int fgetpos(offile_fpos_t *pos)
   {
     int result;
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     result = :: fgetpos64(file_, pos);
 #else
     result = STDIO_NAMESPACE fgetpos(file_, pos);
@@ -611,7 +621,7 @@ public:
   int fsetpos(offile_fpos_t *pos)
   {
     int result;
-#ifdef _LARGEFILE64_SOURCE
+#ifdef EXPLICIT_LFS_64
     result = :: fsetpos64(file_, pos);
 #else
     result = STDIO_NAMESPACE fsetpos(file_, pos);
@@ -804,7 +814,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
- * Revision 1.2  2007-02-19 16:03:47  meichel
+ * Revision 1.3  2007-06-06 13:55:58  onken
+ * Fixed compilation for Mac OS X with making large file support function calls
+ * implicit for this OS (Mac OS X misleadingly defines _LARGEFILE64_SOURCE).
+ *
+ * Revision 1.2  2007/02/19 16:03:47  meichel
  * Added constructor to class OFFile that takes FILE * as argument.
  *
  * Revision 1.1  2006/08/21 12:40:44  meichel

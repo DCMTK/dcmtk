@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.06.06 (onken)
+
+- Fixed compilation for Mac OS X with making large file support function calls
+  implicit for this OS (Mac OS X misleadingly defines _LARGEFILE64_SOURCE).
+  Thanks to Jeff Solomon (DCMTK forum) for the bug report.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2007.05.24 (onken)
 
 - Removed duplicate closing of socket handle in "windows multiprocess" code.
