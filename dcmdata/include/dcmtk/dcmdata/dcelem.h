@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:12:02 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2007-06-07 09:01:15 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,14 +155,14 @@ class DcmElement
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-					                         const E_TransferSyntax oxfer,
-					                         const E_EncodingType enctype = EET_UndefinedLength);
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual OFCondition clear();
 
     virtual OFCondition loadAllDataIntoMemory();
 
-        // GET-Operations
+    // GET-Operations
 
     // get copies of individual components
     virtual OFCondition getUint8(Uint8 &val, const unsigned long pos = 0);
@@ -244,6 +244,24 @@ class DcmElement
     virtual OFCondition putFloat32Array(const Float32 *vals, const unsigned long num);
     virtual OFCondition putFloat64Array(const Float64 *vals, const unsigned long num);
 
+    /** create an empty Uint8 array of given number of bytes and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to certain VRs, e.g. OB.
+     *  @param numBytes number of bytes (8 bit) to be created
+     *  @param bytes stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint8Array(const Uint32 numBytes, Uint8 *&bytes);
+
+    /** create an empty Uint16 array of given number of words and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to OW data.
+     *  @param numWords number of words (16 bit) to be created
+     *  @param words stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint16Array(const Uint32 numWords, Uint16 *&words);
+
 
   protected:
 
@@ -266,8 +284,6 @@ class DcmElement
                          const Uint32 length);  // number of new value bytes
 
     OFCondition createEmptyValue(const Uint32 length); // number of new value bytes
-
-
 
 
     /** This function reads the data value of an attribute and stores the
@@ -324,7 +340,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.31  2006-10-13 10:12:02  joergr
+** Revision 1.32  2007-06-07 09:01:15  joergr
+** Added createUint8Array() and createUint16Array() methods.
+**
+** Revision 1.31  2006/10/13 10:12:02  joergr
 ** Fixed wrong formatting.
 **
 ** Revision 1.30  2006/08/15 15:49:56  meichel

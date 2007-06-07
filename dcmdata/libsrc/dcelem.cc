@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-20 13:19:25 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2007-06-07 09:03:17 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -778,6 +778,25 @@ OFCondition DcmElement::putValue(const void * newValue,
 // ********************************
 
 
+OFCondition DcmElement::createUint8Array(const Uint32 /*numBytes*/,
+                                         Uint8 *& /*bytes*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+OFCondition DcmElement::createUint16Array(const Uint32 /*numWords*/,
+                                          Uint16 *& /*bytes*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+// ********************************
+
+
 OFCondition DcmElement::createEmptyValue(const Uint32 length)
 {
     errorFlag = EC_Normal;
@@ -1075,7 +1094,10 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.55  2007-02-20 13:19:25  joergr
+** Revision 1.56  2007-06-07 09:03:17  joergr
+** Added createUint8Array() and createUint16Array() methods.
+**
+** Revision 1.55  2007/02/20 13:19:25  joergr
 ** Fixed wrong spelling in error message.
 **
 ** Revision 1.54  2006/10/13 10:07:49  joergr

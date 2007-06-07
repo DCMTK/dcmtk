@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:11:30 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2007-06-07 09:03:18 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,6 +287,41 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
     }
     else
         errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmOtherByteOtherWord::createUint8Array(const Uint32 numBytes,
+                                                    Uint8 *&bytes)
+{
+    /* check value representation */
+    if ((Tag.getEVR() != EVR_OW) && (Tag.getEVR() != EVR_lt))
+        errorFlag = createEmptyValue(sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
+    else
+        errorFlag = EC_CorruptedData;
+    if (errorFlag.good())
+        bytes = OFstatic_cast(Uint8 *, this->getValue());
+    else
+        bytes = NULL;
+    return errorFlag;
+}
+
+
+OFCondition DcmOtherByteOtherWord::createUint16Array(const Uint32 numWords,
+                                                     Uint16 *&words)
+{
+    /* check value representation */
+    if ((Tag.getEVR() == EVR_OW) || (Tag.getEVR() == EVR_lt))
+        errorFlag = createEmptyValue(sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
+    else
+        errorFlag = EC_CorruptedData;
+    if (errorFlag.good())
+        words = OFstatic_cast(Uint16 *, this->getValue());
+    else
+        words = NULL;
     return errorFlag;
 }
 
@@ -613,7 +648,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.47  2006-10-13 10:11:30  joergr
+** Revision 1.48  2007-06-07 09:03:18  joergr
+** Added createUint8Array() and createUint16Array() methods.
+**
+** Revision 1.47  2006/10/13 10:11:30  joergr
 ** Fixed wrong formatting.
 **
 ** Revision 1.46  2006/08/15 15:49:54  meichel

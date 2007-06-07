@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-06-07 09:01:15 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,6 +223,26 @@ class DcmOtherByteOtherWord
     virtual OFCondition putUint16Array(const Uint16 *wordValue,
                                        const unsigned long numWords);
 
+    /** create an empty Uint8 array of given number of bytes and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to non-OW data, e.g. OB.
+     *  @param numBytes number of bytes (8 bit) to be created
+     *  @param bytes stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint8Array(const Uint32 numBytes,
+                                         Uint8 *&bytes);
+
+    /** create an empty Uint16 array of given number of words and set it.
+     *  All array elements are initialized with a value of 0 (using 'memzero').
+     *  This method is only applicable to OW data.
+     *  @param numWords number of words (16 bit) to be created
+     *  @param words stores the pointer to the resulting buffer
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition createUint16Array(const Uint32 numWords,
+                                          Uint16 *&words);
+
     /** set element value from the given character string.
      *  The input string is expected to have the same format as described for
      *  'getOFStringArray()' above, i.e. a backslash separated sequence of
@@ -274,7 +293,10 @@ class DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.27  2006-08-15 15:49:56  meichel
+** Revision 1.28  2007-06-07 09:01:15  joergr
+** Added createUint8Array() and createUint16Array() methods.
+**
+** Revision 1.27  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
