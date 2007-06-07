@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.06.07 (riesmeier)
+
+- Enhanced support for very large binary data elements (by reducing the overall
+  memory consumption). Thanks to Dennis Schlevoigt <schlevoigt@visus-tt.com> for
+  the original report.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Added createUint8Array() and createUint16Array() methods.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcvrobow.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcvrobow.cc
+
+- Fixed incorrect comment.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrpobw.h
+
 **** Changes from 2007.06.06 (onken)
 
 - Fixed compilation for Mac OS X with making large file support function calls
