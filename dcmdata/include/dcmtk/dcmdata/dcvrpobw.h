@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,10 +24,9 @@
  *  between OB and OW (e.g. Tag PixelData, OverlayData). This class shall
  *  not be used directly in applications. No identification exists.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:29:06 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-06-07 09:00:59 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +105,7 @@ public:
         const Uint16 * wordValue,
         const unsigned long length );
 
-    // create an empty Uint8 array of given number of words and set it
+    // create an empty Uint8 array of given number of bytes and set it
     virtual OFCondition createUint8Array(
         const Uint32 numBytes,
         Uint8 * & bytes);
@@ -121,7 +120,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.13  2005-12-08 16:29:06  meichel
+** Revision 1.14  2007-06-07 09:00:59  joergr
+** Fixed incorrect comment.
+**
+** Revision 1.13  2005/12/08 16:29:06  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.12  2004/07/01 12:28:25  meichel
