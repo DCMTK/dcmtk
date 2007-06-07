@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 15:01:02 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2007-06-07 09:06:01 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -457,33 +457,39 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
     if (buflen & 1)
         buflen++; /* if odd then make even (DICOM required even length values) */
 
-    Uint8 *buf = new Uint8[buflen];
-    if (buf == NULL)
+    Uint8 *buf = NULL;
+    const DcmEVR evr = elem->getVR();
+    /* create buffer of OB or OW data */
+    if (evr == EVR_OB || evr == EVR_pixelItem)
+        ec = elem->createUint8Array(buflen, buf);
+    else if (evr == EVR_OW)
     {
-        CERR << "ERROR: out of memory reading binary data file: " << filename << OFendl;
-        ec = EC_MemoryExhausted;
-    }
-    else if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len)
+        Uint16 *buf16 = NULL;
+        ec = elem->createUint16Array(buflen / 2, buf16);
+        buf = OFreinterpret_cast(Uint8 *, buf16);
+    } else
+        ec = EC_IllegalCall;
+    if (ec.good())
     {
-        CERR << "ERROR: error reading binary data file: " << filename << ": ";
-        perror(NULL);
-        ec = EC_CorruptedData;
-    } else {
-        /* assign buffer to attribute */
-        DcmEVR evr = elem->getVR();
-        if (evr == EVR_OB || evr == EVR_pixelItem)
+        /* read binary file into the buffer */
+        if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len)
         {
-            /* put 8 bit OB data into the attribute */
-            ec = elem->putUint8Array(buf, buflen);
-        } else if (evr == EVR_OW) {
-            /* put 16 bit OW data into the attribute */
+            CERR << "ERROR: error reading binary data file: " << filename << ": ";
+            perror(NULL);
+            ec = EC_CorruptedData;
+        }
+        else if (evr == EVR_OW)
+        {
+            /* swap 16 bit OW data (if necessary) */
             swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
-            ec = elem->putUint16Array(OFreinterpret_cast(Uint16 *, buf), buflen / 2);
         }
     }
+    else if (ec == EC_MemoryExhausted)
+        CERR << "ERROR: out of memory reading binary data file: " << filename << OFendl;
+    else
+        CERR << "ERROR: illegal call processing binary data file: " << filename << OFendl;
 
     fclose(f);
-    delete[] buf;
     return ec;
 }
 
@@ -1033,7 +1039,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.57  2007-03-09 15:01:02  joergr
+** Revision 1.58  2007-06-07 09:06:01  joergr
+** Enhanced support for very large binary data elements (by reducing the overall
+** memory consumption).
+**
+** Revision 1.57  2007/03/09 15:01:02  joergr
 ** Updated documentation of dump input format.
 **
 ** Revision 1.56  2007/03/07 12:30:13  joergr
