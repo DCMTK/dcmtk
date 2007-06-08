@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-08 15:12:56 $
- *  CVS/RCS Revision: $Revision: 1.105 $
+ *  Update Date:      $Date: 2007-06-08 15:18:47 $
+ *  CVS/RCS Revision: $Revision: 1.106 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2512,7 +2512,7 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                     /* create a copy of the item? */
                     if (createCopy)
                     {
-                        if (status.good() and (item != NULL))
+                        if (status.good() && (item != NULL))
                         {
                             item = OFstatic_cast(DcmItem *, item->clone());
                             if (item == NULL)
@@ -3427,7 +3427,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.105  2007-06-08 15:12:56  joergr
+** Revision 1.106  2007-06-08 15:18:47  joergr
+** Fixed typo that caused MSVC to report an error.
+**
+** Revision 1.105  2007/06/08 15:12:56  joergr
 ** Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
 ** Replaced helper function findAndCopyElement() by new optional parameter
 ** 'createCopy' in various findAndGetXXX() functions.
