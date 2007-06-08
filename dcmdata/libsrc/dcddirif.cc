@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-04-26 16:39:55 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2007-06-08 14:57:56 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -4873,12 +4873,14 @@ void DicomDirInterface::copyElement(DcmItem *dataset,
         if (!optional || (copyEmpty && dataset->tagExists(key)) || dataset->tagExistsWithValue(key))
         {
             DcmElement *delem = NULL;
-            /* create copy of element from source dataset */
-            OFCondition status = dataset->findAndCopyElement(key, delem);
+            /* get copy of element from source dataset */
+            OFCondition status = dataset->findAndGetElement(key, delem, OFFalse /*searchIntoSub*/, OFTrue /*createCopy*/);
             if (status.good())
             {
                 /* ... and insert it into the destination dataset (record) */
                 status = record->insert(delem, OFTrue /*replaceOld*/);
+                if (status.bad())
+                    delete delem;
             } else if (status == EC_TagNotFound)
                 status = record->insertEmptyElement(key);
             printAttributeErrorMessage(key, status, "insert");
@@ -5049,7 +5051,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.23  2007-04-26 16:39:55  joergr
+ *  Revision 1.24  2007-06-08 14:57:56  joergr
+ *  Replaced helper function findAndCopyElement() by new optional parameter
+ *  'createCopy' in various findAndGetXXX() functions.
+ *
+ *  Revision 1.23  2007/04/26 16:39:55  joergr
  *  Fixed issue with SpecificCharacterSet attribute (treat as type 1C instead of
  *  type 1 when copying from the referenced DICOM file to the directory record).
  *
