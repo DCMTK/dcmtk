@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.06.08 (riesmeier)
+
+- Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+
+- Replaced helper function findAndCopyElement() by new optional parameter
+  'createCopy' in various findAndGetXXX() functions.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2007.06.07 (riesmeier)
 
 - Enhanced support for very large binary data elements (by reducing the overall

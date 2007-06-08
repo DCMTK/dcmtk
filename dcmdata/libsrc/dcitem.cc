@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 10:36:09 $
- *  CVS/RCS Revision: $Revision: 1.104 $
+ *  Update Date:      $Date: 2007-06-08 15:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.105 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1931,11 +1931,12 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey &key,
 
 // ********************************
 
-/* --- findAndGet functions: find an element and get it or the value, respectively--- */
+/* --- findAndGet functions: find an element and get it or the value, respectively --- */
 
 OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
                                        DcmElement *&element,
-                                       const OFBool searchIntoSub)
+                                       const OFBool searchIntoSub,
+                                       const OFBool createCopy)
 {
     DcmStack stack;
     /* find the element */
@@ -1946,6 +1947,13 @@ OFCondition DcmItem::findAndGetElement(const DcmTagKey &tagKey,
         /* should never happen but ... */
         if (element == NULL)
             status = EC_CorruptedData;
+        else if (createCopy)
+        {
+            /* create a copy of the element */
+            element = OFstatic_cast(DcmElement *, element->clone());
+            if (element == NULL)
+                status = EC_MemoryExhausted;
+        }
     } else {
         /* reset element pointer */
         element = NULL;
@@ -2435,7 +2443,8 @@ OFCondition DcmItem::findAndGetFloat64Array(const DcmTagKey& tagKey,
 
 OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
                                         DcmSequenceOfItems *&sequence,
-                                        const OFBool searchIntoSub)
+                                        const OFBool searchIntoSub,
+                                        const OFBool createCopy)
 {
     DcmStack stack;
     /* find the element */
@@ -2448,8 +2457,16 @@ OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
             status = EC_CorruptedData;
         /* check for correct VR */
         else if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+        {
             sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
-        else
+            /* create a copy of the sequence? */
+            if (createCopy)
+            {
+                sequence = OFstatic_cast(DcmSequenceOfItems *, sequence->clone());
+                if (sequence == NULL)
+                    status = EC_MemoryExhausted;
+            }
+        } else
             status = EC_InvalidVR;
     }
     if (status.bad())
@@ -2463,7 +2480,8 @@ OFCondition DcmItem::findAndGetSequence(const DcmTagKey &seqTagKey,
 
 OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                             DcmItem *&item,
-                                            const signed long itemNum)
+                                            const signed long itemNum,
+                                            const OFBool createCopy)
 {
     DcmStack stack;
     /* find sequence */
@@ -2477,20 +2495,30 @@ OFCondition DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
             /* check VR */
             if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
             {
-                DcmSequenceOfItems *seq = OFstatic_cast(DcmSequenceOfItems *, delem);
-                const unsigned long count = seq->card();
+                DcmSequenceOfItems *sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+                const unsigned long count = sequence->card();
                 /* empty sequence? */
                 if (count > 0)
                 {
                     /* get last item */
                     if (itemNum == -1)
-                        item = seq->getItem(count - 1);
+                        item = sequence->getItem(count - 1);
                     /* get specified item */
                     else if ((itemNum >= 0) && (OFstatic_cast(unsigned long, itemNum) < count))
-                        item = seq->getItem(OFstatic_cast(unsigned long, itemNum));
+                        item = sequence->getItem(OFstatic_cast(unsigned long, itemNum));
                     /* invalid item number */
                     else
                         status = EC_IllegalParameter;
+                    /* create a copy of the item? */
+                    if (createCopy)
+                    {
+                        if (status.good() and (item != NULL))
+                        {
+                            item = OFstatic_cast(DcmItem *, item->clone());
+                            if (item == NULL)
+                                status = EC_MemoryExhausted;
+                        }
+                    }
                 } else
                     status = EC_IllegalParameter;
             } else
@@ -2518,7 +2546,7 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
     DcmStack stack;
     /* find sequence */
     OFCondition status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    DcmSequenceOfItems *seq = NULL;
+    DcmSequenceOfItems *sequence = NULL;
     /* sequence found? */
     if (status.good())
     {
@@ -2528,51 +2556,51 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
         {
             /* check VR */
             if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
-                seq = OFstatic_cast(DcmSequenceOfItems *, delem);
+                sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
             else
                 status = EC_InvalidVR;
         } else
             status = EC_CorruptedData;
     } else {
         /* create new sequence element */
-        seq = new DcmSequenceOfItems(seqTag);
-        if (seq != NULL)
+        sequence = new DcmSequenceOfItems(seqTag);
+        if (sequence != NULL)
         {
             /* insert into item/dataset */
-            status = insert(seq, OFTrue /*replaceOld*/);
+            status = insert(sequence, OFTrue /*replaceOld*/);
             if (status.bad())
-                delete seq;
+                delete sequence;
         } else
             status = EC_MemoryExhausted;
     }
     if (status.good())
     {
-        if (seq != NULL)
+        if (sequence != NULL)
         {
-            const unsigned long count = seq->card();
+            const unsigned long count = sequence->card();
             /* existing item? */
             if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed long, count)))
             {
                 if (itemNum == -1)
                 {
                     /* get last item */
-                    item = seq->getItem(count - 1);
+                    item = sequence->getItem(count - 1);
                 } else {
                     /* get specified item */
-                    item = seq->getItem(OFstatic_cast(unsigned long, itemNum));
+                    item = sequence->getItem(OFstatic_cast(unsigned long, itemNum));
                 }
             /* create new item(s) */
             } else {
                 unsigned long i = 0;
                 /* create empty trailing items if required */
                 const unsigned long itemCount = (itemNum > OFstatic_cast(signed long, count)) ? (itemNum - count + 1) : 1;
-                while ((i < itemCount) && (status.good()))
+                while ((i < itemCount) && status.good())
                 {
                     item = new DcmItem();
                     if (item != NULL)
                     {
                         /* append new item to end of sequence */
-                        status = seq->append(item);
+                        status = sequence->append(item);
                         if (status.bad())
                             delete item;
                     } else
@@ -2625,21 +2653,36 @@ OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
 }
 
 
-OFCondition DcmItem::findAndCopyElement(const DcmTagKey &tagKey,
-                                        DcmElement *&newElement,
-                                        const OFBool searchIntoSub)
+OFCondition DcmItem::findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
+                                               const signed long itemNum)
 {
-    DcmElement *elem = NULL;
-    /* find the element */
-    OFCondition status = findAndGetElement(tagKey, elem, searchIntoSub);
+    DcmStack stack;
+    /* find sequence */
+    OFCondition status = search(seqTagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (status.good())
     {
-        /* create copy of element */
-        newElement = OFstatic_cast(DcmElement *, elem->clone());
-        if (newElement == NULL)
-            status = EC_MemoryExhausted;
-    } else
-        newElement = NULL;
+        /* get element */
+        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+        if (delem != NULL)
+        {
+            /* check VR */
+            if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+            {
+                DcmSequenceOfItems *sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+                const unsigned long count = sequence->card();
+                /* last item? */
+                if (itemNum == -1)
+                    delete sequence->remove(count - 1);
+                /* valid item? */
+                else if ((itemNum >= 0) && (OFstatic_cast(unsigned long, itemNum) < count))
+                    delete sequence->remove(OFstatic_cast(unsigned long, itemNum));
+                else
+                    status = EC_IllegalParameter;
+            } else
+                status = EC_InvalidVR;
+        } else
+            status = EC_CorruptedData;
+    }
     return status;
 }
 
@@ -3149,6 +3192,9 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
 }
 
 
+// ********************************
+
+
 OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
                                         const OFBool replaceOld)
 {
@@ -3250,6 +3296,92 @@ OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
 }
 
 
+OFCondition DcmItem::insertSequenceItem(const DcmTag &seqTag,
+                                        DcmItem *item,
+                                        const signed long itemNum)
+{
+    OFCondition status = EC_IllegalParameter;
+    if (item != NULL)
+    {
+        DcmStack stack;
+        /* find sequence */
+        status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
+        DcmSequenceOfItems *sequence = NULL;
+        /* sequence found? */
+        if (status.good())
+        {
+            /* get element */
+            DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
+            if (delem != NULL)
+            {
+                /* check VR */
+                if ((delem->ident() == EVR_SQ) || (delem->ident() == EVR_pixelSQ))
+                    sequence = OFstatic_cast(DcmSequenceOfItems *, delem);
+                else
+                    status = EC_InvalidVR;
+            } else
+                status = EC_CorruptedData;
+        } else {
+            /* create new sequence element */
+            sequence = new DcmSequenceOfItems(seqTag);
+            if (sequence != NULL)
+            {
+                /* insert into item/dataset */
+                status = insert(sequence, OFTrue /*replaceOld*/);
+                if (status.bad())
+                    delete sequence;
+            } else
+                status = EC_MemoryExhausted;
+        }
+        if (status.good())
+        {
+            if (sequence != NULL)
+            {
+                const unsigned long count = sequence->card();
+                /* 'itemNum' specifies and existing item? */
+                if ((count > 0) && (itemNum >= -1) && (itemNum < OFstatic_cast(signed long, count)))
+                {
+                    if (itemNum == -1)
+                    {
+                        /* insert given item before last entry */
+                        status = sequence->insert(item, count - 1, OFTrue /*before*/);
+                    } else {
+                        /* insert given item before specified entry */
+                        status = sequence->insert(item, OFstatic_cast(unsigned long, itemNum), OFTrue /*before*/);
+                    }
+                /* create empty item(s) and append */
+                } else {
+                    DcmItem *newItem = NULL;
+                    unsigned long i = 0;
+                    /* create empty trailing items if required */
+                    const unsigned long itemCount = (itemNum > OFstatic_cast(signed long, count)) ? (itemNum - count) : 0;
+                    while ((i < itemCount) && status.good())
+                    {
+                        newItem = new DcmItem();
+                        if (newItem != NULL)
+                        {
+                            /* append new item to end of sequence */
+                            status = sequence->append(newItem);
+                            if (status.bad())
+                                delete newItem;
+                        } else
+                            status = EC_MemoryExhausted;
+                        i++;
+                    }
+                    /* append given item to end of sequence */
+                    status = sequence->append(item);
+                }
+            } else
+                status = EC_IllegalCall;
+        }
+    }
+    return status;
+}
+
+
+// ********************************
+
+
 OFBool DcmItem::containsUnknownVR() const
 {
     if (!elementList->empty())
@@ -3295,7 +3427,12 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.104  2007-03-09 10:36:09  joergr
+** Revision 1.105  2007-06-08 15:12:56  joergr
+** Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
+** Replaced helper function findAndCopyElement() by new optional parameter
+** 'createCopy' in various findAndGetXXX() functions.
+**
+** Revision 1.104  2007/03/09 10:36:09  joergr
 ** Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
 **
 ** Revision 1.103  2007/02/19 15:04:16  meichel
