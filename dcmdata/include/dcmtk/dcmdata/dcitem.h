@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 10:38:13 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2007-06-08 14:56:04 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -273,17 +273,19 @@ class DcmItem
 
     /* --- findAndGet functions: find an element and get it or the value, respectively --- */
 
-    /** find element and get a pointer to it.
+    /** find element and get a pointer to it (or copy it).
      *  Applicable to all DICOM value representations (VR).
      *  The result variable 'element' is automatically set to NULL if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param element variable in which the reference to the element is stored
+     *  @param element variable in which the reference to (or copy of) the element is stored
      *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @param createCopy create a copy of the element if true, return a reference otherwise
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition findAndGetElement(const DcmTagKey &tagKey,
                                   DcmElement *&element,
-                                  const OFBool searchIntoSub = OFFalse);
+                                  const OFBool searchIntoSub = OFFalse,
+                                  const OFBool createCopy = OFFalse);
 
     /** find all elements matching a particular tag and return references to them on a stack.
      *  This functions always performs a deep search (i.e. searches into sequence of items).
@@ -562,13 +564,15 @@ class DcmItem
      *  The result variable 'sequence' is automatically set to NULL if an error occurs
      *  (e.g. if 'seqTagKey' does not refer to a sequence attribute).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
-     *  @param sequence variable in which the reference to the sequence element is stored
+     *  @param sequence variable in which the reference to (or copy of) the sequence is stored
      *  @param searchIntoSub flag indicating whether to search into sub-sequences or not
+     *  @param createCopy create a copy of the sequence if true, return a reference otherwise
      *  @return EC_Normal upon success, an error otherwise.
      */
     OFCondition findAndGetSequence(const DcmTagKey &seqTagKey,
                                    DcmSequenceOfItems *&sequence,
-                                   const OFBool searchIntoSub = OFFalse);
+                                   const OFBool searchIntoSub = OFFalse,
+                                   const OFBool createCopy = OFFalse);
 
     /** looks up and returns a given sequence item, if it exists. Otherwise sets 'item'
      *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or
@@ -576,13 +580,15 @@ class DcmItem
      *  the dataset/item is examined (i.e. no deep-search is performed).
      *  Applicable to the following VRs: SQ, (pixelSQ)
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
-     *  @param item variable in which the reference to the sequence item is stored
+     *  @param item variable in which the reference to (or copy of) the item is stored
      *  @param itemNum number of the item to be searched for (0..n-1, -1 for last)
+     *  @param createCopy create a copy of the item if true, return a reference otherwise
      *  @return EC_Normal upon success, an error otherwise.
      */
     OFCondition findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                        DcmItem *&item,
-                                       const signed long itemNum = 0);
+                                       const signed long itemNum = 0,
+                                       const OFBool createCopy = OFFalse);
 
 
     /* --- findOrCreate functions: find an element or create a new one --- */
@@ -592,8 +598,8 @@ class DcmItem
      *  multiple empty items are inserted. Only the top-most level of the dataset/item
      *  is examined (i.e. no deep-search is performed).
      *  Applicable to the following VRs: SQ, (pixelSQ)
-     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for or
-     *    to be create respectively
+     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for
+     *    (or to be created)
      *  @param item variable in which the reference to the sequence item is stored
      *  @param itemNum number of the item to be searched for (0..n-1, -1 for last,
      *    -2 for append new)
@@ -618,18 +624,15 @@ class DcmItem
                                      const OFBool allOccurrences = OFFalse,
                                      const OFBool searchIntoSub = OFFalse);
 
-    /** find element, and create a copy of it.
-     *  Applicable to all DICOM value representations (VR).
-     *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param newElement stores pointer to the new element copy (NULL in case of error).
-     *    This element is not inserted into the dataset/item and must, therefore, be
-     *    deleted by the caller.
-     *  @param searchIntoSub flag indicating whether to search into sequences or not
-     *  @return EC_Normal upon success, an error code otherwise.
+    /** looks up the given sequence in the current dataset and deletes the given item.
+     *  Applicable to the following VRs: SQ, (pixelSQ)
+     *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
+     *  @param itemNum number of the item to be deleted (0..n-1, -1 for last)
+     *  @return EC_Normal upon success, an error otherwise.
      */
-    OFCondition findAndCopyElement(const DcmTagKey &tagKey,
-                                   DcmElement *&newElement,
-                                   const OFBool searchIntoSub = OFFalse);
+    OFCondition findAndDeleteSequenceItem(const DcmTagKey &seqTagKey,
+                                          const signed long itemNum);
+
 
     /* --- putAndInsert functions: put value and insert new element --- */
 
@@ -773,6 +776,9 @@ class DcmItem
                                     const unsigned long pos = 0,
                                     const OFBool replaceOld = OFTrue);
 
+
+    /* --- insertXXX functions: insert new element --- */
+
     /** create a new element (with no value) and insert it into the dataset/item.
      *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
      *  PN, SH, SL, SQ, SS, ST, TM, UI, UL, US, UT
@@ -782,6 +788,22 @@ class DcmItem
      */
     OFCondition insertEmptyElement(const DcmTag &tag,
                                    const OFBool replaceOld = OFTrue);
+
+    /** looks up the given sequence in the current dataset and inserts the given item.
+     *  If the sequence does not exist, it is created. If necessary, multiple empty items
+     *  are inserted before the specified item position. Only the top-most level of the
+     *  dataset/item is examined (i.e. no deep-search is performed).
+     *  Applicable to the following VRs: SQ, (pixelSQ)
+     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for
+     *    (or to be created)
+     *  @param item item to be inserted into the sequence, must not be contained in this
+     *    or any other sequence. Will be deleted upon destruction of the sequence object.
+     *  @param itemNum position of the item (0..n-1, -1 = before last, -2 = after last)
+     *  @return EC_Normal upon success, an error otherwise (delete 'item' manually!).
+     */
+    OFCondition insertSequenceItem(const DcmTag &seqTag,
+                                   DcmItem *item,
+                                   const signed long itemNum = -2);
 
 
   protected:
@@ -926,7 +948,12 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.60  2007-03-09 10:38:13  joergr
+** Revision 1.61  2007-06-08 14:56:04  joergr
+** Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
+** Replaced helper function findAndCopyElement() by new optional parameter
+** 'createCopy' in various findAndGetXXX() functions.
+**
+** Revision 1.60  2007/03/09 10:38:13  joergr
 ** Added support for missing VRs (SL, SS, UL, SS) to insertEmptyElement().
 **
 ** Revision 1.59  2007/02/19 15:04:34  meichel
