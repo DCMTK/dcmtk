@@ -5,11 +5,16 @@ Changes between releases are documented here.
 
 - Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
 
 - Replaced helper function findAndCopyElement() by new optional parameter
   'createCopy' in various findAndGetXXX() functions.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcitem.cc
+
+- Fixed typo that caused MSVC to report an error.
+  Affects: dcmdata/libsrc/dcitem.cc
 
 **** Changes from 2007.06.07 (riesmeier)
 
