@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:09 $
+ *  Update Date:      $Date: 2007-06-13 14:45:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,8 @@ const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error
 const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"           );
 const OFConditionConst ECC_ApplicationProfileViolated( OFM_dcmdata, 21, OF_error, "Storage media application profile violated" );
 // error code 22 is reserved for dcmodify error messages
+const OFConditionConst ECC_InvalidOffset(              OFM_dcmdata, 23, OF_error, "Invalid offset" );
+const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error, "Too many bytes requested" );
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -75,6 +77,8 @@ const OFCondition EC_UnsupportedEncoding(        ECC_UnsupportedEncoding);
 const OFCondition EC_PutbackFailed(              ECC_PutbackFailed);
 const OFCondition EC_DoubleCompressionFilters(   ECC_DoubleCompressionFilters);
 const OFCondition EC_ApplicationProfileViolated( ECC_ApplicationProfileViolated);
+const OFCondition EC_InvalidOffset(              ECC_InvalidOffset);
+const OFCondition EC_TooManyBytesRequested(      ECC_TooManyBytesRequested);
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -85,7 +89,10 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.16  2005-12-08 15:41:09  meichel
+** Revision 1.17  2007-06-13 14:45:47  meichel
+** Added module code OFM_dcmjpls and some new error codes.
+**
+** Revision 1.16  2005/12/08 15:41:09  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.15  2004/11/05 17:20:31  onken

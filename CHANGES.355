@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.06.13 (eichelberg)
+
+- Added module code OFM_dcmjpls and some new error codes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcerror.cc
+
 **** Changes from 2007.06.08 (riesmeier)
 
 - Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().

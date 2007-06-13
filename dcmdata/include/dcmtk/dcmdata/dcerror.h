@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:12 $
+ *  Update Date:      $Date: 2007-06-13 14:45:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ const unsigned short OFM_dcmpps   = 15;
 const unsigned short OFM_dcmdbsup = 16;
 const unsigned short OFM_dcmppswm = 17;
 const unsigned short OFM_dcmjp2k  = 18;
+const unsigned short OFM_dcmjpls  = 19;
 
 
 // condition constants
@@ -81,6 +82,8 @@ extern const OFCondition EC_UnsupportedEncoding;
 extern const OFCondition EC_PutbackFailed;
 extern const OFCondition EC_DoubleCompressionFilters;
 extern const OFCondition EC_ApplicationProfileViolated;
+extern const OFCondition EC_InvalidOffset;
+extern const OFCondition EC_TooManyBytesRequested;
 
 
 #ifndef OFCONDITION_STRICT_MODE
@@ -101,7 +104,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.20  2005-12-08 16:28:12  meichel
+** Revision 1.21  2007-06-13 14:45:47  meichel
+** Added module code OFM_dcmjpls and some new error codes.
+**
+** Revision 1.20  2005/12/08 16:28:12  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.19  2004/08/24 14:53:15  meichel
