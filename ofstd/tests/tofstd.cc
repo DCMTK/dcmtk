@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: test program for class OFStandard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:48 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-06-26 16:19:40 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,7 +111,8 @@ int main()
     for (i = 0; i < bin_len; i++)
         COUT << OFstatic_cast(int, bin_data[i]) << " ";
     COUT << OFendl;
-    COUT << "base64 encoded: " << OFStandard::encodeBase64(bin_data, bin_len, tmpString) << OFendl;
+    COUT << "base64 encoded (buffer): " << OFStandard::encodeBase64(bin_data, bin_len, tmpString) << OFendl;
+    COUT << "base64 encoded (stream): "; OFStandard::encodeBase64(COUT, bin_data, bin_len); COUT << OFendl;
     length = OFStandard::decodeBase64(tmpString, buffer);
     COUT << "base64 decoded: ";
     for (i = 0; i < length; i++)
@@ -128,12 +129,17 @@ int main()
     for (i = 0; i < 511; i++)
         COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << OFendl;
-    COUT << "base64 encoded: " << OFStandard::encodeBase64(buffer, 511, tmpString) << OFendl;
-    COUT << "base64 with line breaks:" << OFendl;
+    COUT << "base64 encoded (buffer): " << OFendl;
+    COUT << OFStandard::encodeBase64(buffer, 511, tmpString) << OFendl;
+    COUT << "base64 encoded (stream): " << OFendl;
+    OFStandard::encodeBase64(COUT, buffer, 511); COUT << OFendl;
+    COUT << "base64 with line breaks (buffer):" << OFendl;
     COUT << OFStandard::encodeBase64(buffer, 511, tmpString, 72) << OFendl;
+    COUT << "base64 with line breaks (stream):" << OFendl;
+    OFStandard::encodeBase64(COUT, buffer, 511, 72); COUT << OFendl;
     delete[] buffer;
     length = OFStandard::decodeBase64(tmpString, buffer);
-    COUT << "base64 decoded: ";
+    COUT << "base64 decoded: " << OFendl;
     for (i = 0; i < length; i++)
         COUT << OFstatic_cast(int, buffer[i]) << " ";
     COUT << OFendl << OFendl;
@@ -163,7 +169,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
- * Revision 1.9  2006-08-14 16:42:48  meichel
+ * Revision 1.10  2007-06-26 16:19:40  joergr
+ * Added new variant of encodeBase64() method that outputs directly to a stream
+ * (avoids using a memory buffer for large binary data).
+ *
+ * Revision 1.9  2006/08/14 16:42:48  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.
  *

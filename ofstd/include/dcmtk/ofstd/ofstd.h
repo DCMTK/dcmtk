@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 14:54:59 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2007-06-26 16:21:14 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -265,6 +265,24 @@ class OFStandard
      *  the textual output.  The input data is 'padded' with zeros to create a length that is an
      *  even multiple of 3.  A special character ('=') is used to denote padding so that the output
      *  can be decoded back to its exact size.
+     *  If the input data is NULL an error code (EC_IllegalParameter) is returned.
+     ** @param out output stream used for the base64 encoded data
+     *  @param data buffer with binary data to be encoded (big endian required!)
+     *  @param length length of the input data buffer (in bytes)
+     *  @param width maximum number of characters per line in the output stream
+     *    (default: 0 = no line breaks, typical for MIME = 72)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition encodeBase64(STD_NAMESPACE ostream &out,
+                                    const unsigned char *data,
+                                    const size_t length,
+                                    const size_t width = 0);
+
+    /** encode binary data according to "Base64" as described in RFC 2045 (MIME).
+     *  Basic algorithm: groups of 3 bytes from the binary input are coded as groups of 4 bytes in
+     *  the textual output.  The input data is 'padded' with zeros to create a length that is an
+     *  even multiple of 3.  A special character ('=') is used to denote padding so that the output
+     *  can be decoded back to its exact size.
      *  If the input data is NULL an empty string is returned.
      ** @param data buffer with binary data to be encoded (big endian required!)
      *  @param length length of the input data buffer (in bytes)
@@ -454,7 +472,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.26  2007-03-09 14:54:59  joergr
+ * Revision 1.27  2007-06-26 16:21:14  joergr
+ * Added new variant of encodeBase64() method that outputs directly to a stream
+ * (avoids using a memory buffer for large binary data).
+ *
+ * Revision 1.26  2007/03/09 14:54:59  joergr
  * Added optional parameter "recurse" to searchDirectoryRecursively().
  *
  * Revision 1.25  2007/02/20 13:12:27  joergr

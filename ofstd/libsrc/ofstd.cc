@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 16:35:49 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2007-06-26 16:20:39 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -687,6 +687,77 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
 // Base64 translation table as described in RFC 2045 (MIME)
 static const char enc_base64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+OFCondition OFStandard::encodeBase64(STD_NAMESPACE ostream &out,
+                                     const unsigned char *data,
+                                     const size_t length,
+                                     const size_t width)
+{
+    OFCondition status = EC_IllegalParameter;
+    /* check data buffer to be encoded */
+    if (data != NULL)
+    {
+        unsigned char c;
+        size_t w = 0;
+        /* iterate over all data elements */
+        for (size_t i = 0; i < length; i++)
+        {
+            /* encode first 6 bits */
+            out << enc_base64[(data[i] >> 2) & 0x3f];
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                out << OFendl;
+                w = 0;
+            }
+            /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
+            c = (data[i] << 4) & 0x3f;
+            if (++i < length)
+                c |= (data[i] >> 4) & 0x0f;
+            out << enc_base64[c];
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                out << OFendl;
+                w = 0;
+            }
+            /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
+            if (i < length)
+            {
+                c = (data[i] << 2) & 0x3f;
+                if (++i < length)
+                    c |= (data[i] >> 6) & 0x03;
+                out << enc_base64[c];
+            } else {
+                i++;
+                /* append fill char */
+                out << '=';
+            }
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                out << OFendl;
+                w = 0;
+            }
+            /* encode remaining 6 bits of the third byte */
+            if (i < length)
+                out << enc_base64[data[i] & 0x3f];
+            else /* append fill char */
+                out << '=';
+            /* insert line break (if width > 0) */
+            if (++w == width)
+            {
+                out << OFendl;
+                w = 0;
+            }
+        }
+        /* flush stream */
+        out.flush();
+        status = EC_Normal;
+    }
+    return status;
+}
+
+
 const OFString &OFStandard::encodeBase64(const unsigned char *data,
                                          const size_t length,
                                          OFString &result,
@@ -709,7 +780,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                *(bufPtr++) = OFstatic_cast(unsigned char, '\n');
+                *(bufPtr++) = '\n';
                 w = 0;
             }
             /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
@@ -720,7 +791,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                *(bufPtr++) = OFstatic_cast(unsigned char, '\n');
+                *(bufPtr++) = '\n';
                 w = 0;
             }
             /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
@@ -1686,7 +1757,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.38  2007-03-09 16:35:49  joergr
+ *  Revision 1.39  2007-06-26 16:20:39  joergr
+ *  Added new variant of encodeBase64() method that outputs directly to a stream
+ *  (avoids using a memory buffer for large binary data).
+ *
+ *  Revision 1.38  2007/03/09 16:35:49  joergr
  *  Fixed issue with new parameter "recurse" in searchDirectoryRecursively().
  *
  *  Revision 1.37  2007/03/09 14:55:38  joergr

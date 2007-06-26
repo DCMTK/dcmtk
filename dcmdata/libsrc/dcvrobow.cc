@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-07 09:03:18 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2007-06-26 16:24:23 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -621,7 +621,6 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
     /* write element value (if loaded) */
     if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
     {
-        OFString value;
         /* encode binary data as Base64 */
         if (flags & DCMTypes::XF_encodeBase64)
         {
@@ -631,8 +630,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
                 /* Base64 encoder requires big endian input data */
                 swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, Length, sizeof(Uint16));
             }
-            out << OFStandard::encodeBase64(byteValues, OFstatic_cast(size_t, Length), value);
+            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, Length));
         } else {
+            OFString value;
             /* encode as sequence of hexadecimal numbers */
             if (getOFStringArray(value).good())
                 out << value;
@@ -648,7 +648,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.48  2007-06-07 09:03:18  joergr
+** Revision 1.49  2007-06-26 16:24:23  joergr
+** Added new variant of encodeBase64() method that outputs directly to a stream
+** (avoids using a memory buffer for large binary data).
+**
+** Revision 1.48  2007/06/07 09:03:18  joergr
 ** Added createUint8Array() and createUint16Array() methods.
 **
 ** Revision 1.47  2006/10/13 10:11:30  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-06-26 16:24:23 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,13 +165,13 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
     /* write element value (if loaded) */
     if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
     {
-        OFString value;
         /* encode binary data as Base64 */
         if (flags & DCMTypes::XF_encodeBase64)
         {
             /* pixel items always contain 8 bit data, therefore, byte swapping not required */
-            out << OFStandard::encodeBase64(OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, Length), value);
+            OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, Length));
         } else {
+            OFString value;
             /* encode as sequence of hexadecimal numbers */
             if (getOFStringArray(value).good())
                 out << value;
@@ -226,11 +226,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                   {
                       /* if there is no value, Length (member variable) shall be set to 0 */
                       if (!value) Length = 0;
-      
+
                       /* write tag and length information (and possibly also data type information) to the stream, */
                       /* mind the transfer syntax and remember the amount of bytes that have been written */
-                      errorFlag = writeTag(outStream, Tag, oxfer); 
-      
+                      errorFlag = writeTag(outStream, Tag, oxfer);
+
                       /* if the writing was successful, set this element's transfer */
                       /* state to ERW_inWork and the amount of transferred bytes to 0 */
                       if (errorFlag.good())
@@ -274,7 +274,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.30  2006-08-15 15:49:54  meichel
+** Revision 1.31  2007-06-26 16:24:23  joergr
+** Added new variant of encodeBase64() method that outputs directly to a stream
+** (avoids using a memory buffer for large binary data).
+**
+** Revision 1.30  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.06.26 (riesmeier)
+
+- Added new variant of encodeBase64() method that outputs directly to a stream
+  (avoids using a memory buffer for large binary data).
+  Affects: dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcvrobow.cc
+           ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+           ofstd/tests/tofstd.cc
+
 **** Changes from 2007.06.14 (eichelberg)
 
 - Updated changext script
