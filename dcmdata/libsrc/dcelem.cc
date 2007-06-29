@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-07 09:03:17 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,23 +78,23 @@ DcmElement::DcmElement(const DcmElement &elem)
         // newValueField() cannot be used because it is virtual and it does
         // not allocate enough bytes for strings. The number of pad bytes
         // is added to the Length for this purpose.
-        if (Length & 1)
+        if (getLengthField() & 1)
         {
-            fValue = new Uint8[Length + 1 + pad]; // protocol error: odd value length
+            fValue = new Uint8[getLengthField() + 1 + pad]; // protocol error: odd value length
             if (fValue)
-                fValue[Length] = 0;
-            Length++;           // make Length even
+                fValue[getLengthField()] = 0;
+            setLengthField(getLengthField() + 1);           // make Length even
         }
         else
-            fValue = new Uint8[Length + pad];
+            fValue = new Uint8[getLengthField() + pad];
 
         if (!fValue)
             errorFlag = EC_MemoryExhausted;
 
         if (pad && fValue)
-            fValue[Length] = 0;
+            fValue[getLengthField()] = 0;
 
-        memcpy(fValue, elem.fValue, size_t(Length + pad));
+        memcpy(fValue, elem.fValue, size_t(getLengthField() + pad));
     }
 
     if (elem.fLoadValue)
@@ -119,23 +119,23 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
         // not allocate enough bytes for strings. The number of pad bytes
         // is added to the Length for this purpose.
 
-        if (Length & 1)
+        if (getLengthField() & 1)
         {
-            fValue = new Uint8[Length + 1 + pad]; // protocol error: odd value length
+            fValue = new Uint8[getLengthField() + 1 + pad]; // protocol error: odd value length
             if (fValue)
-                fValue[Length] = 0;
-            Length++;           // make Length even
+                fValue[getLengthField()] = 0;
+            setLengthField(getLengthField() + 1);           // make Length even
         }
         else
-            fValue = new Uint8[Length + pad];
+            fValue = new Uint8[getLengthField() + pad];
 
         if (!fValue)
             errorFlag = EC_MemoryExhausted;
 
         if (pad && fValue)
-            fValue[Length] = 0;
+            fValue[getLengthField()] = 0;
 
-        memcpy(fValue, obj.fValue, size_t(Length+pad));
+        memcpy(fValue, obj.fValue, size_t(getLengthField()+pad));
     }
 
     if (obj.fLoadValue)
@@ -162,7 +162,7 @@ OFCondition DcmElement::clear()
     fValue = NULL;
     delete fLoadValue;
     fLoadValue = NULL;
-    Length = 0;
+    setLengthField(0);
     return errorFlag;
 }
 
@@ -188,18 +188,18 @@ OFBool DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
 OFCondition DcmElement::detachValueField(OFBool copy)
 {
     OFCondition l_error = EC_Normal;
-    if (Length != 0)
+    if (getLengthField() != 0)
     {
         if (copy)
         {
             if (!fValue)
                 l_error = loadValue();
-            Uint8 * newValue = new Uint8[Length];
-            memcpy(newValue, fValue, size_t(Length));
+            Uint8 * newValue = new Uint8[getLengthField()];
+            memcpy(newValue, fValue, size_t(getLengthField()));
             fValue = newValue;
         } else {
             fValue = NULL;
-            Length = 0;
+            setLengthField(0);
         }
     }
     return l_error;
@@ -380,7 +380,7 @@ void *DcmElement::getValue(const E_ByteOrder newByteOrder)
         /* in case this call is not illegal, we need to do something. First of all, set the error flag to ok */
         errorFlag =  EC_Normal;
         /* do something only if the length of this element's value does not equal (i.e. is greater than) 0 */
-        if (Length != 0)
+        if (getLengthField() != 0)
         {
             /* if the value has not yet been loaded, do so now */
             if (!fValue)
@@ -394,7 +394,7 @@ void *DcmElement::getValue(const E_ByteOrder newByteOrder)
                 if (newByteOrder != fByteOrder)
                 {
                     swapIfNecessary(newByteOrder, fByteOrder, fValue,
-                                    Length, Tag.getVR().getValueWidth());
+                                    getLengthField(), getTag().getVR().getValueWidth());
                     fByteOrder = newByteOrder;
                 }
                 /* if everything is ok, assign the current value to the result variable */
@@ -414,7 +414,7 @@ void *DcmElement::getValue(const E_ByteOrder newByteOrder)
 OFCondition DcmElement::loadAllDataIntoMemory()
 {
     errorFlag = EC_Normal;
-    if (!fValue && (Length != 0))
+    if (!fValue && (getLengthField() != 0))
         errorFlag = loadValue();
     return errorFlag;
 }
@@ -425,7 +425,7 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
     /* initiailze return value */
     errorFlag = EC_Normal;
     /* only if the length of this element does not equal 0, read information */
-    if (Length != 0)
+    if (getLengthField() != 0)
     {
         DcmInputStream *readStream = inStream;
         OFBool isStreamNew = OFFalse;
@@ -464,14 +464,14 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                 else
                 {
                     /* determine how many bytes shall be read from the stream */
-                    Uint32 readLength = Length - fTransferredBytes;
+                    Uint32 readLength = getLengthField() - getTransferredBytes();
 
                     /* read a corresponding amount of bytes from the stream, store the information in fvalue */
                     /* increase the counter that counts how many bytes were actually read */
-                    fTransferredBytes += readStream->read(&fValue[fTransferredBytes], readLength);
+                    incTransferredBytes(readStream->read(&fValue[getTransferredBytes()], readLength));
 
                     /* if we have read all the bytes which make up this element's value */
-                    if (Length == fTransferredBytes)
+                    if (getLengthField() == getTransferredBytes())
                     {
                         /* call a function which performs certain operations on the information which was read */
                         postLoadValue();
@@ -502,25 +502,25 @@ Uint8 *DcmElement::newValueField()
 {
     Uint8 * value;
     /* if this element's lenght is odd */
-    if (Length & 1)
+    if (getLengthField() & 1)
     {
         /* create an array of Length+1 bytes */
 #ifdef HAVE_STD__NOTHROW
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[Length + 1];    // protocol error: odd value length
+        value = new (std::nothrow) Uint8[getLengthField() + 1];    // protocol error: odd value length
 #else
-        value = new Uint8[Length + 1];    // protocol error: odd value length
+        value = new Uint8[getLengthField() + 1];    // protocol error: odd value length
 #endif
         /* if creation was successful, set last byte to 0 (in order to initialize this byte) */
         /* (no value will be assigned to this byte later, since Length was odd) */
         if (value)
-            value[Length] = 0;
+            value[getLengthField()] = 0;
         /* enforce old (pre DCMTK 3.5.2) behaviour ? */
         if (! dcmAcceptOddAttributeLength.get())
         {
-            Length++;  // make Length even
+            setLengthField(getLengthField() + 1);           // make Length even
         }
     }
     /* if this element's length is even, create a corresponding array of Lenght bytes */
@@ -529,9 +529,9 @@ Uint8 *DcmElement::newValueField()
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[Length];
+        value = new (std::nothrow) Uint8[getLengthField()];
 #else
-        value = new Uint8[Length];
+        value = new Uint8[getLengthField()];
 #endif
     /* if creation was not successful set member error flag correspondingly */
     if (!value)
@@ -550,8 +550,8 @@ void DcmElement::postLoadValue()
     {
         // newValueField always allocates an even number of bytes
         // and sets the pad byte to zero, so we can safely increase Length here
-        if (Length & 1)
-            Length++;
+        if (getLengthField() & 1)
+            setLengthField(getLengthField() + 1);           // make Length even
     }
 }
 
@@ -565,11 +565,11 @@ OFCondition DcmElement::changeValue(const void *value,
 {
     OFBool done = OFFalse;
     errorFlag = EC_Normal;
-    if (position % num != 0 || Length % num != 0 || position > Length)
+    if (position % num != 0 || getLengthField() % num != 0 || position > getLengthField())
         errorFlag = EC_IllegalCall;
-    else if (position == Length)
+    else if (position == getLengthField())
     {
-        if (Length == 0)
+        if (getLengthField() == 0)
         {
             errorFlag = putValue(value, num);
             done = OFTrue;
@@ -578,22 +578,22 @@ OFCondition DcmElement::changeValue(const void *value,
             if (!fValue)
                 loadValue();
             // allocate new memory for value
-            Uint8 * newValue = new Uint8[Length + num];
+            Uint8 * newValue = new Uint8[getLengthField() + num];
             if (!newValue)
                 errorFlag = EC_MemoryExhausted;
             if (errorFlag.good())
             {
                 // swap to local byte order
                 swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
-                                Length, Tag.getVR().getValueWidth());
+                                getLengthField(), getTag().getVR().getValueWidth());
                 fByteOrder = gLocalByteOrder;
                 // copy old value in the beginning of new value
-                memcpy(newValue, fValue, size_t(Length));
+                memcpy(newValue, fValue, size_t(getLengthField()));
                 // set parameter value in the extension
-                memcpy(&newValue[Length], OFstatic_cast(const Uint8 *, value), size_t(num));
+                memcpy(&newValue[getLengthField()], OFstatic_cast(const Uint8 *, value), size_t(num));
                 delete[] fValue;
                 fValue = newValue;
-                Length += num;
+                setLengthField(getLengthField() + num);
             }
             done = OFTrue;
         }
@@ -603,7 +603,7 @@ OFCondition DcmElement::changeValue(const void *value,
     {
         // swap to local byte order
         swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
-                        Length, Tag.getVR().getValueWidth());
+                        getLengthField(), getTag().getVR().getValueWidth());
         memcpy(&fValue[position], OFstatic_cast(const Uint8 *, value), size_t(num));
         fByteOrder = gLocalByteOrder;
     }
@@ -753,7 +753,7 @@ OFCondition DcmElement::putValue(const void * newValue,
         delete fLoadValue;
     fLoadValue = NULL;
 
-    Length = length;
+    setLengthField(length);
 
     if (length != 0)
     {
@@ -761,8 +761,8 @@ OFCondition DcmElement::putValue(const void * newValue,
 
         // newValueField always allocates an even number of bytes
         // and sets the pad byte to zero, so we can safely increase Length here
-        if (Length & 1)
-            Length++;
+        if (getLengthField() & 1)
+            setLengthField(getLengthField() + 1);           // make Length even
 
         // copy length (which may be odd), not Length (which is always even)
         if (fValue)
@@ -806,15 +806,16 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
     if (fLoadValue)
         delete fLoadValue;
     fLoadValue = NULL;
-    Length = length;
+    setLengthField(length);
 
     if (length != 0)
     {
         fValue = newValueField();
         // newValueField always allocates an even number of bytes
         // and sets the pad byte to zero, so we can safely increase Length here
-        if (Length & 1)
-            Length++;
+        if (getLengthField() & 1)
+            setLengthField(getLengthField() + 1);           // make Length even
+
         // initialize <length> bytes (which may be odd), not Length (which is always even)
         if (fValue)
             memzero(fValue, size_t(length));
@@ -835,7 +836,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                              const Uint32 maxReadLength)
 {
     /* if this element's transfer state shows ERW_notInitialized, this is an illegal call */
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -854,14 +855,14 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
         {
             /* if the transfer state is ERW_init, we need to prepare */
             /* the reading of this element's value from the stream */
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 /* if the Length of this element's value is greater than the amount of bytes we */
                 /* can read from the stream and if the stream has random access, we want to create */
                 /* a DcmInputStreamFactory object that enables us to read this element's value later. */
                 /* This new object will be stored (together with the position where we have to start */
                 /* reading the value) in the member variable fLoadValue. */
-                if (Length > maxReadLength)
+                if (getLengthField() > maxReadLength)
                 {
                     /* try to create a stream factory to read the value later */
                     delete fLoadValue;
@@ -869,14 +870,14 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
 
                     if (fLoadValue)
                     {
-                        Uint32 skipped = inStream.skip(Length);
-                        if (skipped < Length)
+                        Uint32 skipped = inStream.skip(getLengthField());
+                        if (skipped < getLengthField())
                         {
                             errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
-                            ofConsole.lockCerr() << "DcmElement: " << Tag.getTagName() << Tag.getXTag() << " larger ("
-                                                 << Length << ") than remaining bytes in file" << OFendl;
+                            ofConsole.lockCerr() << "DcmElement: " << getTagName() << getTag().getXTag() << " larger ("
+                                                 << getLengthField() << ") than remaining bytes in file" << OFendl;
                             ofConsole.unlockCerr();
                         }
                     }
@@ -884,17 +885,17 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                 /* if there is already a value for this element, delete this value */
                 delete[] fValue;
                 /* set the transfer state to ERW_inWork */
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
             /* if the transfer state is ERW_inWork and we are not supposed */
             /* to read this element's value later, read the value now */
-            if (fTransferState == ERW_inWork && !fLoadValue)
+            if (getTransferState() == ERW_inWork && !fLoadValue)
                 errorFlag = loadValue(&inStream);
             /* if the amount of transferred bytes equals the Length of this element */
             /* or the object which contains information to read the value of this */
             /* element later is existent, set the transfer state to ERW_ready */
-            if (fTransferredBytes == Length || fLoadValue)
-                fTransferState = ERW_ready;
+            if (getTransferredBytes() == getLengthField() || fLoadValue)
+                setTransferState(ERW_ready);
         }
     }
 
@@ -908,13 +909,13 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
 
 void DcmElement::swapValueField(size_t valueWidth)
 {
-    if (Length != 0)
+    if (getLengthField() != 0)
     {
         if (!fValue)
             errorFlag = loadValue();
 
         if (errorFlag.good())
-            swapBytes(fValue, Length, valueWidth);
+            swapBytes(fValue, getLengthField(), valueWidth);
     }
 }
 
@@ -925,7 +926,7 @@ void DcmElement::swapValueField(size_t valueWidth)
 void DcmElement::transferInit()
 {
     DcmObject::transferInit();
-    fTransferredBytes = 0;
+    setTransferredBytes(0);
 }
 
 
@@ -937,7 +938,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
                               const E_EncodingType /*enctype*/)
 {
     /* In case the transfer state is not initialized, this is an illegal call */
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -955,7 +956,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             /* if this element's transfer state is ERW_init (i.e. it has not yet been written to */
             /* the stream) and if the outstream provides enough space for tag and length information */
             /* write tag and length information to it, do something */
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
@@ -965,7 +966,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
                     (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     /* if there is no value, Length (member variable) shall be set to 0 */
-                    if (!value) Length = 0;
+                    if (!value) setLengthField(0);
                     /* remember how many bytes have been written to the stream, currently none so far */
                     Uint32 writtenBytes = 0;
                     /* write tag and length information (and possibly also data type information) to the stream, */
@@ -975,22 +976,22 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
                     /* state to ERW_inWork and the amount of transferred bytes to 0 */
                     if (errorFlag.good())
                     {
-                        fTransferState = ERW_inWork;
-                        fTransferredBytes = 0;
+                        setTransferState(ERW_inWork);
+                        setTransferredBytes(0);
                     }
                 } else
                     errorFlag = EC_StreamNotifyClient;
             }
             /* if there is a value that has to be written to the stream */
             /* and if this element's transfer state is ERW_inWork */
-            if (value && fTransferState == ERW_inWork)
+            if (value && getTransferState() == ERW_inWork)
             {
-                /* write as many bytes as possible to the stream starting at value[fTransferredBytes] */
-                /* (note that the bytes value[0] to value[fTransferredBytes-1] have already been */
+                /* write as many bytes as possible to the stream starting at value[getTransferredBytes()] */
+                /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
                 /* written to the stream) */
-                Uint32 len = outStream.write(&value[fTransferredBytes], Length - fTransferredBytes);
+                Uint32 len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
                 /* increase the amount of bytes which have been transfered correspondingly */
-                fTransferredBytes += len;
+                incTransferredBytes(len);
                 /* see if there is something fishy with the stream */
                 errorFlag = outStream.status();
                 /* if the amount of transferred bytes equals the length of the element's value, the */
@@ -998,8 +999,8 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
                 /* has to be set to ERW_ready. If this is not the case but the error flag still shows */
                 /* an ok value, there was no more space in the stream and a corresponding return value */
                 /* has to be set. (Isn't the "else if" part superfluous?!?) */
-                if (fTransferredBytes == Length)
-                    fTransferState = ERW_ready;
+                if (getLengthField() == getTransferredBytes())
+                    setTransferState(ERW_ready);
                 else if (errorFlag.good())
                     errorFlag = EC_StreamNotifyClient;
             }
@@ -1030,24 +1031,24 @@ void DcmElement::writeXMLStartTag(STD_NAMESPACE ostream &out,
                                   const char *attrText)
 {
     OFString xmlString;
-    DcmVR vr(Tag.getVR());
+    DcmVR vr(getTag().getVR());
     /* write standardized XML start tag for all element types */
     out << "<element";
     /* attribute tag = (gggg,eeee) */
     out << " tag=\"";
     out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << Tag.getGTag() << ","
-        << STD_NAMESPACE setw(4) << Tag.getETag() << "\""
+        << STD_NAMESPACE setw(4) << getTag().getGTag() << ","
+        << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
         << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
     /* value multiplicity = 1..n */
     out << " vm=\"" << getVM() << "\"";
     /* value length in bytes = 0..max */
-    out << " len=\"" << Length << "\"";
+    out << " len=\"" << getLengthField() << "\"";
     /* tag name (if known and not suppressed) */
     if (!(flags & DCMTypes::XF_omitDataElementName))
-        out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
+        out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
     /* value loaded = no (or absent)*/
     if (!valueLoaded())
         out << " loaded=\"no\"";
@@ -1094,7 +1095,11 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.56  2007-06-07 09:03:17  joergr
+** Revision 1.57  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.56  2007/06/07 09:03:17  joergr
 ** Added createUint8Array() and createUint16Array() methods.
 **
 ** Revision 1.55  2007/02/20 13:19:25  joergr

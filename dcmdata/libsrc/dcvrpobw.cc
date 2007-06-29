@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,8 +25,8 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:00 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ DcmPolymorphOBOW::DcmPolymorphOBOW(
     changeVR(OFFalse),
     currentVR(EVR_OW)
 {
-    if (Tag.getEVR() == EVR_ox || Tag.getEVR() == EVR_lt) Tag.setVR(EVR_OW);
+    if (getTag().getEVR() == EVR_ox || getTag().getEVR() == EVR_lt) setTagVR(EVR_OW);
 }
 
 DcmPolymorphOBOW::DcmPolymorphOBOW(const DcmPolymorphOBOW & oldObj)
@@ -74,21 +74,21 @@ DcmPolymorphOBOW::getUint8Array(
     OFBool bchangeVR = OFFalse;
     if (currentVR == EVR_OW)
     {
-        if (fByteOrder == EBO_BigEndian)
+        if (getByteOrder() == EBO_BigEndian)
         {
             swapValueField(sizeof(Uint16));
-            fByteOrder = EBO_LittleEndian;
+            setByteOrder(EBO_LittleEndian);
         }
-        if (Tag.getEVR() == EVR_OW)
+        if (getTag().getEVR() == EVR_OW)
         {
             bchangeVR = OFTrue;
-            Tag.setVR(EVR_OB);
+            setTagVR(EVR_OB);
             currentVR = EVR_OB;
         }
     }
     bytes = OFstatic_cast(Uint8 *, this -> getValue());
     if (bchangeVR)
-        Tag.setVR(EVR_OW);
+        setTagVR(EVR_OW);
 
     return errorFlag;
 }
@@ -102,17 +102,17 @@ DcmPolymorphOBOW::getUint16Array(
     OFBool bchangeVR = OFFalse;
     if (currentVR == EVR_OB)
     {
-        fByteOrder = EBO_LittleEndian;
+        setByteOrder(EBO_LittleEndian);
         currentVR = EVR_OW;
-        if (Tag.getEVR() == EVR_OB)
+        if (getTag().getEVR() == EVR_OB)
         {
-            Tag.setVR(EVR_OW);
+            setTagVR(EVR_OW);
             bchangeVR = OFTrue;
         }
     }
     words = OFstatic_cast(Uint16 *, this -> getValue());
     if (bchangeVR)
-        Tag.setVR(EVR_OB);
+        setTagVR(EVR_OB);
 
     return errorFlag;
 }
@@ -123,9 +123,9 @@ DcmPolymorphOBOW::createUint8Array(
     Uint8 * & bytes)
 {
     currentVR = EVR_OB;
-    Tag.setVR(EVR_OB);
+    setTagVR(EVR_OB);
     errorFlag = createEmptyValue(sizeof(Uint8) * Uint32(numBytes));
-    fByteOrder = gLocalByteOrder;
+    setByteOrder(gLocalByteOrder);
     if (EC_Normal == errorFlag)
         bytes = OFstatic_cast(Uint8 *, this->getValue());
     else
@@ -140,9 +140,9 @@ DcmPolymorphOBOW::createUint16Array(
     Uint16 * & words)
 {
     currentVR = EVR_OW;
-    Tag.setVR(EVR_OW);
+    setTagVR(EVR_OW);
     errorFlag = createEmptyValue(sizeof(Uint16) * Uint32(numWords));
-    fByteOrder = gLocalByteOrder;
+    setByteOrder(gLocalByteOrder);
     if (EC_Normal == errorFlag)
         words = OFstatic_cast(Uint16 *, this->getValue());
     else
@@ -157,7 +157,7 @@ DcmPolymorphOBOW::putUint8Array(
     const unsigned long numBytes)
 {
     errorFlag = EC_Normal;
-    currentVR = Tag.getEVR();
+    currentVR = getTag().getEVR();
     if (numBytes)
     {
         if (byteValue)
@@ -165,8 +165,8 @@ DcmPolymorphOBOW::putUint8Array(
             errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
             if (errorFlag == EC_Normal)
             {
-                if (Tag.getEVR() == EVR_OW && fByteOrder == EBO_BigEndian)
-                    fByteOrder = EBO_LittleEndian;
+                if (getTag().getEVR() == EVR_OW && getByteOrder() == EBO_BigEndian)
+                    setByteOrder(EBO_LittleEndian);
                 this -> alignValue();
             }
         }
@@ -187,17 +187,17 @@ DcmPolymorphOBOW::putUint16Array(
     const unsigned long numWords)
 {
     errorFlag = EC_Normal;
-    currentVR = Tag.getEVR();
+    currentVR = getTag().getEVR();
     if (numWords)
     {
         if (wordValue)
         {
             errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
             if (errorFlag == EC_Normal &&
-                Tag.getEVR() == EVR_OB && fByteOrder == EBO_BigEndian)
+                getTag().getEVR() == EVR_OB && getByteOrder() == EBO_BigEndian)
             {
                 swapValueField(sizeof(Uint16));
-                fByteOrder = EBO_LittleEndian;
+                setByteOrder(EBO_LittleEndian);
             }
         }
         else
@@ -220,8 +220,8 @@ DcmPolymorphOBOW::read(
     OFCondition l_error =
         DcmOtherByteOtherWord::read(inStream, ixfer, glenc, maxReadLength);
 
-    if (fTransferState == ERW_ready)
-        currentVR = Tag.getEVR();
+    if (getTransferState() == ERW_ready)
+        currentVR = getTag().getEVR();
 
     return l_error;
 }
@@ -246,29 +246,29 @@ OFCondition DcmPolymorphOBOW::write(
     const E_EncodingType enctype)
 {
     DcmXfer oXferSyn(oxfer);
-    if (fTransferState == ERW_init)
+    if (getTransferState() == ERW_init)
     {
-        if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  fByteOrder == EBO_BigEndian)
+        if (getTag().getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  getByteOrder() == EBO_BigEndian)
         {
             // VR is OB and it will be written as OW in LittleEndianImplicit.
-            Tag.setVR(EVR_OW);
-            if (currentVR == EVR_OB) fByteOrder = EBO_LittleEndian;
+            setTagVR(EVR_OW);
+            if (currentVR == EVR_OB) setByteOrder(EBO_LittleEndian);
             currentVR = EVR_OB;
             changeVR = OFTrue;
         }
-        else if (Tag.getEVR() == EVR_OW && currentVR == EVR_OB)
+        else if (getTag().getEVR() == EVR_OW && currentVR == EVR_OB)
         {
-            fByteOrder = EBO_LittleEndian;
+            setByteOrder(EBO_LittleEndian);
             currentVR = EVR_OW;
         }
     }
     errorFlag = DcmOtherByteOtherWord::write(outStream, oxfer, enctype);
-    if (fTransferState == ERW_ready && changeVR)
+    if (getTransferState() == ERW_ready && changeVR)
     {
         // VR must be OB again. No Swapping is needed since the written
         // transfer syntax was LittleEndianImplicit and so no swapping
         // took place.
-        Tag.setVR(EVR_OB);
+        setTagVR(EVR_OB);
     }
     return errorFlag;
 }
@@ -279,29 +279,29 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
     const E_EncodingType enctype)
 {
     DcmXfer oXferSyn(oxfer);
-    if (fTransferState == ERW_init)
+    if (getTransferState() == ERW_init)
     {
-        if (Tag.getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  fByteOrder == EBO_BigEndian)
+        if (getTag().getEVR() == EVR_OB && oXferSyn.isImplicitVR() &&  getByteOrder() == EBO_BigEndian)
         {
             // VR is OB and it will be written as OW in LittleEndianImplicit.
-            Tag.setVR(EVR_OW);
-            if (currentVR == EVR_OB) fByteOrder = EBO_LittleEndian;
+            setTagVR(EVR_OW);
+            if (currentVR == EVR_OB) setByteOrder(EBO_LittleEndian);
             currentVR = EVR_OB;
             changeVR = OFTrue;
         }
-        else if (Tag.getEVR() == EVR_OW && currentVR == EVR_OB)
+        else if (getTag().getEVR() == EVR_OW && currentVR == EVR_OB)
         {
-            fByteOrder = EBO_LittleEndian;
+            setByteOrder(EBO_LittleEndian);
             currentVR = EVR_OW;
         }
     }
     errorFlag = DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype);
-    if (fTransferState == ERW_ready && changeVR)
+    if (getTransferState() == ERW_ready && changeVR)
     {
         // VR must be OB again. No Swapping is needed since the written
         // transfer syntax was LittleEndianImplicit and so no swapping
         // took place.
-        Tag.setVR(EVR_OB);
+        setTagVR(EVR_OB);
     }
     return errorFlag;
 }
@@ -310,7 +310,11 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.17  2005-12-08 15:42:00  meichel
+** Revision 1.18  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.17  2005/12/08 15:42:00  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.16  2005/11/15 16:59:25  meichel

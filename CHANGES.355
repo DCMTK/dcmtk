@@ -1,6 +1,57 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.06.29 (eichelberg)
+
+- Code clean-up: Most member variables in module dcmdata are now private,
+  not protected anymore.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvrulup.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvras.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrulup.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/libsrc/dcvrut.cc
+
 **** Changes from 2007.06.26 (riesmeier)
 
 - Added new variant of encodeBase64() method that outputs directly to a stream

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,8 +55,8 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
   : DcmSequenceOfItems(tag, len),
     Xfer(EXS_Unknown)
 {
-    Tag.setVR(EVR_OB);
-    Length = DCM_UndefinedLength; // pixel sequences always use undefined length
+    setTagVR(EVR_OB);
+    setLengthField(DCM_UndefinedLength); // pixel sequences always use undefined length
 }
 
 
@@ -111,7 +111,7 @@ void DcmPixelSequence::print(STD_NAMESPACE ostream&out,
     } else {
         OFOStringStream oss;
         oss << "(PixelSequence ";
-        if (Length != DCM_UndefinedLength)
+        if (getLengthField() != DCM_UndefinedLength)
             oss << "with explicit length ";
         oss << "#=" << card() << ")" << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
@@ -129,7 +129,7 @@ void DcmPixelSequence::print(STD_NAMESPACE ostream&out,
         }
         /* print pixel sequence end line */
         DcmTag delimItemTag(DCM_SequenceDelimitationItem);
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
             printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-encod.)", &delimItemTag);
@@ -375,7 +375,11 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.37  2006-08-15 15:49:54  meichel
+** Revision 1.38  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.37  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

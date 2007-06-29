@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDecimalString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:08:19 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ DcmDecimalString::DcmDecimalString(const DcmTag &tag,
                                    const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 16;
+    setMaxLength(16);
 }
 
 
@@ -148,7 +148,11 @@ OFCondition DcmDecimalString::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.19  2006-10-13 10:08:19  joergr
+** Revision 1.20  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.19  2006/10/13 10:08:19  joergr
 ** Enhanced performance of writeXML() for large multi-valued DS elements.
 **
 ** Revision 1.18  2005/12/08 15:41:50  meichel

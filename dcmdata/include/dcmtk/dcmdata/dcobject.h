@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:34 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,7 +507,61 @@ class DcmObject
      */
     virtual Uint32 getTagAndLengthSize(const E_TransferSyntax oxfer) const;
 
+	/** return the DICOM attribute tag name for this object. If not known yet, will
+	 *  be looked up in the dictionary and cached. Therefore, method is not const.
+	 *  @return tag name for this attribute
+	 */
+	const char *getTagName() { return Tag.getTagName(); }
+
+    /** set the VR for this attribute
+     *  @param vr new VR for this attribute.
+     */
+    void setTagVR(DcmEVR vr) { Tag.setVR(vr); }
+
+    /** return the current transfer state of this object during serialization/deserialization
+     *  @return current transfer state of this object
+     */
+    E_TransferState getTransferState() const { return fTransferState; }
+    
+    /** set the current transfer state of this object during serialization/deserialization
+     *  @param newState new transfer state of this object
+     */
+    void setTransferState(E_TransferState newState) { fTransferState = newState; }
+
+    /** return the number of transferred bytes for this object during serialization/deserialization
+     *  @return number of transferred bytes
+     */
+    Uint32 getTransferredBytes() const { return fTransferredBytes; }
+    
+    /** set the number of transferred bytes for this object during serialization/deserialization
+     *  @param val number of transferred bytes
+     */
+    void setTransferredBytes(Uint32 val) { fTransferredBytes = val; }
+
+    /** add to the number of transferred bytes for this object during serialization/deserialization
+     *  @param val number of additional transferred bytes to add to existing value
+     */
+    void incTransferredBytes(Uint32 val) { fTransferredBytes += val; }
+
+    /** return the current value of the Length field (which is different from the functionality
+     *  of the public getLength method).
+     *  @return current value of length field
+     */
+    Uint32 getLengthField() const { return Length; }
+
+    /** set the current value of the Length field 
+     *  @param val new value of the Length field 
+     */
+    void setLengthField(Uint32 val) { Length = val; }
+
     /* member variables */
+
+protected:
+	   
+    /// error flag for this object.
+    OFCondition errorFlag;  
+
+private:
 
     /// the DICOM attribute tag and VR for this object
     DcmTag Tag;
@@ -517,11 +571,6 @@ class DcmObject
 
     /// transfer state during read and write operations
     E_TransferState fTransferState;
-
-    // Note: defined after fTransferState to workaround memory layout problem with Borland C++    
-   
-    /// error flag for this object.
-    OFCondition errorFlag;  
 
     /// number of bytes already read/written during transfer
     Uint32 fTransferredBytes;
@@ -535,7 +584,11 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.46  2007-02-19 15:04:34  meichel
+ * Revision 1.47  2007-06-29 14:17:49  meichel
+ * Code clean-up: Most member variables in module dcmdata are now private,
+ *   not protected anymore.
+ *
+ * Revision 1.46  2007/02/19 15:04:34  meichel
  * Removed searchErrors() methods that are not used anywhere and added
  *   error() methods only in the DcmObject subclasses where really used.
  *

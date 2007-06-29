@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSignedShort
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ DcmEVR DcmSignedShort::ident() const
 
 unsigned long DcmSignedShort::getVM()
 {
-    return Length / sizeof(Sint16);
+    return getLengthField() / sizeof(Sint16);
 }
 
 
@@ -268,13 +268,13 @@ OFCondition DcmSignedShort::putString(const char *stringVal)
 OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 {
     /* check for valid value length */
-    if (Length % (sizeof(Sint16)) != 0)
+    if (getLengthField() % (sizeof(Sint16)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
             /* strip to valid length */
-            Length -= (Length % (sizeof(Sint16)));
+            setLengthField(getLengthField() - (getLengthField() % (sizeof(Sint16))));
         }
     } else
         errorFlag = EC_Normal;
@@ -285,7 +285,11 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.26  2006-08-15 15:49:54  meichel
+** Revision 1.27  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.26  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

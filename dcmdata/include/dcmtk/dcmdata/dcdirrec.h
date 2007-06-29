@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:34 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,12 +99,13 @@ private:
 
     DcmDirectoryRecord &operator=(const DcmDirectoryRecord &);
 
-protected:
     DcmSequenceOfItems *lowerLevelList;
     E_DirRecType DirRecordType;
     DcmDirectoryRecord *referencedMRDR;
     Uint32 numberOfReferences;
     Uint32 offsetInFile;
+
+protected:
 
     // side-effect-free conversion routines:
     E_DirRecType        recordNameToType(const char *recordTypeName);
@@ -240,7 +241,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.35  2007-02-19 15:04:34  meichel
+** Revision 1.36  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.35  2007/02/19 15:04:34  meichel
 ** Removed searchErrors() methods that are not used anywhere and added
 **   error() methods only in the DcmObject subclasses where really used.
 **

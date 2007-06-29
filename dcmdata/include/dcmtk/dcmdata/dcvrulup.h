@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:29:14 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,14 +100,10 @@ class DcmUnsignedLongOffset
      */
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 
-
-  protected:
+  private:
 
     /// pointer to the referenced object. NULL means that no object is referenced.
     DcmObject *nextRecord;
-
-
-  private:
 
 	/// private undefined copy assignment operator
     DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
@@ -120,7 +116,11 @@ class DcmUnsignedLongOffset
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.16  2005-12-08 16:29:14  meichel
+** Revision 1.17  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.16  2005/12/08 16:29:14  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.15  2004/07/01 12:28:25  meichel

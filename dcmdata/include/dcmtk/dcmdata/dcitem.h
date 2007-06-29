@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-08 14:56:04 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -805,7 +805,6 @@ class DcmItem
                                    DcmItem *item,
                                    const signed long itemNum = -2);
 
-
   protected:
 
     /// the list of elements maintained by this object
@@ -822,6 +821,8 @@ class DcmItem
      *  bytes available for a fixed-length item).
      */
     Uint32 fStartPosition;
+
+  protected:
 
     /** This function reads tag and length information from inStream and
      *  returns this information to the caller. When reading information,
@@ -948,7 +949,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.61  2007-06-08 14:56:04  joergr
+** Revision 1.62  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.61  2007/06/08 14:56:04  joergr
 ** Added new helper functions insertSequenceItem(), findAndDeleteSequenceItem().
 ** Replaced helper function findAndCopyElement() by new optional parameter
 ** 'createCopy' in various findAndGetXXX() functions.

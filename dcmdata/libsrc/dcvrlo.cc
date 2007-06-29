@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation class DcmLongString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:55 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ DcmLongString::DcmLongString(const DcmTag &tag,
                              const Uint32 len)
   : DcmCharString(tag, len)
 {
-    maxLength = 64;
+    setMaxLength(64);
 }
 
 
@@ -92,7 +92,11 @@ OFCondition DcmLongString::getOFString(OFString &stringVal,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.cc,v $
-** Revision 1.14  2005-12-08 15:41:55  meichel
+** Revision 1.15  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.14  2005/12/08 15:41:55  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.13  2002/12/06 13:20:51  joergr

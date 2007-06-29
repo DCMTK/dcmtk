@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-13 10:08:44 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,8 +51,8 @@ DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmTag &tag,
   : DcmByteString(tag, len)
 {
     /* padding character is NULL not a space! */
-    paddingChar = '\0';
-    maxLength = 64;
+    setPaddingChar('\0');
+    setMaxLength(64);
 }
 
 
@@ -174,7 +174,11 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.25  2006-10-13 10:08:44  joergr
+** Revision 1.26  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.25  2006/10/13 10:08:44  joergr
 ** Renamed variable "string" to "stringVal".
 **
 ** Revision 1.24  2006/08/15 15:49:54  meichel

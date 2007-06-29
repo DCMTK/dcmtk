@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:10 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ DcmUnlimitedText::DcmUnlimitedText(const DcmTag &tag,
                                    const Uint32 len)
   : DcmCharString(tag, len)
 {
-    maxLength = DCM_UndefinedLength;
+    setMaxLength(DCM_UndefinedLength);
 }
 
 
@@ -109,7 +109,11 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
-** Revision 1.10  2005-12-08 15:42:10  meichel
+** Revision 1.11  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.10  2005/12/08 15:42:10  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.9  2004/01/16 13:45:06  joergr

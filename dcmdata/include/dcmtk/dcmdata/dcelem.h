@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-07 09:01:15 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,11 +84,11 @@ class DcmElement
     virtual Uint32 getLength(const E_TransferSyntax /*xfer*/ = EXS_LittleEndianImplicit,
                              const E_EncodingType /*enctype*/ = EET_UndefinedLength)
     {
-        return Length;
+        return getLengthField();
     }
 
     virtual OFBool isLeaf() const { return OFTrue; }
-    inline OFBool valueLoaded() { return fValue != NULL || Length == 0; }
+    inline OFBool valueLoaded() { return fValue != NULL || getLengthField() == 0; }
 
     virtual void transferInit();
 
@@ -262,10 +262,7 @@ class DcmElement
      */
     virtual OFCondition createUint16Array(const Uint32 numWords, Uint16 *&words);
 
-
   protected:
-
-    E_ByteOrder fByteOrder;
 
     /** This function returns this element's value. The returned value
      *  corresponds to the byte ordering (little or big endian) that
@@ -323,8 +320,20 @@ class DcmElement
     virtual void writeXMLEndTag(STD_NAMESPACE ostream &out,
                                 const size_t flags);
 
+    /** return the current byte order of the value field
+     *  @return current byte order of the value field
+     */
+    E_ByteOrder getByteOrder() const { return fByteOrder; }
+
+    /** set the current byte order of the value field
+     *  @param val byte order of the value field
+     */
+    void setByteOrder(E_ByteOrder val) { fByteOrder = val; }
 
   private:
+
+    /// current byte order of attribute value in memory
+    E_ByteOrder fByteOrder;
 
     /// required information to load value later
     DcmInputStreamFactory *fLoadValue;
@@ -340,7 +349,11 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.32  2007-06-07 09:01:15  joergr
+** Revision 1.33  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.32  2007/06/07 09:01:15  joergr
 ** Added createUint8Array() and createUint16Array() methods.
 **
 ** Revision 1.31  2006/10/13 10:12:02  joergr

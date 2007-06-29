@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-26 16:24:23 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ DcmPixelItem::DcmPixelItem(const DcmTag &tag,
                            const Uint32 len)
   : DcmOtherByteOtherWord(tag, len)
 {
-    Tag.setVR(EVR_pixelItem);
+    setTagVR(EVR_pixelItem);
 }
 
 
@@ -80,10 +80,10 @@ OFCondition DcmPixelItem::writeTagAndLength(DcmOutputStream &outStream,
     if (l_error.good())
     {
         /* write tag information */
-        l_error = writeTag(outStream, Tag, oxfer);
+        l_error = writeTag(outStream, getTag(), oxfer);
         writtenBytes = 4;
         /* prepare to write the value field */
-        Uint32 valueLength = Length;
+        Uint32 valueLength = getLengthField();
         DcmXfer outXfer(oxfer);
         /* check byte-ordering */
         const E_ByteOrder oByteOrder = outXfer.getByteOrder();
@@ -150,7 +150,7 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
     /* XML start tag for "item" */
     out << "<pixel-item";
     /* value length in bytes = 0..max */
-    out << " len=\"" << Length << "\"";
+    out << " len=\"" << getLengthField() << "\"";
     /* value loaded = no (or absent)*/
     if (!valueLoaded())
         out << " loaded=\"no\"";
@@ -169,7 +169,7 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
         if (flags & DCMTypes::XF_encodeBase64)
         {
             /* pixel items always contain 8 bit data, therefore, byte swapping not required */
-            OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, Length));
+            OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, getLengthField()));
         } else {
             OFString value;
             /* encode as sequence of hexadecimal numbers */
@@ -198,7 +198,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
   else
   {
       /* In case the transfer state is not initialized, this is an illegal call */
-      if (fTransferState == ERW_notInitialized)
+      if (getTransferState() == ERW_notInitialized)
           errorFlag = EC_IllegalCall;
       else
       {
@@ -216,7 +216,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
               /* if this element's transfer state is ERW_init (i.e. it has not yet been written to */
               /* the stream) and if the outstream provides enough space for tag and length information */
               /* write tag and length information to it, do something */
-              if (fTransferState == ERW_init)
+              if (getTransferState() == ERW_init)
               {
                   /* first compare with DCM_TagInfoLength (12). If there is not enough space
                    * in the buffer, check if the buffer is still sufficient for the requirements
@@ -225,32 +225,32 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                   if (outStream.avail() >= 4)
                   {
                       /* if there is no value, Length (member variable) shall be set to 0 */
-                      if (!value) Length = 0;
+                      if (!value) setLengthField(0);
 
                       /* write tag and length information (and possibly also data type information) to the stream, */
                       /* mind the transfer syntax and remember the amount of bytes that have been written */
-                      errorFlag = writeTag(outStream, Tag, oxfer);
+                      errorFlag = writeTag(outStream, getTag(), oxfer);
 
                       /* if the writing was successful, set this element's transfer */
                       /* state to ERW_inWork and the amount of transferred bytes to 0 */
                       if (errorFlag.good())
                       {
-                          fTransferState = ERW_inWork;
-                          fTransferredBytes = 0;
+                          setTransferState(ERW_inWork);
+                          setTransferredBytes(0);
                       }
                   } else
                       errorFlag = EC_StreamNotifyClient;
               }
               /* if there is a value that has to be written to the stream */
               /* and if this element's transfer state is ERW_inWork */
-              if (value && fTransferState == ERW_inWork)
+              if (value && getTransferState() == ERW_inWork)
               {
-                  /* write as many bytes as possible to the stream starting at value[fTransferredBytes] */
-                  /* (note that the bytes value[0] to value[fTransferredBytes-1] have already been */
+                  /* write as many bytes as possible to the stream starting at value[getTransferredBytes()] */
+                  /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
                   /* written to the stream) */
-                  Uint32 len = outStream.write(&value[fTransferredBytes], Length - fTransferredBytes);
+                  Uint32 len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
                   /* increase the amount of bytes which have been transfered correspondingly */
-                  fTransferredBytes += len;
+                  incTransferredBytes(len);
                   /* see if there is something fishy with the stream */
                   errorFlag = outStream.status();
                   /* if the amount of transferred bytes equals the length of the element's value, the */
@@ -258,8 +258,8 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                   /* has to be set to ERW_ready. If this is not the case but the error flag still shows */
                   /* an ok value, there was no more space in the stream and a corresponding return value */
                   /* has to be set. (Isn't the "else if" part superfluous?!?) */
-                  if (fTransferredBytes == Length)
-                      fTransferState = ERW_ready;
+                  if (getTransferredBytes() == getLengthField())
+                      setTransferState(ERW_ready);
                   else if (errorFlag.good())
                       errorFlag = EC_StreamNotifyClient;
               }
@@ -274,7 +274,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.31  2007-06-26 16:24:23  joergr
+** Revision 1.32  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.31  2007/06/26 16:24:23  joergr
 ** Added new variant of encodeBase64() method that outputs directly to a stream
 ** (avoids using a memory buffer for large binary data).
 **

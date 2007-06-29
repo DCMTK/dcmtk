@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmDate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:49 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ DcmDate::DcmDate(const DcmTag &tag,
                  const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 10;
+    setMaxLength(10);
 }
 
 
@@ -236,7 +236,11 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.16  2005-12-08 15:41:49  meichel
+** Revision 1.17  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.16  2005/12/08 15:41:49  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.15  2002/12/06 13:20:49  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:08 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
     /* perform additional checks on the stored value */
     Uint32 *uintVals;
     errorFlag = getUint32Array(uintVals);
-    if (errorFlag.good() && (Length > 0) && (uintVals != NULL) && (*uintVals != 0) && (nextRecord == NULL))
+    if (errorFlag.good() && (getLengthField() > 0) && (uintVals != NULL) && (*uintVals != 0) && (nextRecord == NULL))
         errorFlag = EC_CorruptedData;
     return errorFlag;
 }
@@ -121,7 +121,11 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.26  2005-12-08 15:42:08  meichel
+** Revision 1.27  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.26  2005/12/08 15:42:08  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.25  2004/01/16 13:45:34  joergr

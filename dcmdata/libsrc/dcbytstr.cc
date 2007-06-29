@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:14:44 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ unsigned long DcmByteString::getVM()
     getString(s);
     unsigned long vm = 0;
     /*  check for empty string */
-    if ((s == NULL) || (Length == 0))
+    if ((s == NULL) || (getLengthField() == 0))
         vm = 0;
     else
     {
@@ -150,7 +150,7 @@ Uint32 DcmByteString::getLength(const E_TransferSyntax /*xfer*/,
     /* convert string to DICOM representation, i.e. add padding if required */
     makeDicomByteString();
     /* DICOM value length is always an even number */
-    return Length;
+    return getLengthField();
 }
 
 
@@ -201,12 +201,12 @@ OFCondition DcmByteString::write(DcmOutputStream &outStream,
                                  const E_TransferSyntax writeXfer,
                                  const E_EncodingType encodingType)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         /* convert string value to DICOM representation and call inherited method */
-        if (fTransferState == ERW_init)
+        if (getTransferState() == ERW_init)
             makeDicomByteString();
         errorFlag = DcmElement::write(outStream, writeXfer, encodingType);
     }
@@ -218,12 +218,12 @@ OFCondition DcmByteString::writeSignatureFormat(DcmOutputStream &outStream,
                                                 const E_TransferSyntax writeXfer,
                                                 const E_EncodingType encodingType)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         /* convert string value to DICOM representation and call inherited method */
-        if (fTransferState == ERW_init)
+        if (getTransferState() == ERW_init)
             makeDicomByteString();
         errorFlag = DcmElement::writeSignatureFormat(outStream, writeXfer, encodingType);
     }
@@ -317,12 +317,12 @@ OFCondition DcmByteString::makeDicomByteString()
         if (realLength & 1)
         {
             /* if so add a padding character */
-            Length = realLength + 1;
+            setLengthField(realLength + 1);
             value[realLength] = paddingChar;
-        } else if (realLength < Length)
-            Length = realLength;
+        } else if (realLength < getLengthField())
+            setLengthField(realLength);
         /* terminate string (removes additional trailing padding characters) */
-        value[Length] = '\0';
+        value[getLengthField()] = '\0';
     }
     /* current string representation is now the DICOM one */
     fStringMode = DCM_DicomString;
@@ -370,26 +370,26 @@ Uint8 *DcmByteString::newValueField()
 {
     Uint8 *value = NULL;
     /* check for odd length (in case of a protocol error) */
-    if (Length & 1)
+    if (getLengthField() & 1)
     {
         /* allocate space for extra padding character (required for the DICOM representation of the string) */
 #ifdef HAVE_STD__NOTHROW
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[Length + 2];
+        value = new (std::nothrow) Uint8[getLengthField() + 2];
 #else
-        value = new Uint8[Length + 2];
+        value = new Uint8[getLengthField() + 2];
 #endif
 
         /* terminate string after real length */
         if (value != NULL)
-            value[Length] = 0;
+            value[getLengthField()] = 0;
         /* enforce old (pre DCMTK 3.5.2) behaviour? */
         if (!dcmAcceptOddAttributeLength.get())
         {
             /* make length even */
-            Length++;
+            setLengthField(getLengthField() + 1);
         }
     } else {
         /* length is even */
@@ -397,14 +397,14 @@ Uint8 *DcmByteString::newValueField()
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[Length + 1];
+        value = new (std::nothrow) Uint8[getLengthField() + 1];
 #else
-        value = new Uint8[Length + 1];
+        value = new Uint8[getLengthField() + 1];
 #endif
     }
     /* make sure that the string is properly terminates by a 0 byte */
     if (value != NULL)
-        value[Length] = 0;
+        value[getLengthField()] = 0;
     return value;
 }
 
@@ -420,11 +420,11 @@ void DcmByteString::postLoadValue()
     if (dcmEnableAutomaticInputDataCorrection.get())
     {
         /* check for odd length */
-        if (Length & 1)
+        if (getLengthField() & 1)
         {
             // newValueField always allocates an even number of bytes and sets
             // the pad byte to zero, so we can safely increase Length here.
-            Length++;
+            setLengthField(getLengthField() + 1);
         }
     }
 }
@@ -465,7 +465,7 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
             if (autocorrect)
                 tempstr[temppos++] = c;
             field++;
-            if (pos > Length)
+            if (pos > getLengthField())
                 break;
         }
         /* replace current string value if auto correction is enabled */
@@ -611,7 +611,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.45  2006-12-15 14:14:44  joergr
+** Revision 1.46  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.45  2006/12/15 14:14:44  joergr
 ** Added new method that checks whether a DICOM object or element is affected
 ** by SpecificCharacterSet (0008,0005).
 **

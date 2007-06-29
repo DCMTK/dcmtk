@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmCodeString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:48 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ DcmCodeString::DcmCodeString(const DcmTag &tag,
                              const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = MAX_CS_LENGTH;
+    setMaxLength(MAX_CS_LENGTH);
 }
 
 
@@ -125,7 +125,11 @@ OFBool DcmCodeString::checkVR(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
-** Revision 1.15  2005-12-08 15:41:48  meichel
+** Revision 1.16  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.15  2005/12/08 15:41:48  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.14  2003/06/12 15:07:13  joergr

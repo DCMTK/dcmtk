@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:05 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ DcmTime::DcmTime(const DcmTag &tag,
                  const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 16;
+    setMaxLength(16);
 }
 
 
@@ -331,7 +331,11 @@ OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.27  2005-12-08 15:42:05  meichel
+** Revision 1.28  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.27  2005/12/08 15:42:05  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.26  2004/01/16 13:46:38  joergr

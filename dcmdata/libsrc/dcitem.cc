@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-08 15:18:47 $
- *  CVS/RCS Revision: $Revision: 1.106 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.107 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -317,7 +317,7 @@ void DcmItem::print(STD_NAMESPACE ostream&out,
     } else {
         OFOStringStream oss;
         oss << "(Item with ";
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             oss << "undefined";
         else
             oss << "explicit";
@@ -337,7 +337,7 @@ void DcmItem::print(STD_NAMESPACE ostream&out,
         }
         /* print item end line */
         DcmTag delimItemTag(DCM_ItemDelimitationItem);
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(ItemDelimitationItem)", &delimItemTag);
         else
             printInfoLine(out, flags, level, "(ItemDelimitationItem for re-encoding)", &delimItemTag);
@@ -356,8 +356,8 @@ OFCondition DcmItem::writeXML(STD_NAMESPACE ostream&out,
     /* cardinality (number of attributes) = 1..n */
     out << " card=\"" << card() << "\"";
     /* value length in bytes = 0..max (if not undefined) */
-    if (Length != DCM_UndefinedLength)
-        out << " len=\"" << Length << "\"";
+    if (getLengthField() != DCM_UndefinedLength)
+        out << " len=\"" << getLengthField() << "\"";
     out << ">" << OFendl;
     /* write item content */
     if (!elementList->empty())
@@ -888,7 +888,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                           const Uint32 maxReadLength)
 {
     /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -898,18 +898,18 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
         /* stream, set the error flag correspondingly; else go ahead */
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && fTransferState != ERW_ready)
+        else if (errorFlag.good() && getTransferState() != ERW_ready)
         {
             /* if the transfer state of this item is ERW_init, get its start */
             /* position in the stream and set the transfer state to ERW_inWork */
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 fStartPosition = inStream.tell();  // start position of this item
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
             DcmTag newTag;
             /* start a loop in order to read all elements (attributes) which are contained in the inStream */
-            while (inStream.good() && (fTransferredBytes < Length || !lastElementComplete))
+            while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete))
             {
                 /* initialize variables */
                 Uint32 newValueLength = 0;
@@ -921,7 +921,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* possibly also VR information) from the inStream */
                     errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
                     /* increase counter correpsondingly */
-                    fTransferredBytes += bytes_tagAndLen;
+                    incTransferredBytes(bytes_tagAndLen);
 
                     /* if there was an error while we were reading from the stream, terminate the while-loop */
                     /* (note that if the last element had been read from the instream in the last iteration, */
@@ -952,7 +952,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                         lastElementComplete = OFTrue;
                 }
                 /* remember how many bytes were read */
-                fTransferredBytes = inStream.tell() - fStartPosition;
+                setTransferredBytes(inStream.tell() - fStartPosition);
                 if (errorFlag.good())
                 {
                     // If we completed one element, update the private tag cache.
@@ -965,7 +965,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
             /* determine an appropriate result value; note that if the above called read function */
             /* encountered the end of the stream before all information for this element could be */
             /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
-            if ((fTransferredBytes < Length || !lastElementComplete) && errorFlag.good())
+            if ((getTransferredBytes() < getLengthField() || !lastElementComplete) && errorFlag.good())
                 errorFlag = EC_StreamNotifyClient;
             if (errorFlag.good() && inStream.eos())
                 errorFlag = EC_EndOfStream;
@@ -978,7 +978,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
         /* Note that all information for this element could be read from the */
         /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
         if (errorFlag.good())
-            fTransferState = ERW_ready;
+            setTransferState(ERW_ready);
     }
     /* return result value */
     return errorFlag;
@@ -992,34 +992,34 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
                            const E_TransferSyntax oxfer,
                            const E_EncodingType enctype)
 {
-  if (fTransferState == ERW_notInitialized)
+  if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
   else
   {
     errorFlag = outStream.status();
-    if (errorFlag.good() && fTransferState != ERW_ready)
+    if (errorFlag.good() && getTransferState() != ERW_ready)
     {
-      if (fTransferState == ERW_init)
+      if (getTransferState() == ERW_init)
       {
         if (outStream.avail() >= 8)
         {
           if (enctype == EET_ExplicitLength)
-            Length = getLength(oxfer, enctype);
+            setLengthField(getLength(oxfer, enctype));
           else
-            Length = DCM_UndefinedLength;
-          errorFlag = writeTag(outStream, Tag, oxfer);
-          Uint32 valueLength = Length;
+            setLengthField(DCM_UndefinedLength);
+          errorFlag = writeTag(outStream, getTag(), oxfer);
+          Uint32 valueLength = getLengthField();
           DcmXfer outXfer(oxfer);
           const E_ByteOrder oByteOrder = outXfer.getByteOrder();
           if (oByteOrder == EBO_unknown) return EC_IllegalCall;
           swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
           outStream.write(&valueLength, 4); // 4 bytes length
           elementList->seek(ELP_first);
-          fTransferState = ERW_inWork;
+          setTransferState(ERW_inWork);
         } else
           errorFlag = EC_StreamNotifyClient;
       }
-      if (fTransferState == ERW_inWork)
+      if (getTransferState() == ERW_inWork)
       {
         // elementList->get() can be NULL if buffer was full after
         // writing the last item but before writing the sequence delimitation.
@@ -1035,8 +1035,8 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
         }
         if (errorFlag.good())
         {
-          fTransferState = ERW_ready;
-          if (Length == DCM_UndefinedLength)
+          setTransferState(ERW_ready);
+          if (getLengthField() == DCM_UndefinedLength)
           {
             if (outStream.avail() >= 8)
             {
@@ -1051,7 +1051,7 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
                 // Every subelement of the item is written but it
                 // is not possible to write the delimination item into the buffer.
                 errorFlag = EC_StreamNotifyClient;
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
           }
         }
@@ -1067,29 +1067,29 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
                                           const E_TransferSyntax oxfer,
                                           const E_EncodingType enctype)
 {
-  if (fTransferState == ERW_notInitialized)
+  if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
   else
   {
     errorFlag = outStream.status();
-    if (errorFlag.good() && fTransferState != ERW_ready)
+    if (errorFlag.good() && getTransferState() != ERW_ready)
     {
-      if (fTransferState == ERW_init)
+      if (getTransferState() == ERW_init)
       {
         if (outStream.avail() >= 4)
         {
           if (enctype == EET_ExplicitLength)
-            Length = getLength(oxfer, enctype);
+            setLengthField(getLength(oxfer, enctype));
           else
-            Length = DCM_UndefinedLength;
-          errorFlag = writeTag(outStream, Tag, oxfer);
+            setLengthField(DCM_UndefinedLength);
+          errorFlag = writeTag(outStream, getTag(), oxfer);
           /* we don't write the item length */
           elementList->seek(ELP_first);
-          fTransferState = ERW_inWork;
+          setTransferState(ERW_inWork);
         } else
           errorFlag = EC_StreamNotifyClient;
       }
-      if (fTransferState == ERW_inWork)
+      if (getTransferState() == ERW_inWork)
       {
         // elementList->get() can be NULL if buffer was full after
         // writing the last item but before writing the sequence delimitation.
@@ -1105,7 +1105,7 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
         }
         if (errorFlag.good())
         {
-          fTransferState = ERW_ready;
+          setTransferState(ERW_ready);
           /* we don't write an item delimitation even if the item has undefined length */
         }
       }
@@ -1453,7 +1453,7 @@ OFCondition DcmItem::clear()
         dO = elementList->remove();
         delete dO;                          // also delete sub elements
     }
-    Length = 0;
+    setLengthField(0);
 
     return errorFlag;
 }
@@ -1465,7 +1465,7 @@ OFCondition DcmItem::clear()
 OFCondition DcmItem::verify(const OFBool autocorrect)
 {
     DCM_dcmdataDebug(3, ("DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-            getGTag(), getETag(), DcmVR(getVR()).getVRName(), Tag.getTagName()));
+            getGTag(), getETag(), DcmVR(getVR()).getVRName(), getTagName()));
 
     errorFlag = EC_Normal;
     if (!elementList->empty())
@@ -1479,7 +1479,7 @@ OFCondition DcmItem::verify(const OFBool autocorrect)
         } while (elementList->seek(ELP_next));
     }
     if (autocorrect == OFTrue)
-        Length = getLength();
+        setLengthField(getLength());
     return errorFlag;
 }
 
@@ -3427,7 +3427,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.106  2007-06-08 15:18:47  joergr
+** Revision 1.107  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.106  2007/06/08 15:18:47  joergr
 ** Fixed typo that caused MSVC to report an error.
 **
 ** Revision 1.105  2007/06/08 15:12:56  joergr

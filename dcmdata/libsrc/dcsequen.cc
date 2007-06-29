@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:16 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,7 +202,7 @@ void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
     } else {
         OFOStringStream oss;
         oss << "(Sequence with ";
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             oss << "undefined";
         else
             oss << "explicit";
@@ -222,7 +222,7 @@ void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
         }
         /* print sequence end line */
         DcmTag delimItemTag(DCM_SequenceDelimitationItem);
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
             printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
         else
             printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-encod.)", &delimItemTag);
@@ -237,25 +237,25 @@ OFCondition DcmSequenceOfItems::writeXML(STD_NAMESPACE ostream&out,
                                          const size_t flags)
 {
     OFString xmlString;
-    DcmVR vr(Tag.getVR());
+    DcmVR vr(getTag().getVR());
     /* XML start tag for "sequence" */
     out << "<sequence";
     /* attribute tag = (gggg,eeee) */
     out << " tag=\"";
     out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-        << STD_NAMESPACE setw(4) << Tag.getGTag() << ","
-        << STD_NAMESPACE setw(4) << Tag.getETag() << "\""
+        << STD_NAMESPACE setw(4) << getTag().getGTag() << ","
+        << STD_NAMESPACE setw(4) << getTag().getETag() << "\""
         << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     /* value representation = VR */
     out << " vr=\"" << vr.getVRName() << "\"";
     /* cardinality (number of items) = 1..n */
     out << " card=\"" << card() << "\"";
     /* value length in bytes = 0..max (if not undefined) */
-    if (Length != DCM_UndefinedLength)
-        out << " len=\"" << Length << "\"";
+    if (getLengthField() != DCM_UndefinedLength)
+        out << " len=\"" << getLengthField() << "\"";
     /* tag name (if known and not suppressed) */
     if (!(flags & DCMTypes::XF_omitDataElementName))
-        out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
+        out << " name=\"" << OFStandard::convertToMarkupString(getTagName(), xmlString) << "\"";
     out << ">" << OFendl;
     /* write sequence content */
     if (!itemList->empty())
@@ -434,7 +434,7 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
         {
-            ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << Tag << " is odd" << OFendl;
+            ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << getTag() << " is odd" << OFendl;
             ofConsole.unlockCerr();
         }
         length = valueLength;
@@ -498,7 +498,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -506,18 +506,18 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && (fTransferState != ERW_ready))
+        else if (errorFlag.good() && (getTransferState() != ERW_ready))
         {
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 fStartPosition = inStream.tell();   // Position Sequence-Value
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
 
             E_TransferSyntax readxfer = readAsUN_ ? EXS_LittleEndianImplicit : xfer;
 
             itemList->seek(ELP_last); // append data at end
-            while (inStream.good() && ((fTransferredBytes < Length) || !lastItemComplete))
+            while (inStream.good() && ((getTransferredBytes() < getLengthField()) || !lastItemComplete))
             {
                 DcmTag newTag;
                 Uint32 newValueLength = 0;
@@ -529,7 +529,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                     if (errorFlag.bad())
                         break;                  // finish while loop
                     else
-                        fTransferredBytes += 8;
+                        incTransferredBytes(8);
 
                     lastItemComplete = OFFalse;
                     errorFlag = readSubItem(inStream, newTag, newValueLength, readxfer, glenc, maxReadLength);
@@ -542,20 +542,20 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                     if (errorFlag.good())
                         lastItemComplete = OFTrue;
                 }
-                fTransferredBytes = inStream.tell() - fStartPosition;
+                setTransferredBytes(inStream.tell() - fStartPosition);
 
                 if (errorFlag.bad())
                     break;
 
             } //while
-            if (((fTransferredBytes < Length) || !lastItemComplete) && errorFlag.good())
+            if (((getTransferredBytes() < getLengthField()) || !lastItemComplete) && errorFlag.good())
                 errorFlag = EC_StreamNotifyClient;
         } // else errorFlag
 
         if (errorFlag == EC_SequEnd)
             errorFlag = EC_Normal;
         if (errorFlag.good())
-            fTransferState = ERW_ready;      // sequence is complete
+            setTransferState(ERW_ready);      // sequence is complete
     }
     return errorFlag;
 }
@@ -568,14 +568,14 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType enctype)
   {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         errorFlag = outStream.status();
-        if (errorFlag.good() && (fTransferState != ERW_ready))
+        if (errorFlag.good() && (getTransferState() != ERW_ready))
         {
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
@@ -585,20 +585,20 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                     (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     if (enctype == EET_ExplicitLength)
-                        Length = getLength(oxfer, enctype);
+                        setLengthField(getLength(oxfer, enctype));
                     else
-                        Length = DCM_UndefinedLength;
+                        setLengthField(DCM_UndefinedLength);
                     Uint32 written_bytes = 0;
                     errorFlag = writeTagAndLength(outStream, oxfer, written_bytes);
                     if (errorFlag.good())
                     {
-                        fTransferState = ERW_inWork;
+                        setTransferState(ERW_inWork);
                         itemList->seek(ELP_first);
                     }
                 } else
                     errorFlag = EC_StreamNotifyClient;
             }
-            if (fTransferState == ERW_inWork)
+            if (getTransferState() == ERW_inWork)
             {
                 // itemList->get() can be NULL if buffer was full after
                 // writing the last item but before writing the sequence delimitation.
@@ -614,8 +614,8 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                 }
                 if (errorFlag.good())
                 {
-                    fTransferState = ERW_ready;
-                    if (Length == DCM_UndefinedLength)
+                    setTransferState(ERW_ready);
+                    if (getLengthField() == DCM_UndefinedLength)
                     {
                         if (outStream.avail() >= 8)
                         {
@@ -628,7 +628,7 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                             // the complete sequence is written but it
                             // is not possible to write the delimination item into the buffer.
                             errorFlag = EC_StreamNotifyClient;
-                            fTransferState = ERW_inWork;
+                            setTransferState(ERW_inWork);
                         }
                     }
                 }
@@ -689,14 +689,14 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                                                      const E_TransferSyntax oxfer,
                                                      const E_EncodingType enctype)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
         errorFlag = outStream.status();
-        if (errorFlag.good() && (fTransferState != ERW_ready))
+        if (errorFlag.good() && (getTransferState() != ERW_ready))
         {
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 /* first compare with DCM_TagInfoLength (12). If there is not enough space
                  * in the buffer, check if the buffer is still sufficient for the requirements
@@ -706,20 +706,20 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                     (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     if (enctype == EET_ExplicitLength)
-                        Length = getLength(oxfer, enctype);
+                        setLengthField(getLength(oxfer, enctype));
                     else
-                        Length = DCM_UndefinedLength;
-                    errorFlag = writeTagAndVR(outStream, Tag, getVR(), oxfer);
+                        setLengthField(DCM_UndefinedLength);
+                    errorFlag = writeTagAndVR(outStream, getTag(), getVR(), oxfer);
                     /* we don't write the sequence length */
                     if (errorFlag.good())
                     {
-                        fTransferState = ERW_inWork;
+                        setTransferState(ERW_inWork);
                         itemList->seek(ELP_first);
                     }
                 } else
                     errorFlag = EC_StreamNotifyClient;
             }
-            if (fTransferState == ERW_inWork)
+            if (getTransferState() == ERW_inWork)
             {
                 // itemList->get() can be NULL if buffer was full after
                 // writing the last item but before writing the sequence delimitation.
@@ -734,7 +734,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                 }
                 if (errorFlag.good())
                 {
-                    fTransferState = ERW_ready;
+                    setTransferState(ERW_ready);
                     /* we always write a sequence delimitation item tag, but no length */
                     if (outStream.avail() >= 4)
                     {
@@ -745,7 +745,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                         // Every subelement of the item was written but it
                         // is not possible to write the delimination item
                         // into the buffer.
-                        fTransferState = ERW_inWork;
+                        setTransferState(ERW_inWork);
                         errorFlag = EC_StreamNotifyClient;
                     }
                 }
@@ -1010,7 +1010,7 @@ OFCondition DcmSequenceOfItems::clear()
             dO = NULL;
         }
     }
-    Length = 0;
+    setLengthField(0);
     return errorFlag;
 }
 
@@ -1032,7 +1032,7 @@ OFCondition DcmSequenceOfItems::verify(const OFBool autocorrect)
         } while (itemList->seek(ELP_next));
     }
     if (autocorrect == OFTrue)
-        Length = getLength();
+        setLengthField(getLength());
 
     return errorFlag;
 }
@@ -1250,7 +1250,11 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.67  2007-02-19 15:04:16  meichel
+** Revision 1.68  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.67  2007/02/19 15:04:16  meichel
 ** Removed searchErrors() methods that are not used anywhere and added
 **   error() methods only in the DcmObject subclasses where really used.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,8 +97,8 @@ DcmPixelData::DcmPixelData(
 {
     repListEnd = repList.end();
     current = original = repListEnd;
-    if (Tag.getEVR() == EVR_ox) Tag.setVR(EVR_OW);
-    unencapsulatedVR = Tag.getEVR();
+    if (getTag().getEVR() == EVR_ox) setTagVR(EVR_OW);
+    unencapsulatedVR = getTag().getEVR();
     recalcVR();
 }
 
@@ -676,7 +676,7 @@ DcmPixelData::read(
     const Uint32 maxReadLength)
 {
     /* if this element's transfer state shows ERW_notInitialized, this is an illegal call */
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -684,7 +684,7 @@ DcmPixelData::read(
 
         /* if the transfer state is ERW_init, we need to prepare the reading of the pixel */
         /* data from the stream: remove all representations from the representation list. */
-        if (fTransferState == ERW_init)
+        if (getTransferState() == ERW_init)
             clearRepresentationList(repListEnd);
 
         /* create a DcmXfer object based on the transfer syntax which was passed */
@@ -696,21 +696,21 @@ DcmPixelData::read(
          * compressed transfer syntaxes the Icon Image Sequence may contain an
          * uncompressed image.
          */
-        if (Length == DCM_UndefinedLength)
+        if (getLengthField() == DCM_UndefinedLength)
         {
             /* the pixel data is captured in encapsulated (compressed) format */
 
             /* if the transfer state is ERW_init, we need to prepare */
             /* the reading of the pixel data from the stream. */
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 current = insertRepresentationEntry(
                     new DcmRepresentationEntry(
-                        ixfer, NULL, new DcmPixelSequence(Tag, Length)));
+                        ixfer, NULL, new DcmPixelSequence(getTag(), getLengthField())));
                 recalcVR();
                 original = current;
                 existUnencapsulated = OFFalse;
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
 
                 if (! ixferSyn.isEncapsulated())
                 {
@@ -731,7 +731,7 @@ DcmPixelData::read(
             /* if the errorFlag equals EC_Normal, all pixel data has been */
             /* read; hence, the transfer state has to be set to ERW_ready */
             if (errorFlag == EC_Normal)
-                fTransferState = ERW_ready;
+                setTransferState(ERW_ready);
         }
         else
         {
@@ -739,10 +739,10 @@ DcmPixelData::read(
 
             /* if the transfer state is ERW_init, we need to prepare */
             /* the reading of the pixel data from the stream. */
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 current = original = repListEnd;
-                unencapsulatedVR = Tag.getEVR();
+                unencapsulatedVR = getTag().getEVR();
                 recalcVR();
                 existUnencapsulated = OFTrue;
 
@@ -930,13 +930,13 @@ OFCondition DcmPixelData::write(
     const E_EncodingType enctype)
 {
   errorFlag = EC_Normal;
-  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  if (getTransferState() == ERW_notInitialized) errorFlag = EC_IllegalCall;
   else
   {
     DcmXfer xferSyn(oxfer);
     if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
     {
-      if (fTransferState == ERW_init)
+      if (getTransferState() == ERW_init)
       {
         DcmRepresentationListIterator found;
         errorFlag = findConformingEncapsulatedRepresentation(xferSyn, NULL, found);
@@ -945,11 +945,11 @@ OFCondition DcmPixelData::write(
           current = found;
           recalcVR();
           pixelSeqForWrite = (*found)->pixSeq;
-          fTransferState = ERW_inWork;
+          setTransferState(ERW_inWork);
         }
       }
       if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->write(outStream, oxfer, enctype);
-      if (errorFlag == EC_Normal) fTransferState = ERW_ready;
+      if (errorFlag == EC_Normal) setTransferState(ERW_ready);
     }
     else if (existUnencapsulated)
     {
@@ -985,13 +985,13 @@ OFCondition DcmPixelData::writeSignatureFormat(
     const E_EncodingType enctype)
 {
   errorFlag = EC_Normal;
-  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
-  else if (Tag.isSignable())
+  if (getTransferState() == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  else if (getTag().isSignable())
   {
     DcmXfer xferSyn(oxfer);
     if (xferSyn.isEncapsulated() && (! alwaysUnencapsulated))
     {
-      if (fTransferState == ERW_init)
+      if (getTransferState() == ERW_init)
       {
         DcmRepresentationListIterator found;
         errorFlag = findConformingEncapsulatedRepresentation(xferSyn, NULL, found);
@@ -1000,11 +1000,11 @@ OFCondition DcmPixelData::writeSignatureFormat(
           current = found;
           recalcVR();
           pixelSeqForWrite = (*found)->pixSeq;
-          fTransferState = ERW_inWork;
+          setTransferState(ERW_inWork);
         }
       }
       if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->writeSignatureFormat(outStream, oxfer, enctype);
-      if (errorFlag == EC_Normal) fTransferState = ERW_ready;
+      if (errorFlag == EC_Normal) setTransferState(ERW_ready);
     }
     else if (existUnencapsulated)
     {
@@ -1037,7 +1037,11 @@ void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.38  2006-08-15 15:49:54  meichel
+** Revision 1.39  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.38  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

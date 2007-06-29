@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:34 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,31 +53,6 @@
 
 class DcmSequenceOfItems : public DcmElement
 {
-protected:
-    DcmList *itemList;
-    OFBool lastItemComplete;
-    Uint32 fStartPosition;
-
-    virtual OFCondition readTagAndLength(DcmInputStream &inStream,            // inout
-                                         const E_TransferSyntax xfer,         // in
-                                         DcmTag &tag,                         // out
-                                         Uint32 &length);                     // out
-
-    virtual OFCondition makeSubObject(DcmObject *&subObject,
-                                      const DcmTag &mewTag,
-                                      const Uint32 newLength);
-
-    OFCondition readSubItem(DcmInputStream &inStream,                         // inout
-                            const DcmTag &newTag,                             // in
-                            const Uint32 newLength,                           // in
-                            const E_TransferSyntax xfer,                      // in
-                            const E_GrpLenEncoding glenc,                     // in
-                            const Uint32 maxReadLength = DCM_MaxReadLength);  // in
-
-    virtual OFCondition searchSubFromHere(const DcmTagKey &tag,               // in
-                                          DcmStack &resultStack,              // inout
-                                          const OFBool searchIntoSub);        // in
-
 public:
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0, OFBool readAsUN = OFFalse);
     DcmSequenceOfItems(const DcmSequenceOfItems& oldSeq);
@@ -206,26 +181,64 @@ public:
                                OFBool searchIntoSub = OFTrue);    // in
     virtual OFCondition loadAllDataIntoMemory(void);
 
+protected:
+
+    virtual OFCondition readTagAndLength(DcmInputStream &inStream,            // inout
+                                         const E_TransferSyntax xfer,         // in
+                                         DcmTag &tag,                         // out
+                                         Uint32 &length);                     // out
+
+    virtual OFCondition makeSubObject(DcmObject *&subObject,
+                                      const DcmTag &mewTag,
+                                      const Uint32 newLength);
+
+    OFCondition readSubItem(DcmInputStream &inStream,                         // inout
+                            const DcmTag &newTag,                             // in
+                            const Uint32 newLength,                           // in
+                            const E_TransferSyntax xfer,                      // in
+                            const E_GrpLenEncoding glenc,                     // in
+                            const Uint32 maxReadLength = DCM_MaxReadLength);  // in
+
+    virtual OFCondition searchSubFromHere(const DcmTagKey &tag,               // in
+                                          DcmStack &resultStack,              // inout
+                                          const OFBool searchIntoSub);        // in
+
+    /// the list of items maintained by this sequence object
+    DcmList *itemList;
+
 private:
 
-  /* static helper method used in writeSignatureFormat().
-   * This function resembles DcmObject::writeTagAndLength()
-   * but only writes the tag, VR and reserved field.
-   * @param outStream stream to write to
-   * @param tag attribute tag
-   * @param vr attribute VR as reported by getVR
-   * @param oxfer output transfer syntax
-   * @return EC_Normal if successful, an error code otherwise
-   */
-  static OFCondition writeTagAndVR(DcmOutputStream &outStream,
-                                   const DcmTag &tag,
-                                   DcmEVR vr,
-                                   const E_TransferSyntax oxfer);
+    /* static helper method used in writeSignatureFormat().
+     * This function resembles DcmObject::writeTagAndLength()
+     * but only writes the tag, VR and reserved field.
+     * @param outStream stream to write to
+     * @param tag attribute tag
+     * @param vr attribute VR as reported by getVR
+     * @param oxfer output transfer syntax
+     * @return EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition writeTagAndVR(
+      DcmOutputStream &outStream,
+      const DcmTag &tag,
+      DcmEVR vr,
+      const E_TransferSyntax oxfer);
 
-  /** true if this element has been instantiated while reading an UN element
-   *  with undefined length
-   */
-  OFBool readAsUN_;
+    /** flag used during suspended I/O. Indicates whether the last item
+     *  was completely or only partially read/written during the last call
+     *  to read/write.
+     */
+    OFBool lastItemComplete;
+
+    /** used during reading. Contains the position in the stream where
+     *  the sequence started (needed for calculating the remaining number of
+     *  bytes available for a fixed-length sequence).
+     */
+    Uint32 fStartPosition;
+
+    /** true if this sequence has been instantiated while reading an UN element
+     *  with undefined length
+     */
+    OFBool readAsUN_;
 
 };
 
@@ -236,7 +249,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.37  2007-02-19 15:04:34  meichel
+** Revision 1.38  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.37  2007/02/19 15:04:34  meichel
 ** Removed searchErrors() methods that are not used anywhere and added
 **   error() methods only in the DcmObject subclasses where really used.
 **

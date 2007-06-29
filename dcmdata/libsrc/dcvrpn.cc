@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmPersonName
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:59 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@ DcmPersonName::DcmPersonName(const DcmTag &tag,
                              const Uint32 len)
   : DcmCharString(tag, len)
 {
-    maxLength = 64;     // not correct: max length of PN is 3*64+2 = 194 characters (not bytes!)
+    setMaxLength(64);     // not correct: max length of PN is 3*64+2 = 194 characters (not bytes!)
 }
 
 
@@ -315,7 +315,11 @@ OFCondition DcmPersonName::putNameComponents(const OFString &lastName,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.18  2005-12-08 15:41:59  meichel
+** Revision 1.19  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.18  2005/12/08 15:41:59  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.17  2003/05/20 09:15:14  joergr

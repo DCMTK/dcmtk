@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmShortText
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:04 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ DcmShortText::DcmShortText(const DcmTag &tag,
                            const Uint32 len)
   : DcmCharString(tag, len)
 {
-    maxLength = 1024;
+    setMaxLength(1024);
 }
 
 
@@ -107,7 +107,11 @@ OFCondition DcmShortText::getOFStringArray(OFString &stringVal,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.cc,v $
-** Revision 1.15  2005-12-08 15:42:04  meichel
+** Revision 1.16  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.15  2005/12/08 15:42:04  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.14  2004/01/16 13:47:37  joergr

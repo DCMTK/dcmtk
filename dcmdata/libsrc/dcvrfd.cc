@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointDouble
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-21 09:26:19 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ DcmEVR DcmFloatingPointDouble::ident() const
 
 unsigned long DcmFloatingPointDouble::getVM()
 {
-    return Length / sizeof(Float64);
+    return getLengthField() / sizeof(Float64);
 }
 
 
@@ -280,13 +280,13 @@ OFCondition DcmFloatingPointDouble::putString(const char *stringVal)
 OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
 {
     /* check for valid value length */
-    if (Length % (sizeof(Float64)) != 0)
+    if (getLengthField() % (sizeof(Float64)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
             /* strip to valid length */
-            Length -= (Length % (sizeof(Float64)));
+            setLengthField(getLengthField() - (getLengthField() % (sizeof(Float64))));
         }
     } else
         errorFlag = EC_Normal;
@@ -297,7 +297,11 @@ OFCondition DcmFloatingPointDouble::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.29  2007-02-21 09:26:19  meichel
+** Revision 1.30  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.29  2007/02/21 09:26:19  meichel
 ** Increased output precision to 17 (DBL_DIG+2) when converting an FD element to string.
 **
 ** Revision 1.28  2006/08/15 15:49:54  meichel

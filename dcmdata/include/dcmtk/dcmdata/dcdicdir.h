@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,6 @@ class DcmDicomDir
     DcmDicomDir &operator=(const DcmDicomDir &);
     DcmDicomDir( const DcmDicomDir &newDir );
 
-  protected:
     OFCondition errorFlag;
     char * dicomDirFileName;
     OFBool modified;              // wird wo gebraucht ?
@@ -76,6 +75,8 @@ class DcmDicomDir
     DcmDirectoryRecord * RootRec;
     DcmSequenceOfItems * MRDRSeq;
 
+  protected: 
+  	
     // Manipulation der internen Datenelemente:
     OFCondition createNewElements(const char* fileSetID);  // in
     DcmDataset& getDataset(void);
@@ -167,7 +168,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.20  2006-08-15 15:49:56  meichel
+** Revision 1.21  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.20  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

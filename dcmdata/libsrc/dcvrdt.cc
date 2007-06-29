@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:51 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ DcmDateTime::DcmDateTime(const DcmTag &tag,
                          const Uint32 len)
   : DcmByteString(tag, len)
 {
-    maxLength = 26;
+    setMaxLength(26);
 }
 
 DcmDateTime::DcmDateTime(const DcmDateTime &old)
@@ -329,7 +329,11 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.26  2005-12-08 15:41:51  meichel
+** Revision 1.27  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.26  2005/12/08 15:41:51  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.25  2004/04/16 12:50:45  joergr

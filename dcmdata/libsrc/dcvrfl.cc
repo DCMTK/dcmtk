@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ DcmEVR DcmFloatingPointSingle::ident() const
 
 unsigned long DcmFloatingPointSingle::getVM()
 {
-    return Length / sizeof(Float32);
+    return getLengthField() / sizeof(Float32);
 }
 
 
@@ -102,7 +102,7 @@ void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
         errorFlag = getFloat32Array(floatVals);
         if (floatVals != NULL)
         {
-            const unsigned long count = Length / sizeof(Float32) /* do not use getVM()! */;
+            const unsigned long count = getLengthField() / sizeof(Float32) /* do not use getVM()! */;
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
                 DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1);
             unsigned long printedLength = 0;
@@ -160,7 +160,7 @@ OFCondition DcmFloatingPointSingle::getFloat32(Float32 &floatVal,
     {
         if (floatValues == NULL)
             errorFlag = EC_IllegalCall;
-        else if (pos >= Length / sizeof(Float32) /* do not use getVM()! */)
+        else if (pos >= getLengthField() / sizeof(Float32) /* do not use getVM()! */)
             errorFlag = EC_IllegalParameter;
         else
             floatVal = floatValues[pos];
@@ -280,13 +280,13 @@ OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
 OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 {
     /* check for valid value length */
-    if (Length % (sizeof(Float32)) != 0)
+    if (getLengthField() % (sizeof(Float32)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
             /* strip to valid length */
-            Length -= (Length % (sizeof(Float32)));
+            setLengthField(getLengthField() - (getLengthField() % (sizeof(Float32))));
         }
     } else
         errorFlag = EC_Normal;
@@ -297,7 +297,11 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.30  2006-08-15 15:49:54  meichel
+** Revision 1.31  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.30  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

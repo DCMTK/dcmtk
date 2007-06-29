@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-26 16:24:23 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ DcmOtherByteOtherWord &DcmOtherByteOtherWord::operator=(const DcmOtherByteOtherW
 
 DcmEVR DcmOtherByteOtherWord::ident() const
 {
-    return Tag.getEVR();
+    return getTag().getEVR();
 }
 
 
@@ -91,7 +91,7 @@ unsigned long DcmOtherByteOtherWord::getVM()
 
 OFCondition DcmOtherByteOtherWord::setVR(DcmEVR vr)
 {
-    Tag.setVR(vr);
+    setTagVR(vr);
     return EC_Normal;
 }
 
@@ -107,7 +107,7 @@ void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
 {
     if (valueLoaded())
     {
-        const DcmEVR evr = Tag.getEVR();
+        const DcmEVR evr = getTag().getEVR();
         Uint16 *wordValues = NULL;
         Uint8 *byteValues = NULL;
         /* get 8 or 16 bit data respectively */
@@ -120,7 +120,7 @@ void DcmOtherByteOtherWord::print(STD_NAMESPACE ostream&out,
         {
             /* determine number of values to be printed */
             const unsigned int vrSize = (evr == EVR_OW || evr == EVR_lt) ? 4 : 2;
-            const unsigned long count = (evr == EVR_OW || evr == EVR_lt) ? (Length / 2) : Length;
+            const unsigned long count = (evr == EVR_OW || evr == EVR_lt) ? (getLengthField() / 2) : getLengthField();
             unsigned long expectedLength = count * (vrSize + 1) - 1;
             const unsigned long printCount =
                 ((expectedLength > DCM_OptPrintLineLength) && (flags & DCMTypes::PF_shortenLongTagValues)) ?
@@ -191,22 +191,22 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
             FILE *file = fopen(fname.c_str(), "wb");
             if (file != NULL)
             {
-                if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
+                if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
                 {
                     /* write 16 bit data in little endian byte-order */
                     Uint16 *data = NULL;
                     getUint16Array(data);
                     if (data != NULL)
                     {
-                        swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, Length, sizeof(Uint16));
-                        fwrite(data, sizeof(Uint16), OFstatic_cast(size_t, Length / sizeof(Uint16)), file);
-                        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
+                        swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, getLengthField(), sizeof(Uint16));
+                        fwrite(data, sizeof(Uint16), OFstatic_cast(size_t, getLengthField() / sizeof(Uint16)), file);
+                        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, getLengthField(), sizeof(Uint16));
                     }
                 } else {
                     Uint8 *data = NULL;
                     getUint8Array(data);
                     if (data != NULL)
-                        fwrite(data, sizeof(Uint8), OFstatic_cast(size_t, Length), file);
+                        fwrite(data, sizeof(Uint8), OFstatic_cast(size_t, getLengthField()), file);
                 }
                 fclose(file);
             } else {
@@ -229,15 +229,15 @@ OFCondition DcmOtherByteOtherWord::alignValue()
 {
     errorFlag = EC_Normal;
     /* add padding byte in case of 8 bit data */
-    if ((Tag.getEVR() != EVR_OW && Tag.getEVR() != EVR_lt) && (Length > 0))
+    if ((getTag().getEVR() != EVR_OW && getTag().getEVR() != EVR_lt) && (getLengthField() > 0))
     {
         Uint8 *bytes = NULL;
-        bytes = OFstatic_cast(Uint8 *, getValue(fByteOrder));
+        bytes = OFstatic_cast(Uint8 *, getValue(getByteOrder()));
         /* check for odd length */
-        if ((bytes != NULL) && ((Length & 1) != 0))
+        if ((bytes != NULL) && ((getLengthField() & 1) != 0))
         {
-            bytes[Length] = 0;
-            Length++;
+            bytes[getLengthField()] = 0;
+            setLengthField(getLengthField() + 1);
         }
     }
     return errorFlag;
@@ -261,7 +261,7 @@ OFCondition DcmOtherByteOtherWord::putUint8Array(const Uint8 *byteValue,
     if (numBytes > 0)
     {
         /* check for valid 8 bit data */
-        if ((byteValue != NULL) && (Tag.getEVR() != EVR_OW && Tag.getEVR() != EVR_lt))
+        if ((byteValue != NULL) && (getTag().getEVR() != EVR_OW && getTag().getEVR() != EVR_lt))
         {
             errorFlag = putValue(byteValue, sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
             alignValue();
@@ -280,7 +280,7 @@ OFCondition DcmOtherByteOtherWord::putUint16Array(const Uint16 *wordValue,
     if (numWords > 0)
     {
         /* check for valid 16 bit data */
-        if ((wordValue != NULL) && (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt))
+        if ((wordValue != NULL) && (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt))
             errorFlag = putValue(wordValue, sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
         else
             errorFlag = EC_CorruptedData;
@@ -298,7 +298,7 @@ OFCondition DcmOtherByteOtherWord::createUint8Array(const Uint32 numBytes,
                                                     Uint8 *&bytes)
 {
     /* check value representation */
-    if ((Tag.getEVR() != EVR_OW) && (Tag.getEVR() != EVR_lt))
+    if ((getTag().getEVR() != EVR_OW) && (getTag().getEVR() != EVR_lt))
         errorFlag = createEmptyValue(sizeof(Uint8) * OFstatic_cast(Uint32, numBytes));
     else
         errorFlag = EC_CorruptedData;
@@ -314,7 +314,7 @@ OFCondition DcmOtherByteOtherWord::createUint16Array(const Uint32 numWords,
                                                      Uint16 *&words)
 {
     /* check value representation */
-    if ((Tag.getEVR() == EVR_OW) || (Tag.getEVR() == EVR_lt))
+    if ((getTag().getEVR() == EVR_OW) || (getTag().getEVR() == EVR_lt))
         errorFlag = createEmptyValue(sizeof(Uint16) * OFstatic_cast(Uint32, numWords));
     else
         errorFlag = EC_CorruptedData;
@@ -338,7 +338,7 @@ OFCondition DcmOtherByteOtherWord::putString(const char *stringVal)
         unsigned long vm = getVMFromString(stringVal);
         if (vm > 0)
         {
-            const DcmEVR evr = Tag.getEVR();
+            const DcmEVR evr = getTag().getEVR();
             Uint8 *byteField = NULL;
             Uint16 *wordField = NULL;
             /* create new value field */
@@ -415,7 +415,7 @@ OFCondition DcmOtherByteOtherWord::getUint8(Uint8 &byteVal,
 OFCondition DcmOtherByteOtherWord::getUint8Array(Uint8 *&byteVals)
 {
     errorFlag = EC_Normal;
-    if (Tag.getEVR() != EVR_OW && Tag.getEVR() != EVR_lt)
+    if (getTag().getEVR() != EVR_OW && getTag().getEVR() != EVR_lt)
         byteVals = OFstatic_cast(Uint8 *, getValue());
     else
         errorFlag = EC_IllegalCall;
@@ -451,7 +451,7 @@ OFCondition DcmOtherByteOtherWord::getUint16(Uint16 &wordVal,
 OFCondition DcmOtherByteOtherWord::getUint16Array(Uint16 *&wordVals)
 {
     errorFlag = EC_Normal;
-    if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
+    if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
         wordVals = OFstatic_cast(Uint16 *, getValue());
     else
         errorFlag = EC_IllegalCall;
@@ -466,7 +466,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
                                                const unsigned long pos,
                                                OFBool /*normalize*/)
 {
-    if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
+    if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
     {
         Uint16 uint16Val;
         /* get the specified numeric value (16 bit) */
@@ -499,7 +499,7 @@ OFCondition DcmOtherByteOtherWord::getOFString(OFString &stringVal,
 OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
                                                     OFBool /*normalize*/)
 {
-    if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
+    if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
     {
         /* get array of 16 bit values */
         Uint16 *uint16Vals = OFstatic_cast(Uint16 *, getValue());
@@ -566,7 +566,7 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
                                            const E_TransferSyntax /*oldXfer*/)
 {
     DcmXfer newXferSyn(newXfer);
-    return (Tag != DCM_PixelData) || !newXferSyn.isEncapsulated();
+    return (getTag() != DCM_PixelData) || !newXferSyn.isEncapsulated();
 }
 
 
@@ -577,11 +577,11 @@ OFCondition DcmOtherByteOtherWord::write(DcmOutputStream &outStream,
                                          const E_TransferSyntax oxfer,
                                          const E_EncodingType enctype)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
-        if (fTransferState == ERW_init) alignValue();
+        if (getTransferState() == ERW_init) alignValue();
         /* call inherited method */
         errorFlag = DcmElement::write(outStream, oxfer, enctype);
     }
@@ -593,11 +593,11 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmOutputStream &outStre
                                                         const E_TransferSyntax oxfer,
                                                         const E_EncodingType enctype)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
-        if (fTransferState == ERW_init) alignValue();
+        if (getTransferState() == ERW_init) alignValue();
         /* call inherited method */
         errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype);
     }
@@ -625,12 +625,12 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
         if (flags & DCMTypes::XF_encodeBase64)
         {
             Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-            if (Tag.getEVR() == EVR_OW || Tag.getEVR() == EVR_lt)
+            if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
             {
                 /* Base64 encoder requires big endian input data */
-                swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, Length, sizeof(Uint16));
+                swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, getLengthField(), sizeof(Uint16));
             }
-            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, Length));
+            OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
         } else {
             OFString value;
             /* encode as sequence of hexadecimal numbers */
@@ -648,7 +648,11 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.49  2007-06-26 16:24:23  joergr
+** Revision 1.50  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.49  2007/06/26 16:24:23  joergr
 ** Added new variant of encodeBase64() method that outputs directly to a stream
 ** (avoids using a memory buffer for large binary data).
 **

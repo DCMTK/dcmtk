@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:15 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1083,7 +1083,7 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
         lowerLevelList->print(out, flags, level + 1);
     /* print item end line */
     DcmTag delimItemTag(DCM_ItemDelimitationItem);
-    if (Length == DCM_UndefinedLength)
+    if (getLengthField() == DCM_UndefinedLength)
         printInfoLine(out, flags, level, "\"ItemDelimitationItem\"", &delimItemTag);
     else
         printInfoLine(out, flags, level, "\"ItemDelimitationItem for re-encoding\"", &delimItemTag);
@@ -1101,8 +1101,8 @@ OFCondition DcmDirectoryRecord::writeXML(STD_NAMESPACE ostream&out,
     /* cardinality (number of attributes) = 1..n */
     out << " card=\"" << card() << "\"";
     /* value length in bytes = 0..max (if not undefined) */
-    if (Length != DCM_UndefinedLength)
-        out << " len=\"" << Length << "\"";
+    if (getLengthField() != DCM_UndefinedLength)
+        out << " len=\"" << getLengthField() << "\"";
     /* byte offset of the record */
     out << " offset=\"" << getFileOffset() << "\"";
     out << ">" << OFendl;
@@ -1134,11 +1134,11 @@ OFCondition DcmDirectoryRecord::read(DcmInputStream &inStream,
                                      const E_GrpLenEncoding glenc,
                                      const Uint32 maxReadLength)
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
-        if (fTransferState != ERW_ready)
+        if (getTransferState() != ERW_ready)
         {
             DcmXfer xferSyn(xfer);
             errorFlag = DcmItem::read(inStream, xfer, glenc, maxReadLength);
@@ -1149,10 +1149,10 @@ OFCondition DcmDirectoryRecord::read(DcmInputStream &inStream,
             ** fStartPosition is set in DcmItem::read(...)
             ** offsetInFile is used in the print(...) method.
             */
-            offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(Tag.getEVR());
+            offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(getTag().getEVR());
         }
 
-        if (fTransferState == ERW_ready && DirRecordType == ERT_Private)     // minimizes multiple evaluation
+        if (getTransferState() == ERW_ready && DirRecordType == ERT_Private)     // minimizes multiple evaluation
         {
             DirRecordType = lookForRecordType();
             if (DirRecordType == ERT_Mrdr)
@@ -1454,7 +1454,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.59  2007-02-19 15:04:15  meichel
+ * Revision 1.60  2007-06-29 14:17:49  meichel
+ * Code clean-up: Most member variables in module dcmdata are now private,
+ *   not protected anymore.
+ *
+ * Revision 1.59  2007/02/19 15:04:15  meichel
  * Removed searchErrors() methods that are not used anywhere and added
  *   error() methods only in the DcmObject subclasses where really used.
  *

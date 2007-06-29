@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -535,7 +535,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                                 const Uint32 maxReadLength)
 
 {
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -546,13 +546,13 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
 
         if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && fTransferState != ERW_ready)
+        else if (errorFlag.good() && getTransferState() != ERW_ready)
         {
             // the new data is added to the end
             itemList->seek(ELP_last);
 
             DcmMetaInfo *metaInfo = getMetaInfo();
-            if (metaInfo == NULL && fTransferState == ERW_init)
+            if (metaInfo == NULL && getTransferState() == ERW_init)
             {
                 metaInfo = new DcmMetaInfo();
                 itemList->insert(metaInfo, ELP_first);
@@ -573,7 +573,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
             {
                 dataset = getDataset();
-                if (dataset == NULL && fTransferState == ERW_init)
+                if (dataset == NULL && getTransferState() == ERW_init)
                 {
                     dataset = new DcmDataset();
                     itemList->seek (ELP_first);
@@ -585,11 +585,11 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                 }
             }
         }
-        if (fTransferState == ERW_init)
-            fTransferState = ERW_inWork;
+        if (getTransferState() == ERW_init)
+            setTransferState(ERW_inWork);
 
         if (dataset && dataset->transferState() == ERW_ready)
-            fTransferState = ERW_ready;
+            setTransferState(ERW_ready);
     }
     return errorFlag;
 }  // DcmFileFormat::read()
@@ -636,7 +636,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
      */
 {
     /* if the transfer state of this is not initialized, this is an illegal call */
-    if (fTransferState == ERW_notInitialized)
+    if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -657,22 +657,22 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
             errorFlag = EC_IllegalCall;
         else if (itemList->empty())
             errorFlag = EC_CorruptedData;
-        else if (errorFlag.good() && fTransferState != ERW_ready)
+        else if (errorFlag.good() && getTransferState() != ERW_ready)
         {
             /* in this case we can write data to the stream */
 
             /* if this function was called for the first time for the dataset object, the transferState is */
             /* still set to ERW_init. In this case, we need to validate the meta header information, set the */
             /* item list pointer to the fist element and we need to set the transfer state to ERW_inWork. */
-            if (fTransferState == ERW_init)
+            if (getTransferState() == ERW_init)
             {
                 validateMetaInfo(outxfer);
                 itemList->seek(ELP_first);
-                fTransferState = ERW_inWork;
+                setTransferState(ERW_inWork);
             }
             /* if the transfer state is set to ERW_inWork, we need to write the */
             /* information which is included in this to the buffer which was passed. */
-            if (fTransferState == ERW_inWork)
+            if (getTransferState() == ERW_inWork)
             {
                 /* write meta header information */
                 errorFlag = metainfo->write(outStream, outxfer, enctype);
@@ -684,7 +684,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
                                                subPadlen, instanceLength);
                 /* if everything is ok, set the transfer state to ERW_ready */
                 if (errorFlag.good())
-                    fTransferState = ERW_ready;
+                    setTransferState(ERW_ready);
             }
         }
         /* in case the transfer syntax which shall be used is indeed the */
@@ -876,7 +876,11 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.43  2006-08-15 15:49:54  meichel
+** Revision 1.44  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.43  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

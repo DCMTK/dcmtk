@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmAttributeTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ DcmEVR DcmAttributeTag::ident() const
 unsigned long DcmAttributeTag::getVM()
 {
     /* attribute tags store pairs of 16 bit values */
-    return OFstatic_cast(unsigned long, Length / (2 * sizeof(Uint16)));
+    return OFstatic_cast(unsigned long, getLengthField() / (2 * sizeof(Uint16)));
 }
 
 
@@ -271,13 +271,13 @@ OFCondition DcmAttributeTag::putString(const char *stringVal)
 OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 {
     /* check for valid value length */
-    if (Length % (2 * sizeof(Uint16)) != 0)
+    if (getLengthField() % (2 * sizeof(Uint16)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
             /* strip to valid length */
-            Length -= (Length % (2* sizeof(Uint16)));
+            setLengthField(getLengthField() - (getLengthField() % (2* sizeof(Uint16))));
         }
     } else
         errorFlag = EC_Normal;
@@ -288,7 +288,11 @@ OFCondition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.28  2006-08-15 15:49:54  meichel
+** Revision 1.29  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.28  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

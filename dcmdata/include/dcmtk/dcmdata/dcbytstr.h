@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:18:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,16 +244,26 @@ class DcmByteString
      */
     OFCondition getStringValue(OFString &stringVal);
 
+    /** set the end-of-string padding character 
+     *  @param c end-of-string padding character
+     */    
+    void setPaddingChar(char c) { paddingChar = c; }
+
+    /** set the max length of string
+     *  @param val max length of string
+     */    
+    void setMaxLength(Uint32 val) { maxLength = val; }
+
+private:
     /// padding character used to adjust odd value length (space)
     char paddingChar;
+
     /// maximum number of characters for each string component
     Uint32 maxLength;
 
-
- private:
-
     /// number of characters of the internal string representation
     Uint32 realLength;
+
     /// current representation of the string value
     E_StringMode fStringMode;
 };
@@ -306,7 +316,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.34  2006-12-15 14:18:07  joergr
+** Revision 1.35  2007-06-29 14:17:49  meichel
+** Code clean-up: Most member variables in module dcmdata are now private,
+**   not protected anymore.
+**
+** Revision 1.34  2006/12/15 14:18:07  joergr
 ** Added new method that checks whether a DICOM object or element is affected
 ** by SpecificCharacterSet (0008,0005).
 **

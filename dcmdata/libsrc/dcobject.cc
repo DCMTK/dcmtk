@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:04:16 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,21 +62,21 @@ OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
 
 DcmObject::DcmObject(const DcmTag &tag,
                      const Uint32 len)
-  : Tag(tag),
-    Length(len),
-    fTransferState(ERW_init),
-    errorFlag(EC_Normal),
-    fTransferredBytes(0)
+: errorFlag(EC_Normal)
+, Tag(tag)
+, Length(len)
+, fTransferState(ERW_init)
+, fTransferredBytes(0)
 {
 }
 
 
 DcmObject::DcmObject(const DcmObject &obj)
-  : Tag(obj.Tag),
-    Length(obj.Length),
-    fTransferState(obj.fTransferState),
-    errorFlag(obj.errorFlag),
-    fTransferredBytes(obj.fTransferredBytes)
+: errorFlag(obj.errorFlag)
+, Tag(obj.Tag)
+, Length(obj.Length)
+, fTransferState(obj.fTransferState)
+, fTransferredBytes(obj.fTransferredBytes)
 {
 }
 
@@ -370,7 +370,7 @@ OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
 
         /* write the tag information (a total of 4 bytes, group number and element */
         /* number) to the stream. Mind the transfer syntax's byte ordering. */
-        l_error = writeTag(outStream, Tag, oxfer);
+        l_error = writeTag(outStream, getTag(), oxfer);
         writtenBytes = 4;
 
         /* create an object which represents the transfer syntax */
@@ -476,7 +476,11 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.50  2007-02-19 15:04:16  meichel
+ * Revision 1.51  2007-06-29 14:17:49  meichel
+ * Code clean-up: Most member variables in module dcmdata are now private,
+ *   not protected anymore.
+ *
+ * Revision 1.50  2007/02/19 15:04:16  meichel
  * Removed searchErrors() methods that are not used anywhere and added
  *   error() methods only in the DcmObject subclasses where really used.
  *
