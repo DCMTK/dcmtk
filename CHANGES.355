@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.07.04 (riesmeier)
+
+- Added support for binary data (e.g. pixel data) stored in a separate file.
+  NB: This feature is not yet available in dcm2xml.
+  Affects: dcmdata/apps/dcm2xml.dtd
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/xml2dcm.man
+
 **** Changes from 2007.06.29 (eichelberg)
 
 - Code clean-up: Most member variables in module dcmdata are now private,
@@ -91,8 +99,8 @@ Changes between releases are documented here.
 **** Changes from 2007.06.07 (riesmeier)
 
 - Enhanced support for very large binary data elements (by reducing the overall
-  memory consumption). Thanks to Dennis Schlevoigt <schlevoigt@visus-tt.com> for
-  the original report.
+  memory consumption). Thanks to Dennis Schlevoigt <schlevoigt@visus-tt.com>
+  for the original report.
   Affects: dcmdata/apps/dump2dcm.cc
 
 - Added createUint8Array() and createUint16Array() methods.

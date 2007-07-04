@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2006, OFFIS
+ *  Copyright (C) 2003-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-07-04 12:51:05 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,7 +207,6 @@ static OFCondition putElementContent(xmlNodePtr current,
         /* check whether node content is base64 encoded */
         else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
         {
-            /* tbd: byte ordering?? */
             Uint8 *data = NULL;
             const size_t length = OFStandard::decodeBase64(OFreinterpret_cast(char *, elemVal), data);
             if (length > 0)
@@ -221,6 +220,58 @@ static OFCondition putElementContent(xmlNodePtr current,
                 if (result.bad())
                     delete[] data;
             }
+        }
+        /* check whether node content is stored in a file */
+        else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "file")) == 0)
+        {
+            if (xmlStrlen(elemVal) > 0)
+            {
+                const char *filename = OFreinterpret_cast(char *, elemVal);
+                /* try to open binary file */
+                FILE *f = fopen(filename, "rb");
+                if (f != NULL)
+                {
+                    /* determine filesize */
+                    size_t fileSize = 0;
+                    struct stat fileStat;
+                    if (stat(filename, &fileStat) == 0)
+                        fileSize = OFstatic_cast(size_t, fileStat.st_size);
+                    unsigned long buflen = fileSize;
+                    /* if odd then make even (DICOM requires even length values) */
+                    if (buflen & 1)
+                        buflen++;
+                    Uint8 *buf = NULL;
+                    /* create buffer of OB or OW data */
+                    if (dcmEVR == EVR_OW)
+                    {
+                        Uint16 *buf16 = NULL;
+                        result = element->createUint16Array(buflen / 2, buf16);
+                        buf = OFreinterpret_cast(Uint8 *, buf16);
+                    } else
+                        result = element->createUint8Array(buflen, buf);
+                    if (result.good())
+                    {
+                        /* read binary file into the buffer */
+                        if (fread(buf, 1, OFstatic_cast(size_t, fileSize), f) != fileSize)
+                        {
+                            const char *text = strerror(errno);
+                            if (text == NULL) text = "(unknown error code)";
+                            CERR << "Error: error reading binary data file: " << filename << ": " << text << OFendl;
+                            result = EC_CorruptedData;
+                        }
+                        else if (dcmEVR == EVR_OW)
+                        {
+                            /* swap 16 bit OW data (if necessary) */
+                            swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, buf, buflen, sizeof(Uint16));
+                        }
+                    }
+                    fclose(f);
+                } else {
+                    CERR << "Error: cannot open binary data file: " << filename << OFendl;
+                    result = EC_InvalidTag;
+                }
+            } else
+                CERR << "Warning: filename for element " << element->getTag() << " is missing, empty element inserted" << OFendl;
         } else {
             OFString dicomVal;
             /* convert character set from UTF8 (for specific VRs only) */
@@ -875,7 +926,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.19  2006-08-15 15:50:56  meichel
+ * Revision 1.20  2007-07-04 12:51:05  joergr
+ * Added support for binary data (e.g. pixel data) stored in a separate file.
+ *
+ * Revision 1.19  2006/08/15 15:50:56  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
