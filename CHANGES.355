@@ -1,12 +1,6 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2007.07.10 (onken)
-
-- Fixed bug in windows multiprocess code that invalidated option values
-  containing spaces. All cmdline arguments are now surrounded by double qoutes
-  when spawning a new process.
-
 **** Changes from 2007.07.04 (riesmeier)
 
 - Added support for binary data (e.g. pixel data) stored in a separate file.
