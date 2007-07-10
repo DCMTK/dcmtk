@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: onken $, $Date: 2007-05-24 16:10:08 $
+** Last Update:         $Author: onken $, $Date: 2007-07-10 09:40:57 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.74 $
+** Revision:            $Revision: 1.75 $
 ** Status:              $State: Exp $
 */
 
@@ -1648,8 +1648,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         cmdLine += " --forked-child";
         for (int i=1; i < command_argc; ++i)
         {
-            cmdLine += " ";
+            /* copy each argv value and surround it with double quotes
+             * to keep option values containing a space glued together
+             */
+            cmdLine += " \"";
             cmdLine += command_argv[i];
+            cmdLine += "\"";
         }
 
                 // create anonymous pipe
@@ -2613,7 +2617,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.74  2007-05-24 16:10:08  onken
+** Revision 1.75  2007-07-10 09:40:57  onken
+** Fixed bug in windows multiprocess code that invalidated option values
+** containing spaces. All cmdline arguments are now surrounded by double qoutes
+** when spawning a new process.
+**
+** Revision 1.74  2007/05/24 16:10:08  onken
 ** Removed duplicate closing of socket handle in "windows multiprocess" code.
 **
 ** Revision 1.73  2006/08/15 16:04:29  meichel
