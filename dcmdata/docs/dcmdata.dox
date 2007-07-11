@@ -14,6 +14,7 @@ The main interface classes are:
 \section Tools
 
 This module contains the following command line tools:
+\li \ref dcm2pdf
 \li \ref dcm2xml
 \li \ref dcmconv
 \li \ref dcmcrle
