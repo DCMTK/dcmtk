@@ -21,9 +21,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-07-11 08:52:22 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-07-11 10:42:28 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,24 +61,21 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 // ********************************************
 
-
-#define SHORTCOL 4
-#define LONGCOL 21
-
 #define BUFSIZE 32768
+
 void createTestDataset(DcmDataset *dset, unsigned char *buffer)
 {
   // byte array, VR=OB
   dset->putAndInsertUint8Array(DCM_EncapsulatedDocument, buffer, BUFSIZE);
-  
+
   // short array, VR=US
   dset->putAndInsertUint16Array(DCM_RWavePointer, (Uint16 *)buffer, BUFSIZE/sizeof(Uint16));
-  
+
   // long array, VR=UL
   DcmElement *elem = new DcmUnsignedLong(DCM_TableOfPixelValues);
   elem->putUint32Array((Uint32 *)buffer, BUFSIZE/sizeof(Uint32));
   dset->insert(elem);
-  
+
   // double array, VR=FD
   elem = new DcmFloatingPointDouble(DCM_TableOfYBreakPoints);
   elem->putFloat64Array((Float64 *)buffer, BUFSIZE/sizeof(Float64));
@@ -95,13 +92,13 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
     while (offset < BUFSIZE)
     {
       bytes_to_read = (rand() % 20)+1;  // read 1 to 20 bytes
- 
+
       // make sure we don't attempt to read beyond the end of the attribute value
       if (offset + bytes_to_read > BUFSIZE) bytes_to_read = BUFSIZE - offset;
 
       cond = delem->getPartialValue(target, offset, bytes_to_read, dcache);
       if (cond.bad())
-      { 
+      {
         delete[] target;
         return cond;
       }
@@ -113,12 +110,12 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
           CERR << std::hex << (int) (buffer[offset+i]) << " ";
-        }        
+        }
         CERR << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
           CERR << std::hex << (int) (target[i]) << " ";
-        }        
+        }
         CERR << OFendl;
         delete[] target;
         return EC_IllegalCall;
@@ -140,13 +137,13 @@ OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, u
     while (offset < BUFSIZE)
     {
       bytes_to_read = (rand() % 20)+1;  // read 1 to 20 bytes
- 
+
       // make sure we don't attempt to read beyond the end of the attribute value
       if (offset + bytes_to_read > BUFSIZE) bytes_to_read = BUFSIZE - offset;
 
       cond = delem->getPartialValue(target, offset, bytes_to_read, dcache);
       if (cond.bad())
-      { 
+      {
         delete[] target;
         return cond;
       }
@@ -158,12 +155,12 @@ OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, u
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
           CERR << std::hex << (int) (buffer[offset+i]) << " ";
-        }        
+        }
         CERR << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
           CERR << std::hex << (int) (target[i]) << " ";
-        }        
+        }
         CERR << OFendl;
         delete[] target;
         return EC_IllegalCall;
@@ -190,10 +187,10 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
 
       // make sure we don't attempt to read beyond the end of the attribute value
       if (offset + bytes_to_read > BUFSIZE) bytes_to_read = BUFSIZE - offset;
-      	
+
       cond = delem->getPartialValue(target, offset, bytes_to_read, dcache);
       if (cond.bad())
-      { 
+      {
         delete[] target;
         return cond;
       }
@@ -205,12 +202,12 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
           CERR << std::hex << (int) (buffer[offset+i]) << " ";
-        }        
+        }
         CERR << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
           CERR << std::hex << (int) (target[i]) << " ";
-        }        
+        }
         CERR << OFendl;
         delete[] target;
         return EC_IllegalCall;
@@ -227,7 +224,7 @@ OFCondition sequentialNonOverlappingRead(DcmDataset *dset, unsigned char *buffer
   DcmFileCache cache;
   DcmElement *delem = NULL;
   OFCondition cond;
-  
+
   cond = dset->findAndGetElement(DCM_EncapsulatedDocument, delem);
   if (cond.bad()) return cond;
 
@@ -251,7 +248,7 @@ OFCondition sequentialNonOverlappingRead(DcmDataset *dset, unsigned char *buffer
 
   cond = sequentialNonOverlappingRead(delem, &cache, buffer);
 
-  return cond; 
+  return cond;
 }
 
 OFCondition sequentialOverlappingRead(DcmDataset *dset, unsigned char *buffer)
@@ -259,7 +256,7 @@ OFCondition sequentialOverlappingRead(DcmDataset *dset, unsigned char *buffer)
   DcmFileCache cache;
   DcmElement *delem = NULL;
   OFCondition cond;
-  
+
   cond = dset->findAndGetElement(DCM_EncapsulatedDocument, delem);
   if (cond.bad()) return cond;
 
@@ -283,7 +280,7 @@ OFCondition sequentialOverlappingRead(DcmDataset *dset, unsigned char *buffer)
 
   cond = sequentialOverlappingRead(delem, &cache, buffer);
 
-  return cond; 
+  return cond;
 }
 
 OFCondition randomRead(DcmDataset *dset, unsigned char *buffer)
@@ -291,7 +288,7 @@ OFCondition randomRead(DcmDataset *dset, unsigned char *buffer)
   DcmFileCache cache;
   DcmElement *delem = NULL;
   OFCondition cond;
-  
+
   cond = dset->findAndGetElement(DCM_EncapsulatedDocument, delem);
   if (cond.bad()) return cond;
 
@@ -315,7 +312,7 @@ OFCondition randomRead(DcmDataset *dset, unsigned char *buffer)
 
   cond = randomRead(delem, &cache, buffer);
 
-  return cond; 
+  return cond;
 }
 
 int main(int argc, char *argv[])
@@ -332,14 +329,12 @@ int main(int argc, char *argv[])
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
   OFCommandLine cmd;
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+  cmd.addGroup("general options:");
+   cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
+   cmd.addOption("--debug",   "-d", "debug mode, print debug information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -387,13 +382,13 @@ int main(int argc, char *argv[])
     unsigned char *bufptr = buffer;
     srand(time(NULL));
     for (int i = BUFSIZE; i; --i)
-    { 
+    {
       *bufptr++ = (unsigned char) rand();
     }
-   
+
     createTestDataset(dfile.getDataset(), buffer);
     OFCondition cond = EC_Normal;
-    
+
     if (opt_verbose)
         COUT << "Writing test files" << OFendl;
 
@@ -408,7 +403,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
         COUT << "Opening test files" << OFendl;
-    
+
     DcmFileFormat dfile_be;
     DcmFileFormat dfile_le;
     DcmFileFormat dfile_df;
@@ -453,7 +448,7 @@ int main(int argc, char *argv[])
     cond = randomRead(dfile_df.getDataset(), buffer);
     if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
 #endif
-    
+
     // testing overlapping reads of partial element values
     if (opt_verbose)
         COUT << "Testing overlapping reads of partial element values" << OFendl;
@@ -477,7 +472,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: tstpread.cc,v $
-** Revision 1.1  2007-07-11 08:52:22  meichel
+** Revision 1.2  2007-07-11 10:42:28  joergr
+** Fixed layout and other minor issues of the usage output (--help).
+**
+** Revision 1.1  2007/07/11 08:52:22  meichel
 ** Added regression test for new method DcmElement::getPartialValue.
 **
 **

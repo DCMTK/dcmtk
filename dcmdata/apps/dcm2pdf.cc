@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2007, OFFIS
+ *  Copyright (C) 2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Exctract PDF file from DICOM encapsulated PDF storage object
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-07-11 09:10:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-07-11 10:41:21 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,10 +68,10 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #define FILENAME_PLACEHOLDER "#f"
 
-static OFString replaceChars( const OFString &srcstr, const OFString &pattern, const OFString &substitute )
+static OFString replaceChars(const OFString &srcstr, const OFString &pattern, const OFString &substitute)
     /*
      * This function replaces all occurrences of pattern in srcstr with substitute and returns
-     * the result as a new OFString variable. Note that srcstr itself will not be changed,
+     * the result as a new OFString variable. Note that srcstr itself will not be changed.
      *
      * Parameters:
      *   srcstr     - [in] The source string.
@@ -82,23 +82,23 @@ static OFString replaceChars( const OFString &srcstr, const OFString &pattern, c
   OFString result = srcstr;
   size_t pos = 0;
 
-  while( pos != OFString_npos )
+  while (pos != OFString_npos)
   {
-    pos = result.find( pattern, pos );
+    pos = result.find(pattern, pos);
 
-    if( pos != OFString_npos )
+    if (pos != OFString_npos)
     {
-      result.replace( pos, pattern.size(), substitute );
+      result.replace(pos, pattern.size(), substitute);
       pos += substitute.size();
     }
   }
 
-  return( result );
+  return result;
 }
 
 
 #define SHORTCOL 3
-#define LONGCOL 19
+#define LONGCOL 20
 
 int main(int argc, char *argv[])
 {
@@ -108,11 +108,11 @@ int main(int argc, char *argv[])
   const char *opt_ofname = NULL;
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
-  const char *   opt_execString = NULL;
+  const char    *opt_execString = NULL;
   E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Exctract PDF file from DICOM encapsulated PDF", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Extract PDF file from DICOM encapsulated PDF", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -128,36 +128,36 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
-     cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
-     cmd.addOption("--read-file-only",       "+fo",    "read file format only");
-     cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
+     cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
+     cmd.addOption("--read-file-only",     "+fo",    "read file format only");
+     cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
     cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",       "-t=",    "use TS recognition (default)");
-     cmd.addOption("--read-xfer-detect",     "-td",    "ignore TS specified in the file meta header");
-     cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
+     cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
+     cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
+     cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
+     cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
+     cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
     cmd.addSubGroup("parsing of odd-length attributes:");
-     cmd.addOption("--accept-odd-length",    "+ao",    "accept odd length attributes (default)");
-     cmd.addOption("--assume-even-length",   "+ae",    "assume real length is one byte larger");
+     cmd.addOption("--accept-odd-length",  "+ao",    "accept odd length attributes (default)");
+     cmd.addOption("--assume-even-length", "+ae",    "assume real length is one byte larger");
     cmd.addSubGroup("handling of undefined length UN elements:");
-     cmd.addOption("--enable-cp246",         "+ui",    "read undefined len UN as implicit VR (default)");
-     cmd.addOption("--disable-cp246",        "-ui",    "read undefined len UN as explicit VR");
+     cmd.addOption("--enable-cp246",       "+ui",    "read undefined len UN as implicit VR (default)");
+     cmd.addOption("--disable-cp246",      "-ui",    "read undefined len UN as explicit VR");
     cmd.addSubGroup("handling of defined length UN elements:");
-     cmd.addOption("--retain-un",            "-uc",    "retain elements as UN (default)");
-     cmd.addOption("--convert-un",           "+uc",    "convert to real VR if known");
+     cmd.addOption("--retain-un",          "-uc",    "retain elements as UN (default)");
+     cmd.addOption("--convert-un",         "+uc",    "convert to real VR if known");
     cmd.addSubGroup("automatic data correction:");
-     cmd.addOption("--enable-correction",    "+dc",    "enable automatic data correction (default)");
-     cmd.addOption("--disable-correction",   "-dc",    "disable automatic data correction");
+     cmd.addOption("--enable-correction",  "+dc",    "enable automatic data correction (default)");
+     cmd.addOption("--disable-correction", "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("bitstream format of deflated input:");
-     cmd.addOption("--bitstream-deflated",   "+bd",    "expect deflated bitstream (default)");
-     cmd.addOption("--bitstream-zlib",       "+bz",    "expect deflated zlib bitstream");
+     cmd.addOption("--bitstream-deflated", "+bd",    "expect deflated bitstream (default)");
+     cmd.addOption("--bitstream-zlib",     "+bz",    "expect deflated zlib bitstream");
 #endif
 
-   cmd.addGroup("execution options:", LONGCOL, SHORTCOL+2);
-    cmd.addOption(  "--exec",              "-x",   1, "[c]ommand: string",
-                                                      "execute command c after PDF extraction" );
+   cmd.addGroup("execution options:", LONGCOL, SHORTCOL + 2);
+    cmd.addOption(  "--exec",              "-x",  1, "[c]ommand: string",
+                                                     "execute command c after PDF extraction" );
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
@@ -274,7 +274,6 @@ int main(int argc, char *argv[])
 #endif
 
       if (cmd.findOption("--exec")) app.checkValue(cmd.getValue(opt_execString));
-
    }
 
     SetDebugLevel((opt_debugMode));
@@ -341,7 +340,7 @@ int main(int argc, char *argv[])
      * files to end with %%EOF followed by CR/LF. If the last character of the
      * file is not a CR or LF, we assume it is a pad byte and remove it.
      */
-    if (pdfDocument[len-1] != 10 && pdfDocument[len-1] != 13) 
+    if (pdfDocument[len-1] != 10 && pdfDocument[len-1] != 13)
     {
       --len;
     }
@@ -363,14 +362,14 @@ int main(int argc, char *argv[])
     }
 
     fclose(pdffile);
-    
+
     if (opt_verbose)
     {
         ofConsole.lockCout() << "conversion successful\n";
         ofConsole.unlockCout();
     }
 
-    if (opt_execString) 
+    if (opt_execString)
     {
       OFString cmd = opt_execString;
       cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), opt_ofname );
@@ -386,7 +385,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pdf.cc,v $
- * Revision 1.1  2007-07-11 09:10:29  meichel
+ * Revision 1.2  2007-07-11 10:41:21  joergr
+ * Fixed layout and other minor issues of the usage output (--help).
+ *
+ * Revision 1.1  2007/07/11 09:10:29  meichel
  * Added new tool dcm2pdf that extracts a PDF document from a DICOM
  *   Encapsulated PDF file, i.e. is the counterpart to pdf2dcm.
  *
