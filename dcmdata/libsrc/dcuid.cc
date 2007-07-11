@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-11-17 15:37:32 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-07-11 08:49:54 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -808,7 +808,7 @@ static const DcmModalityTable modalities[] = {
     { UID_PseudoColorSoftcopyPresentationStateStorage,         "PSp", 4096 },
     { UID_RETIRED_NuclearMedicineImageStorage,                 "NMr", 2 * 64 * 64 },
     { UID_RETIRED_UltrasoundImageStorage,                      "USr", 1 * 512 * 512 },
-    { UID_RETIRED_UltrasoundMultiframeImageStorage,            "USr", 1 * 512 * 512 },
+    { UID_RETIRED_UltrasoundMultiframeImageStorage,            "USf", 1 * 512 * 512 },
     { UID_RETIRED_VLImageStorage,                              "VLr", 768 * 576 * 3 },
     { UID_RETIRED_VLMultiFrameImageStorage,                    "VMr", 768 * 576 * 3 },
     { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,         "XB",  2 * 512 * 512 },
@@ -832,7 +832,7 @@ static const DcmModalityTable modalities[] = {
     { UID_StoredPrintStorage,                                  "SP",  4096 },
     { UID_TwelveLeadECGWaveformStorage,                        "TLE", 4096 },
     { UID_UltrasoundImageStorage,                              "US",  1 * 512 * 512 },
-    { UID_UltrasoundMultiframeImageStorage,                    "US",  1 * 512 * 512 },
+    { UID_UltrasoundMultiframeImageStorage,                    "USm",  1 * 512 * 512 },
     { UID_VLEndoscopicImageStorage,                            "VLe", 768 * 576 * 3 },
     { UID_VLMicroscopicImageStorage,                           "VLm", 768 * 576 * 3 },
     { UID_VLPhotographicImageStorage,                          "VLp", 768 * 576 * 3 },
@@ -1403,7 +1403,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.65  2006-11-17 15:37:32  joergr
+** Revision 1.66  2007-07-11 08:49:54  meichel
+** Changed the modality codes used for filename generation for the current and
+**   retired ultrasound multiframe SOP classes to USm and USf, respectively.
+**
+** Revision 1.65  2006/11/17 15:37:32  joergr
 ** Mask out the upper 32 bits gethostid()'s return value since on 64-bit Linux
 ** it is sign-extended to a 64-bit long.
 **
