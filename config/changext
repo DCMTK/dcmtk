@@ -73,6 +73,24 @@ if [ -f dcmqrdbx/apps/dcmqrscq.$newext ] ; then
   `mv dcmqrdbx/apps/dcmqrscq.new dcmqrdbx/apps/dcmqrscq.$newext`
 fi
 
+if [ -f dcmmisc/apps/ppsscpfs_e.$newext ] ; then
+  echo "updating implementation include in ppsscpfs_e.$newext"
+  `cat dcmmisc/apps/ppsscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsscpfs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppscefs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppscefs.$newext\"/g" >dcmmisc/apps/ppsscpfs_e.new`
+  `mv dcmmisc/apps/ppsscpfs_e.new dcmmisc/apps/ppsscpfs_e.$newext`
+fi
+
+if [ -f dcmmisc/apps/detecscp.$newext ] ; then
+  echo "updating implementation include in detecscp.$newext"
+  `cat dcmmisc/apps/detecscp.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmnet\/apps\/storescp\.$oldext\"/#include \"..\/..\/dcmnet\/apps\/storescp.$newext\"/g" >dcmmisc/apps/detecscp.new`
+  `mv dcmmisc/apps/detecscp.new dcmmisc/apps/detecscp.$newext`
+fi
+
+if [ -f dcmmisc/apps/detecscu.$newext ] ; then
+  echo "updating implementation include in detecscu.$newext"
+  `cat dcmmisc/apps/detecscu.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmnet\/apps\/echoscu\.$oldext\"/#include \"..\/..\/dcmnet\/apps\/echoscu.$newext\"/g" >dcmmisc/apps/detecscu.new`
+  `mv dcmmisc/apps/detecscu.new dcmmisc/apps/detecscu.$newext`
+fi
+
 echo "updating makefiles"
 for file in `find . -name "Makefile*" -print`
 do

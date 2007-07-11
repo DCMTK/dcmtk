@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2007.07.11 (eichelberg)
 
+- Updated changext shell script for current tool set
+  Affects: config/changext
+
 - Added new tool dcm2pdf that extracts a PDF document from a DICOM 
   Encapsulated PDF file, i.e. is the counterpart to pdf2dcm.
   Added:   dcmdata/apps/apps/dcm2pdf.cc
