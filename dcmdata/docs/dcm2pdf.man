@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page dcm2pdf Exctract PDF file from DICOM encapsulated PDF
+\page dcm2pdf Extract PDF file from DICOM encapsulated PDF
 \else
-\page dcm2pdf dcm2pdf: Exctract PDF file from DICOM encapsulated PDF
+\page dcm2pdf dcm2pdf: Extract PDF file from DICOM encapsulated PDF
 \endif
 
 \section synopsis SYNOPSIS
@@ -14,9 +14,9 @@ dcm2pdf [options] dcmfile-in pdffile-out
 
 \section description DESCRIPTION
 
-The \b dcm2pdf utility reads a DICOM file of the Encapsulated PDF Storage SOP 
-Class (\e dcmfile-in), extracts the embedded PDF document and writes it to an 
-output file (\e pdffile-out). Optionally a command can be executed after the 
+The \b dcm2pdf utility reads a DICOM file of the Encapsulated PDF Storage SOP
+Class (\e dcmfile-in), extracts the embedded PDF document and writes it to an
+output file (\e pdffile-out).  Optionally a command can be executed after the
 creation of the PDF file.
 
 \section parameters PARAMETERS
@@ -123,12 +123,12 @@ bitstream format of deflated input:
 
 \section notes NOTES
 
-Option \e --exec allows for the execution of a certain command line after the 
-creation of the PDF document. The command line to be executed is passed to this 
-option as a parameter. The specified command line may contain the placeholder 
-\b \#f, which will be replaced by the PDF filename at run time. The specified 
-command line is executed in the foreground, i.e. pdf2dcm will be blocked until 
-the command terminates.
+Option \e --exec allows for the execution of a certain command line after the
+creation of the PDF document.  The command line to be executed is passed to
+this option as a parameter.  The specified command line may contain the
+placeholder '\#f', which will be replaced by the PDF filename at run time.
+The specified command line is executed in the foreground, i.e. \b pdf2dcm will
+be blocked until the command terminates.
 
 \section command_line COMMAND LINE
 
@@ -167,9 +167,13 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+\section see_also SEE ALSO
+
+<b>pdf2dcm</b>(1)
+
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

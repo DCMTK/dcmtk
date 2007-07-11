@@ -14,9 +14,9 @@ pdf2dcm [options] pdffile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b pdf2dcm utility reads a PDF file (\e pdffile-in), converts it
-to a DICOM Encapsulated PDF Storage SOP instance and stores the
-converted data to an output file (\e dcmfile-out).
+The \b pdf2dcm utility reads a PDF file (\e pdffile-in), converts it to a
+DICOM Encapsulated PDF Storage SOP instance and stores the converted data
+to an output file (\e dcmfile-out).
 
 \section parameters PARAMETERS
 
@@ -137,9 +137,13 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+\section see_also SEE ALSO
+
+<b>dcm2pdf</b>(1)
+
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2005-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

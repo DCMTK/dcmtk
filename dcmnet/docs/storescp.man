@@ -254,7 +254,6 @@ filename generation:
 
   -fe   --filename-extension  [e]xtension: string
           append e to all filenames
-
 \endverbatim
 
 \subsection event_options event options
@@ -279,7 +278,6 @@ filename generation:
   -xs   --exec-sync
           execute command synchronously in foreground.
           This option is available on Windows only.
-
 \endverbatim
 
 \subsection tls_options transport layer security (TLS) options
@@ -415,7 +413,7 @@ the execution of \b storescp will not be held back.
 Option \e --exec-on-eostudy allows to execute a certain command line when all
 DICOM objects that belong to one study have been received by \b storescp.
 The same placeholders as with \e --exec-on-reception may be used, except for
-\#f, which is not supported.  A study is considered complete by \b storescp
+'\#f', which is not supported.  A study is considered complete by \b storescp
 when an object belonging to a different study is received or the timeout
 specified with \e --eostudy-timeout takes place. If option
 \e --rename-on-eostudy is in force, the renaming takes place before the
@@ -653,7 +651,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1996-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
