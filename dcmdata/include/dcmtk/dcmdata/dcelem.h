@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2007-07-11 08:50:23 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,9 +40,11 @@
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/offile.h"
 
 // forward declarations
 class DcmInputStreamFactory;
+class DcmFileCache;
 
 
 /** abstract base class for all DICOM elements
@@ -244,6 +246,30 @@ class DcmElement
     virtual OFCondition putFloat32Array(const Float32 *vals, const unsigned long num);
     virtual OFCondition putFloat64Array(const Float64 *vals, const unsigned long num);
 
+    /** Copy numBytes bytes of data from the attribute value in byteOrder byte order
+     *  to targetBuffer, starting at byte offset offset of the attribute value.
+     *  This method does not cause the complete attribute value to be read into
+     *  main memory. Subsequent calls for the same partial value may cause repeated
+     *  access to file if the attribute value is kept in file.
+     *  @param targetBuffer pointer to target buffer, must not be NULL.
+     *    Buffer size must be at least numBytes bytes.
+     *  @param offset byte offset within the attribute value from where to start
+     *    copying
+     *  @param numBytes number of bytes to copy.
+     *  @cache file cache object that may be passed to multiple subsequent calls
+     *    to this method for the same file; the file cache will then keep a file
+     *    handle open, thus improving performance. Optional, may be NULL
+     *  @param byteOrder byte order desired byte order of attribute value in memory buffer.
+     *    Default is the local byte order of the machine.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition getPartialValue(
+      void *targetBuffer, 
+      offile_off_t offset, 
+      offile_off_t numBytes, 
+      DcmFileCache *cache = NULL,
+      E_ByteOrder byteOrder = gLocalByteOrder);
+
     /** create an empty Uint8 array of given number of bytes and set it.
      *  All array elements are initialized with a value of 0 (using 'memzero').
      *  This method is only applicable to certain VRs, e.g. OB.
@@ -349,7 +375,12 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.33  2007-06-29 14:17:49  meichel
+** Revision 1.34  2007-07-11 08:50:23  meichel
+** Initial release of new method DcmElement::getPartialValue which gives access
+**   to partial attribute values without loading the complete attribute value
+**   into memory, if kept in file.
+**
+** Revision 1.33  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

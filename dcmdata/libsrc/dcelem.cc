@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2007-07-11 08:50:21 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,12 +46,13 @@
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcfcache.h"    /* for class DcmFileCache */
 
+#define SWAPBUFFER_SIZE 16  /* sufficient for all DICOM VRs as per the 2007 edition */
 
 //
 // CLASS DcmElement
 //
-
 
 DcmElement::DcmElement(const DcmTag &tag,
                        const Uint32 len)
@@ -1092,10 +1093,210 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
 }
 
 
+OFCondition DcmElement::getPartialValue(
+  void *targetBuffer, 
+  offile_off_t offset, 
+  offile_off_t numBytes, 
+  DcmFileCache *cache,
+  E_ByteOrder byteOrder)
+{
+  
+  // check integrity of parameters passed to this method
+  if (targetBuffer == NULL) return EC_IllegalCall;
+
+  // if the user has only requested zero bytes, we immediately return
+  if (numBytes == 0) return EC_Normal;
+  	
+  // offset must always be less then attribute length (unless offset,
+  // attribute length and numBytes are all zero, a case that was
+  // handled above).
+  if (offset >= getLengthField()) return EC_InvalidOffset;
+
+  // check if the caller is trying to read past the end of the value field
+  if (numBytes > (getLengthField() - offset)) return EC_TooManyBytesRequested;
+
+  // check if the value is already in memory 
+  if (valueLoaded())
+  {
+    // the attribute value is already in memory. 
+    // change internal byte order of the attribute value to the desired byte order.
+    // This should only happen once for multiple calls to this method since the
+    // caller will hopefully always request the same byte order.
+    char *value = OFstatic_cast(char *, getValue(byteOrder));
+    if (value)
+    {
+      memcpy(targetBuffer, value+offset, OFstatic_cast(size_t, numBytes));
+    }
+    else
+    {
+      // this should never happen because valueLoaded() returned true, but 
+      // we don't want to dereference a NULL pointer anyway
+      return EC_IllegalCall;
+    }
+  }
+  else
+  {
+    // the value is not in memory. We should directly read from file and
+    // also consider byte order.
+
+    // since the value is not in memory, fLoadValue should exist. Check anyway.
+    if (! fLoadValue) return EC_IllegalCall;
+
+    // make sure we have a file cache object
+    DcmFileCache defaultcache; // automatic object, creation is cheap.
+    if (cache == NULL) cache = &defaultcache;
+
+    // the stream from which we will read the attribute value
+    DcmInputStream *readStream = NULL;
+
+    // check if we need to seek to a position in file earlier than
+    // the one specified by the user in order to correctly swap according
+    // to the VR.
+    size_t valueWidth = getTag().getVR().getValueWidth();
+
+    // we need to cast the target buffer to something we can increment bytewise
+    char *targetBufferChar = OFreinterpret_cast(char *, targetBuffer);
+
+    // the swap buffer should be large enough to keep one value of the current VR
+    unsigned char swapBuffer[SWAPBUFFER_SIZE];
+    if (valueWidth > SWAPBUFFER_SIZE) return EC_IllegalCall;
+    	
+    // seekoffset is the number of bytes we need to skip from the beginning of the
+    // value field to the point where we will start reading. This is always at the
+    // start of a new value of a multi-valued attribute.
+    size_t partialoffset = offset % valueWidth; 
+    size_t partialvalue = 0; 
+    offile_off_t seekoffset = offset - partialoffset;
+    
+    // check if cache already contains the stream we're looking for
+    if (cache->isUser(this)) 
+    {
+      readStream = cache->getStream();
+
+      // since we cannot seek back in the stream (only forward), check if the stream
+      // is already past our needed start position
+      if (readStream->tell() - cache->getOffset() > seekoffset)
+      {
+        readStream = NULL;
+      } 
+    }
+
+    // initialize the cache with new stream
+    if (!readStream) 
+    {
+      readStream = fLoadValue->create();
+
+      // check that read stream is non-NULL
+      if (readStream == NULL) return EC_InvalidStream;
+
+      // check that stream status is OK      	
+      if (readStream->status().bad()) return readStream->status();
+
+      cache->init(readStream, this);
+    }
+
+    // now skip bytes from our current position in file to where we 
+    // want to start reading.
+    offile_off_t remainingBytesToSkip = seekoffset - (readStream->tell() - cache->getOffset());
+    offile_off_t skipResult;
+
+    while (remainingBytesToSkip) 
+    {
+      skipResult = readStream->skip(remainingBytesToSkip);
+      if (skipResult == 0) return EC_InvalidStream; // error while skipping
+      remainingBytesToSkip -= skipResult;
+    }
+
+    // check if the first few bytes we want to read are "in the middle" of one value
+    // of a multi-valued attribute. In that case we need to read the complete value,
+    // swap it and then copy only the last bytes in desired byte order.
+    if (partialoffset > 0)
+    {
+      // we possibly want to reset the stream to this point later
+      readStream->mark();
+
+      // compute the number of bytes we need to copy from the first attributes 
+      partialvalue = valueWidth - partialoffset;
+      
+      // we need to read a single data element into the swap buffer
+      if (valueWidth != readStream->read(swapBuffer, valueWidth))
+      	return EC_InvalidStream;
+
+      // swap to desired byte order. fByteOrder contains the byte order in file.
+      swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
+
+      // copy to target buffer and adjust values
+      if (partialvalue > numBytes)
+      {
+        memcpy(targetBufferChar, &swapBuffer[partialoffset], numBytes);
+        targetBufferChar += numBytes;
+        numBytes = 0;
+
+        // Reset stream to position marked before, since we have not copied the complete value
+        readStream->putback();
+      }
+      else
+      {
+        memcpy(targetBufferChar, &swapBuffer[partialoffset], partialvalue);
+        targetBufferChar += partialvalue;
+        numBytes -= partialvalue;
+      }
+    }
+
+    // now read the main block of data directly into the target buffer
+    partialvalue = numBytes % valueWidth;
+    offile_off_t bytesToRead = numBytes - partialvalue;
+
+    if (bytesToRead > 0)
+    {
+      // here we read the main block of data
+     if (bytesToRead != readStream->read(targetBufferChar, bytesToRead))
+         return EC_InvalidStream;
+
+      // swap to desired byte order. fByteOrder contains the byte order in file.
+      swapIfNecessary(byteOrder, fByteOrder, targetBufferChar, bytesToRead, valueWidth);
+
+      // adjust pointer to target buffer
+      targetBufferChar += bytesToRead;
+    }
+
+    // check if the last few bytes we want to read are only a partial value.
+    // In that case we need to read the complete value, swap it and then copy
+    // only the first few bytes in desired byte order.
+    if (partialvalue > 0)
+    {
+      // we want to reset the stream to this point later
+      readStream->mark();
+
+      // we need to read a single data element into the swap buffer
+      if (valueWidth != readStream->read(swapBuffer, valueWidth))
+      	return EC_InvalidStream;
+
+      // swap to desired byte order. fByteOrder contains the byte order in file.
+      swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
+
+      // copy to target buffer and adjust values
+      memcpy(targetBufferChar, swapBuffer, partialvalue);
+
+      // finally reset stream to position marked before
+      readStream->putback();
+    }
+  }
+
+  // done.
+  return EC_Normal;
+}  
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.57  2007-06-29 14:17:49  meichel
+** Revision 1.58  2007-07-11 08:50:21  meichel
+** Initial release of new method DcmElement::getPartialValue which gives access
+**   to partial attribute values without loading the complete attribute value
+**   into memory, if kept in file.
+**
+** Revision 1.57  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **
