@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.07.12 (onken)
+
+- Added status codes and corresponding printing routines for DIMSE-N.
+  Affects: dcmnet/libsrc/diutil.cc
+           dcmnet/include/dcmtk/dcmnet/diutil.h
+           dcmnet/include/dcmtk/dcmnet/dimse.h
+
 **** Changes from 2007.07.11 (riesmeier)
 
 - Fixed layout and other minor issues of the usage output (--help).
