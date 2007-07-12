@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 16:02:22 $
+** Last Update:		$Author: onken $
+** Update Date:		$Date: 2007-07-12 12:18:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -103,12 +103,22 @@ const char *DU_cfindStatusString(Uint16 statusCode);
 const char *DU_cmoveStatusString(Uint16 statusCode);
 const char *DU_cgetStatusString(Uint16 statusCode);
 
+const char *DU_ncreateStatusString(Uint16 statusCode);
+const char *DU_ngetStatusString(Uint16 statusCode);
+const char *DU_nsetStatusString(Uint16 statusCode);
+const char *DU_nactionStatusString(Uint16 statusCode);
+const char *DU_ndeleteStatusString(Uint16 statusCode);
+const char *DU_neventReportStatusString(Uint16 statusCode);
+
 #endif
 
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
-** Revision 1.7  2005-12-08 16:02:22  meichel
+** Revision 1.8  2007-07-12 12:18:00  onken
+** Added status codes and corresponding printing routines for DIMSE-N.
+**
+** Revision 1.7  2005/12/08 16:02:22  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.6  2002/11/25 18:00:37  meichel

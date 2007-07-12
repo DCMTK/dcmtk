@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2006-08-15 16:04:29 $
+** Last Update:		$Author: onken $
+** Update Date:		$Date: 2007-07-12 12:18:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -176,6 +176,7 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 #define STATUS_N_ProcessingFailure                                      0x0110
 #define STATUS_N_ResourceLimitation                                     0x0213
 #define STATUS_N_UnrecognizedOperation                                  0x0211
+#define STATUS_N_NoSuchAction                                           0x0123
 
 /* Print Management Service Class Specific Codes */
 #define STATUS_N_PRINT_BFS_Warn_MemoryAllocation                        0xB600
@@ -1033,7 +1034,10 @@ void DIMSE_printMessage(STD_NAMESPACE ostream& outstream, T_DIMSE_Message &msg, 
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.18  2006-08-15 16:04:29  meichel
+** Revision 1.19  2007-07-12 12:18:00  onken
+** Added status codes and corresponding printing routines for DIMSE-N.
+**
+** Revision 1.18  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

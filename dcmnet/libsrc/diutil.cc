@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 15:44:47 $
+** Last Update:		$Author: onken $
+** Update Date:		$Date: 2007-07-12 12:18:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -437,10 +437,353 @@ DU_cgetStatusString(Uint16 statusCode)
     return staticBuf;
 }
 
+const char *
+DU_ncreateStatusString(Uint16 statusCode)
+{
+  const char *s = NULL;
+
+  switch (statusCode) {
+    case STATUS_Success:
+	    s = "Success";
+	    break;
+    case STATUS_N_ClassInstanceConflict:
+      s = "Failure: ClassInstanceConflict";
+	    break;
+    case STATUS_N_DuplicateInvocation:
+	    s = "Failure: DuplicateInvocation";
+	    break;
+    case STATUS_N_InvalidArgumentValue:
+	    s = "Failure: InvalidArgumentValue";
+	    break;
+    case STATUS_N_InvalidObjectInstance:
+	    s = "Failure: InvalidObjectInstance";
+	    break;
+    case STATUS_N_MistypedArgument:
+	    s = "Failure: MistypedArgument";
+	    break;
+    case STATUS_N_NoSuchArgument:
+	    s = "Failure: NoSuchArgument";
+	    break;
+    case STATUS_N_NoSuchEventType:
+	    s = "Failure: NoSuchEventType";
+	    break;
+    case STATUS_N_NoSuchSOPClass:
+	    s = "Failure: NoSuchSOPClass";
+	    break;
+    case STATUS_N_NoSuchObjectInstance:
+	    s = "Failure: NoSuchObjectInstance";
+	    break;
+    case STATUS_N_ProcessingFailure:
+	    s = "Failure: ProcessingFailure";
+	    break;
+    case STATUS_N_ResourceLimitation:
+	    s = "Failure: ResourceLimitation";
+	    break;
+  }
+  if (s)
+	  return s;
+
+  switch (statusCode & 0xf000) {	/* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
+	    s = "Failed: UnableToProcess";
+	    break;
+  }
+
+  if (s == NULL) {
+  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+	  s = staticBuf;
+  }
+  return s;
+}
+
+const char *
+DU_ngetStatusString(Uint16 statusCode)
+{
+  const char *s = NULL;
+
+  switch (statusCode) {
+    case STATUS_Success:
+	    s = "Success";
+	    break;
+    case STATUS_N_AttributeListError:
+      s = "Warning: AttributeListError";
+	    break;
+    case STATUS_N_ClassInstanceConflict:
+      s = "Failure: ClassInstanceConflict";
+	    break;
+    case STATUS_N_DuplicateInvocation:
+	    s = "Failure: DuplicateInvocation";
+	    break;
+    case STATUS_N_InvalidObjectInstance:
+	    s = "Failure: InvalidObjectInstance";
+	    break;
+    case STATUS_N_MistypedArgument:
+	    s = "Failure: MistypedArgument";
+	    break;
+    case STATUS_N_NoSuchSOPClass:
+	    s = "Failure: NoSuchSOPClass";
+	    break;
+    case STATUS_N_NoSuchObjectInstance:
+	    s = "Failure: NoSuchObjectInstance";
+	    break;
+    case STATUS_N_ProcessingFailure:
+	    s = "Failure: ProcessingFailure";
+	    break;
+    case STATUS_N_ResourceLimitation:
+	    s = "Failure: ResourceLimitation";
+	    break;
+  }
+  if (s)
+	  return s;
+
+  switch (statusCode & 0xf000) {	/* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
+	    s = "Failed: UnableToProcess";
+	    break;
+  }
+
+  if (s == NULL) {
+  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+	  s = staticBuf;
+  }
+  return s;
+}
+
+const char *
+DU_nsetStatusString(Uint16 statusCode)
+{
+  const char *s = NULL;
+
+  switch (statusCode) {
+    case STATUS_Success:
+	    s = "Success";
+	    break;
+    case STATUS_N_ClassInstanceConflict:
+      s = "Failure: ClassInstanceConflict";
+	    break;
+    case STATUS_N_DuplicateInvocation:
+	    s = "Failure: DuplicateInvocation";
+	    break;
+    case STATUS_N_InvalidAttributeValue:
+	    s = "Failure: InvalidAttributeValue";
+	    break;
+    case STATUS_N_MistypedArgument:
+	    s = "Failure: MistypedArgument";
+	    break;
+    case STATUS_N_InvalidObjectInstance:
+	    s = "Failure: InvalidObjectInstance";
+	    break;
+    case STATUS_N_MissingAttributeValue:
+	    s = "Failure: MissingAttributeValue";
+	    break;
+    case STATUS_N_NoSuchAttribute:
+	    s = "Failure: MissingAttributeValue";
+	    break;
+    case STATUS_N_NoSuchSOPClass:
+	    s = "Failure: NoSuchSOPClass";
+	    break;
+    case STATUS_N_NoSuchObjectInstance:
+	    s = "Failure: NoSuchObjectInstance";
+	    break;
+    case STATUS_N_ProcessingFailure:
+	    s = "Failure: ProcessingFailure";
+	    break;
+    case STATUS_N_ResourceLimitation:
+	    s = "Failure: ResourceLimitation";
+	    break;
+  }
+  if (s)
+	  return s;
+
+  switch (statusCode & 0xf000) {	/* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
+	    s = "Failed: UnableToProcess";
+	    break;
+  }
+
+  if (s == NULL) {
+  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+	  s = staticBuf;
+  }
+  return s;
+}
+
+const char *
+DU_nactionStatusString(Uint16 statusCode)
+{
+  const char *s = NULL;
+
+  switch (statusCode) {
+    case STATUS_Success:
+	    s = "Success";
+	    break;
+    case STATUS_N_ClassInstanceConflict:
+      s = "Failure: ClassInstanceConflict";
+	    break;
+    case STATUS_N_DuplicateInvocation:
+	    s = "Failure: DuplicateInvocation";
+	    break;
+    case STATUS_N_InvalidArgumentValue:
+	    s = "Failure: InvalidArgumentValue";
+	    break;
+     case STATUS_N_InvalidObjectInstance:
+	    s = "Failure: InvalidObjectInstance";
+	    break;
+     case STATUS_N_MistypedArgument:
+	    s = "Failure: MistypedArgument";
+	    break;     
+     case STATUS_N_NoSuchAction:
+	    s = "Failure: MistypedArgument";
+	    break;     
+     case STATUS_N_NoSuchArgument:
+	    s = "Failure: NoSuchArgument";
+	    break;       
+    case STATUS_N_NoSuchSOPClass:
+	    s = "Failure: NoSuchSOPClass";
+	    break;
+    case STATUS_N_NoSuchObjectInstance:
+	    s = "Failure: NoSuchObjectInstance";
+	    break;
+    case STATUS_N_ProcessingFailure:
+	    s = "Failure: ProcessingFailure";
+	    break;
+    case STATUS_N_ResourceLimitation:
+	    s = "Failure: ResourceLimitation";
+	    break;
+  }
+  if (s)
+	  return s;
+
+  switch (statusCode & 0xf000) {	/* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
+	    s = "Failed: UnableToProcess";
+	    break;
+  }
+
+  if (s == NULL) {
+  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+	  s = staticBuf;
+  }
+  return s;
+}
+
+const char *
+DU_ndeleteStatusString(Uint16 statusCode)
+{
+  const char *s = NULL;
+
+  switch (statusCode) {
+    case STATUS_Success:
+	    s = "Success";
+	    break;
+    case STATUS_N_ClassInstanceConflict:
+      s = "Failure: ClassInstanceConflict";
+	    break;
+    case STATUS_N_DuplicateInvocation:
+	    s = "Failure: DuplicateInvocation";
+	    break;
+     case STATUS_N_InvalidObjectInstance:
+	    s = "Failure: InvalidObjectInstance";
+	    break;
+     case STATUS_N_MistypedArgument:
+	    s = "Failure: MistypedArgument";
+	    break;     
+    case STATUS_N_NoSuchSOPClass:
+	    s = "Failure: NoSuchSOPClass";
+	    break;
+    case STATUS_N_NoSuchObjectInstance:
+	    s = "Failure: NoSuchObjectInstance";
+	    break;
+    case STATUS_N_ProcessingFailure:
+	    s = "Failure: ProcessingFailure";
+	    break;
+    case STATUS_N_ResourceLimitation:
+	    s = "Failure: ResourceLimitation";
+	    break;
+  }
+  if (s)
+	  return s;
+
+  switch (statusCode & 0xf000) {	/* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
+	    s = "Failed: UnableToProcess";
+	    break;
+  }
+
+  if (s == NULL) {
+  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+	  s = staticBuf;
+  }
+  return s;
+}
+
+const char *
+DU_neventReportStatusString(Uint16 statusCode)
+{
+  const char *s = NULL;
+
+  switch (statusCode) {
+    case STATUS_Success:
+	    s = "Success";
+	    break;
+    case STATUS_N_ClassInstanceConflict:
+      s = "Failure: ClassInstanceConflict";
+	    break;
+    case STATUS_N_DuplicateInvocation:
+	    s = "Failure: DuplicateInvocation";
+	    break;
+    case STATUS_N_InvalidArgumentValue:
+	    s = "Failure: InvalidArgumentValue";
+	    break;
+    case STATUS_N_InvalidObjectInstance:
+	    s = "Failure: InvalidObjectInstance";
+	    break;
+    case STATUS_N_MistypedArgument:
+	    s = "Failure: MistypedArgument";
+	    break;     
+    case STATUS_N_NoSuchArgument:
+	    s = "Failure: NoSuchArgument";
+	    break;     
+    case STATUS_N_NoSuchEventType:
+	    s = "Failure: NoSuchEventType";
+	    break;    
+    case STATUS_N_NoSuchSOPClass:
+	    s = "Failure: NoSuchSOPClass";
+	    break;
+    case STATUS_N_NoSuchObjectInstance:
+	    s = "Failure: NoSuchObjectInstance";
+	    break;
+    case STATUS_N_ProcessingFailure:
+	    s = "Failure: ProcessingFailure";
+	    break;
+    case STATUS_N_ResourceLimitation:
+	    s = "Failure: ResourceLimitation";
+	    break;
+  }
+  if (s)
+	  return s;
+
+  switch (statusCode & 0xf000) {	/* high nibble significant */
+    case STATUS_FIND_Failed_UnableToProcess:	/* high nibble */
+	    s = "Failed: UnableToProcess";
+	    break;
+  }
+
+  if (s == NULL) {
+  	sprintf(staticBuf, "Unknown Status: 0x%x", (unsigned int)statusCode);
+	  s = staticBuf;
+  }
+  return s;
+}
+
+
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.22  2005-12-08 15:44:47  meichel
+** Revision 1.23  2007-07-12 12:18:42  onken
+** Added status codes and corresponding printing routines for DIMSE-N.
+**
+** Revision 1.22  2005/12/08 15:44:47  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.21  2002/11/27 13:04:43  meichel
