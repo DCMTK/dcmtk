@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.07.13 (onken)
+
+- Fixed some status code for DIMSE-N.
+  Affects: dcmnet/libsrc/diutil.cc
+
 **** Changes from 2007.07.12 (onken)
 
 - Added status codes and corresponding printing routines for DIMSE-N.
