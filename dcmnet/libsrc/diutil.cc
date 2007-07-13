@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: onken $
-** Update Date:		$Date: 2007-07-12 12:18:42 $
+** Update Date:		$Date: 2007-07-13 12:24:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.23 $
+** CVS/RCS Revision:	$Revision: 1.24 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -452,20 +452,26 @@ DU_ncreateStatusString(Uint16 statusCode)
     case STATUS_N_DuplicateInvocation:
 	    s = "Failure: DuplicateInvocation";
 	    break;
-    case STATUS_N_InvalidArgumentValue:
-	    s = "Failure: InvalidArgumentValue";
+    case STATUS_N_DuplicateSOPInstance:
+	    s = "Failure: DuplicateSOPInstance";
+	    break;
+    case STATUS_N_InvalidAttributeValue:
+	    s = "Failure: InvalidAttributeValue";
 	    break;
     case STATUS_N_InvalidObjectInstance:
 	    s = "Failure: InvalidObjectInstance";
 	    break;
+    case STATUS_N_MissingAttribute:
+	    s = "Failure: MissingAttribute";
+	    break;
+    case STATUS_N_MissingAttributeValue:
+	    s = "Failure: MissingAttributeValue";
+	    break;
     case STATUS_N_MistypedArgument:
 	    s = "Failure: MistypedArgument";
 	    break;
-    case STATUS_N_NoSuchArgument:
-	    s = "Failure: NoSuchArgument";
-	    break;
-    case STATUS_N_NoSuchEventType:
-	    s = "Failure: NoSuchEventType";
+    case STATUS_N_NoSuchAttribute:
+	    s = "Failure: NoSuchAttribute";
 	    break;
     case STATUS_N_NoSuchSOPClass:
 	    s = "Failure: NoSuchSOPClass";
@@ -478,6 +484,9 @@ DU_ncreateStatusString(Uint16 statusCode)
 	    break;
     case STATUS_N_ResourceLimitation:
 	    s = "Failure: ResourceLimitation";
+	    break;
+    case STATUS_N_UnrecognizedOperation:
+	    s = "Failure: UnrecognizedOperation";
 	    break;
   }
   if (s)
@@ -577,7 +586,7 @@ DU_nsetStatusString(Uint16 statusCode)
 	    s = "Failure: MissingAttributeValue";
 	    break;
     case STATUS_N_NoSuchAttribute:
-	    s = "Failure: MissingAttributeValue";
+	    s = "Failure: NoSuchAttribute";
 	    break;
     case STATUS_N_NoSuchSOPClass:
 	    s = "Failure: NoSuchSOPClass";
@@ -590,6 +599,9 @@ DU_nsetStatusString(Uint16 statusCode)
 	    break;
     case STATUS_N_ResourceLimitation:
 	    s = "Failure: ResourceLimitation";
+	    break;
+    case STATUS_N_UnrecognizedOperation:
+	    s = "Failure: UnrecognizedOperation";
 	    break;
   }
   if (s)
@@ -633,7 +645,7 @@ DU_nactionStatusString(Uint16 statusCode)
 	    s = "Failure: MistypedArgument";
 	    break;     
      case STATUS_N_NoSuchAction:
-	    s = "Failure: MistypedArgument";
+	    s = "Failure: NoSuchAction";
 	    break;     
      case STATUS_N_NoSuchArgument:
 	    s = "Failure: NoSuchArgument";
@@ -649,6 +661,9 @@ DU_nactionStatusString(Uint16 statusCode)
 	    break;
     case STATUS_N_ResourceLimitation:
 	    s = "Failure: ResourceLimitation";
+	    break;
+    case STATUS_N_UnrecognizedOperation:
+	    s = "Failure: UnrecognizedOperation";
 	    break;
   }
   if (s)
@@ -699,6 +714,9 @@ DU_ndeleteStatusString(Uint16 statusCode)
 	    break;
     case STATUS_N_ResourceLimitation:
 	    s = "Failure: ResourceLimitation";
+	    break;
+    case STATUS_N_UnrecognizedOperation:
+	    s = "Failure: UnrecognizedOperation";
 	    break;
   }
   if (s)
@@ -759,6 +777,9 @@ DU_neventReportStatusString(Uint16 statusCode)
     case STATUS_N_ResourceLimitation:
 	    s = "Failure: ResourceLimitation";
 	    break;
+    case STATUS_N_UnrecognizedOperation:
+	    s = "Failure: UnrecognizedOperation";
+	    break;
   }
   if (s)
 	  return s;
@@ -780,7 +801,10 @@ DU_neventReportStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.23  2007-07-12 12:18:42  onken
+** Revision 1.24  2007-07-13 12:24:51  onken
+** Fixed some status code for DIMSE-N.
+**
+** Revision 1.23  2007/07/12 12:18:42  onken
 ** Added status codes and corresponding printing routines for DIMSE-N.
 **
 ** Revision 1.22  2005/12/08 15:44:47  meichel
