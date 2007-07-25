@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.07.25 (riesmeier)
+
+- Enhanced misleading documentation.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/didocu.h
+
+- Fixed typo.
+  Affects: dcmimgle/libsrc/diluptab.cc
+
 **** Changes from 2007.07.13 (onken)
 
 - Fixed some status code for DIMSE-N.

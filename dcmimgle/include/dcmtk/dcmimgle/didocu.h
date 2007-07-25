@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:38 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-07-25 15:11:43 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -252,7 +252,7 @@ class DiDocument
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  item       element in the dataset where the search should start (default: root)
      *
-     ** @return VM if successful, 0 otherwise
+     ** @return VM / number of values if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            const Uint16 *&returnVal,
@@ -311,7 +311,7 @@ class DiDocument
      ** @param  elem       element where the value is stored
      *  @param  returnVal  reference to the storage area for the resulting value
      *
-     ** @return VM if successful, 0 otherwise
+     ** @return VM / number of values if successful, 0 otherwise
      */
     static unsigned long getElemValue(const DcmElement *elem,
                                       const Uint16 *&returnVal);
@@ -376,7 +376,10 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.19  2005-12-08 16:47:38  meichel
+ * Revision 1.20  2007-07-25 15:11:43  joergr
+ * Enhanced misleading documentation.
+ *
+ * Revision 1.19  2005/12/08 16:47:38  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.18  2003/12/08 18:20:13  joergr
