@@ -22,8 +22,8 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:52:34 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2007-07-25 15:10:08 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: incomplete or missing  'LookupTableDescriptor' ... ignoring LUT !" << OFendl;
+                ofConsole.lockCerr() << "WARNING: incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -617,7 +617,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.33  2007-03-16 11:52:34  joergr
+ * Revision 1.34  2007-07-25 15:10:08  joergr
+ * Fixed typo.
+ *
+ * Revision 1.33  2007/03/16 11:52:34  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
  * Fixed problem with wrong interpretation of the palette descriptor in certain
