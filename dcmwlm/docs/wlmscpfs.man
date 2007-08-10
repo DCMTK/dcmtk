@@ -72,6 +72,10 @@ port  tcp/ip port number to listen on
 
   -cs1  --return-iso-ir-100
           return specific character set ISO IR 100
+
+  -csk  --keep-char-set
+          return character set provided in file
+
 \endverbatim
 
 \subsection network_options network options

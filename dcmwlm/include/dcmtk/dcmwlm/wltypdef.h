@@ -21,10 +21,10 @@
  *
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:49:22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-08-10 14:25:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,8 @@ enum WlmDatabaseType
 enum WlmReturnedCharacterSetType
 {
   RETURN_NO_CHARACTER_SET,
-  RETURN_CHARACTER_SET_ISO_IR_100
+  RETURN_CHARACTER_SET_ISO_IR_100,
+  RETURN_CHARACTER_SET_FROM_FILE  
 };
 
   /// name of lockfile for worklist management based on file system
@@ -144,7 +145,11 @@ struct WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.12  2006-12-15 14:49:22  onken
+** Revision 1.13  2007-08-10 14:25:21  meichel
+** Added new command line option --keep-char-set that returns
+**   any specific character set as encoded in the worklist file.
+**
+** Revision 1.12  2006/12/15 14:49:22  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.
 **

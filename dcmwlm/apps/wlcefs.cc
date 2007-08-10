@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:44:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-08-10 14:25:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
     cmd->addOption("--return-no-char-set",    "-cs0",    "return no specific character set (default)");
     cmd->addOption("--return-iso-ir-100",     "-cs1",    "return specific character set ISO IR 100");
+    cmd->addOption("--keep-char-set",         "-csk",    "return character set provided in file");
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
@@ -238,6 +239,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     cmd->beginOptionBlock();
     if( cmd->findOption("--return-no-char-set") ) opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
     if( cmd->findOption("--return-iso-ir-100") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
+    if( cmd->findOption("--keep-char-set") )  opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
     cmd->endOptionBlock();
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
@@ -415,7 +417,11 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.17  2006-12-15 14:44:09  onken
+** Revision 1.18  2007-08-10 14:25:20  meichel
+** Added new command line option --keep-char-set that returns
+**   any specific character set as encoded in the worklist file.
+**
+** Revision 1.17  2006/12/15 14:44:09  onken
 ** Changed member variable from char* to OFString and reintegrated correct
 ** intending of command line options, that were lost in of of last revisions.
 ** Removed (unchecked) command line options for group / sequence length

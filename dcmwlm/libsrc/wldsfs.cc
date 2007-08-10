@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:49:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-08-10 14:25:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -397,7 +397,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
           delete elem;
         }
       }
-      else
+      else if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
       {
         // if it shall be contained in the returned data set, check if it is not already included
         if( specificCharacterSetElement == NULL )
@@ -414,13 +414,14 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( const DcmData
         // and set the value of the attribute accordingly
         if( specificCharacterSetElement != NULL )
         {
-          if( returnedCharacterSet == RETURN_CHARACTER_SET_ISO_IR_100 )
-          {
             OFCondition cond = specificCharacterSetElement->putString( "ISO_IR 100" );
             if( cond.bad() )
               DumpMessage( "WlmDataSourceDatabase::StartFindRequest: Could not set value in result element.\n" );
-          }
         }
+      }
+      else
+      {
+        // case RETURN_CHARACTER_SET_FROM_FILE is handled in HandleNonSequenceElementInResultDataset().
       }
 
       // if the ScheduledProcedureStepSequence can be found in the current dataset, handle
@@ -522,9 +523,9 @@ void WlmDataSourceFileSystem::HandleNonSequenceElementInResultDataset( DcmElemen
   DcmTagKey tag( element->getTag().getXTag() );
 
   // check if the current element is the "Specific Character Set" (0008,0005) attribute;
-  // we do not want to deal with this attribute here, this attribute will be taken care
-  // of when the entire result dataset is completed.
-  if( tag != DCM_SpecificCharacterSet )
+  // we do not want to deal with this attribute here (unless mode is RETURN_CHARACTER_SET_FROM_FILE);
+  // this attribute will be taken care of when the entire result dataset is completed.
+  if( returnedCharacterSet == RETURN_CHARACTER_SET_FROM_FILE || tag != DCM_SpecificCharacterSet )
   {
     // in case the current element is not the "Specific Character Set" (0008,0005) attribute,
     // get a value for the current element from database; note that all values for return key
@@ -824,7 +825,11 @@ OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.21  2006-12-15 14:49:28  onken
+** Revision 1.22  2007-08-10 14:25:21  meichel
+** Added new command line option --keep-char-set that returns
+**   any specific character set as encoded in the worklist file.
+**
+** Revision 1.21  2006/12/15 14:49:28  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.
 **

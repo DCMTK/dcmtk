@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.08.10 (eichelberg)
+
+- Added new command line option --keep-char-set that returns
+  any specific character set as encoded in the worklist file.
+  Thanks to Steffen Benndorf <steffen.benndorf@siemens.com> for the suggestion.
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+           dcmwlm/libsrc/wldsfs.cc
+
 **** Changes from 2007.07.25 (riesmeier)
 
 - Enhanced misleading documentation.
