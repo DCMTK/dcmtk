@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.08.27 (riesmeier)
+
+- Added further check on Overlay Type variable.
+  Affects: dcmimgle/libsrc/diovpln.cc
+
 **** Changes from 2007.08.10 (eichelberg)
 
 - Added new command line option --keep-char-set that returns

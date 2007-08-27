@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-08-27 09:57:31 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         /* get overlay type */
         tag.setElement(DCM_OverlayType.getElement());
         const char *str;
-        if ((docu->getValue(tag, str) > 0) && (strcmp(str, "R") == 0))
+        if ((docu->getValue(tag, str) > 0) && (str != NULL) && (strcmp(str, "R") == 0))
             DefaultMode = Mode = EMO_RegionOfInterest;
         Sint32 sl = 0;
         /* multi-frame overlays */
@@ -603,7 +603,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.30  2006-08-15 16:30:11  meichel
+ * Revision 1.31  2007-08-27 09:57:31  joergr
+ * Added further check on Overlay Type variable.
+ *
+ * Revision 1.30  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
