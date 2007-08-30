@@ -1,9 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.08.30 (riesmeier)
+
+- Added further check on pixel pointer (possibly avoids crash under certain
+  conditions).
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for the suggestion.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+
 **** Changes from 2007.08.27 (riesmeier)
 
 - Added further check on Overlay Type variable.
+  Thanks to Per Inge Mathisen <perim@sonowand.com> for the suggestion.
   Affects: dcmimgle/libsrc/diovpln.cc
 
 **** Changes from 2007.08.10 (eichelberg)

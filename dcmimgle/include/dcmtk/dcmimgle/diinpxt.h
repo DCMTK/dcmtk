@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 14:59:26 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2007-08-30 13:39:30 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -356,98 +356,120 @@ class DiInputPixelTemplate
         const Uint16 bitsof_T2 = bitsof(T2);
         T1 *pixel;
         const Uint32 length_Bytes = getPixelData(pixelData, pixel);
-        /* need to split 'length' in order to avoid integer overflow for large pixel data */
-        const Uint32 length_B1 = length_Bytes / bitsAllocated;
-        const Uint32 length_B2 = length_Bytes % bitsAllocated;
-        const Uint32 length_T1 = length_Bytes / sizeof(T1);
-//      # old code: Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
-        Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
-        register unsigned long i;
-        Data = new T2[Count];
-        if (Data != NULL)
+        if (pixel != NULL)
         {
+            /* need to split 'length' in order to avoid integer overflow for large pixel data */
+            const Uint32 length_B1 = length_Bytes / bitsAllocated;
+            const Uint32 length_B2 = length_Bytes % bitsAllocated;
+            const Uint32 length_T1 = length_Bytes / sizeof(T1);
+//          # old code: Count = ((length_Bytes * 8) + bitsAllocated - 1) / bitsAllocated;
+            Count = 8 * length_B1 + (8 * length_B2 + bitsAllocated - 1) / bitsAllocated;
+            register unsigned long i;
+            Data = new T2[Count];
+            if (Data != NULL)
+            {
 #ifdef DEBUG
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-            {
-                ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << this->isSigned() << OFendl;
-                ofConsole.unlockCerr();
-            }
-#endif
-            register const T1 *p = pixel;
-            register T2 *q = Data;
-            if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
-            {
-                if (bitsStored == bitsAllocated)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
-#ifdef DEBUG
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                    {
-                        ofConsole.lockCerr() << "convert pixelData: case 1a (single copy)" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
-#endif
-                    for (i = Count; i != 0; --i)
-                        *(q++) = OFstatic_cast(T2, *(p++));
+                    ofConsole.lockCerr() << bitsAllocated << " " << bitsStored << " " << highBit << " " << this->isSigned() << OFendl;
+                    ofConsole.unlockCerr();
                 }
-                else /* bitsStored < bitsAllocated */
+#endif
+                register const T1 *p = pixel;
+                register T2 *q = Data;
+                if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
                 {
+                    if (bitsStored == bitsAllocated)
+                    {
+#ifdef DEBUG
+                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                        {
+                            ofConsole.lockCerr() << "convert pixelData: case 1a (single copy)" << OFendl;
+                            ofConsole.unlockCerr();
+                        }
+#endif
+                        for (i = Count; i != 0; --i)
+                            *(q++) = OFstatic_cast(T2, *(p++));
+                    }
+                    else /* bitsStored < bitsAllocated */
+                    {
+                        register T1 mask = 0;
+                        for (i = 0; i < bitsStored; ++i)
+                            mask |= OFstatic_cast(T1, 1 << i);
+                        const T2 sign = 1 << (bitsStored - 1);
+                        T2 smask = 0;
+                        for (i = bitsStored; i < bitsof_T2; ++i)
+                            smask |= OFstatic_cast(T2, 1 << i);
+                        const Uint16 shift = highBit + 1 - bitsStored;
+                        if (shift == 0)
+                        {
+#ifdef DEBUG
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                            {
+                                ofConsole.lockCerr() << "convert pixelData: case 1b (mask & sign)" << OFendl;
+                                ofConsole.unlockCerr();
+                            }
+#endif
+                            for (i = length_T1; i != 0; --i)
+                                *(q++) = expandSign(OFstatic_cast(T2, *(p++) & mask), sign, smask);
+                        }
+                        else /* shift > 0 */
+                        {
+#ifdef DEBUG
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                            {
+                                ofConsole.lockCerr() << "convert pixelData: case 1c (shift & mask & sign)" << OFendl;
+                                ofConsole.unlockCerr();
+                            }
+#endif
+                            for (i = length_T1; i != 0; --i)
+                                *(q++) = expandSign(OFstatic_cast(T2, (*(p++) >> shift) & mask), sign, smask);
+                        }
+                    }
+                }
+                else if ((bitsof_T1 > bitsAllocated) && (bitsof_T1 % bitsAllocated == 0))   // case 2: divisor of 8/16 bit
+                {
+                    const Uint16 times = bitsof_T1 / bitsAllocated;
                     register T1 mask = 0;
                     for (i = 0; i < bitsStored; ++i)
                         mask |= OFstatic_cast(T1, 1 << i);
-                    const T2 sign = 1 << (bitsStored - 1);
-                    T2 smask = 0;
-                    for (i = bitsStored; i < bitsof_T2; ++i)
-                        smask |= OFstatic_cast(T2, 1 << i);
-                    const Uint16 shift = highBit + 1 - bitsStored;
-                    if (shift == 0)
+                    register Uint16 j;
+                    register T1 value;
+                    if ((bitsStored == bitsAllocated) && (bitsStored == bitsof_T2))
                     {
+                        if (times == 2)
+                        {
 #ifdef DEBUG
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                        {
-                            ofConsole.lockCerr() << "convert pixelData: case 1b (mask & sign)" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                            {
+                                ofConsole.lockCerr() << "convert pixelData: case 2a (simple mask)" << OFendl;
+                                ofConsole.unlockCerr();
+                            }
 #endif
-                        for (i = length_T1; i != 0; --i)
-                            *(q++) = expandSign(OFstatic_cast(T2, *(p++) & mask), sign, smask);
-                    }
-                    else /* shift > 0 */
-                    {
+                            for (i = length_T1; i != 0; --i, ++p)
+                            {
+                                *(q++) = OFstatic_cast(T2, *p & mask);
+                                *(q++) = OFstatic_cast(T2, *p >> bitsAllocated);
+                            }
+                        }
+                        else
+                        {
 #ifdef DEBUG
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                        {
-                            ofConsole.lockCerr() << "convert pixelData: case 1c (shift & mask & sign)" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                            {
+                                ofConsole.lockCerr() << "convert pixelData: case 2b (mask)" << OFendl;
+                                ofConsole.unlockCerr();
+                            }
 #endif
-                        for (i = length_T1; i != 0; --i)
-                            *(q++) = expandSign(OFstatic_cast(T2, (*(p++) >> shift) & mask), sign, smask);
-                    }
-                }
-            }
-            else if ((bitsof_T1 > bitsAllocated) && (bitsof_T1 % bitsAllocated == 0))   // case 2: divisor of 8/16 bit
-            {
-                const Uint16 times = bitsof_T1 / bitsAllocated;
-                register T1 mask = 0;
-                for (i = 0; i < bitsStored; ++i)
-                    mask |= OFstatic_cast(T1, 1 << i);
-                register Uint16 j;
-                register T1 value;
-                if ((bitsStored == bitsAllocated) && (bitsStored == bitsof_T2))
-                {
-                    if (times == 2)
-                    {
-#ifdef DEBUG
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                        {
-                            ofConsole.lockCerr() << "convert pixelData: case 2a (simple mask)" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
-#endif
-                        for (i = length_T1; i != 0; --i, ++p)
-                        {
-                            *(q++) = OFstatic_cast(T2, *p & mask);
-                            *(q++) = OFstatic_cast(T2, *p >> bitsAllocated);
+                            for (i = length_T1; i != 0; --i)
+                            {
+                                value = *(p++);
+                                for (j = times; j != 0; --j)
+                                {
+                                    *(q++) = OFstatic_cast(T2, value & mask);
+                                    value >>= bitsAllocated;
+                                }
+                            }
                         }
                     }
                     else
@@ -455,126 +477,107 @@ class DiInputPixelTemplate
 #ifdef DEBUG
                         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
-                            ofConsole.lockCerr() << "convert pixelData: case 2b (mask)" << OFendl;
+                            ofConsole.lockCerr() << "convert pixelData: case 2c (shift & mask & sign)" << OFendl;
                             ofConsole.unlockCerr();
                         }
 #endif
+                        const T2 sign = 1 << (bitsStored - 1);
+                        T2 smask = 0;
+                        for (i = bitsStored; i < bitsof_T2; ++i)
+                            smask |= OFstatic_cast(T2, 1 << i);
+                        const Uint16 shift = highBit + 1 - bitsStored;
                         for (i = length_T1; i != 0; --i)
                         {
-                            value = *(p++);
+                            value = *(p++) >> shift;
                             for (j = times; j != 0; --j)
                             {
-                                *(q++) = OFstatic_cast(T2, value & mask);
+                                *(q++) = expandSign(OFstatic_cast(T2, value & mask), sign, smask);
                                 value >>= bitsAllocated;
                             }
                         }
                     }
                 }
-                else
+                else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
+                    && (bitsStored == bitsAllocated))
                 {
 #ifdef DEBUG
                     if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
-                        ofConsole.lockCerr() << "convert pixelData: case 2c (shift & mask & sign)" << OFendl;
+                        ofConsole.lockCerr() << "convert pixelData: case 3 (multi copy)" << OFendl;
                         ofConsole.unlockCerr();
                     }
 #endif
-                    const T2 sign = 1 << (bitsStored - 1);
+                    const Uint16 times = bitsAllocated / bitsof_T1;
+                    register Uint16 j;
+                    register Uint16 shift;
+                    register T2 value;
+                    for (i = length_T1; i != 0; --i)
+                    {
+                        shift = 0;
+                        value = OFstatic_cast(T2, *(p++));
+                        for (j = times; j > 1; --j, --i)
+                        {
+                            shift += bitsof_T1;
+                            value |= OFstatic_cast(T2, *(p++)) << shift;
+                        }
+                        *(q++) = value;
+                    }
+                }
+                else                                                                        // case 4: anything else
+                {
+#ifdef DEBUG
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+                    {
+                        ofConsole.lockCerr() << "convert pixelData: case 4 (general)" << OFendl;
+                        ofConsole.unlockCerr();
+                    }
+#endif
+                    register T2 value = 0;
+                    register Uint16 bits = 0;
+                    register Uint32 skip = highBit + 1 - bitsStored;
+                    register Uint32 times;
+                    T1 mask[bitsof_T1];
+                    mask[0] = 1;
+                    for (i = 1; i < bitsof_T1; ++i)
+                        mask[i] = (mask[i - 1] << 1) | 1;
                     T2 smask = 0;
                     for (i = bitsStored; i < bitsof_T2; ++i)
                         smask |= OFstatic_cast(T2, 1 << i);
-                    const Uint16 shift = highBit + 1 - bitsStored;
-                    for (i = length_T1; i != 0; --i)
+                    const T2 sign = 1 << (bitsStored - 1);
+                    const Uint32 gap = bitsAllocated - bitsStored;
+                    i = 0;
+                    while (i < length_T1)
                     {
-                        value = *(p++) >> shift;
-                        for (j = times; j != 0; --j)
+                        if (skip < bitsof_T1)
                         {
-                            *(q++) = expandSign(OFstatic_cast(T2, value & mask), sign, smask);
-                            value >>= bitsAllocated;
+                            if (skip + bitsStored - bits < bitsof_T1)       // -++- --++
+                            {
+                                value |= (OFstatic_cast(T2, (*p >> skip) & mask[bitsStored - bits - 1]) << bits);
+                                skip += bitsStored - bits + gap;
+                                bits = bitsStored;
+                            }
+                            else                                            // ++-- ++++
+                            {
+                                value |= (OFstatic_cast(T2, (*p >> skip) & mask[bitsof_T1 - skip - 1]) << bits);
+                                bits += bitsof_T1 - OFstatic_cast(Uint16, skip);
+                                skip = (bits == bitsStored) ? gap : 0;
+                                ++i;
+                                ++p;
+                            }
+                            if (bits == bitsStored)
+                            {
+                                *(q++) = expandSign(value, sign, smask);
+                                value = 0;
+                                bits = 0;
+                            }
                         }
-                    }
-                }
-            }
-            else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
-                && (bitsStored == bitsAllocated))
-            {
-#ifdef DEBUG
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "convert pixelData: case 3 (multi copy)" << OFendl;
-                    ofConsole.unlockCerr();
-                }
-#endif
-                const Uint16 times = bitsAllocated / bitsof_T1;
-                register Uint16 j;
-                register Uint16 shift;
-                register T2 value;
-                for (i = length_T1; i != 0; --i)
-                {
-                    shift = 0;
-                    value = OFstatic_cast(T2, *(p++));
-                    for (j = times; j > 1; --j, --i)
-                    {
-                        shift += bitsof_T1;
-                        value |= OFstatic_cast(T2, *(p++)) << shift;
-                    }
-                    *(q++) = value;
-                }
-            }
-            else                                                                        // case 4: anything else
-            {
-#ifdef DEBUG
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "convert pixelData: case 4 (general)" << OFendl;
-                    ofConsole.unlockCerr();
-                }
-#endif
-                register T2 value = 0;
-                register Uint16 bits = 0;
-                register Uint32 skip = highBit + 1 - bitsStored;
-                register Uint32 times;
-                T1 mask[bitsof_T1];
-                mask[0] = 1;
-                for (i = 1; i < bitsof_T1; ++i)
-                    mask[i] = (mask[i - 1] << 1) | 1;
-                T2 smask = 0;
-                for (i = bitsStored; i < bitsof_T2; ++i)
-                    smask |= OFstatic_cast(T2, 1 << i);
-                const T2 sign = 1 << (bitsStored - 1);
-                const Uint32 gap = bitsAllocated - bitsStored;
-                i = 0;
-                while (i < length_T1)
-                {
-                    if (skip < bitsof_T1)
-                    {
-                        if (skip + bitsStored - bits < bitsof_T1)       // -++- --++
+                        else
                         {
-                            value |= (OFstatic_cast(T2, (*p >> skip) & mask[bitsStored - bits - 1]) << bits);
-                            skip += bitsStored - bits + gap;
-                            bits = bitsStored;
+                            times = skip / bitsof_T1;
+                            i += times;
+                            p += times;
+                            skip -= times * bitsof_T1;
                         }
-                        else                                            // ++-- ++++
-                        {
-                            value |= (OFstatic_cast(T2, (*p >> skip) & mask[bitsof_T1 - skip - 1]) << bits);
-                            bits += bitsof_T1 - OFstatic_cast(Uint16, skip);
-                            skip = (bits == bitsStored) ? gap : 0;
-                            ++i;
-                            ++p;
-                        }
-                        if (bits == bitsStored)
-                        {
-                            *(q++) = expandSign(value, sign, smask);
-                            value = 0;
-                            bits = 0;
-                        }
-                    }
-                    else
-                    {
-                        times = skip / bitsof_T1;
-                        i += times;
-                        p += times;
-                        skip -= times * bitsof_T1;
                     }
                 }
             }
@@ -603,7 +606,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.33  2006-10-27 14:59:26  joergr
+ * Revision 1.34  2007-08-30 13:39:30  joergr
+ * Added further check on pixel pointer (possibly avoids crash under certain
+ * conditions).
+ *
+ * Revision 1.33  2006/10/27 14:59:26  joergr
  * Fixed possible integer overflow for images with very large pixel data.
  *
  * Revision 1.32  2006/08/15 16:30:11  meichel
