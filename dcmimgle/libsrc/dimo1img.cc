@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochrome1Image (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:54 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-09-04 11:11:07 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,9 +135,9 @@ DiImage *DiMono1Image::createScale(const signed long left_pos,
                                    const int aspect,
                                    const Uint16 pvalue) const
 {
-    DiImage *image = new DiMono1Image(this, OFstatic_cast(Uint16, left_pos), OFstatic_cast(Uint16, top_pos),
-        OFstatic_cast(Uint16, src_cols), OFstatic_cast(Uint16, src_rows), OFstatic_cast(Uint16, dest_cols),
-        OFstatic_cast(Uint16, dest_rows), interpolate, aspect, pvalue);
+    DiImage *image = new DiMono1Image(this, left_pos, top_pos, OFstatic_cast(Uint16, src_cols),
+        OFstatic_cast(Uint16, src_rows), OFstatic_cast(Uint16, dest_cols), OFstatic_cast(Uint16, dest_rows),
+        interpolate, aspect, pvalue);
     return image;
 }
 
@@ -169,7 +169,11 @@ DiImage *DiMono1Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo1img.cc,v $
- * Revision 1.12  2005-12-08 15:42:54  meichel
+ * Revision 1.13  2007-09-04 11:11:07  joergr
+ * Fixed wrong typecast in createScale() that filtered out negative clipping
+ * coordinates for the top left hand corner.
+ *
+ * Revision 1.12  2005/12/08 15:42:54  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.11  2004/02/06 11:10:39  joergr

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.09.04 (riesmeier)
+
+- Fixed wrong typecast in createScale() that filtered out negative clipping
+  coordinates for the top left hand corner.
+  Thanks to J. Carnulfo <jca@vertigoeng.com> for the bug report and fix.
+  Affects: dcmimgle/libsrc/dimo1img.cc
+
 **** Changes from 2007.08.30 (riesmeier)
 
 - Added further check on pixel pointer (possibly avoids crash under certain
