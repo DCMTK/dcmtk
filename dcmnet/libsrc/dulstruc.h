@@ -50,14 +50,18 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 2005-12-08 15:48:09 $
+** Last Update:		$Author: onken $, $Date: 2007-09-07 08:47:54 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.9 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
+#ifndef DULSTRUC_H
+#define DULSTRUC_H
+
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/extneg.h"
+#include "dcmtk/dcmnet/dcextusr.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
@@ -230,6 +234,8 @@ typedef struct user_info {
     DUL_SUBITEM implementationVersionName;               // 55H: implementation version name
     LST_HEAD *SCUSCPRoleList;                            // 54H: SCP/SCU role selection
     SOPClassExtendedNegotiationSubItemList *extNegList;  // 56H: extended negotiation
+                                                         // 57H: SOP CLASS COMMON EXTENDED NEGOTIATION (not implemented)
+    ExtendedNegotiationUserIdentitySubItem *extUsrId;    // 58H: extended negotiation of user identity RQ or AC
 }   DUL_USERINFO;
 
 typedef struct dul_associatepdu {
@@ -307,10 +313,16 @@ typedef struct dul_datapdu {
 
 #define EXTRACT_SHORT_BIG(A,B)  { (B) = (unsigned short)(A)[1] | (((unsigned short)(A)[0]) << 8); }
 
+#endif // #ifndef DULSTRUC_H
+
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.9  2005-12-08 15:48:09  meichel
+** Revision 1.10  2007-09-07 08:47:54  onken
+** Added basic support for Extended Negotiation of User Identity. Added #ifndef
+** guard to header file.
+**
+** Revision 1.9  2005/12/08 15:48:09  meichel
 ** Updated Makefiles to correctly install header files
 **
 ** Revision 1.8  2004/02/25 12:31:17  meichel
@@ -346,3 +358,4 @@ typedef struct dul_datapdu {
 **
 **
 */
+
