@@ -1,6 +1,25 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.09.07 (onken)
+
+- Added basic support for Extended Negotiation of User Identity.
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/dcextusr.h
+           dcmnet/include/dcmtk/dcmnet/dul.h
+           dcmnet/libsrc/CMakeLists.txt
+           dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dcextusr.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulstruc.h
+
+- Added #ifndef guard to header file.
+  Affects: dcmnet/libsrc/dulstruc.h
+
 **** Changes from 2007.09.04 (riesmeier)
 
 - Fixed wrong typecast in createScale() that filtered out negative clipping
