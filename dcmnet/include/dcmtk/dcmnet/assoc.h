@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2006-08-15 16:04:29 $
+** Last Update:		$Author: onken $
+** Update Date:		$Date: 2007-09-07 08:49:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
+** CVS/RCS Revision:	$Revision: 1.26 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -405,6 +405,10 @@ void ASC_getAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotia
 void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 
+/* extended negotiation of user identity */
+void ASC_getRequestedExtUserIdentRQ(T_ASC_Parameters* params, ExtendedNegotiationUserIdentitySubItemRQ** extNegUser);
+void ASC_getRequestedExtUserIdentAC(T_ASC_Parameters* params, ExtendedNegotiationUserIdentitySubItemAC** extNegUser);
+
 /* get peer certificate from open association */
 unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc);
 unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned long bufLen);
@@ -501,7 +505,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.25  2006-08-15 16:04:29  meichel
+** Revision 1.26  2007-09-07 08:49:12  onken
+** Added basic support for Extended Negotiation of User Identity.
+**
+** Revision 1.25  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

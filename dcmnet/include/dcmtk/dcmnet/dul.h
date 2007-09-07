@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2006-08-15 16:04:29 $
+** Last Update:		$Author: onken $, $Date: 2007-09-07 08:49:12 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.24 $
+** Revision:		$Revision: 1.25 $
 ** Status:		$State: Exp $
 */
 
@@ -55,11 +55,13 @@
 #define DUL_IS_IN 1
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofglobal.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/dcmnet/extneg.h"
 #include "dcmtk/dcmnet/dicom.h"
+#include "dcmtk/dcmnet/dcextusr.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
@@ -104,6 +106,9 @@ typedef void DUL_ASSOCIATIONKEY;
 typedef unsigned char DUL_PRESENTATIONCONTEXTID;
 #endif
 
+/** pure virtual base class for DUL mode callbacks
+ */
+
 /*  Define a structure containing fixed length fields that can
  *  be used for requesting or accepting an association.  The
  *  lengths of "titles" and "names" are specified by the DICOM
@@ -130,8 +135,6 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
 
 #define DUL_MAXTYPE			OFstatic_cast(unsigned char, 0x07)
 
-/** pure virtual base class for DUL mode callbacks
- */
 class DUL_ModeCallback
 {
 public:
@@ -167,6 +170,9 @@ typedef struct {
     unsigned long peerMaxPDU;
     SOPClassExtendedNegotiationSubItemList *requestedExtNegList;
     SOPClassExtendedNegotiationSubItemList *acceptedExtNegList;
+    ExtendedNegotiationUserIdentitySubItemRQ *reqExtNegUserIdent;
+    ExtendedNegotiationUserIdentitySubItemAC *ackExtNegUserIdent;
+
     OFBool useSecureLayer;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
 
@@ -483,7 +489,10 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.24  2006-08-15 16:04:29  meichel
+** Revision 1.25  2007-09-07 08:49:12  onken
+** Added basic support for Extended Negotiation of User Identity.
+**
+** Revision 1.24  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

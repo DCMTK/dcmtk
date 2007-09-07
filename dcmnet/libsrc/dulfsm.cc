@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:		  Define tables and provide functions that implement
 **			      the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:	  $Author: joergr $, $Date: 2007-03-12 13:27:53 $
+** Last Update:	  $Author: onken $, $Date: 2007-09-07 08:49:30 $
 ** Source File:	  $RCSfile: dulfsm.cc,v $
-** Revision:	  $Revision: 1.61 $
+** Revision:	  $Revision: 1.62 $
 ** Status:		  $State: Exp $
 */
 
@@ -1001,6 +1001,14 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             appendList(*assoc.userInfo.extNegList, *service->acceptedExtNegList);
         }
 
+        /* extended negotiation of user identity */
+        if (assoc.userInfo.extUsrId != NULL) {
+          service->ackExtNegUserIdent = 
+            new ExtendedNegotiationUserIdentitySubItemAC( *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemAC*, assoc.userInfo.extUsrId)));
+          if (service->ackExtNegUserIdent == NULL)  return EC_MemoryExhausted;
+          
+        }
+
         destroyPresentationContextList(&assoc.presentationContextList);
         destroyUserInformationLists(&assoc.userInfo);
         service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
@@ -1205,6 +1213,13 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
             appendList(*assoc.userInfo.extNegList, *service->requestedExtNegList);
         }
 
+        /* extended negotiation of user identity: Remember request values in association parameters (copy)*/
+        if (assoc.userInfo.extUsrId != NULL) {
+          service->reqExtNegUserIdent = new ExtendedNegotiationUserIdentitySubItemRQ();
+          if (service->reqExtNegUserIdent == NULL) return EC_MemoryExhausted;
+            *(service->reqExtNegUserIdent) = *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemRQ*,assoc.userInfo.extUsrId));
+        }
+        
         service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDVRequestor =
@@ -3940,14 +3955,20 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
     (void) LST_Destroy(&userInfo->SCUSCPRoleList);
 
     /* extended negotiation */
-    delete userInfo->extNegList;
+    delete userInfo->extNegList; userInfo->extNegList = NULL;
+
+    /* extended negotiation of user identity */
+    delete userInfo->extUsrId; userInfo->extUsrId = NULL;
 }
 
 
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.61  2007-03-12 13:27:53  joergr
+** Revision 1.62  2007-09-07 08:49:30  onken
+** Added basic support for Extended Negotiation of User Identity.
+**
+** Revision 1.61  2007/03/12 13:27:53  joergr
 ** Updated debug code to correctly compile when all standard C++ classes remain
 ** in namespace std.
 **

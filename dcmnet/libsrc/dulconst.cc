@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 2006-08-15 16:04:29 $
+** Last Update:		$Author: onken $, $Date: 2007-09-07 08:49:29 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.17 $
+** Revision:		$Revision: 1.18 $
 ** Status:		$State: Exp $
 */
 
@@ -894,7 +894,29 @@ constructUserInfo(unsigned char type, DUL_ASSOCIATESERVICEPARAMETERS * params,
     if (cond.bad()) return cond;
     userInfo->length += (unsigned short) length;
     *rtnLen += length;
-
+    
+    // construct user info sub-item 58H: extended negotiation of user identification
+    if (params->reqExtNegUserIdent && (type == DUL_TYPEASSOCIATERQ))
+    {
+      cond = params->reqExtNegUserIdent->constructItem(length);
+      if (cond.bad())
+        return cond;
+      userInfo->extUsrId = new ExtendedNegotiationUserIdentitySubItemRQ();
+        *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemRQ*,userInfo->extUsrId)) = *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemRQ*, params->reqExtNegUserIdent));
+      userInfo->length += (unsigned short) length;
+      *rtnLen += length;
+    }
+    else if (params->ackExtNegUserIdent && (type == DUL_TYPEASSOCIATEAC))
+    {
+      cond = params->ackExtNegUserIdent->constructItem(length);
+      if (cond.bad())
+        return cond;
+      userInfo->extUsrId = new ExtendedNegotiationUserIdentitySubItemAC();
+      *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemAC*,userInfo->extUsrId)) = *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemAC*, params->ackExtNegUserIdent));
+      userInfo->length += (unsigned short) length;
+      *rtnLen += length;
+    }
+  
     return EC_Normal;
 }
 
@@ -1315,7 +1337,16 @@ streamUserInfo(DUL_USERINFO * userInfo, unsigned char *b,
 	b += subLength;
 	*length += subLength;
     }
-    
+
+  // stream user info sub-item 58H: extended negotiation of user identity
+  if (userInfo->extUsrId != NULL) {
+    cond = userInfo->extUsrId->stream(b, subLength /*out*/);
+	  if (cond.bad())
+	    return cond;
+	  b += subLength;
+	  *length += subLength;
+  }
+
     return EC_Normal;
 }
 
@@ -1440,25 +1471,25 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 static OFCondition
 streamExtNegList(SOPClassExtendedNegotiationSubItemList *lst, unsigned char *b, unsigned long *length)
 {
-    OFCondition cond = EC_Normal;
-    unsigned long localLength;
+  OFCondition cond = EC_Normal;
+  unsigned long localLength;
 
-    *length = 0;
+  *length = 0;
 
-    if (lst == NULL)
-        return EC_Normal;
-
-    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst->begin();
-    while (i != lst->end()) {
-	localLength = 0;
-        cond = streamExtNeg(*i, b, &localLength);
-	if (cond.bad())
-	    return cond;
-	*length += localLength;
-	b += localLength;
-        ++i;
-    }
+  if (lst == NULL)
     return EC_Normal;
+
+  OFListIterator(SOPClassExtendedNegotiationSubItem*) i = lst->begin();
+  while (i != lst->end()) {
+    localLength = 0;
+    cond = streamExtNeg(*i, b, &localLength);
+    if (cond.bad())
+      return cond;
+    *length += localLength;
+    b += localLength;
+    ++i;
+  }
+  return EC_Normal;
 }
 
 static OFCondition
@@ -1495,7 +1526,10 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.17  2006-08-15 16:04:29  meichel
+** Revision 1.18  2007-09-07 08:49:29  onken
+** Added basic support for Extended Negotiation of User Identity.
+**
+** Revision 1.17  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

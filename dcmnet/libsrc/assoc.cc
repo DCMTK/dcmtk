@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2006-08-15 16:04:29 $
+** Last Update:         $Author: onken $
+** Update Date:         $Date: 2007-09-07 08:49:29 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.47 $
+** CVS/RCS Revision:    $Revision: 1.48 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -366,6 +366,9 @@ ASC_destroyAssociationParameters(T_ASC_Parameters ** params)
     /* free the elements in the accepted presentation context list */
     destroyPresentationContextList(
         &((*params)->DULparams.acceptedPresentationContext));
+
+    /* free DUL parameters */
+    DUL_ClearServiceParameters( &(*params)->DULparams );
 
     free(*params);
     *params = NULL;
@@ -1284,6 +1287,16 @@ void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotia
     params->DULparams.acceptedExtNegList = extNegList;
 }
 
+void ASC_getExtUserIdentRQ(T_ASC_Parameters* params, ExtendedNegotiationUserIdentitySubItemRQ** extNegUser)
+{
+  *extNegUser = params->DULparams.reqExtNegUserIdent;
+}
+
+void ASC_getExtUserIdentAC(T_ASC_Parameters* params, ExtendedNegotiationUserIdentitySubItemAC** extNegUser)
+{
+  *extNegUser = params->DULparams.ackExtNegUserIdent;
+}
+
 void 
 ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream)
  /*
@@ -1337,6 +1350,27 @@ ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream)
     } else {
         outstream << " none" << OFendl;
     }
+    
+    ExtendedNegotiationUserIdentitySubItemRQ *userIdentRQ = NULL;
+    ASC_getExtUserIdentRQ(params, &userIdentRQ);
+    outstream << "Requested Extended Negotitation of User Identity:";
+    if (userIdentRQ != NULL) {
+        outstream << OFendl;
+        userIdentRQ->dump(outstream);
+    } else {
+        outstream << " none" << OFendl;
+    }
+
+    ExtendedNegotiationUserIdentitySubItemAC *userIdentAC = NULL;
+    ASC_getExtUserIdentAC(params, &userIdentAC);
+    outstream << "Extended Negotitation of User Identity Response:";
+    if (userIdentAC != NULL) {
+        outstream << OFendl;
+        userIdentAC->dump(outstream);
+    } else {
+        outstream << " none" << OFendl;
+    }
+
 
 #if 0
     outstream << "DUL Params --- BEGIN" << OFendl;
@@ -1980,7 +2014,10 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.47  2006-08-15 16:04:29  meichel
+** Revision 1.48  2007-09-07 08:49:29  onken
+** Added basic support for Extended Negotiation of User Identity.
+**
+** Revision 1.47  2006/08/15 16:04:29  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

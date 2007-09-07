@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: onken $, $Date: 2007-07-10 09:40:57 $
+** Last Update:         $Author: onken $, $Date: 2007-09-07 08:49:29 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.75 $
+** Revision:            $Revision: 1.76 $
 ** Status:              $State: Exp $
 */
 
@@ -1365,12 +1365,24 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
 OFCondition
 DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
+    // Clear requested and accepted presentation contexts
     clearPresentationContext(&params->requestedPresentationContext);
     clearPresentationContext(&params->acceptedPresentationContext);
-    deleteListMembers(*params->requestedExtNegList);
-    delete params->requestedExtNegList;
-    deleteListMembers(*params->acceptedExtNegList);
-    delete params->acceptedExtNegList;
+    // Delete structures of Extended SOP Class Negotiation request
+    if (params->requestedExtNegList)
+    {
+      deleteListMembers(*params->requestedExtNegList);
+      delete params->requestedExtNegList; params->requestedExtNegList = NULL;
+    }
+    // Delete structures of Extended SOP Class Negotiation acknowledge
+    if (params->acceptedExtNegList)
+    {
+      deleteListMembers(*params->acceptedExtNegList);
+      delete params->acceptedExtNegList; params->acceptedExtNegList = NULL;
+    // Delete Extended Negotiation of User Identity request and ack structures
+    }
+    delete params->reqExtNegUserIdent; params->reqExtNegUserIdent = NULL;
+    delete params->ackExtNegUserIdent; params->ackExtNegUserIdent = NULL;
     return EC_Normal;
 }
 
@@ -2617,7 +2629,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.75  2007-07-10 09:40:57  onken
+** Revision 1.76  2007-09-07 08:49:29  onken
+** Added basic support for Extended Negotiation of User Identity.
+**
+** Revision 1.75  2007/07/10 09:40:57  onken
 ** Fixed bug in windows multiprocess code that invalidated option values
 ** containing spaces. All cmdline arguments are now surrounded by double qoutes
 ** when spawning a new process.
