@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.09.21 (onken)
+
+- Changed foundVR() API and implementation to use Uint8* instead of char* to
+  avoid calls to isalpha() with negative arguments (undef. behaviour/assertion)
+  Thanks to Niels Dekker <dicomrelatedmail@xs4all.nl> for the bug report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2007.09.07 (onken)
 
 - Added basic support for Extended Negotiation of User Identity.
