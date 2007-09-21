@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.107 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2007-09-21 10:40:18 $
+ *  CVS/RCS Revision: $Revision: 1.108 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,21 +143,21 @@ DcmItem::~DcmItem()
 // ********************************
 
 
-OFBool DcmItem::foundVR(char *atposition)
+OFBool DcmItem::foundVR(const Uint8* atposition)
 {
-    char c1 =  atposition[0];
-    char c2 = atposition[1];
+    const Uint8 c1 =  atposition[0];
+    const Uint8 c2 = atposition[1];
     OFBool valid = OFFalse;
 
     if (isalpha(c1) && isalpha(c2))
     {
-        char vrName[3];
+        Uint8 vrName[3];
         vrName[0] = c1;
         vrName[1] = c2;
         vrName[2] = '\0';
 
         /* is this VR name a standard VR descriptor */
-        DcmVR vr(vrName);
+        DcmVR vr( OFreinterpret_cast(const char*, &vrName[0] ) );
         valid = vr.isStandard();
     } else {
         /* cannot be a valid VR name since non-characters */
@@ -173,7 +173,7 @@ OFBool DcmItem::foundVR(char *atposition)
 E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 {
     E_TransferSyntax transferSyntax;
-    char tagAndVR[6];
+    Uint8 tagAndVR[6];
 
     /* read 6 bytes from the input stream (try to read tag and VR (data type)) */
     inStream.mark();
@@ -182,12 +182,12 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 
     /* create two tag variables (one for little, one for big */
     /* endian) in order to figure out, if there is a valid tag */
-    char c1 = tagAndVR[0];
-    char c2 = tagAndVR[1];
-    char c3 = tagAndVR[2];
-    char c4 = tagAndVR[3];
-    Uint16 t1 = OFstatic_cast(unsigned short, (c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
-    Uint16 t2 = OFstatic_cast(unsigned short, (c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
+    const Uint8 c1 = tagAndVR[0];
+    const Uint8 c2 = tagAndVR[1];
+    const Uint8 c3 = tagAndVR[2];
+    const Uint8 c4 = tagAndVR[3];
+    const Uint16 t1 = OFstatic_cast(unsigned short, (c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
+    const Uint16 t2 = OFstatic_cast(unsigned short, (c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
@@ -3427,7 +3427,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.107  2007-06-29 14:17:49  meichel
+** Revision 1.108  2007-09-21 10:40:18  onken
+** Changed foundVR() API and implementation to use Uint8* instead of char* to
+** avoid calls to isalpha() with negative arguments (undef. behaviour/assertion)
+**
+** Revision 1.107  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

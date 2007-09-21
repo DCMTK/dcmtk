@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2007-09-21 10:40:15 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -892,7 +892,7 @@ class DcmItem
                                   DcmStack &resultStack,         // inout
                                   OFBool searchIntoSub );        // in
 
-    OFBool foundVR(char *atposition);
+    OFBool foundVR(const Uint8* atposition);
 
     /// cache for private creator tags and names
     DcmPrivateTagCache privateCreatorCache;
@@ -949,7 +949,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.62  2007-06-29 14:17:49  meichel
+** Revision 1.63  2007-09-21 10:40:15  onken
+** Changed foundVR() API and implementation to use Uint8* instead of char* to
+** avoid calls to isalpha() with negative arguments (undef. behaviour/assertion)
+**
+** Revision 1.62  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **
