@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.09.28 (onken)
+
+- Fixed crash of network code when processing association requests without any
+  offered presentation contexts. Minor changes in source formatting.
+  Thanks to Jesper Bojesen <jbb@medical-insight.com> for the bug report and
+  suggested fix.
+  Affects: dcmnet/libsrc/dulconst.cc
+
 **** Changes from 2007.09.21 (onken)
 
 - Changed foundVR() API and implementation to use Uint8* instead of char* to

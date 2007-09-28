@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: onken $, $Date: 2007-09-07 08:49:29 $
+** Last Update:		$Author: onken $, $Date: 2007-09-28 13:15:45 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.18 $
+** Revision:		$Revision: 1.19 $
 ** Status:		$State: Exp $
 */
 
@@ -977,74 +977,74 @@ constructSCUSCPRoles(unsigned char type,
 		  DUL_ASSOCIATESERVICEPARAMETERS * params, LST_HEAD ** lst,
 		     unsigned long *rtnLength)
 {
-    DUL_PRESENTATIONCONTEXT
-	* presentationCtx;	/* Pointer to loop through presentation ctx */
-    PRV_SCUSCPROLE
-	* scuscpItem;
-    unsigned char
-        scuRole = 0,
-        scpRole = 0;
-    unsigned long
-        length;
+  /* Pointer to loop through presentation ctx */  
+  DUL_PRESENTATIONCONTEXT* presentationCtx;
+  PRV_SCUSCPROLE* scuscpItem;
+  unsigned char scuRole = 0, scpRole = 0;
+  unsigned long length;
 
-    *rtnLength = 0;
-    OFCondition cond = EC_Normal;
-    if (type == DUL_TYPEASSOCIATERQ) {
-	presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->requestedPresentationContext);
-	if (presentationCtx != NULL)
-	    (void) LST_Position(&params->requestedPresentationContext,
-				(LST_NODE*)presentationCtx);
-	while (presentationCtx != NULL) {
+  *rtnLength = 0;
+  OFCondition cond = EC_Normal;
+  if (type == DUL_TYPEASSOCIATERQ) 
+  {
+	  presentationCtx = params->requestedPresentationContext != NULL ?
+	    (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->requestedPresentationContext) :
+	    (DUL_PRESENTATIONCONTEXT*)NULL;
+  
+    if (presentationCtx != NULL)
+      (void) LST_Position(&params->requestedPresentationContext, (LST_NODE*)presentationCtx);
+	
+    while (presentationCtx != NULL) {
 	    if (presentationCtx->proposedSCRole != DUL_SC_ROLE_DEFAULT) {
-		scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
-		if (scuscpItem == NULL) return EC_MemoryExhausted;
-		if (presentationCtx->proposedSCRole == DUL_SC_ROLE_SCU) {
-		    scuRole = 1;
-		} else if (presentationCtx->proposedSCRole == DUL_SC_ROLE_SCP) {
-		    scpRole = 1;
-		} else {
-		    scuRole = scpRole = 1;
-		}
-		cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
-				       DUL_TYPESCUSCPROLE, scuRole, scpRole,
-					      scuscpItem, &length);
-		if (cond.bad())
-		    return cond;
-		*rtnLength += length;
-		cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
-                if (cond.bad()) return cond;
-	    }
-	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->requestedPresentationContext);
-	}
-    } else {
-	presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
-	if (presentationCtx != NULL)
-	    (void) LST_Position(&params->acceptedPresentationContext,
-				(LST_NODE*)presentationCtx);
-	while (presentationCtx != NULL) {
-	    if (presentationCtx->acceptedSCRole != DUL_SC_ROLE_DEFAULT) {
-		scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(*scuscpItem));
-		if (scuscpItem == NULL) return EC_MemoryExhausted;
-		if (presentationCtx->acceptedSCRole == DUL_SC_ROLE_SCU) {
-		    scuRole = 1;
-		} else if (presentationCtx->acceptedSCRole == DUL_SC_ROLE_SCP) {
-		    scpRole = 1;
-		} else {
-		    scuRole = scpRole = 1;
-		}
-		cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
-				       DUL_TYPESCUSCPROLE, scuRole, scpRole,
-					      scuscpItem, &length);
-		if (cond.bad())
-		    return cond;
-		*rtnLength += length;
-		cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
-		if (cond.bad()) return cond;
-	    }
-	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->acceptedPresentationContext);
-	}
+		    scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
+		    if (scuscpItem == NULL) return EC_MemoryExhausted;
+		    if (presentationCtx->proposedSCRole == DUL_SC_ROLE_SCU) {
+		      scuRole = 1;
+	 	    } else if (presentationCtx->proposedSCRole == DUL_SC_ROLE_SCP) {
+		      scpRole = 1;
+		    } else {
+		      scuRole = scpRole = 1;
+		    }
+		    cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
+			    DUL_TYPESCUSCPROLE, scuRole, scpRole,
+			    scuscpItem, &length);
+		    if (cond.bad())
+		      return cond;
+		    *rtnLength += length;
+		    cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
+        if (cond.bad()) return cond;
+      }
+	    presentationCtx = params->acceptedPresentationContext != NULL ?
+ 	      (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext) :
+ 	      (DUL_PRESENTATIONCONTEXT*)NULL;
     }
-    return EC_Normal;
+  } else {
+	  presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Head(&params->acceptedPresentationContext);
+	  if (presentationCtx != NULL)
+	    (void) LST_Position(&params->acceptedPresentationContext, (LST_NODE*)presentationCtx);
+	  while (presentationCtx != NULL) {
+	    if (presentationCtx->acceptedSCRole != DUL_SC_ROLE_DEFAULT) {
+		    scuscpItem = (PRV_SCUSCPROLE*)malloc(sizeof(*scuscpItem));
+		    if (scuscpItem == NULL) return EC_MemoryExhausted;
+		    if (presentationCtx->acceptedSCRole == DUL_SC_ROLE_SCU) {
+		      scuRole = 1;
+		    } else if (presentationCtx->acceptedSCRole == DUL_SC_ROLE_SCP) {
+		      scpRole = 1;
+		    } else {
+		      scuRole = scpRole = 1;
+        }
+		    cond = constructSCUSCPSubItem(presentationCtx->abstractSyntax,
+				  DUL_TYPESCUSCPROLE, scuRole, scpRole, scuscpItem, &length);
+		    if (cond.bad())
+		      return cond;
+		    *rtnLength += length;
+		    cond = LST_Enqueue(lst, (LST_NODE*)scuscpItem);
+		    if (cond.bad()) return cond;
+      }
+	    presentationCtx = (DUL_PRESENTATIONCONTEXT*)LST_Next(&params->acceptedPresentationContext);
+    }
+  }
+  return EC_Normal;
 }
 
 /* constructExtNeg
@@ -1526,7 +1526,11 @@ streamExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *b, unsig
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.18  2007-09-07 08:49:29  onken
+** Revision 1.19  2007-09-28 13:15:45  onken
+** Fixed crash of network code when processing association requests without any
+** offered presentation contexts. Minor changes in source formatting.
+**
+** Revision 1.18  2007/09/07 08:49:29  onken
 ** Added basic support for Extended Negotiation of User Identity.
 **
 ** Revision 1.17  2006/08/15 16:04:29  meichel
