@@ -32,7 +32,7 @@ with a particular transfer syntax.
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename to be dumped
+dcmfile-in  DICOM input file or directory to be dumped
 \endverbatim
 
 \section options OPTIONS
@@ -78,6 +78,22 @@ input transfer syntax:
 
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
+
+input files:
+
+  +sd  --scan-directories
+         scan directories for input files (dcmfile-in)
+
+  +sp  --scan-pattern  [p]attern : string (only with --scan-directories)
+         pattern for filename matching (wildcards)
+
+         # possibly not available on all systems
+
+  -r   --no-recurse
+         do not recurse within directories (default)
+
+  +r   --recurse
+         recurse within specified directories
 
 parsing of odd-length attributes:
 
