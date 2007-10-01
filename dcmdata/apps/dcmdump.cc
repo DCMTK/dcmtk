@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-09 14:58:31 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2007-10-01 16:52:38 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcistrmz.h"   /* for dcmZlibExpectRFC1950Encoding */
 
@@ -45,6 +46,10 @@
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
+#endif
+
+#if defined (HAVE_WINDOWS_H) || defined(HAVE_FNMATCH_H)
+#define PATTERN_MATCHING_AVAILABLE
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
@@ -125,9 +130,13 @@ int main(int argc, char *argv[])
     E_FileReadMode readMode = ERM_autoDetect;
     E_TransferSyntax xfer = EXS_Unknown;
     OFBool stopOnErrors = OFTrue;
-    const char *current = NULL;
+    OFBool scanDir = OFFalse;
+    OFBool recurse = OFFalse;
+    const char *scanPattern = NULL;
     const char *pixelDirectory = NULL;
-
+#ifdef USE_EXPERIMENTAL_QUIET_MODE
+    OFOStringStream errorStream;
+#endif
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -148,7 +157,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "DICOM input filename to be dumped", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dcmfile-in", "DICOM input file or directory to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -169,6 +178,14 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
         cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
+      cmd.addSubGroup("input files:");
+        cmd.addOption("--scan-directories",   "+sd",    "scan directories for input files (dcmfile-in)");
+#ifdef PATTERN_MATCHING_AVAILABLE
+        cmd.addOption("--scan-pattern",       "+sp", 1, "[p]attern : string (only with --scan-directories)",
+                                                        "pattern for filename matching (wildcards)");
+#endif
+        cmd.addOption("--no-recurse",         "-r",     "do not recurse within directories (default)");
+        cmd.addOption("--recurse",            "+r",     "recurse within specified directories");
       cmd.addSubGroup("parsing of odd-length attributes:");
         cmd.addOption("--accept-odd-length",  "+ao",    "accept odd length attributes (default)");
         cmd.addOption("--assume-even-length", "+ae",    "assume real length is one byte larger");
@@ -239,8 +256,9 @@ int main(int argc, char *argv[])
 #ifdef USE_EXPERIMENTAL_QUIET_MODE
       if (cmd.findOption("--quiet"))
       {
-        // tbd: disable ofConsole output!
         app.setQuietMode();
+        // redirect error output to a dummy stream
+        ofConsole.setCerr(&errorStream);
       }
 #endif
       if (cmd.findOption("--debug")) opt_debugMode = 5;
@@ -270,6 +288,23 @@ int main(int argc, char *argv[])
       {
         app.checkDependence("--read-xfer-implicit", "--read-dataset", readMode == ERM_dataset);
         xfer = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--scan-directories")) scanDir = OFTrue;
+#ifdef PATTERN_MATCHING_AVAILABLE
+      if (cmd.findOption("--scan-pattern"))
+      {
+        app.checkDependence("--scan-pattern", "--scan-directories", scanDir);
+        app.checkValue(cmd.getValue(scanPattern));
+      }
+#endif
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--no-recurse")) recurse = OFFalse;
+      if (cmd.findOption("--recurse"))
+      {
+        app.checkDependence("--recurse", "--scan-directories", scanDir);
+        recurse = OFTrue;
       }
       cmd.endOptionBlock();
 
@@ -355,10 +390,11 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--search", 0, OFCommandLine::FOM_First))
       {
+        const char *tagName = NULL;
         do
         {
-          app.checkValue(cmd.getValue(current));
-          if (!addPrintTagName(current)) return 1;
+          app.checkValue(cmd.getValue(tagName));
+          if (!addPrintTagName(tagName)) return 1;
         } while (cmd.findOption("--search", 0, OFCommandLine::FOM_Next));
       }
 
@@ -406,14 +442,42 @@ int main(int argc, char *argv[])
     }
 
     int errorCount = 0;
-    int count = cmd.getParamCount();
-    for (int i = 1; i <= count; i++)
+
+    /* create list of input files */
+    const char *paramString = NULL;
+    const int paramCount = cmd.getParamCount();
+    OFList<OFString> inputFiles;
+    /* iterate over all input filenames */
+    for (int i = 1; i <= paramCount; i++)
     {
-      cmd.getParam(i, current);
+      cmd.getParam(i, paramString);
+      /* search directory recursively (if required) */
+      if (OFStandard::dirExists(paramString))
+      {
+        if (scanDir)
+          OFStandard::searchDirectoryRecursively(paramString, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
+        else if (opt_debugMode)
+          CERR << "warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
+      } else
+        inputFiles.push_back(paramString);
+    }
+    /* check whether there are any input files at all */
+    if (inputFiles.empty())
+      app.printError("no input files to be dumped");
+
+    size_t i = 0;
+    const size_t count = inputFiles.size();
+    const char *current = NULL;
+    OFListIterator(OFString) if_iter = inputFiles.begin();
+    OFListIterator(OFString) if_last = inputFiles.end();
+    /* iterate over all input filenames */
+    while (if_iter != if_last)
+    {
+      current = (*if_iter++).c_str();
       if (printFilename)
       {
         /* a newline separates two consecutive "dumps" */
-        if (i > 1)
+        if (++i > 1)
             COUT << OFendl;
         /* print header with filename */
         COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl;
@@ -543,7 +607,11 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.58  2007-03-09 14:58:31  joergr
+ * Revision 1.59  2007-10-01 16:52:38  joergr
+ * Added support for searching directories recursively for DICOM files.
+ * Enhanced experimental quiet mode.
+ *
+ * Revision 1.58  2007/03/09 14:58:31  joergr
  * Fixed wrong output of status variable after calling loadFile().
  *
  * Revision 1.57  2006/08/15 15:50:56  meichel
