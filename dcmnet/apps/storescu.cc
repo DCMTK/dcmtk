@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-12 14:29:05 $
+ *  Update Date:      $Date: 2007-10-01 16:23:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,7 @@ static E_FileReadMode opt_readMode = ERM_autoDetect;
 
 static OFBool opt_scanDir = OFFalse;
 static OFBool opt_recurse = OFFalse;
-static const char *opt_pattern = NULL;
+static const char *opt_scanPattern = NULL;
 
 static OFBool opt_haltOnUnsuccessfulStore = OFTrue;
 static OFBool unsuccessfulStoreEncountered = OFFalse;
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
   cmd.setParamColumn(LONGCOL+SHORTCOL+4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
-  cmd.addParam("dcmfile-in", "DICOM file(s) or directories to be transmitted", OFCmdParam::PM_MultiMandatory);
+  cmd.addParam("dcmfile-in", "DICOM file or directory to be transmitted", OFCmdParam::PM_MultiMandatory);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
@@ -221,12 +221,12 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-dataset",         "-f",      "read data set without file meta information");
     cmd.addSubGroup("input files:");
       cmd.addOption("--scan-directories",     "+sd",     "scan directories for input files (dcmfile-in)");
-      cmd.addOption("--no-recurse",           "-r",      "do not recurse within directories (default)");
-      cmd.addOption("--recurse",              "+r",      "recurse within specified directories");
 #ifdef PATTERN_MATCHING_AVAILABLE
-      cmd.addOption("--pattern",              "+p",  1,  "[p]attern : string (only with --scan-directories)",
+      cmd.addOption("--scan-pattern",         "+sp",  1, "[p]attern : string (only with --scan-directories)",
                                                          "pattern for filename matching (wildcards)");
 #endif
+      cmd.addOption("--no-recurse",           "-r",      "do not recurse within directories (default)");
+      cmd.addOption("--recurse",              "+r",      "recurse within specified directories");
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
@@ -396,6 +396,13 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       if (cmd.findOption("--scan-directories")) opt_scanDir = OFTrue;
+#ifdef PATTERN_MATCHING_AVAILABLE
+      if (cmd.findOption("--scan-pattern"))
+      {
+        app.checkDependence("--scan-pattern", "--scan-directories", opt_scanDir);
+        app.checkValue(cmd.getValue(opt_scanPattern));
+      }
+#endif
       cmd.beginOptionBlock();
       if (cmd.findOption("--no-recurse")) opt_recurse = OFFalse;
       if (cmd.findOption("--recurse"))
@@ -404,13 +411,6 @@ int main(int argc, char *argv[])
         opt_recurse = OFTrue;
       }
       cmd.endOptionBlock();
-#ifdef PATTERN_MATCHING_AVAILABLE
-      if (cmd.findOption("--pattern"))
-      {
-        app.checkDependence("--pattern", "--scan-directories", opt_scanDir);
-        app.checkValue(cmd.getValue(opt_pattern));
-      }
-#endif
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
@@ -644,8 +644,8 @@ int main(int argc, char *argv[])
 #endif
 
       /* finally, create list of input files */
-      int paramCount = cmd.getParamCount();
       const char *paramString = NULL;
+      const int paramCount = cmd.getParamCount();
       OFList<OFString> inputFiles;
       if (opt_scanDir && opt_verbose)
         COUT << "determining input files ..." << OFendl;
@@ -657,7 +657,7 @@ int main(int argc, char *argv[])
         if (OFStandard::dirExists(paramString))
         {
           if (opt_scanDir)
-            OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_pattern, "" /*dirPrefix*/, opt_recurse);
+            OFStandard::searchDirectoryRecursively(paramString, inputFiles, opt_scanPattern, "" /*dirPrefix*/, opt_recurse);
           else if (opt_debug)
             CERR << "warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
         } else
@@ -1578,7 +1578,10 @@ findSOPClassAndInstanceInFile(
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.68  2007-03-12 14:29:05  joergr
+** Revision 1.69  2007-10-01 16:23:44  joergr
+** Renamed command line option --pattern (+p) to --scan-pattern (+sp).
+**
+** Revision 1.68  2007/03/12 14:29:05  joergr
 ** Added support for searching directories recursively for DICOM files.
 ** Added support for common "input file format" options.
 ** Consistently use COUT and CERR instead of stdout and stderr.
@@ -1831,4 +1834,3 @@ findSOPClassAndInstanceInFile(
 ** Initial Release.
 **
 */
-
