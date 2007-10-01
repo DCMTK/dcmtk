@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2006, OFFIS
+ *  Copyright (C) 2005-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Termination Service Class User (negotiates the private shutdown
  *           SOP class in order to shutdown server applications)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-10-01 16:21:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,11 +163,10 @@ int main( int argc, char *argv[] )
         app.printHeader( OFTrue );
         CERR << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-        CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+        CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
         CERR << " none" << OFendl;
 #endif
-
         return( 0 );
       }
     }
@@ -343,7 +342,10 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.6  2006-08-15 16:04:28  meichel
+** Revision 1.7  2007-10-01 16:21:26  joergr
+** Fixed layout issue with --version output.
+**
+** Revision 1.6  2006/08/15 16:04:28  meichel
 ** Updated the code in module dcmnet to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
