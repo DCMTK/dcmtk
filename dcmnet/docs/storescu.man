@@ -26,7 +26,7 @@ peer        hostname of DICOM peer
 
 port        tcp/ip port number of peer
 
-dcmfile-in  DICOM file(s) or directories to be transmitted
+dcmfile-in  DICOM file or directory to be transmitted
 \endverbatim
 
 \section options OPTIONS
@@ -67,16 +67,17 @@ input files:
   +sd   --scan-directories
           scan directories for input files (dcmfile-in)
 
+  +sp   --scan-pattern  [p]attern : string (only with --scan-directories)
+          pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
+
   -r    --no-recurse
           do not recurse within directories (default)
 
   +r    --recurse
           recurse within specified directories
 
-  +p    --pattern  [p]attern : string (only with --scan-directories)
-          pattern for filename matching (wildcards)
-
-          # possibly not available on all systems
 \endverbatim
 
 \subsection network_options network options
