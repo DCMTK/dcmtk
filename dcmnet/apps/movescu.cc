@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 14:51:27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2007-10-18 16:15:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,10 +157,11 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
 
     // try to parse group and element number
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
+    OFString toParse = s;
+    size_t eqPos = toParse.find('=');
     if (n < 2) {
       // try to parse dictionary name and value instead
-      OFString toParse = s;
-      size_t eqPos = toParse.find('=');
+
       if (eqPos != OFString_npos)
       {
         dicName = toParse.substr(0,eqPos).c_str();
@@ -187,7 +188,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
       }
     }
     else
-      valStr = val;
+      valStr = toParse.substr(eqPos+1,toParse.length());
     DcmTag tag(g,e);
     if (tag.error() != EC_Normal) {
         sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
@@ -1419,7 +1420,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.64  2007-02-19 14:51:27  meichel
+** Revision 1.65  2007-10-18 16:15:07  onken
+** - Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
+** tag-value combination if the value contained whitespace characters.
+**
+** Revision 1.64  2007/02/19 14:51:27  meichel
 ** Removed calls to DcmObject::error()
 **
 ** Revision 1.63  2006/08/15 16:04:28  meichel
