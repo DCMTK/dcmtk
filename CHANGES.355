@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.10.18 (onken)
+
+- Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
+  tag-value combination if the value contained whitespace characters.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/libsrc/dfindscu.cc
+
 **** Changes from 2007.10.01 (riesmeier)
 
 - Added support for searching directories recursively for DICOM files.
