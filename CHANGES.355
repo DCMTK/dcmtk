@@ -1,7 +1,12 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2007.10.18 (onken)
+**** Changes from 2007.10.19 (onken)
+
+- Fixed typo in debug output.
+  Affects: dcmnet/libsrc/assoc.cc
+
+**** Changes from 2007.10.19 (onken)
 
 - Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
   tag-value combination if the value contained whitespace characters.
