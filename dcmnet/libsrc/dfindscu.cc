@@ -22,9 +22,9 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2007-10-18 16:14:34 $
+ *  Update Date:      $Date: 2007-10-19 10:56:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,14 +165,15 @@ void DcmFindSCU::addOverrideKey(DcmDataset * & overrideKeys, OFConsoleApplicatio
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
     OFString toParse = s;
     size_t eqPos = toParse.find('=');
-    if (n < 2) {
-      // try to parse dictionary name and value instead
+    if (n < 2)  // if at least no tag could be parsed
+    { 
+      // if value is given, extract it (and extrect dictname)
       if (eqPos != OFString_npos)
       {
         dicName = toParse.substr(0,eqPos).c_str();
         valStr = toParse.substr(eqPos+1,toParse.length());
       }
-      else
+      else // no value given, just dictionary name
         dicName = s; // only dictionary name given (without value)
       // try to lookup in dictionary
       DcmTagKey key(0xffff,0xffff);
@@ -191,9 +192,12 @@ void DcmFindSCU::addOverrideKey(DcmDataset * & overrideKeys, OFConsoleApplicatio
         msg += dicName;
         app.printError(msg.c_str());
       }
-    }
+    } // tag could be parsed, copy value if it exists
     else
-      valStr = toParse.substr(eqPos+1,toParse.length());
+    {
+      if (eqPos != OFString_npos)
+        valStr = toParse.substr(eqPos+1,toParse.length());
+    }
     DcmTag tag(g,e);
     if (tag.error() != EC_Normal) {
         sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
@@ -662,7 +666,11 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
- * Revision 1.2  2007-10-18 16:14:34  onken
+ * Revision 1.3  2007-10-19 10:56:33  onken
+ * Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
+ * tag-value combination if the value contained whitespace characters.
+ *
+ * Revision 1.2  2007/10/18 16:14:34  onken
  * - Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
  * tag-value combination if the value contained whitespace characters.
  *
