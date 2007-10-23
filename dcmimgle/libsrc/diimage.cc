@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-10-23 16:53:04 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -761,8 +761,10 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
         /* write pixel data (OB or OW) */
         if (bitsStored <= 8)
             dataset.putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, pixel)), count);
-        else
+        else if (bitsStored <= 16)
             dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, pixel)), count);
+        else
+            dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, pixel)), count * 2 /*double-words*/);
         /* update other DICOM attributes */
         updateImagePixelModuleAttributes(dataset);
         result = 1;
@@ -868,7 +870,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.36  2006-08-15 16:30:11  meichel
+ * Revision 1.37  2007-10-23 16:53:04  joergr
+ * Fixed bug in writeFrameToDataset() for images with BitsAllocated = 32.
+ *
+ * Revision 1.36  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
