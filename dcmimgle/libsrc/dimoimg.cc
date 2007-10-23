@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:51:43 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2007-10-23 16:52:29 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2016,12 +2016,12 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
                 case EPR_Uint32:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 0);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count * 2 /*double-words*/);
                     break;
                 case EPR_Sint32:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 32);
                     dataset.putAndInsertUint16(DCM_PixelRepresentation, 1);
-                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count);
+                    dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(const Uint16 *, pixel), count * 2 /*double-words*/);
                     break;
             }
             dataset.putAndInsertUint16(DCM_BitsStored, bits);
@@ -2134,7 +2134,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.68  2007-03-16 11:51:43  joergr
+ * Revision 1.69  2007-10-23 16:52:29  joergr
+ * Fixed bug in writeImageToDataset() for images with BitsAllocated = 32.
+ *
+ * Revision 1.68  2007/03/16 11:51:43  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
  *
