@@ -289,7 +289,7 @@ Changes between releases are documented here.
 
 - Fixed compilation for Mac OS X with making large file support function calls
   implicit for this OS (Mac OS X misleadingly defines _LARGEFILE64_SOURCE).
-  Thanks to Jeff Solomon (DCMTK forum) for the bug report.
+  Thanks to Jeff Solomon <jsolomon@medicalnumerics.com> for the bug report.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
 **** Changes from 2007.05.24 (onken)
@@ -409,7 +409,8 @@ Changes between releases are documented here.
 **** Changes from 2007.02.21 (eichelberg)
 
 - Increased output precision to 17 (DBL_DIG+2) when converting an FD element to
-  string. Thanks to Forum user Niels Dekker (LUMC) for the suggestion.
+  string.
+  Thanks to Niels Dekker <dicomrelatedmail@xs4all.nl> for the suggestion.
   Affects: dcmdata/libsrc/dcvrfd.cc
 
 **** Changes from 2007.02.20 (riesmeier)
@@ -685,7 +686,8 @@ Changes between releases are documented here.
 
 - Fixed possible program crash when processing multi-frame overlay data stored
   in data element OverlayData (60xx,3000).
-  Thanks to cfremgen <c.fremgen@icoserve.com> for the bug report and fix.
+  Thanks to Christian Fremgen <c.fremgen@icoserve.com> for the bug report and
+  fix.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diovpln.h
 
 - Added private tags from Siemens AXIOM Artis VB30 conformance statement.
@@ -1470,7 +1472,7 @@ Changes between releases are documented here.
 **** Changes from 2006.07.24 (eichelberg)
 
 - Fixed memory leak in private tag lookup cache.
-  Thanks for DCMTK forum user <Maggele> for reporting this bug.
+  Thanks for Markus Erbacher <markus.erbacher@gmx.de> for reporting this bug.
   Affects: dcmdata/libsrc/dcpcache.cc
 
 **** Changes from 2006.07.19 (riesmeier)
@@ -1862,7 +1864,7 @@ Changes between releases are documented here.
 **** Changes from 2006.04.05 (riesmeier)
 
 - Fixed issue with initialization of OFString member variables.
-  Thanks to Aaron1 <Yibing_d@163.com> for the report.
+  Thanks to DCMTK Forum user Aaron1 <Yibing_d@163.com> for the report.
   Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbg.h
            dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h
 
@@ -1891,13 +1893,14 @@ Changes between releases are documented here.
 **** Changes from 2006.03.23 (riesmeier)
 
 - Added missing fclose() statement at the end of main().
-  Thanks to ecoto <ecoto@tutopia.com> for the bug report and suggested fix.
+  Thanks to DCMTK Forum user ecoto <ecoto@tutopia.com> for the bug report and
+  suggested fix.
   Affects: dcmdata/apps/dump2dcm.cc
 
 **** Changes from 2006.03.23 (eichelberg)
 
 - Fixed Win32 multi-process SCP code to also work correctly on Windows 2000.
-  Thanks to Colby Dillion for the bug fix.
+  Thanks to Colby Dillion <colby.dillion@gmail.com> for the bug fix.
   Affects: dcmnet/libsrc/dul.cc
 
 **** Changes from 2006.03.17 (riesmeier)
