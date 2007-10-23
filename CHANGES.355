@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.10.23 (riesmeier)
+
+- Fixed bug in writeImageToDataset() for images with BitsAllocated = 32.
+  Thanks to Christian Fremgen <christian.fremgen@ith-icoserve.com> for the bug
+  report.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Fixed bug in writeFrameToDataset() for images with BitsAllocated = 32.
+  Affects: dcmimgle/libsrc/diimage.cc
+
 **** Changes from 2007.10.19 (onken)
 
 - Fixed typo in debug output.
@@ -8,8 +18,9 @@ Changes between releases are documented here.
 
 **** Changes from 2007.10.19 (onken)
 
-- Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
+- Fixed bug in addOverrideKey() that caused problems when parsing a value in a
   tag-value combination if the value contained whitespace characters.
+  Thanks to Paul Wijntjes <paul.wijntjes@med.ge.com> for the bug report.
   Affects: dcmnet/apps/movescu.cc
            dcmnet/libsrc/dfindscu.cc
 
