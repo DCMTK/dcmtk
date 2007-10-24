@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-10-01 16:52:38 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2007-10-24 17:13:33 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,6 +75,8 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
 // ********************************************
 
+static OFBool printFilename = OFFalse;
+static OFBool printFileSearch = OFFalse;
 static OFBool printAllInstances = OFTrue;
 static OFBool prependSequenceHierarchy = OFFalse;
 static int printTagCount = 0;
@@ -82,6 +84,7 @@ static const int MAX_PRINT_TAG_NAMES = 1024;
 static const char *printTagNames[MAX_PRINT_TAG_NAMES];
 static const DcmTagKey *printTagKeys[MAX_PRINT_TAG_NAMES];
 static OFCmdUnsignedInt maxReadLength = 4096; // default is 4 KB
+static size_t fileCounter = 0;
 
 static OFBool addPrintTagName(const char *tagName)
 {
@@ -125,7 +128,6 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
     size_t printFlags = DCMTypes::PF_shortenLongTagValues /*| DCMTypes::PF_showTreeStructure*/;
-    OFBool printFilename = OFFalse;
     OFBool writePixelData = OFFalse;
     E_FileReadMode readMode = ERM_autoDetect;
     E_TransferSyntax xfer = EXS_Unknown;
@@ -213,6 +215,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-all",          "+L",     "print long tag values completely");
         cmd.addOption("--print-short",        "-L",     "print long tag values shortened (default)");
         cmd.addOption("--print-filename",     "+F",     "print header with filename for each input file");
+        cmd.addOption("--print-file-search",  "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
 
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",      "-E",     "do not print if file is damaged (default)");
@@ -380,8 +383,18 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--print-short")) printFlags |= DCMTypes::PF_shortenLongTagValues;
       cmd.endOptionBlock();
 
+      cmd.beginOptionBlock();
       if (cmd.findOption("--print-filename"))
+      {
         printFilename = OFTrue;
+        printFileSearch = OFFalse;
+      }
+      if (cmd.findOption("--print-file-search"))
+      {
+        printFileSearch = OFTrue;
+        printFilename = OFFalse;
+      }
+      cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
@@ -397,6 +410,9 @@ int main(int argc, char *argv[])
           if (!addPrintTagName(tagName)) return 1;
         } while (cmd.findOption("--search", 0, OFCommandLine::FOM_Next));
       }
+
+      if (printFileSearch)
+        app.checkDependence("--print-file-search", "--search", printTagCount > 0);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--search-all"))
@@ -465,7 +481,6 @@ int main(int argc, char *argv[])
     if (inputFiles.empty())
       app.printError("no input files to be dumped");
 
-    size_t i = 0;
     const size_t count = inputFiles.size();
     const char *current = NULL;
     OFListIterator(OFString) if_iter = inputFiles.begin();
@@ -477,10 +492,10 @@ int main(int argc, char *argv[])
       if (printFilename)
       {
         /* a newline separates two consecutive "dumps" */
-        if (++i > 1)
-            COUT << OFendl;
+        if (++fileCounter > 1)
+          COUT << OFendl;
         /* print header with filename */
-        COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl;
+        COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << fileCounter << "/" << count << "): " << current << OFendl;
       }
       errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors,
         writePixelData, pixelDirectory);
@@ -504,18 +519,17 @@ static void printResult(STD_NAMESPACE ostream &out, DcmStack &stack, size_t prin
              * very helpful to distinguish instances.
              */
             if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
-                char buf[512];
-                sprintf(buf, "(%x,%x).",
-                    OFstatic_cast(unsigned, dobj->getGTag()),
-                    OFstatic_cast(unsigned, dobj->getETag()));
-                out << buf;
+                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                    << "(" << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getGTag())
+                    << "," << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getETag())
+                    << ")." << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
             }
         }
     }
 
     /* print the tag and its value */
     DcmObject *dobj = stack.top();
-    dobj->print(out, printFlags);
+    dobj->print(out, printFlags, 1 /*level*/);
 }
 
 static int dumpFile(STD_NAMESPACE ostream &out,
@@ -569,6 +583,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
         } else
             dset->print(out, printFlags);
     } else {
+        OFBool firstTag = OFTrue;
         /* only print specified tags */
         for (int i = 0; i < printTagCount; i++)
         {
@@ -590,6 +605,19 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             DcmStack stack;
             if (dset->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
             {
+                if (firstTag)
+                {
+                    if (!printFilename)
+                    {
+                        /* a newline separates two consecutive "dumps" */
+                        if (++fileCounter > 1)
+                            COUT << OFendl;
+                    }
+                    /* print header with filename */
+                    if (printFileSearch)
+                        COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << fileCounter << "): " << ifname << OFendl;
+                    firstTag = OFFalse;
+                }
                 printResult(out, stack, printFlags);
                 if (printAllInstances)
                 {
@@ -607,7 +635,14 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.59  2007-10-01 16:52:38  joergr
+ * Revision 1.60  2007-10-24 17:13:33  joergr
+ * Added new command line option which prints a header with the filename only
+ * for those input files that contain one of the searched tags.
+ * Fixed small layout and formatting issues in the dump output (missing
+ * indentation and leading zeros).
+ * Replaced sprintf() call by an appropriate use of the C++ stream manipulators.
+ *
+ * Revision 1.59  2007/10/01 16:52:38  joergr
  * Added support for searching directories recursively for DICOM files.
  * Enhanced experimental quiet mode.
  *
