@@ -157,7 +157,11 @@ printing:
   +F   --print-filename
          print header with filename for each input file
 
-error handling:
+  +Fs  --print-file-search
+         print header with filename only for those input files
+         that contain one of the searched tags
+
+ error handling:
 
   -E   --stop-on-error
          do not print if file is damaged (default)
@@ -235,7 +239,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

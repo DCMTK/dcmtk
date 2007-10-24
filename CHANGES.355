@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.10.24 (riesmeier)
+
+- Added new command line option which prints a header with the filename only
+  for those input files that contain one of the searched tags.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
+- Fixed small layout and formatting issues in the dump output (missing
+  indentation and leading zeros).
+  Affects: dcmdata/apps/dcmdump.cc
+
+- Replaced sprintf() call by an appropriate use of the C++ stream manipulators.
+  Affects: dcmdata/apps/dcmdump.cc
+
 **** Changes from 2007.10.23 (riesmeier)
 
 - Fixed bug in writeImageToDataset() for images with BitsAllocated = 32.
