@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.10.25 (riesmeier)
+
+- Removed short option -P for --no-port since this string is already used for
+  the patient root information model (--patient).
+  Thanks to Anibal Jodorcovsky <anibal@intelerad.com> for the report.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/docs/movescu.man
+
 **** Changes from 2007.10.24 (riesmeier)
 
 - Added new command line option which prints a header with the filename only

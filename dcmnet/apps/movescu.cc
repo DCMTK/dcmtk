@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2007-10-19 11:52:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-10-25 10:08:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     OFString toParse = s;
     size_t eqPos = toParse.find('=');
     if (n < 2)  // if at least no tag could be parsed
-    { 
+    {
       // if value is given, extract it (and extrect dictname)
       if (eqPos != OFString_npos)
       {
@@ -316,7 +316,7 @@ main(int argc, char *argv[])
       cmd.addOption("--access-control",      "+ac",     "enforce host access control rules");
 #endif
     cmd.addSubGroup("port for incoming network associations:");
-      cmd.addOption("--no-port",             "-P",      "no port for incoming associations (default)");
+      cmd.addOption("--no-port",                        "no port for incoming associations (default)");
       cmd.addOption("--port",                "+P",   1, "[n]umber: integer",
                                                         "port number for incoming associations");
     cmd.addSubGroup("handling of illegal datasets following 'pending' move responses:");
@@ -1423,7 +1423,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.66  2007-10-19 11:52:09  onken
+** Revision 1.67  2007-10-25 10:08:22  joergr
+** Removed short option -P for --no-port since this string is already used for
+** the patient root information model (--patient).
+**
+** Revision 1.66  2007/10/19 11:52:09  onken
 ** *** empty log message ***
 **
 ** Revision 1.65  2007/10/18 16:15:07  onken
@@ -1684,4 +1688,3 @@ cmove(T_ASC_Association * assoc, const char *fname)
 **
 **
 */
-

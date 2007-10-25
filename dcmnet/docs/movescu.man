@@ -140,7 +140,7 @@ network host access control (tcp wrapper) options:
 
 port for incoming network associations:
 
-  -P    --no-port
+        --no-port
           no port for incoming associations (default)
 
   +P    --port  [n]umber: integer
@@ -522,7 +522,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
