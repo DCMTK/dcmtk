@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2007-10-31 14:16:40 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -983,7 +983,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         requestedDecimateCropBehavior = *((DcmCodeString *)(stack.top()));
 
         OFString theBehaviour;
-        polarity.getOFString(theBehaviour, 0, OFTrue);
+        requestedDecimateCropBehavior.getOFString(theBehaviour, 0, OFTrue);
         if ((theBehaviour != "DECIMATE")&&(theBehaviour != "CROP")&&(theBehaviour != "FAIL"))
         {
           if (verboseMode)
@@ -1551,7 +1551,11 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.34  2006-08-15 16:57:02  meichel
+ *  Revision 1.35  2007-10-31 14:16:40  meichel
+ *  Fixed bug in DICOMscope support code that caused the Print SCU to send
+ *    wrong values for Decimate/Crop Behavior.
+ *
+ *  Revision 1.34  2006/08/15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

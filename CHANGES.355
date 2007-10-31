@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.10.31 (eichelberg)
+
+- Fixed bug in DICOMscope support code that caused the Print SCU to send
+  wrong values for Decimate/Crop Behavior.
+  Thanks to Keith Bailey <keith.bailey@kodak.com> for the report.
+
 **** Changes from 2007.10.25 (riesmeier)
 
 - Removed short option -P for --no-port since this string is already used for
