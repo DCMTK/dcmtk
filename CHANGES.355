@@ -6,6 +6,7 @@ Changes between releases are documented here.
 - Fixed bug in DICOMscope support code that caused the Print SCU to send
   wrong values for Decimate/Crop Behavior.
   Thanks to Keith Bailey <keith.bailey@kodak.com> for the report.
+  Affects: dcmpstat/libsrc/dvpsib.cc
 
 **** Changes from 2007.10.25 (riesmeier)
 
@@ -125,8 +126,8 @@ Changes between releases are documented here.
 
 **** Changes from 2007.08.10 (eichelberg)
 
-- Added new command line option --keep-char-set that returns
-  any specific character set as encoded in the worklist file.
+- Added new command line option --keep-char-set that returns any specific
+  character set as encoded in the worklist file.
   Thanks to Steffen Benndorf <steffen.benndorf@siemens.com> for the suggestion.
   Affects: dcmwlm/apps/wlcefs.cc
            dcmwlm/docs/wlmscpfs.man
@@ -814,8 +815,8 @@ Changes between releases are documented here.
   Affects: ofstd/tests/Makefile.dep
            ofstd/tests/Makefile.in
 
-- Updated code to correctly compile when
-  all standard C++ classes remain in namespace std.
+- Updated code to correctly compile when all standard C++ classes remain in
+  namespace std.
   Affects: ofstd/libsrc/ofcmdln.cc
 
 **** Changes from 2006.08.16 (eichelberg)
@@ -1796,7 +1797,7 @@ Changes between releases are documented here.
 - Added missing name to list of acknowledgements for release 3.5.4
   Affects: ANNOUNCE.354
 
-- Slightly improved wording
+- Slightly improved wording.
   Affects: INSTALL
 
 - Updated configure test AC_CHECK_POINTER_TYPE to use a static_cast if
@@ -1806,7 +1807,7 @@ Changes between releases are documented here.
            config/configure
            config/configure.in
 
-- Removed DOS line end character
+- Removed DOS line end character.
   Affects: config/include/dcmtk/config/cfunix.h.in
 
 - Sample configuration file for storescp now prefers MPEG transfer syntax over
