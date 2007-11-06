@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:49:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-06 15:24:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,11 +349,11 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
 // Return Value : none.
 {
   // Be aware of the following remark: the DICOM standard specifies in part 4, section C.2.2.2.6
-  // that if a search mask contains a sequence attribute which contains no item or a single empty item,
-  // all attributes from that particular sequence are in fact queried and shall be returned by the SCP.
+  // that if a search mask contains a sequence attribute which contains a single empty item, all
+  // attributes from that particular sequence are in fact queried and shall be returned by the SCP.
   // This implementation accounts for this specification by expanding the search mask correspondingly.
 
-  char msg[200];
+  char msg[255];
   DcmElement *elem = NULL;
 
   // determine current element's tag
@@ -369,6 +369,12 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
     // contains exactly one empty item
     if( element->getLength() == 0 || ( sequenceElement->card() == 1 && sequenceElement->getItem(0)->card() == 0 ) )
     {
+      // an empty sequence is not allowed in a C-FIND request
+      if (element->getLength() == 0)
+      {
+        sprintf( msg, "Warning: Empty sequence %s within the query encountered.\n  Treating as if an empty item within the sequence has been sent.", tag.getTagName() );
+        DumpMessage( msg );
+      }
       // if this is the case, we need to check the value of a variable
       // which pertains to a certain command line option
       if( noSequenceExpansion == OFFalse )
@@ -389,7 +395,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         // we want to dump an error message and we want to increase the corresponding counter.
         PutOffendingElements(tag);
         errorComment->putString("More than 1 item in sequence.");
-        sprintf( msg, "Error: More than one item in sequence %s within the query encountered.\nDiscarding all items except for the first one.", tag.getTagName() );
+        sprintf( msg, "Error: More than one item in sequence %s within the query encountered.\n  Discarding all items except for the first one.", tag.getTagName() );
         DumpMessage( msg );
         invalidMatchingKeyAttributeCount++;
 
@@ -697,7 +703,7 @@ OFBool WlmDataSource::CheckMatchingKey( const DcmElement *elem )
         errorComment->putString("Invalid value for an attribute of datatype DA");
         ok = OFFalse;
       }
-      else 
+      else
         return OFTrue;
 
     case EVR_TM:
@@ -801,9 +807,9 @@ OFBool WlmDataSource::IsValidDateOrDateRange( const OFString& value )
 // Return Value : OFTrue  - The given value is a valid date or date range.
 //                OFFalse - The given value is not a valid date or date range.
 {
-  // create new string without leading or trailing blanks  
+  // create new string without leading or trailing blanks
   OFString dateRange = DeleteLeadingAndTrailingBlanks( value );
-  
+
   if (dateRange.length() == 0)
     return OFFalse;
 
@@ -834,9 +840,9 @@ OFBool WlmDataSource::IsValidDateOrDateRange( const OFString& value )
       // in this case the hyphen occurs somewhere in between beginning and end; hence there are two date values
       // which have to be checked for validity. Determine where the hyphen occurs exactly
       // check both dates for validity
-      if( IsValidDate( dateRange.substr(0, dateRange.length()-hyphen-1 )) && 
+      if( IsValidDate( dateRange.substr(0, dateRange.length()-hyphen-1 )) &&
           IsValidDate( dateRange.substr(        hyphen + 1             )) )
-      {   
+      {
         isValidDateRange = OFTrue;
       }
     }
@@ -865,11 +871,11 @@ OFBool WlmDataSource::IsValidDate( const OFString& value )
 //                OFFalse - Date is not valid.
 {
   int year=0, month=0, day=0;
-  
+
   // create new string without leading or trailing blanks
   OFString date = DeleteLeadingAndTrailingBlanks( value );
   // check parameter
-  
+
   if( value.length() == 0 )
     return( OFFalse );
 
@@ -942,7 +948,7 @@ OFBool WlmDataSource::IsValidTimeOrTimeRange( const OFString& value )
       // which have to be checked for validity.
 
       // check both times for validity
-      if( IsValidTime( timeRange.substr(0, timeRange.length() - hyphen -1 )) && 
+      if( IsValidTime( timeRange.substr(0, timeRange.length() - hyphen -1 )) &&
           IsValidTime( timeRange.substr( hyphen + 1 )                     ))
         return OFTrue;
     }
@@ -1096,7 +1102,7 @@ OFString WlmDataSource::DeleteLeadingAndTrailingBlanks( const OFString& value )
 {
   OFString returnValue = value;
   size_t pos = 0;
-  
+
   // delete leading blanks
   while ( (returnValue.length() > 0) && (returnValue[pos] == ' ') )
     pos++; // count blanks
@@ -1109,13 +1115,13 @@ OFString WlmDataSource::DeleteLeadingAndTrailingBlanks( const OFString& value )
     pos--;
   if (pos < returnValue.length() -1)
     returnValue.erase(pos);
-  
+
   return returnValue;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSource::GetStringValue( const DcmElement *elem, 
+OFBool WlmDataSource::GetStringValue( const DcmElement *elem,
                                       OFString& resultVal )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
@@ -1128,7 +1134,7 @@ OFBool WlmDataSource::GetStringValue( const DcmElement *elem,
 // Return Value : OFTrue if string value could be accessed, OFFalse else
 {
   DcmElement *elemNonConst = OFconst_cast(DcmElement*, elem);
-  OFCondition result = elemNonConst->getOFStringArray( resultVal ); 
+  OFCondition result = elemNonConst->getOFStringArray( resultVal );
   if (result.bad() || resultVal.length() == 0)
     return OFFalse;
   return OFTrue;
@@ -1501,7 +1507,10 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.21  2006-12-15 14:49:28  onken
+** Revision 1.22  2007-11-06 15:24:07  joergr
+** Report warning message if a query contains an empty sequence (without item).
+**
+** Revision 1.21  2006/12/15 14:49:28  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.
 **
