@@ -1,0 +1,99 @@
+
+################################################################################
+# IMG2DCM TEMPLATE FOR WRITING SECONDARY CAPTURE OBJECTS                       #
+# SOP Class: 1.2.840.10008.5.1.4.1.1.7 (SC)                                    #
+################################################################################
+# Type 1:  Value MUST be filled in                                             #
+# Type 1C: Value MUST be filled in if known, if certain condition (see         #
+#          standard) is fullfilled, otherwise DO NOT insert                    #
+# Type 2:  Value MUST be filled in if known, MUST be left empty otherwise      #
+# Type 2C: Same as 2, if a certain condition (see standard) is met. If the     #
+#          condition is not met, DO NOT insert                                 #
+# Type 3:  User optional, CAN be written (if it should not, delete line).      #
+#          The value written can be choosen freely, but has to conform to      #
+#          element's VR (see standard)                                         #
+################################################################################
+
+########################### Patient Module #####################################
+
+# Patient's Name, Type 2
+(0010,0010) PN []
+
+# Patient ID, Type 2
+(0010,0020) LO []
+
+# Patient's Birth Date, Type 2
+(0010,0030) DA []
+
+# Patient's Sex, Type 2
+(0010,0040) CS []
+
+# Responsible Organization, Type 2C (only included if patient is animal...)
+# (0010,2299) LO []
+
+########################### General Study Module ##############################
+#    All attributes from the General Study Module are overwritten by the      #
+#    --study-from and series-from options                                     #
+###############################################################################
+
+# Study Date, Type 2
+(0008,0020) DA []
+
+# Study Time, Type 2
+(0008,0030) TM []
+
+# Accession Number, Type 2
+(0008,0050) SH []
+
+# Referring Physician's Name, Type 2
+(0008,0090) PN []
+
+# Study ID, Type 2
+(0020,0010) SH []
+
+# Study Instance UID, Type 1, usually provided automatically (newly created)
+#(0020,000d) UI []
+
+########################### General Series Module ##############################
+#    All attributes from the General Series Module are overwritten by the      #
+#    --series-from option                                                      #
+################################################################################
+
+# Patient Position, Type 2C
+(0018,5100) CS (no value available)
+
+# Series Instance UID, Type 1, usually provided automatically (newly created)
+# (0020,000e) UI []
+
+# Series Number, Type 2
+(0020,0011) IS []
+
+# Laterality, Type 2C
+# (0020,0060) CS (no value available)
+
+###################### SC Equipment Module #####################################
+
+# Conversion Type, Type 1, Defined Terms, see Standard (SI=Scanned Image)
+(0008,0064) CS [SI]
+
+###################### General Image Module ####################################
+
+# Content Date, Type 2C
+#(0008,0023) DA []
+
+# Instance Number, Type 2
+(0020,0013) IS []
+
+# Patient Orientation, Type 2C
+(0020,0020) CS (no value available)
+
+###################### Image Pixel Module ######################################
+#         The Image Pixel Module is written by the img2dcm application         #
+################################################################################
+
+########################### SOP Common Module ##################################
+
+# Specific Character Set, Type 1C.
+# "ISO_IR 100" should be used if ISO Latin 1 characters could/are used in file
+# If only plain ASCII is used, this line could (but does not have to) be deleted
+(0008,0005) CS [ISO_IR 100]

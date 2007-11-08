@@ -2,7 +2,6 @@
 #	Makefile for dcmdata/etc
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -12,10 +11,16 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+files = SC.dump VLP.dump
+
 
 all:
 
 install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(etcdir)
+	for file in $(files); do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(etcdir) ;\
+	done
 
 clean:
 	rm -f $(TRASH)
