@@ -55,6 +55,7 @@ install-lib: $(library)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
 	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
 	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
+	(cd i2dlib && $(MAKE) ARCH="$(ARCH)" install-lib)
 
 install-support: $(DICTFILE) $(PRIVDICTFILE)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
@@ -70,6 +71,7 @@ install-support: $(DICTFILE) $(PRIVDICTFILE)
 $(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
+	(cd i2dlib && $(MAKE) ARCH="$(ARCH)" all)
 
 mkdeftag: mkdeftag.o $(dictobjs) cmdlnarg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
@@ -103,14 +105,17 @@ nobuiltindict:
 
 clean:
 	rm -f $(support_progs) $(support_objs) $(objs) $(library) $(TRASH)
+	(cd i2dlib && $(MAKE) clean)
 
 distclean: nobuiltindict clean
 	rm -f $(DISTTRASH)
+	(cd i2dlib && $(MAKE) distclean)
 
 
 # Dependencies
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+	(cd i2dlib && touch $(DEP) && $(MAKE) dependencies)
 
 include $(DEP)

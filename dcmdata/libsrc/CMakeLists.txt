@@ -4,3 +4,5 @@ ADD_LIBRARY(dcmdata cmdlnarg dcbytstr dcchrstr dccodec dcdatset dcddirif dcdebug
 # declare installation files
 INSTALL_TARGETS(${INSTALL_LIBDIR} dcmdata)
 INSTALL_FILES(${INSTALL_DATDIR} FILES dicom.dic private.dic)
+
+SUBDIRS(i2dlib)

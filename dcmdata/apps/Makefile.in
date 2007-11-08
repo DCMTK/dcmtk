@@ -16,15 +16,16 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 
 LOCALINCLUDES = -I$(ofstddir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc
+LIBDIRS = -L$(top_srcdir)/libsrc/i2dlib/ -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
+LIBI2D = -li2dlib
 
 objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o \
-	pdf2dcm.o dcm2pdf.o
+	pdf2dcm.o dcm2pdf.o img2dcm.o
 
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
-	dcmdrle dcmodify pdf2dcm dcm2pdf
+	dcmdrle dcmodify pdf2dcm dcm2pdf img2dcm
 
 support = dcm2xml.dtd dumppat.txt
 
@@ -67,6 +68,9 @@ pdf2dcm: pdf2dcm.o
 
 dcm2pdf: dcm2pdf.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+img2dcm: img2dcm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LIBI2D) $(LOCALLIBS) $(MATHLIBS) $(LIBS)	
 
 install: install-bin install-support
 
