@@ -38,7 +38,7 @@
 I2DOutputPlugSC::I2DOutputPlugSC()
 {
   if (m_debug)
-    COUT << "I2DOutputPlugSC: Output plugin for Secondary Capture (deprecated) initialized" << OFendl;
+    COUT << "I2DOutputPlugSC: Output plugin for Secondary Capture initialized" << OFendl;
 }
 
 
@@ -81,7 +81,10 @@ I2DOutputPlugSC::~I2DOutputPlugSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.cc,v $
- * Revision 1.1  2007-11-08 15:55:17  onken
+ * Revision 1.2  2007-11-08 18:08:58  onken
+ * *** empty log message ***
+ *
+ * Revision 1.1  2007/11/08 15:55:17  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *

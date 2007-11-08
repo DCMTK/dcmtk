@@ -180,7 +180,7 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
 
 static void addCmdLineOptions(OFCommandLine& cmd)
 {
-  cmd.addParam("imgfile-in",   "Image input filename");
+  cmd.addParam("imgfile-in",   "image input filename");
   cmd.addParam("dcmfile-out",  "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
@@ -192,27 +192,27 @@ static void addCmdLineOptions(OFCommandLine& cmd)
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general input options:");
       cmd.addOption("--input-format",            "-i",1,  "[i]nput file format: string","supported formats: JPEG (default)");
-      cmd.addOption("--dataset-from", "-df", 1,  "[f]ilename : string",
-                                                   "use dataset from DICOM file f");
+      cmd.addOption("--dataset-from", "-df", 1,  "[f]ilename: string",
+                                                 "use dataset from DICOM file f");
 
-      cmd.addOption("--study-from",   "-stf", 1, "[f]ilename : string",
-                                                   "read patient/study from DICOM file f");
-      cmd.addOption("--series-from",  "-sef", 1, "[f]ilename : string",
-                                                   "read patient/study/series from DICOM file f");
+      cmd.addOption("--study-from",   "-stf", 1, "[f]ilename: string",
+                                                 "read patient/study from DICOM file f");
+      cmd.addOption("--series-from",  "-sef", 1, "[f]ilename: string",
+                                                 "read patient/study/series from DICOM file f");
       cmd.addOption("--instance-inc", "-ii",     "incr. instance number read from DICOM file");
     cmd.addSubGroup("JPEG input options:");
       cmd.addOption("--disable-progr", "-dp",     "disable support for progressive JPEG");
       cmd.addOption("--disable-ext",   "-de",     "disable support for extended sequential JPEG");
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--no-checks",      "Disable attribute validity checking");
+     cmd.addOption("--no-checks",                 "disable attribute validity checking");
      cmd.addOption("--key",               "-k",   1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
-                                                       "add further attribute");
+                                                     "add further attribute");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("target SOP class:");
       cmd.addOption("--vl-photo",            "-vlp",   "write Visible Light Photo SOP class (default)");
-      cmd.addOption("--sec-capture",         "-sc",    "write Secondary Capture SOP class (depr.)");
+      cmd.addOption("--sec-capture",         "-sc",    "write Secondary Capture SOP class");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",          "+F",     "write file format (default)");
       cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
@@ -226,7 +226,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
       cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
-                                                         "align file on multiple of f bytes\nand items on multiple of i bytes");
+                                                       "align file on multiple of f bytes\nand items on multiple of i bytes");
 }
 
 
@@ -270,7 +270,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   // Write only pure dataset, i.e. without meta header
   OFBool writeOnlyDataset = OFFalse;
   // Override keys are applied at the very end of the conversion "pipeline"
-  DcmDataset *overrideKeys;
+  DcmDataset *overrideKeys = NULL;
   // The transfersytanx proposed to be written by output plugin
   E_TransferSyntax writeXfer;
 
@@ -387,6 +387,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
       app.checkValue(cmd.getValue(ovKey));
       addOverrideKey(overrideKeys, app, ovKey);
     } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
+    i2d.setOverrideKeys(overrideKeys);
   }
 
   if (cmd.findOption("--no-checks"))
@@ -459,7 +460,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
- * Revision 1.1  2007-11-08 16:00:34  onken
+ * Revision 1.2  2007-11-08 18:08:56  onken
+ * *** empty log message ***
+ *
+ * Revision 1.1  2007/11/08 16:00:34  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *
