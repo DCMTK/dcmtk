@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:44:12 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,7 +159,7 @@ OFBool DSRDocument::isFinalized() const
 }
 
 
-OFCondition DSRDocument::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocument::print(STD_NAMESPACE ostream &stream,
                                const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
@@ -946,7 +946,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
                                   const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
@@ -1146,13 +1146,12 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream& stream,
 }
 
 
-void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream& stream,
+void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream &stream,
                                         const size_t flags)
 {
     OFString tmpString, string2;
     OFString htmlString;
-    const OFBool convertNonASCII = (flags & HF_convertNonASCIICharacters) > 0;
-    stream << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, tmpString), string2), htmlString, convertNonASCII);
+    stream << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(PatientsName, tmpString), string2), htmlString, flags);
     OFString patientStr;
     if (PatientsSex.getLength() > 0)
     {
@@ -1164,7 +1163,7 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream& stream,
         else if (tmpString == "O")
             patientStr += "other";
         else
-            patientStr += convertToMarkupString(tmpString, htmlString, convertNonASCII);
+            patientStr += convertToHTMLString(tmpString, htmlString, flags);
     }
     if (PatientsBirthDate.getLength() > 0)
     {
@@ -1178,14 +1177,14 @@ void DSRDocument::renderHTMLPatientData(STD_NAMESPACE ostream& stream,
        if (!patientStr.empty())
            patientStr += ", ";
        patientStr += '#';
-       patientStr += convertToMarkupString(getStringValueFromElement(PatientID, tmpString), htmlString, convertNonASCII);
+       patientStr += convertToHTMLString(getStringValueFromElement(PatientID, tmpString), htmlString, flags);
     }
     if (!patientStr.empty())
         stream << " (" << patientStr << ")";
 }
 
 
-void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream& stream,
+void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream &stream,
                                           DSRSOPInstanceReferenceList &refList,
                                           const size_t /*flags*/)
 {
@@ -1218,7 +1217,7 @@ void DSRDocument::renderHTMLReferenceList(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                                     const size_t flags,
                                     const char *styleSheet)
 {
@@ -1227,9 +1226,15 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
     if (isValid())
     {
         size_t newFlags = flags;
-        if (flags & HF_version32Compatibility)
-            newFlags |= HF_convertNonASCIICharacters;
-        const OFBool convertNonASCII = (newFlags & HF_convertNonASCIICharacters) > 0;
+        if (flags & HF_XHTML11Compatibility)
+            newFlags = (flags & ~DSRTypes::HF_HTML32Compatibility);
+        else if (flags & HF_HTML32Compatibility)
+        {
+            /* fixes for HTML 3.2 */
+            newFlags = (flags & ~HF_useCodeDetailsTooltip) | HF_convertNonASCIICharacters;
+            /* ignore CSS (if any) */
+            styleSheet = NULL;
+        }
 
         /* used for multiple purposes */
         OFString tmpString, string2;
@@ -1238,32 +1243,51 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
         /* update only some DICOM attributes */
         updateAttributes(OFFalse /* updateAll */);
 
-        // --- HTML document structure (start) ---
+        // --- HTML/XHTML document structure (start) ---
+
+        if (newFlags & HF_XHTML11Compatibility)
+        {
+            stream << "<?xml version=\"1.0\"";
+            /* optional character set */
+            tmpString = characterSetToXMLName(SpecificCharacterSetEnum);
+            if (!tmpString.empty())
+            {
+                if (tmpString != "?")
+                    stream << " encoding=\"" << tmpString << "\"";
+                else
+                    printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent XML encoding");
+            }
+            stream << "?>" << OFendl;
+        }
 
         /* optional document type definition */
         if (newFlags & HF_addDocumentTypeReference)
         {
-            if (newFlags & HF_version32Compatibility)
-                stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << OFendl;
+            if (newFlags & HF_XHTML11Compatibility)
+                stream << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">" << OFendl;
             else {
-                if (styleSheet != NULL)
-                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" << OFendl;
+                if (newFlags & HF_HTML32Compatibility)
+                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2//EN\">" << OFendl;
                 else
-                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" << OFendl;
+                    stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/html4/strict.dtd\">" << OFendl;
             }
         }
-        stream << "<html>" << OFendl;
+        stream << "<html";
+        if (newFlags & HF_XHTML11Compatibility)
+            stream << " xmlns=\"http://www.w3.org/1999/xhtml\"";
+        stream << ">" << OFendl;
         stream << "<head>" << OFendl;
         /* document title */
         stream << "<title>";
         if (newFlags & HF_renderPatientTitle)
-            renderHTMLPatientData(stream, convertNonASCII);
+            renderHTMLPatientData(stream, newFlags);
         else
             stream << documentTypeToDocumentTitle(getDocumentType(), tmpString);
         stream << "</title>" << OFendl;
-        if (!(newFlags & HF_version32Compatibility))
+        /* for HTML 4.01 and XHTML 1.1 only */
+        if (!(newFlags & HF_HTML32Compatibility))
         {
-            /* optional cascading style sheet (HTML 4.0) */
+            /* optional cascading style sheet */
             if (styleSheet != NULL)
             {
                 if (newFlags & HF_copyStyleSheetContent)
@@ -1292,20 +1316,33 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
                     }
                 } else {
                     /* just add a reference to the CSS file (might be an URL) */
-                    stream << "<link rel=stylesheet type=\"text/css\" href=\"" << styleSheet << "\">" << OFendl;
+                    stream << "<link rel=\"stylesheet\" type=\"text/css\" href=\"" << styleSheet << "\"";
+                    if (newFlags & HF_XHTML11Compatibility)
+                        stream << " /";
+                    stream << ">" << OFendl;
                 }
             }
-            /* optional character set (HTML 4.0) */
+            /* optional character set */
             tmpString = characterSetToHTMLName(SpecificCharacterSetEnum);
             if (!tmpString.empty())
             {
                 if (tmpString != "?")
                 {
-                    stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
-                    stream << tmpString << "\">" << OFendl;
+                    stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=" << tmpString << "\"";
+                    if (newFlags & HF_XHTML11Compatibility)
+                        stream << " /";
+                    stream << ">" << OFendl;
                 } else
                     printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent HTML charset");
             }
+        }
+        /* generator meta element referring to the DCMTK */
+        if (!(newFlags & HF_omitGeneratorMetaElement))
+        {
+            stream << "<meta name=\"generator\" content=\"OFFIS DCMTK " << OFFIS_DCMTK_VERSION << "\"";
+            if (newFlags & HF_XHTML11Compatibility)
+                stream << " /";
+            stream << ">" << OFendl;
         }
         stream << "</head>" << OFendl;
         stream << "<body>" << OFendl;
@@ -1322,7 +1359,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Patient:</b></td>" << OFendl;
                 stream << "<td>";
-                renderHTMLPatientData(stream, convertNonASCII);
+                renderHTMLPatientData(stream, newFlags);
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -1331,7 +1368,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Referring Physician:</b></td>" << OFendl;
-                stream << "<td>" << convertToMarkupString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, tmpString), string2), htmlString, convertNonASCII);
+                stream << "<td>" << convertToHTMLString(dicomToReadablePersonName(getStringValueFromElement(ReferringPhysiciansName, tmpString), string2), htmlString, newFlags);
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -1340,9 +1377,9 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Study:</b></td>" << OFendl;
-                stream << "<td>" << convertToMarkupString(getStringValueFromElement(StudyDescription, tmpString), htmlString, convertNonASCII);
+                stream << "<td>" << convertToHTMLString(getStringValueFromElement(StudyDescription, tmpString), htmlString, newFlags);
                 if (StudyID.getLength() > 0)
-                    stream << " (#" << convertToMarkupString(getStringValueFromElement(StudyID, tmpString), htmlString, convertNonASCII) << ")";
+                    stream << " (#" << convertToHTMLString(getStringValueFromElement(StudyID, tmpString), htmlString, newFlags) << ")";
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -1351,7 +1388,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
             {
                 stream << "<tr>" << OFendl;
                 stream << "<td><b>Manufacturer:</b></td>" << OFendl;
-                stream << "<td>" << convertToMarkupString(getStringValueFromElement(Manufacturer, tmpString), htmlString, convertNonASCII);
+                stream << "<td>" << convertToHTMLString(getStringValueFromElement(Manufacturer, tmpString), htmlString, newFlags);
                 stream << "</td>" << OFendl;
                 stream << "</tr>" << OFendl;
             }
@@ -1367,7 +1404,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
                 {
                     stream << "<tr>" << OFendl;
                     stream << "<td></td>" << OFendl;
-                    stream << "<td>" << convertToMarkupString(getStringValueFromElement(CompletionFlagDescription, tmpString), htmlString, convertNonASCII);
+                    stream << "<td>" << convertToHTMLString(getStringValueFromElement(CompletionFlagDescription, tmpString), htmlString, newFlags);
                     stream << "</td>" << OFendl;
                     stream << "</tr>" << OFendl;
                 }
@@ -1410,32 +1447,34 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
                             stream << "<td></td>" << OFendl;
                         stream << "<td>";
                         stream << dicomToReadableDateTime(dateTime, string2) << " - ";
-                        /* render code details as a tooltip */
-                        if (obsCode.isValid() && (flags & DSRTypes::HF_useCodeDetailsTooltip))
+                        /* render code details as a tooltip (HTML 4.01 or above) */
+                        if (obsCode.isValid() && (newFlags & DSRTypes::HF_useCodeDetailsTooltip))
                         {
-                            stream << "<u><span title=\"(";
-                            stream << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII) << ", ";
-                            stream << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII);
+                            if (newFlags & HF_XHTML11Compatibility)
+                                stream << "<span class=\"code\" title=\"(";
+                            else /* HTML 4.01 */
+                                stream << "<span class=\"under\" title=\"(";
+                            stream << convertToHTMLString(obsCode.getCodeValue(), htmlString, newFlags) << ", ";
+                            stream << convertToHTMLString(obsCode.getCodingSchemeDesignator(), htmlString, newFlags);
                             if (!obsCode.getCodingSchemeVersion().empty())
-                                stream << " [" << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << "]";
-                            stream << ", &quot;" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "&quot;)\">";
+                                stream << " [" << convertToHTMLString(obsCode.getCodingSchemeVersion(), htmlString, newFlags) << "]";
+                            stream << ", &quot;" << convertToHTMLString(obsCode.getCodeMeaning(), htmlString, newFlags) << "&quot;)\">";
                         }
-                        stream << convertToMarkupString(dicomToReadablePersonName(obsName, string2), htmlString, convertNonASCII);
-                        if (obsCode.isValid() && (flags & DSRTypes::HF_useCodeDetailsTooltip))
-                        {
-                            stream << "</span></u>";
-                        } else {
+                        stream << convertToHTMLString(dicomToReadablePersonName(obsName, string2), htmlString, newFlags);
+                        if (obsCode.isValid() && (newFlags & DSRTypes::HF_useCodeDetailsTooltip))
+                            stream << "</span>";
+                        else {
                             /* render code in a conventional manner */
                             if (obsCode.isValid() && ((newFlags & HF_renderAllCodes) == HF_renderAllCodes))
                             {
-                                stream << " (" << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII);
-                                stream << ", " << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII);
+                                stream << " (" << convertToHTMLString(obsCode.getCodeValue(), htmlString, newFlags);
+                                stream << ", " << convertToHTMLString(obsCode.getCodingSchemeDesignator(), htmlString, newFlags);
                                 if (!obsCode.getCodingSchemeVersion().empty())
-                                    stream << " [" << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << "]";
-                                stream << ", &quot;" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "&quot;)";
+                                    stream << " [" << convertToHTMLString(obsCode.getCodingSchemeVersion(), htmlString, newFlags) << "]";
+                                stream << ", &quot;" << convertToHTMLString(obsCode.getCodeMeaning(), htmlString, newFlags) << "&quot;)";
                             }
                         }
-                        stream << ", " << convertToMarkupString(organization, htmlString, convertNonASCII);
+                        stream << ", " << convertToHTMLString(organization, htmlString, newFlags);
                         stream << "</td>" << OFendl;
                         stream << "</tr>" << OFendl;
                     }
@@ -1453,7 +1492,10 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
             /* end of table */
             stream << "</table>" << OFendl;
 
-            stream << "<hr>" << OFendl;
+            if (newFlags & HF_XHTML11Compatibility)
+                stream << "<hr />" << OFendl;
+            else
+                stream << "<hr>" << OFendl;
         }
 
         // --- render document tree to stream ---
@@ -1470,12 +1512,23 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream& stream,
 
         if (newFlags & HF_renderDcmtkFootnote)
         {
-            stream << "<hr>" << OFendl;
-
-            stream << "<small>" << OFendl;
+            if (newFlags & HF_XHTML11Compatibility)
+            {
+                stream << "<hr />" << OFendl;
+                stream << "<div class=\"footnote\">" << OFendl;
+            } else {
+                stream << "<hr>" << OFendl;
+                if (newFlags & HF_HTML32Compatibility)
+                    stream << "<div>" << OFendl;
+                else /* HTML 4.01 */
+                    stream << "<div class=\"footnote\">" << OFendl;
+                stream << "<small>" << OFendl;
+            }
             stream << "This page was generated from a DICOM Structured Reporting document by ";
             stream << "<a href=\"" << DCMTK_INTERNET_URL << "\">OFFIS DCMTK</a> " << OFFIS_DCMTK_VERSION << "." << OFendl;
-            stream << "</small>" << OFendl;
+            if (!(newFlags & HF_XHTML11Compatibility))
+                stream << "</small>" << OFendl;
+            stream << "</div>" << OFendl;
         }
 
         // --- HTML document structure (end) ---
@@ -2324,7 +2377,13 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.58  2006-08-15 16:40:03  meichel
+ *  Revision 1.59  2007-11-15 16:44:12  joergr
+ *  Added meta header element for the generator of the HTML/XHTML document.
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.58  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
