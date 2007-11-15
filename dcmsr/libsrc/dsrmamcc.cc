@@ -23,8 +23,8 @@
  *    classes: DSRMammographyCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:42 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2007-11-15 16:57:31 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,8 +106,7 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
     /* row 5 the table */
-    else if ((relationshipType == RT_hasProperties) &&
-        ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num /* required for TID 4023 */)))
+    else if ((relationshipType == RT_hasProperties) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code)))
     {
         /* by-reference allowed (see CP 545) */
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code)  || (targetValueType == VT_Num) ||
@@ -133,8 +132,12 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
- *  Revision 1.7  2007-11-15 16:45:42  joergr
- *  Added support for output in XHTML 1.1 format.
+ *  Revision 1.8  2007-11-15 16:57:31  joergr
+ *  Removed preliminary patch for TID 4023 (since not yet approved). Documented
+ *  modification required for CP 492 (has already been added by the last commit).
+ *
+ *  Revision 1.7  2007/11/15 16:45:42  joergr
+ *  Added support for output in XHTML 1.1 format. -> incorrect log entry
  *
  *  Revision 1.6  2006/03/24 11:11:45  joergr
  *  Added full support for CP 545, i.e. allow by-reference HAS PROPERTIES

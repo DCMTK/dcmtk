@@ -3,6 +3,15 @@ Changes between releases are documented here.
 
 **** Changes from 2007.11.15 (riesmeier)
 
+- Introduced new markup mode for convertToMarkupString() that is used to
+  distinguish between HTML, HTML 3.2, XHTML and XML.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Enhanced convertToMarkupString() in order to be more compliant to the HTML
+  specification (e.g. do not use "&apos;").
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Added support for output in XHTML 1.1 format.
   Added:   dcmsr/apps/reportx.css
   Affects: dcmsr/apps/Makefile.in
@@ -105,14 +114,9 @@ Changes between releases are documented here.
            dcmsr/libsrc/dsrwavch.cc
            dcmsr/libsrc/dsrwavtn.cc
 
-- Introduced new markup mode for convertToMarkupString() that is used to
-  distinguish between HTML, HTML 3.2, XHTML and XML.
-  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
-           ofstd/libsrc/ofstd.cc
-
-- Enhanced convertToMarkupString() in order to be more compliant to the HTML
-  specification (e.g. do not use "&apos;").
-  Affects: ofstd/libsrc/ofstd.cc
+- Removed preliminary patch for TID 4023 (since not yet approved). Documented
+  modification required for CP 492 (has already been added by the last commit).
+  Affects: dcmsr/libsrc/dsrmamcc.cc
 
 **** Changes from 2007.11.08 (onken)
 
