@@ -1,73 +1,90 @@
-TD {
-	background-color: #CCCCFF;
-	font-family : sans-serif ;
-	padding: 4px;
+/* Copyright (C) 2000-2007 OFFIS e.V.
+   Sample CSS for HTML output of "dsr2html"
+*/
+
+body {
+	background-color: #dddddd;
+	font-family: sans-serif;
 }
 
-P SMALL {
-	background : #EEEEEE;
-	width: 100%;
-	color : Black;
-	text-align : left;
-}
-
-P {
-	background : #FAFAFA;
-	text-align : justify;
-}
-
-SMALL {
-	color : Gray;
-}
-
-BODY {
-	background-color: #EEEEEE;
-	font-family : sans-serif ;
-}
-
-HR {
-	color : Silver;
-	border : thin;
-	background : transparent;
-}
-
-A {
-	color: Maroon;
-}
-
-A:Hover {
-	color: red;
-}
-
-SMALL A {
-	color: Gray;
-}
-
-H1,H2,H3,H4,H5,H6 {
+h1, h2, h3, h4, h5, h6 {
 	background-color: #000099;
 	color: white;
 	width: 100%;
 }
 
-H1 {
+h1 {
 	padding: 4px;
-	font-size : 150%;
-	font-weight : bold;
+	font-size: x-large;
+	font-weight: bold;
 }
 
-H2 {
+h2 {
 	padding: 3px;
-	font-size : 120%;
+	font-size: large;
 }
 
-H3,H4,H5,H6 {
+h3, h4, h5, h6 {
 	padding: 2px;
 }
 
-H4,H5,H6 {
-	font-size: 100%;
+h4, h5, h6 {
+	font-size: medium;
 }
 
-H1,H2 A {
-	color : White;
+h2 a[name] {
+	color: white;
+	text-decoration: none;
+}
+
+div {
+    background-color: white;
+	text-align: justify;
+}
+
+div small {
+	width: 100%;
+	color: black;
+	text-align: left;
+}
+
+td {
+	background-color: #ccccff;
+	font-family: sans-serif;
+	padding: 4px;
+}
+
+a[href] {
+	color: maroon;
+}
+
+a:hover {
+	color: red;
+}
+
+a[name]:hover {
+    text-decoration: underline;
+}
+
+div.footnote {
+	background-color: #dddddd;
+	color: gray;
+}
+
+div.footnote a, div.footnote small {
+	color: gray;
+}
+
+div.footnote a:hover {
+    color: black;
+}
+
+span.under {
+    text-decoration: underline;
+}
+
+hr {
+	color: silver;
+	background: transparent;
+	border: thin;
 }
