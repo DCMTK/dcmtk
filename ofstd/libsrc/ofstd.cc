@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-26 16:20:39 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2007-11-15 16:12:53 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -616,7 +616,7 @@ OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
 const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                                                   OFString &markupString,
                                                   const OFBool convertNonASCII,
-                                                  const OFBool xmlMode,
+                                                  const E_MarkupMode markupMode,
                                                   const OFBool newlineAllowed)
 {
     /* char pointer allows faster access to the string */
@@ -625,7 +625,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
     markupString.clear();
     /* avoid to resize the string too often */
     markupString.reserve(strlen(str));
-    /* replace HTML/XML reserved characters */
+    /* replace HTML/XHTML/XML reserved characters */
     while (*str != 0)
     {
         /* less than */
@@ -639,33 +639,49 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
             markupString += "&amp;";
         /* quotation mark */
         else if (*str == '"')
-            markupString += "&quot;";
+        {
+            /* entity "&quot;" is not defined in HTML 3.2 */
+            if (markupMode == MM_HTML32)
+                markupString += "&#34;";
+            else
+                markupString += "&quot;";
+        }
         /* apostrophe */
         else if (*str == '\'')
-            markupString += "&apos;";
+        {
+            /* entity "&apos;" is not defined in HTML */
+            if ((markupMode == MM_HTML) || (markupMode == MM_HTML32))
+                markupString += "&#39;";
+            else
+                markupString += "&apos;";
+        }
         /* newline: LF, CR, LF CR, CR LF */
         else if ((*str == '\012') || (*str == '\015'))
         {
-            if (xmlMode)
+            if (markupMode == MM_XML)
             {
                 /* encode CR and LF exactly as specified */
                 if (*str == '\012')
                     markupString += "&#10;";    // '\n'
                 else
                     markupString += "&#13;";    // '\r'
-            } else {  /* HTML mode */
+            } else {  /* HTML/XHTML mode */
                 /* skip next character if it belongs to the newline sequence */
                 if (((*str == '\012') && (*(str + 1) == '\015')) || ((*str == '\015') && (*(str + 1) == '\012')))
                     str++;
                 if (newlineAllowed)
-                    markupString += "<br>\n";
-                else
+                {
+                    if (markupMode == MM_XHTML)
+                        markupString += "<br />\n";
+                    else
+                        markupString += "<br>\n";
+                } else
                     markupString += "&para;";
             }
         } else {
             /* other character: ... */
             const size_t charValue = OFstatic_cast(unsigned char, *str);
-            if (convertNonASCII && (charValue > 127))
+            if ((convertNonASCII || (markupMode == MM_HTML32)) && (charValue > 127))
             {
                 char buffer[16];
                 sprintf(buffer, "%lu", OFstatic_cast(unsigned long, charValue));
@@ -1757,7 +1773,13 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.39  2007-06-26 16:20:39  joergr
+ *  Revision 1.40  2007-11-15 16:12:53  joergr
+ *  Introduced new markup mode for convertToMarkupString() that is used to
+ *  distinguish between HTML, HTML 3.2, XHTML and XML.
+ *  Enhanced convertToMarkupString() in order to be more compliant to the HTML
+ *  specification (e.g. do not use "&apos;").
+ *
+ *  Revision 1.39  2007/06/26 16:20:39  joergr
  *  Added new variant of encodeBase64() method that outputs directly to a stream
  *  (avoids using a memory buffer for large binary data).
  *
