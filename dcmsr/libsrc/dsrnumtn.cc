@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:43:43 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ OFBool DSRNumTreeNode::isValid() const
 }
 
 
-OFCondition DSRNumTreeNode::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRNumTreeNode::print(STD_NAMESPACE ostream &stream,
                                   const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -78,7 +78,7 @@ OFCondition DSRNumTreeNode::print(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRNumTreeNode::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRNumTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                      const size_t flags,
                                      OFConsole *logStream) const
 {
@@ -112,8 +112,8 @@ OFCondition DSRNumTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRNumTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
-                                                  STD_NAMESPACE ostream& annexStream,
+OFCondition DSRNumTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                                  STD_NAMESPACE ostream &annexStream,
                                                   const size_t /*nestingLevel*/,
                                                   size_t &annexNumber,
                                                   const size_t flags,
@@ -134,7 +134,10 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStre
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.20  2006-08-15 16:40:03  meichel
+ *  Revision 1.21  2007-11-15 16:43:43  joergr
+ *  Fixed coding style to be more consistent.
+ *
+ *  Revision 1.20  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

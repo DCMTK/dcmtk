@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:43:43 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ DSRReferencedSamplePositionList &DSRReferencedSamplePositionList::operator=(cons
 }
 
 
-OFCondition DSRReferencedSamplePositionList::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRReferencedSamplePositionList::print(STD_NAMESPACE ostream &stream,
                                                    const size_t flags,
                                                    const char separator) const
 {
@@ -173,7 +173,10 @@ OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.13  2006-08-15 16:40:03  meichel
+ *  Revision 1.14  2007-11-15 16:43:43  joergr
+ *  Fixed coding style to be more consistent.
+ *
+ *  Revision 1.13  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

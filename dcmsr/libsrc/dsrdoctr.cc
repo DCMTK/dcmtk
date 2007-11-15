@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-05-11 14:48:55 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2007-11-15 16:43:43 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ void DSRDocumentTree::setLogStream(OFConsole *stream)
 }
 
 
-OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocumentTree::print(STD_NAMESPACE ostream &stream,
                                    const size_t flags)
 {
     OFCondition result = EC_Normal;
@@ -280,7 +280,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
 }
 
 
-OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream &stream,
                                       const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocumentTree;
@@ -301,8 +301,8 @@ OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream& docStream,
-                                        STD_NAMESPACE ostream& annexStream,
+OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
+                                        STD_NAMESPACE ostream &annexStream,
                                         const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocumentTree;
@@ -664,7 +664,10 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.30  2007-05-11 14:48:55  joergr
+ *  Revision 1.31  2007-11-15 16:43:43  joergr
+ *  Fixed coding style to be more consistent.
+ *
+ *  Revision 1.30  2007/05/11 14:48:55  joergr
  *  Enhanced debug output when detecting by-reference relationships to non-
  *  existing content items.
  *

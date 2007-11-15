@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:43:43 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,7 +246,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocum
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(STD_NAMESPACE ostream &stream,
                                                                 const size_t flags) const
 {
     /* write the series level attributes */
@@ -560,7 +560,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::readXML(const DSRXMLDocume
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::StudyStruct::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::writeXML(STD_NAMESPACE ostream &stream,
                                                                const size_t flags) const
 {
     OFCondition result = EC_Normal;
@@ -938,7 +938,7 @@ OFCondition DSRSOPInstanceReferenceList::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRSOPInstanceReferenceList::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRSOPInstanceReferenceList::writeXML(STD_NAMESPACE ostream &stream,
                                                   const size_t flags) const
 {
     OFCondition result = EC_Normal;
@@ -1386,7 +1386,10 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.12  2006-08-15 16:40:03  meichel
+ *  Revision 1.13  2007-11-15 16:43:43  joergr
+ *  Fixed coding style to be more consistent.
+ *
+ *  Revision 1.12  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
