@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-06 11:50:42 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2007-11-15 16:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,9 +175,9 @@ class DSRDocument
     OFCondition writeXML(STD_NAMESPACE ostream &stream,
                          const size_t flags = 0);
 
-    /** render current SR document in HTML format.
+    /** render current SR document in HTML/XHTML format.
      *  The output format is identical to that of the dsr2html command line tool.
-     ** @param  stream      output stream to which the HTML document is written
+     ** @param  stream      output stream to which the HTML/XHTML document is written
      *  @param  flags       optional flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -1013,15 +1013,15 @@ class DSRDocument
                                              DSRXMLCursor cursor,
                                              const size_t flags);
 
-    /** render patient name, sex, birthdate and ID in HTML format
-     ** @param  stream  output stream to which the HTML document is written
+    /** render patient name, sex, birthdate and ID in HTML/XHTML format
+     ** @param  stream  output stream to which the HTML/XHTML document is written
      *  @param  flags   flag used to customize the output (see DSRTypes::HF_xxx)
      */
     void renderHTMLPatientData(STD_NAMESPACE ostream &stream,
                                const size_t flags);
 
-    /** render list of referenced SOP instances in HTML format
-     ** @param  stream   output stream to which the HTML document is written
+    /** render list of referenced SOP instances in HTML/XHTML format
+     ** @param  stream   output stream to which the HTML/XHTML document is written
      *  @param  refList  list of referenced SOP instances to be rendered
      *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
      */
@@ -1184,7 +1184,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.43  2006-12-06 11:50:42  joergr
+ *  Revision 1.44  2007-11-15 16:33:30  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.43  2006/12/06 11:50:42  joergr
  *  Updated various citations according to the latest version of the DICOM
  *  standard (incl. CP 584). Removed references to a particular edition of the
  *  standard.

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-05-11 14:50:05 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2007-11-15 16:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,7 +96,7 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition print(STD_NAMESPACE ostream& stream,
+    OFCondition print(STD_NAMESPACE ostream &stream,
                       const size_t flags = 0);
 
     /** read SR document tree from DICOM dataset.
@@ -138,17 +138,17 @@ class DSRDocumentTree
      *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeXML(STD_NAMESPACE ostream& stream,
+    OFCondition writeXML(STD_NAMESPACE ostream &stream,
                          const size_t flags);
 
-    /** render current SR document tree in HTML format
-     ** @param  docStream    output stream to which the main HTML document is written
-     *  @param  annexStream  output stream to which the HTML document annex is written
+    /** render current SR document tree in HTML/XHTML format
+     ** @param  docStream    output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream  output stream to which the HTML/XHTML document annex is written
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
-                           STD_NAMESPACE ostream& annexStream,
+    OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
+                           STD_NAMESPACE ostream &annexStream,
                            const size_t flags = 0);
 
     /** get document type
@@ -352,7 +352,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.19  2007-05-11 14:50:05  joergr
+ *  Revision 1.20  2007-11-15 16:33:30  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.19  2007/05/11 14:50:05  joergr
  *  Enhanced debug output when detecting by-reference relationships to non-
  *  existing content items.
  *

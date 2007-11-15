@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DSRContainerTreeNode
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition print(STD_NAMESPACE ostream& stream,
+    virtual OFCondition print(STD_NAMESPACE ostream &stream,
                               const size_t flags) const;
 
     /** write content item in XML format
@@ -100,17 +100,17 @@ class DSRContainerTreeNode
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream& stream,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
-    /** render content item in HTML format.
+    /** render content item in HTML/XHTML format.
      *  After rendering the current content item all child nodes (if any) are also rendered (see
      *  renderHTMLChildNodes() for details).  This method overwrites the one specified in base class
      *  DSRDocumentTree since the rendering of the child nodes depends on the value of the flag
      *  'ContinuityOfContent'.
-     ** @param  docStream     output stream to which the main HTML document is written
-     *  @param  annexStream   output stream to which the HTML document annex is written
+     ** @param  docStream     output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
      *  @param  nestingLevel  current nesting level.  Used to render section headings.
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
@@ -118,8 +118,8 @@ class DSRContainerTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
-                                   STD_NAMESPACE ostream& annexStream,
+    virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
+                                   STD_NAMESPACE ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
                                    const size_t flags,
@@ -170,9 +170,9 @@ class DSRContainerTreeNode
     virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
                                            DSRXMLCursor cursor);
 
-    /** render content item (value) in HTML format
-     ** @param  docStream     output stream to which the main HTML document is written
-     *  @param  annexStream   output stream to which the HTML document annex is written
+    /** render content item (value) in HTML/XHTML format
+     ** @param  docStream     output stream to which the main HTML/XHTML document is written
+     *  @param  annexStream   output stream to which the HTML/XHTML document annex is written
      *  @param  nestingLevel  current nesting level.  Used to render section headings.
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
@@ -180,8 +180,8 @@ class DSRContainerTreeNode
      *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
-                                              STD_NAMESPACE ostream& annexStream,
+    virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                              STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
                                               const size_t flags,
@@ -208,7 +208,10 @@ class DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
- *  Revision 1.12  2006-08-15 16:40:03  meichel
+ *  Revision 1.13  2007-11-15 16:33:30  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.12  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

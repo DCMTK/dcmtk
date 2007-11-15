@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ class DSRStringValue
      *                     A value of 0 turns this meachanism off (default), i.e. the full string
      *                     value is printed.
      */
-    void print(STD_NAMESPACE ostream& stream,
+    void print(STD_NAMESPACE ostream &stream,
                const size_t maxLength = 0) const;
 
     /** read string value from dataset.
@@ -134,13 +134,13 @@ class DSRStringValue
                         DSRXMLCursor cursor,
                         const OFBool encoding = OFFalse);
 
-    /** render string value in HTML format
-     ** @param  docStream  output stream to which the main HTML document is written
+    /** render string value in HTML/XHTML format
+     ** @param  docStream  output stream to which the main HTML/XHTML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition renderHTML(STD_NAMESPACE ostream& docStream,
+    OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                            const size_t flags,
                            OFConsole *logStream) const;
 
@@ -187,7 +187,10 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
- *  Revision 1.13  2006-08-15 16:40:03  meichel
+ *  Revision 1.14  2007-11-15 16:33:30  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.13  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
