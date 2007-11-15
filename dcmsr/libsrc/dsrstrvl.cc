@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ OFBool DSRStringValue::isValid() const
 }
 
 
-void DSRStringValue::print(STD_NAMESPACE ostream& stream,
+void DSRStringValue::print(STD_NAMESPACE ostream &stream,
                            const size_t maxLength) const
 {
     OFString printString;
@@ -129,16 +129,28 @@ OFCondition DSRStringValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRStringValue::renderHTML(STD_NAMESPACE ostream& docStream,
+OFCondition DSRStringValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                        const size_t flags,
                                        OFConsole * /*logStream*/) const
 {
     OFString htmlString;
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
-        docStream << "<u>";
-    docStream << DSRTypes::convertToMarkupString(Value, htmlString, (flags & DSRTypes::HF_convertNonASCIICharacters) > 0);
+    {
+        if (flags & DSRTypes::HF_XHTML11Compatibility)
+            docStream << "<span class=\"under\">";
+        else if (flags & DSRTypes::HF_HTML32Compatibility)
+            docStream << "<u>";
+        else /* HTML 4.01 */
+            docStream << "<span class=\"under\">";
+    }
+    docStream << DSRTypes::convertToHTMLString(Value, htmlString, flags);
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
-        docStream << "</u>";
+    {
+        if (flags & DSRTypes::HF_HTML32Compatibility)
+            docStream << "</u>";
+        else
+            docStream << "</span>";
+    }
     return EC_Normal;
 }
 
@@ -164,7 +176,12 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.15  2006-08-15 16:40:03  meichel
+ *  Revision 1.16  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.15  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

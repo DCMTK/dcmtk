@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRImageReferenceValue::print(STD_NAMESPACE ostream &stream,
                                           const size_t flags) const
 {
     const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
@@ -184,7 +184,7 @@ OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
                                              const size_t flags,
                                              OFConsole *logStream) const
 {
@@ -242,8 +242,8 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
-                                               STD_NAMESPACE ostream& annexStream,
+OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
+                                               STD_NAMESPACE ostream &annexStream,
                                                size_t &annexNumber,
                                                const size_t flags,
                                                OFConsole * /*logStream*/) const
@@ -254,13 +254,13 @@ OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
     /* reference: pstate */
     if (PresentationState.isValid())
     {
-        docStream << "&pstate=" << PresentationState.getSOPClassUID();
+        docStream << "&amp;pstate=" << PresentationState.getSOPClassUID();
         docStream << "+" << PresentationState.getSOPInstanceUID();
     }
     /* reference: frames */
     if (!FrameList.isEmpty())
     {
-        docStream << "&frames=";
+        docStream << "&amp;frames=";
         FrameList.print(docStream, 0 /*flags*/, '+');
     }
     docStream << "\">";
@@ -277,7 +277,8 @@ OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
     docStream << "</a>";
     if (!isShort(flags))
     {
-        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " :
+                                (flags & DSRTypes::HF_XHTML11Compatibility) ? "<br />" : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream << OFendl << "<p>" << OFendl;
@@ -287,7 +288,7 @@ OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
             docStream << "</p>";
         } else {
             docStream << " ";
-            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
+            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber, flags);
             annexStream << "<p>" << OFendl;
             /* render frame list (= print)*/
             annexStream << "<b>Referenced Frame Number:</b>" << lineBreak;
@@ -361,7 +362,12 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.19  2006-08-15 16:40:03  meichel
+ *  Revision 1.20  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.19  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

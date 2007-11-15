@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ OFBool DSRContainerTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
-OFCondition DSRContainerTreeNode::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRContainerTreeNode::print(STD_NAMESPACE ostream &stream,
                                         const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -130,7 +130,7 @@ OFCondition DSRContainerTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRContainerTreeNode::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRContainerTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                            const size_t flags,
                                            OFConsole *logStream) const
 {
@@ -144,8 +144,8 @@ OFCondition DSRContainerTreeNode::writeXML(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
-                                                        STD_NAMESPACE ostream&  /*annexStream*/,
+OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                                        STD_NAMESPACE ostream & /*annexStream*/,
                                                         const size_t nestingLevel,
                                                         size_t & /*annexNumber*/,
                                                         const size_t flags,
@@ -166,15 +166,25 @@ OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& d
         if (!getObservationDateTime().empty())
         {
             OFString tmpString;
-            docStream << "<small>(observed: " << dicomToReadableDateTime(getObservationDateTime(), tmpString) << ")</small>" << OFendl;
+            docStream << "<p>" << OFendl;
+            if (flags & HF_XHTML11Compatibility)
+                docStream << "<span class=\"observe\">";
+            else
+                docStream << "<small>";
+            docStream << "(observed: " << dicomToReadableDateTime(getObservationDateTime(), tmpString) << ")";
+            if (flags & HF_XHTML11Compatibility)
+                docStream << "</span>" << OFendl;
+            else
+                docStream << "</small>" << OFendl;
+            docStream << "</p>" << OFendl;
         }
     }
     return EC_Normal;
 }
 
 
-OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream& docStream,
-                                             STD_NAMESPACE ostream& annexStream,
+OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
+                                             STD_NAMESPACE ostream &annexStream,
                                              const size_t nestingLevel,
                                              size_t &annexNumber,
                                              const size_t flags,
@@ -213,7 +223,12 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.25  2006-08-15 16:40:03  meichel
+ *  Revision 1.26  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.25  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

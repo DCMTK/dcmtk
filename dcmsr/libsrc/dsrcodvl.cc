@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ OFBool DSRCodedEntryValue::isEmpty() const
 }
 
 
-void DSRCodedEntryValue::print(STD_NAMESPACE ostream& stream,
+void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
                                const OFBool printCodeValue,
                                const OFBool printInvalid) const
 {
@@ -284,19 +284,19 @@ OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRCodedEntryValue::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRCodedEntryValue::writeXML(STD_NAMESPACE ostream &stream,
                                          const size_t flags,
                                          OFConsole * /*logStream*/) const
 {
     OFString tmpString;
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
     {
-        stream << " codValue=\"" << DSRTypes::convertToMarkupString(CodeValue, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\"";
-        stream << " codScheme=\"" << DSRTypes::convertToMarkupString(CodingSchemeDesignator, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\"";
+        stream << " codValue=\"" << DSRTypes::convertToXMLString(CodeValue, tmpString) << "\"";
+        stream << " codScheme=\"" << DSRTypes::convertToXMLString(CodingSchemeDesignator, tmpString) << "\"";
         if (!CodingSchemeVersion.empty() || (flags & DSRTypes::XF_writeEmptyTags))
-            stream << " codVersion=\"" << DSRTypes::convertToMarkupString(CodingSchemeVersion, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\"";
+            stream << " codVersion=\"" << DSRTypes::convertToXMLString(CodingSchemeVersion, tmpString) << "\"";
         stream << ">";      // close open bracket from calling routine
-        stream << DSRTypes::convertToMarkupString(CodeMeaning, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
+        stream << DSRTypes::convertToXMLString(CodeMeaning, tmpString);
     } else {
         DSRTypes::writeStringValueToXML(stream, CodeValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
         stream << "<scheme>" << OFendl;
@@ -309,45 +309,44 @@ OFCondition DSRCodedEntryValue::writeXML(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRCodedEntryValue::renderHTML(STD_NAMESPACE ostream& stream,
+OFCondition DSRCodedEntryValue::renderHTML(STD_NAMESPACE ostream &stream,
                                            const size_t flags,
                                            OFConsole * /*logStream*/,
                                            const OFBool fullCode,
                                            const OFBool valueFirst) const
 {
     OFString htmlString;
-    const OFBool convertNonASCII = (flags & DSRTypes::HF_convertNonASCIICharacters) > 0;
     if (flags & DSRTypes::HF_useCodeDetailsTooltip)
     {
         /* render code details as a tooltip */
         stream << "<span title=\"(";
-        stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
-        stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII);
+        stream << DSRTypes::convertToHTMLString(CodeValue, htmlString, flags) << ", ";
+        stream << DSRTypes::convertToHTMLString(CodingSchemeDesignator, htmlString, flags);
         if (!CodingSchemeVersion.empty())
-            stream << " [" << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII) << "]";
-        stream << ", &quot;" << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII) << "&quot;)\">";
+            stream << " [" << DSRTypes::convertToHTMLString(CodingSchemeVersion, htmlString, flags) << "]";
+        stream << ", &quot;" << DSRTypes::convertToHTMLString(CodeMeaning, htmlString, flags) << "&quot;)\">";
         /* render value */
         if (valueFirst)
-            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
+            stream << DSRTypes::convertToHTMLString(CodeValue, htmlString, flags);
         else
-            stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
+            stream << DSRTypes::convertToHTMLString(CodeMeaning, htmlString, flags);
         stream << "</span>";
     } else {
         /* render code in a conventional manner */
         if (valueFirst)
-            stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
+            stream << DSRTypes::convertToHTMLString(CodeValue, htmlString, flags);
         else
-            stream << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
+            stream << DSRTypes::convertToHTMLString(CodeMeaning, htmlString, flags);
         if (fullCode)
         {
             stream << " (";
             if (!valueFirst)
-                stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
-            stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII);
+                stream << DSRTypes::convertToHTMLString(CodeValue, htmlString, flags) << ", ";
+            stream << DSRTypes::convertToHTMLString(CodingSchemeDesignator, htmlString, flags);
             if (!CodingSchemeVersion.empty())
-                stream << " [" << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII) << "]";
+                stream << " [" << DSRTypes::convertToHTMLString(CodingSchemeVersion, htmlString, flags) << "]";
             if (valueFirst)
-                stream << ", &quot;" << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII) << "&quot;";
+                stream << ", &quot;" << DSRTypes::convertToHTMLString(CodeMeaning, htmlString, flags) << "&quot;";
             stream << ")";
         }
     }
@@ -408,7 +407,12 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.23  2006-08-15 16:40:03  meichel
+ *  Revision 1.24  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.23  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

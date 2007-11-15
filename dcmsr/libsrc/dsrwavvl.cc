@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRWaveformReferenceValue::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRWaveformReferenceValue::print(STD_NAMESPACE ostream &stream,
                                              const size_t flags) const
 {
     const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
@@ -133,7 +133,7 @@ OFCondition DSRWaveformReferenceValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRWaveformReferenceValue::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRWaveformReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
                                                 const size_t flags,
                                                 OFConsole *logStream) const
 {
@@ -175,8 +175,8 @@ OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream& docStream,
-                                                  STD_NAMESPACE ostream& annexStream,
+OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
+                                                  STD_NAMESPACE ostream &annexStream,
                                                   size_t &annexNumber,
                                                   const size_t flags,
                                                   OFConsole * /*logStream*/) const
@@ -186,7 +186,7 @@ OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream& docStre
     docStream << "?waveform=" << SOPClassUID << "+" << SOPInstanceUID;
     if (!ChannelList.isEmpty())
     {
-        docStream << "&channels=";
+        docStream << "&amp;channels=";
         ChannelList.print(docStream, 0 /*flags*/, '+', '+');
     }
     docStream << "\">";
@@ -199,7 +199,8 @@ OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream& docStre
     /* render (optional) channel list */
     if (!isShort(flags))
     {
-        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " :
+                                (flags & DSRTypes::HF_XHTML11Compatibility) ? "<br />" : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream  << OFendl << "<p>" << OFendl;
@@ -209,7 +210,7 @@ OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream& docStre
             docStream << "</p>";
         } else {
             docStream << " ";
-            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
+            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber, flags);
             annexStream << "<p>" << OFendl;
             /* render channel list (= print)*/
             annexStream << "<b>Referenced Waveform Channels:</b>" << lineBreak;
@@ -270,7 +271,12 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.18  2006-08-15 16:40:03  meichel
+ *  Revision 1.19  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.18  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

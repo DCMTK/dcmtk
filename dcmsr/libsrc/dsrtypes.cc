@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,14 +92,16 @@ const size_t DSRTypes::HF_renderDcmtkFootnote            = 1 <<  9;
 const size_t DSRTypes::HF_renderFullData                 = 1 << 10;
 const size_t DSRTypes::HF_renderSectionTitlesInline      = 1 << 11;
 const size_t DSRTypes::HF_copyStyleSheetContent          = 1 << 12;
-const size_t DSRTypes::HF_version32Compatibility         = 1 << 13;
-const size_t DSRTypes::HF_addDocumentTypeReference       = 1 << 14;
+const size_t DSRTypes::HF_HTML32Compatibility            = 1 << 13;
+const size_t DSRTypes::HF_XHTML11Compatibility           = 1 << 14;
+const size_t DSRTypes::HF_addDocumentTypeReference       = 1 << 15;
+const size_t DSRTypes::HF_omitGeneratorMetaElement       = 1 << 16;
 /* internal */
-const size_t DSRTypes::HF_renderItemsSeparately          = 1 << 15;
-const size_t DSRTypes::HF_renderItemInline               = 1 << 16;
-const size_t DSRTypes::HF_currentlyInsideAnnex           = 1 << 17;
-const size_t DSRTypes::HF_createFootnoteReferences       = 1 << 18;
-const size_t DSRTypes::HF_convertNonASCIICharacters      = 1 << 19;
+const size_t DSRTypes::HF_renderItemsSeparately          = 1 << 17;
+const size_t DSRTypes::HF_renderItemInline               = 1 << 18;
+const size_t DSRTypes::HF_currentlyInsideAnnex           = 1 << 19;
+const size_t DSRTypes::HF_createFootnoteReferences       = 1 << 20;
+const size_t DSRTypes::HF_convertNonASCIICharacters      = 1 << 21;
 /* shortcuts */
 const size_t DSRTypes::HF_renderAllCodes                 = DSRTypes::HF_renderInlineCodes |
                                                            DSRTypes::HF_renderConceptNameCodes |
@@ -761,7 +763,7 @@ const OFString &DSRTypes::getMarkupStringFromElement(const DcmElement &delem,
                                                      const OFBool convertNonASCII)
 {
     OFString tempString;
-    return convertToMarkupString(getStringValueFromElement(delem, tempString), stringValue, convertNonASCII);
+    return OFStandard::convertToMarkupString(getStringValueFromElement(delem, tempString), stringValue, convertNonASCII);
 }
 
 
@@ -985,7 +987,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
         if (writeEmptyValue || !str4.empty())
         {
             xmlPersonName += "<prefix>";
-            xmlPersonName += convertToMarkupString(str4, xmlString);
+            xmlPersonName += convertToXMLString(str4, xmlString);
             xmlPersonName += "</prefix>";
             newLine = OFTrue;
         }
@@ -998,7 +1000,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
                 newLine = OFFalse;
             }
             xmlPersonName += "<first>";
-            xmlPersonName += convertToMarkupString(str2, xmlString);
+            xmlPersonName += convertToXMLString(str2, xmlString);
             xmlPersonName += "</first>";
             newLine = OFTrue;
         }
@@ -1011,7 +1013,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
                 newLine = OFFalse;
             }
             xmlPersonName += "<middle>";
-            xmlPersonName += convertToMarkupString(str3, xmlString);
+            xmlPersonName += convertToXMLString(str3, xmlString);
             xmlPersonName += "</middle>";
             newLine = OFTrue;
         }
@@ -1024,7 +1026,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
                 newLine = OFFalse;
             }
             xmlPersonName += "<last>";
-            xmlPersonName += convertToMarkupString(str1, xmlString);
+            xmlPersonName += convertToXMLString(str1, xmlString);
             xmlPersonName += "</last>";
             newLine = OFTrue;
         }
@@ -1037,7 +1039,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
                 newLine = OFFalse;
             }
             xmlPersonName += "<suffix>";
-            xmlPersonName += convertToMarkupString(str5, xmlString);
+            xmlPersonName += convertToXMLString(str5, xmlString);
             xmlPersonName += "</suffix>";
             newLine = OFTrue;
         }
@@ -1103,14 +1105,23 @@ const OFString &DSRTypes::convertToPrintString(const OFString &sourceString,
 }
 
 
-const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
-                                                OFString &markupString,
-                                                const OFBool convertNonASCII,
-                                                const OFBool newlineAllowed,
-                                                const OFBool xmlMode)
+const OFString &DSRTypes::convertToHTMLString(const OFString &sourceString,
+                                              OFString &markupString,
+                                              const size_t flags,
+                                              const OFBool newlineAllowed)
 {
-    /* NB: the order of the parameters 'newlineAllowed' and 'xmlMode' is interchanged! */
-    return OFStandard::convertToMarkupString(sourceString, markupString, convertNonASCII, xmlMode, newlineAllowed);
+    const OFBool convertNonASCII = (flags & HF_convertNonASCIICharacters) > 0;
+    const OFStandard::E_MarkupMode markupMode = (flags & HF_XHTML11Compatibility) ? OFStandard::MM_XHTML : (flags & HF_HTML32Compatibility) ? OFStandard::MM_HTML32 : OFStandard::MM_HTML;
+    /* call the real function */
+    return OFStandard::convertToMarkupString(sourceString, markupString, convertNonASCII, markupMode, newlineAllowed);
+}
+
+
+const OFString &DSRTypes::convertToXMLString(const OFString &sourceString,
+                                             OFString &markupString)
+{
+    /* call the real function */
+    return OFStandard::convertToMarkupString(sourceString, markupString, OFFalse /*convertNonASCII*/, OFStandard::MM_XML, OFFalse /*newlineAllowed*/);
 }
 
 
@@ -1365,7 +1376,7 @@ void DSRTypes::printUnknownValueWarningMessage(OFConsole *stream,
 }
 
 
-OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream& stream,
+OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream &stream,
                                        const OFString &stringValue,
                                        const OFString &tagName,
                                        const OFBool writeEmptyValue)
@@ -1375,7 +1386,7 @@ OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream& stream,
     {
         OFString tmpString;
         stream << "<" << tagName << ">";
-        stream << convertToMarkupString(stringValue, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
+        stream << convertToXMLString(stringValue, tmpString);
         stream << "</" << tagName << ">" << OFendl;
         result = OFTrue;
     }
@@ -1383,7 +1394,7 @@ OFBool DSRTypes::writeStringValueToXML(STD_NAMESPACE ostream& stream,
 }
 
 
-OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream& stream,
+OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream &stream,
                                              DcmElement &delem,
                                              const OFString &tagName,
                                              const OFBool writeEmptyValue)
@@ -1406,40 +1417,52 @@ OFBool DSRTypes::writeStringFromElementToXML(STD_NAMESPACE ostream& stream,
 }
 
 
-size_t DSRTypes::createHTMLAnnexEntry(STD_NAMESPACE ostream& docStream,
-                                      STD_NAMESPACE ostream& annexStream,
+size_t DSRTypes::createHTMLAnnexEntry(STD_NAMESPACE ostream &docStream,
+                                      STD_NAMESPACE ostream &annexStream,
                                       const OFString &referenceText,
-                                      size_t &annexNumber)
+                                      size_t &annexNumber,
+                                      const size_t flags)
 {
     /* hyperlink to corresponding annex */
+    const char *attrName = (flags & DSRTypes::HF_XHTML11Compatibility) ? "id" : "name";
     docStream << "[";
     if (!referenceText.empty())
         docStream << referenceText << " ";
-    docStream << "<a name=\"annex_src_" << annexNumber << "\" href=\"#annex_dst_" << annexNumber << "\">Annex " << annexNumber << "</a>]" << OFendl;
+    docStream << "<a " << attrName << "=\"annex_src_" << annexNumber << "\" href=\"#annex_dst_" << annexNumber << "\">Annex " << annexNumber << "</a>]" << OFendl;
     /* create new annex */
-    annexStream << "<h2><a name=\"annex_dst_" << annexNumber << "\" href=\"#annex_src_" << annexNumber << "\">Annex " << annexNumber << "</a></h2>" << OFendl;
+    annexStream << "<h2><a " << attrName << "=\"annex_dst_" << annexNumber << "\" href=\"#annex_src_" << annexNumber << "\">Annex " << annexNumber << "</a></h2>" << OFendl;
     /* increase annex number, return previous number */
     return annexNumber++;
 }
 
 
-size_t DSRTypes::createHTMLFootnote(STD_NAMESPACE ostream& docStream,
-                                    STD_NAMESPACE ostream& footnoteStream,
+size_t DSRTypes::createHTMLFootnote(STD_NAMESPACE ostream &docStream,
+                                    STD_NAMESPACE ostream &footnoteStream,
                                     size_t &footnoteNumber,
-                                    const size_t nodeID)
+                                    const size_t nodeID,
+                                    const size_t flags)
 {
     /* hyperlink to corresponding footnote */
-    docStream << "<sup><small><a name=\"footnote_src_" << nodeID << "_" << footnoteNumber << "\" ";
-    docStream << "href=\"#footnote_dst_" << nodeID << "_" << footnoteNumber << "\">" << footnoteNumber << "</a></small></sup>" << OFendl;
+    const char *attrName = (flags & DSRTypes::HF_XHTML11Compatibility) ? "id" : "name";
+    if (flags & HF_XHTML11Compatibility)
+        docStream << "<span class=\"super\">";
+    else
+        docStream << "<small><sup>";
+    docStream << "<a " << attrName << "=\"footnote_src_" << nodeID << "_" << footnoteNumber << "\" ";
+    docStream << "href=\"#footnote_dst_" << nodeID << "_" << footnoteNumber << "\">" << footnoteNumber << "</a>";
+    if (flags & HF_XHTML11Compatibility)
+        docStream << "</span>" << OFendl;
+    else
+        docStream << "</sup></small>" << OFendl;
     /* create new footnote */
-    footnoteStream << "<b><a name=\"footnote_dst_" << nodeID << "_" << footnoteNumber << "\" ";
+    footnoteStream << "<b><a " << attrName << "=\"footnote_dst_" << nodeID << "_" << footnoteNumber << "\" ";
     footnoteStream << "href=\"#footnote_src_" << nodeID << "_" << footnoteNumber << "\">Footnote " << footnoteNumber << "</a></b>" << OFendl;
     /* increase footnote number, return previous number */
     return footnoteNumber++;
 }
 
 
-OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream& mainStream,
+OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
                                    OFOStringStream &tempStream,
                                    const char *heading)
 {
@@ -1470,7 +1493,12 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream& mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.51  2006-08-15 16:40:03  meichel
+ *  Revision 1.52  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.51  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

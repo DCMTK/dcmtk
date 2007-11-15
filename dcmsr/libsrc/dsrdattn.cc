@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDateTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFBool DSRDateTreeNode::isValid() const
 }
 
 
-OFCondition DSRDateTreeNode::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRDateTreeNode::print(STD_NAMESPACE ostream &stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -86,7 +86,7 @@ OFCondition DSRDateTreeNode::print(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRDateTreeNode::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRDateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                       const size_t flags,
                                       OFConsole *logStream) const
 {
@@ -154,8 +154,8 @@ OFString &DSRDateTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
-                                                   STD_NAMESPACE ostream&  /*annexStream*/,
+OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                                   STD_NAMESPACE ostream & /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t flags,
@@ -168,10 +168,22 @@ OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStr
     {
         OFString htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
-            docStream << "<u>";
+        {
+            if (flags & DSRTypes::HF_XHTML11Compatibility)
+                docStream << "<span class=\"date\">";
+            else if (flags & DSRTypes::HF_HTML32Compatibility)
+                docStream << "<u>";
+            else /* HTML 4.01 */
+                docStream << "<span class=\"under\">";
+        }
         docStream << dicomToReadableDate(getValue(), htmlString);
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
-            docStream << "</u>";
+        {
+            if (flags & DSRTypes::HF_HTML32Compatibility)
+                docStream << "</u>";
+            else
+                docStream << "</span>";
+        }
         docStream << OFendl;
     }
     return result;
@@ -181,7 +193,12 @@ OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
- *  Revision 1.20  2006-08-15 16:40:03  meichel
+ *  Revision 1.21  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.20  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ OFBool DSRNumericMeasurementValue::isEmpty() const
 }
 
 
-OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRNumericMeasurementValue::print(STD_NAMESPACE ostream &stream,
                                               const size_t /*flags*/) const
 {
     if (isEmpty())
@@ -158,7 +158,7 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
                                                  const size_t flags,
                                                  OFConsole *logStream) const
 {
@@ -283,8 +283,8 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream& docStream,
-                                                   STD_NAMESPACE ostream&  /*annexStream*/,
+OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream &docStream,
+                                                   STD_NAMESPACE ostream & /*annexStream*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
@@ -298,12 +298,24 @@ OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream& docStr
         const OFBool fullCode = (flags & DSRTypes::HF_renderNumericUnitCodes) &&
             ((flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately));
         if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
-            docStream << "<u>";
-        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, (flags & DSRTypes::HF_convertNonASCIICharacters) > 0) << " ";
+        {
+            if (flags & DSRTypes::HF_XHTML11Compatibility)
+                docStream << "<span class=\"num\">";
+            else if (flags & DSRTypes::HF_HTML32Compatibility)
+                docStream << "<u>";
+            else /* HTML 4.01 */
+                docStream << "<span class=\"under\">";
+        }
+        docStream << DSRTypes::convertToHTMLString(NumericValue, htmlString, flags) << " ";
         /* render full code of the measurement unit (value first?) or code value only */
         MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, (flags & DSRTypes::HF_useCodeMeaningAsUnit) == 0 /*valueFirst*/);
         if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
-            docStream << "</u>";
+        {
+            if (flags & DSRTypes::HF_HTML32Compatibility)
+                docStream << "</u>";
+            else
+                docStream << "</span>";
+        }
     }
     if (!ValueQualifier.isEmpty())
     {
@@ -426,7 +438,12 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.23  2006-08-15 16:40:03  meichel
+ *  Revision 1.24  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.23  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

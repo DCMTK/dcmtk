@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:26 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ OFBool DSRDocumentTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
-OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream &stream,
                                        const size_t flags) const
 {
     if (RelationshipType != RT_isRoot)
@@ -237,7 +237,7 @@ OFCondition DSRDocumentTreeNode::readXMLContentItem(const DSRXMLDocument & /*doc
 }
 
 
-OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                           const size_t flags,
                                           OFConsole *logStream) const
 {
@@ -301,7 +301,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream& stream,
 }
 
 
-void DSRDocumentTreeNode::writeXMLItemStart(STD_NAMESPACE ostream& stream,
+void DSRDocumentTreeNode::writeXMLItemStart(STD_NAMESPACE ostream &stream,
                                             const size_t flags,
                                             const OFBool closingBracket) const
 {
@@ -328,7 +328,7 @@ void DSRDocumentTreeNode::writeXMLItemStart(STD_NAMESPACE ostream& stream,
 }
 
 
-void DSRDocumentTreeNode::writeXMLItemEnd(STD_NAMESPACE ostream& stream,
+void DSRDocumentTreeNode::writeXMLItemEnd(STD_NAMESPACE ostream &stream,
                                           const size_t flags) const
 {
     /* close content item */
@@ -345,8 +345,8 @@ void DSRDocumentTreeNode::writeXMLItemEnd(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream& docStream,
-                                            STD_NAMESPACE ostream& annexStream,
+OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
+                                            STD_NAMESPACE ostream &annexStream,
                                             const size_t nestingLevel,
                                             size_t &annexNumber,
                                             const size_t flags,
@@ -357,11 +357,13 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream& docStream,
         printInvalidContentItemMessage(logStream, "Rendering", this);
     /* declare hyperlink target */
     if (ReferenceTarget)
-        docStream << "<a name=\"content_item_" << getNodeID() << "\">" << OFendl;
+    {
+        const char *attrName = (flags & DSRTypes::HF_XHTML11Compatibility) ? "id" : "name";
+        const char *closeElm = (flags & DSRTypes::HF_XHTML11Compatibility) ? " /" : "></a";
+        docStream << "<a " << attrName << "=\"content_item_" << getNodeID() << "\"" << closeElm << ">" << OFendl;
+    }
     /* render content item */
     OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
-    if (ReferenceTarget)
-        docStream << "</a>" << OFendl;
     /* render child nodes */
     if (result.good())
         result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, logStream);
@@ -454,8 +456,8 @@ OFCondition DSRDocumentTreeNode::writeContentItem(DcmItem & /*dataset*/,
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream&  /*docStream*/,
-                                                       STD_NAMESPACE ostream&  /*annexStream*/,
+OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream & /*docStream*/,
+                                                       STD_NAMESPACE ostream & /*annexStream*/,
                                                        const size_t /*nestingLevel*/,
                                                        size_t & /*annexNumber*/,
                                                        const size_t /*flags*/,
@@ -879,13 +881,14 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream& docStream,
+OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream &docStream,
                                                        const size_t flags,
                                                        OFConsole *logStream) const
 {
     if (!(flags & HF_renderItemInline) && (flags & HF_renderItemsSeparately))
     {
-        const char *lineBreak = (flags & HF_renderSectionTitlesInline) ? " " : "<br>";
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " :
+                                (flags & DSRTypes::HF_XHTML11Compatibility) ? "<br />" : "<br>";
         /* flag indicating whether line is empty or not */
         OFBool writeLine = OFFalse;
         if (!ConceptName.getCodeMeaning().empty())
@@ -910,7 +913,15 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream& do
             if (writeLine)
                 docStream << " ";
             OFString tmpString;
-            docStream << "<small>(observed: " << dicomToReadableDateTime(ObservationDateTime, tmpString) << ")</small>";
+            if (flags & HF_XHTML11Compatibility)
+                docStream << "<span class=\"observe\">";
+            else
+                docStream << "<small>";
+            docStream << "(observed: " << dicomToReadableDateTime(ObservationDateTime, tmpString) << ")";
+            if (flags & HF_XHTML11Compatibility)
+                docStream << "</span>";
+            else
+                docStream << "</small>";
             writeLine = OFTrue;
         }
         if (writeLine)
@@ -920,8 +931,8 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream& do
 }
 
 
-OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& docStream,
-                                                      STD_NAMESPACE ostream& annexStream,
+OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &docStream,
+                                                      STD_NAMESPACE ostream &annexStream,
                                                       const size_t nestingLevel,
                                                       size_t &annexNumber,
                                                       const size_t flags,
@@ -956,13 +967,28 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& doc
                     if (paragraphFlag)
                     {
                         /* inside paragraph: line break */
-                        docStream << "<br>" << OFendl;
+                        if (flags & HF_XHTML11Compatibility)
+                            docStream << "<br />" << OFendl;
+                        else
+                            docStream << "<br>" << OFendl;
                     } else {
                         /* open paragraph */
-                        docStream << "<p><small>" << OFendl;
+                        if (flags & HF_XHTML11Compatibility)
+                        {
+                            docStream << "<div class=\"small\">" << OFendl;
+                            docStream << "<p>" << OFendl;
+                        } else {
+                            docStream << "<p>" << OFendl;
+                            docStream << "<small>" << OFendl;
+                        }
                         paragraphFlag = OFTrue;
                     }
-                    docStream << "<u>" << relationshipText << "</u>: ";
+                    if (newFlags & HF_XHTML11Compatibility)
+                        docStream << "<span class=\"relation\">" << relationshipText << "</span>: ";
+                    else if (flags & DSRTypes::HF_HTML32Compatibility)
+                        docStream << "<u>" << relationshipText << "</u>: ";
+                    else /* HTML 4.01 */
+                        docStream << "<span class=\"under\">" << relationshipText << "</span>: ";
                     /* expand short nodes with no children inline (or depending on 'flags' all nodes) */
                     if ((flags & HF_alwaysExpandChildrenInline) ||
                         (!(flags & HF_neverExpandChildrenInline) && !node->hasChildNodes() && node->isShort(flags)))
@@ -985,11 +1011,19 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& doc
                         else
                             docStream << node->getConceptName().getCodeMeaning() << " ";
                         /* render annex heading and reference */
-                        createHTMLAnnexEntry(docStream, annexStream, "" /*referenceText*/, annexNumber);
+                        createHTMLAnnexEntry(docStream, annexStream, "" /*referenceText*/, annexNumber, newFlags);
+                        if (flags & HF_XHTML11Compatibility)
+                            annexStream << "<div class=\"para\">" << OFendl;
+                        else
+                            annexStream << "<div>" << OFendl;
                         /* create memory output stream for the temporal annex */
                         OFOStringStream tempAnnexStream;
                         /* render HTML code (directly to the annex) */
                         result = node->renderHTML(annexStream, tempAnnexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_currentlyInsideAnnex, logStream);
+                        annexStream << "</div>" << OFendl;
+                        /* use empty paragraph for bottom margin */
+                        if (!(flags & HF_XHTML11Compatibility))
+                            annexStream << "<p>" << OFendl;
                         /* append temporary stream to main stream */
                         if (result.good())
                             result = appendStream(annexStream, tempAnnexStream);
@@ -998,12 +1032,24 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& doc
                     /* close paragraph */
                     if (paragraphFlag)
                     {
-                        docStream << "</small></p>" << OFendl;
+                        if (flags & HF_XHTML11Compatibility)
+                        {
+                            docStream << "</p>" << OFendl;
+                            docStream << "</div>" << OFendl;
+                        } else {
+                            docStream << "</small>" << OFendl;
+                            docStream << "</p>" << OFendl;
+                        }
                         paragraphFlag = OFFalse;
                     }
                     /* begin new paragraph */
                     if (flags & HF_renderItemsSeparately)
-                        docStream << "<p>" << OFendl;
+                    {
+                        if (flags & HF_XHTML11Compatibility)
+                            docStream << "<div class=\"para\">" << OFendl;
+                        else
+                            docStream << "<div>" << OFendl;
+                    }
                     /* write footnote text to temporary stream */
                     if (newFlags & HF_createFootnoteReferences)
                     {
@@ -1013,9 +1059,16 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& doc
                         if (result.good())
                         {
                             /* tags are closed automatically in 'node->renderHTMLChildNodes()' */
-                            tempDocStream << "<p><small>" << OFendl;
+                            if (flags & HF_XHTML11Compatibility)
+                            {
+                                tempDocStream << "<div class=\"small\">" << OFendl;
+                                tempDocStream << "<p>" << OFendl;
+                            } else {
+                                tempDocStream << "<p>" << OFendl;
+                                tempDocStream << "<small>" << OFendl;
+                            }
                             /* render footnote text and reference */
-                            createHTMLFootnote(docStream, tempDocStream, footnoteNumber, node->getNodeID());
+                            createHTMLFootnote(docStream, tempDocStream, footnoteNumber, node->getNodeID(), flags);
                             /* render child nodes to temporary stream */
                             result = node->renderHTMLChildNodes(tempDocStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags, logStream);
                         }
@@ -1025,14 +1078,28 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream& doc
                     }
                     /* end paragraph */
                     if (flags & HF_renderItemsSeparately)
-                        docStream << "</p>" << OFendl;
+                    {
+                        docStream << "</div>" << OFendl;
+                        /* use empty paragraph for bottom margin */
+                        if (!(flags & HF_XHTML11Compatibility))
+                            docStream << "<p>" << OFendl;
+                    }
                 }
             } else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.gotoNext());
         /* close last open paragraph (if any) */
         if (paragraphFlag)
-            docStream << "</small></p>" << OFendl;
+        {
+            if (flags & HF_XHTML11Compatibility)
+            {
+                docStream << "</p>" << OFendl;
+                docStream << "</div>" << OFendl;
+            } else {
+                docStream << "</small>" << OFendl;
+                docStream << "</p>" << OFendl;
+            }
+        }
         /* append temporary stream to main stream */
         if (result.good())
             result = appendStream(docStream, tempDocStream);
@@ -1082,7 +1149,12 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.44  2006-08-15 16:40:03  meichel
+ *  Revision 1.45  2007-11-15 16:45:26  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.44  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
