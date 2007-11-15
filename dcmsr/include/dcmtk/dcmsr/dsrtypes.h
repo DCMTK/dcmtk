@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:32:48 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@
 // name of the private coding scheme
 #define OFFIS_CODING_SCHEME_NAME "OFFIS DCMTK Coding Scheme"
 // organization responsible for the private coding scheme
-#define OFFIS_RESPONSIBLE_ORGANIZATION "Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany"
+#define OFFIS_RESPONSIBLE_ORGANIZATION "OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany"
 
 // protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
 #define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
@@ -190,7 +190,7 @@ class DSRTypes
     /// external: render codes even if they appear inline
     static const size_t HF_renderInlineCodes;
 
-    /// external: render code details as a tooltip
+    /// external: render code details as a tooltip (not with HTML 3.2)
     static const size_t HF_useCodeDetailsTooltip;
 
     /// external: render concept name codes (default: code meaning only)
@@ -220,11 +220,17 @@ class DSRTypes
     /// external: copy Cascading Style Sheet (CSS) content to HTML file
     static const size_t HF_copyStyleSheetContent;
 
-    /// external: output compatible to HTML version 3.2 (default: 4.0)
-    static const size_t HF_version32Compatibility;
+    /// external: output compatible to HTML version 3.2 (default: 4.01)
+    static const size_t HF_HTML32Compatibility;
+
+    /// external: output compatible to XHTML version 1.1 (default: HTML 4.01)
+    static const size_t HF_XHTML11Compatibility;
 
     /// external: add explicit reference to HTML document type (DTD)
     static const size_t HF_addDocumentTypeReference;
+
+    /// external: omit generator meta element referring to the DCMTK
+    static const size_t HF_omitGeneratorMetaElement;
 
     /// internal: render items separately (for container with SEPARATE flag)
     static const size_t HF_renderItemsSeparately;
@@ -866,28 +872,34 @@ class DSRTypes
     static const OFString &convertToPrintString(const OFString &sourceString,
                                                 OFString &printString);
 
-    /** convert character string to HTML/XML mnenonic string.
-     *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replace by the
-     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue
-     *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
-     *  not allow to specify the character set).
+    /** convert character string to HTML mnenonic string.
+     *  Characters with special meaning for HTML (e.g. '<' and '&') are replace by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'HF_convertNonASCIICharacters'
+     *  is set all characters > #127 are also converted (useful if only HTML 3.2 is supported which
+     *  does not allow to specify the character set).
      ** @param  sourceString     source string to be converted
      *  @param  markupString     reference to character string where the result should be stored
-     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&#nnn;)
-     *                           if OFTrue
+     *  @param  flags            optional flags, checking HF_convertNonASCIICharacters,  
+                                 HF_HTML32Compatibility and HF_XHTML11Compatibility only
      *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
      *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
      *                           The following combinations are accepted: LF, CR, LF CR, CF LF.
-     *  @param  xmlMode          convert to XML markup string if OFTrue, HTML string otherwise.
-     *                           LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the
-     *                           flag 'newlineAllowed' has no meaning in this case.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
-    static const OFString &convertToMarkupString(const OFString &sourceString,
-                                                 OFString &markupString,
-                                                 const OFBool convertNonASCII = OFFalse,
-                                                 const OFBool newlineAllowed = OFFalse,
-                                                 const OFBool xmlMode = OFFalse);
+    static const OFString &convertToHTMLString(const OFString &sourceString,
+                                               OFString &markupString,
+                                               const size_t flags = 0,
+                                               const OFBool newlineAllowed = OFFalse);
+
+    /** convert character string to XML mnenonic string.
+     *  Characters with special meaning for XML (e.g. '<' and '&') are replace by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").
+     ** @param  sourceString  source string to be converted
+     *  @param  markupString  reference to character string where the result should be stored
+     ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
+     */
+    static const OFString &convertToXMLString(const OFString &sourceString,
+                                              OFString &markupString);
 
     /** check string for valid UID format.
      *  The string should be non-empty and consist only of interger numbers separated by "." where
@@ -1149,7 +1161,7 @@ class DSRTypes
      *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
      ** @return OFTrue if tag/value has been written, OFFalse otherwise
      */
-    static OFBool writeStringValueToXML(STD_NAMESPACE ostream& stream,
+    static OFBool writeStringValueToXML(STD_NAMESPACE ostream &stream,
                                         const OFString &stringValue,
                                         const OFString &tagName,
                                         const OFBool writeEmptyValue = OFFalse);
@@ -1163,7 +1175,7 @@ class DSRTypes
      *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
      ** @return OFTrue if tag/value has been written, OFFalse otherwise
      */
-    static OFBool writeStringFromElementToXML(STD_NAMESPACE ostream& stream,
+    static OFBool writeStringFromElementToXML(STD_NAMESPACE ostream &stream,
                                               DcmElement &delem,
                                               const OFString &tagName,
                                               const OFBool writeEmptyValue = OFFalse);
@@ -1176,12 +1188,14 @@ class DSRTypes
      *  @param  referenceText  optional text added to the main document (e.g. 'for details see')
      *  @param  annexNumber    reference to the variable where the current annex number is stored.
      *                         Value is increased automatically by 1 after the new entry has been added.
+     *  @param  flags          optional flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return current annex number after the new entry has been added
      */
-    static size_t createHTMLAnnexEntry(STD_NAMESPACE ostream& docStream,
-                                       STD_NAMESPACE ostream& annexStream,
+    static size_t createHTMLAnnexEntry(STD_NAMESPACE ostream &docStream,
+                                       STD_NAMESPACE ostream &annexStream,
                                        const OFString &referenceText,
-                                       size_t &annexNumber);
+                                       size_t &annexNumber,
+                                       const size_t flags = 0);
 
     /** create an HTML footnote with hyperlinks
      ** @param  docStream       output stream used for the main document
@@ -1190,12 +1204,14 @@ class DSRTypes
      *                          Value is increased automatically by 1 after the new entry has been added.
      *  @param  nodeID          unique numerical identifier of the current node for which this footnote
      *                          is created.  Used to create a unique name for the hyperlink.
+     *  @param  flags           optional flag used to customize the output (see DSRTypes::HF_xxx)
      ** @return current footnote number after the new entry has been added
      */
-    static size_t createHTMLFootnote(STD_NAMESPACE ostream& docStream,
-                                     STD_NAMESPACE ostream& footnoteStream,
+    static size_t createHTMLFootnote(STD_NAMESPACE ostream &docStream,
+                                     STD_NAMESPACE ostream &footnoteStream,
                                      size_t &footnoteNumber,
-                                     const size_t nodeID);
+                                     const size_t nodeID,
+                                     const size_t flags = 0);
 
     /** append one output stream to another.
      ** @param  mainStream  stream to which the other should be added
@@ -1204,7 +1220,7 @@ class DSRTypes
      *                      This string is only added if 'tempStream' is not empty.
      ** @return status, EC_Normal if stream has been added successfully, an error code otherwise
      */
-    static OFCondition appendStream(STD_NAMESPACE ostream& mainStream,
+    static OFCondition appendStream(STD_NAMESPACE ostream &mainStream,
                                     OFOStringStream &tempStream,
                                     const char *heading = NULL);
 };
@@ -1216,7 +1232,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.49  2006-08-15 16:40:03  meichel
+ *  Revision 1.50  2007-11-15 16:32:48  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
+ *  standard HTML from version 4.0 to 4.01 (strict).
+ *
+ *  Revision 1.49  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
