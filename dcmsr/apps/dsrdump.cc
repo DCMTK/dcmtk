@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom structured reporting file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:02 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:22:42 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static OFCondition dumpFile(STD_NAMESPACE ostream& out,
+static OFCondition dumpFile(STD_NAMESPACE ostream &out,
                             const char *ifname,
                             const E_FileReadMode readMode,
                             const E_TransferSyntax xfer,
@@ -300,7 +300,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.26  2006-08-15 16:40:02  meichel
+ * Revision 1.27  2007-11-15 16:22:42  joergr
+ * Fixed coding style to be more consistent.
+ *
+ * Revision 1.26  2006/08/15 16:40:02  meichel
  * Updated the code in module dcmsr to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

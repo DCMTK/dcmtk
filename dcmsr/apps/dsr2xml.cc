@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 14:16:15 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2007-11-15 16:22:42 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static OFCondition writeFile(STD_NAMESPACE ostream& out,
+static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const char *ifname,
                              const E_FileReadMode readMode,
                              const E_TransferSyntax xfer,
@@ -366,7 +366,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.34  2006-12-13 14:16:15  joergr
+ * Revision 1.35  2007-11-15 16:22:42  joergr
+ * Fixed coding style to be more consistent.
+ *
+ * Revision 1.34  2006/12/13 14:16:15  joergr
  * Added new command line option that allows to check all data elements with
  * string values for extended characters, not only those affected by Specific
  * CharacterSet (0008,0005).
