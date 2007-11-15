@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:42 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ OFBool DSRTemporalCoordinatesValue::isShort(const size_t flags) const
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRTemporalCoordinatesValue::print(STD_NAMESPACE ostream &stream,
                                                const size_t flags) const
 {
     /* TemporalRangeType */
@@ -158,7 +158,7 @@ OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
                                                   const size_t flags,
                                                   OFConsole * /*logStream*/) const
 {
@@ -233,8 +233,8 @@ OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream& docStream,
-                                                    STD_NAMESPACE ostream& annexStream,
+OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docStream,
+                                                    STD_NAMESPACE ostream &annexStream,
                                                     size_t &annexNumber,
                                                     const size_t flags,
                                                     OFConsole * /*logStream*/) const
@@ -244,7 +244,8 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream& docSt
     /* render data */
     if (!isShort(flags))
     {
-        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " : "<br>";
+        const char *lineBreak = (flags & DSRTypes::HF_renderSectionTitlesInline) ? " " :
+                                (flags & DSRTypes::HF_XHTML11Compatibility) ? "<br />" : "<br>";
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
             docStream << OFendl << "<p>" << OFendl;
@@ -264,7 +265,7 @@ OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream& docSt
             }
             docStream << "</p>";
         } else {
-            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
+            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber, flags);
             annexStream << "<p>" << OFendl;
             /* render data list (= print)*/
             if (!SamplePositionList.isEmpty())
@@ -355,7 +356,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.14  2006-08-15 16:40:03  meichel
+ *  Revision 1.15  2007-11-15 16:45:42  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.14  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

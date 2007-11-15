@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:42 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ OFBool DSRTextTreeNode::isShort(const size_t /*flags*/) const
 }
 
 
-OFCondition DSRTextTreeNode::print(STD_NAMESPACE ostream& stream,
+OFCondition DSRTextTreeNode::print(STD_NAMESPACE ostream &stream,
                                    const size_t flags) const
 {
     OFCondition result = DSRDocumentTreeNode::print(stream, flags);
@@ -96,7 +96,7 @@ OFCondition DSRTextTreeNode::print(STD_NAMESPACE ostream& stream,
 }
 
 
-OFCondition DSRTextTreeNode::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRTextTreeNode::writeXML(STD_NAMESPACE ostream &stream,
                                       const size_t flags,
                                       OFConsole *logStream) const
 {
@@ -133,8 +133,8 @@ OFCondition DSRTextTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 }
 
 
-OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStream,
-                                                   STD_NAMESPACE ostream&  /*annexStream*/,
+OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
+                                                   STD_NAMESPACE ostream & /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
                                                    const size_t flags,
@@ -145,9 +145,9 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStr
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
-        docStream << "\"" << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0) << "\"" << OFendl;
+        docStream << "\"" << convertToHTMLString(getValue(), htmlString, flags) << "\"" << OFendl;
     else
-        docStream << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0, OFTrue /*newlineAllowed*/) << OFendl;
+        docStream << convertToHTMLString(getValue(), htmlString, flags, OFTrue /*newlineAllowed*/) << OFendl;
     return result;
 }
 
@@ -155,7 +155,10 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream& docStr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.24  2006-08-15 16:40:03  meichel
+ *  Revision 1.25  2007-11-15 16:45:42  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.24  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

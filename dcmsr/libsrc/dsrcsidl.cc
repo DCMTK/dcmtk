@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2006, OFFIS
+ *  Copyright (C) 2003-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:45:42 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,7 +207,7 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream& stream,
+OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream &stream,
                                                         const size_t flags) const
 {
     OFString tmpString;
@@ -220,13 +220,13 @@ OFCondition DSRCodingSchemeIdentificationList::writeXML(STD_NAMESPACE ostream& s
         /* check whether list item really exists */
         if (item != NULL)
         {
-            stream << "<scheme designator=\"" << convertToMarkupString(item->CodingSchemeDesignator, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/) << "\">" << OFendl;
-            writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeRegistry, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "registry", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+            stream << "<scheme designator=\"" << convertToXMLString(item->CodingSchemeDesignator, tmpString) << "\">" << OFendl;
+            writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeRegistry, tmpString), "registry", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             writeStringValueToXML(stream, item->CodingSchemeUID, "uid", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-            writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeExternalID, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "identifier", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-            writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeName, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "name", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-            writeStringValueToXML(stream, convertToMarkupString(item->CodingSchemeVersion, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "version", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-            writeStringValueToXML(stream, convertToMarkupString(item->ResponsibleOrganization, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/), "organization", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+            writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeExternalID, tmpString), "identifier", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+            writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeName, tmpString), "name", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+            writeStringValueToXML(stream, convertToXMLString(item->CodingSchemeVersion, tmpString), "version", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+            writeStringValueToXML(stream, convertToXMLString(item->ResponsibleOrganization, tmpString), "organization", (flags & DSRTypes::XF_writeEmptyTags) > 0);
             stream << "</scheme>" << OFendl;
         }
         ++iter;
@@ -575,7 +575,10 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.9  2006-08-15 16:40:03  meichel
+ *  Revision 1.10  2007-11-15 16:45:42  joergr
+ *  Added support for output in XHTML 1.1 format.
+ *
+ *  Revision 1.9  2006/08/15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
