@@ -1,0 +1,103 @@
+/* Copyright (C) 2000-2007 OFFIS e.V.
+   Sample CSS for XHTML output of "dsr2html"
+*/
+
+body {
+	background-color: #dddddd;
+	font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	background-color: #000099;
+	color: white;
+	width: 100%;
+}
+
+h1 {
+	padding: 4px;
+	font-size: x-large;
+	font-weight: bold;
+}
+
+h2 {
+	padding: 3px;
+	font-size: large;
+}
+
+h3, h4, h5, h6 {
+	padding: 2px;
+}
+
+h4, h5, h6 {
+	font-size: medium;
+}
+
+h2 a[id] {
+	color: white;
+	text-decoration: none;
+}
+
+td {
+	background-color: #ccccff;
+	font-family: sans-serif;
+	padding: 4px;
+}
+
+a[href] {
+	color: maroon;
+}
+
+a:hover {
+	color: red;
+}
+
+a[id]:hover {
+    text-decoration: underline;
+}
+
+div.para {
+    background-color: white;
+	text-align: justify;
+    margin-bottom: 1em;
+}
+
+div.small {
+	width: 100%;
+	color: black;
+	text-align: left;
+	font-size: small;
+}
+
+div.footnote {
+	background-color: #dddddd;
+	color: gray;
+	font-size: small;
+}
+
+div.footnote a {
+	color: gray;
+}
+
+div.footnote a:hover {
+    color: black;
+}
+
+span.under, span.relation, span.date, span.time, span.datetime, span.pname, span.num, span.code {
+    text-decoration: underline;
+}
+
+span.observe {
+	color: gray;
+	font-size: small;
+}
+
+span.super {
+	font-size: x-small;
+	vertical-align: super;
+}
+
+hr {
+	color: silver;
+	background: transparent;
+	border: thin;
+}

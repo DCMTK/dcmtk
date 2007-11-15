@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:02 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-15 16:25:07 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-static OFCondition renderFile(STD_NAMESPACE ostream& out,
+static OFCondition renderFile(STD_NAMESPACE ostream &out,
                               const char *ifname,
                               const char *cssName,
                               const char *defaultCharset,
@@ -162,13 +162,13 @@ int main(int argc, char *argv[])
 
     SetDebugLevel(( 0 ));
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Render DICOM SR file and data set to HTML", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Render DICOM SR file and data set to HTML/XHTML", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
     cmd.addParam("dsrfile-in",   "DICOM SR input filename to be rendered", OFCmdParam::PM_Mandatory);
-    cmd.addParam("htmlfile-out", "HTML output filename (default: stdout)", OFCmdParam::PM_Optional);
+    cmd.addParam("htmlfile-out", "HTML/XHTML output filename (default: stdout)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -201,15 +201,16 @@ int main(int argc, char *argv[])
                                                           "greek, cyrillic, arabic, hebrew)\n"
                                                           "assume c if undeclared extended charset found");
     cmd.addGroup("output options:");
-      cmd.addSubGroup("HTML compatibility:");
+      cmd.addSubGroup("HTML/XHTML compatibility:");
         cmd.addOption("--html-3.2",             "+H3",    "use only HTML version 3.2 compatible features");
-        cmd.addOption("--html-4.0",             "+H4",    "allow all HTML version 4.0 features (default)");
+        cmd.addOption("--html-4.0",             "+H4",    "allow all HTML version 4.01 features (default)");
+        cmd.addOption("--xhtml-1.1",            "+X1",    "comply with XHTML version 1.1 specification");
         cmd.addOption("--add-document-type",    "+Hd",    "add reference to SGML document type definition");
-      cmd.addSubGroup("cascading style sheet (CSS), only with HTML 4.0:");
+      cmd.addSubGroup("cascading style sheet (CSS), not with HTML 3.2:");
         cmd.addOption("--css-reference",        "+Sr", 1, "URL : string",
-                                                          "add reference to specified CSS to HTML page");
+                                                          "add reference to specified CSS to document");
         cmd.addOption("--css-file",             "+Sf", 1, "filename : string",
-                                                          "embed content of specified CSS into HTML page");
+                                                          "embed content of specified CSS into document");
       cmd.addSubGroup("general rendering:");
         cmd.addOption("--expand-inline",        "+Ri",    "expand short content items inline (default)");
         cmd.addOption("--never-expand-inline",  "-Ri",    "never expand content items inline");
@@ -318,11 +319,11 @@ int main(int argc, char *argv[])
         /* HTML compatibility */
         cmd.beginOptionBlock();
         if (cmd.findOption("--html-3.2"))
-            opt_renderFlags |= DSRTypes::HF_version32Compatibility;
+            opt_renderFlags = (opt_renderFlags & ~DSRTypes::HF_XHTML11Compatibility) | DSRTypes::HF_HTML32Compatibility;
         if (cmd.findOption("--html-4.0"))
-        {
-            /* default */
-        }
+            opt_renderFlags = (opt_renderFlags & ~(DSRTypes::HF_XHTML11Compatibility | DSRTypes::HF_HTML32Compatibility));
+        if (cmd.findOption("--xhtml-1.1"))
+            opt_renderFlags = (opt_renderFlags & ~DSRTypes::HF_HTML32Compatibility) | DSRTypes::HF_XHTML11Compatibility | DSRTypes::HF_addDocumentTypeReference;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--add-document-type"))
@@ -332,13 +333,13 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--css-reference"))
         {
-          	app.checkDependence("--css-reference", "--html-4.0", !(opt_renderFlags & DSRTypes::HF_version32Compatibility));
+          	app.checkConflict("--css-reference", "--html-3.2", opt_renderFlags & DSRTypes::HF_HTML32Compatibility);
             opt_renderFlags &= ~DSRTypes::HF_copyStyleSheetContent;
             app.checkValue(cmd.getValue(opt_cssName));
         }
         if (cmd.findOption("--css-file"))
         {
-          	app.checkDependence("--css-file", "--html-4.0", !(opt_renderFlags & DSRTypes::HF_version32Compatibility));
+          	app.checkConflict("--css-file", "--html-3.2", opt_renderFlags & DSRTypes::HF_HTML32Compatibility);
             opt_renderFlags |= DSRTypes::HF_copyStyleSheetContent;
             app.checkValue(cmd.getValue(opt_cssName));
         }
@@ -389,7 +390,10 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--render-all-codes"))
             opt_renderFlags |= DSRTypes::HF_renderAllCodes;
         if (cmd.findOption("--code-details-tooltip"))
+        {
+          	app.checkConflict("--code-details-tooltip", "--html-3.2", opt_renderFlags & DSRTypes::HF_HTML32Compatibility);
             opt_renderFlags |= DSRTypes::HF_useCodeDetailsTooltip;
+        }
     }
 
     SetDebugLevel((opt_debugMode));
@@ -428,7 +432,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.27  2006-08-15 16:40:02  meichel
+ * Revision 1.28  2007-11-15 16:25:07  joergr
+ * Added support for output in XHTML 1.1 format.
+ *
+ * Revision 1.27  2006/08/15 16:40:02  meichel
  * Updated the code in module dcmsr to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

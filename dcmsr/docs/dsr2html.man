@@ -1,9 +1,9 @@
 /*!
 
 \if MANPAGES
-\page dsr2html Render DICOM SR file and data set to HTML
+\page dsr2html Render DICOM SR file and data set to HTML/XHTML
 \else
-\page dsr2html dsr2html: Render DICOM SR file and data set to HTML
+\page dsr2html dsr2html: Render DICOM SR file and data set to HTML/XHTML
 \endif
 
 \section synopsis SYNOPSIS
@@ -16,7 +16,8 @@ dsr2html [options] dsrfile-in [htmlfile-out]
 
 The \b dsr2html utility renders the contents of a DICOM Structured Reporting
 (SR) document (file format or raw data set) to HTML (Hyper Text Markup
-Language) which is compatible with version 3.2 or 4.0.
+Language) version 3.2 or 4.01 as well as to XHTML (Extensible Hyper Text Markup
+Language) version 1.1.
 
 If \b dsr2html reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -31,7 +32,7 @@ with a particular transfer syntax.
 \verbatim
 dsrfile-in    DICOM SR input filename to be rendered
 
-htmlfile-out  HTML output filename (default: stdout)
+htmlfile-out  HTML/XHTML output filename (default: stdout)
 \endverbatim
 
 \section options OPTIONS
@@ -113,24 +114,27 @@ character set:
 
 \subsection output_options output options
 \verbatim
-HTML compatibility:
+HTML/XHTML compatibility:
 
   +H3  --html-3.2
          use only HTML version 3.2 compatible features
 
   +H4  --html-4.0
-         allow all HTML version 4.0 features (default)
+         allow all HTML version 4.01 features (default)
+
+  +X1  --xhtml-1.1
+         comply with XHTML version 1.1 specification
 
   +Hd  --add-document-type
          add reference to SGML document type definition
 
-cascading style sheet (CSS), only with HTML 4.0:
+cascading style sheet (CSS), not with HTML 3.2:
 
   +Sr  --css-reference  URL : string
-         add reference to specified CSS to HTML page
+         add reference to specified CSS to document
 
   +Sf  --css-file  filename : string
-         embed content of specified CSS into HTML page
+         embed content of specified CSS into document
 
 general rendering:
 
@@ -238,13 +242,18 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+\section files FILES
+
+<em><datadir>/report.css</em> - Sample Cascading Stylesheet file for HTML
+<em><datadir>/reportx.css</em> - Sample Cascading Stylesheet file for XHTML
+
 \section see_also SEE ALSO
 
 <b>dcmconv</b>(1)
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2000-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

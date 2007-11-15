@@ -22,7 +22,7 @@ LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS)
 
 objs = dsrdump.o dsr2html.o dsr2xml.o xml2dsr.o
 progs = dsrdump dsr2html dsr2xml xml2dsr
-support = dsr2xml.xsd
+support = dsr2xml.xsd report.css reportx.css
 
 
 all: $(progs)
