@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.11.23 (eichelberg)
+
+- Copy assignment operators in dcmdata now safe for self assignment
+  Affects: dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrpobw.cc
+
+- Removed unwanted output on console when debug flag is not set
+  Affects: dcmdata/apps/mdfconen.cc
+
+- Removed non-existing length to end attributes outside group 0008
+  Affects: dcmdata/libsrc/dicom.dic
+
 **** Changes from 2007.11.15 (riesmeier)
 
 - Introduced new markup mode for convertToMarkupString() that is used to
