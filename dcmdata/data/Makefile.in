@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmdata/etc
+#	Makefile for dcmdata/data
 #
 
 @SET_MAKE@
@@ -11,10 +11,16 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+files = dcm2xml.dtd dumppat.txt SC.dump VLP.dump
+
 
 all:
 
 install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
+	for file in $(files); do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
+	done
 
 clean:
 	rm -f $(TRASH)
