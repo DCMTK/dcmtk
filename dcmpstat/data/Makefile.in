@@ -1,0 +1,31 @@
+#
+#	Makefile for dcmpstat/data
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+files = philips.lut
+
+
+all:
+
+install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
+	for file in $(files); do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
+	done
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean:
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+dependencies:

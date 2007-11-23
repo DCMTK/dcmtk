@@ -2,7 +2,6 @@
 #	Makefile for dcmpstat/tests
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -27,13 +26,12 @@ LOCALINCLUDES = -I$(dcmnetdir)/include -I$(ofstddir)/include -I$(dcmdatadir)/inc
 	-I$(dcmimgledir)/include -I$(dcmsrdir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 	-L$(dcmdatadir)/libsrc -L$(dcmsigndir)/libsrc -L$(dcmtlsdir)/libsrc \
-	-L$(dcmqrdbdir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmsrdir)/libsrc 
+	-L$(dcmqrdbdir)/libsrc -L$(dcmimgledir)/libsrc -L$(dcmsrdir)/libsrc
 LOCALLIBS = -ldcmpstat -ldcmdsig -ldcmimgle -ldcmsr -ldcmqrdb -ldcmnet -ldcmtls \
 	-ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 
 objs = msgserv.o
 progs = msgserv
-support = philips.lut
 
 
 all: $(progs)
@@ -42,13 +40,7 @@ msgserv: msgserv.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ msgserv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
-install: all install-support
-
-install-support:
-	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
-	for file in $(support); do \
-		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
-	done
+install: all
 
 
 clean:
