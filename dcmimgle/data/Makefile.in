@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmimgle/tests
+#	Makefile for dcmimgle/data
 #
 
 @SET_MAKE@
@@ -11,15 +11,19 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+files = camera.lut monitor.lut printer.lut scanner.lut
+
 
 all:
 
 install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
+	for file in $(files); do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
+	done
 
 clean:
 	rm -f $(TRASH)
 
 distclean:
 	rm -f $(DISTTRASH)
-
-dependencies:

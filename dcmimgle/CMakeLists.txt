@@ -5,4 +5,4 @@ PROJECT(dcmimgle)
 INCLUDE_DIRECTORIES(${dcmimgle_SOURCE_DIR}/include ${ofstd_SOURCE_DIR}/include ${dcmdata_SOURCE_DIR}/include ${ZLIB_INCDIR})
 
 # recurse into subdirectories
-SUBDIRS(libsrc apps tests include/dcmtk/dcmimgle)
+SUBDIRS(libsrc apps tests include/dcmtk/dcmimgle data)
