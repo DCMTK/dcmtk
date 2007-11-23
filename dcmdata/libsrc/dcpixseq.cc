@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2007-11-23 15:42:36 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,9 +75,12 @@ DcmPixelSequence::~DcmPixelSequence()
 
 DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 {
+  if (this != &obj)
+  {
     DcmSequenceOfItems::operator=(obj);
     Xfer = obj.Xfer;
-    return *this;
+  }
+  return *this;
 }
 
 
@@ -375,7 +378,10 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.38  2007-06-29 14:17:49  meichel
+** Revision 1.39  2007-11-23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.38  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

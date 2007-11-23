@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2007-11-23 15:42:36 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,12 +88,15 @@ DcmObject::~DcmObject()
 
 DcmObject &DcmObject::operator=(const DcmObject &obj)
 {
+  if (this != &obj)
+  {
     Tag = obj.Tag;
     Length = obj.Length;
     errorFlag = obj.errorFlag;
     fTransferState = obj.fTransferState;
     fTransferredBytes = obj.fTransferredBytes;
-    return *this;
+  }
+  return *this;
 }
 
 
@@ -476,7 +479,10 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.51  2007-06-29 14:17:49  meichel
+ * Revision 1.52  2007-11-23 15:42:36  meichel
+ * Copy assignment operators in dcmdata now safe for self assignment
+ *
+ * Revision 1.51  2007/06/29 14:17:49  meichel
  * Code clean-up: Most member variables in module dcmdata are now private,
  *   not protected anymore.
  *

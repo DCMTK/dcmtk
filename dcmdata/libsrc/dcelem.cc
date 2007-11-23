@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-07-11 08:50:21 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2007-11-23 15:42:36 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,10 +105,15 @@ DcmElement::DcmElement(const DcmElement &elem)
 
 DcmElement &DcmElement::operator=(const DcmElement &obj)
 {
-    DcmObject::operator=(obj);
-    fByteOrder = obj.fByteOrder;
+  if (this != &obj)
+  {
+    delete[] fValue;
+    delete fLoadValue;
     fLoadValue = NULL;
     fValue = NULL;
+
+    DcmObject::operator=(obj);
+    fByteOrder = obj.fByteOrder;
 
     if (obj.fValue)
     {
@@ -142,7 +147,8 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
     if (obj.fLoadValue)
         fLoadValue = obj.fLoadValue->clone();
 
-    return *this;
+  }
+  return *this;
 }
 
 
@@ -1291,7 +1297,10 @@ OFCondition DcmElement::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.58  2007-07-11 08:50:21  meichel
+** Revision 1.59  2007-11-23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.58  2007/07/11 08:50:21  meichel
 ** Initial release of new method DcmElement::getPartialValue which gives access
 **   to partial attribute values without loading the complete attribute value
 **   into memory, if kept in file.

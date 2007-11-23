@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2007-11-23 15:42:36 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,6 +113,8 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
 
 DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
 {
+  if (this != &obj)
+  {
     DcmElement::operator=(obj);
     lastItemComplete = obj.lastItemComplete;
     fStartPosition = obj.fStartPosition;
@@ -168,7 +170,8 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
     delete itemList;
     itemList = newList;
 
-    return *this;
+  }
+  return *this;
 }
 
 
@@ -1250,7 +1253,10 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.68  2007-06-29 14:17:49  meichel
+** Revision 1.69  2007-11-23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.68  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2007-11-23 15:42:36 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,9 +104,13 @@ DcmFileFormat::~DcmFileFormat()
 
 DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
 {
+  if (this != &obj)
+  {
     DcmSequenceOfItems::operator=(obj);
     FileReadMode = obj.FileReadMode;
-    return *this;
+  }
+
+  return *this;
 }
 
 
@@ -876,7 +880,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.44  2007-06-29 14:17:49  meichel
+** Revision 1.45  2007-11-23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.44  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2007-11-23 15:42:36 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,13 +77,17 @@ DcmByteString::~DcmByteString()
 
 DcmByteString &DcmByteString::operator=(const DcmByteString &obj)
 {
+  if (this != &obj)
+  {
     DcmElement::operator=(obj);
+
     /* copy member variables */
     realLength = obj.realLength;
     fStringMode = obj.fStringMode;
     paddingChar = obj.paddingChar;
     maxLength = obj.maxLength;
-    return *this;
+  }
+  return *this;
 }
 
 
@@ -611,7 +615,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.46  2007-06-29 14:17:49  meichel
+** Revision 1.47  2007-11-23 15:42:36  meichel
+** Copy assignment operators in dcmdata now safe for self assignment
+**
+** Revision 1.46  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **
