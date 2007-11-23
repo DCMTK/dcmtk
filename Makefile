@@ -19,6 +19,8 @@ install-bin:  config-install-bin ofstd-install-bin dcmdata-install-bin dcmtls-in
 
 install-doc:  config-install-doc ofstd-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc dcmqrdb-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc
 
+install-data:  config-install-data ofstd-install-data dcmdata-install-data dcmtls-install-data dcmnet-install-data dcmqrdb-install-data dcmwlm-install-data dcmimgle-install-data dcmsr-install-data dcmsign-install-data dcmpstat-install-data dcmimage-install-data dcmjpeg-install-data
+
 install-etc:  config-install-etc ofstd-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc dcmqrdb-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-etc
 
 install-lib:  config-install-lib ofstd-install-lib dcmdata-install-lib dcmtls-install-lib dcmnet-install-lib dcmqrdb-install-lib dcmwlm-install-lib dcmimgle-install-lib dcmsr-install-lib dcmsign-install-lib dcmpstat-install-lib dcmimage-install-lib dcmjpeg-install-lib
@@ -60,6 +62,9 @@ config-install-bin:
 config-install-doc:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+config-install-data:
+	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 config-install-etc:
 	(cd config && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -86,6 +91,9 @@ ofstd-install-bin:
 
 ofstd-install-doc:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+ofstd-install-data:
+	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
 
 ofstd-install-etc:
 	(cd ofstd && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
@@ -114,6 +122,9 @@ dcmdata-install-bin:
 dcmdata-install-doc:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+dcmdata-install-data:
+	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 dcmdata-install-etc:
 	(cd dcmdata && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -140,6 +151,9 @@ dcmtls-install-bin:
 
 dcmtls-install-doc:
 	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmtls-install-data:
+	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
 
 dcmtls-install-etc:
 	(cd dcmtls && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
@@ -168,6 +182,9 @@ dcmnet-install-bin:
 dcmnet-install-doc:
 	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+dcmnet-install-data:
+	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 dcmnet-install-etc:
 	(cd dcmnet && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -194,6 +211,9 @@ dcmqrdb-install-bin:
 
 dcmqrdb-install-doc:
 	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmqrdb-install-data:
+	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
 
 dcmqrdb-install-etc:
 	(cd dcmqrdb && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
@@ -222,6 +242,9 @@ dcmwlm-install-bin:
 dcmwlm-install-doc:
 	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+dcmwlm-install-data:
+	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 dcmwlm-install-etc:
 	(cd dcmwlm && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -248,6 +271,9 @@ dcmimgle-install-bin:
 
 dcmimgle-install-doc:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmimgle-install-data:
+	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
 
 dcmimgle-install-etc:
 	(cd dcmimgle && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
@@ -276,6 +302,9 @@ dcmsr-install-bin:
 dcmsr-install-doc:
 	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+dcmsr-install-data:
+	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 dcmsr-install-etc:
 	(cd dcmsr && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -302,6 +331,9 @@ dcmsign-install-bin:
 
 dcmsign-install-doc:
 	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmsign-install-data:
+	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
 
 dcmsign-install-etc:
 	(cd dcmsign && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
@@ -330,6 +362,9 @@ dcmpstat-install-bin:
 dcmpstat-install-doc:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+dcmpstat-install-data:
+	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 dcmpstat-install-etc:
 	(cd dcmpstat && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -357,6 +392,9 @@ dcmimage-install-bin:
 dcmimage-install-doc:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
 
+dcmimage-install-data:
+	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
+
 dcmimage-install-etc:
 	(cd dcmimage && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)
 
@@ -383,6 +421,9 @@ dcmjpeg-install-bin:
 
 dcmjpeg-install-doc:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-doc)
+
+dcmjpeg-install-data:
+	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-data)
 
 dcmjpeg-install-etc:
 	(cd dcmjpeg && $(MAKE) ARCH="$(ARCH)" DESTDIR="$(DESTDIR)" install-etc)

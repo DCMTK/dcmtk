@@ -2,7 +2,6 @@
 #	Makefile for config
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -17,6 +16,8 @@ install: install-doc
 install-bin:
 
 install-doc: docs-install
+
+install-data:
 
 install-etc:
 

@@ -35,6 +35,7 @@ fi
 	makeinstall="$makeinstall ${module}-install"
 	makeinstallbin="$makeinstallbin ${module}-install-bin"
 	makeinstalldoc="$makeinstalldoc ${module}-install-doc"
+	makeinstalldata="$makeinstalldata ${module}-install-data"
 	makeinstalletc="$makeinstalletc ${module}-install-etc"
 	makeinstalllib="$makeinstalllib ${module}-install-lib"
 	makeinstallinclude="$makeinstallinclude ${module}-install-include"
@@ -53,6 +54,8 @@ install-all: install install-lib install-html
 install-bin: $makeinstallbin
 
 install-doc: $makeinstalldoc
+
+install-data: $makeinstalldata
 
 install-etc: $makeinstalletc
 
@@ -98,6 +101,9 @@ ${module}-install-bin:
 
 ${module}-install-doc:
 	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-doc)
+
+${module}-install-data:
+	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-data)
 
 ${module}-install-etc:
 	(cd $module && \$(MAKE) ARCH="\$(ARCH)" DESTDIR="\$(DESTDIR)" install-etc)
