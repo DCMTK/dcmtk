@@ -2,7 +2,6 @@
 #	Makefile for dcmimgle/apps
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh

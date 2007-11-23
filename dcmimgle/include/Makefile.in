@@ -2,7 +2,6 @@
 #	Makefile for dcmimgle/include
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
