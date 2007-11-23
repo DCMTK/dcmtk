@@ -2,7 +2,6 @@
 #	Makefile for ofstd/docs
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh

@@ -2,7 +2,6 @@
 #	Makefile for doxygen
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
