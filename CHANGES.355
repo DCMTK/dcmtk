@@ -1,9 +1,181 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.11.23 (riesmeier)
+
+- Added dummy of the ANNOUNCE file in order to avoid installation problems.
+  Added:   ANNOUNCE.355
+
+- Added reference to "make install-all".
+  Affects: INSTALL
+
+- Introduced "data" subdirectory in each module (used for read-only
+  architecture independent data).
+  Added:   dcmdata/data/CMakeLists.txt
+           dcmdata/data/Makefile.in
+           dcmdata/data/SC.dump
+           dcmdata/data/VLP.dump
+           dcmdata/data/dcm2xml.dtd
+           dcmdata/data/dumppat.txt
+           dcmimage/data/Makefile.in
+           dcmimgle/data/CMakeLists.txt
+           dcmimgle/data/Makefile.in
+           dcmimgle/data/camera.lut
+           dcmimgle/data/monitor.lut
+           dcmimgle/data/printer.lut
+           dcmimgle/data/scanner.lut
+           dcmjpeg/data/Makefile.in
+           dcmnet/data/Makefile.in
+           dcmpstat/data/CMakeLists.txt
+           dcmpstat/data/Makefile.in
+           dcmpstat/data/philips.lut
+           dcmqrdb/data/Makefile.in
+           dcmsign/data/Makefile.in
+           dcmsr/data/CMakeLists.txt
+           dcmsr/data/Makefile.in
+           dcmsr/data/dsr2xml.xsd
+           dcmsr/data/report.css
+           dcmsr/data/reportx.css
+           dcmtls/data/Makefile.in
+           dcmwlm/data/CMakeLists.txt
+           dcmwlm/data/Makefile.in
+           dcmwlm/wlistdb/OFFIS/*
+           dcmwlm/wlistdb/README
+           dcmwlm/wlistqry/*
+           ofstd/data/Makefile.in
+  Removed: dcmdata/apps/dcm2xml.dtd
+           dcmdata/apps/dumppat.txt
+           dcmimgle/tests/CMakeLists.txt
+           dcmimgle/tests/camera.lut
+           dcmimgle/tests/monitor.lut
+           dcmimgle/tests/printer.lut
+           dcmimgle/tests/scanner.lut
+           dcmpstat/tests/CMakeLists.txt
+           dcmpstat/tests/philips.lut
+           dcmsr/apps/dsr2xml.xsd
+           dcmsr/apps/report.css
+           dcmsr/apps/reportx.css
+           dcmwlm/wlistdb/*
+           dcmwlm/wlistqry/*
+  Affects: Makefile
+           config/Makefile.in
+           config/rootconf
+           dcmdata/CMakeLists.txt
+           dcmdata/Makefile.in
+           dcmdata/apps/CMakeLists.txt
+           dcmdata/apps/Makefile.in
+           dcmdata/etc/CMakeLists.txt
+           dcmdata/etc/Makefile.in
+           dcmimage/Makefile.in
+           dcmimgle/CMakeLists.txt
+           dcmimgle/Makefile.in
+           dcmimgle/tests/Makefile.in
+           dcmjpeg/Makefile.in
+           dcmnet/Makefile.in
+           dcmpstat/CMakeLists.txt
+           dcmpstat/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmqrdb/Makefile.in
+           dcmsign/Makefile.in
+           dcmsr/CMakeLists.txt
+           dcmsr/Makefile.in
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/apps/Makefile.in
+           dcmtls/Makefile.in
+           dcmwlm/CMakeLists.txt
+           dcmwlm/Makefile.in
+           ofstd/Makefile.in
+
+- Removed empty make dependencies file.
+  Removed: dcmimage/tests/Makefile.dep
+           dcmimgle/tests/Makefile.dep
+           dcmjpeg/tests/Makefile.dep
+           dcmqrdb/tests/Makefile.dep
+           dcmsign/tests/Makefile.dep
+           dcmtls/tests/Makefile.dep
+  Affects: dcmimage/Makefile.in
+           dcmimgle/Makefile.in
+           dcmjpeg/Makefile.in
+           dcmqrdb/Makefile.in
+           dcmsign/Makefile.in
+           dcmtls/Makefile.in
+
+- Fixed minor layout issue.
+  Affects: dcmdata/docs/Makefile.in
+           dcmdata/include/Makefile.in
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/i2dlib/Makefile.in
+           dcmdata/tests/Makefile.in
+           dcmimage/apps/Makefile.in
+           dcmimage/docs/Makefile.in
+           dcmimage/etc/Makefile.in
+           dcmimage/include/Makefile.in
+           dcmimage/libsrc/Makefile.in
+           dcmimage/tests/Makefile.in
+           dcmimgle/apps/Makefile.in
+           dcmimgle/docs/Makefile.in
+           dcmimgle/etc/Makefile.in
+           dcmimgle/include/Makefile.in
+           dcmimgle/libsrc/Makefile.in
+           dcmjpeg/docs/Makefile.in
+           dcmjpeg/etc/Makefile.in
+           dcmjpeg/include/Makefile.in
+           dcmjpeg/libijg12/Makefile.in
+           dcmjpeg/libijg16/Makefile.in
+           dcmjpeg/libijg8/Makefile.in
+           dcmjpeg/libsrc/Makefile.in
+           dcmjpeg/tests/Makefile.in
+           dcmnet/apps/Makefile.in
+           dcmnet/docs/Makefile.in
+           dcmnet/include/Makefile.in
+           dcmnet/libsrc/Makefile.in
+           dcmnet/tests/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmpstat/docs/Makefile.in
+           dcmpstat/etc/Makefile.in
+           dcmpstat/include/Makefile.in
+           dcmpstat/jni/Makefile.in
+           dcmpstat/libsrc/Makefile.in
+           dcmqrdb/apps/Makefile.in
+           dcmqrdb/docs/Makefile.in
+           dcmqrdb/etc/Makefile.in
+           dcmqrdb/include/Makefile.in
+           dcmqrdb/libsrc/Makefile.in
+           dcmqrdb/tests/Makefile.in
+           dcmsign/apps/Makefile.in
+           dcmsign/docs/Makefile.in
+           dcmsign/etc/Makefile.in
+           dcmsign/include/Makefile.in
+           dcmsign/libsrc/Makefile.in
+           dcmsign/tests/Makefile.in
+           dcmsr/docs/Makefile.in
+           dcmsr/etc/Makefile.in
+           dcmsr/include/Makefile.in
+           dcmsr/libsrc/Makefile.in
+           dcmsr/tests/Makefile.in
+           dcmtls/apps/Makefile.in
+           dcmtls/docs/Makefile.in
+           dcmtls/etc/Makefile.in
+           dcmtls/include/Makefile.in
+           dcmtls/libsrc/Makefile.in
+           dcmtls/tests/Makefile.in
+           dcmwlm/apps/Makefile.in
+           dcmwlm/docs/Makefile.in
+           dcmwlm/etc/Makefile.in
+           dcmwlm/include/Makefile.in
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/tests/Makefile.in
+           dcmwlm/wwwapps/Makefile.in
+           doxygen/Makefile.in
+           ofstd/docs/Makefile.in
+           ofstd/etc/Makefile.in
+           ofstd/include/Makefile.in
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/Makefile.in
+
 **** Changes from 2007.11.23 (eichelberg)
 
-- Copy assignment operators in dcmdata now safe for self assignment
+- Copy assignment operators in dcmdata now safe for self assignment.
   Affects: dcmdata/libsrc/dcbytstr.cc
            dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcfilefo.cc
@@ -12,10 +184,10 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcsequen.cc
            dcmdata/libsrc/dcvrpobw.cc
 
-- Removed unwanted output on console when debug flag is not set
+- Removed unwanted output on console when debug flag is not set.
   Affects: dcmdata/apps/mdfconen.cc
 
-- Removed non-existing length to end attributes outside group 0008
+- Removed non-existing length to end attributes outside group 0008.
   Affects: dcmdata/libsrc/dicom.dic
 
 **** Changes from 2007.11.15 (riesmeier)
