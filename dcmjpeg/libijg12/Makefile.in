@@ -2,7 +2,6 @@
 #	Makefile for dcmjpeg/libijg12
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
