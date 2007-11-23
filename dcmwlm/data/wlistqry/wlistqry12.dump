@@ -1,0 +1,12 @@
+#
+# Worklist query
+#
+(0010,0010) PN []                                       # PatientName
+(0040,0100) SQ                                          # ScheduledProcedureStepSequence
+  (fffe,e000) na                                          # Item
+    (0008,0060) CS []                                       # Modality
+    (0040,0001) AE [AA4]                                    # ScheduledStationAETitle
+    (0040,0010) SH [A2]                                     # ScheduledStationName
+    (0040,0400) LT [*]                                      # CommentsOnTheScheduledProcedureStep
+  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   # ItemDelimitationItem
+(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) # SequenceDelimitationItem

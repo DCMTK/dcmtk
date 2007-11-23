@@ -1,0 +1,17 @@
+#
+# Worklist query
+#
+(0010,0010) PN []                                       # PatientName
+(0040,0100) SQ                                          # ScheduledProcedureStepSequence
+  (fffe,e000) na                                          # Item
+    (0008,0060) CS []                                       # Modality
+    (0040,0001) AE [AA2]                                    # ScheduledStationAETitle
+    (0040,0002) DA []                                       # ScheduledProcedureStepStartDate
+    (0040,0003) TM []                                       # ScheduledProcedureStepStartTime
+    (0040,0006) PN []                                       # ScheduledPerformingPhysiciansName
+    (0040,0010) SH [A2]                                     # ScheduledStationName
+    (0040,0011) SH []                                       # ScheduledProcedureStepLocation
+  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   # ItemDelimitationItem
+(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) # SequenceDelimitationItem
+(0040,1001) SH []                                       # RequestedProcedureID
+(0040,1003) SH []                                       # RequestedProcedurePriority

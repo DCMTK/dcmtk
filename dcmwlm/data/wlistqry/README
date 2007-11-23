@@ -1,0 +1,16 @@
+
+MODALITY WORKLIST - EXAMPLE QUERIES
+
+This directory contains a set of example queries in an ascii-based
+"dump" format.  These must be converted to DICOM file format using
+the dump2dcm program.  Once converted, these files can be
+used a queries in the findscu and wltest programs.
+
+It will probably be necessary to edit the "dump" files
+to adjust the queries to your worklist database.
+
+See the documentation in dcmtk/dcmdata/docs for more information
+on the dump2dcm utility program.  See the documentation in
+dcmtk/dcmnet/docs for more information on the findscu utility
+program.  
+

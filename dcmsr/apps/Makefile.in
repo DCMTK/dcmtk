@@ -2,7 +2,6 @@
 #	Makefile for dcmsr/apps
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -22,7 +21,6 @@ LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS)
 
 objs = dsrdump.o dsr2html.o dsr2xml.o xml2dsr.o
 progs = dsrdump dsr2html dsr2xml xml2dsr
-support = dsr2xml.xsd report.css reportx.css
 
 
 all: $(progs)
@@ -40,18 +38,12 @@ xml2dsr: xml2dsr.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
-install: install-bin install-support
+install: install-bin
 
 install-bin: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
-	done
-
-install-support:
-	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
-	for file in $(support); do \
-		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
 	done
 
 

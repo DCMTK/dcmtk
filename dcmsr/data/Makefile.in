@@ -1,0 +1,29 @@
+#
+#	Makefile for dcmsr/data
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+files = dsr2xml.xsd report.css reportx.css
+
+
+all:
+
+install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
+	for file in $(files); do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
+	done
+
+clean:
+	rm -f $(TRASH)
+
+distclean:
+	rm -f $(DISTTRASH)

@@ -1,0 +1,18 @@
+#
+# Worklist query
+#
+(0010,0010) PN []                                       # PatientName
+(0040,0100) SQ                                          # ScheduledProcedureStepSequence
+  (fffe,e000) na                                          # Item
+    (0008,0060) CS []                                       # Modality
+    (0040,0011) SH []                                       # ScheduledProcedureStepLocation
+    (0040,0008) SQ                                          # ScheduledProtocolCodeSequence
+      (fffe,e000) na                                          # Item
+        (0008,0100) SH                                          # CodeValue
+        (0008,0102) SH                                          # CodingSchemeDesignator
+        (0008,0104) LO                                          # CodeMeaning
+      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   # ItemDelimitationItem
+    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) # SequenceDelimitationItem
+  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   # ItemDelimitationItem
+(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) # SequenceDelimitationItem
+(0040,1001) SH []                                       # RequestedProcedureID

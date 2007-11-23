@@ -1,0 +1,62 @@
+
+DCMWLM - EXAMPLE MODALITY WORKLIST DATABASE
+
+Within this directory and its subdirectories is an
+example of a worklist database as supported by the
+wlmscpfs application.
+
+Each subdirectory within this directory represents
+an Application Entity (AE) title for wlmscpfs.
+e.g. requestsing an association with the AE title
+of OFFIS would allow wlmscpfs to search the worklist
+entities contained in the OFFIS sub-directory.
+
+You can create a subdirectory for you own company
+and copy the example worklist entities found in
+the OFFIS subdirectory into your own subdirectory.
+
+The databases of worklist entities to be searched by wlmscpfs
+have a very simple format.  Each database consists of zero
+or more dicom files.  Each dicom file represents a single
+worklist entity.
+
+wlmscpfs locks the worklist database while peforming a search
+to indicate that other processes should not update the database. 
+Locking is achieved by locking a lockfile within each worklist
+database.  A file "lockfile" must exist within each worklist
+database directory.  The lockfile can be empty.
+
+If no processes are accessing the worklist database then 
+new worklist entities can be added by creating a dicom files
+containing worklist attributes and worklist entities
+can be removed by deleting worklist files.  
+
+Files containing worklist entities must have the suffix ".wl".
+
+If the "*.wl" files do not yet exist, you can create them using
+the dump2dcm command, e.g.
+	dump2dcm -g wklist2.dump wklist2.wl
+
+New worklist files can be easily adapted from existing files
+using the following procedure (wklist1.wl is an existing 
+worklist file):
+
+Step 1.
+	dcmdump wklist1.wl > wklist2.dump
+
+   Step 1 creates an ascii dump of the worklist file wklist1.wl
+
+Step 2.
+	emacs wklist2.dump 
+
+   In Step 2 edit the text file by modifying the value fields 
+   within square brackets([]).  
+
+Step 3.
+	dump2dcm -g wklist2.dump wklist2.wl
+
+   Step 3 converts the text file into a dicom file.
+
+See the documentation in dcmtk/dcmdata/docs for more information
+on the dcmdump and dump2dcm utilities.
+

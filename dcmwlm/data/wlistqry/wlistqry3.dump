@@ -1,0 +1,8 @@
+#
+# Worklist query
+#
+(0010,0010) PN []                                       # PatientName
+(0040,0100) SQ                                          # ScheduledProcedureStepSequence
+  (fffe,e000) na                                          # Item
+  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   # ItemDelimitationItem
+(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) # SequenceDelimitationItem

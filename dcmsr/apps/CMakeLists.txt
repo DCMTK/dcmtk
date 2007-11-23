@@ -10,7 +10,6 @@ ENDFOREACH(PROGRAM)
 FOREACH(PROGRAM dsr2html dsr2xml dsrdump xml2dsr)
   INSTALL_TARGETS(${INSTALL_BINDIR} ${PROGRAM})
 ENDFOREACH(PROGRAM)
-INSTALL_FILES(${INSTALL_DATDIR} FILES dsr2xml.xsd)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM dsr2html dsr2xml dsrdump xml2dsr)

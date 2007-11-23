@@ -1,0 +1,31 @@
+#
+# Worklist query
+#
+(0008,0050) SH []                                       # AccessionNumber
+(0010,0010) PN []                                       # PatientName
+(0010,0020) LO []                                       # PatientID
+(0010,0030) DA []                                       # PatientBirthDate
+(0010,0040) CS []                                       # PatientSex
+(0010,2000) LO []                                       # MedicalAlerts
+(0010,2110) LO []                                       # ContrastAllergies
+(0020,000d) UI []                                       # StudyInstanceUID
+(0032,1032) PN []                                       # RequestingPhysician
+(0032,1060) LO []                                       # RequestedProcedureDescription
+(0040,0100) SQ                                          # ScheduledProcedureStepSequence
+  (fffe,e000) na                                          # Item
+    (0008,0060) CS []                                       # Modality
+    (0032,1070) LO []                                       # RequestedContrastAgent
+    (0040,0001) AE [AA2]                                    # ScheduledStationAETitle
+    (0040,0002) DA []                                       # ScheduledProcedureStepStartDate
+    (0040,0003) TM []                                       # ScheduledProcedureStepStartTime
+    (0040,0006) PN []                                       # ScheduledPerformingPhysiciansName
+    (0040,0007) LO []                                       # ScheduledProcedureStepDescription
+    (0040,0009) SH []                                       # ScheduledProcedureStepID
+    (0040,0010) SH []                                       # ScheduledStationName
+    (0040,0011) SH []                                       # ScheduledProcedureStepLocation
+    (0040,0012) LO []                                       # PreMedication
+    (0040,0400) LT []                                       # CommentsOnTheScheduledProcedureStep
+  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   # ItemDelimitationItem
+(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) # SequenceDelimitationItem
+(0040,1001) SH []                                       # RequestedProcedureID
+(0040,1003) SH []                                       # RequestedProcedurePriority

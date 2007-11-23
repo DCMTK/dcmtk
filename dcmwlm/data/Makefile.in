@@ -1,0 +1,30 @@
+#
+#	Makefile for dcmwlm/data
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
+
+folders = wlistdb wlistdb/OFFIS wlistqry
+
+
+all:
+
+install:
+	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
+	for folder in $(folders); do \
+		$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)/$$folder ;\
+		find $$folder -type f -maxdepth 1 -exec $(INSTALL_DATA) {} $(DESTDIR)$(datadir)/$$folder \; ;\
+	done
+
+clean:
+	rm -f $(TRASH)
+
+distclean:
+	rm -f $(DISTTRASH)
