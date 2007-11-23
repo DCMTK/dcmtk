@@ -2,7 +2,6 @@
 #	Makefile for dcmdata/docs
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh

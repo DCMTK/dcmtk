@@ -2,7 +2,6 @@
 #	Makefile for dcmdata/tests
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -30,6 +29,7 @@ tvrdatim: tvrdatim.o
 
 tstpread: tstpread.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
 
 install: all
 

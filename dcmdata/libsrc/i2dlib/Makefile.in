@@ -2,7 +2,6 @@
 #	Makefile for dcmdata/libsrc/i2dlib
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
