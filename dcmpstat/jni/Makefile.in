@@ -9,7 +9,6 @@
 # (e.g. -fPIC for gcc, -PIC for Sun CC)
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh

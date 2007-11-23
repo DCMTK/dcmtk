@@ -2,7 +2,6 @@
 #	Makefile for dcmpstat/docs
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
