@@ -2,7 +2,6 @@
 #	Makefile for dcmdata/apps
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -26,8 +25,6 @@ objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
 
 progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
 	dcmdrle dcmodify pdf2dcm dcm2pdf img2dcm
-
-support = dcm2xml.dtd dumppat.txt
 
 
 all: $(progs)
@@ -70,20 +67,15 @@ dcm2pdf: dcm2pdf.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 img2dcm: img2dcm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LIBI2D) $(LOCALLIBS) $(MATHLIBS) $(LIBS)	
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LIBI2D) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
-install: install-bin install-support
+
+install: install-bin
 
 install-bin: all
 	$(configdir)/mkinstalldirs $(DESTDIR)$(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(DESTDIR)$(bindir) && strip $(DESTDIR)$(bindir)/$$prog$(BINEXT) ;\
-	done
-
-install-support:
-	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
-	for file in $(support); do \
-		$(INSTALL_DATA) $$file $(DESTDIR)$(datadir) ;\
 	done
 
 
