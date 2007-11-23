@@ -335,7 +335,7 @@ Step 3 will install the executables and some support files (data dictionary,
 configuration and documentation files).  If you also wish to install the
 libraries and include files then use the "make install-lib".  For the HTML
 documentation (see below) use "make install-html" (requires Doxygen to be
-installed).
+installed); "make install-all" installs all of the above.
 In case the files should be installed in a temporary directory, e.g. in order
 to create a distribution package, use "make install DESTDIR=<path>" to prepend
 <path> to the installation directories specified for configure.
@@ -578,6 +578,6 @@ These are documented in "config/docs/envvars.txt".
 Have fun.
 
 Marco Eichelberg, Joerg Riesmeier, Michael Onken
-Kuratorium OFFIS e.V., Oldenburg, Germany.
+OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2006-07-18 (Riesmeier).
+Last revised: 2007-11-23 (Riesmeier).
