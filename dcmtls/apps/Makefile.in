@@ -2,7 +2,6 @@
 #	Makefile for dcmtls/apps
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh

@@ -2,7 +2,6 @@
 #	Makefile for dcmwlm/include
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
