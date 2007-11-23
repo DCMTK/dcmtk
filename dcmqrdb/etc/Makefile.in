@@ -2,7 +2,6 @@
 #	Makefile for dcmqrdb/etc
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
