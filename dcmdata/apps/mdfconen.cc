@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-06 09:31:49 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-11-23 15:42:53 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,7 +507,7 @@ int MdfConsoleEngine::startProvidingService()
     //return value of this function
     int errors=0;
     //just for better readability on console
-    debugMsg(OFTrue,"\n","","");
+    if (verbose_option) debugMsg(OFTrue,"\n","","");
     //parse command line into file and job list
     parseCommandLine();
     //iterators for job and file loops
@@ -711,7 +711,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.21  2006-12-06 09:31:49  onken
+** Revision 1.22  2007-11-23 15:42:53  meichel
+** Removed unwanted output on console when debug flag is not set
+**
+** Revision 1.21  2006/12/06 09:31:49  onken
 ** Added "--no-backup" option to prevent dcmodify from creating backup files
 **
 ** Revision 1.20  2006/08/15 15:50:56  meichel
