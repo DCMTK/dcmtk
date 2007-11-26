@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.11.26 (riesmeier)
+
+- Added missing term "FILES" to install files command.
+  Affects: dcmdata/data/CMakeLists.txt
+
 **** Changes from 2007.11.23 (riesmeier)
 
 - Added dummy of the ANNOUNCE file in order to avoid installation problems.
