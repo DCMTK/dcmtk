@@ -6,6 +6,20 @@ Changes between releases are documented here.
 - Added missing term "FILES" to install files command.
   Affects: dcmdata/data/CMakeLists.txt
 
+- Fixed wrong installation directory.
+  Affects: dcmdata/data/CMakeLists.txt
+           dcmsr/data/CMakeLists.txt
+           dcmwlm/data/CMakeLists.txt
+
+- Explicitly list all files to be installed (in order to be more consistent
+  with the "make install" approach on Unix systems).
+  Affects: dcmimgle/data/CMakeLists.txt
+           dcmpstat/data/CMakeLists.txt
+           dcmsr/data/CMakeLists.txt
+
+- Added ANNOUNCE file to list of files to be installed.
+  Affects: CMakeLists.txt
+
 **** Changes from 2007.11.23 (riesmeier)
 
 - Added dummy of the ANNOUNCE file in order to avoid installation problems.
