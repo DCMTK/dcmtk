@@ -1,2 +1,2 @@
 # declare installation files
-INSTALL_FILES(${INSTALL_DATDIR} .lut)
+INSTALL_FILES(${INSTALL_DATDIR} FILES philips.lut)
