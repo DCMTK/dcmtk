@@ -11,7 +11,7 @@
 #   config/changext cpp
 #
 # The first command line argument (if given) overrides the
-#   new extension (default: C). 
+#   new extension (default: C).
 #   You must not specify the dot preceding the extension.
 #
 # The second command line argument (if given) overrides the
@@ -20,7 +20,7 @@
 #
 # Author: Marco Eichelberg, (C) 1997-2007 Kuratorium OFFIS e.V.
 #
- 
+
 newext=${1-C}
 oldext=${2-cc}
 
@@ -77,6 +77,12 @@ if [ -f dcmmisc/apps/ppsscpfs_e.$newext ] ; then
   echo "updating implementation include in ppsscpfs_e.$newext"
   `cat dcmmisc/apps/ppsscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppsscpfs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppsscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmpps\/apps\/ppscefs\.$oldext\"/#include \"..\/..\/dcmpps\/apps\/ppscefs.$newext\"/g" >dcmmisc/apps/ppsscpfs_e.new`
   `mv dcmmisc/apps/ppsscpfs_e.new dcmmisc/apps/ppsscpfs_e.$newext`
+fi
+
+if [ -f dcmmisc/apps/pawscpfs_e.$newext ] ; then
+  echo "updating implementation include in pawscpfs_e.$newext"
+  `cat dcmmisc/apps/pawscpfs_e.$newext | sed -e "s/#include \"\.\.\/\.\.\/dcmppswm\/apps\/pawscpfs\.$oldext\"/#include \"..\/..\/dcmppswm\/apps\/pawscpfs.$newext\"/g" | sed -e "s/#include \"\.\.\/\.\.\/dcmppswm\/apps\/pawcefs\.$oldext\"/#include \"..\/..\/dcmppswm\/apps\/pawcefs.$newext\"/g" >dcmmisc/apps/pawscpfs_e.new`
+  `mv dcmmisc/apps/pawscpfs_e.new dcmmisc/apps/pawscpfs_e.$newext`
 fi
 
 if [ -f dcmmisc/apps/detecscp.$newext ] ; then

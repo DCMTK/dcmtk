@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.11.27 (riesmeier)
+
+- Updated "change extension" shell script for current tool set.
+  Affects: config/changext
+
 **** Changes from 2007.11.26 (riesmeier)
 
 - Added missing term "FILES" to install files command.
