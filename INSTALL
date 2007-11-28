@@ -404,7 +404,7 @@ the following steps to install CMake on your machine:
 
 1. Go to http://www.cmake.org/HTML/Download.html to download the latest release
    version of CMake for Windows.  With regard to a certain CMake version, note
-   that CMake 2.4.2 or later can be used in conjunction with DCMTK.
+   that CMake 2.4.7 or later can be used in conjunction with DCMTK.
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
@@ -580,4 +580,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2007-11-23 (Riesmeier).
+Last revised: 2007-11-28 (Riesmeier).
