@@ -43,7 +43,6 @@ Changes between releases are documented here.
            dcmdata/libsrc/Makefile.dep
            dcmdata/libsrc/Makefile.in
            dcmnet/libsrc/dimse.cc
-           dcmpps/libsrcdb/ppsdbim.cc
            dcmsign/libsrc/simaccon.cc
 
 - Updated doxygen API documentation
