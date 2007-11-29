@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005, OFFIS
+ *  Copyright (C) 2005-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:26 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-29 13:48:12 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
                                                                          const E_ValueType targetValueType,
                                                                          const OFBool byReference) const
 {
-    /* the following code implements the constraints of table A.35.X-2 in DICOM Supplement 94 */
+    /* the following code implements the constraints of table A.35.8-2 in DICOM PS3.3 */
     OFBool result = OFFalse;
     /* by-reference relationships not allowed at all */
     if (!byReference)
@@ -88,6 +88,12 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
             result = (targetValueType == VT_Text)     || (targetValueType == VT_Code)      || (targetValueType == VT_Num)   ||
                      (targetValueType == VT_DateTime) || (targetValueType == VT_UIDRef)    || (targetValueType == VT_PName) ||
                      (targetValueType == VT_Image)    || (targetValueType == VT_Composite) || (targetValueType == VT_Container);
+        }
+        /* row added by Supplement 127 (CT Radiation Dose Reporting) */
+        if ((relationshipType == RT_hasObsContext) && (sourceValueType == VT_Container))
+        {
+            result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)      || (targetValueType == VT_DateTime) ||
+                     (targetValueType == VT_UIDRef) || (targetValueType == VT_PName);
         }
         /* row 2 of the table */
         else if ((relationshipType == RT_hasObsContext) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) ||
@@ -134,7 +140,10 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxrdcc.cc,v $
- *  Revision 1.2  2005-12-08 15:48:26  meichel
+ *  Revision 1.3  2007-11-29 13:48:12  joergr
+ *  Added support for CP 127 (CT Radiation Dose Reporting).
+ *
+ *  Revision 1.2  2005/12/08 15:48:26  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.1  2005/11/30 12:06:26  joergr
