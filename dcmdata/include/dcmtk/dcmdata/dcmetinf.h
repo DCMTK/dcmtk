@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 14:57:22 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,9 +42,16 @@
 #include "dcmtk/dcmdata/dcitem.h"
 
 
+/// magic string identifying DICOM files
 #define DCM_Magic                       "DICM"
+
+/// length of magic string identifying DICOM files
 #define DCM_MagicLen                    4
+
+/// length of DICOM file preamble, in bytes
 #define DCM_PreambleLen                 128
+
+/// transfer syntax used for encoding DICOM meta-headers
 #define META_HEADER_DEFAULT_TRANSFERSYNTAX EXS_LittleEndianExplicit
 
 
@@ -82,6 +89,9 @@ class DcmMetaInfo
      */
     virtual DcmEVR ident() const;
 
+    /** return the transfer syntax in which this dataset was originally read.
+     *  @return transfer syntax in which this dataset was originally read, EXS_Unknown if the dataset was created in memory
+     */
     E_TransferSyntax getOriginalXfer() const;
 
     /** print meta information header to a stream
@@ -97,12 +107,38 @@ class DcmMetaInfo
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
+    /** initialize the transfer state of this object. This method must be called
+     *  before this object is written to a stream or read (parsed) from a stream.
+     */
     virtual void transferInit();
+
+    /** finalize the transfer state of this object. This method must be called
+     *  when reading/writing this object from/to a stream has been completed.
+     */
     virtual void transferEnd();
 
+    /** calculate the length of this DICOM element when encoded with the 
+     *  given transfer syntax and the given encoding type for sequences.
+     *  For elements, the length includes the length of the tag, length field,
+     *  VR field and the value itself, for items and sequences it returns
+     *  the length of the complete item or sequence including delimitation tags
+     *  if applicable. Never returns undefined length.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return length of DICOM element
+     */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
+    /** read object from a stream.
+     *  @param inStream DICOM input stream
+     *  @param ixfer transfer syntax to use when parsing
+     *  @param glenc handling of group length parameters
+     *  @param maxReadLength attribute values larger than this value are skipped
+     *    while parsing and read later upon first access if the stream type supports
+     *    this. 
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax xfer = EXS_Unknown,
                              const E_GrpLenEncoding glenc = EGL_noChange,
@@ -112,11 +148,14 @@ class DcmMetaInfo
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -132,13 +171,40 @@ class DcmMetaInfo
     /// private unimplemented copy assignment operator
     DcmMetaInfo& operator=(const DcmMetaInfo&);
 
+    /// initialize the preamble buffer with 128 zero bytes followed by "DICM"
     void setPreamble();
 
+    /** check if the next 132 bytes in the input stream are a preamble
+     *  followed by the DICOM "magic word" DICM. If so, try to determine
+     *  the transfer syntax of the meta-header and return in parameter
+     *  newxfer. If not, reset stream to start position.
+     *  @param inStream input stream, should be at start position
+     *  @newxfer as input parameter contains the expected transfer syntax,
+     *    as output parameter returns the real transfer syntax of the
+     *    meta-header as determined heuristically
+     *  @return true if meta-header found and read, false otherwise
+     */
     OFBool checkAndReadPreamble(DcmInputStream &inStream,
                                 E_TransferSyntax &newxfer);  // out
 
+    /** peeks into the input stream and checks whether the next element
+     *  is group 0002, i.e. belongs to the meta-header
+     *  @return true if next element is part of meta-header, false otherwise
+     */
     OFBool nextTagIsMeta(DcmInputStream &inStream);
 
+    /** read meta-header group length element which is important because
+     *  it tells us where to switch from meta-header transfer syntax to
+     *  dataset transfer syntax. Insert element into dataset
+     *  @param inStream input stream
+     *  @param xfer transfer syntax of meta-header
+     *  @param xtag attribute tag for group length
+     *  @param glenc handling of group length encoding element in dataset
+     *  @param headerLen output parameter; length of meta-header as encoded in group length element
+     *  @param bytesRead output parameter; number of bytes read when reading group length (for counting the remaining number of meta-header bytes) 
+     *  @param maxReadLength max read length for elements
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     OFCondition readGroupLength(DcmInputStream &inStream,       // inout
                                 const E_TransferSyntax xfer,    // in
                                 const DcmTagKey &xtag,          // in
@@ -150,8 +216,13 @@ class DcmMetaInfo
     /// buffer for 132 byte DICOM file preamble
     char filePreamble[DCM_PreambleLen + DCM_MagicLen];
 
+    /// true if the preamble was read from stream
     OFBool preambleUsed;
+
+    /// transfer state of the preamble
     E_TransferState fPreambleTransferState;
+
+    /// transfer syntax in which the meta-header was read
     E_TransferSyntax Xfer;
 
 };
@@ -161,7 +232,13 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.24  2007-02-19 14:57:22  meichel
+** Revision 1.25  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.24  2007/02/19 14:57:22  meichel
 ** Declaration of copy assignment operator now private, as it should be
 **
 ** Revision 1.23  2006/08/15 15:49:56  meichel

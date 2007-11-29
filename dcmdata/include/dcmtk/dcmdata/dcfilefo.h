@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,9 @@ class DcmFileFormat
      */
     DcmFileFormat();
 
+    /** constructor
+     *  @param dataset to be copied (!) into the new DcmFileFormat object
+     */
     DcmFileFormat(DcmDataset *dataset);
 
     /** copy constructor
@@ -111,12 +114,36 @@ class DcmFileFormat
     DcmDataset  *getDataset();
     DcmDataset  *getAndRemoveDataset();
 
+    /** calculate the length of this DICOM element when encoded with the 
+     *  given transfer syntax and the given encoding type for sequences.
+     *  For elements, the length includes the length of the tag, length field,
+     *  VR field and the value itself, for items and sequences it returns
+     *  the length of the complete item or sequence including delimitation tags
+     *  if applicable. Never returns undefined length.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return length of DICOM element
+     */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
+    /** check if this DICOM object can be encoded in the given transfer syntax.
+     *  @param newXfer transfer syntax in which the DICOM object is to be encoded
+     *  @param oldXfer transfer syntax in which the DICOM object was read or created.
+     *  @return true if object can be encoded in desired transfer syntax, false otherwise.
+     */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer = EXS_Unknown);
 
+    /** read object from a stream.
+     *  @param inStream DICOM input stream
+     *  @param ixfer transfer syntax to use when parsing
+     *  @param glenc handling of group length parameters
+     *  @param maxReadLength attribute values larger than this value are skipped
+     *    while parsing and read later upon first access if the stream type supports
+     *    this. 
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition read(DcmInputStream &inStream,
                              const E_TransferSyntax xfer = EXS_Unknown,
                              const E_GrpLenEncoding glenc = EGL_noChange,
@@ -126,15 +153,34 @@ class DcmFileFormat
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
+
+    /** write object to a stream (abstract)
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
+     *  @param glenc group length encoding
+     *  @param padenc dataset trailing padding encoding
+     *  @param padlen padding structure size for complete file
+     *  @param subPadlen padding structure set for sequence items
+     *  @param instanceLength Number of extra bytes added to the item/dataset 
+     *  length used when computing the padding. This parameter is for instance 
+     *  used to pass the length of the file meta header from the DcmFileFormat 
+     *  to the DcmDataset object.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
-
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
+                              DcmWriteCache *wcache,
                               const E_GrpLenEncoding glenc,
                               const E_PaddingEncoding padenc = EPD_noChange,
                               const Uint32 padlen = 0,
@@ -192,19 +238,26 @@ class DcmFileFormat
 
     // methods for different pixel representations
 
-    // choose Representation changes the representation of
-    // PixelData Elements in the data set to the given representation
-    // If the representation does not exists it creates one.
+    /** select a specific representation (compressed or uncompressed) of the dataset
+     *  and create the representation if needed. This may cause compression or decompression
+     *  to be applied to the pixel data in the dataset.
+     *  @param repType desired transfer syntax
+     *  @param repParam desired representation parameter (e.g. quality factor for lossy compression)
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     OFCondition chooseRepresentation(const E_TransferSyntax repType,
                                      const DcmRepresentationParameter *repParam)
     {
         return getDataset()->chooseRepresentation(repType, repParam);
     }
 
-    // checks if all PixelData elements have a conforming representation
-    // (for definition of conforming representation see dcpixel.h).
-    // if one PixelData element has no conforming representation
-    // OFFalse is returned.
+    /** check if all PixelData elements in this dataset have a representation conforming
+     *  to the given transfer syntax and representation parameters (see dcpixel.h for 
+     *  definition of "conforming"). 
+     *  @param repType desired transfer syntax
+     *  @param repParam desired representation parameter (e.g. quality factor for lossy compression)
+     *  @return true if all pixel elements have the desired representation, false otherwise
+     */
     OFBool hasRepresentation(const E_TransferSyntax repType,
                              const DcmRepresentationParameter *repParam)
     {
@@ -246,26 +299,59 @@ class DcmFileFormat
         FileReadMode = readMode;
     }
 
-// The following methods have no meaning in DcmFileFormat and shall not be
-// called. Since it is not possible to delete inherited methods from a class
-// stubs are defined that create an error.
+    /** method inherited from base class that shall not be used for instances of this class.
+     *  Method immediately returns with error code.
+     *  @param item item
+     *  @param where where
+     *  @return always returns EC_IllegalCall.
+     */
+    virtual OFCondition insertItem(DcmItem *item, const unsigned long where = DCM_EndOfListIndex);
 
-    virtual OFCondition insertItem(DcmItem *item,
-                                   const unsigned long where = DCM_EndOfListIndex);
+    /** method inherited from base class that shall not be used for instances of this class.
+     *  Method immediately returns.
+     *  @param num num
+     *  @return always returns NULL.
+     */
     virtual DcmItem *remove(const unsigned long num);
-    virtual DcmItem *remove(DcmItem *item);
-    virtual OFCondition clear();
 
+    /** method inherited from base class that shall not be used for instances of this class.
+     *  Method immediately returns.
+     *  @param item item
+     *  @return always returns NULL.
+     */
+    virtual DcmItem *remove(DcmItem *item);
+
+    /** method inherited from base class that shall not be used for instances of this class.
+     *  Method immediately returns with error code.
+     *  @return always returns EC_IllegalCall.
+     */
+    virtual OFCondition clear();
 
   private:
 
-    OFCondition checkValue(DcmMetaInfo *metainfo,
+    /** This function checks if a particular data element of the meta header information is existent
+     *  in metainfo. If the element is not existent, it will be inserted. Additionally, this function
+     *  makes sure that the corresponding data element will contain a correct value.
+     *  @param metainfo The meta header information.
+     *  @param dataset  The data set information.
+     *  @param atagkey  Tag of the data element which shall be checked.
+     *  @param obj      Data object from metainfo which represents the data element that shall be checked.
+     *                  Equals NULL if this data element is not existent in the meta header information.
+     *  @param oxfer    The transfer syntax which shall be used.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    static OFCondition checkValue(DcmMetaInfo *metainfo,
                            DcmDataset *dataset,
                            const DcmTagKey &atagkey,
                            DcmObject *obj,
                            const E_TransferSyntax oxfer);
 
-    E_TransferSyntax lookForXfer(DcmMetaInfo *metainfo);
+    /** read DCM_TransferSyntaxUID from meta header dataset and return as
+     *  E_TransferSyntax value
+     *  @param metainfo meta-header dataset
+     *  @return E_TransferSyntax value for DCM_TransferSyntaxUID, EXS_Unknown if not found or unknown
+     */
+    static E_TransferSyntax lookForXfer(DcmMetaInfo *metainfo);
 
     /// file read mode, specifies whether to read the meta header or not
     E_FileReadMode FileReadMode;
@@ -278,7 +364,13 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.26  2006-08-15 15:49:56  meichel
+** Revision 1.27  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.26  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:36 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,7 @@
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 
 
 // ********************************
@@ -493,8 +494,8 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
         if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
         {
             char * xferid = NULL;
-            xferUI->getString(xferid);     // auslesen der ID
-            DcmXfer localXfer(xferid);      // dekodieren in E_TransferSyntax
+            xferUI->getString(xferid);     
+            DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
             newxfer = localXfer.getXfer();
             DCM_dcmdataDebug(4, ("DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
                 newxfer, localXfer.getXferName()));
@@ -602,17 +603,20 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
 // ********************************
 
 
-OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
-                                 const E_TransferSyntax oxfer,
-                                 const E_EncodingType enctype)
+OFCondition DcmFileFormat::write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache)
 {
-    return write(outStream, oxfer, enctype, EGL_recalcGL, EPD_noChange);
+    return write(outStream, oxfer, enctype, wcache, EGL_recalcGL, EPD_noChange);
 }
 
 
 OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype,
+                                 DcmWriteCache *wcache,
                                  const E_GrpLenEncoding glenc,
                                  const E_PaddingEncoding padenc,
                                  const Uint32 padlen,
@@ -679,12 +683,12 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
             if (getTransferState() == ERW_inWork)
             {
                 /* write meta header information */
-                errorFlag = metainfo->write(outStream, outxfer, enctype);
+                errorFlag = metainfo->write(outStream, outxfer, enctype, wcache);
                 /* recalculate the instance length */
                 instanceLength += metainfo->calcElementLength(outxfer, enctype);
                 /* if everything is ok, write the data set */
                 if (errorFlag.good())
-                    errorFlag = dataset->write(outStream, outxfer, enctype, glenc, padenc, padlen,
+                    errorFlag = dataset->write(outStream, outxfer, enctype, wcache, glenc, padenc, padlen,
                                                subPadlen, instanceLength);
                 /* if everything is ok, set the transfer state to ERW_ready */
                 if (errorFlag.good())
@@ -755,6 +759,7 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
                                     const Uint32 subPadLength,
                                     const OFBool isDataset)
 {
+
     if (isDataset)
     {
         return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
@@ -764,6 +769,8 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
     /* check parameters first */
     if ((fileName != NULL) && (strlen(fileName) > 0))
     {
+        DcmWriteCache wcache;
+
         /* open file for output */
         DcmOutputFileStream fileStream(fileName);
 
@@ -773,7 +780,7 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
         {
             /* write data to file */
             transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, groupLength, padEncoding, padLength, subPadLength);
+            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
             transferEnd();
         }
     }
@@ -880,7 +887,13 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.45  2007-11-23 15:42:36  meichel
+** Revision 1.46  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.45  2007/11/23 15:42:36  meichel
 ** Copy assignment operators in dcmdata now safe for self assignment
 **
 ** Revision 1.44  2007/06/29 14:17:49  meichel

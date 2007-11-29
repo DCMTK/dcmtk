@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-07-11 08:50:23 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,22 +78,55 @@ class DcmElement
      */
     DcmElement &operator=(const DcmElement &obj);
 
-    // returns length of element with tag, vr, ...
+    /** calculate the length of this DICOM element when encoded with the 
+     *  given transfer syntax and the given encoding type for sequences.
+     *  For elements, the length includes the length of the tag, length field,
+     *  VR field and the value itself, for items and sequences it returns
+     *  the length of the complete item or sequence including delimitation tags
+     *  if applicable. Never returns undefined length.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return length of DICOM element
+     */
     virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype);
 
-    // returns length of value
+    /** calculate the value length (without attribute tag, VR and length field)
+     *  of this DICOM element when encoded with the given transfer syntax and
+     *  the given encoding type for sequences. Never returns undefined length.
+     *  @param xfer transfer syntax for length calculation
+     *  @param enctype sequence encoding type for length calculation
+     *  @return value length of DICOM element
+     */
     virtual Uint32 getLength(const E_TransferSyntax /*xfer*/ = EXS_LittleEndianImplicit,
                              const E_EncodingType /*enctype*/ = EET_UndefinedLength)
     {
         return getLengthField();
     }
 
+    /** check if this element is a leaf node in a dataset tree.
+     *  All subclasses of DcmElement except for DcmSequenceOfItems
+     *  are leaf nodes, while DcmSequenceOfItems, DcmItem, DcmDataset etc.
+     *  are not.
+     *  @return true if leaf node, false otherwise.
+     */
     virtual OFBool isLeaf() const { return OFTrue; }
-    inline OFBool valueLoaded() { return fValue != NULL || getLengthField() == 0; }
 
+    /** check if value of this element is loaded into main memory
+     *  @return true if value is present in memory, false if value still resides in file
+     */
+    inline OFBool valueLoaded() const { return fValue != NULL || getLengthField() == 0; }
+
+    /** initialize the transfer state of this object. This method must be called
+     *  before this object is written to a stream or read (parsed) from a stream.
+     */
     virtual void transferInit();
 
+    /** check if this DICOM object can be encoded in the given transfer syntax.
+     *  @param newXfer transfer syntax in which the DICOM object is to be encoded
+     *  @param oldXfer transfer syntax in which the DICOM object was read or created.
+     *  @return true if object can be encoded in desired transfer syntax, false otherwise.
+     */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
                                 const E_TransferSyntax oldXfer);
 
@@ -136,11 +169,14 @@ class DcmElement
      *  @param outStream The stream the information will be written to.
      *  @param oxfer The transfer syntax which shall be used.
      *  @param enctype encoding types (undefined or explicit length) (actually unused)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -154,31 +190,104 @@ class DcmElement
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
+    /** clear (remove) attribute value
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition clear();
 
+    /** this method loads all attribute values maintained by this object and
+     *  all sub-objects (in case of a container such as DcmDataset) into memory.
+     *  After a call to this method, the file from which a dataset was read may safely
+     *  be deleted or replaced. For large files, this method may obviously allocate large
+     *  amounts of memory.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition loadAllDataIntoMemory();
 
     // GET-Operations
 
     // get copies of individual components
+
+    /** retrieve a single value of type Uint8. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getUint8(Uint8 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Sint16. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getSint16(Sint16 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Uint16. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getUint16(Uint16 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Sint32. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getSint32(Sint32 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Uint32. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getUint32(Uint32 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Float32. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getFloat32(Float32 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type Float64. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getFloat64(Float64 &val, const unsigned long pos = 0);
+
+    /** retrieve a single value of type DcmTagKey. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param val value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute, default 0
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getTagVal(DcmTagKey &val, const unsigned long pos = 0);
 
-    // Gets a copy of one string value component.  For multi-valued
-    // string attributes (i.e those using \ separators),
-    // this method extracts the pos component (counting from zero base).
+    /** retrieve a single value of type string. Requires element to be of corresponding VR,
+     *  otherwise an error is returned.
+     *  @param str value returned in this parameter upon success
+     *  @param pos position in multi-valued attribute
+     *  @param normalize true if string is to be normalized (e.g. trailing space characters to be trimmed)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getOFString(OFString &str,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
@@ -195,55 +304,246 @@ class DcmElement
     virtual OFCondition getOFStringArray(OFString &value,
                                          OFBool normalize = OFTrue);
 
-    // The following get operations do not copy,
-    // they return a reference of the element value
-    // The element value remains under control of the element
-    // and is only valid until the next put.., read, or write
-    // operation.
+    /** get a pointer to the element value of the current element as type string.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getString(char *&val);        // for strings
+
+    /** get a pointer to the element value of the current element as type string.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getUint8Array(Uint8 *&val);   // for bytes
+
+    /** get a pointer to the element value of the current element as type Sint16.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getSint16Array(Sint16 *&val);
+
+    /** get a pointer to the element value of the current element as type Uint16.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getUint16Array(Uint16 *&val);
+
+    /** get a pointer to the element value of the current element as type Sint32.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getSint32Array(Sint32 *&val);
+
+    /** get a pointer to the element value of the current element as type Uint32.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getUint32Array(Uint32 *&val);
+
+    /** get a pointer to the element value of the current element as type Float32.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getFloat32Array(Float32 *&val);
+
+    /** get a pointer to the element value of the current element as type Float64.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  This method does not copy, but returns a pointer to the element value,
+     *  which remains under control of this object and is valid only until the next
+     *  read, write or put operation.
+     *  @param val pointer to value returned in this parameter upon success
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition getFloat64Array(Float64 *&val);
 
-    // detachValueField detaches the value field from the
-    // DICOM element. After detaching the calling part of the
-    // application has total control over the element value, especially
-    // the value must be deleted from the heap after use.
-    // The DICOM element remains a copy of the value if the copy
-    // parameter is OFTrue else the value is erased in the DICOM
-    // element.
+    /** detach the value field from the DICOM element (i.e., this object). 
+     *  After detaching the calling part of the application has total control 
+     *  over the element value, especially the value must be deleted from the 
+     *  heap after use. The DICOM element remains a copy of the value if the 
+     *  copy parameter is OFTrue; otherwise the value is erased in the DICOM element.
+     *  @param copy if true, copy value field before detaching; if false, do not retain a copy.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition detachValueField(OFBool copy = OFFalse);
 
 
 // PUT-Operations
-// Put operations copy the value.
 
     // Sets the value of a complete (possibly multi-valued) string attribute.
+
+    /** replace the element value by a copy of the given string (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param stringValue new attribute value
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putOFStringArray(const OFString &stringValue);
 
-    // One Value
+    /** replace the element value by a copy of the given string (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param stringValue new attribute value
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putString(const char *val);
 
-    // One Value at a position pos
+    /** insert into the element value a copy of the given Sint16 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putSint16(const Sint16 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given Uint16 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putUint16(const Uint16 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given Sint32 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putSint32(const Sint32 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given Uint32 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putUint32(const Uint32 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given Float32 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putFloat32(const Float32 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given Float64 value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param val new value to be inserted
+     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putFloat64(const Float64 val, const unsigned long pos = 0);
+
+    /** insert into the element value a copy of the given DcmTagKey value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param attrTag new value to be inserted
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putTagVal(const DcmTagKey &attrTag, const unsigned long pos = 0);
 
-    // num Values
+    /** replace the element value by a copy of the given Uint8 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putUint8Array(const Uint8 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Sint16 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putSint16Array(const Sint16 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Uint16 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putUint16Array(const Uint16 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Sint32 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putSint32Array(const Sint32 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Uint32 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putUint32Array(const Uint32 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Float32 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putFloat32Array(const Float32 *vals, const unsigned long num);
+
+    /** replace the element value by a copy of the given Float64 array (which is possibly multi-valued).
+     *  Requires element to be of corresponding VR, otherwise an error is returned.
+     *  @param vals new attribute value
+     *  @param num number of values in array vals
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     virtual OFCondition putFloat64Array(const Float64 *vals, const unsigned long num);
 
     /** Copy numBytes bytes of data from the attribute value in byteOrder byte order
@@ -263,7 +563,7 @@ class DcmElement
      *    Default is the local byte order of the machine.
      *  @return EC_Normal upon success, an error code otherwise
      */
-    OFCondition getPartialValue(
+    virtual OFCondition getPartialValue(
       void *targetBuffer, 
       offile_off_t offset, 
       offile_off_t numBytes, 
@@ -298,16 +598,33 @@ class DcmElement
      */
     void *getValue(const E_ByteOrder newByteOrder = gLocalByteOrder);
 
-
+    /** insert into the element value a copy of the given raw value. If the
+     *  attribute is multi-valued, all other values remain untouched.
+     *  Only works for fixed-size VRs, not for strings.
+     *  @param value new value to be inserted
+     *  @param position position for insert operation. Value: pos <= getVM(), i.e. 
+     *  a value can be appended to the end of the current element or inserted within
+     *  the existing value field.
+     *  @param num number of bytes for each value in the value field.
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition changeValue(const void *value,      // new Value
                             const Uint32 position,  // position in value array
                             const Uint32 num);      // number of new value bytes
 
+    /** replace the element value by a copy of the given raw data block
+     *  @param value new attribute value
+     *  @param length length of new attribute value in bytes
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition putValue(const void *value,     // new value
                          const Uint32 length);  // number of new value bytes
 
+    /** create a new, empty value field of given size.
+     *  @param length size of new value field in bytes
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
     OFCondition createEmptyValue(const Uint32 length); // number of new value bytes
-
 
     /** This function reads the data value of an attribute and stores the
      *  information which was read in this. The information is either read
@@ -320,6 +637,10 @@ class DcmElement
      */
     OFCondition loadValue(DcmInputStream *inStream = NULL);
 
+    /** performs clean-up functions after loading an attribute value into main memory.
+     *  In particular, if dcmEnableAutomaticInputDataCorrection is enabled, silently
+     *  fixes odd length elements.
+     */
     virtual void postLoadValue();
 
     /** This function creates a byte array of Length bytes and returns this
@@ -328,6 +649,10 @@ class DcmElement
      */
     virtual Uint8 *newValueField();
 
+    /** swaps the content of the value field (if loaded) from big-endian to
+     *  little-endian or back
+     *  @param valueWidth width (in bytes) of each element value
+     */
     void swapValueField(size_t valueWidth);
 
     /** write element start tag in XML format
@@ -375,7 +700,13 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.34  2007-07-11 08:50:23  meichel
+** Revision 1.35  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.34  2007/07/11 08:50:23  meichel
 ** Initial release of new method DcmElement::getPartialValue which gives access
 **   to partial attribute values without loading the complete attribute value
 **   into memory, if kept in file.

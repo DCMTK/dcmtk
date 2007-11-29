@@ -21,9 +21,9 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-22 12:49:28 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -486,7 +486,7 @@ DcmXfer &DcmXfer::operator=(const DcmXfer &newXfer)
 
 // ********************************
 
-Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr)
+Uint32 DcmXfer::sizeofTagHeader(DcmEVR evr) const
 {
     Uint32 len = 0;
     if (isExplicitVR())
@@ -542,7 +542,13 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.26  2007-02-22 12:49:28  joergr
+ * Revision 1.27  2007-11-29 14:30:21  meichel
+ * Write methods now handle large raw data elements (such as pixel data)
+ *   without loading everything into memory. This allows very large images to
+ *   be sent over a network connection, or to be copied without ever being
+ *   fully in memory.
+ *
+ * Revision 1.26  2007/02/22 12:49:28  joergr
  * Fixed inconsistent naming of transfer syntaxes (added space characters).
  *
  * Revision 1.25  2005/12/08 15:42:11  meichel

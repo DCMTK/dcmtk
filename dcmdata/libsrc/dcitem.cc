@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2007-09-21 10:40:18 $
- *  CVS/RCS Revision: $Revision: 1.108 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.109 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ DcmItem::~DcmItem()
 
 OFBool DcmItem::foundVR(const Uint8* atposition)
 {
-    const Uint8 c1 =  atposition[0];
+    const Uint8 c1 = atposition[0];
     const Uint8 c2 = atposition[1];
     OFBool valid = OFFalse;
 
@@ -990,7 +990,8 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
 
 OFCondition DcmItem::write(DcmOutputStream &outStream,
                            const E_TransferSyntax oxfer,
-                           const E_EncodingType enctype)
+                           const E_EncodingType enctype,
+                           DcmWriteCache *wcache)                           
 {
   if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
@@ -1030,7 +1031,7 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
           {
               dO = elementList->get();
               if (dO->transferState() != ERW_ready)
-                errorFlag = dO->write(outStream, oxfer, enctype);
+                errorFlag = dO->write(outStream, oxfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
         if (errorFlag.good())
@@ -1063,9 +1064,11 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
 
 // ********************************
 
-OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
-                                          const E_TransferSyntax oxfer,
-                                          const E_EncodingType enctype)
+OFCondition DcmItem::writeSignatureFormat(
+	DcmOutputStream &outStream,
+   const E_TransferSyntax oxfer,
+   const E_EncodingType enctype,
+   DcmWriteCache *wcache)                           
 {
   if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
@@ -1100,7 +1103,7 @@ OFCondition DcmItem::writeSignatureFormat(DcmOutputStream &outStream,
           {
             dO = elementList->get();
             if (dO->transferState() != ERW_ready)
-              errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype);
+              errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
         if (errorFlag.good())
@@ -3427,7 +3430,13 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.108  2007-09-21 10:40:18  onken
+** Revision 1.109  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.108  2007/09/21 10:40:18  onken
 ** Changed foundVR() API and implementation to use Uint8* instead of char* to
 ** avoid calls to isalpha() with negative arguments (undef. behaviour/assertion)
 **

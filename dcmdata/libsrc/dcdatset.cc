@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2007-11-29 14:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcistrmf.h"    /* for class DcmInputFileStream */
+#include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 
 
 // ********************************
@@ -290,17 +291,20 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
 // ********************************
 
 
-OFCondition DcmDataset::write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype)
+OFCondition DcmDataset::write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype /* = EET_UndefinedLength */,
+      DcmWriteCache *wcache)
 {
-    return write(outStream, oxfer, enctype, EGL_recalcGL);
+    return write(outStream, oxfer, enctype, wcache, EGL_recalcGL);
 }
 
 
 OFCondition DcmDataset::write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
+                              DcmWriteCache *wcache,
                               const E_GrpLenEncoding glenc,
                               const E_PaddingEncoding padenc,
                               const Uint32 padlen,
@@ -370,7 +374,7 @@ OFCondition DcmDataset::write(DcmOutputStream &outStream,
           do
           {
             dO = elementList->get();
-            errorFlag = dO->write(outStream, newXfer, enctype);
+            errorFlag = dO->write(outStream, newXfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
 
@@ -392,7 +396,8 @@ OFCondition DcmDataset::write(DcmOutputStream &outStream,
 
 OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream &outStream,
                                              const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype)
+                                             const E_EncodingType enctype,      
+                                             DcmWriteCache *wcache)
 {
   if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
@@ -420,7 +425,7 @@ OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream &outStream,
           DcmObject *dO;
           do {
             dO = elementList->get();
-            errorFlag = dO->writeSignatureFormat(outStream, newXfer, enctype);
+            errorFlag = dO->writeSignatureFormat(outStream, newXfer, enctype, wcache);
           } while (errorFlag.good() && elementList->seek(ELP_next));
         }
         if (errorFlag.good())
@@ -475,6 +480,7 @@ OFCondition DcmDataset::saveFile(const char *fileName,
                                  const Uint32 padLength,
                                  const Uint32 subPadLength)
 {
+    DcmWriteCache wcache;
     OFCondition l_error = EC_IllegalParameter;
     /* check parameters first */
     if ((fileName != NULL) && (strlen(fileName) > 0))
@@ -488,7 +494,7 @@ OFCondition DcmDataset::saveFile(const char *fileName,
         {
             /* write data to file */
             transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, groupLength, padEncoding, padLength, subPadLength);
+            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
             transferEnd();
         }
     }
@@ -595,7 +601,13 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.42  2007-06-29 14:17:49  meichel
+** Revision 1.43  2007-11-29 14:30:20  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.42  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

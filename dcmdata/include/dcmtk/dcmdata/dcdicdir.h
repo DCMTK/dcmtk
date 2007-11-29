@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,38 +50,106 @@
 #define DICOMDIR_BACKUP_SUFFIX ".$$$"
 #define DICOMDIR_DEFAULT_TRANSFERSYNTAX  EXS_LittleEndianExplicit
 
-
+/** helper structure for item offsets
+ */
 typedef struct
 {
+    /// DICOM item containing a directory record
     DcmItem *item;
+    /// offset in file for this item
     Uint32  fileOffset;
 } ItemOffset;
 
 
+/** this class implements support for DICOMDIR files, which are special DICOM files
+ *  containing a list of directory records, with a logical tree structure being
+ *  implemented through references between records as byte offsets in file.
+ */
 class DcmDicomDir
 {
-  private:
+public:
+    /// default constructor
+    DcmDicomDir();
 
- // --- declarations to avoid compiler warnings
+    /** constructor
+     *  @param fileName filename to read a DICOMDIR from. If NULL, an attempt is 
+     *  made to read file DEFAULT_DICOMDIR_NAME ("DICOMDIR").
+     *  @param fileSetID file set ID of this file set, used only for new DICOMDIRs
+     */
+    DcmDicomDir( const char *fileName,
+                 const char *fileSetID = NULL );  // only used for new DICOMDIR
 
-    DcmDicomDir &operator=(const DcmDicomDir &);
-    DcmDicomDir( const DcmDicomDir &newDir );
+    /// destructor. If DICOMDIR was modified, writes new file.
+    virtual ~DcmDicomDir();
 
-    OFCondition errorFlag;
-    char * dicomDirFileName;
-    OFBool modified;              // wird wo gebraucht ?
-    OFBool mustCreateNewDir;
-    DcmFileFormat * DirFile;
-    DcmDirectoryRecord * RootRec;
-    DcmSequenceOfItems * MRDRSeq;
+    /** print all elements of the item to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName not used
+     *  @param pixelCounter not used
+     */
+    virtual void print(STD_NAMESPACE ostream&out,
+                       const size_t flags = 0,
+                       const int level = 0,
+                       const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
+
+    /// returns current status flag
+    virtual OFCondition error();
+
+    /** returns reference to DICOM file from which DICOMDIR was read. 
+     *  Note, this file may be obsolete if the DICOMDIR was modified
+     *  @return reference to DICOM file
+     */
+    virtual DcmFileFormat& getDirFileFormat();
+
+    /** returns file name from which DICOMDIR was read. 
+     *  @return filename of DICOMDIR
+     */
+    virtual const char* getDirFileName();
+
+    /// returns root directory record    
+    virtual DcmDirectoryRecord& getRootRecord();
+
+    /// returns container in which all MRDR (multi-reference directory records) are stored  
+    virtual DcmSequenceOfItems& getMRDRSequence();
+
+    /** look up directory record for the given referenced file ID (not OS file path)
+     *  @return directory record if found, NULL otherwise
+     */
+    virtual DcmDirectoryRecord* matchFilename( char *filename );
+
+    /** look up MRDR for the given referenced file ID (not OS file path).
+     *  If there is none yet, create one.
+     *  @return MRDR for given referenced file ID
+     */
+    virtual DcmDirectoryRecord* matchOrCreateMRDR( char *filename );
+
+    /** writes DICOMDIR to file
+     *  @param oxfer, must be DICOMDIR_DEFAULT_TRANSFERSYNTAX
+     *  @param enctype encoding type for sequences
+     *  @param enctype encoding type for group lengths
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
+    virtual OFCondition write(
+      const E_TransferSyntax oxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX,
+      const E_EncodingType enctype = EET_UndefinedLength,
+      const E_GrpLenEncoding glenc = EGL_withoutGL );
+
+    /** check the currently stored element value
+     *  @param autocorrect correct value length if OFTrue
+     *  @return status, EC_Normal if value length is correct, an error code otherwise
+     */
+    virtual OFCondition verify( OFBool autocorrect = OFFalse );
 
   protected: 
   	
-    // Manipulation der internen Datenelemente:
+    // Manipulation of member variables
     OFCondition createNewElements(const char* fileSetID);  // in
     DcmDataset& getDataset(void);
 
-    // Seiteneffekt-freie Methoden zur Manipulation und Konversion:
+    // side-effect free methods for manipulation and conversion
     DcmSequenceOfItems&    getDirRecSeq(      DcmDataset &dset );   // inout
     DcmUnsignedLongOffset* lookForOffsetElem( DcmObject *obj,       // in
                                               const DcmTagKey &offsetTag );// in
@@ -126,41 +194,47 @@ class DcmDicomDir
                                      ItemOffset *refCounter,        // inout
                                      const unsigned long numCounters );    // in
 
-    // komplette Reorganisation der verwalteten Directory Records (Seiteneffekt)
+    // complete re-organization of the managed directory records (side effect)
     OFCondition convertLinearToTree();
+
     OFCondition convertTreeToLinear( Uint32 beginOfFileSet,         // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype,        // in
                                      E_GrpLenEncoding glenc,        // in
                                      DcmSequenceOfItems &unresRecs);// inout
 
-public:
-    DcmDicomDir();
-    DcmDicomDir( const char *fileName,
-                 const char *fileSetID = NULL );  // only used for new DICOMDIR
-    virtual ~DcmDicomDir();
+  private:
 
-    virtual void print(STD_NAMESPACE ostream&out,
-                       const size_t flags = 0,
-                       const int level = 0,
-                       const char *pixelFileName = NULL,
-                       size_t *pixelCounter = NULL);
+    /// private undefined copy assignment operator
+    DcmDicomDir &operator=(const DcmDicomDir &);
 
-    virtual OFCondition         error();
-    virtual DcmFileFormat&      getDirFileFormat();
-    virtual const char*         getDirFileName();
-    virtual DcmDirectoryRecord& getRootRecord();
-    virtual DcmSequenceOfItems& getMRDRSequence();
-    virtual DcmDirectoryRecord* matchFilename(     char *filename );
-    virtual DcmDirectoryRecord* matchOrCreateMRDR( char *filename );
-    virtual OFCondition         write(const E_TransferSyntax oxfer
-                                            = DICOMDIR_DEFAULT_TRANSFERSYNTAX,
-                                      const E_EncodingType enctype
-                                            = EET_UndefinedLength,
-                                      const E_GrpLenEncoding glenc
-                                            = EGL_withoutGL );
-// PENDING: DICOM-konform, aber unvollstaendig
-    virtual OFCondition         verify( OFBool autocorrect = OFFalse );
+    /// private undefined copy constructor
+    DcmDicomDir( const DcmDicomDir &newDir );
+
+    /// condition flag
+    OFCondition errorFlag;
+
+    /// file name the DICOMDIR was read from, or DEFAULT_DICOMDIR_NAME
+    char * dicomDirFileName;
+
+    /** flag indicating whether or not this DICOMDIR has been modified after being read from file.
+     *  If true, the destructor of this class will write the modified DICOMDIR back to file
+     */
+    OFBool modified;
+
+    /// flag indicating whether the DICOM file in DirFile needs to be re-created upon writing
+    OFBool mustCreateNewDir;
+
+    /** DICOM file into which a DICOMDIR is read first before the logical tree
+     *  structure is created.
+     */
+    DcmFileFormat * DirFile;
+
+    /// root directory record of this DICOMDIR
+    DcmDirectoryRecord * RootRec;
+
+    /// container in which all MRDR (multi-reference directory records) for this DICOMDIR are kept
+    DcmSequenceOfItems * MRDRSeq;
 };
 
 #endif // DCDICDIR_H
@@ -168,7 +242,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.21  2007-06-29 14:17:49  meichel
+** Revision 1.22  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.21  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

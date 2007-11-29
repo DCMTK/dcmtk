@@ -24,14 +24,13 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
-
 
 #ifndef DCOBJECT_H
 #define DCOBJECT_H
@@ -51,7 +50,7 @@
 // forward declarations
 class DcmOutputStream;
 class DcmInputStream;
-
+class DcmWriteCache;
 
 // Undefined Length Identifier now defined in dctypes.h
 
@@ -298,11 +297,14 @@ class DcmObject
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength) = 0;
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache) = 0;
 
     /** write object in XML format to a stream
      *  @param out output stream to which the XML document is written
@@ -316,12 +318,14 @@ class DcmObject
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSignatureFormat(
       DcmOutputStream &outStream,
       const E_TransferSyntax oxfer,
-      const E_EncodingType enctype = EET_UndefinedLength) = 0;
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache) = 0;
 
     /** returns true if the current object may be included in a digital signature
      *  @return true if signable, false otherwise
@@ -584,7 +588,13 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.47  2007-06-29 14:17:49  meichel
+ * Revision 1.48  2007-11-29 14:30:19  meichel
+ * Write methods now handle large raw data elements (such as pixel data)
+ *   without loading everything into memory. This allows very large images to
+ *   be sent over a network connection, or to be copied without ever being
+ *   fully in memory.
+ *
+ * Revision 1.47  2007/06/29 14:17:49  meichel
  * Code clean-up: Most member variables in module dcmdata are now private,
  *   not protected anymore.
  *

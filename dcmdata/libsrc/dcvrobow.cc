@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -573,9 +573,11 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
 // ********************************
 
 
-OFCondition DcmOtherByteOtherWord::write(DcmOutputStream &outStream,
-                                         const E_TransferSyntax oxfer,
-                                         const E_EncodingType enctype)
+OFCondition DcmOtherByteOtherWord::write(
+    DcmOutputStream &outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -583,15 +585,17 @@ OFCondition DcmOtherByteOtherWord::write(DcmOutputStream &outStream,
     {
         if (getTransferState() == ERW_init) alignValue();
         /* call inherited method */
-        errorFlag = DcmElement::write(outStream, oxfer, enctype);
+        errorFlag = DcmElement::write(outStream, oxfer, enctype, wcache);
     }
     return errorFlag;
 }
 
 
-OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmOutputStream &outStream,
-                                                        const E_TransferSyntax oxfer,
-                                                        const E_EncodingType enctype)
+OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
+    DcmOutputStream &outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -599,7 +603,7 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmOutputStream &outStre
     {
         if (getTransferState() == ERW_init) alignValue();
         /* call inherited method */
-        errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype);
+        errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     }
     return errorFlag;
 }
@@ -648,7 +652,13 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.50  2007-06-29 14:17:49  meichel
+** Revision 1.51  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.50  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

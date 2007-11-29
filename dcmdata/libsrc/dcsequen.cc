@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:36 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -566,10 +566,11 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
 // ********************************
 
-
-OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
-                                      const E_TransferSyntax oxfer,
-                                      const E_EncodingType enctype)
+OFCondition DcmSequenceOfItems::write(
+    DcmOutputStream &outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
   {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -612,7 +613,7 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
                     {
                       dO = itemList->get();
                       if (dO->transferState() != ERW_ready)
-                          errorFlag = dO->write(outStream, oxfer, enctype);
+                          errorFlag = dO->write(outStream, oxfer, enctype, wcache);
                     } while (errorFlag.good() && itemList->seek(ELP_next));
                 }
                 if (errorFlag.good())
@@ -688,9 +689,11 @@ OFCondition DcmSequenceOfItems::writeTagAndVR(DcmOutputStream &outStream,
 }
 
 
-OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
-                                                     const E_TransferSyntax oxfer,
-                                                     const E_EncodingType enctype)
+OFCondition DcmSequenceOfItems::writeSignatureFormat(
+   DcmOutputStream &outStream,
+   const E_TransferSyntax oxfer,
+   const E_EncodingType enctype,
+   DcmWriteCache *wcache)                           
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -732,7 +735,7 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
                     do {
                         dO = itemList->get();
                         if (dO->transferState() != ERW_ready)
-                            errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype);
+                            errorFlag = dO->writeSignatureFormat(outStream, oxfer, enctype, wcache);
                     } while (errorFlag.good() && itemList->seek(ELP_next));
                 }
                 if (errorFlag.good())
@@ -1250,10 +1253,28 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFCondition DcmSequenceOfItems::getPartialValue(
+  void * /* targetBuffer */, 
+  offile_off_t /* offset */, 
+  offile_off_t /* numBytes */, 
+  DcmFileCache * /* cache */,
+  E_ByteOrder /* byteOrder */)
+{
+  // cannot use getPartialValue() with class DcmSequenceOfItems or derived classes
+  return EC_IllegalCall;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.69  2007-11-23 15:42:36  meichel
+** Revision 1.70  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.69  2007/11/23 15:42:36  meichel
 ** Copy assignment operators in dcmdata now safe for self assignment
 **
 ** Revision 1.68  2007/06/29 14:17:49  meichel

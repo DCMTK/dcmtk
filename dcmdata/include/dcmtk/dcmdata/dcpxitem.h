@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,24 +40,34 @@
 #include "dcmtk/dcmdata/dcvrobow.h"
 #include "dcmtk/dcmdata/dcofsetl.h"    /* for class DcmOffsetList */
 
-// CLASS DcmPixelItem
-// This is a pseudo item, that has a value with representation OB
-// and has no sub elements. Since a DcmOtherByteOtherWord is defined as a
-// Dicom structure with a value of representation OW/OB it is better to
-// derive this class from DcmOtherByteOtherWord.
-
+/** this class implements a container for a fragment of compressed pixel data.
+ *  Instances of this class use the same attribute tags as sequence items,
+ *  but are maintained within a pixel data element (class DcmPixelSequence)
+ *  with undefined length and contain no DICOM structure, but raw data.
+ *  Therefore, this class is derived from DcmOtherByteOtherWord, the class
+ *  that is used for OB raw data which is handled very similar.
+ */
 class DcmPixelItem : public DcmOtherByteOtherWord
-
 {
-  protected:
-    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,
-					  const E_TransferSyntax oxfer,
-					  Uint32 & writtenBytes) const;
   public:
+
+    /** constructor
+     *  @param tag attribute tag
+     *  @param len length of the attribute value
+     */
     DcmPixelItem(const DcmTag &tag, const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param old element to be copied
+     */
     DcmPixelItem(const DcmPixelItem &old);
+
+    /// destructor
     virtual ~DcmPixelItem();
 
+    /** copy assignment operator
+     *  @param obj element to be copied
+     */
     DcmPixelItem &operator=(const DcmPixelItem &obj) { DcmOtherByteOtherWord::operator=(obj); return *this; }
 
     /** clone method
@@ -68,8 +78,18 @@ class DcmPixelItem : public DcmOtherByteOtherWord
       return new DcmPixelItem(*this);
     }
 
+    /** get type identifier
+     *  @return type identifier of this class (EVR_item)
+     */
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
 
+    /** print all elements of the item to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName optional filename used to write the raw pixel data file
+     *  @param pixelCounter optional counter used for automatic pixel data filename creation
+     */
     virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
@@ -92,11 +112,29 @@ class DcmPixelItem : public DcmOtherByteOtherWord
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype
-					 = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
+
+  protected:
+
+    /** write tag, VR and length field to the given output stream
+     *  @param outStream output stream
+     *  @param oxfer transfer syntax for writing
+     *  @param writtenBytes number of bytes written to stream returned in this parameter
+     *  @return EC_Normal if successful, an error code otherwise
+     */     
+    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,
+					  const E_TransferSyntax oxfer,
+					  Uint32 & writtenBytes) const;
 
 };
 
@@ -106,7 +144,13 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.22  2006-08-15 15:49:56  meichel
+** Revision 1.23  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.22  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

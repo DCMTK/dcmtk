@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -925,9 +925,10 @@ DcmPixelData::transferInit()
 }
 
 OFCondition DcmPixelData::write(
-    DcmOutputStream & outStream,
+    DcmOutputStream &outStream,
     const E_TransferSyntax oxfer,
-    const E_EncodingType enctype)
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
   errorFlag = EC_Normal;
   if (getTransferState() == ERW_notInitialized) errorFlag = EC_IllegalCall;
@@ -948,18 +949,18 @@ OFCondition DcmPixelData::write(
           setTransferState(ERW_inWork);
         }
       }
-      if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->write(outStream, oxfer, enctype);
+      if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->write(outStream, oxfer, enctype, wcache);
       if (errorFlag == EC_Normal) setTransferState(ERW_ready);
     }
     else if (existUnencapsulated)
     {
       current = repListEnd;
       recalcVR();
-      errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
+      errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype, wcache);
     }
     else if (getValue() == NULL)
     {
-      errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype);
+      errorFlag = DcmPolymorphOBOW::write(outStream, oxfer, enctype, wcache);
     } else errorFlag = EC_RepresentationNotFound;
   }
   return errorFlag;
@@ -980,9 +981,10 @@ OFCondition DcmPixelData::writeXML(
 }
 
 OFCondition DcmPixelData::writeSignatureFormat(
-    DcmOutputStream & outStream,
+    DcmOutputStream &outStream,
     const E_TransferSyntax oxfer,
-    const E_EncodingType enctype)
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
   errorFlag = EC_Normal;
   if (getTransferState() == ERW_notInitialized) errorFlag = EC_IllegalCall;
@@ -1003,18 +1005,18 @@ OFCondition DcmPixelData::writeSignatureFormat(
           setTransferState(ERW_inWork);
         }
       }
-      if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->writeSignatureFormat(outStream, oxfer, enctype);
+      if (errorFlag == EC_Normal && pixelSeqForWrite) errorFlag = pixelSeqForWrite->writeSignatureFormat(outStream, oxfer, enctype, wcache);
       if (errorFlag == EC_Normal) setTransferState(ERW_ready);
     }
     else if (existUnencapsulated)
     {
       current = repListEnd;
       recalcVR();
-      errorFlag = DcmPolymorphOBOW::writeSignatureFormat(outStream, oxfer, enctype);
+      errorFlag = DcmPolymorphOBOW::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     }
     else if (getValue() == NULL)
     {
-      errorFlag = DcmPolymorphOBOW::writeSignatureFormat(outStream, oxfer, enctype);
+      errorFlag = DcmPolymorphOBOW::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     } else errorFlag = EC_RepresentationNotFound;
   } else errorFlag = EC_Normal;
   return errorFlag;
@@ -1037,7 +1039,13 @@ void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.39  2007-06-29 14:17:49  meichel
+** Revision 1.40  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.39  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

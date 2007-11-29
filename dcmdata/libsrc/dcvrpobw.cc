@@ -25,8 +25,8 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:36 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,9 +244,10 @@ DcmPolymorphOBOW::transferInit()
 }
 
 OFCondition DcmPolymorphOBOW::write(
-    DcmOutputStream & outStream,
+    DcmOutputStream &outStream,
     const E_TransferSyntax oxfer,
-    const E_EncodingType enctype)
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
     DcmXfer oXferSyn(oxfer);
     if (getTransferState() == ERW_init)
@@ -265,7 +266,7 @@ OFCondition DcmPolymorphOBOW::write(
             currentVR = EVR_OW;
         }
     }
-    errorFlag = DcmOtherByteOtherWord::write(outStream, oxfer, enctype);
+    errorFlag = DcmOtherByteOtherWord::write(outStream, oxfer, enctype, wcache);
     if (getTransferState() == ERW_ready && changeVR)
     {
         // VR must be OB again. No Swapping is needed since the written
@@ -277,9 +278,10 @@ OFCondition DcmPolymorphOBOW::write(
 }
 
 OFCondition DcmPolymorphOBOW::writeSignatureFormat(
-    DcmOutputStream & outStream,
+    DcmOutputStream &outStream,
     const E_TransferSyntax oxfer,
-    const E_EncodingType enctype)
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
     DcmXfer oXferSyn(oxfer);
     if (getTransferState() == ERW_init)
@@ -298,7 +300,7 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
             currentVR = EVR_OW;
         }
     }
-    errorFlag = DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype);
+    errorFlag = DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     if (getTransferState() == ERW_ready && changeVR)
     {
         // VR must be OB again. No Swapping is needed since the written
@@ -313,7 +315,13 @@ OFCondition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.19  2007-11-23 15:42:36  meichel
+** Revision 1.20  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.19  2007/11/23 15:42:36  meichel
 ** Copy assignment operators in dcmdata now safe for self assignment
 **
 ** Revision 1.18  2007/06/29 14:17:49  meichel

@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:36 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -303,13 +303,15 @@ OFCondition DcmPixelSequence::read(DcmInputStream &inStream,
 // ********************************
 
 
-OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
-                                      const E_TransferSyntax oxfer,
-                                      const E_EncodingType /*enctype*/)
+OFCondition DcmPixelSequence::write(
+    DcmOutputStream &outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType /*enctype*/,
+    DcmWriteCache *wcache)
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
-        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength, wcache);
 
     return l_error;
 }
@@ -318,13 +320,15 @@ OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
 // ********************************
 
 
-OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream &outStream,
-                                                   const E_TransferSyntax oxfer,
-                                                   const E_EncodingType /*enctype*/)
+OFCondition DcmPixelSequence::writeSignatureFormat(
+   DcmOutputStream &outStream,
+   const E_TransferSyntax oxfer,
+   const E_EncodingType enctype,
+   DcmWriteCache *wcache)                           
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
-        return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
+        return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength, wcache);
 
     return l_error;
 }
@@ -378,7 +382,13 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.39  2007-11-23 15:42:36  meichel
+** Revision 1.40  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.39  2007/11/23 15:42:36  meichel
 ** Copy assignment operators in dcmdata now safe for self assignment
 **
 ** Revision 1.38  2007/06/29 14:17:49  meichel

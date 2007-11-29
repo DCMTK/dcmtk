@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ int mkstemp(char *);
 #include "dcmtk/dcmdata/dcvrus.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 
 // ********************************
 
@@ -993,6 +994,8 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
                                const E_EncodingType enctype,
                                const E_GrpLenEncoding glenc)
 {
+    DcmWriteCache wcache;
+
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
     {
       ofConsole.lockCerr() << "Error: DcmDicomDir::write(): wrong TransferSyntax used - only LittleEndianExplicit allowed!" << OFendl;
@@ -1072,7 +1075,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     getDirFileFormat().validateMetaInfo( outxfer );
 
     metainfo.transferInit();
-    metainfo.write(*outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
+    metainfo.write(*outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype, &wcache);
     metainfo.transferEnd();
 
     Uint32 beginOfDataset = outStream->tell();
@@ -1082,7 +1085,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     dset.transferInit();
     // do not calculate GroupLength and Padding twice!
-    dset.write(*outStream, outxfer, enctype, EGL_noChange);
+    dset.write(*outStream, outxfer, enctype, &wcache, EGL_noChange);
     dset.transferEnd();
 
     // outStream is closed here
@@ -1325,7 +1328,13 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.49  2006-08-15 15:49:54  meichel
+** Revision 1.50  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.49  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

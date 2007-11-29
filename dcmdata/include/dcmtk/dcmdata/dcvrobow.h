@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-07 09:01:15 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,11 +123,14 @@ class DcmOtherByteOtherWord
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax oxfer,
-                              const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition write(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format to a stream
      *  @param out output stream to which the XML document is written
@@ -141,11 +144,14 @@ class DcmOtherByteOtherWord
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** get particular 8 bit value.
      *  This method is only applicable to non-OW data, e.g. OB.
@@ -293,7 +299,13 @@ class DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.28  2007-06-07 09:01:15  joergr
+** Revision 1.29  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.28  2007/06/07 09:01:15  joergr
 ** Added createUint8Array() and createUint16Array() methods.
 **
 ** Revision 1.27  2006/08/15 15:49:56  meichel

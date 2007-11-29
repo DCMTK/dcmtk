@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:36 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2007-11-29 14:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,9 +201,11 @@ void DcmByteString::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmByteString::write(DcmOutputStream &outStream,
-                                 const E_TransferSyntax writeXfer,
-                                 const E_EncodingType encodingType)
+OFCondition DcmByteString::write(
+    DcmOutputStream &outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -212,15 +214,18 @@ OFCondition DcmByteString::write(DcmOutputStream &outStream,
         /* convert string value to DICOM representation and call inherited method */
         if (getTransferState() == ERW_init)
             makeDicomByteString();
-        errorFlag = DcmElement::write(outStream, writeXfer, encodingType);
+
+        errorFlag = DcmElement::write(outStream, oxfer, enctype, wcache);
     }
     return errorFlag;
 }
 
 
-OFCondition DcmByteString::writeSignatureFormat(DcmOutputStream &outStream,
-                                                const E_TransferSyntax writeXfer,
-                                                const E_EncodingType encodingType)
+OFCondition DcmByteString::writeSignatureFormat(
+    DcmOutputStream &outStream,
+    const E_TransferSyntax oxfer,
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -229,7 +234,7 @@ OFCondition DcmByteString::writeSignatureFormat(DcmOutputStream &outStream,
         /* convert string value to DICOM representation and call inherited method */
         if (getTransferState() == ERW_init)
             makeDicomByteString();
-        errorFlag = DcmElement::writeSignatureFormat(outStream, writeXfer, encodingType);
+        errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     }
     return errorFlag;
 }
@@ -615,7 +620,13 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.47  2007-11-23 15:42:36  meichel
+** Revision 1.48  2007-11-29 14:30:20  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.47  2007/11/23 15:42:36  meichel
 ** Copy assignment operators in dcmdata now safe for self assignment
 **
 ** Revision 1.46  2007/06/29 14:17:49  meichel

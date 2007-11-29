@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #define DCPIXEL_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dcvrpobw.h"
 #include "dcmtk/ofstd/oflist.h"
@@ -47,6 +46,12 @@ class DcmPixelData;
 class DcmRepresentationEntry;
 
 
+/** abstract base class for codec representation parameter sets.
+ *  A codec parameter set subclass is implemented for each codec and passed to the codec
+ *  by the encode() and decode() routines. It is supposed to contain data that may vary
+ *  between compressed image representations using the same transfer syntax,
+ *  for example the quality factor or compression factor for lossy compression.
+ */
 class DcmRepresentationParameter
 {
 public:
@@ -130,8 +135,13 @@ private:
     friend class DcmPixelData;
 };
 
+/// list of DcmRepresentationEntry objects
 typedef OFList<DcmRepresentationEntry *> DcmRepresentationList;
+
+/// iterator for list of DcmRepresentationEntry objects
 typedef OFListIterator(DcmRepresentationEntry *) DcmRepresentationListIterator;
+
+/// const iterator for list of DcmRepresentationEntry objects
 typedef OFListConstIterator(DcmRepresentationEntry *) DcmRepresentationListConstIterator;
 
 /** The class DcmPixelData stores different pixel representations identified by
@@ -233,6 +243,9 @@ private:
         const DcmRepresentationParameter *toParam,
         DcmStack & pixelStack);
 
+    /** set the current VR, which is always OB if the currently selected
+     *  pixel representation is compressed, and may be OB or OW for uncompressed.
+     */
     void recalcVR()
     {
         if (current == repList.end()) setTagVR(unencapsulatedVR);
@@ -240,10 +253,24 @@ private:
     }
 
 public:
+
+    /** constructor
+     *  @param tag attribute tag
+     *  @param len length of the attribute value
+     */
     DcmPixelData(const DcmTag & tag, const Uint32 len = 0);
+
+    /** copy constructor
+     *  @param pixelData element to be copied
+     */
     DcmPixelData(const DcmPixelData & pixelData);
+
+    /// destructor
     virtual ~DcmPixelData();
 
+    /** copy assignment operator
+     *  @param obj element to be copied
+     */
     DcmPixelData &operator=(const DcmPixelData &obj);
 
     /** clone method
@@ -254,9 +281,29 @@ public:
       return new DcmPixelData(*this);
     }
 
+    /** set/change the current value representation of the uncompressed image representation, if any
+     *  @param vr new value representation to be set.  All VRs except for OW (Other
+     *    Word String) are treated as 8 bit data (OB).  This is particularily useful
+     *    for unknown (UN) or unsupported VRs.
+     *  @return status status, EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition setVR(DcmEVR vr);
+
+    /** return identifier for this class. Every class derived from this class
+     *  returns a unique value of type enum DcmEVR for this call. This is used
+     *  as a "poor man's RTTI" to correctly identify instances derived from
+     *  this class even on compilers not supporting RTTI.
+     *  @return type identifier of this class
+     */
     virtual DcmEVR ident() const { return EVR_PixelData; }
 
+    /** print all elements of the item to a stream
+     *  @param out output stream
+     *  @param flags optional flag used to customize the output (see DCMTypes::PF_xxx)
+     *  @param level current level of nested items. Used for indentation.
+     *  @param pixelFileName optional filename used to write the raw pixel data file
+     *  @param pixelCounter optional counter used for automatic pixel data filename creation
+     */
     virtual void print(STD_NAMESPACE ostream&out,
                        const size_t flags = 0,
                        const int level = 0,
@@ -287,7 +334,8 @@ public:
         const E_TransferSyntax xfer  = EXS_LittleEndianImplicit,
         const E_EncodingType enctype = EET_UndefinedLength);
 
-    /** Initialize a streaming operation (read, write)
+    /** initialize the transfer state of this object. This method must be called
+     *  before this object is written to a stream or read (parsed) from a stream.
      */
     virtual void transferInit();
 
@@ -315,9 +363,10 @@ public:
      *  The written representation is the new current representation
      */
     virtual OFCondition write(
-        DcmOutputStream & outStream,
-        const E_TransferSyntax oxfer,
-        const E_EncodingType enctype = EET_UndefinedLength);
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -328,15 +377,30 @@ public:
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
+     *  @param outStream DICOM output stream
+     *  @param oxfer output transfer syntax
+     *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
+     *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSignatureFormat(
-        DcmOutputStream & outStream,
-	const E_TransferSyntax oxfer,
-	const E_EncodingType enctype = EET_UndefinedLength);
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
+    /** this method loads all attribute values maintained by this object and
+     *  all sub-objects (in case of a container such as DcmDataset) into memory.
+     *  After a call to this method, the file from which a dataset was read may safely
+     *  be deleted or replaced. For large files, this method may obviously allocate large
+     *  amounts of memory.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
     virtual OFCondition loadAllDataIntoMemory(void);
 
-    /** Finalize a streaming operation (read, write)
+
+    /** finalize the transfer state of this object. This method must be called
+     *  when reading/writing this object from/to a stream has been completed.
      */
     virtual void transferEnd();
 
@@ -364,7 +428,7 @@ public:
         const DcmRepresentationParameter * repParam,
         DcmPixelSequence * pixSeq);
 
-    /** The following two put-methods insert an original unencapsulated
+    /**insert an original unencapsulated
      *  representation. current and original representations are changed,
      *  all old representations are deleted. The array data is copied.
      */
@@ -372,6 +436,10 @@ public:
         const Uint8 * byteValue,
         const unsigned long length);
 
+    /** insert an original unencapsulated
+     *  representation. current and original representations are changed,
+     *  all old representations are deleted. The array data is copied.
+     */
     virtual OFCondition putUint16Array(
         const Uint16 * wordValue,
         const unsigned long length);
@@ -468,7 +536,13 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.30  2007-06-29 14:17:49  meichel
+** Revision 1.31  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.30  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

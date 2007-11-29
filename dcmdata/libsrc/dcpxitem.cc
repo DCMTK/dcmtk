@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2007-11-29 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 
 
 // ********************************
@@ -184,19 +185,22 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
 }
 
 OFCondition DcmPixelItem::writeSignatureFormat(
-    DcmOutputStream & outStream,
+    DcmOutputStream &outStream,
     const E_TransferSyntax oxfer,
-    const E_EncodingType enctype)
+    const E_EncodingType enctype,
+    DcmWriteCache *wcache)
 {
   if (dcmEnableOldSignatureFormat.get())
   {
       /* Old signature format as created by DCMTK releases previous to 3.5.4.
        * This is non-conformant because it includes the item length in pixel items.
        */
-      return DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype);
+      return DcmOtherByteOtherWord::writeSignatureFormat(outStream, oxfer, enctype, wcache);
   }
   else
   {
+      DcmWriteCache wcache2;
+
       /* In case the transfer state is not initialized, this is an illegal call */
       if (getTransferState() == ERW_notInitialized)
           errorFlag = EC_IllegalCall;
@@ -210,9 +214,47 @@ OFCondition DcmPixelItem::writeSignatureFormat(
           {
               /* create an object that represents the transfer syntax */
               DcmXfer outXfer(oxfer);
-              /* get this element's value. Mind the byte ordering (little */
-              /* or big endian) of the transfer syntax which shall be used */
-              Uint8 *value = OFstatic_cast(Uint8 *, getValue(outXfer.getByteOrder()));
+
+              /* pointer to element value if value resides in memory or old-style
+               * write behaviour is active (i.e. everything loaded into memory upon write 
+               */
+              Uint8 *value = NULL;
+              OFBool accessPossible = OFFalse;
+
+              /* check that we actually do have access to the element's value.
+               * If the element is unaccessable (which would mean that the value resides
+               * in file and access to the file fails), write an empty element with
+               * zero length.
+               */
+              if (getLengthField() > 0)
+              {
+                if (valueLoaded())
+                {
+                  /* get this element's value. Mind the byte ordering (little */
+                  /* or big endian) of the transfer syntax which shall be used */
+                  value = OFstatic_cast(Uint8 *, getValue(outXfer.getByteOrder()));
+                  if (value) accessPossible = OFTrue;
+                }
+                else
+                {
+                  /* Use local cache object if needed. This may cause those bytes
+                   * that are read but not written because the output stream stalls to
+                   * be read again, and the file from being re-opened next time.
+                   * Therefore, this case should be avoided.
+                   */
+                  if (! wcache) wcache = &wcache2; 
+              
+                  /* initialize cache object. This is safe even if the object was already initialized */
+                  wcache->init(this, getLengthField(), getTransferredBytes(), outXfer.getByteOrder());
+              
+                  /* access first block of element content */
+                  errorFlag = wcache->fillBuffer(*this);
+              
+                  /* check that everything worked and the buffer is non-empty now */
+                  accessPossible = errorFlag.good() && (! wcache->bufferIsEmpty());
+                }
+              }
+
               /* if this element's transfer state is ERW_init (i.e. it has not yet been written to */
               /* the stream) and if the outstream provides enough space for tag and length information */
               /* write tag and length information to it, do something */
@@ -243,25 +285,58 @@ OFCondition DcmPixelItem::writeSignatureFormat(
               }
               /* if there is a value that has to be written to the stream */
               /* and if this element's transfer state is ERW_inWork */
-              if (value && getTransferState() == ERW_inWork)
+              if (accessPossible && getTransferState() == ERW_inWork)
               {
-                  /* write as many bytes as possible to the stream starting at value[getTransferredBytes()] */
-                  /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
-                  /* written to the stream) */
-                  Uint32 len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
-                  /* increase the amount of bytes which have been transfered correspondingly */
-                  incTransferredBytes(len);
-                  /* see if there is something fishy with the stream */
-                  errorFlag = outStream.status();
+
+                  Uint32 len = 0;
+                  if (valueLoaded())
+                  {
+                      /* write as many bytes as possible to the stream starting at value[getTransferredBytes()] */
+                      /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
+                      /* written to the stream) */
+                      len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
+                  
+                      /* increase the amount of bytes which have been transfered correspondingly */
+                      incTransferredBytes(len);
+                      
+                      /* see if there is something fishy with the stream */
+                      errorFlag = outStream.status();
+                  }
+                  else
+                  {
+                      Uint32 buflen = 0;
+                      OFBool done = getTransferredBytes() == getLengthField();
+                      while (! done)
+                      {
+                        // re-fill buffer from file if empty
+                        errorFlag = wcache->fillBuffer(*this);
+                        buflen = wcache->contentLength();
+                      
+                        if (errorFlag.good())
+                        {
+                          // write as many bytes from cache buffer to stream as possible
+                          len = wcache->writeBuffer(outStream);
+                  
+                          /* increase the amount of bytes which have been transfered correspondingly */
+                          incTransferredBytes(len);
+                  
+                          /* see if there is something fishy with the stream */
+                          errorFlag = outStream.status();
+                        }
+                      
+                        // stop writing if something went wrong, we were unable to send all of the buffer content
+                        // (which indicates that the output stream needs to be flushed, or everything was sent out.
+                        done = errorFlag.bad() || (len < buflen) || (getTransferredBytes() == getLengthField());
+                      }
+                  }
+                  
                   /* if the amount of transferred bytes equals the length of the element's value, the */
                   /* entire value has been written to the stream. Thus, this element's transfer state */
                   /* has to be set to ERW_ready. If this is not the case but the error flag still shows */
                   /* an ok value, there was no more space in the stream and a corresponding return value */
                   /* has to be set. (Isn't the "else if" part superfluous?!?) */
-                  if (getTransferredBytes() == getLengthField())
-                      setTransferState(ERW_ready);
-                  else if (errorFlag.good())
-                      errorFlag = EC_StreamNotifyClient;
+                  if (getLengthField() == getTransferredBytes()) setTransferState(ERW_ready);
+                  else if (errorFlag.good()) errorFlag = EC_StreamNotifyClient;
               }
           }
       }
@@ -274,7 +349,13 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.32  2007-06-29 14:17:49  meichel
+** Revision 1.33  2007-11-29 14:30:21  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.32  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

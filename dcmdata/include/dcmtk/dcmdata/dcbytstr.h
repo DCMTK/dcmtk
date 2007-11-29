@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  Update Date:      $Date: 2007-11-29 14:30:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,8 +46,7 @@
 
 /** base class for all DICOM value representations storing a character string
  */
-class DcmByteString
-  : public DcmElement
+class DcmByteString: public DcmElement
 {
 
     /// internal type used to specify the current string representation
@@ -145,19 +144,24 @@ class DcmByteString
      *  @param outStream output stream
      *  @param writeXfer transfer syntax used to write the data
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param wcache pointer to write cache object, may be NULL
      */
     virtual OFCondition write(DcmOutputStream &outStream,
-                              const E_TransferSyntax writeXfer,
-                              const E_EncodingType encodingType = EET_UndefinedLength);
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** write data element to a stream as required for the creation of digital signatures
      *  @param outStream output stream
      *  @param writeXfer transfer syntax used to write the data
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param wcache pointer to write cache object, may be NULL
      */
-    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
-                                             const E_TransferSyntax writeXfer,
-                                             const E_EncodingType encodingType = EET_UndefinedLength);
+    virtual OFCondition writeSignatureFormat(
+      DcmOutputStream &outStream,
+      const E_TransferSyntax oxfer,
+      const E_EncodingType enctype,
+      DcmWriteCache *wcache);
 
     /** get a copy of a particular string component
      *  @param stringVal variable in which the result value is stored
@@ -316,7 +320,13 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.35  2007-06-29 14:17:49  meichel
+** Revision 1.36  2007-11-29 14:30:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.35  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **
