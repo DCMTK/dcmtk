@@ -3,7 +3,7 @@ Changes between releases are documented here.
 
 **** Changes from 2007.11.29 (riesmeier)
 
-- Added support for CP 127 (CT Radiation Dose Reporting).
+- Added support for Supplement 127 (CT Radiation Dose Reporting).
   Affects: dcmsr/libsrc/dsrxrdcc.cc
 
 **** Changes from 2007.11.28 (riesmeier)
