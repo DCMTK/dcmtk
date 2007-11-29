@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,50 +43,84 @@
 ** Defines
 */
 
+/// macro for an "undefined" attribute tag that is never used in DICOM
 #define DCM_UndefinedTagKey     DcmTagKey(0xffff, 0xffff)
 
-
-/*
- * Unique key generation for DICOM tags
+/** class maintaining a attribute tag (group and element number)
  */
-
-class DcmTagKey {
-private:
-    Uint16 group;
-    Uint16 element;
-
-protected:
-    int groupLT(const DcmTagKey& key) const;
-    int groupGT(const DcmTagKey& key) const;
-    int groupEQ(const DcmTagKey& key) const;
-    int elementLT(const DcmTagKey& key) const;
-    int elementGT(const DcmTagKey& key) const;
-    int elementEQ(const DcmTagKey& key) const;
-
+class DcmTagKey 
+{
 public:
+    /// default constructor
     DcmTagKey();
+
+    /// copy constructor
     DcmTagKey(const DcmTagKey& key);
+
+    /** constructor
+     *  @param g group
+     *  @param e element
+     */
     DcmTagKey(Uint16 g, Uint16 e);
 
+    /** set value to given tag key
+     *  @param key attribute tag to copy
+     */
     void set(const DcmTagKey& key);
+
+    /** set value to given group and element
+     *  @param g group
+     *  @param e element
+     */
     void set(Uint16 g, Uint16 e);
+
+    /** set group to given number
+     *  @param g group
+     */
     void setGroup(Uint16 g);
+
+    /** set element to given number
+     *  @param e element
+     */
     void setElement(Uint16 e);
+
+    /// return group number
     Uint16 getGroup() const;
+
+    /// return element number
     Uint16 getElement() const;
 
+    /** generate a simple hash code for this attribute tag,
+     *  used for fast look-up in the DICOM dictionary
+     *  @return hash code for this tag
+     */
     Uint32 hash() const; // generate simple hash code
 
+    /// copy assignment operator
     DcmTagKey& operator = (const DcmTagKey& key);
+
+    /// standard comparison operator
     int operator == (const DcmTagKey& key) const;
+
+    /// standard comparison operator
     int operator != (const DcmTagKey& key) const;
+
+    /// standard comparison operator
     int operator < (const DcmTagKey& key) const;
+
+    /// standard comparison operator
     int operator > (const DcmTagKey& key) const;
+
+    /// standard comparison operator
     int operator <= (const DcmTagKey& key) const;
+
+    /// standard comparison operator
     int operator >= (const DcmTagKey& key) const;
 
     friend STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmTagKey& k);
 
+    /** convert tag key to string
+     */
     OFString toString() const;
 
     /** returns true if a data element with the given tag key can
@@ -94,6 +128,32 @@ public:
      *  @return true if signable, false otherwise
      */
     OFBool isSignableTag() const;
+
+protected:
+    /// less-than operation comparing only group numbers
+    int groupLT(const DcmTagKey& key) const;
+
+    /// greater-than operation comparing only group numbers
+    int groupGT(const DcmTagKey& key) const;
+
+    /// comparison operation comparing only group numbers
+    int groupEQ(const DcmTagKey& key) const;
+
+    /// less-than operation comparing only element numbers
+    int elementLT(const DcmTagKey& key) const;
+
+    /// greater-than operation comparing only element numbers
+    int elementGT(const DcmTagKey& key) const;
+
+    /// comparison operation comparing only element numbers
+    int elementEQ(const DcmTagKey& key) const;
+
+private:
+    /// tag group number
+    Uint16 group;
+    /// tag element number
+    Uint16 element;
+
 };
 
 /** stream output operator for tag keys
@@ -266,7 +326,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.17  2006-08-15 15:49:56  meichel
+** Revision 1.18  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.17  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

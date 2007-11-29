@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmOverlayData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:28 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,22 +35,34 @@
 #define DCOVLAY_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcmtk/dcmdata/dcvrpobw.h"
 
-
+/** a class used to represent overlay data (60xx,3000) 
+ */
 class DcmOverlayData : public DcmPolymorphOBOW
 {
 public:
+
+    /** constructor
+     *  @param tag attribute tag
+     *  @param len length of the attribute value
+     */
     DcmOverlayData(
 	const DcmTag & tag, 
 	const Uint32 len = 0)
 	: DcmPolymorphOBOW(tag, len) {}
+
+    /// copy constructor
     DcmOverlayData(
 	const DcmOverlayData & oldObj)
 	: DcmPolymorphOBOW(oldObj) {}
+
+    /// destructor
     virtual ~DcmOverlayData() {}
 
+    /** copy assignment operator
+     *  @param obj element to be copied
+     */
     DcmOverlayData &operator=(const DcmOverlayData &obj) { DcmPolymorphOBOW::operator=(obj); return *this; }
 
     /** clone method
@@ -61,6 +73,12 @@ public:
       return new DcmOverlayData(*this);
     }
 
+    /** return identifier for this class. Every class derived from this class
+     *  returns a unique value of type enum DcmEVR for this call. This is used
+     *  as a "poor man's RTTI" to correctly identify instances derived from
+     *  this class even on compilers not supporting RTTI.
+     *  @return type identifier of this class
+     */
     virtual DcmEVR ident() const { return EVR_OverlayData; }
 };
 
@@ -69,7 +87,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcovlay.h,v $
-** Revision 1.7  2005-12-08 16:28:28  meichel
+** Revision 1.8  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.7  2005/12/08 16:28:28  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.6  2004/07/01 12:28:25  meichel

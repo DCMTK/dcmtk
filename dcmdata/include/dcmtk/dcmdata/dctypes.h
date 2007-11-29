@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-05-11 08:55:22 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 ** Macro Definitions
 */
 
-// XML namespace URI for the dcmtk
+/// XML namespace URI for the dcmtk
 #define DCMTK_XML_NAMESPACE_URI "http://dicom.offis.de/dcmtk"
 
 
@@ -53,45 +53,67 @@
 ** Enumerated Types
 */
 
+/// encoding type for sequences and sequence items
 typedef enum {
+    /// defined length
     EET_ExplicitLength = 0,
+    /// undefined length
     EET_UndefinedLength = 1
 } E_EncodingType;
 
 
+/// handling of group length elements when reading/writing a dataset
 typedef enum {
-    EGL_noChange = 0,       // no change of GL values, WARNING: DO NOT USE FOR WRITE
-    EGL_withoutGL = 1,      // remove group length tags
-    EGL_withGL = 2,         // add group length tags for every group
-    EGL_recalcGL = 3        // recalculate values for existing group length tags
+    /// no change of group length values, WARNING: DO NOT USE THIS VALUE FOR WRITE OPERATIONS
+    EGL_noChange = 0,       
+    /// remove group length tags
+    EGL_withoutGL = 1,      
+    /// add group length tags for every group
+    EGL_withGL = 2,         
+    /// recalculate values for existing group length tags
+    EGL_recalcGL = 3        
 } E_GrpLenEncoding;
 
+/// handling of dataset trailing padding
 typedef enum {
-    EPD_noChange = 0,       // no change of padding tags
-    EPD_withoutPadding = 1, // remove all padding tags
-    EPD_withPadding = 2     // add padding tags
+    /// no change of padding tags
+    EPD_noChange = 0,       
+    /// remove all padding tags
+    EPD_withoutPadding = 1, 
+    /// add padding tags
+    EPD_withPadding = 2    
 } E_PaddingEncoding;
 
-
+/// search mode for hierarchical search operations
 typedef enum {
+    /// start search from current object
     ESM_fromHere = 0,
+    /// start search from object pointed to by stack top
     ESM_fromStackTop = 1,
+    /// start search from object following the object pointed to by stack top
     ESM_afterStackTop = 2
 } E_SearchMode;
 
-
+/// object state during transfer (read/write) operations
 typedef enum {
+    /// object prepared for transfer, no data transferred yet
     ERW_init = 0,
+    /// object transfer completed
     ERW_ready = 1,
+    /// object transfer in progress
     ERW_inWork = 2,
+    /// object not prepared for transfer operation
     ERW_notInitialized = 3
 } E_TransferState;
 
-
+/// read mode for file reading
 typedef enum {
-    ERM_autoDetect = 0,     // auto detect: fileformat or dataset
-    ERM_dataset = 1,        // dataset (ignore meta header)
-    ERM_fileOnly = 2        // fileformat only
+    /// auto detect: fileformat or dataset
+    ERM_autoDetect = 0,
+    /// read as dataset (assume no meta header present)
+    ERM_dataset = 1,        
+    /// read file format only, refuse if no meta-header
+    ERM_fileOnly = 2        
 } E_FileReadMode;
 
 
@@ -154,7 +176,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.23  2006-05-11 08:55:22  joergr
+ * Revision 1.24  2007-11-29 14:30:35  meichel
+ * Updated doxygen API documentation
+ *
+ * Revision 1.23  2006/05/11 08:55:22  joergr
  * Added new option that allows to omit the element name in the XML output.
  *
  * Revision 1.22  2006/02/08 15:21:15  joergr

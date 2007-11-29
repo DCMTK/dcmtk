@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 11:58:49 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,24 +42,19 @@
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
 
-/*
-** dcmFindNameOfUID(const char* uid)
-** Return the name of a UID.
-** Performs a table lookup and returns a pointer to a read-only string.
-** Returns NULL if the UID is not known.
-*/
-
+/** return the name of a UID.
+ *  Performs a table lookup and returns a pointer to a read-only string.
+ *  @param uid UID string for which the name is to be looked up
+ *  @return name string or NULL if UID is unknown
+ */
 const char* dcmFindNameOfUID(const char* uid);
 
-//
-// dcmFindUIDFromName(const char* name)
-// Return the UID of a name.
-// Performs a table lookup and returns a pointer to a read-only string.
-// Returns NULL if the name is not known.
-//
-
+/** return the UID of a name.
+ *  Performs a table lookup and returns a pointer to a read-only string.
+ *  @param name name string for which the corresponding UID is to be looked up
+ *  @return UID string or NULL if name is unknown
+ */
 const char* dcmFindUIDFromName(const char * name);
-
 
 /** an array of const strings containing all known Storage SOP Classes
  *  that fit into the conventional PATIENT-STUDY-SERIES-INSTANCE information
@@ -98,58 +93,57 @@ extern const char* dcmShortSCUStorageSOPClassUIDs[];
 /// number of entries in dcmShortSCUStorageSOPClassUIDs.
 extern const int numberOfDcmShortSCUStorageSOPClassUIDs;
 
-/*
-** dcmIsaStorageSOPClassUID(const char* uid)
-** Returns true if the uid is one of the Storage SOP Classes.
-** Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
-*/
+/** returns true if the uid is one of the Storage SOP Classes.
+ *  Performs a table lookup in the dcmAllStorageSOPClassUIDs table.
+ *  @param uid UID string
+ *  @return true if UID is a known Storage SOP Class, false otherwise
+ */
 OFBool dcmIsaStorageSOPClassUID(const char* uid);
 
-/*
-** The global variable dcmImageSOPClassUIDs is an array of
-** string pointers containing the UIDs of all known Image SOP
-** Classes.  The global variable numberOfDcmImageSOPClassUIDs
-** defines the size of the array.
-** NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
-*/
-
+/** a global constant array of
+ *  string pointers containing the UIDs of all known Image SOP
+ *  Classes.  The global variable numberOfDcmImageSOPClassUIDs
+ *  defines the size of the array.
+ *  NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
+ */
 extern const char* dcmImageSOPClassUIDs[];
+
+/// number of entries in dcmImageSOPClassUIDs
 extern const int numberOfDcmImageSOPClassUIDs;
 
+/** creates a Unique Identifer in uid and returns uid.
+ *  uid must be at least 65 bytes. Care is taken to make sure
+ *  that the generated UID is 64 characters or less.
+ *  If a prefix string is not passed as the second argument a
+ *  default of SITE_INSTANCE_UID_ROOT (see below) will be used.
+ *  Otherwise the supplied prefix string will appear at the beginning
+ *  of uid.
+ *  The UID is created by appending to the prefix the following:
+ *       the host id (if obtainable, zero otherwise),
+ *       the process id (if obtainable, zero otherwise),
+ *       the system calendar time, and
+ *       an accumulating counter for tis process.
+ *  @param uid pointer to buffer of 65 or more characters in which the UID is returned
+ *  @param prefix prefix for UID creation
+ *  @return pointer to UID, identical to uid parameter
+ */  
+char *dcmGenerateUniqueIdentifier(char *uid, const char* prefix=NULL);
 
-/*
-** char* generateUniqueIdentifier(char* uid)
-** Creates a Unique Identifer in uid and returns uid.
-** uid must be at least 65 bytes. Care is taken to make sure
-** that the generated UID is 64 characters or less.
-**
-** If a prefix string is not passed as the second argument a
-** default of SITE_INSTANCE_UID_ROOT (see below) will be used.
-** Otherwise the supplied prefix string will appear at the beginning
-** of uid.
-**
-** The UID is created by appending to the prefix the following:
-**      the host id (if obtainable, zero otherwise)
-**      the process id (if obtainable, zero otherwise)
-**      the system calendar time
-**      an accumulating counter for this process
-*/
-char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix=NULL);
-
-/*
- * dcmSOPClassUIDToModality
- * performs a table lookup and returns a short modality identifier
- * that can be used for building file names etc.
- * Identifiers are defined for all storage SOP classes.
- * Returns 'defaultValue' if no modality identifier found or sopClassUID==NULL.
+/** performs a table lookup and returns a short modality identifier
+ *  that can be used for building file names etc.
+ *  Identifiers are defined for all storage SOP classes.
+ *  Returns 'defaultValue' if no modality identifier found or sopClassUID==NULL.
+ *  @param sopClassUID UID string
+ *  @param defaultValue default to return if UID not known
+ *  @return modality string for modality UID, or defaultValue if not found
  */
 const char *dcmSOPClassUIDToModality(const char *sopClassUID, const char *defaultValue = NULL);
 
-/*
- * dcmGuessModalityBytes
- * performs a table lookup and returns a guessed average
- * file size for the given SOP class.
- * Average sizes are defined for all storage SOP classes.
+/** performs a table lookup and returns a guessed average
+ *  file size for the given SOP class.
+ *  Average sizes are defined for all storage SOP classes, but may be very far off.
+ *  @param sopClassUID UID string
+ *  @return estimated everage size for objects of this SOP class
  */
 unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
@@ -167,26 +161,51 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *       The second name is used to identify files written without dcmdata
  *       (i.e. using the --bit-preserving switch in various tools)
  */
+
+/// implementation version name for this version of the toolkit
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_354"
+
+/// implementation version name for this version of the toolkit, used for files received in "bit preserving" mode
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_354"
+
+/// release date of current toolkit release
 #define OFFIS_DCMTK_RELEASEDATE                 "2005-12-20"
 
+/// UID root for DCMTK, registered for OFFIS with DIN in Germany.
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
+
+/// DCMTK version number for this release
 #define OFFIS_DCMTK_VERSION_NUMBER              354
+
+/// DCMTK version number (as string) for this release
 #define OFFIS_DCMTK_VERSION_STRING              "3.5.4"
+
+/// DCMTK version number suffix string for this release
 #define OFFIS_DCMTK_VERSION_SUFFIX              ""
+
+/// DCMTK version number string including suffix
 #define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX
+
+/// Implementation class UID for this release of the toolkit
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION_STRING
+
+/// Instance creator UID for this release of the toolkit
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
+/// private coding scheme UID root for coding schemes generated by OFFIS
 #define OFFIS_CODING_SCHEME_UID_ROOT            OFFIS_UID_ROOT ".0.0"
+
+/// private coding scheme version for coding schemes generated by OFFIS
 #define OFFIS_CODING_SCHEME_VERSION             "1"
+
+/// private coding scheme UID for coding schemes generated by OFFIS
 #define OFFIS_CODING_SCHEME_UID                 OFFIS_CODING_SCHEME_UID_ROOT "." OFFIS_CODING_SCHEME_VERSION
 
 /*
 ** Each site should define its own SITE_UID_ROOT
 */
 #ifndef SITE_UID_ROOT
+/// UID root to be used when generating UIDs. By default uses the DCMTK root, but can be replaced at compile time.
 #define SITE_UID_ROOT                           OFFIS_UID_ROOT  /* default */
 #endif
 
@@ -199,95 +218,100 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 **
 */
 
+/// UID root for study instance UIDs
 #define SITE_STUDY_UID_ROOT                     SITE_UID_ROOT ".1.2"
+
+/// UID root for series instance UIDs
 #define SITE_SERIES_UID_ROOT                    SITE_UID_ROOT ".1.3"
+
+
+/// UID root for SOP instance UIDs
 #define SITE_INSTANCE_UID_ROOT                  SITE_UID_ROOT ".1.4"
 
-/*
-** A private SOP Class UID which can be used in a file meta-header when
-** no real SOP Class is stored in the file. -- NON-STANDARD
-*/
+/** A private SOP Class UID which is used in a file meta-header when
+ *  no real SOP Class is stored in the file. -- NON-STANDARD
+ */
 #define UID_PrivateGenericFileSOPClass          SITE_UID_ROOT ".1.0.1"
 
-
-/*
-** DICOM Defined Standard Application Context UID
-*/
-
+/// DICOM Defined Standard Application Context UID
 #define UID_StandardApplicationContext          "1.2.840.10008.3.1.1.1"
 
 /*
 ** Defined Transfer Syntax UIDs
 */
 
-/* Implicit VR Little Endian: Default Transfer Syntax for DICOM */
+/// Implicit VR Little Endian: Default Transfer Syntax for DICOM 
 #define UID_LittleEndianImplicitTransferSyntax  "1.2.840.10008.1.2"
-/* Explicit VR Little Endian */
+/// Explicit VR Little Endian 
 #define UID_LittleEndianExplicitTransferSyntax  "1.2.840.10008.1.2.1"
-/* Explicit VR Big Endian */
+/// Explicit VR Big Endian 
 #define UID_BigEndianExplicitTransferSyntax     "1.2.840.10008.1.2.2"
-/* JPEG Baseline (Process 1): Default Transfer Syntax
-   for Lossy JPEG 8 Bit Image Compression */
+/** JPEG Baseline (Process 1): Default Transfer Syntax
+ * for Lossy JPEG 8 Bit Image Compression 
+ */
 #define UID_JPEGProcess1TransferSyntax          "1.2.840.10008.1.2.4.50"
-/* JPEG Extended (Process 2 & 4): Default Transfer Syntax
-   for Lossy JPEG 12 Bit Image Compression (Process 4 only) */
+/** JPEG Extended (Process 2 & 4): Default Transfer Syntax
+ *  for Lossy JPEG 12 Bit Image Compression (Process 4 only) 
+ */
 #define UID_JPEGProcess2_4TransferSyntax        "1.2.840.10008.1.2.4.51"
-/* JPEG Extended (Process 3 & 5) */
+/// JPEG Extended (Process 3 & 5) 
 #define UID_JPEGProcess3_5TransferSyntax        "1.2.840.10008.1.2.4.52"
-/* JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) */
+/// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) 
 #define UID_JPEGProcess6_8TransferSyntax        "1.2.840.10008.1.2.4.53"
-/* JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) */
+/// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) 
 #define UID_JPEGProcess7_9TransferSyntax        "1.2.840.10008.1.2.4.54"
-/* JPEG Full Progression, Non-Hierarchical (Process 10 & 12) */
+/// JPEG Full Progression, Non-Hierarchical (Process 10 & 12) 
 #define UID_JPEGProcess10_12TransferSyntax      "1.2.840.10008.1.2.4.55"
-/* JPEG Full Progression, Non-Hierarchical (Process 11 & 13) */
+/// JPEG Full Progression, Non-Hierarchical (Process 11 & 13) 
 #define UID_JPEGProcess11_13TransferSyntax      "1.2.840.10008.1.2.4.56"
-/* JPEG Lossless, Non-Hierarchical (Process 14) */
+/// JPEG Lossless, Non-Hierarchical (Process 14) 
 #define UID_JPEGProcess14TransferSyntax         "1.2.840.10008.1.2.4.57"
-/* JPEG Lossless, Non-Hierarchical (Process 15) */
+/// JPEG Lossless, Non-Hierarchical (Process 15) 
 #define UID_JPEGProcess15TransferSyntax         "1.2.840.10008.1.2.4.58"
-/* JPEG Extended, Hierarchical (Process 16 & 18) */
+/// JPEG Extended, Hierarchical (Process 16 & 18) 
 #define UID_JPEGProcess16_18TransferSyntax      "1.2.840.10008.1.2.4.59"
-/* JPEG Extended, Hierarchical (Process 17 & 19) */
+/// JPEG Extended, Hierarchical (Process 17 & 19) 
 #define UID_JPEGProcess17_19TransferSyntax      "1.2.840.10008.1.2.4.60"
-/* JPEG Spectral Selection, Hierarchical (Process 20 & 22) */
+/// JPEG Spectral Selection, Hierarchical (Process 20 & 22) 
 #define UID_JPEGProcess20_22TransferSyntax      "1.2.840.10008.1.2.4.61"
-/* JPEG Spectral Selection, Hierarchical (Process 21 & 23) */
+/// JPEG Spectral Selection, Hierarchical (Process 21 & 23) 
 #define UID_JPEGProcess21_23TransferSyntax      "1.2.840.10008.1.2.4.62"
-/* JPEG Full Progression, Hierarchical (Process 24 & 26) */
+/// JPEG Full Progression, Hierarchical (Process 24 & 26) 
 #define UID_JPEGProcess24_26TransferSyntax      "1.2.840.10008.1.2.4.63"
-/* JPEG Full Progression, Hierarchical (Process 25 & 27) */
+/// JPEG Full Progression, Hierarchical (Process 25 & 27) 
 #define UID_JPEGProcess25_27TransferSyntax      "1.2.840.10008.1.2.4.64"
-/* JPEG Lossless, Hierarchical (Process 28) */
+/// JPEG Lossless, Hierarchical (Process 28) 
 #define UID_JPEGProcess28TransferSyntax         "1.2.840.10008.1.2.4.65"
-/* JPEG Lossless, Hierarchical (Process 29) */
+/// JPEG Lossless, Hierarchical (Process 29) 
 #define UID_JPEGProcess29TransferSyntax         "1.2.840.10008.1.2.4.66"
-/* JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14
-   [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression */
+/** JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14
+ *  [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression 
+ */
 #define UID_JPEGProcess14SV1TransferSyntax      "1.2.840.10008.1.2.4.70"
-/* JPEG-LS Lossless Image Compression */
+/// JPEG-LS Lossless Image Compression 
 #define UID_JPEGLSLosslessTransferSyntax        "1.2.840.10008.1.2.4.80"
-/* JPEG-LS Lossy (Near-Lossless) Image Compression */
+/// JPEG-LS Lossy (Near-Lossless) Image Compression 
 #define UID_JPEGLSLossyTransferSyntax           "1.2.840.10008.1.2.4.81"
-/* RLE Lossless */
+/// RLE Lossless 
 #define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
-/* Deflated Explicit VR Little Endian */
+/// Deflated Explicit VR Little Endian 
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
-/* JPEG 2000 Image Compression (Lossless Only) */
+/// JPEG 2000 Image Compression (Lossless Only) 
 #define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
-/* JPEG 2000 Image Compression (Lossless or Lossy) */
+/// JPEG 2000 Image Compression (Lossless or Lossy) 
 #define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
-/* MPEG2 Main Profile @ Main Level */
+/// MPEG2 Main Profile @ Main Level 
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
-/* JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only) */
+/// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only) 
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
-/* JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy) */
+/// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy) 
 #define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
 
-/* MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
-   refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
-   on a DICOM storage medium. It is never used for network communication
-   or encoding of DICOM objects. */
+/** MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
+ *  refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
+ *  on a DICOM storage medium. It is never used for network communication
+ *  or encoding of DICOM objects. 
+ */
 #define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
 
 /*
@@ -573,7 +597,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.73  2006-10-27 11:58:49  joergr
+** Revision 1.74  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.73  2006/10/27 11:58:49  joergr
 ** Added new default parameter to dcmSOPClassUIDToModality() that allows for
 ** the specification of the return value in case the SOP Class is unknown.
 **

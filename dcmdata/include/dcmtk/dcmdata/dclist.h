@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: generic list class
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:20 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dclist.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,71 +42,154 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
-
+/// index indicating "end of list"
 const unsigned long DCM_EndOfListIndex = OFstatic_cast(unsigned long, -1L);
 
 
 class DcmObject;    // forward declaration
 
 
-class DcmListNode {
-    friend class DcmList;
-    DcmListNode *nextNode;
-    DcmListNode *prevNode;
-    DcmObject *objNodeValue;
-
- // --- declarations to avoid compiler warnings
- 
-    DcmListNode(const DcmListNode &);
-    DcmListNode &operator=(const DcmListNode &);
+/** helper class maintaining an entry in a DcmList double-linked list
+ */
+class DcmListNode 
+{
 
 public:
+    /** constructor
+     *  @param obj object to be maintained by this list node
+     */
     DcmListNode( DcmObject *obj );
+
+    /// destructor
     ~DcmListNode();
+
+    /// return pointer to object maintained by this list node
     inline DcmObject *value() { return objNodeValue; } 
+
+private:
+    friend class DcmList;
+
+    /// pointer to next node in double-linked list
+    DcmListNode *nextNode;
+
+    /// pointer to previous node in double-linked list
+    DcmListNode *prevNode;
+
+    /// pointer to DcmObject instance maintained by this list entry
+    DcmObject *objNodeValue;
+
+    /// private undefined copy constructor 
+    DcmListNode(const DcmListNode &);
+
+    /// private undefined copy assignment operator 
+    DcmListNode &operator=(const DcmListNode &);
+
 };
 
-
+/// list position indicator
 typedef enum
 {
+    /// at current position in list
     ELP_atpos,
+
+    /// at list start
     ELP_first,
+
+    /// at list end
     ELP_last,
+
+    /// before current list position
     ELP_prev,
+
+    /// after current list position
     ELP_next
 } E_ListPos;
 
-/* this class only manages pointers to elements.
- * remove() does not delete the element pointed to.
- * Upon destruction of the list, all elements pointed to are also deleted.
+/** double-linked list class that maintains pointers to DcmObject instances.
+ *  The remove operation does not delete the object pointed to, however,
+ *  the destructor will delete all elements pointed to
  */
-
-class DcmList {
-    DcmListNode *firstNode;
-    DcmListNode *lastNode;
-    DcmListNode *currentNode;
-    unsigned long cardinality;
-
- // --- declarations to avoid compiler warnings
- 
-    DcmList &operator=(const DcmList &);
-    DcmList(const DcmList &newList);
-
+class DcmList 
+{
 public:
+    /// constructor
     DcmList();
+
+    /// destructor
     ~DcmList();
 
+    /** insert object at end of list
+     *  @param obj pointer to object
+     *  @return pointer to object
+     */
     DcmObject *append(  DcmObject *obj );
+
+    /** insert object at start of list
+     *  @param obj pointer to object
+     *  @return pointer to object
+     */
     DcmObject *prepend( DcmObject *obj );
+
+    /** insert object relative to current position and indicator
+     *  @param obj pointer to object
+     *  @param pos position indicator
+     *  @return pointer to object
+     */
     DcmObject *insert(  DcmObject *obj,
                         E_ListPos pos = ELP_next );
+
+    /** remove current entry from list, return element
+     *  @return pointer to removed element, which is not deleted
+     */
     DcmObject *remove();
+
+    /** get pointer to element in list at given position
+     *  @param pos position indicator
+     *  @return pointer to object
+     */
     DcmObject *get(     E_ListPos pos = ELP_atpos );
+
+    /** seek within element in list to given position
+     *  (i.e. set current element to given position)
+     *  @param pos position indicator
+     *  @return pointer to new current object
+     */
     DcmObject *seek(    E_ListPos pos = ELP_next );
+
+    /** seek within element in list to given element index
+     *  (i.e. set current element to given index)
+     *  @param absolute_position position index < card()
+     *  @return pointer to new current object
+     */
     DcmObject *seek_to(unsigned long absolute_position);
+
+    /// return cardinality of list
     inline unsigned long card() const { return cardinality; }
+
+    /// return true if list is empty, false otherwise
     inline OFBool empty(void) const { return firstNode == NULL; }
+
+    /// return true if current node exists, false otherwise
     inline OFBool valid(void) const { return currentNode != NULL; }
+
+private:
+    /// pointer to first node in list
+    DcmListNode *firstNode;
+
+    /// pointer to last node in list
+    DcmListNode *lastNode;
+
+    /// pointer to current node in list
+    DcmListNode *currentNode;
+
+    /// number of elements in list
+    unsigned long cardinality;
+ 
+    /// private undefined copy constructor 
+    DcmList &operator=(const DcmList &);
+
+    /// private undefined copy assignment operator 
+    DcmList(const DcmList &newList);
 };
 
 #endif  // DCLIST_H
@@ -115,7 +198,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dclist.h,v $
- * Revision 1.16  2005-12-08 16:28:20  meichel
+ * Revision 1.17  2007-11-29 14:30:35  meichel
+ * Updated doxygen API documentation
+ *
+ * Revision 1.16  2005/12/08 16:28:20  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.15  2003/08/08 13:32:45  joergr

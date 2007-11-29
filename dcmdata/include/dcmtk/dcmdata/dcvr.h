@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:50 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,55 +62,138 @@ extern OFGlobal<OFBool> dcmEnableUnknownVRConversion; /* default OFFalse */
 */
 enum DcmEVR
 {
+
+    /// application entity title
     EVR_AE,
+
+    /// age string
     EVR_AS,
+
+    /// attribute tag
     EVR_AT,
+
+    /// code string
     EVR_CS,
+
+    /// date string
     EVR_DA,
+
+    /// decimal string
     EVR_DS,
+
+    /// date time string
     EVR_DT,
+
+    /// float single-precision
     EVR_FL,
+
+    /// float double-precision
     EVR_FD,
+
+    /// integer string
     EVR_IS,
+
+    /// long string
     EVR_LO,
+
+    /// long text
     EVR_LT,
+
+    /// other byte
     EVR_OB,
+
+    /// other float
     EVR_OF,
+
+    /// other word
     EVR_OW,
+
+    /// person name
     EVR_PN,
+
+    /// short string
     EVR_SH,
+
+    /// signed long
     EVR_SL,
+
+    /// sequence of items
     EVR_SQ,
+
+    /// signed short
     EVR_SS,
+
+    /// short text
     EVR_ST,
+
+    /// time string
     EVR_TM,
+
+    /// unique identifier
     EVR_UI,
+
+    /// unsigned long
     EVR_UL,
+
+    /// unsigned short
     EVR_US,
+
+    /// unlimited text
     EVR_UT,
 
-    EVR_ox,  /* OB or OW depending on context */
-    EVR_xs,  /* SS or US depending on context */
-    EVR_lt,  /* US, SS or OW depending on context, used for LUT Data (thus the name) */
-    EVR_na,  /* na="not applicable", for data which has no VR */
-    EVR_up,  /* up="unsigned pointer", used internally for DICOMDIR support */
+    /// OB or OW depending on context
+    EVR_ox,
 
-    EVR_item,        /* used internally */
-    EVR_metainfo,    /* used internally */
-    EVR_dataset,     /* used internally */
-    EVR_fileFormat,  /* used internally */
-    EVR_dicomDir,    /* used internally */
-    EVR_dirRecord,   /* used internally */
+    /// SS or US depending on context
+    EVR_xs,
 
-    EVR_pixelSQ,     /* used internally */
-    EVR_pixelItem,   /* used internally */
+    /// US, SS or OW depending on context, used for LUT Data (thus the name)
+    EVR_lt,
 
-    EVR_UNKNOWN,     /* used internally */
-    EVR_UN,          /* Unknown value representation - defined in supplement 14 */
-    EVR_PixelData,   /* used internally */
-    EVR_OverlayData, /* used internally */
+    /// na="not applicable", for data which has no VR
+    EVR_na,  
 
-    EVR_UNKNOWN2B    /* like EVR_UNKNOWN but without extended length property in explicit VR */
+    /// up="unsigned pointer", used internally for DICOMDIR suppor
+    EVR_up,  
+
+    /// used internally for items
+    EVR_item,
+
+    /// used internally for meta info datasets
+    EVR_metainfo, 
+
+    /// used internally for datasets
+    EVR_dataset,
+
+    /// used internally for DICOM files
+    EVR_fileFormat,
+
+    /// used internally for DICOMDIR objects
+    EVR_dicomDir,
+
+    /// used internally for DICOMDIR records
+    EVR_dirRecord,
+
+    /// used internally for pixel sequences in a compressed image
+    EVR_pixelSQ,
+
+    /// used internally for pixel items in a compressed image
+    EVR_pixelItem,
+
+    /// used internally for elements with unknown VR (encoded with 4-byte length field in explicit VR)
+    EVR_UNKNOWN,
+
+    /// unknown value representation
+    EVR_UN,
+
+    /// used internally for uncompressed pixeld data
+    EVR_PixelData,
+
+    /// used internally for overlay data
+    EVR_OverlayData,
+
+    /// used internally for elements with unknown VR with 2-byte length field in explicit VR
+    EVR_UNKNOWN2B
 };
 
 
@@ -263,7 +346,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.24  2005-12-08 16:28:50  meichel
+ * Revision 1.25  2007-11-29 14:30:35  meichel
+ * Updated doxygen API documentation
+ *
+ * Revision 1.24  2005/12/08 16:28:50  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.23  2005/11/15 18:28:02  meichel

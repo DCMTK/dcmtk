@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:04 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,17 +37,24 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofglobal.h"
 
+/** global variable maintaining an application-wide debug level
+ */
 extern OFGlobal<int> DcmDebugLevel; /* default 0 */
 
 #ifdef DEBUG
 
+/** fprint-like function for debug output
+ *  @param text fprint-like format string
+ *  @param ... parameter list
+ */
 void DCM_dcmdata_debug_print(const char* text, ... );
 
-// Set the debug level
+/// Macro for setting the the debug level
 #define SetDebugLevel(level) DcmDebugLevel.set(level);
 
-// debug prints a debug message in param if lev <= DcmDebugLevel. param has the
-// format of the printf parameters (with round brackets)!
+/** Macro that prints a debug message in param if lev <= DcmDebugLevel. 
+ *  param must be a printf parameter list in brackets!
+ */
 #define DCM_dcmdataDebug(lev, param) \
   { \
     if ((lev) <= DcmDebugLevel.get()) \
@@ -58,7 +65,10 @@ void DCM_dcmdata_debug_print(const char* text, ... );
     } \
   }
 
-// Cdebug does the same as debug but only if a condition cond is OFTrue
+/** Macro that prints a debug message in param if lev <= DcmDebugLevel
+ *  and condition cond is true. 
+ *  param must be a printf parameter list in brackets!
+ */
 #define DCM_dcmdataCDebug(lev, cond, param) \
   { \
     if ((lev) <= DcmDebugLevel.get() && (cond)) \
@@ -83,7 +93,10 @@ void DCM_dcmdata_debug_print(const char* text, ... );
 /*
  * CVS/RCS Log:
  * $Log: dcdebug.h,v $
- * Revision 1.13  2005-12-08 16:28:04  meichel
+ * Revision 1.14  2007-11-29 14:30:35  meichel
+ * Updated doxygen API documentation
+ *
+ * Revision 1.13  2005/12/08 16:28:04  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.12  2005/11/28 15:53:16  meichel

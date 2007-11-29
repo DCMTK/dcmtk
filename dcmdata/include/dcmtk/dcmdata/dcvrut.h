@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           Value Representation UT is defined in Correction Proposal 101
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:29:16 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrut.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,13 +50,24 @@ class DcmUnlimitedText
 
   public:
 
+    /** constructor
+     *  @param tag attribute tag
+     *  @param len length of the attribute value
+     */
     DcmUnlimitedText(const DcmTag &tag,
                      const Uint32 len = 0);
 
+    /** copy constructor
+     *  @param old element to be copied
+     */
     DcmUnlimitedText(const DcmUnlimitedText &old);
 
+    /// destructor
     virtual ~DcmUnlimitedText();
 
+    /** copy assignment operator
+     *  @param obj element to be copied
+     */
     DcmUnlimitedText &operator=(const DcmUnlimitedText &obj);
 
     /** clone method
@@ -67,6 +78,12 @@ class DcmUnlimitedText
       return new DcmUnlimitedText(*this);
     }
 
+    /** return identifier for this class. Every class derived from this class
+     *  returns a unique value of type enum DcmEVR for this call. This is used
+     *  as a "poor man's RTTI" to correctly identify instances derived from
+     *  this class even on compilers not supporting RTTI.
+     *  @return type identifier of this class
+     */
     virtual DcmEVR ident() const;
 
     /** get the value multiplicity.
@@ -102,7 +119,10 @@ class DcmUnlimitedText
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.h,v $
-** Revision 1.9  2005-12-08 16:29:16  meichel
+** Revision 1.10  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.9  2005/12/08 16:29:16  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.8  2004/07/01 12:28:25  meichel

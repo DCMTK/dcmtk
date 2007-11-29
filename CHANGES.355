@@ -1,6 +1,63 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.11.29 (eichelberg)
+
+- Write methods now handle large raw data elements (such as pixel data)
+  without loading everything into memory. This allows very large images to
+  be sent over a network connection, or to be copied without ever being
+  fully in memory.
+  Added:   dcmdata/include/dcmtk/dcmdata/dcwcache.h
+           dcmdata/libsrc/dcwcache.cc
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcpixseq.h
+           dcmdata/include/dcmtk/dcmdata/dcpxitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvrobow.h
+           dcmdata/include/dcmtk/dcmdata/dcvrpobw.h
+           dcmdata/include/dcmtk/dcmdata/dcxfer.h
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+
+- Updated doxygen API documentation
+  Affects: dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+           dcmdata/include/dcmtk/dcmdata/dcdebug.h
+           dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dclist.h
+           dcmdata/include/dcmtk/dcmdata/dcovlay.h
+           dcmdata/include/dcmtk/dcmdata/dcswap.h
+           dcmdata/include/dcmtk/dcmdata/dctagkey.h
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/include/dcmtk/dcmdata/dcuid.h
+           dcmdata/include/dcmtk/dcmdata/dcvm.h
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/include/dcmtk/dcmdata/dcvrut.h
+
 **** Changes from 2007.11.29 (riesmeier)
 
 - Added support for Supplement 127 (CT Radiation Dose Reporting).

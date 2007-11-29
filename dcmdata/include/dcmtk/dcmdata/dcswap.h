@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: byte order functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:43 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcswap.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,20 +42,40 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
+/** swap block of data from big-endian to little-endian or back if neccessary
+ *  @param newByteOrder desired byte order of data block
+ *  @param oldByteOrder current byte order of data block
+ *  @param value pointer to block of data
+ *  @param byteLength size of data block in bytes
+ *  @param valWidth size of each value in the data block, in bytes
+ *  @return EC_Normal if successful, an error code otherwise
+ */
+OFCondition swapIfNecessary(
+  const E_ByteOrder newByteOrder, 
+  const E_ByteOrder oldByteOrder,
+  void * value, 
+  const Uint32 byteLength,
+  const size_t valWidth);
 
-// Swap byteLength bytes, if newByteOrder != oldByteOrder. The bytes are
-// parted in valWidth bytes, each swapped separately
-OFCondition swapIfNecessary(const E_ByteOrder newByteOrder, 
-			    const E_ByteOrder oldByteOrder,
-			    void * value, const Uint32 byteLength,
-			    const size_t valWidth);
+/** swap block of data from big-endian to little-endian or back
+ *  @param value pointer to block of data
+ *  @param byteLength size of data block in bytes
+ *  @param valWidth size of each value in the data block, in bytes
+ */
+void swapBytes(
+  void * value, 
+  const Uint32 byteLength, 
+  const size_t valWidth);
 
-
-void swapBytes(void * value, const Uint32 byteLength, 
-			   const size_t valWidth);
-
+/** swap an Uint16 number from big-endian to little-endian or back
+ *  @param toSwap number to be swapped
+ *  @return swapped number
+ */
 Uint16 swapShort(const Uint16 toSwap);
 
+/** swap a sequence of two bytes from big-endian to little-endian or back
+ *  @param toSwap pointer to object to swap
+ */
 inline void swap2Bytes(Uint8 * toSwap)
 // swaps [byte0][byte1] to [byte1][byte0]
 {
@@ -64,6 +84,9 @@ inline void swap2Bytes(Uint8 * toSwap)
     toSwap[1] = tmp;
 }
 
+/** swap a sequence of four bytes from big-endian to little-endian or back
+ *  @param toSwap pointer to object to swap
+ */
 inline void swap4Bytes(Uint8 * toSwap)
 // swaps [byte0][byte1][byte2][byte3] to [byte3][byte2][byte1][byte0]
 {
@@ -80,7 +103,10 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
- * Revision 1.15  2005-12-08 16:28:43  meichel
+ * Revision 1.16  2007-11-29 14:30:35  meichel
+ * Updated doxygen API documentation
+ *
+ * Revision 1.15  2005/12/08 16:28:43  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.14  2002/11/27 12:07:23  meichel

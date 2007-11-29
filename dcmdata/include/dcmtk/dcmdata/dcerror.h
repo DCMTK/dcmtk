@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-13 14:45:47 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,27 +62,47 @@ const unsigned short OFM_dcmppswm = 17;
 const unsigned short OFM_dcmjp2k  = 18;
 const unsigned short OFM_dcmjpls  = 19;
 
-
 // condition constants
+
+/// invalid tag 
 extern const OFCondition EC_InvalidTag;
+/// tag not found
 extern const OFCondition EC_TagNotFound;
+/// invalid VR
 extern const OFCondition EC_InvalidVR;
+/// invalid stream
 extern const OFCondition EC_InvalidStream;
+/// end of stream
 extern const OFCondition EC_EndOfStream;
+/// corrupted data
 extern const OFCondition EC_CorruptedData;
+/// illegal call, perhaps wrong parameters
 extern const OFCondition EC_IllegalCall;
+/// sequence end
 extern const OFCondition EC_SequEnd;
+/// doubled tag
 extern const OFCondition EC_DoubledTag;
+/// I/O suspension or premature end of stream
 extern const OFCondition EC_StreamNotifyClient;
+/// stream mode (R/W, random/sequence) is wrong
 extern const OFCondition EC_WrongStreamMode;
+/// item end
 extern const OFCondition EC_ItemEnd;
+/// compressed/uncompressed pixel representation not found
 extern const OFCondition EC_RepresentationNotFound;
+/// Pixel representation cannot be changed to requested transfer syntax
 extern const OFCondition EC_CannotChangeRepresentation;
+/// Unsupported compression or encryption
 extern const OFCondition EC_UnsupportedEncoding;
+/// Parser failure: Putback operation failed
 extern const OFCondition EC_PutbackFailed;
+/// Too many compression filters
 extern const OFCondition EC_DoubleCompressionFilters;
+/// Storage media application profile violated
 extern const OFCondition EC_ApplicationProfileViolated;
+/// Invalid offset
 extern const OFCondition EC_InvalidOffset;
+/// Too many bytes requested
 extern const OFCondition EC_TooManyBytesRequested;
 
 
@@ -104,7 +124,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.21  2007-06-13 14:45:47  meichel
+** Revision 1.22  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.21  2007/06/13 14:45:47  meichel
 ** Added module code OFM_dcmjpls and some new error codes.
 **
 ** Revision 1.20  2005/12/08 16:28:12  meichel

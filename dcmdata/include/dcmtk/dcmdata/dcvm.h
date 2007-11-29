@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: functions to derive VM from string
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:49 $
+ *  Update Date:      $Date: 2007-11-29 14:30:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvm.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,11 +36,19 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
-// get the number of values stored in string
+/** compute the number of values stored in one string
+ *  @param val string
+ *  @return number of values separated by backslash characters in this string
+ */
 unsigned long getVMFromString(const char * val);
 
-// get first value stored in string, set the parameter to beginning of the
-// next value
+/** get the first value strored in the given string and update the parameter
+ *  to point to the next value in the string (values separated by backslash).
+ *  The result of this function is allocated with new[] and must be delete[]d by the caller.
+ *  The original string pointed to by s is not modified.
+ *  @param s points to start of string; updated to point to start of next value in string
+ *  @return first value in string, zero-terminated. char array allocated on heap, must be delete[]d by caller
+ */
 char * getFirstValueFromString(const char * & s);
 
 
@@ -49,7 +57,10 @@ char * getFirstValueFromString(const char * & s);
 /*
 ** CVS/RCS Log:
 ** $Log: dcvm.h,v $
-** Revision 1.6  2005-12-08 16:28:49  meichel
+** Revision 1.7  2007-11-29 14:30:35  meichel
+** Updated doxygen API documentation
+**
+** Revision 1.6  2005/12/08 16:28:49  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.5  2001/06/01 15:48:47  meichel
