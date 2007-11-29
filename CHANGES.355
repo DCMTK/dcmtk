@@ -42,6 +42,9 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcxfer.cc
            dcmdata/libsrc/Makefile.dep
            dcmdata/libsrc/Makefile.in
+           dcmnet/libsrc/dimse.cc
+           dcmpps/libsrcdb/ppsdbim.cc
+           dcmsign/libsrc/simaccon.cc
 
 - Updated doxygen API documentation
   Affects: dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
@@ -57,6 +60,32 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcvm.h
            dcmdata/include/dcmtk/dcmdata/dcvr.h
            dcmdata/include/dcmtk/dcmdata/dcvrut.h
+
+- Rebuilt Makefile dependencies
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           ofstd/tests/Makefile.dep
 
 **** Changes from 2007.11.29 (riesmeier)
 

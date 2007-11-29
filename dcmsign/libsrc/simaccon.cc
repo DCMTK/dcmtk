@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 16:53:45 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2007-11-29 14:42:21 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmsign/simac.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvrat.h"
+#include "dcmtk/dcmdata/dcwcache.h"
 
 // block size used for the memory buffer
 #define SiMACConstructor_BlockSize 16384
@@ -81,17 +82,20 @@ OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
 OFCondition SiMACConstructor::encodeElement(DcmElement *element, SiMAC& mac, E_TransferSyntax oxfer)
 {
   if (element == NULL) return EC_IllegalCall;
+  DcmWriteCache wcache;
   OFCondition result = EC_Normal;
   OFBool last = OFFalse;
+  element->transferInit(); 
   while (!last) 
   {
-    result = element->writeSignatureFormat(stream, oxfer, EET_ExplicitLength);
+    result = element->writeSignatureFormat(stream, oxfer, EET_ExplicitLength, &wcache);
     if (result == EC_StreamNotifyClient) result = flushBuffer(mac); 
     else 
     {
       last=OFTrue;
     }
   }    
+  element->transferEnd();
   return result;
 }
 
@@ -204,7 +208,13 @@ int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.9  2007-02-19 16:53:45  meichel
+ *  Revision 1.10  2007-11-29 14:42:21  meichel
+ *  Write methods now handle large raw data elements (such as pixel data)
+ *    without loading everything into memory. This allows very large images to
+ *    be sent over a network connection, or to be copied without ever being
+ *    fully in memory.
+ *
+ *  Revision 1.9  2007/02/19 16:53:45  meichel
  *  Class DcmOutputStream and related classes are now safe for use with
  *    large files (2 GBytes or more) if supported by compiler and operating system.
  *

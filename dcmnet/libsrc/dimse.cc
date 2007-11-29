@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2007-02-19 16:51:37 $
+** Update Date:         $Date: 2007-11-29 14:42:19 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.46 $
+** CVS/RCS Revision:    $Revision: 1.47 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,6 +107,8 @@
 #include "dcmtk/dcmdata/dcvrsh.h"      /* for class DcmShortString */
 #include "dcmtk/dcmdata/dcvrae.h"      /* for class Dcm */
 #include "dcmtk/dcmdata/dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
+#include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
+
 /*
  * Type definitions
  */
@@ -673,6 +675,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
     unsigned long pdvCount = 0;
+    DcmWriteCache wcache;
 
     /* initialize some local variables (we want to use the association's send buffer */
     /* to store data) this buffer can only take a certain number of elements */
@@ -718,7 +721,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
         /* DcmDataset stores information about what of its content has already been sent to the buffer.) */
         if (! written)
         {
-          econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, 
+          econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, &wcache,
                              groupLength_encoding, EPD_withoutPadding);
           if (econd == EC_Normal)                   /* all contents have been written to the buffer */
           {
@@ -1423,7 +1426,7 @@ OFCondition DIMSE_createFilestream(
   if (metainfo)
   {
     metainfo->transferInit();
-    if (EC_Normal != metainfo->write(**filestream, META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_ExplicitLength))
+    if (EC_Normal != metainfo->write(**filestream, META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_ExplicitLength, NULL))
     {
       char buf2[4096]; // file names could be long!
       sprintf(buf2, "DIMSE_createFilestream: cannot write metaheader to file '%s'", filename);
@@ -1775,7 +1778,13 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.46  2007-02-19 16:51:37  meichel
+** Revision 1.47  2007-11-29 14:42:19  meichel
+** Write methods now handle large raw data elements (such as pixel data)
+**   without loading everything into memory. This allows very large images to
+**   be sent over a network connection, or to be copied without ever being
+**   fully in memory.
+**
+** Revision 1.46  2007/02/19 16:51:37  meichel
 ** Class DcmOutputStream and related classes are now safe for use with
 **   large files (2 GBytes or more) if supported by compiler and operating system.
 **
