@@ -25,6 +25,7 @@ ddpiimpl.o: ddpiimpl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
@@ -78,6 +79,7 @@ dipijpeg.o: dipijpeg.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diovlay.h \
@@ -121,6 +123,7 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
@@ -163,6 +166,7 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
@@ -245,6 +249,7 @@ djdecbas.o: djdecbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h
 djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -276,6 +281,7 @@ djdecext.o: djdecext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
   ../include/dcmtk/dcmjpeg/djdijg12.h
 djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -308,6 +314,7 @@ djdeclol.o: djdeclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
   ../include/dcmtk/dcmjpeg/djdijg12.h ../include/dcmtk/dcmjpeg/djdijg16.h
 djdecode.o: djdecode.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -363,6 +370,7 @@ djdecpro.o: djdecpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
   ../include/dcmtk/dcmjpeg/djdijg12.h
 djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -395,6 +403,7 @@ djdecsps.o: djdecsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
   ../include/dcmtk/dcmjpeg/djdijg12.h
 djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -427,6 +436,7 @@ djdecsv1.o: djdecsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djdijg8.h ../include/dcmtk/dcmjpeg/djdecabs.h \
   ../include/dcmtk/dcmjpeg/djdijg12.h ../include/dcmtk/dcmjpeg/djdijg16.h
 djdijg12.o: djdijg12.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -603,6 +613,7 @@ djencbas.o: djencbas.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h
 djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -634,6 +645,7 @@ djencext.o: djencext.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
   ../include/dcmtk/dcmjpeg/djeijg12.h
 djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -666,6 +678,7 @@ djenclol.o: djenclol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
   ../include/dcmtk/dcmjpeg/djeijg12.h ../include/dcmtk/dcmjpeg/djeijg16.h
 djencode.o: djencode.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -721,6 +734,7 @@ djencpro.o: djencpro.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
   ../include/dcmtk/dcmjpeg/djeijg12.h
 djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -753,6 +767,7 @@ djencsps.o: djencsps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
   ../include/dcmtk/dcmjpeg/djeijg12.h
 djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -785,6 +800,7 @@ djencsv1.o: djencsv1.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmjpeg/djeijg8.h ../include/dcmtk/dcmjpeg/djencabs.h \
   ../include/dcmtk/dcmjpeg/djeijg12.h ../include/dcmtk/dcmjpeg/djeijg16.h
 djrplol.o: djrplol.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -812,6 +828,7 @@ djrplol.o: djrplol.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h
 djrploss.o: djrploss.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -838,6 +855,7 @@ djrploss.o: djrploss.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
   ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h
 djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
@@ -866,5 +884,6 @@ djutils.o: djutils.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h
