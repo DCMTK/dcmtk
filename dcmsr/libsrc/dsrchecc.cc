@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRChestCadSRConstraintChecker
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2007-11-30 16:54:28 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,8 +89,8 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
     else if ((relationshipType == RT_hasObsContext) && !byReference && ((sourceValueType == VT_Container) ||
         (sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
-        result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)  || (targetValueType == VT_Num)  ||
-                 (targetValueType == VT_Date)   || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
+        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+                 (targetValueType == VT_Date) || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
                  (targetValueType == VT_UIDRef) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table */
@@ -102,7 +102,8 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
     }
     /* row 4 of the table */
     else if ((relationshipType == RT_hasConceptMod) && !byReference &&
-        ((sourceValueType == VT_Container) || (sourceValueType == VT_Code) || (sourceValueType == VT_Composite)))
+        ((sourceValueType == VT_Container) || (sourceValueType == VT_Code) || (sourceValueType == VT_Composite) ||
+        (sourceValueType == VT_Num /* CP 767 */)))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
@@ -111,17 +112,17 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
-        result = (targetValueType == VT_Text)   || (targetValueType == VT_Code)  || (targetValueType == VT_Num)      ||
-                 (targetValueType == VT_Date)   || (targetValueType == VT_Image) || (targetValueType == VT_Waveform) ||
-                 (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord);
+        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+                 (targetValueType == VT_Date) || (targetValueType == VT_Image) || (targetValueType == VT_Waveform) ||
+                 (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) || (targetValueType == VT_UIDRef /* CP 767 */);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
-        result = (targetValueType == VT_Code)     || (targetValueType == VT_Num)    || (targetValueType == VT_Image)  ||
+        result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_Image) ||
                  (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
-                 (targetValueType == VT_Container);
+                 (targetValueType == VT_Container) || (targetValueType == VT_Text /* CP 767 */);
     }
     /* row 7 of the table */
     else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_SCoord))
@@ -142,7 +143,10 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrchecc.cc,v $
- *  Revision 1.4  2005-12-08 15:47:38  meichel
+ *  Revision 1.5  2007-11-30 16:54:28  joergr
+ *  Updated relationship content constraints according to CP 767.
+ *
+ *  Revision 1.4  2005/12/08 15:47:38  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.3  2003/10/09 13:00:41  joergr

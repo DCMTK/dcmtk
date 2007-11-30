@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.11.30 (riesmeier)
+
+- Updated relationship content constraints according to CP 767.
+  Affects: dcmsr/libsrc/dsrchecc.cc
+           dcmsr/libsrc/dsrmamcc.cc
+
 **** Changes from 2007.11.29 (eichelberg)
 
 - Write methods now handle large raw data elements (such as pixel data)

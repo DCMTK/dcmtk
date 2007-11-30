@@ -23,8 +23,8 @@
  *    classes: DSRMammographyCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:57:31 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2007-11-30 16:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,42 +82,47 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
     /* row 1 of the table */
     if ((relationshipType == RT_contains) && !byReference && (sourceValueType == VT_Container))
     {
-        result = (targetValueType == VT_Code)  || (targetValueType == VT_Num) || (targetValueType == VT_SCoord) ||
-                 (targetValueType == VT_Image) || (targetValueType == VT_Container);
+        result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_SCoord) ||
+                 (targetValueType == VT_Image) || (targetValueType == VT_Container) ||
+                 (targetValueType == VT_Text /* CP 767 */ ) || (targetValueType == VT_Date /* CP 767 */);
     }
     /* row 2 of the table */
     else if ((relationshipType == RT_hasObsContext) && !byReference && ((sourceValueType == VT_Container) ||
         (sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
-        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num)   ||
+        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
                  (targetValueType == VT_Date) || (targetValueType == VT_Time) || (targetValueType == VT_PName) ||
-                 (targetValueType == VT_Composite);
+                 (targetValueType == VT_UIDRef /* CP 767 */) || (targetValueType == VT_Composite);
     }
     /* row 3 of the table */
     else if ((relationshipType == RT_hasAcqContext) && !byReference && (sourceValueType == VT_Image))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Date) ||
-                 (targetValueType == VT_Time) || (targetValueType == VT_Num /* see CP 545 */);
+                 (targetValueType == VT_Time) || (targetValueType == VT_Num);
     }
     /* row 4 of the table */
     else if ((relationshipType == RT_hasConceptMod) && !byReference &&
-        ((sourceValueType == VT_Container) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num /* required for CP 492 */)))
+        ((sourceValueType == VT_Container) || (sourceValueType == VT_Code) ||
+        (sourceValueType == VT_Num /* CP 767 */) || (sourceValueType == VT_Composite /* CP 767 */)))
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
     /* row 5 the table */
-    else if ((relationshipType == RT_hasProperties) && ((sourceValueType == VT_Text) || (sourceValueType == VT_Code)))
+    else if ((relationshipType == RT_hasProperties) &&
+        ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num /* CP 767 */)))
     {
-        /* by-reference allowed (see CP 545) */
-        result = (targetValueType == VT_Text) || (targetValueType == VT_Code)  || (targetValueType == VT_Num) ||
-                 (targetValueType == VT_Date) || (targetValueType == VT_Image) || (targetValueType == VT_SCoord);
+        /* by-reference allowed */
+        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
+                 (targetValueType == VT_Date) || (targetValueType == VT_Image) || (targetValueType == VT_SCoord) ||
+                 (targetValueType == VT_UIDRef /* CP 767 */);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
         result = (targetValueType == VT_Code) || (targetValueType == VT_Num) || (targetValueType == VT_SCoord) ||
-                 (targetValueType == VT_Container);
+                 (targetValueType == VT_Container) || (targetValueType == VT_Text /* CP 767 */) ||
+                 (targetValueType == VT_Image /* CP 767 */);
     }
     /* row 7 of the table */
     else if ((relationshipType == RT_selectedFrom) && (sourceValueType == VT_SCoord))
@@ -132,7 +137,10 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
- *  Revision 1.8  2007-11-15 16:57:31  joergr
+ *  Revision 1.9  2007-11-30 16:57:50  joergr
+ *  Updated relationship content constraints according to CP 767.
+ *
+ *  Revision 1.8  2007/11/15 16:57:31  joergr
  *  Removed preliminary patch for TID 4023 (since not yet approved). Documented
  *  modification required for CP 492 (has already been added by the last commit).
  *
