@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.12.04 (riesmeier)
+
+- Fixed small inconsistency in description of command line parameters.
+  Affects: dcmdata/docs/dcmgpdir.man
+           dcmjpeg/docs/dcmmkdir.man
+
 **** Changes from 2007.11.30 (riesmeier)
 
 - Updated relationship content constraints according to CP 767.

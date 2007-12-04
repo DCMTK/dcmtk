@@ -9,7 +9,7 @@
 \section synopsis SYNOPSIS
 
 \verbatim
-dcmgpdir [options] dcmfile-in...
+dcmgpdir [options] [dcmfile-in...]
 \endverbatim
 
 \section description DESCRIPTION
