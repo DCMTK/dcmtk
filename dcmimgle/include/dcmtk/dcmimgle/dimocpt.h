@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-08 17:10:27 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2007-12-10 16:11:53 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ class DiMonoCopyTemplate
             if ((pixel->getCount() > fstart * fsize) && (pixel->getCount() >= (fstart + fcount) * fsize))
                 copy(OFstatic_cast(const T *, pixel->getData()) + fstart * fsize);
             /* need to determine the global min/max value */
-            determineMinMax();
+            this->determineMinMax();
         }
     }
 
@@ -109,7 +109,10 @@ class DiMonoCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dimocpt.h,v $
- * Revision 1.12  2007-02-08 17:10:27  joergr
+ * Revision 1.13  2007-12-10 16:11:53  joergr
+ * Fixed compilation problem with gcc 4.1.2 on Linux x86_64.
+ *
+ * Revision 1.12  2007/02/08 17:10:27  joergr
  * Need to determine global min/max value after copying pixel data.
  *
  * Revision 1.11  2005/12/08 16:47:48  meichel
