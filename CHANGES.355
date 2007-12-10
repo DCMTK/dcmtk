@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.12.10 (riesmeier)
+
+- Fixed compilation problem with gcc 4.1.2 on Linux x86_64.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimocpt.h
+
 **** Changes from 2007.12.04 (riesmeier)
 
 - Fixed small inconsistency in description of command line parameters.
