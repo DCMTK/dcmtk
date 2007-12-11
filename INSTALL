@@ -569,8 +569,11 @@ COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
 The behaviour of several DCMTK tools and libraries can be modified by a number
 of compile time flags (macros).  Those macros which are not automatically
 handled by the configure mechanism are documented in "config/docs/macros.txt"
+(or "/usr/local/share/doc/dcmtk/macros.txt").
+
 There is also a number of environment variables which affect DCMTK's behaviour.
-These are documented in "config/docs/envvars.txt".
+These are documented in "config/docs/envvars.txt" (or "/usr/local/share/doc/
+dcmtk/envvars.txt").
 
 
 ---------
@@ -580,4 +583,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2007-11-28 (Riesmeier).
+Last revised: 2007-12-11 (Riesmeier).

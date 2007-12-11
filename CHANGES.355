@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.12.11 (riesmeier)
+
+- Fixed remaining inconsistencies regarding the documentation of the
+  installation directories (new scheme).
+  Affects: INSTALL
+           config/docs/envvars.txt
+
 **** Changes from 2007.12.11 (onken)
 
 - Corrected some putAndInsert functions that returned wrong error code
