@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:21 $
- *  CVS/RCS Revision: $Revision: 1.109 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2007-12-11 12:21:57 $
+ *  CVS/RCS Revision: $Revision: 1.110 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2945,7 +2945,7 @@ OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3034,7 +3034,7 @@ OFCondition DcmItem::putAndInsertSint16(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3072,7 +3072,7 @@ OFCondition DcmItem::putAndInsertSint16Array(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3098,7 +3098,7 @@ OFCondition DcmItem::putAndInsertUint32(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else
+        } else if (status.good())
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3125,7 +3125,7 @@ OFCondition DcmItem::putAndInsertSint32(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else
+        } else if (status.good())
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3162,7 +3162,7 @@ OFCondition DcmItem::putAndInsertFloat32(const DcmTag& tag,
         /* could not be inserted, therefore, delete it immediately */
         if (status.bad())
             delete elem;
-    } else
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
@@ -3188,7 +3188,7 @@ OFCondition DcmItem::putAndInsertFloat64(const DcmTag& tag,
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
-        } else
+        } else if (status.good())
             status = EC_MemoryExhausted;
     }
     return status;
@@ -3430,6 +3430,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.110  2007-12-11 12:21:57  onken
+** Corrected some putAndInsert functions that returned wrong error code
+** (EC_MemoryExhausted) in some cases.
+**
 ** Revision 1.109  2007-11-29 14:30:21  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
