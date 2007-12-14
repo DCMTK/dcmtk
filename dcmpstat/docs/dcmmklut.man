@@ -195,6 +195,10 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+\section files FILES
+
+<em><datadir>/philips.lut</em> - sample LUT in text format
+
 \section copyright COPYRIGHT
 
 Copyright (C) 1998-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
