@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2007.12.19 (riesmeier)
+
+- Updated Doxygen configuration files to version 1.5.1.
+  Affects: doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+
 **** Changes from 2007.12.14 (riesmeier)
 
 - Added reference to sample LUT in text format.
