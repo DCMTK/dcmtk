@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.01.08 (riesmeier)
+
+- Fixed reference to wrong SR IOD in API documentation.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrxrdcc.h
+
 **** Changes from 2007.12.19 (riesmeier)
 
 - Updated Doxygen configuration files to version 1.5.1.

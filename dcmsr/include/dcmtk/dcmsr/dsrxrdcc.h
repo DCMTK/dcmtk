@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005, OFFIS
+ *  Copyright (C) 2005-2007, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:37 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-01-08 09:35:35 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
  *  class declaration  *
  *---------------------*/
 
-/** Class for checking the content relationship constraints of the Enhanced SR IOD
+/** Class for checking the content relationship constraints of the X-Ray Radiation Dose SR IOD
  */
 class DSRXRayRadiationDoseSRConstraintChecker
   : public DSRIODConstraintChecker
@@ -101,7 +101,10 @@ class DSRXRayRadiationDoseSRConstraintChecker
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxrdcc.h,v $
- *  Revision 1.2  2005-12-08 16:05:37  meichel
+ *  Revision 1.3  2008-01-08 09:35:35  joergr
+ *  Fixed reference to wrong SR IOD in API documentation.
+ *
+ *  Revision 1.2  2005/12/08 16:05:37  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.1  2005/11/30 12:05:59  joergr
