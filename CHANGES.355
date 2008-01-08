@@ -6,6 +6,12 @@ Changes between releases are documented here.
 - Fixed reference to wrong SR IOD in API documentation.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrxrdcc.h
 
+- Fixed minor inconsistencies with part 6 of the DICOM standard.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+
 **** Changes from 2007.12.19 (riesmeier)
 
 - Updated Doxygen configuration files to version 1.5.1.
