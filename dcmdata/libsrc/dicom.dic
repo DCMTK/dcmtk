@@ -16,26 +16,25 @@
 #
 #  Module:  dcmdata
 #
-#  Author:  Andrew Hewett, Marco Eichelberg
+#  Author:  Andrew Hewett, Marco Eichelberg, Joerg Riesmeier
 #
 #  Purpose:
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2007-11-23 15:44:05 $
-#  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.56 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2008-01-08 14:00:54 $
+#  CVS/RCS Revision: $Revision: 1.57 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
-#   - the complete dictionary from the 2004 DICOM publication 
+#   - the complete dictionary from the 2004 DICOM publication
 #   - all final text supplements and CPs as of the last CVS commit date
 #  This includes:
 #     supplements 1-42 (except 16, 21 and 34 which are cancelled),
-#     44-55 (46 is cancelled), 57-62, 64-73, 75-77, 79-94 
+#     44-55 (46 is cancelled), 57-62, 64-73, 75-77, 79-94
 #     (81 is cancelled), 97, 99-101 and 103-105 as well as the
 #     CP packages 1-33 (final text)
-# 
+#
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
 # in ascending tag order.
@@ -1076,7 +1075,7 @@
 (0028,6190)	ST	MaskOperationExplanation	1	dicom98
 (0028,9001)	UL	DataPointRows	1	dicom2003
 (0028,9002)	UL	DataPointColumns	1	dicom2003
-(0028,9003)	CS	SignalDomainColumns	1-2	dicom2003
+(0028,9003)	CS	SignalDomainColumns	1	dicom2003
 (0028,9099)	US	LargestMonochromePixelValue	1	dicom2003
 (0028,9108)	CS	DataRepresentation	1	dicom2003
 (0028,9110)	SQ	PixelMeasuresSequence	1	dicom2003
@@ -1092,7 +1091,7 @@
 (0028,9445)	FL	GeometricMaximumDistortion	1	dicom2005
 (0028,9446)	CS	ImageProcessingApplied	1-n	dicom2005
 (0028,9454)	CS	MaskSelectionMode	1	dicom2005
-(0028,9475)	CS	LUTFunction	1	dicom2005
+(0028,9474)	CS	LUTFunction	1	dicom2005
 (0032,0000)	UL	StudyGroupLength	1	dicom98
 (0032,000A)	CS	StudyStatusID	1	dicom98
 (0032,000C)	CS	StudyPriorityID	1	dicom98
@@ -1982,7 +1981,7 @@
 (300A,000E)	ST	PrescriptionDescription	1	dicom98
 (300A,0010)	SQ	DoseReferenceSequence	1	dicom98
 (300A,0012)	IS	DoseReferenceNumber	1	dicom98
-(300A,0013)	LO	DoseReferenceUID	1	dicom2004
+(300A,0013)	UI	DoseReferenceUID	1	dicom2004
 (300A,0014)	CS	DoseReferenceStructureType	1	dicom98
 (300A,0015)	CS	NominalBeamEnergyUnit	1	dicom99
 (300A,0016)	LO	DoseReferenceDescription	1	dicom98

@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2006-11-0919:17:53
+**   Date: 2008-01-08 14:49:34
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/joergr/source/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2006-11-0919:17:53";
+const char* dcmBuiltinDictBuildDate = "2008-01-08 14:49:34";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -12206,7 +12206,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x9003, 0x0028, 0x9003,
-      EVR_CS, "SignalDomainColumns", 1, 2, "dicom2003",
+      EVR_CS, "SignalDomainColumns", 1, 1, "dicom2003",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x9099, 0x0028, 0x9099,
@@ -12269,7 +12269,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "MaskSelectionMode", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
-  , { 0x0028, 0x9475, 0x0028, 0x9475,
+  , { 0x0028, 0x9474, 0x0028, 0x9474,
       EVR_CS, "LUTFunction", 1, 1, "dicom2005",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
@@ -18538,7 +18538,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0013, 0x300a, 0x0013,
-      EVR_LO, "DoseReferenceUID", 1, 1, "dicom2004",
+      EVR_UI, "DoseReferenceUID", 1, 1, "dicom2004",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x300a, 0x0014, 0x300a, 0x0014,
@@ -20219,10 +20219,6 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "PrivateGroupLength", 1, 1, "PRIVATE",
       DcmDictRange_Odd, DcmDictRange_Unspecified,
       NULL }
-  , { 0x0009, 0x0001, 0xffff, 0x0001,
-      EVR_UL, "PrivateGroupLengthToEnd", 1, 1, "PRIVATE",
-      DcmDictRange_Odd, DcmDictRange_Unspecified,
-      NULL }
   , { 0x6000, 0x0060, 0x60ff, 0x0060,
       EVR_CS, "ACR_NEMA_2C_OverlayCompressionCode", 1, 1, "ACR/NEMA2C",
       DcmDictRange_Even, DcmDictRange_Unspecified,
@@ -20279,20 +20275,12 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UL, "IllegalGroupLength", 1, 1, "ILLEGAL",
       DcmDictRange_Odd, DcmDictRange_Unspecified,
       NULL }
-  , { 0x0001, 0x0001, 0x0007, 0x0001,
-      EVR_UL, "IllegalGroupLengthToEnd", 1, 1, "ILLEGAL",
-      DcmDictRange_Odd, DcmDictRange_Unspecified,
-      NULL }
   , { 0x0001, 0x0010, 0x0007, 0x00ff,
       EVR_LO, "IllegalPrivateCreator", 1, 1, "ILLEGAL",
       DcmDictRange_Odd, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0000, 0xffff, 0x0000,
       EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
-      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      NULL }
-  , { 0x0000, 0x0001, 0xffff, 0x0001,
-      EVR_UL, "GenericGroupLengthToEnd", 1, 1, "GENERIC",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x6000, 0x1100, 0x60ff, 0x1100,
@@ -20492,3 +20480,5 @@ DcmDataDictionary::loadBuiltinDictionary()
         addEntry(e);
     }
 }
+
+
