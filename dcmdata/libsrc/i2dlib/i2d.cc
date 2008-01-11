@@ -21,11 +21,10 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:19:28 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -40,7 +39,8 @@
 Image2Dcm::Image2Dcm() : m_overrideKeys(NULL), m_templateFile(""),
   m_readStudyLevel(OFFalse), m_readSeriesLevel(OFFalse), m_studySeriesFile(),
   m_incInstNoFromFile(OFFalse), m_disableAttribChecks(OFFalse),
-  m_debug(OFFalse), m_verbose(OFFalse)
+  m_inventMissingType2Attribs(OFTrue), m_inventMissingType1Attribs(OFFalse),
+  m_insertLatin1(OFTrue), m_debug(OFFalse), m_logStream(NULL)
 {
 
 }
@@ -56,8 +56,8 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     return EC_IllegalParameter;
 
   OFCondition cond;
-  if (m_verbose || m_debug)
-    COUT << "Image2Dcm: Starting conversion of file: " << inputPlug->getImageFile()  << OFendl;
+  if (m_debug)
+    printMessage(m_logStream, "Image2Dcm: Starting conversion of file: ", inputPlug->getImageFile());
 
   // If specified, copy DICOM template file to export file
   if (m_templateFile.length() != 0)
@@ -67,8 +67,7 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     if (cond.bad())
       return cond;
     // remove problematic attributes from dataset
-    dcmff.getDataset()->findAndDeleteElement(DCM_PixelData);
-    dcmff.getDataset()->findAndDeleteElement(DCM_SOPClassUID);
+    cleanupTemplate(dcmff.getDataset());
     // copy from input file
     resultDset = new DcmDataset(*(dcmff.getDataset()));
   }
@@ -99,6 +98,12 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     }
   }
 
+  // Insert Latin 1 as standard character set if desired
+  if (m_insertLatin1)
+    cond = insertLatin1(resultDset);
+  if (cond.bad())
+    return cond;
+
   // Generate and insert UIDs as necessary
   generateUIDs(resultDset);
 
@@ -124,27 +129,64 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   // Do some very basic attribute checking (e. g. existence (type 2) and values (type 1))
   if (!m_disableAttribChecks)
   {
-    cond = isValid(*resultDset);
-    if (cond.bad())
+    OFString err;
+    err = isValid(*resultDset);
+    err += outPlug->isValid(*resultDset);
+    if (!err.empty())
     {
       delete resultDset; resultDset = NULL;
-      return cond;
-    }
-    cond = outPlug->isValid(*resultDset);
-    if (cond.bad())
-    {
-      delete resultDset; resultDset = NULL;
-      return cond;
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
     }
   }
 
-  return cond;
+  return EC_Normal;
+}
+
+
+OFCondition Image2Dcm::insertLatin1(DcmDataset *outputDset)
+{
+  if (outputDset == NULL)
+    return EC_IllegalParameter;
+  return outputDset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, "ISO_IR 100");
+}
+
+
+void Image2Dcm::cleanupTemplate(DcmDataset *targetDset)
+{
+  if (!targetDset)
+    return;
+  // Remove any existing image pixel module attribute
+  targetDset->findAndDeleteElement(DcmTagKey(0x0028,0x7FE0)); // Pixel Data Provider URL (JPIP)
+  targetDset->findAndDeleteElement(DCM_PhotometricInterpretation);
+  targetDset->findAndDeleteElement(DCM_SamplesPerPixel);
+  targetDset->findAndDeleteElement(DCM_Rows);
+  targetDset->findAndDeleteElement(DCM_Columns);
+  targetDset->findAndDeleteElement(DCM_BitsAllocated);
+  targetDset->findAndDeleteElement(DCM_BitsStored);
+  targetDset->findAndDeleteElement(DCM_HighBit);
+  targetDset->findAndDeleteElement(DCM_PixelRepresentation);
+  targetDset->findAndDeleteElement(DCM_PixelData);
+  targetDset->findAndDeleteElement(DCM_PlanarConfiguration);
+  targetDset->findAndDeleteElement(DCM_PixelAspectRatio);
+  targetDset->findAndDeleteElement(DCM_SmallestImagePixelValue);
+  targetDset->findAndDeleteElement(DCM_LargestImagePixelValue);
+  targetDset->findAndDeleteElement(DCM_RedPaletteColorLookupTableDescriptor);
+  targetDset->findAndDeleteElement(DCM_GreenPaletteColorLookupTableDescriptor);
+  targetDset->findAndDeleteElement(DCM_BluePaletteColorLookupTableDescriptor);
+  targetDset->findAndDeleteElement(DCM_RedPaletteColorLookupTableData);
+  targetDset->findAndDeleteElement(DCM_GreenPaletteColorLookupTableData);
+  targetDset->findAndDeleteElement(DCM_BluePaletteColorLookupTableData);
+  targetDset->findAndDeleteElement(DCM_ICCProfile);
+  // Remove SOP Class / Instance information
+  targetDset->findAndDeleteElement(DCM_SOPClassUID);
+  targetDset->findAndDeleteElement(DCM_SOPInstanceUID);
+
 }
 
 OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
 {
   if (m_debug)
-    COUT << "Image2Dcm: Applying study and/or series information from file" << OFendl;
+    printMessage(m_logStream, "Image2Dcm: Applying study and/or series information from file");
   if ( (!m_readSeriesLevel && !m_readStudyLevel) || (m_studySeriesFile.length() == 0) )
     return EC_IllegalCall;
   DcmFileFormat dcmff;
@@ -155,7 +197,7 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
   cond = dcmff.loadFile(m_studySeriesFile.c_str());
   if (cond.bad())
   {
-    errMsg = "Error: Unable to open study / series file "; errMsg += m_studySeriesFile; errMsg+=": "; errMsg += cond.text();
+    errMsg = "Error: Unable to open study / series file "; errMsg += m_studySeriesFile;
     return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
   }
 
@@ -188,6 +230,12 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
   cond = targetDset->putAndInsertOFStringArray(DCM_PatientsBirthDate, value);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Patient's Birth Date to file");
+  value.clear();
+
+  srcDset->findAndGetOFString(DCM_SpecificCharacterSet, value);
+  cond = targetDset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, value);
+  if (cond.bad())
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Specific Character Set to file");
   value.clear();
 
   // Study level attributes (type 2 except Study Instance UID)
@@ -266,7 +314,7 @@ OFCondition Image2Dcm::incrementInstanceNumber(DcmDataset *targetDset)
   if (m_incInstNoFromFile)
   {
     if (m_debug)
-      COUT << "Image2Dcm: Trying to read and increment instance number" << OFendl;
+      printMessage(m_logStream, "Image2Dcm: Trying to read and increment instance number");
     Sint32 instanceNumber;
     if ( targetDset->findAndGetSint32(DCM_InstanceNumber, instanceNumber).good() )
     {
@@ -290,7 +338,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
   OFCondition cond;
 
   if (m_debug)
-    COUT << "Image2Dcm: Generate and insert new UIDs if necessary" << OFendl;
+    printMessage(m_logStream, "Image2Dcm: Generate and insert new UIDs if necessary");
   // Generate and write Series Instance UID if not already present
   if (!m_readSeriesLevel)
   {
@@ -335,19 +383,24 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
   return EC_Normal;
 }
 
+void Image2Dcm::setISOLatin1(OFBool insertLatin1)
+{
+  m_insertLatin1 = insertLatin1;
+}
+
 
 OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
                                               DcmDataset* dset,
                                               E_TransferSyntax& outputTS)
 {
   imgSource->setDebugMode(m_debug);
-  imgSource->setVerboseMode(m_debug);
 
-  Uint16 samplesPerPixel, rows, cols, bitsAlloc, bitsStored, highBit, pixelRepr, planConf, pixAspectH, pixAspectV;
+  Uint16 samplesPerPixel, rows, cols, bitsAlloc, bitsStored, highBit, pixelRepr, planConf;
+  Uint16 pixAspectH =1; Uint16 pixAspectV = 1;
   OFString photoMetrInt;
   outputTS = EXS_Unknown;
   char* pixData = NULL;
-  unsigned long length;
+  Uint32 length;
 
   OFCondition cond = imgSource->readPixelData(rows, cols,
     samplesPerPixel, photoMetrInt, bitsAlloc, bitsStored, highBit, pixelRepr,
@@ -358,7 +411,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
   DcmPixelSequence *pixelSequence = NULL;
 
   if (m_debug)
-    COUT << "Image2Dcm: Store imported pixel data to DICOM file" << OFendl;
+    printMessage(m_logStream, "Image2Dcm: Store imported pixel data to DICOM file");
   // create initial pixel sequence
   pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
   if (pixelSequence == NULL)
@@ -393,7 +446,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
     delete pixelSequence;
 
   if (m_debug)
-    COUT << "Image2Dcm: Inserting Image Pixel module information" << OFendl;
+    printMessage(m_logStream, "Image2Dcm: Inserting Image Pixel module information");
 
   cond = dset->putAndInsertUint16(DCM_SamplesPerPixel, samplesPerPixel);
   if (cond.bad())
@@ -435,126 +488,52 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
 }
 
 
-OFCondition Image2Dcm::isValid(DcmDataset& dset) const
+OFString Image2Dcm::isValid(DcmDataset& dset) const
 {
   if (m_debug)
-    COUT << "Image2Dcm: Checking validity of DICOM output dataset" << OFendl;
+   printMessage(m_logStream, "Image2Dcm: Checking validity of DICOM output dataset");
   OFString dummy, err; OFCondition cond;
-  // Genera Patient module attributes
-  if (!dset.tagExists(DCM_PatientsName))
-    err += "Error: Patient ID (type 2) not present in dataset\n";
-
-  if (!dset.tagExists(DCM_PatientsSex))
-    err += "Error: Patient's Sex (type 2) not present in dataset\n";
-
-  if (!dset.tagExists(DCM_PatientsBirthDate))
-    err += "Error: Patient's Birth Date (type 2) not present in dataset\n";
+  // General Patient module attributes
+  err += checkAndInventType2Attrib(DCM_PatientsName, &dset);
+  err += checkAndInventType2Attrib(DCM_PatientsSex, &dset);
+  err += checkAndInventType2Attrib(DCM_PatientsBirthDate, &dset);
+  err += checkAndInventType2Attrib(DCM_PatientID, &dset);
 
   // General Study module attributes
-  cond = dset.findAndGetOFString(DCM_StudyInstanceUID, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Study Instance UID (type 1) not present or having empty value in dataset\n";
-    dummy.clear();
-  }
-
-  if (!dset.tagExists(DCM_StudyDate))
-    err += "Error: Study Date (type 2) not present in dataset\n";
-
-  if (!dset.tagExists(DCM_StudyTime))
-    err += "Error: Study Time (type 2) not present in dataset\n";
-
-  if (!dset.tagExists(DCM_ReferringPhysiciansName))
-    err += "Error: Referring Physcian's Name (type 2) not present in dataset\n";
-
-  if (!dset.tagExists(DCM_StudyID))
-    err += "Error: Study ID (type 2) not present in dataset\n";
-
-  if (!dset.tagExists(DCM_AccessionNumber))
-    err += "Error: Accession Number (type 2) not present in dataset\n";
+  err += checkAndInventType1Attrib(DCM_StudyInstanceUID, &dset);
+  err += checkAndInventType2Attrib(DCM_StudyDate, &dset);
+  err += checkAndInventType2Attrib(DCM_StudyTime, &dset);
+  err += checkAndInventType2Attrib(DCM_ReferringPhysiciansName, &dset);
+  err += checkAndInventType2Attrib(DCM_StudyID, &dset);
+  err += checkAndInventType2Attrib(DCM_AccessionNumber, &dset);
 
   // General Series module attributes
-  cond = dset.findAndGetOFString(DCM_SeriesInstanceUID, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Series Instance UID (type 1) not present or having empty value in dataset\n";
-    dummy.clear();
-  }
-  if (!dset.tagExists(DCM_SeriesNumber))
+  err += checkAndInventType1Attrib(DCM_SeriesInstanceUID, &dset);
+  err += checkAndInventType2Attrib(DCM_SeriesNumber, &dset);
+  err += checkAndInventType2Attrib(DCM_InstanceNumber, &dset);
 
-    err += "Error: Series Number (type 2) not present in dataset\n";
+  // General Image module attributes
+  /* Patient Orientation is of type 2C and must be written if not
+     Image Orientation (Patient) (0020,0037) and Image Position (Patient)
+     are required for the IOD. The current output IODs (SC, new SC, VLP)
+     therefore need Patient Orientation. Make sure any new output plugin
+     takes care about this attribute
+   */
+  err += checkAndInventType2Attrib(DCM_PatientOrientation, &dset);
 
-  // Instance level attributes
-  if (!dset.tagExists(DCM_InstanceNumber))
-    err += "Error: Instance Number (type 2) not present in dataset\n";
 
-  cond = dset.findAndGetOFString(DCM_Rows, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Rows (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
+  // Image Pixel Module
+  err += checkAndInventType1Attrib(DCM_Rows, &dset);
+  err += checkAndInventType1Attrib(DCM_Columns, &dset);
+  err += checkAndInventType1Attrib(DCM_SamplesPerPixel, &dset);
+  err += checkAndInventType1Attrib(DCM_PhotometricInterpretation, &dset);
+  err += checkAndInventType1Attrib(DCM_BitsAllocated, &dset);
+  err += checkAndInventType1Attrib(DCM_BitsStored, &dset);
+  err += checkAndInventType1Attrib(DCM_HighBit, &dset);
+  err += checkAndInventType1Attrib(DCM_PixelRepresentation, &dset);
+  err += checkAndInventType1Attrib(DCM_SOPInstanceUID, &dset);
 
-  cond = dset.findAndGetOFString(DCM_Columns, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Columns (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_SamplesPerPixel, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Samples per Pixel (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_PhotometricInterpretation, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Photometric Interpretation (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_BitsAllocated, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Bits Allocated (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_BitsStored, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Bits Stored (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_HighBit, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: High Bit (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_PixelRepresentation, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Pixel Representation (type 1) not present in dataset or having an empty value\n";
-    dummy.clear();
-  }
-
-  cond = dset.findAndGetOFString(DCM_SOPInstanceUID, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: SOP Instance UID (type 1) not present or having empty value in dataset\n";
-    dummy.clear();
-  }
-
-  if (err.length() != 0)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
-  else
-    return EC_Normal;
+  return err;
 }
 
 
@@ -573,9 +552,13 @@ void Image2Dcm::setStudyFrom(const OFString& file)
 }
 
 
-void Image2Dcm::setValidityChecking(OFBool doChecks)
+void Image2Dcm::setValidityChecking(OFBool doChecks,
+                                    OFBool insertMissingType2,
+                                    OFBool inventMissingType1)
 {
   m_disableAttribChecks = !doChecks;
+  m_inventMissingType2Attribs = insertMissingType2;
+  m_inventMissingType1Attribs = inventMissingType1;
 }
 
 
@@ -606,7 +589,7 @@ void Image2Dcm::applyOverrideKeys(DcmDataset *outputDset)
     return; /* nothing to do */
   }
   if (m_debug)
-    COUT << "Image2Dcm: Applying override keys" << OFendl;
+    printMessage(m_logStream, "Image2Dcm: Applying override keys");
   /* copy the override keys */
   DcmDataset keys(*m_overrideKeys);
 
@@ -619,10 +602,84 @@ void Image2Dcm::applyOverrideKeys(DcmDataset *outputDset)
 }
 
 
+OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
+                                              DcmDataset* targetDset,
+                                              const OFString& defaultValue) const
+{
+  OFString err;
+  OFBool exists = targetDset->tagExists(key);
+  if (!exists)
+  {
+    OFString err = "Image2Dcm: Missing type 1 attribute: "; err += DcmTag(key).getTagName(); err += "\n";
+    return err;
+  }
+  DcmElement *elem;
+  OFCondition cond = targetDset->findAndGetElement(key, elem);
+  if (cond.bad() || !elem || (elem->getLength() == 0))
+  {
+    if (!m_inventMissingType1Attribs)
+    {
+      err += "Image2Dcm: Empty value for type 1 attribute: ";
+      err += DcmTag(key).getTagName();
+      err += "\n";
+      return err;
+    }
+    //holds element to insert in item
+    DcmElement *elem = NULL;
+    DcmTag tag(key); OFBool wasError = OFFalse;
+    //if dicom element could be created, insert in to item and modify to value
+    if ( newDicomElement(elem, tag).good())
+    {
+        if (targetDset->insert(elem, OFTrue).good())
+        {
+          if (elem->putString(defaultValue.c_str()).good())
+          {
+            if (m_debug)
+            {
+              OFString msg = "Image2Dcm: Inserting missing type 1 attribute ";
+              msg += tag.getTagName(); msg += " with value "; msg += defaultValue;
+              printMessage(m_logStream, msg);
+              return err;
+            }
+          } else wasError = OFTrue;
+        } else wasError = OFTrue;
+    } else wasError = OFTrue;
+    if (wasError)
+    {
+      err += "Unable to insert type 1 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
+    }
+  }
+  return err;
+}
+
+
+OFString Image2Dcm::checkAndInventType2Attrib(const DcmTagKey& key,
+                                              DcmDataset* targetDset) const
+{
+  OFString err;
+  OFBool exists = targetDset->tagExists(key);
+  if (!exists)
+  {
+    if (m_inventMissingType2Attribs)
+    {
+      DcmTag tag(key);
+      if (m_debug)
+        printMessage(m_logStream, "Image2Dcm: Inserting missing type 2 attribute: ", tag.getTagName());
+      targetDset->insertEmptyElement(tag);
+    }
+    else
+    {
+      err = "Image2Dcm: Missing type 2 attribute: "; err += DcmTag(key).getTagName(); err += "\n";
+      return err;
+    }
+  }
+  return err;
+}
+
 Image2Dcm::~Image2Dcm()
 {
   if (m_debug)
-    COUT << "Image2Dcm: Freeing memory" << OFendl;
+    printMessage(m_logStream,"Image2Dcm: Freeing memory");
   delete m_overrideKeys; m_overrideKeys = NULL;
 }
 
@@ -630,7 +687,10 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
- * Revision 1.1  2007-11-08 15:55:17  onken
+ * Revision 1.2  2008-01-11 14:19:28  onken
+ * *** empty log message ***
+ *
+ * Revision 1.1  2007/11/08 15:55:17  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *

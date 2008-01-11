@@ -21,11 +21,10 @@
  *
  *  Purpose: Implements conversion from image into DICOM SC IOD
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:19:28 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -38,38 +37,43 @@
 I2DOutputPlugSC::I2DOutputPlugSC()
 {
   if (m_debug)
-    COUT << "I2DOutputPlugSC: Output plugin for Secondary Capture initialized" << OFendl;
+    printMessage(m_logStream, "I2DOutputPlugSC: Output plugin for Secondary Capture initialized");
 }
 
-
-OFString I2DOutputPlugSC::targetSOPClassUID() const
+OFString I2DOutputPlugSC::ident()
 {
-  return UID_SecondaryCaptureImageStorage;
+  return "Secondary Capture Image SOP Class";
 }
+
+void I2DOutputPlugSC::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
+{
+  suppSOPs.push_back(UID_SecondaryCaptureImageStorage);
+}
+
 
 OFCondition I2DOutputPlugSC::convert(DcmDataset &dataset) const
 {
   if (m_debug)
-    COUT << "I2DOutputPlugSC: Inserting SC specific attributes" << OFendl;
+    printMessage(m_logStream, "I2DOutputPlugSC: Inserting SC specific attributes");
   OFCondition cond;
-  cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, targetSOPClassUID());
+  cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 
   return EC_Normal;
 }
 
-OFCondition I2DOutputPlugSC::isValid(DcmDataset& dset) const
+
+OFString I2DOutputPlugSC::isValid(DcmDataset& dataset) const
 {
+  OFString err;
+  // Just return if checking was disabled
+  if (!m_doAttribChecking)
+    return err;
+
   if (m_debug)
-    COUT << "I2DOutputPlugSC: Checking SC specific attributes" << OFendl;
-  OFString dummy; OFString err;
-  OFCondition cond = dset.findAndGetOFString(DCM_ConversionType, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-    err += "Error: Conversion Type (type 1) not present or having empty value in dataset\n";
+    printMessage(m_logStream, "I2DOutputPlugSC: Checking SC specific attributes");
+  err += checkAndInventType1Attrib(DCM_ConversionType, &dataset, "WSD"); // WSD="Workstation"
 
-  if (err.length() != 0)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
-
-  return EC_Normal;
+  return err;
 }
 
 
@@ -81,7 +85,10 @@ I2DOutputPlugSC::~I2DOutputPlugSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.cc,v $
- * Revision 1.2  2007-11-08 18:08:58  onken
+ * Revision 1.3  2008-01-11 14:19:28  onken
+ * *** empty log message ***
+ *
+ * Revision 1.2  2007/11/08 18:08:58  onken
  * *** empty log message ***
  *
  * Revision 1.1  2007/11/08 15:55:17  onken

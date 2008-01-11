@@ -21,11 +21,10 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:19:28 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -35,11 +34,12 @@
 #include "dcmtk/dcmdata/i2dlib/i2djpgs.h"
 
 
-I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(NULL),
-  m_disableProgrTs(OFFalse), m_disableExtSeqTs(OFFalse)
+I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(),
+  m_disableProgrTs(OFFalse), m_disableExtSeqTs(OFFalse), m_insistOnJFIF(OFFalse),
+  m_keepAPPn(OFFalse)
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Plugin instantiated" << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Plugin instantiated");
 }
 
 
@@ -51,35 +51,41 @@ OFString I2DJpegSource::inputFormat() const
 OFCondition I2DJpegSource::openFile(const OFString &filename)
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Opening JPEG file: " << filename << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Opening JPEG file: ", filename);
   OFCondition cond;
   if (filename.length() == 0)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "No JPEG filename specified");
 
   // Try to open JPEG file
-  if ((jpegFile = fopen(filename.c_str(), "rb")) == NULL)
+  if ((jpegFile.fopen(filename.c_str(), "rb")) == OFFalse)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to open JPEG file");
-
-  // Create "map" with byte positions of all JPEG markers in JPEG file
-  cond = createJPEGFileMap();
-  if (cond.bad())
-    clearMap();
 
   return cond;
 }
 
 
-void I2DJpegSource::setExtSeqSupport(const OFBool& enabled)
+void I2DJpegSource::setExtSeqSupport(const OFBool enabled)
 {
   m_disableExtSeqTs = !enabled;
 }
 
 
-void I2DJpegSource::setProgrSupport(const OFBool& enabled)
+void I2DJpegSource::setProgrSupport(const OFBool enabled)
 {
   m_disableProgrTs = !enabled;
 }
 
+
+void I2DJpegSource::setInsistOnJFIF(const OFBool enabled)
+{
+  m_insistOnJFIF = enabled;
+}
+
+
+void I2DJpegSource::setKeepAPPn(const OFBool enabled)
+{
+  m_keepAPPn = enabled;
+}
 
 
 OFCondition I2DJpegSource::readPixelData(Uint16& rows,
@@ -94,11 +100,11 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
                                          Uint16& pixAspectH,
                                          Uint16& pixAspectV,
                                          char*&  pixData,
-                                         unsigned long& length,
+                                         Uint32& length,
                                          E_TransferSyntax &ts)
 {
-  if (m_verbose)
-    COUT << "I2DJpegSource: Importing JPEG pixel data" << OFendl;
+  if (m_debug)
+   printMessage(m_logStream, "I2DJpegSource: Importing JPEG pixel data");
   OFCondition cond = openFile(m_imageFile);
   // return error if file is not open
   if (cond.bad())
@@ -106,13 +112,21 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
     closeFile();
     return cond;
   }
+  // Create "map" with byte positions of all JPEG markers in JPEG file
+  cond = createJPEGFileMap();
+  if (cond.bad())
+  {
+    clearMap();
+    closeFile();
+    return cond;
+  }
 
-  // Check for image data in file
+  // Check for image data in file (look for SOF marker)
   E_JPGMARKER jpegEncoding;
   OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
   while (entry != m_jpegFileMap.end())
   {
-    if ( (*entry)->marker >= E_JPGMARKER_SOF0 && (*entry)->marker <= E_JPGMARKER_SOF15 )
+    if ( isSOFMarker((*entry)->marker) )
     {
       jpegEncoding = (E_JPGMARKER) ((*entry)->marker);
       break;
@@ -153,7 +167,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   }
 
   // Examine JFIF information (version, horizontal and vertical aspect ratio, aspect ratio units.
-  Uint16 jfifVersion, aspectH, aspectV, unit;
+  Uint16 jfifVersion, unit; Uint16 aspectH = 1; Uint16 aspectV = 1;
   entry = m_jpegFileMap.begin();
   while (entry != m_jpegFileMap.end())
   {
@@ -161,16 +175,33 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
       break;
     entry++;
   }
-  if ( entry == m_jpegFileMap.end() )
+  if ( entry == m_jpegFileMap.end())
   {
-    closeFile();
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "No JFIF information found in JPEG file");
+    if (!m_insistOnJFIF)
+    {
+      if (m_debug)
+        printMessage(m_logStream, "I2DJpegSource: Ignoring missing JFIF header");
+    }
+    else
+    {
+      closeFile();
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "No JFIF information found in JPEG file");
+    }
   }
-  cond = getJFIFImageParameters(**entry, jfifVersion, aspectH, aspectV, unit);
+  else
+    cond = getJFIFImageParameters(**entry, jfifVersion, aspectH, aspectV, unit);
   if (cond.bad())
   {
-    closeFile();
-    return cond;
+    if (!m_insistOnJFIF)
+    {
+      if (m_debug)
+        printMessage(m_logStream, "I2DJpegSource: Ignoring errors while evaluating JFIF data");
+    }
+    else
+    {
+      closeFile();
+      return cond;
+    }
   }
   pixAspectH = aspectH;
   pixAspectV = aspectV;
@@ -192,13 +223,17 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   planConf = 0;
   pixelRepr = 0;
 
+  Uint32 tLength = 0; char* tPixelData = NULL;
+  // Keep all APPx info (however, JFIF is always removed)
+  if (m_keepAPPn)
+    cond = copyJPEGStream(tPixelData, tLength);
   // Cut off all APPx information from JPEG and get raw JPEG bit stream into memory
-  unsigned long tLength = 0; char* tPixelData = NULL;
-  cond = extractRawJPEGStream(tPixelData, tLength);
+  else
+    cond = extractRawJPEGStream(tPixelData, tLength);
   if (cond.bad())
   {
     closeFile();
-    return cond;
+      return cond;
   }
   length = tLength;
   pixData = tPixelData;
@@ -215,37 +250,38 @@ OFCondition I2DJpegSource::getSOFImageParameters( const JPEGFileMapEntry& entry,
                                                   Uint16& bitsPerSample)
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Checking for JPEG SOF image parameters" << OFendl;
+   printMessage(m_logStream, "I2DJpegSource: Checking for JPEG SOF image parameters");
   if ( (entry.marker < E_JPGMARKER_SOF0) || (entry.marker > E_JPGMARKER_SOF15) )
     return EC_IllegalCall;
   Uint16 length;
   Uint16 image_height, image_width;
   Uint8 data_precision, num_components;
+  int result;
 
   // seek to the given SOFn marker
 
-  fseek(jpegFile, entry.bytePos, SEEK_SET);
-  OFCondition cond = read2Bytes(length);  /* usual parameter length count */
-  if (cond.bad())
-    return cond;
+  jpegFile.fseek(entry.bytePos, SEEK_SET);
+  result = read2Bytes(length);  /* usual parameter length count */
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
   // read values
 
-  cond = read1Byte(data_precision);
-  if (cond.bad())
-    return cond;
+  result = read1Byte(data_precision);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
-  cond = read2Bytes(image_height);
-  if (cond.bad())
-    return cond;
+  result = read2Bytes(image_height);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
-  cond = read2Bytes(image_width);
-  if (cond.bad())
-    return cond;
+  result = read2Bytes(image_width);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
-  cond = read1Byte(num_components);
-  if (cond.bad())
-    return cond;
+  result = read1Byte(num_components);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
   imageWidth = image_width;
   imageHeight = image_height;
@@ -254,11 +290,16 @@ OFCondition I2DJpegSource::getSOFImageParameters( const JPEGFileMapEntry& entry,
 
   if (m_debug)
   {
-    COUT << "I2DJpegSource: JPEG SOF image parameters:" << OFendl;
-    COUT << "  Image Width: "         << (Uint16)imageWidth << OFendl;
-    COUT << "  Image Height "         << (Uint16)imageHeight << OFendl;
-    COUT << "  Number of Components: "<< (Uint16)samplesPerPixel << OFendl;
-    COUT << "  Data Precision: "      << (Uint16)bitsPerSample << OFendl;
+    char buf[100];
+    printMessage(m_logStream, "I2DJpegSource: JPEG SOF image parameters:");
+    sprintf(buf, "%u", image_width);
+    printMessage(m_logStream, "I2DJpegSource:   Image Width: ", buf);
+    sprintf(buf, "%u", image_height);
+    printMessage(m_logStream, "I2DJpegSource:   Image Height: ", buf);
+    sprintf(buf, "%u", num_components);
+    printMessage(m_logStream, "I2DJpegSource:   Number of Components: ", buf);
+    sprintf(buf, "%u", data_precision);
+    printMessage(m_logStream, "I2DJpegSource:   Data Precision: ", buf);
   }
 
   if (length != (unsigned int) (8 + num_components * 3))
@@ -276,53 +317,53 @@ OFCondition I2DJpegSource::getJFIFImageParameters( const JPEGFileMapEntry& entry
                                                    Uint16& unit)
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Examing JFIF information" << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Examing JFIF information");
   if (entry.marker != E_JPGMARKER_APP0)
     return EC_IllegalCall;
   Uint16 jv, pah, pav, unt;
 
   // go to specified byte position and read on to value field
   Uint16 length;
-  fseek(jpegFile, entry.bytePos, SEEK_SET);
-  OFCondition cond = read2Bytes(length);  /* usual parameter length count */
-  if (cond.bad())
-    return cond;
+  jpegFile.fseek(entry.bytePos, SEEK_SET);
+  int result = read2Bytes(length);  /* usual parameter length count */
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
   // read and check the 5 byte "JFIF" marker value (X'4A', X'46', X'49', X'46', X'00')
   Uint16 twoBytes;
-  cond = read2Bytes(twoBytes);
-  if (cond.bad() || twoBytes != 0x4a46 )
+  result = read2Bytes(twoBytes);
+  if ( (result == EOF) || (twoBytes != 0x4a46) )
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Invalid JFIF marker or JFIF marker not found");
-  cond = read2Bytes(twoBytes);
-  if (cond.bad() || twoBytes != 0x4946 )
+  result = read2Bytes(twoBytes);
+  if ( (result == EOF) || (twoBytes != 0x4946) )
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Invalid JFIF marker or JFIF marker not found");
   Uint8 oneByte;
-  cond = read1Byte(oneByte);
-  if (cond.bad() || oneByte != 0x00)
+  result = read1Byte(oneByte);
+  if ( (result == EOF)|| (oneByte != 0x00) )
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Invalid JFIF marker or JFIF marker not found");
 
   // read JFIF version
-  cond = read2Bytes(twoBytes);
-  if (cond.bad())
-    return cond;
+  result = read2Bytes(twoBytes);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   jv = twoBytes;
 
   // read pixel aspect ratio unit
-  cond = read1Byte(oneByte);
-  if (cond.bad() || oneByte > 2)
-    return cond;
+  result = read1Byte(oneByte);
+  if ( (result == EOF) || (oneByte > 2) )
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   unt = oneByte;
 
   // read horizontal aspect ratio (XDensity)
-  cond = read2Bytes(twoBytes);
-  if (cond.bad())
-    return cond;
+  result = read2Bytes(twoBytes);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   pah = twoBytes;
 
   // read vertical aspect ratio (YDensity)
-  cond = read2Bytes(twoBytes);
-  if (cond.bad() )
-    return cond;
+  result = read2Bytes(twoBytes);
+ if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   pav = twoBytes;
 
   // prepare return values and return
@@ -333,34 +374,114 @@ OFCondition I2DJpegSource::getJFIFImageParameters( const JPEGFileMapEntry& entry
 
   if (m_debug)
   {
-    COUT << "I2DJpegSource: JPEG SOF image parameters:" << OFendl;
-    COUT << "  JFIF version: "                << jfifVersion << OFendl;
-    COUT << "  Horizontal Pixel Aspect Ratio "<< pixelAspectH << OFendl;
-    COUT << "  Vertical Pixel Aspect Ratio: " << pixelAspectV << OFendl;
-    COUT << "  Units: "                       << unit << OFendl;
+    char buf[100];
+    printMessage(m_logStream, "I2DJpegSource: JPEG JFIF image parameters:", buf);
+    sprintf(buf, "%u", jfifVersion);
+    printMessage(m_logStream, "I2DJpegSource:   JFIF version: ", buf);
+    sprintf(buf, "%u", pixelAspectH);
+    printMessage(m_logStream, "I2DJpegSource:   Horizontal Pixel Aspect Ratio ", buf);
+    sprintf(buf, "%u", pixelAspectV);
+    printMessage(m_logStream, "I2DJpegSource:   Vertical Pixel Aspect Ratio: ", buf);
+    sprintf(buf, "%u", unit);
+    printMessage(m_logStream, "I2DJpegSource:   Units: ", buf);
   }
 
   return EC_Normal;
 }
 
 
-// expects valid JPEG stream (especially exactly one SOI and one EOI marker)
-OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
-                                                unsigned long& pixLength)
+OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
+                                          Uint32& pixLength)
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Extracting JPEG data from JPEG file" << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Copying JPEG data from JPEG file");
+  /* Calculate length of total stream as found in the file
+   * Therefore, look at byte positions from SOI and EOI marker */
+
+  offile_off_t bytePosJFIF = 0;
+  offile_off_t bytePosAfterJFIF = 0;
+  int marker = 0;
+
+  // determine file size
+  offile_off_t result = jpegFile.fseek(0, SEEK_END);
+  if (result != 0)
+    return EC_IllegalParameter;
+  offile_off_t filesize = jpegFile.ftell();
+
+  // Only pixel data up to 2^32 bytes is supported (DICOM) and maximum size for "new" operator = size_t
+
+  if (  ((unsigned long)filesize > (unsigned long)4294967294) || ( (unsigned long)filesize > (unsigned long)((size_t)-1) ) )
+  {
+    printMessage(m_logStream, "I2DJpegSource: JPEG file length longer than 2^32 bytes (or larger than size_t capacity), aborting");
+    return EC_MemoryExhausted;
+  }
+
+  // get position of JFIF section and SOI marker
+  OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
+  while (entry != m_jpegFileMap.end())
+  {
+    marker = (*entry)->marker;
+    if ( (marker == E_JPGMARKER_APP0) )
+    {
+      bytePosJFIF = (*entry)->bytePos - 1; // include first byte of marker (FF)
+      entry++;
+      bytePosAfterJFIF = (*entry)->bytePos - 1; // include first byte (FF) of marker after APPn
+      break;
+    }
+    entry++;
+  }
+
+  // Go to starting position (SOI marker) of JPEG stream data
+  jpegFile.fseek(0, SEEK_SET);
+
+  // Allocate buffer for raw JPEG data
+  pixLength = OFstatic_cast(Uint32, filesize - (bytePosAfterJFIF - bytePosJFIF));
+  pixelData = new char[pixLength];
+  char *currBufferPos = pixelData;
+
+  // exclude JFIF if present
+  if (bytePosJFIF != 0)
+  {
+    // read from SOI to JFIF
+    result = jpegFile.fread (currBufferPos, 1, 2);
+    if (result != 2)
+      return EC_IllegalCall;
+    currBufferPos += 2;
+    // read from end of JFIF to end of file
+    jpegFile.fseek(bytePosAfterJFIF - 1, SEEK_SET); // -1 because offsets start with 0
+    result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, (filesize - bytePosAfterJFIF + 1)));
+    if (result != filesize - bytePosAfterJFIF + 1)
+      return EC_IllegalCall;
+  }
+  else // otherwise copy everything starting with SOI marker
+  {
+    result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, filesize));
+    if (result != filesize)
+      return EC_IllegalCall;
+  }
+  return EC_Normal;
+}
+
+
+// expects valid JPEG stream (especially exactly one SOI and one EOI marker)
+OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
+                                                Uint32& pixLength)
+{
+  if (m_debug)
+    printMessage(m_logStream, "I2DJpegSource: Extracting JPEG data from JPEG file");
   OFCondition cond;
   int marker = 0;
   Uint16 length;
 
   /* Calculate length of total stream as found in the file
-   * Therefore, look at byte positions from SOI and EOI marker */
+   * Therefore, look at byte positions from SOI and EOI marker and
+   * and exclude all APPn markers in calculation
+   */
 
-  unsigned long bytePosSOI = 0;
-  unsigned long bytePosEOI = 0;
-  unsigned long totalAPPSize = 0;
-  OFList<unsigned int> appPosAndLengths;
+  offile_off_t bytePosSOI = 0;
+  offile_off_t bytePosEOI = 0;
+  offile_off_t totalAPPSize = 0;
+  OFList<offile_off_t> appPosAndLengths;
 
   OFListIterator(JPEGFileMapEntry*) entry = m_jpegFileMap.begin();
   while (entry != m_jpegFileMap.end())
@@ -381,10 +502,13 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
     }
     else if (marker >= E_JPGMARKER_APP0 && marker <= E_JPGMARKER_APP15)
     {
-      fseek(jpegFile, (*entry)->bytePos - ftell(jpegFile), SEEK_CUR);
-      cond = read2Bytes( length);
-      if (cond.bad())
-        return cond;
+      jpegFile.fseek((*entry)->bytePos - jpegFile.ftell(), SEEK_CUR);
+      int result = read2Bytes( length);
+      if (result == EOF)
+      {
+        jpegFile.fclose();
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+      }
       // remember pos and length of APP data so we don't need a second "scan" for that
       appPosAndLengths.push_back( (*entry)->bytePos - 1 ); // -1 for FF of marker
       appPosAndLengths.push_back( length );
@@ -400,23 +524,29 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
   if ( (entry == m_jpegFileMap.end()) || (bytePosSOI == 0) || (bytePosEOI == 0)) // at least endmarker was not found
     return EC_IllegalCall;
 
-  unsigned long rawStreamSize = bytePosEOI - bytePosSOI - totalAPPSize;
+  offile_off_t rawStreamSize = bytePosEOI - bytePosSOI - totalAPPSize;
   // Start position n and endpos. m results in a total amount of m-n+1 bytes
   rawStreamSize++;
 
   // Allocate buffer for raw JPEG data
-
-  pixelData = new char[rawStreamSize];
+  // Only pixel data up to 2^32 bytes is supported (DICOM)
+  if (  ((unsigned long)rawStreamSize > (unsigned long)4294967294) || ( (unsigned long)rawStreamSize > (unsigned long)((size_t)-1) ) )
+  {
+    printMessage(m_logStream, "I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
+    return EC_MemoryExhausted;
+  }
+  pixelData = new char[OFstatic_cast(size_t, rawStreamSize)];
   // keep track of current write position in memory buffer
-  char *currBufferPos = pixelData; //unsigned int currBytePos = bytePosSOI;
+  char *currBufferPos = pixelData;
 
   // Go to starting position (SOI marker) of JPEG stream data
-  fseek(jpegFile, bytePosSOI-1, SEEK_SET);
+  jpegFile.fseek(bytePosSOI-1, SEEK_SET);
 
-  // Copy everything but leave out APP segments
-  OFBool finnished = OFFalse;
-  unsigned int endOfBlock = 0; unsigned int startOfNextBlock = 0;
-  while (!finnished)
+  /* Copy everything but leave out APP segments
+   */
+  OFBool finished = OFFalse;
+  offile_off_t endOfBlock = 0; offile_off_t startOfNextBlock = 0;
+  while (!finished)
   {
     // determine position of the next block to be read
     if ( appPosAndLengths.size() != 0)
@@ -430,22 +560,22 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
     else // we can read to the end
     {
       endOfBlock = bytePosEOI;
-      finnished = OFTrue;
+      finished = OFTrue;
     }
     // read block
-    int blockSize = endOfBlock - ftell(jpegFile);
-    int result = fread (currBufferPos, 1, blockSize, jpegFile);
+    offile_off_t blockSize = endOfBlock - jpegFile.ftell();
+    int result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, blockSize));
     if (result != blockSize)
       return EC_IllegalCall;
     // prepare for reading next block
-    if (!finnished)
+    if (!finished)
     {
-      fseek(jpegFile, startOfNextBlock, SEEK_SET);
+      jpegFile.fseek(startOfNextBlock, SEEK_SET);
       currBufferPos += blockSize;
     }
   }
   // update result variable
-  pixLength = rawStreamSize;
+  pixLength = OFstatic_cast(size_t, rawStreamSize);
 
   return cond;
 }
@@ -454,7 +584,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
 OFCondition I2DJpegSource::createJPEGFileMap()
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Examing JPEG file and creating map of JPEG markers" << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Examing JPEG file and creating map of JPEG markers");
   E_JPGMARKER marker;
   JPEGFileMapEntry *entry = NULL;
   OFBool lastWasSOSMarker = OFFalse;
@@ -466,12 +596,12 @@ OFCondition I2DJpegSource::createJPEGFileMap()
   if (cond.bad())
     return cond;
   entry = new JPEGFileMapEntry();
-  entry->bytePos = ftell(jpegFile);
+  entry->bytePos = jpegFile.ftell();
   entry->marker = first;
   m_jpegFileMap.push_back(entry);
 
   if (first != E_JPGMARKER_SOI)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Expected SOI marker first");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "I2DJpegSource: SOI marker not found at beginning of JPEG stream");
 
   /* Scan miscellaneous markers until we reach EOI */
   while (cond.good())
@@ -480,22 +610,44 @@ OFCondition I2DJpegSource::createJPEGFileMap()
     if (cond.good())
     {
       entry = new JPEGFileMapEntry();
-      entry->bytePos = ftell(jpegFile);
+      entry->bytePos = jpegFile.ftell();
       entry->marker = marker;
       m_jpegFileMap.push_back(entry);
       if (marker == E_JPGMARKER_SOS)
+      {
         lastWasSOSMarker = OFTrue;
+      }
       else if (marker == E_JPGMARKER_EOI)
       {
-        if (m_debug)
-          debugDumpJPEGFileMap(COUT);
-        return EC_Normal;
+        // End of file reached
+        cond = EC_Normal;
+        break;
       }
-      else
+      else if ( isSOFMarker(marker) && m_keepAPPn )
+      {
+        cond = EC_Normal;
+        break;
+      }
+      if ( !isRSTMarker(marker) ) // RST marker does not have a length that could be used for skipping
         skipVariable();
     }
   } /* end loop */
+  if (m_debug)
+    debugDumpJPEGFileMap();
   return cond;
+}
+
+
+OFBool I2DJpegSource::isRSTMarker(const E_JPGMARKER& marker) const
+{
+  return ((marker >= E_JPGMARKER_RST0) && (marker <= E_JPGMARKER_RST7));
+}
+
+
+OFBool I2DJpegSource::isSOFMarker(const E_JPGMARKER& marker) const
+{
+  return ( (marker >= E_JPGMARKER_SOF0) && (marker <= E_JPGMARKER_SOF15)
+           && (marker != E_JPGMARKER_DHT) &&  (marker != E_JPGMARKER_DAC));
 }
 
 
@@ -545,32 +697,30 @@ OFString I2DJpegSource::jpegMarkerToString(const E_JPGMARKER& marker)
 
 
 /* Read one byte, testing for EOF */
-OFCondition I2DJpegSource::read1Byte(Uint8& result)
+int I2DJpegSource::read1Byte(Uint8& result)
 {
-  int c;
-
-  c = getc(jpegFile);
+  register int c;
+  c = jpegFile.fgetc();
   if (c == EOF)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+    return EOF;
   result = (Uint8) c;
-  return EC_Normal;
+  return 0;
 }
 
 
 /* Read 2 bytes, convert to unsigned int */
 /* All 2-byte quantities in JPEG markers are MSB first */
-OFCondition I2DJpegSource::read2Bytes(Uint16& result)
+int I2DJpegSource::read2Bytes(Uint16& result)
 {
   int c1, c2;
-
-  c1 = getc(jpegFile);
+  c1 = jpegFile.fgetc();
   if (c1 == EOF)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
-  c2 = getc(jpegFile);
+    return EOF;
+  c2 = jpegFile.fgetc();
   if (c2 == EOF)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
+    return EOF;
   result = (((Uint16) c1) << 8) + ((Uint16) c2);
-  return EC_Normal;
+  return 0;
 }
 
 
@@ -588,26 +738,28 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker,
 {
   Uint8 c;
   int discarded_bytes = 0;
+  int oneByte;
 
   /* Find 0xFF byte; count and skip any non-FFs. */
-  OFCondition cond = read1Byte(c);
-  if (cond.bad())
-    return cond;
+  oneByte = read1Byte(c);
+  if (oneByte == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
 
-  while (c != 0xFF) {
+  while (c != 0xFF)
+  {
     if (!lastWasSOSMarker)
       discarded_bytes++;
-    cond = read1Byte(c);
-    if (cond.bad())
-      return cond;
+    oneByte = read1Byte(c);
+    if (oneByte == EOF)
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   }
   /* Get marker code byte, swallowing any duplicate FF bytes.  Extra FFs
    * are legal as pad bytes, so don't count them in discarded_bytes.
    */
   do {
-    cond = read1Byte(c);
-    if (cond.bad())
-      return cond;
+    oneByte = read1Byte(c);
+    if (oneByte == EOF)
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   } while (c == 0xFF);
 
   if (lastWasSOSMarker && c == 0x00)
@@ -617,7 +769,7 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker,
 
   if (discarded_bytes != 0) {
 
-    CERR << "Warning: garbage data found in JPEG file" << OFendl;
+    printMessage(m_logStream, "Warning: garbage data found in JPEG file");
   }
   result = (E_JPGMARKER)c;
   return EC_Normal;
@@ -634,8 +786,8 @@ OFCondition I2DJpegSource::firstMarker(E_JPGMARKER& result)
 {
   Uint8 c1, c2;
 
-  c1 = (Uint8)getc(jpegFile);
-  c2 = (Uint8)getc(jpegFile);
+  c1 = (Uint8)jpegFile.fgetc();
+  c2 = (Uint8)jpegFile.fgetc();
   if (c1 != 0xFF || c2 != E_JPGMARKER_SOI) {
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Not a JPEG file");
   }
@@ -658,21 +810,15 @@ OFCondition I2DJpegSource::skipVariable()
   Uint16 length;
 
   /* Get the marker parameter length count */
-  OFCondition cond = read2Bytes(length);
-  if (cond.bad())
-    return cond;
+  int result = read2Bytes(length);
+  if (result == EOF)
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Premature EOF in JPEG file");
   /* Length includes itself, so must be at least 2 */
   if (length < 2)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Erroneous JPEG marker length");
   length -= 2;
   /* Skip over the remaining bytes */
-  Uint8 ignoredData;
-  while (length > 0) {
-    cond = read1Byte(ignoredData);
-    if (cond.bad())
-      return cond;
-    length--;
-  }
+  jpegFile.fseek(length, SEEK_CUR);
   return EC_Normal;
 }
 
@@ -680,7 +826,7 @@ OFCondition I2DJpegSource::skipVariable()
 OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncoding) const
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Checking whether JPEG encoding is supported (" << jpegMarkerToString(jpegEncoding) << ")" << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Checking whether JPEG encoding is supported: ", jpegMarkerToString(jpegEncoding));
   switch (jpegEncoding)
   {
     case E_JPGMARKER_SOF0:
@@ -722,13 +868,19 @@ E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding) co
 }
 
 
-void I2DJpegSource::debugDumpJPEGFileMap(STD_NAMESPACE ostream& out) const
+void I2DJpegSource::debugDumpJPEGFileMap() const
 {
-  out << "Dumping JPEG marker file map: " << OFendl;
+  printMessage(m_logStream,"I2DJpegSource: Dumping JPEG marker file map: ");
+  if (m_keepAPPn)
+    printMessage(m_logStream, "I2DJpegSource: Keep APPn option enabled, any markers after SOFn marker will not be dumped");
   OFListIterator(JPEGFileMapEntry*) it= m_jpegFileMap.begin();
   while (it != m_jpegFileMap.end())
   {
-    out << "Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) << STD_NAMESPACE setfill('0') << (*it)->bytePos <<" | Marker: " << jpegMarkerToString( (*it)->marker) << OFendl;
+    if (m_logStream)
+    {
+      m_logStream->lockCerr() <<  "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) << STD_NAMESPACE setfill('0') << (*it)->bytePos <<" | Marker: " << jpegMarkerToString( (*it)->marker) << OFendl << STD_NAMESPACE dec;
+      m_logStream->unlockCerr();
+    }
     it++;
   }
 }
@@ -748,16 +900,14 @@ void I2DJpegSource::clearMap()
 // closes underlying JPEG file
 void I2DJpegSource::closeFile()
 {
-  if (jpegFile != NULL)
-    fclose(jpegFile);
-  jpegFile = NULL;
+  jpegFile.fclose();
 }
 
 // close file and free dynamically allocated memory
 I2DJpegSource::~I2DJpegSource()
 {
   if (m_debug)
-    COUT << "I2DJpegSource: Closing JPEG file and cleaning up memory" << OFendl;
+    printMessage(m_logStream, "I2DJpegSource: Closing JPEG file and cleaning up memory");
   closeFile();
   clearMap();
 }
@@ -766,7 +916,10 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
- * Revision 1.1  2007-11-08 15:55:17  onken
+ * Revision 1.2  2008-01-11 14:19:28  onken
+ * *** empty log message ***
+ *
+ * Revision 1.1  2007/11/08 15:55:17  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *

@@ -21,11 +21,10 @@
  *
  *  Purpose: Implements conversion from image into DICOM Visible Light Photography IOD
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:19:28 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -38,22 +37,26 @@
 I2DOutputPlugVLP::I2DOutputPlugVLP()
 {
   if (m_debug)
-    COUT << "I2DOutputPlugVLP: Output plugin for VLP initialized" << OFendl;
+    printMessage(m_logStream, "I2DOutputPlugVLP: Output plugin for VLP initialized");
 }
 
-
-OFString I2DOutputPlugVLP::targetSOPClassUID() const
+OFString I2DOutputPlugVLP::ident()
 {
-  return UID_VLPhotographicImageStorage;
+  return "Visible Light Photographic Image SOP Class";
+}
+
+void I2DOutputPlugVLP::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
+{
+  suppSOPs.push_back(UID_VLPhotographicImageStorage);
 }
 
 
 OFCondition I2DOutputPlugVLP::convert(DcmDataset &dataset) const
 {
   if (m_debug)
-    COUT << "I2DOutputPlugVLP: Inserting VLP specific attributes" << OFendl;
+    printMessage(m_logStream, "I2DOutputPlugVLP: Inserting VLP specific attributes");
   OFCondition cond;
-  cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, targetSOPClassUID());
+  cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, UID_VLPhotographicImageStorage);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to insert SOP class into dataset");
 
@@ -65,34 +68,26 @@ OFCondition I2DOutputPlugVLP::convert(DcmDataset &dataset) const
 }
 
 
-OFCondition I2DOutputPlugVLP::isValid(DcmDataset& dset) const
+OFString I2DOutputPlugVLP::isValid(DcmDataset& dataset) const
 {
+  OFString err;
+  // Just return if checking was disabled
+  if (!m_doAttribChecking)
+    return err;
+
   if (m_debug)
-    COUT << "I2DOutputPlugVLP: Checking VLP specific attributes for validity" << OFendl;
+    printMessage(m_logStream, "I2DOutputPlugVLP: Checking VLP specific attributes for validity");
   // Acquisition Context Module
-  OFString err; OFString dummy;
-  if (!dset.tagExists(DCM_AcquisitionContextSequence))
-    err += "Error: Acquisition Context Sequence (type 2) not present in dataset\n";
+  err = checkAndInventType2Attrib(DCM_AcquisitionContextSequence, &dataset);
 
   // General Equipment Module
-  if (!dset.tagExists(DCM_Manufacturer))
-    err += "Error: Manufacturer (type 2) not present in dataset\n";
+  err += checkAndInventType2Attrib(DCM_Manufacturer, &dataset);
 
   // VL Image Module
-  OFCondition cond = dset.findAndGetOFString(DCM_ImageType, dummy);
-  if (cond.bad() || (dummy.length() == 0))
-  {
-    err += "Error: Image Type (type 1) not present or having empty value in dataset\n";
-    dummy.clear();
-  }
+  err += checkAndInventType1Attrib(DCM_ImageType, &dataset, "DERIVED\\SECONDARY");
+  err += checkAndInventType2Attrib(DCM_LossyImageCompression, &dataset);
 
-  if (!dset.tagExists(DCM_LossyImageCompression))
-    err += "Error: Lossy Image Compression (type 2) not present in dataset\n";
-
-  if (err.length() > 0)
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
-  else
-    return EC_Normal;
+  return err;
 }
 
 
@@ -104,7 +99,10 @@ I2DOutputPlugVLP::~I2DOutputPlugVLP()
 /*
  * CVS/RCS Log:
  * $Log: i2dplvlp.cc,v $
- * Revision 1.1  2007-11-08 15:55:17  onken
+ * Revision 1.2  2008-01-11 14:19:28  onken
+ * *** empty log message ***
+ *
+ * Revision 1.1  2007/11/08 15:55:17  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *
