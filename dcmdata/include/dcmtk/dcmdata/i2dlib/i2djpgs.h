@@ -21,11 +21,10 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:17:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -74,7 +73,7 @@ enum E_JPGMARKER { E_JPGMARKER_SOF0 = 0xC0, E_JPGMARKER_SOF1 = 0xC1, E_JPGMARKER
  * of the byte position of the marker and the marker code itself
  */
 struct JPEGFileMapEntry {
-  unsigned long bytePos;
+  offile_off_t bytePos;
   E_JPGMARKER marker;
 };
 
@@ -128,20 +127,36 @@ public:
                              Uint16& pixAspectH,
                              Uint16& pixAspectV,
                              char*&  pixData,
-                             unsigned long& length,
+                             Uint32& length,
                              E_TransferSyntax& ts);
 
   /** Enable/Disable support for Extended Sequential JPEG Coding
    *  @param enabled - [in] OFTrue: support Extended Sequential, OFTrue: Do not support
    *  @return none
    */
-  void setExtSeqSupport(const OFBool& enabled);
+  void setExtSeqSupport(const OFBool enabled);
 
   /** Enable/Disable support for Progressive JPEG Coding
    *  @param enabled - [in] OFTrue: support Extended Sequential, OFTrue: Do not support
    *  @return none
    */
-  void setProgrSupport(const OFBool& enabled);
+  void setProgrSupport(const OFBool enabled);
+
+  /** If enabled, conversion will only take place if JFIF data could be found
+   *  and evaluated. Many digital cameras do not provide a JFIF header, so this
+   *  is disabled by default.
+   */
+  void setInsistOnJFIF(const OFBool enabled);
+
+  /**  If enabled, APPn markers (except JFIF!) are also copied to the output file.
+   *   This can cause a huge speedup because instead of parsing the whole
+   *   JPEG file (for finding any APPn markers) the parsing stops after finding
+   *   the SOFn marker (which is relevant for extracting width/height and so on.
+   *   Default: false
+   *   @param enabled - [in] OFtrue: copy APPn, OFFalse: cut off APPn info
+   *   @return none
+   */
+  void setKeepAPPn(const OFBool enabled);
 
   /** Returns a string representation of a JPEG marker code.
    *  @param marker - [in] The marker to be converted
@@ -179,10 +194,9 @@ protected:
   /** Dump the internal JPEG file map to a given stream. The file map
    *  lists JPEG markers and their position in the bitstream found in the JPEG
    *  file
-   *  @param ostream - [out] The stream to print to
    *  @return none
    */
-  void debugDumpJPEGFileMap(STD_NAMESPACE ostream& out) const;
+  void debugDumpJPEGFileMap() const;
 
   /** Get image parameters as found at given SOF marker of the JPEG image.
    *  @param entry - [in] This specifies the marker and the byte position of the SOF marker
@@ -227,13 +241,34 @@ protected:
    */
   E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding) const;
 
-  /** Extract raw JPEG stream (i.e. without APP markers) from JPEG file.
+  /** Returns true if marker is one of the RST0 to RST7 markers
+   *  @param marker - [in] Image marker that should be tested
+   *  @return OFTrue, if marker is RST0 to RST7, OFFalse otherwise
+   */
+  OFBool isRSTMarker(const E_JPGMARKER& jpegEncoding) const;
+
+  /** Returns true if marker is one of the SOF0 to SOF15 markers
+   *  @param marker - [in] Image marker that should be tested
+   *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
+   */
+  OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding) const;
+
+
+  /** Extract raw JPEG stream (i.e. without APPn markers) from JPEG file.
    *  @param pixelData - [out] The resulting JPEG stream
    *  @param pixLength - [out] The length of the resulting stream
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition extractRawJPEGStream(char*& pixelData,
-                                   unsigned long& pixLength);
+                                   Uint32& pixLength);
+
+  /** Copies JPEG stream (with APPn markers, excluding JFIF) from JPEG file.
+   *  @param pixelData - [out] The resulting JPEG stream
+   *  @param pixLength - [out] The length of the resulting stream
+   *  @return EC_Normal, if successful, error otherwise
+   */
+  OFCondition copyJPEGStream(char*& pixelData,
+                             Uint32& pixLength);
 
   /** Skips one marker while scanning through the JPEG file stream.
    *  @param none
@@ -259,15 +294,15 @@ protected:
 
   /** Read 2 bytes from the byte stream.
    *  @param result - [out] The result
-   *  @return EC_Normal, if successful, error otherwise
+   *  @return 0, if successful, EOF if rest of stream does not contain enough bytes
    */
-  OFCondition read2Bytes(Uint16& result);
+  inline int read2Bytes(Uint16& result);
 
   /** Read 1 byte from the byte stream.
    *  @param result - [out] The result
-   *  @return EC_Normal, if successful, error otherwise
+   *  @return 0, if successful, EOF if rest of stream does not contain enough bytes
    */
-  OFCondition read1Byte(Uint8& result);
+  inline int read1Byte(Uint8& result);
 
   /** Deletes internal JPEG file map and frees memory.
    *  @param none
@@ -279,13 +314,24 @@ protected:
   OFList<JPEGFileMapEntry*> m_jpegFileMap;
 
   /// The JPEG file, if opened
-  FILE * jpegFile;
+  OFFile jpegFile;
 
   /// If true, JPEGs with progressive coding are not supported
   OFBool m_disableProgrTs;
 
   /// If true, JPEGs with extended sequential coding are not supported
   OFBool m_disableExtSeqTs;
+
+  /// If true, conversion will only work if JFIF header can be found.
+  /// Default: false
+  OFBool m_insistOnJFIF;
+
+  /// If true, APPn markers (except JFIF!) are also copied to the output file.
+  /// This can cause a huge speedup because instead of parsing the whole
+  /// JPEG file (for finding any APPn markers) the parsing stops after finding
+  /// the SOFn marker (which is relevant for extracting width/height and so on.
+  /// Default: false
+  OFBool m_keepAPPn;
 
 };
 
@@ -294,7 +340,14 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
- * Revision 1.1  2007-11-08 15:58:55  onken
+ * Revision 1.2  2008-01-11 14:17:53  onken
+ * Added various options to i2dlib. Changed logging to use a configurable
+ * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
+ * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
+ * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
+ * need for templates any more). Added some bug fixes.
+ *
+ * Revision 1.1  2007/11/08 15:58:55  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *

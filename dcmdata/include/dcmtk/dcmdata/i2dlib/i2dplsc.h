@@ -21,11 +21,10 @@
  *
  *  Purpose: Class for conversion of image file into DICOM SC Image Storage
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:17:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -49,12 +48,18 @@ public:
    */
   I2DOutputPlugSC();
 
+  /** Virtual function that returns a short name of the plugin.
+   *  @param none
+   *  @return The name of the plugin
+   */
+  virtual OFString ident();
+
   /** Overwrites function from base class. Returns the Storage SOP class
    *  written by this plugin
    *  @param none
    *  @return A string holding the Storage SOP class written by this plugin
    */
-  virtual OFString targetSOPClassUID() const;
+  virtual void supportedSOPClassUIDs(OFList<OFString> suppSOPs);
 
   /** Outputs SOP class specific information into dataset
    * @param dset - [in/out] Dataset to write to
@@ -65,9 +70,9 @@ public:
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
    *  @param dataset - [in] The dataset to check
-   *  @return EC_Normal if successful, error otherwise
+   *  @return Error string if error occurs, empty string otherwise
    */
-  virtual OFCondition isValid(DcmDataset& dataset) const;
+  virtual OFString isValid(DcmDataset& dataset) const;
 
   /** Virtual Destructor, clean up memory
    *  @param none
@@ -82,7 +87,14 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.h,v $
- * Revision 1.1  2007-11-08 15:58:56  onken
+ * Revision 1.2  2008-01-11 14:17:53  onken
+ * Added various options to i2dlib. Changed logging to use a configurable
+ * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
+ * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
+ * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
+ * need for templates any more). Added some bug fixes.
+ *
+ * Revision 1.1  2007/11/08 15:58:56  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *

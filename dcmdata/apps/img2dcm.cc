@@ -21,11 +21,10 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:16:04 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -39,6 +38,7 @@
 #include "dcmtk/dcmdata/i2dlib/i2djpgs.h"
 #include "dcmtk/dcmdata/i2dlib/i2dplsc.h"
 #include "dcmtk/dcmdata/i2dlib/i2dplvlp.h"
+#include "dcmtk/dcmdata/i2dlib/i2dplnsc.h"
 
 #define OFFIS_CONSOLE_APPLICATION "img2dcm"
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -160,7 +160,7 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
     converter.setStudyFrom(tempStr);
   }
 
-  else if ( cmd.findOption("--series-from") )
+  if ( cmd.findOption("--series-from") )
   {
     OFString tempStr;
     OFCommandLine::E_ValueStatus valStatus;
@@ -203,16 +203,27 @@ static void addCmdLineOptions(OFCommandLine& cmd)
     cmd.addSubGroup("JPEG input options:");
       cmd.addOption("--disable-progr", "-dp",     "disable support for progressive JPEG");
       cmd.addOption("--disable-ext",   "-de",     "disable support for extended sequential JPEG");
+      cmd.addOption("--insist-on-jfif","-jf",     "insist on JFIF header");
+      cmd.addOption("--keep-appn",     "-ka",     "keep APPn sections (except JFIF)");
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--no-checks",                 "disable attribute validity checking");
-     cmd.addOption("--key",               "-k",   1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
+     cmd.addOption("--do-checks",                    "enable attribute validity checking (default)");
+     cmd.addOption("--no-checks",                    "disable attribute validity checking");
+     cmd.addOption("--insert-type2",       "+i2",    "insert missing type 2 attributes (default)\n(only with --do-checks)");
+     cmd.addOption("--no-type2-insert",    "-i2",    "do not insert missing type 2 attributes \n(only with --do-checks)");
+     cmd.addOption("--invent-type1",       "+i1",    "invent missing type 1 attributes (default)\n(only with --do-checks)");
+     cmd.addOption("--no-type1-invent",    "-i1",    "do not invent missing type 1 attributes\n(only with --do-checks)");
+     cmd.addOption("--latin1",             "+l1",    "Set latin1 as standard character set (default)");
+     cmd.addOption("--no-latin1",          "-l1",    "Keep 7bit ASCII as standard character set");
+     cmd.addOption("--key",                 "-k", 1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
                                                      "add further attribute");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("target SOP class:");
-      cmd.addOption("--vl-photo",            "-vlp",   "write Visible Light Photo SOP class (default)");
-      cmd.addOption("--sec-capture",         "-sc",    "write Secondary Capture SOP class");
+      cmd.addOption("--sec-capture",         "-sc",   "write Secondary Capture SOP class (default)");
+      cmd.addOption("--new-sc",              "-nsc",  "write new Secondary Capture SOP classes");
+      cmd.addOption("--vl-photo",            "-vlp",  "write Visible Light Photo SOP class");
+
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",          "+F",     "write file format (default)");
       cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
@@ -277,38 +288,21 @@ static OFCondition startConversion(OFCommandLine& cmd,
   // Parse rest of command line options
   OFBool dMode = OFFalse; OFBool vMode = OFFalse;
   if (cmd.findOption("--verbose"))
-  {
     vMode = OFTrue;
-    i2d.setVerboseMode(OFTrue);
-  }
   if (cmd.findOption("--debug"))
   {
     dMode = OFTrue;
     vMode = OFTrue;
     i2d.setDebugMode(OFTrue);
+    i2d.setLogStream(&ofConsole);
   }
-  // Find out which plugin to use
-  if (dMode)
-    COUT << "Image2Dcm: Instantiating DICOM output plugin" << OFendl;
-  cmd.beginOptionBlock();
-    if (cmd.findOption("--sec-capture"))
-      outPlug = new I2DOutputPlugSC();
-    if (cmd.findOption("--vl-photo"))
-      outPlug = new I2DOutputPlugVLP();
-  cmd.endOptionBlock();
-  if (!outPlug) // default is Visual Light Photography
-    outPlug = new I2DOutputPlugVLP();
-
-  outPlug->setVerboseMode(vMode);
-  outPlug->setDebugMode(dMode);
 
   OFString pixDataFile, outputFile, tempStr;
   cmd.getParam(1, tempStr);
 
   if (tempStr.length() == 0)
   {
-    CERR << "Error: No image input filename given" << OFendl;
-    delete outPlug; outPlug = NULL;
+    CERR << "Error: No image input filename specified" << OFendl;
     return EC_IllegalCall;
   }
   else
@@ -317,13 +311,14 @@ static OFCondition startConversion(OFCommandLine& cmd,
   cmd.getParam(2, tempStr);
   if (tempStr.length() == 0)
   {
-    CERR << "Error: No DICOM output filename given" << OFendl;
-    delete outPlug; outPlug = NULL;
+    CERR << "Error: No DICOM output filename specified" << OFendl;
     return EC_IllegalCall;
   }
   else
     outputFile = tempStr;
 
+  if (vMode)
+    COUT << "img2dcm: Instantiating input plugin: ";
   if (cmd.findOption("--input-format"))
   {
     app.checkValue(cmd.getValue(tempStr));
@@ -332,23 +327,43 @@ static OFCondition startConversion(OFCommandLine& cmd,
       inputPlug = new I2DJpegSource();
       if (!inputPlug)
       {
-        delete outPlug; outPlug = NULL;
         return EC_MemoryExhausted;
       }
     }
     else
     {
-       delete outPlug; outPlug = NULL;
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "No plugin for selected input format available");
     }
   }
   else // default is JPEG
+  {
     inputPlug = new I2DJpegSource();
+  }
+  if (vMode)
+    COUT << inputPlug->inputFormat() << OFendl;
 
+ // Find out which plugin to use
+  if (vMode)
+    COUT << "img2dcm: Instantiating output plugin: ";
+  cmd.beginOptionBlock();
+    if (cmd.findOption("--sec-capture"))
+      outPlug = new I2DOutputPlugSC();
+    if (cmd.findOption("--vl-photo"))
+      outPlug = new I2DOutputPlugVLP();
+    if (cmd.findOption("--new-sc"))
+      outPlug = new I2DOutputPlugNewSC();
+  cmd.endOptionBlock();
+  if (!outPlug) // default is the old Secondary Capture object
+    outPlug = new I2DOutputPlugSC();
+  if (vMode)
+    COUT << outPlug->ident() << OFendl;
+
+  outPlug->setDebugMode(dMode);
+  outPlug->setLogStream(&ofConsole);
 
   cmd.beginOptionBlock();
-    if (cmd.findOption("--write-file"))    writeOnlyDataset = OFFalse;
-    if (cmd.findOption("--write-dataset")) writeOnlyDataset = OFTrue;
+    if (cmd.findOption("--write-file"))         writeOnlyDataset = OFFalse;
+    if (cmd.findOption("--write-dataset"))      writeOnlyDataset = OFTrue;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
@@ -358,11 +373,11 @@ static OFCondition startConversion(OFCommandLine& cmd,
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
-  if (cmd.findOption("--length-explicit"))  lengthEnc = EET_ExplicitLength ;
-  if (cmd.findOption("--length-undefined")) lengthEnc = EET_UndefinedLength;
+  if (cmd.findOption("--length-explicit"))      lengthEnc = EET_ExplicitLength ;
+  if (cmd.findOption("--length-undefined"))     lengthEnc = EET_UndefinedLength;
   cmd.endOptionBlock();
 
-
+  cmd.beginOptionBlock();
   if (cmd.findOption("--padding-off"))
   {
     filepad = 0;
@@ -375,7 +390,6 @@ static OFCondition startConversion(OFCommandLine& cmd,
     app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
     itempad = opt_itempad;
     filepad = opt_filepad;
-
   }
   cmd.endOptionBlock();
 
@@ -387,11 +401,45 @@ static OFCondition startConversion(OFCommandLine& cmd,
       app.checkValue(cmd.getValue(ovKey));
       addOverrideKey(overrideKeys, app, ovKey);
     } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
-    i2d.setOverrideKeys(overrideKeys);
+    i2d.setOverrideKeys(overrideKeys); // does a deep copy
+    delete overrideKeys; overrideKeys = NULL;
   }
 
-  if (cmd.findOption("--no-checks"))
-    i2d.setValidityChecking(OFFalse);
+  // Test for ISO Latin 1 option
+  OFBool insertLatin1 = OFTrue;
+  cmd.beginOptionBlock();
+    if (cmd.findOption("--latin1"))
+      insertLatin1 = OFTrue;
+    if (cmd.findOption("--no-latin1"))
+      insertLatin1 = OFFalse;
+  cmd.endOptionBlock();
+  i2d.setISOLatin1(insertLatin1);
+
+
+  // evaluate validity checking options
+  OFBool insertType2 = OFTrue; OFBool inventType1 = OFTrue; OFBool doChecks = OFTrue;
+  cmd.beginOptionBlock();
+    if (cmd.findOption("--no-checks"))
+      doChecks = OFFalse;
+    if (cmd.findOption("--do-checks"))
+      doChecks = OFTrue;
+  cmd.endOptionBlock();
+
+  cmd.beginOptionBlock();
+    if (cmd.findOption("--insert-type2"))
+      insertType2 = OFTrue;
+    if (cmd.findOption("--no-type2-insert"))
+      insertType2 = OFFalse;
+  cmd.endOptionBlock();
+
+  cmd.beginOptionBlock();
+    if (cmd.findOption("--invent-type1"))
+      inventType1 = OFTrue;
+    if (cmd.findOption("--no-type1-invent"))
+      inventType1 = OFFalse;
+  cmd.endOptionBlock();
+  i2d.setValidityChecking(doChecks, insertType2, inventType1);
+  outPlug->setValidityChecking(doChecks, insertType2, inventType1);
 
   // evaluate --xxx-from options and transfer syntax options
   OFCondition cond;
@@ -407,27 +455,49 @@ static OFCondition startConversion(OFCommandLine& cmd,
   {
     I2DJpegSource *jpgSource = OFstatic_cast(I2DJpegSource*, inputPlug);
     if (!jpgSource)
-      return EC_IllegalCall;
+    {
+       delete outPlug; outPlug = NULL;
+       delete inputPlug; inputPlug = NULL;
+       return EC_MemoryExhausted;
+    }
     if ( cmd.findOption("--disable-progr") )
       jpgSource->setProgrSupport(OFFalse);
     if ( cmd.findOption("--disable-ext") )
       jpgSource->setExtSeqSupport(OFFalse);
+    if ( cmd.findOption("--insist-on-jfif") )
+      jpgSource->setInsistOnJFIF(OFTrue);
+    if ( cmd.findOption("--keep-appn") )
+      jpgSource->setKeepAPPn(OFTrue);
   }
   inputPlug->setImageFile(pixDataFile);
+  inputPlug->setDebugMode(dMode);
+  inputPlug->setLogStream(&ofConsole);
 
   DcmDataset *resultObject = NULL;
+  if (vMode)
+    COUT << "img2dcm: Starting image conversion" << OFendl;
   cond = i2d.convert(inputPlug, outPlug, resultObject, writeXfer);
-  if (cond.bad())
+
+  // Save
+  if (cond.good())
   {
-    delete outPlug; outPlug = NULL;
-    delete inputPlug; inputPlug = NULL;
-    return cond;
+    if (vMode)
+      COUT << "img2dcm: Saving output DICOM to file " << outputFile << OFendl;
+    DcmFileFormat dcmff(resultObject);
+    cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeOnlyDataset);
   }
-  // Save and return
-  if (dMode || vMode)
-    COUT << "image2dcm: Saving output DICOM to file " << outputFile << OFendl;
-  DcmFileFormat dcmff(resultObject);
-  cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeOnlyDataset);
+
+  /* make sure data dictionary is loaded */
+  if (!dcmDataDict.isDictionaryLoaded())
+  {
+      CERR << "Warning: no data dictionary loaded, "
+           << "check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+  }
+
+  // Cleanup and return
+  delete outPlug; outPlug = NULL;
+  delete inputPlug; inputPlug = NULL;
   delete resultObject; resultObject = NULL;
 
   return cond;
@@ -460,7 +530,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
- * Revision 1.2  2007-11-08 18:08:56  onken
+ * Revision 1.3  2008-01-11 14:16:04  onken
+ * Added various options to i2dlib. Changed logging to use a configurable
+ * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
+ * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
+ * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
+ * need for templates any more). Added some bug fixes.
+ *
+ * Revision 1.2  2007/11/08 18:08:56  onken
  * *** empty log message ***
  *
  * Revision 1.1  2007/11/08 16:00:34  onken

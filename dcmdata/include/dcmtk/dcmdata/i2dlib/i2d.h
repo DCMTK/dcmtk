@@ -21,11 +21,10 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:17:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -58,7 +57,7 @@ public:
    *  @param inputPlug - [in] The input plugin to read pixel data
    *  @param outputPlug - [in] The output plugin for specific SOP class output
    *  @param resultDset - [out] The DICOM object resulting from the conversion
-   *  @param proposedTS - [out] The proposed transfer syntax (needed e. g. 
+   *  @param proposedTS - [out] The proposed transfer syntax (needed e. g.
    *                            by JPEG input plugin)
    *  @return EC_Normal, if successfull, error otherwise
    */
@@ -67,7 +66,7 @@ public:
                       DcmDataset*& resultDset,
                       E_TransferSyntax& proposedTS);
 
-  /** Sets a DICOM file that should serve as a template for the resulting 
+  /** Sets a DICOM file that should serve as a template for the resulting
     * DICOM object. Only the dataset of the given file is imported.
     * @param file - [in] The filename of the template DICOM file
     * @return none
@@ -94,32 +93,74 @@ public:
    */
   void setIncrementInstanceNumber(OFBool incInstNo);
 
+  /** Enables/disables autotmatic insertion of the value "ISO_IR100" as
+    * a value for the Specific Character Set attribute. If disabled,
+    * no value is inserted for Specifific Character Set but instead
+    * must be provided by other means (see setTemplateFile(), setSeriesFrom(),
+    * setStudyFrom(), setOverrideKeys()). The insertion is applied after
+    * loading the (optional) template file; the value might be overwritten
+    * by the value copied by setStudy/Series/OverrideKeys.
+    * @param insertLatin1 - [in] Enable/disable insertion of Iso Latin 1
+    * @return none;
+    */
+  void setISOLatin1(OFBool insertLatin1);
+
   /** Specifies some attributes that should be inserted after conversion.
-   *  They will override any identical attributes already existing in the 
+   *  They will override any identical attributes already existing in the
    *  converted result DICOM object. The override keys are applied at the very
    *  end of the conversion and do not undergoe any validity checking.
    *  @param dset - [in] The dataset with override attributes (is copied)
    *  @return none
-   */  
+   */
   void setOverrideKeys(const DcmDataset* dset);
-  
+
   /** Enable/Disable basic validity checks for output dataset
    *  @param doCheck - [in] OFTrue enables checking, OFFalse turns it off.
+   *  @param insertMissingType2 - [in] If true (default), missing type 2
+   *         attributes are inserted automatically
+   *  @param insertMissingType1 - [in] If true , missing type 1
+   *         attributes are inserted automatically with a predefined
+   *         value (if possible). An existing empty type 1 attribute is
+   *         assigned a value, too.
    *  @return none
    */
-  void setValidityChecking(OFBool doChecks);
+  void setValidityChecking(OFBool doChecks,
+                           OFBool insertMissingType2 = OFTrue,
+                           OFBool inventMissingType1 = OFTrue);
 
-  /** Sets the verbose mode
-   *  @param verboseMode - [in] New status for verbose mode
+  /** Sets the log stream
+   *  The log stream is used to report any warnings and error messages.
+   *  @param stream - [out] pointer to the log stream (might be NULL = no messages)
    *  @return none
    */
-  void setVerboseMode(const OFBool& verboseMode) { m_verbose = verboseMode; };
+  void setLogStream(OFConsole *stream)
+  {
+    m_logStream = stream;
+  }
 
   /** Sets the debug mode
    *  @param debugMode - [in] New status for debug mode
    *  @return none
    */
   void setDebugMode(const OFBool& debugMode) { m_debug = debugMode; };
+
+  /** Prints a message to the given stream.
+   ** @param  stream - [out] output stream to which the message is printed
+   *  @param  message1 - [in] first part of message to be printed
+   *  @param  message2 - [in] second part of message to be printed
+   *  @return none
+   */
+  static void printMessage(OFConsole *stream,
+                           const OFString& message1,
+                           const OFString& message2 = "")
+  {
+    if (stream != NULL)
+    {
+        stream->lockCerr() << message1 << message2 << OFendl;
+        stream->unlockCerr();
+    }
+  }
+
 
   /** Destructor, frees plugin memory
    *  @param none
@@ -128,6 +169,13 @@ public:
   ~Image2Dcm();
 
 protected:
+
+  /** Cleans up template for future insertion of pixel data information, ie
+    * generally removes attributes from image pixel module
+    * @param targetDataset - [out] The dataset that should be cleand up
+    * @return none
+    */
+  void cleanupTemplate(DcmDataset *targetDset);
 
   /** Parses patient/study/series level attributes from file as defined
    *  on command line and fills internal attributes accordingly.
@@ -163,14 +211,45 @@ protected:
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
    *  @param dataset - [in] The dataset to check
-   *  @return EC_Normal if successful, error otherwise
+   *  @param inventMissingType2Attribs - [in] If set, missing type attributes
+   *         are added automatically.
+   *  @return Error string if error occurs, empty string otherwise
    */
-  OFCondition isValid(DcmDataset& dataset) const;
+  OFString isValid(DcmDataset& dataset) const;
 
   /** Copy override keys over existing keys in given dataset.
    *  @param outputDset - [out] dataset to which the override keys are copied
    */
    void applyOverrideKeys(DcmDataset *outputDset);
+
+   /** Inserts "ISO_IR100" in the attribute "Specific Character Set".
+    *  Overwrites any existing value.
+    *  @param outputDset - [out] The dataset to write to
+    *  @return EC_Normal if insertion is successfull, error code otherwise
+    */
+   OFCondition insertLatin1(DcmDataset *outputDset);
+
+   /** Check whether given type 1 attribute is present and has a length > 0.
+    *  @param  key - [in] The attribute tag check
+    *  @param  targetDset - [out] targetDset
+    *  @param  defaultValue - [in] value to be inserted if attribute is missing
+    *                         (needs invent option for type 1 attributes enabled)
+    *  @return A string with an error message if attribute is not present
+    *          or has length of 0
+    */
+   OFString checkAndInventType1Attrib(const DcmTagKey& key,
+                                      DcmDataset* targetDset,
+                                      const OFString& defaultValue = "") const;
+
+
+   /** Inserts an empty element with the given tag into a dataset
+    *  @param  key - [in] The attribute tag to check
+    *  @param  targetDset - [out] targetDset
+    *  @return A string with an error message if attribute is not present
+    *          nor gets inserted automatically (see m_inventMissingType2Attribs)
+    */
+   OFString checkAndInventType2Attrib(const DcmTagKey& key,
+                                      DcmDataset* targetDset) const;
 
 private:
 
@@ -201,11 +280,26 @@ private:
   ///  missing type 1 values) are omitted
   OFBool m_disableAttribChecks;
 
+  /// If true, missing type 2 elements are inserted automatically (empty value).
+  /// Enabled per default.
+  OFBool m_inventMissingType2Attribs;
+
+  /// If true, missing type 1 elements are inserted automatically with a
+  /// predefined value, if possible. Disabled per default.
+  OFBool m_inventMissingType1Attribs;
+
+  // If enabled, ISO_IR100 (ISO Latin 1) is inserted as a standard value
+  // for attribute "Specific Character Set". Insertion takes place after
+  // loading (optional) template file.
+  OFBool m_insertLatin1;
+
   /// If true, debug output is enabled
   OFBool m_debug;
 
-  /// If true, verbose output is enabled
-  OFBool m_verbose;
+  /// stream where warning/error message are sent to.
+  /// can be NULL (default, no output).
+  OFConsole *m_logStream;
+
 };
 
 #endif // I2D_H
@@ -213,7 +307,14 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
- * Revision 1.1  2007-11-08 15:58:55  onken
+ * Revision 1.2  2008-01-11 14:17:53  onken
+ * Added various options to i2dlib. Changed logging to use a configurable
+ * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
+ * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
+ * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
+ * need for templates any more). Added some bug fixes.
+ *
+ * Revision 1.1  2007/11/08 15:58:55  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *

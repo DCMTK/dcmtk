@@ -22,11 +22,10 @@
  *  Purpose: Base Class for plugins extracting pixel data from standard
  *           image files
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  Source File:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-11 14:17:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -43,7 +42,7 @@ class I2DImgSource
 
 public:
 
-  I2DImgSource() : m_verbose(OFFalse), m_debug(OFFalse), m_imageFile() {}
+  I2DImgSource() : m_logStream(NULL), m_debug(OFFalse), m_imageFile() {}
 
   /** Returns identifier for the image input format the plugin imports.
    *  @return A short identifier (e. g. "JPEG")
@@ -87,7 +86,7 @@ public:
                                      Uint16& pixAspectH,
                                      Uint16& pixAspectV,
                                      char*&  pixData,
-                                     unsigned long& length,
+                                     Uint32& length,
                                      E_TransferSyntax& ts) =0;
 
   /** Sets the input image file to read.
@@ -101,15 +100,15 @@ public:
    */
   OFString getImageFile() { return m_imageFile; };
 
-  /** Virtual Destructor
-   */
-  virtual ~I2DImgSource() {}
-
-  /** Sets the verbose mode
-   *  @param verboseMode - [in] New status for verbose mode
+  /** Sets the log stream
+   *  The log stream is used to report any warnings and error messages.
+   *  @param stream - [out] pointer to the log stream (might be NULL = no messages)
    *  @return none
    */
-  void setVerboseMode(const OFBool& verboseMode) { m_verbose = verboseMode; };
+  void setLogStream(OFConsole *stream)
+  {
+    m_logStream= stream;
+  }
 
   /** Sets the debug mode
    *  @param debugMode - [in] New status for debug mode
@@ -117,10 +116,32 @@ public:
    */
   void setDebugMode(const OFBool& debugMode) { m_debug = debugMode; };
 
+  /** Prints a message to the given stream.
+   ** @param  stream - [out] output stream to which the message is printed
+   *  @param  message1 - [in] first part of message to be printed
+   *  @param  message2 - [in] second part of message to be printed
+   *  @return none
+   */
+  static void printMessage(OFConsole *stream,
+                           const OFString& message1,
+                           const OFString& message2 = "")
+  {
+    if (stream != NULL)
+    {
+        stream->lockCerr() << message1 << message2 << OFendl;
+        stream->unlockCerr();
+    }
+  }
+
+  /** Virtual Destructor
+   */
+  virtual ~I2DImgSource() {}
+
 protected:
 
-  /// verbose mode status
-  OFBool m_verbose;
+  /// stream where warning/error message are sent to.
+  /// can be NULL (default, no output).
+  OFConsole *m_logStream;
 
   /// debug mode status
   OFBool m_debug;
@@ -135,7 +156,14 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
- * Revision 1.1  2007-11-08 15:58:55  onken
+ * Revision 1.2  2008-01-11 14:17:53  onken
+ * Added various options to i2dlib. Changed logging to use a configurable
+ * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
+ * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
+ * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
+ * need for templates any more). Added some bug fixes.
+ *
+ * Revision 1.1  2007/11/08 15:58:55  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.
  *
  *
