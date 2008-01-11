@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.01.11 (onken)
+
+- Added various options to i2dlib. Changed logging to use a configurable
+  logstream. Added output plugin for the new Multiframe Secondary Capture SOP 
+  Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except 
+  JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
+  need for templates any more). Added some bug fixes.
+  
+  Added:   dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplnsc.h
+           dcmdata/libsrc/i2dlib/i2dplnsc.cc
+           
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/docs/img2dcm.man
+           dcmdata/include/dcmtk/dcmdata/i2dlib/i2d.h
+           dcmdata/include/dcmtk/dcmdata/i2dlib/i2dimgs.h
+           dcmdata/include/dcmtk/dcmdata/i2dlib/i2djpgs.h
+           dcmdata/include/dcmtk/dcmdata/i2dlib/i2doutpl.h
+           dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplsc.h
+           dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplvlp.h           
+           dcmdata/libsrc/i2dlib/CMakeLists.txt
+           dcmdata/libsrc/i2dlib/Makefile.in
+           dcmdata/libsrc/i2dlib/i2d.cc
+           dcmdata/libsrc/i2dlib/i2djpgs.cc
+           dcmdata/libsrc/i2dlib/i2dplsc.cc
+           dcmdata/libsrc/i2dlib/i2dplvlp.cc
+
 **** Changes from 2008.01.08 (riesmeier)
 
 - Fixed reference to wrong SR IOD in API documentation.
