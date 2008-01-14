@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-11 14:16:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-01-14 16:51:11 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
     converter.setTemplateFile(tempStr);
   }
 
-  if ( cmd.findOption("--study-from") )
+  if (cmd.findOption("--study-from"))
   {
     OFString tempStr;
     OFCommandLine::E_ValueStatus valStatus;
@@ -160,7 +160,7 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
     converter.setStudyFrom(tempStr);
   }
 
-  if ( cmd.findOption("--series-from") )
+  if (cmd.findOption("--series-from"))
   {
     OFString tempStr;
     OFCommandLine::E_ValueStatus valStatus;
@@ -170,7 +170,7 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
     converter.setSeriesFrom(tempStr);
   }
 
-  if ( cmd.findOption("--instance-inc") )
+  if (cmd.findOption("--instance-inc"))
     converter.setIncrementInstanceNumber(OFTrue);
 
     // Return success
@@ -180,64 +180,64 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
 
 static void addCmdLineOptions(OFCommandLine& cmd)
 {
-  cmd.addParam("imgfile-in",   "image input filename");
-  cmd.addParam("dcmfile-out",  "DICOM output filename");
+  cmd.addParam("imgfile-in",  "image input filename");
+  cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-    cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+    cmd.addOption("--verbose",               "-v",      "verbose mode, print processing details");
+    cmd.addOption("--debug",                 "-d",      "debug mode, print debug information");
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general input options:");
-      cmd.addOption("--input-format",            "-i",1,  "[i]nput file format: string","supported formats: JPEG (default)");
-      cmd.addOption("--dataset-from", "-df", 1,  "[f]ilename: string",
-                                                 "use dataset from DICOM file f");
+      cmd.addOption("--input-format",        "-i",  1,  "[i]nput file format: string","supported formats: JPEG (default)");
+      cmd.addOption("--dataset-from",        "-df", 1,  "[f]ilename: string",
+                                                        "use dataset from DICOM file f");
 
-      cmd.addOption("--study-from",   "-stf", 1, "[f]ilename: string",
-                                                 "read patient/study from DICOM file f");
-      cmd.addOption("--series-from",  "-sef", 1, "[f]ilename: string",
-                                                 "read patient/study/series from DICOM file f");
-      cmd.addOption("--instance-inc", "-ii",     "incr. instance number read from DICOM file");
+      cmd.addOption("--study-from",          "-stf", 1, "[f]ilename: string",
+                                                        "read patient/study from DICOM file f");
+      cmd.addOption("--series-from",         "-sef", 1, "[f]ilename: string",
+                                                        "read patient/study/series from DICOM file f");
+      cmd.addOption("--instance-inc",        "-ii",     "incr. instance number read from DICOM file");
     cmd.addSubGroup("JPEG input options:");
-      cmd.addOption("--disable-progr", "-dp",     "disable support for progressive JPEG");
-      cmd.addOption("--disable-ext",   "-de",     "disable support for extended sequential JPEG");
-      cmd.addOption("--insist-on-jfif","-jf",     "insist on JFIF header");
-      cmd.addOption("--keep-appn",     "-ka",     "keep APPn sections (except JFIF)");
+      cmd.addOption("--disable-progr",       "-dp",     "disable support for progressive JPEG");
+      cmd.addOption("--disable-ext",         "-de",     "disable support for extended sequential JPEG");
+      cmd.addOption("--insist-on-jfif",      "-jf",     "insist on JFIF header");
+      cmd.addOption("--keep-appn",           "-ka",     "keep APPn sections (except JFIF)");
 
   cmd.addGroup("processing options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--do-checks",                    "enable attribute validity checking (default)");
-     cmd.addOption("--no-checks",                    "disable attribute validity checking");
-     cmd.addOption("--insert-type2",       "+i2",    "insert missing type 2 attributes (default)\n(only with --do-checks)");
-     cmd.addOption("--no-type2-insert",    "-i2",    "do not insert missing type 2 attributes \n(only with --do-checks)");
-     cmd.addOption("--invent-type1",       "+i1",    "invent missing type 1 attributes (default)\n(only with --do-checks)");
-     cmd.addOption("--no-type1-invent",    "-i1",    "do not invent missing type 1 attributes\n(only with --do-checks)");
-     cmd.addOption("--latin1",             "+l1",    "Set latin1 as standard character set (default)");
-     cmd.addOption("--no-latin1",          "-l1",    "Keep 7bit ASCII as standard character set");
-     cmd.addOption("--key",                 "-k", 1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
-                                                     "add further attribute");
+     cmd.addOption("--do-checks",                       "enable attribute validity checking (default)");
+     cmd.addOption("--no-checks",                       "disable attribute validity checking");
+     cmd.addOption("--insert-type2",         "+i2",     "insert missing type 2 attributes (default)\n(only with --do-checks)");
+     cmd.addOption("--no-type2-insert",      "-i2",     "do not insert missing type 2 attributes \n(only with --do-checks)");
+     cmd.addOption("--invent-type1",         "+i1",     "invent missing type 1 attributes (default)\n(only with --do-checks)");
+     cmd.addOption("--no-type1-invent",      "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
+     cmd.addOption("--latin1",               "+l1",     "set latin-1 as standard character set (default)");
+     cmd.addOption("--no-latin1",            "-l1",     "keep 7bit ASCII as standard character set");
+     cmd.addOption("--key",                  "-k",   1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
+                                                        "add further attribute");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("target SOP class:");
-      cmd.addOption("--sec-capture",         "-sc",   "write Secondary Capture SOP class (default)");
-      cmd.addOption("--new-sc",              "-nsc",  "write new Secondary Capture SOP classes");
-      cmd.addOption("--vl-photo",            "-vlp",  "write Visible Light Photo SOP class");
+      cmd.addOption("--sec-capture",         "-sc",     "write Secondary Capture SOP class (default)");
+      cmd.addOption("--new-sc",              "-nsc",    "write new Secondary Capture SOP classes");
+      cmd.addOption("--vl-photo",            "-vlp",    "write Visible Light Photographic SOP class");
 
     cmd.addSubGroup("output file format:");
-      cmd.addOption("--write-file",          "+F",     "write file format (default)");
-      cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
+      cmd.addOption("--write-file",          "+F",      "write file format (default)");
+      cmd.addOption("--write-dataset",       "-F",      "write data set without file meta information");
     cmd.addSubGroup("group length encoding:");
-      cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
-      cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
-      cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
+      cmd.addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create", "+g",      "always write with group length elements");
+      cmd.addOption("--group-length-remove", "-g",      "always write without group length elements");
     cmd.addSubGroup("length encoding in sequences and items:");
-      cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
-      cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
+      cmd.addOption("--length-explicit",     "+e",      "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",    "-e",      "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-      cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
-                                                       "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-off",         "-p",      "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad: integer",
+                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
 }
 
 
@@ -247,7 +247,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
 {
   // Parse command line and exclusive options
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert image file to DICOM", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert standard image formats into DICOM format", rcsid);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
     /* check exclusive options first */
@@ -346,12 +346,12 @@ static OFCondition startConversion(OFCommandLine& cmd,
   if (vMode)
     COUT << "img2dcm: Instantiating output plugin: ";
   cmd.beginOptionBlock();
-    if (cmd.findOption("--sec-capture"))
-      outPlug = new I2DOutputPlugSC();
-    if (cmd.findOption("--vl-photo"))
-      outPlug = new I2DOutputPlugVLP();
-    if (cmd.findOption("--new-sc"))
-      outPlug = new I2DOutputPlugNewSC();
+  if (cmd.findOption("--sec-capture"))
+    outPlug = new I2DOutputPlugSC();
+  if (cmd.findOption("--vl-photo"))
+    outPlug = new I2DOutputPlugVLP();
+  if (cmd.findOption("--new-sc"))
+    outPlug = new I2DOutputPlugNewSC();
   cmd.endOptionBlock();
   if (!outPlug) // default is the old Secondary Capture object
     outPlug = new I2DOutputPlugSC();
@@ -362,19 +362,19 @@ static OFCondition startConversion(OFCommandLine& cmd,
   outPlug->setLogStream(&ofConsole);
 
   cmd.beginOptionBlock();
-    if (cmd.findOption("--write-file"))         writeOnlyDataset = OFFalse;
-    if (cmd.findOption("--write-dataset"))      writeOnlyDataset = OFTrue;
+  if (cmd.findOption("--write-file"))    writeOnlyDataset = OFFalse;
+  if (cmd.findOption("--write-dataset")) writeOnlyDataset = OFTrue;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
-  if (cmd.findOption("--group-length-recalc"))  grpLengthEnc = EGL_recalcGL;
-  if (cmd.findOption("--group-length-create"))  grpLengthEnc = EGL_withGL;
-  if (cmd.findOption("--group-length-remove"))  grpLengthEnc = EGL_withoutGL;
+  if (cmd.findOption("--group-length-recalc")) grpLengthEnc = EGL_recalcGL;
+  if (cmd.findOption("--group-length-create")) grpLengthEnc = EGL_withGL;
+  if (cmd.findOption("--group-length-remove")) grpLengthEnc = EGL_withoutGL;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
-  if (cmd.findOption("--length-explicit"))      lengthEnc = EET_ExplicitLength ;
-  if (cmd.findOption("--length-undefined"))     lengthEnc = EET_UndefinedLength;
+  if (cmd.findOption("--length-explicit"))  lengthEnc = EET_ExplicitLength;
+  if (cmd.findOption("--length-undefined")) lengthEnc = EET_UndefinedLength;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
@@ -408,10 +408,10 @@ static OFCondition startConversion(OFCommandLine& cmd,
   // Test for ISO Latin 1 option
   OFBool insertLatin1 = OFTrue;
   cmd.beginOptionBlock();
-    if (cmd.findOption("--latin1"))
-      insertLatin1 = OFTrue;
-    if (cmd.findOption("--no-latin1"))
-      insertLatin1 = OFFalse;
+  if (cmd.findOption("--latin1"))
+    insertLatin1 = OFTrue;
+  if (cmd.findOption("--no-latin1"))
+    insertLatin1 = OFFalse;
   cmd.endOptionBlock();
   i2d.setISOLatin1(insertLatin1);
 
@@ -419,24 +419,24 @@ static OFCondition startConversion(OFCommandLine& cmd,
   // evaluate validity checking options
   OFBool insertType2 = OFTrue; OFBool inventType1 = OFTrue; OFBool doChecks = OFTrue;
   cmd.beginOptionBlock();
-    if (cmd.findOption("--no-checks"))
-      doChecks = OFFalse;
-    if (cmd.findOption("--do-checks"))
-      doChecks = OFTrue;
+  if (cmd.findOption("--no-checks"))
+    doChecks = OFFalse;
+  if (cmd.findOption("--do-checks"))
+    doChecks = OFTrue;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
-    if (cmd.findOption("--insert-type2"))
-      insertType2 = OFTrue;
-    if (cmd.findOption("--no-type2-insert"))
-      insertType2 = OFFalse;
+  if (cmd.findOption("--insert-type2"))
+    insertType2 = OFTrue;
+  if (cmd.findOption("--no-type2-insert"))
+    insertType2 = OFFalse;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
-    if (cmd.findOption("--invent-type1"))
-      inventType1 = OFTrue;
-    if (cmd.findOption("--no-type1-invent"))
-      inventType1 = OFFalse;
+  if (cmd.findOption("--invent-type1"))
+    inventType1 = OFTrue;
+  if (cmd.findOption("--no-type1-invent"))
+    inventType1 = OFFalse;
   cmd.endOptionBlock();
   i2d.setValidityChecking(doChecks, insertType2, inventType1);
   outPlug->setValidityChecking(doChecks, insertType2, inventType1);
@@ -530,6 +530,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.4  2008-01-14 16:51:11  joergr
+ * Fixed minor inconsistencies.
+ *
  * Revision 1.3  2008-01-11 14:16:04  onken
  * Added various options to i2dlib. Changed logging to use a configurable
  * logstream. Added output plugin for the new Multiframe Secondary Capture SOP

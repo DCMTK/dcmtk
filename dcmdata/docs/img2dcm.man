@@ -14,18 +14,19 @@ img2dcm [options] imgfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b img2dcm tool serves as a convert from a general image format like
-JPEG to DICOM. Different output SOP Classes can be selected. The additional
-information (regarding patients, series, etc.) stored in the target DICOM 
-file can be extracted from other DICOM files which serve as a "template" for
-the resulting DICOM object. \b img2dcm also can be configured to invent
-missing DICOM type 1 and type 2 attributes to work even without any
-template datasets.
+The \b img2dcm tool serves as a conversion tool from a standard image format
+like JPEG to DICOM. Different output SOP Classes can be selected. The
+additional information (regarding patients, series, etc.) stored in the DICOM
+output file can be extracted from other DICOM files which serve as a "template"
+for the resulting DICOM object. \b img2dcm can also be configured to invent
+missing DICOM type 1 and type 2 attributes to work even without any template
+dataset.
 
 \section parameters PARAMETERS
 \verbatim
-imgfile-in  image file to be imported
-dcmfile-out DICOM output file
+imgfile-in   image file to be imported
+
+dcmfile-out  DICOM output file
 \endverbatim
 
 \section options OPTIONS
@@ -47,6 +48,7 @@ dcmfile-out DICOM output file
 \subsection input_options input options
 \verbatim
 general input options:
+
   -i    --input-format  [i]nput file format: string
           supported formats: JPEG (default)
 
@@ -56,7 +58,7 @@ general input options:
   -stf  --study-from  [f]ilename: string
           read patient/study from DICOM file f
 
-  -sef  --series-from [f]ilename: string
+  -sef  --series-from  [f]ilename: string
           read patient/study/series from DICOM file f
 
   -ii   --instance-inc
@@ -69,12 +71,12 @@ JPEG input options:
 
   -de   --disable-ext
           disable support for extended sequential JPEG
-          
+
   -jf   --insist-on-jfif
           insist on JFIF header existence
-          
+
   -ka   --keep-appn
-          keep APPn sections (except JFIF)          
+          keep APPn sections (except JFIF)
 \endverbatim
 
 \subsection processing_options processing options
@@ -85,27 +87,27 @@ JPEG input options:
         --no-checks
           disable attribute validity checking
 
-  +i2  --insert-type2
-         insert missing type 2 attributes (default)
-         (only with --do-checks)
-         
-  -i2  --no-type2-insert
-         do not insert missing type 2 attributes
-         (only with --do-checks)
-         
-  +i1  --invent-type1
-         invent missing type 1 attributes
-         (only with --do-checks)
-         
-  -i1  --no-type1-invent
-         do not invent missing type 1 attributes
-         (only with --do-checks)
-         
-  +l1  --latin1               
-         Set latin1 as standard character set (default)         
-         
-  -l1  --no-latin1            
-         Keep 7bit ASCII as standard character set         
+  +i2   --insert-type2
+          insert missing type 2 attributes (default)
+          (only with --do-checks)
+
+  -i2   --no-type2-insert
+          do not insert missing type 2 attributes
+          (only with --do-checks)
+
+  +i1   --invent-type1
+          invent missing type 1 attributes
+          (only with --do-checks)
+
+  -i1   --no-type1-invent
+          do not invent missing type 1 attributes
+          (only with --do-checks)
+
+  +l1   --latin1
+          set latin-1 as standard character set (default)
+
+  -l1   --no-latin1
+          keep 7bit ASCII as standard character set
 
   -k    --key  key: gggg,eeee="str" or dictionary name="str"
           add further attribute
@@ -122,7 +124,7 @@ target SOP class:
           write new Secondary Capture SOP classes
 
   -vlp  --vl-photo
-          write Visible Light Photo SOP class (default)
+          write Visible Light Photographic SOP class (default)
 
 output file format:
 
@@ -134,41 +136,42 @@ output file format:
 
 group length encoding:
 
-  +g=  --group-length-recalc
-         recalculate group lengths if present (default)
+  +g=   --group-length-recalc
+          recalculate group lengths if present (default)
 
-  +g   --group-length-create
-         always write with group length elements
+  +g    --group-length-create
+          always write with group length elements
 
-  -g   --group-length-remove
-         always write without group length elements
+  -g    --group-length-remove
+          always write without group length elements
 
 length encoding in sequences and items:
 
-  +e   --length-explicit
-         write with explicit lengths (default)
+  +e    --length-explicit
+          write with explicit lengths (default)
 
-  -e   --length-undefined
-         write with undefined lengths
+  -e    --length-undefined
+          write with undefined lengths
 
 data set trailing padding (not with --write-dataset):
 
-  -p   --padding-off
-         no padding (implicit if --write-dataset)
+  -p    --padding-off
+          no padding (implicit if --write-dataset)
 
-  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
-         align file on multiple of f bytes
+  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+          align file on multiple of f bytes
+          and items on multiple of i bytes
 \endverbatim
 
 \section notes NOTES
 
-\subsection attribute_sources ATTRIBUTE SOURCES
+\subsection attribute_sources Attribute Sources
 
 For converting a general image format into DICOM format, the \b img2dcm
-application may be fed with some additional input for filling mandatory 
+application may be fed with some additional input for filling mandatory
 (and optional) attributes in the new DICOM file like patient, study and series
-information. This information can be collected using different approaches, 
-which can be combined and are applied to the result file in the following 
+information. This information can be collected using different approaches,
+which can be combined and are applied to the result file in the following
 order:
 
 \li Using the \e --dataset-from option \b img2dcm is forced to import
@@ -177,19 +180,18 @@ order:
     As an exception, the SOP Instance UID is not copied by this option.
     Also image related data like Rows, Columns etc. is exchanged during
     conversion. Note that \b img2dcm does not check any other attribute
-    values for validity, e. g. it does not look into sequences to
-    adapt any attributes to the new object (referenced images etc.).
-    Therefore it is recommended using the templates in the etc directory
-    of this module for (old) SC and VLP objects. See also section INPUT 
-    TEMPLATES.
+    values for validity, e. g. it does not look into sequences to adapt any
+    attributes to the new object (referenced images etc.). Therefore, it is
+    recommended to use the templates in the data directory for (old) SC and
+    VLP objects. See also section "Input Templates".
 
 \li The \e --study-from and \e --series-from options (mutually exclusive) can
     be used to import study and series information from an existing DICOM file.
     If \e --series-from is specified, then the given DICOM file is opened by
-    \b img2dcm and all mandatory information down to the series is imported. 
-    Note that this includes patient information, study information and - in 
-    case of \e --series-from - also series information. The following attributes
-    are overtaken:
+    \b img2dcm and all mandatory information down to the series level is
+    imported. Note that this includes patient information, study information
+    and - in case of \e --series-from - also series information. The following
+    attributes are taken over:
     \verbatim
       Patient Level:
         Patient's Name
@@ -197,70 +199,73 @@ order:
         Patient's Sex
         Patient's Birth Date
         Specific Character Set
-      
+
       Study Level:
         Study Instance UID
         Study Date
         Study Time
         Referring Physician's Name
         Study ID
-        Accession Number  
-        
+        Accession Number
+
       Series Level (only in case of option --series-from):
         Series Instance UID
         Series Number
-        Manufacturer  
-    \endverbatim    
-    
-\li With the \e --insert-type2 and \e --invent-type1 options (both enabled per 
-    default) , missing attributes (type 2 attributes) and/or missing attribute 
+        Manufacturer
+    \endverbatim
+
+\li With the \e --insert-type2 and \e --invent-type1 options (both enabled per
+    default), missing attributes (type 2 attributes) and/or missing attribute
     values (for type 1 attributes) are automatically added and invented by
-    \b img2dcm. Please note that these options are only evaluated if option 
-    \e --do-checks is enabled (default). If the \e --no-checks options is 
+    \b img2dcm. Please note that these options are only evaluated if option
+    \e --do-checks is enabled (default). If the \e --no-checks options is
     enabled, no automatic attribute insertion will take place.
 
-\li The \e --key option can be used to add additonal attributes to the target
-    DICOM file. This option is applied at the very end just before
-    saving the DICOM file. 
+\li The \e --key option can be used to add additonal attributes to the DICOM
+    output file. This option is applied at the very end, just before saving the
+    DICOM file.
 
-\subsection uids UIDS    
+\subsection uids UIDs
 
-Study and Series Instance UIDs are newly generated <b>as necessary</b> after 
-applying the \e --study-from and \e --series options. If Study Instance UID or 
+New Study and Series Instance UIDs are generated <b>if necessary</b> after
+applying the \e --study-from and \e --series options. If Study Instance UID or
 Series Instance UID are not present after these steps, they are newly generated,
 independently from each other.
 A contrary behaviour is choosen for the SOP Instance UID that one could expect
-to be overtaken when using the \e --dataset-from option. This is \b not the 
-case, the SOP Instance UID is \b not copied to the new object. This should 
+to be taken over when using the \e --dataset-from option. This is \b not the
+case, the SOP Instance UID is \b not copied to the new object. This should
 be the desirable behaviour for most use cases. However, if a certain SOP
 Instance UID should be inserted into the new object, the \e --key option should
 be used.
 
-\subsection inputtemplates INPUT TEMPLATES
+\subsection inputtemplates Input Templates
 
-For supporting the conversion into DICOM, \b img2dcm comes with some pre-defined
-templates wich can be used for the \e --dataset-from option (SC.dump and
-VLP.dump in the etc directory). These templates should be filled with the
-desired values and then must be dumped (converted) to a DICOM file before
-actually being used with img2dcm. Use \b dump2dcm to convert the dump to DICOM.
-Example: dump2dcm SC.dump SC.dcm
+For supporting the conversion into DICOM, \b img2dcm comes with some
+pre-defined templates which can be used for the \e --dataset-from option (see
+sample files \e SC.dump and \e VLP.dump). These templates should be filled with
+the desired values and then must be dumped (converted) to a DICOM file before
+actually being used with \b img2dcm. Use \b dump2dcm to convert the dump to
+DICOM. Example:
+\verbatim
+  dump2dcm SC.dump SC.dcm
+\endverbatim
 
 It is possible to use any DICOM file as a template. Please note that the
-complete DICOM dataset is imported; hence it should be assured that only
+complete DICOM dataset is imported; hence, it should be assured that only
 attributes are present which should be part of the constructed DICOM object.
-The SOP Class UID and the Pixel Data attributes (including attributes like Rows,
-Columns etc.) are not copied but replaced by \b img2dcm during conversion.
+The SOP Class UID and the Pixel Data attributes (including attributes like
+Rows, Columns etc.) are not copied but replaced by \b img2dcm during conversion.
 
-\subsection inputplugins INPUT PLUGINS
+\subsection inputplugins Input Plugins
 
-The \b img2dcm application at this time only supports the JPEG image format
-as input. The JPEG data from the source file is not decoded but extracted
-and slightly transformed (e. g. JFIF header is cut off) to allow fast conversion
+The \b img2dcm application currently only supports the JPEG image format as
+input. The JPEG data from the source file is not decoded but extracted and
+slightly transformed (e. g. JFIF header is cut off) to allow fast conversion
 of even big JPEG files without the need of decoding and re-encoding. The JPEG
-plugin chooses the necessary output transfer syntax itself, depending on the
-actual encoding of the data inside the JPEG file. Therefore, the following
+plugin chooses the necessary output transfer syntax automatically depending on
+the actual encoding of the data inside the JPEG file. Therefore, the following
 Transfer Syntaxes (and their corresponding JPEG encodings) are used by the
-the JPEG plugin:
+JPEG plugin:
 
 \li JPEG Coding Process 1
     Baseline, Lossy, Non-Hierarchical, Sequential, DCT, Huffman, 8 Bit
@@ -277,100 +282,102 @@ the JPEG plugin:
 Color and grayscale images are supported.
 
 The support for the Extended JPEG Transfer Syntax can be disabled
-(\e --disable-ext option) as well as for the (retired) Progressive JPEG Transfer
-Syntax (\e --disable-progr option).
+(\e --disable-ext option) as well as the support for the (retired) Progressive
+JPEG Transfer Syntax (\e --disable-progr option).
 
-JPEG lossless encoding or any arithmethic or hierarchical JPEG encoding modes
-are not supported by the plugin.
+JPEG lossless encoding as well as any arithmethic or hierarchical JPEG encoding
+modes are not supported by the plugin.
 
-JFIF (JPEG File Interchange Format) information facilitates optional APPn 
-markers in a JPEG file. Many digital cameras for example, do not integrate 
-such JFIF information into the JPEG output they create. For example, JFIF
-contains information about the pixel aspect ratio of the compressed image.
-If you want the \b img2dcm application to insist on a JFIF header in the JPEG
-stream, you can use the option \e --insist-on-jfif which will abort if no
-JFIF information can be found. Per default, missing JFIF information is 
-ignored.
+JFIF (JPEG File Interchange Format) information facilitates optional APPn
+markers in a JPEG file. Many digital cameras do not integrate such JFIF
+information into the JPEG output they create. For example, JFIF contains
+information about the pixel aspect ratio of the compressed image. If you want
+the \b img2dcm application to insist on a JFIF header in the JPEG stream, you
+can use the option \e --insist-on-jfif which will abort if no JFIF information
+can be found. By default, missing JFIF information is ignored.
 
-For DICOM it is kind of a gray zone, whether it is allowed integrating
-any JFIF (or any other APPn data) into the DICOM object's internal JPEG stream. 
-However, the most reliable approach is to cut those markers and their 
+For DICOM it is kind of a "gray zone", whether the integration of JFIF (or any
+other APPn) data into the DICOM object's internal JPEG stream is allowed or
+not. However, the most reliable approach is to cut those markers and their
 information off the JPEG stream. This approach is also taken by the \b img2dcm
-application. Per default, all APPn markers are cut off from the original JPEG 
-stream. However, if you want to keep other APPn markers than JFIF (e. g. 
+application. By default, all APPn markers are cut off from the original JPEG
+stream. However, if you want to keep other APPn markers than JFIF (e. g.
 EXIF information) inside the DICOM stream, the option \e --keep-appn
-does the trick. It also should be slightly faster than cutting off APPn 
+does the trick. It should also be slightly faster than cutting off APPn
 information, because it is not necessary to scan the whole JPEG stream for
 such data. JFIF information is \b always removed by \b img2dcm.
 
-\subsection outputplugins OUTPUT PLUGINS
+\subsection outputplugins Output Plugins
 
-The desired output SOP Class can be selected on the command line. At this time
-an export plugin for the Secondary Capture Image SOP Class (default, option
-\e -sc), the new Secondary Capture Image SOP Classes (option \e -nsc) and
-Visible Light Photographic Image (option \e -vl) are available. Please note
-that the first one is retired in the DICOM standard but is selected as default
-because its widely supported. Future versions of \b img2dcm might provide 
-further output plugins for other SOP Classes.
+The desired output SOP Class can be selected on the command line. Currently,
+an export plugin for the Secondary Capture Image SOP class (default, option
+\e -sc), the new Secondary Capture Image SOP classes (option \e -nsc) and
+Visible Light Photographic Image SOP class (option \e -vl) are available.
+Please note that the first one is retired in the DICOM standard but is
+selected as default because it is widely supported. Future versions of
+\b img2dcm might provide further output plugins for other SOP Classes.
 
-For the new Secondary Capture SOP classes it is not possible to specifiy which
-specific SOP class should be used for output. That is because these new
-SOP classes are differentiated from each other by colour depth (1/8/16) and 
-whether the image is black/white or colour. Thats why \b img2dcm decides
-during conversion, which output SOP class is suitable for a given
-source image.
+For the new Secondary Capture SOP classes, it is not possible to specifiy which
+specific SOP class should be used for output. That is because these new SOP
+classes are differentiated from each other by colour depth (1/8/16) and the
+fact whether the image is black/white or colour. That is why \b img2dcm decides
+during conversion, which output SOP class is suitable for a given source image.
 
 \section examples EXAMPLES
 
-Here are some examples how the \b img2dcm application can be used.
+Here are some examples that show how the \b img2dcm application can be used.
 
 <ol>
 
 <li>
-1) img2dcm image.jpg out.dcm <br>
-Read JPEG file image.jpg, convert to the old Secondary Capture SOP Class 
-and save result to DICOM file out.dcm. This is the easiest way of using
-\b img2dcm. Any type 1 and type 2 attributes required for writing valid
-objects of this SOP class are inserted automatically.
+img2dcm image.jpg out.dcm
+<br>Read JPEG file "image.jpg", convert to the old Secondary Capture SOP class
+and save the result to DICOM file "out.dcm". This is the easiest way of using
+\b img2dcm. Any type 1 and type 2 attributes required for writing valid objects
+of this SOP class are inserted automatically.
 </li>
 
 <li>
-2) img2dcm image.jpg out.dcm -vlp -k "PatientsName=Bond^James"
-Same as above, but writes Visible Light Photography object to out.dcm
-and sets PatientsName to "Bond^James" which otherwise would be left empty.
+img2dcm image.jpg out.dcm -vlp -k "PatientsName=Bond^James"
+<br>Same as above, but writes Visible Light Photographic Image object to
+"out.dcm" and sets PatientsName to "Bond^James" which otherwise would be left
+empty.
 </li>
 
 <li>
-3) img2dcm image.jpg out.dcm --series-from template.dcm -k "PatientsName=Bond^James"
-Same as 1), but imports patient/study/series infomation from DICOM file
-template.dcm. Please note that attribute PatientsName will contain "Bond^James"
-at the end, any value from template.dcm will be overwritten. That is, because
-the -k option is applied at the very end of the "conversion" pipeline (see 
-above).
+img2dcm image.jpg out.dcm --series-from template.dcm -k
+"PatientsName=Bond^James"
+<br>Same as 1), but imports patient/study/series infomation from DICOM file
+"template.dcm". Please note that attribute PatientsName will contain
+"Bond^James" at the end, any value from "template.dcm" will be overwritten.
+That is, because the -k option is applied at the very end of the conversion
+pipeline (see above).
 </li>
 
-<li>4) Same as 1), but does not perform any attribute checking and no
-type1 and type2 attribute insertion! So in this case an invalid DICOM
-object would be generated. This can be interesting if the output file
-is not meant to be completed but will undergoe further transformations, e. g.
-adding attributes using \b dcmodify. Only use option \e --no-checks if you
-know what you are doing!
+<li>
 img2dcm image.jpg out.dcm --no-checks
+<br>Same as 1), but does not perform any attribute checking and no type 1 and
+type 2 attribute insertion! So in this case, an invalid DICOM object would be
+generated. This can be interesting if the output file is not meant to be
+completed but will undergo further transformations, e. g. adding attributes
+using \b dcmodify. Only use option \e --no-checks if you know what you are
+doing!
 </li>
 
-<li>5) Same as 1), but does not insert missing type 1 attributes and / or
-their values. Type 2 attributes will be inserted. Note that in this case
-it must be assured that any type 1 attributes are provided by other means, i.e.
-adding them with the \e --key option. Otherwise \b img2dcm will report an error
-and will stop converting.
+<li>
 img2dcm image.jpg out.dcm --no-type1-invent
+<br>Same as 1), but does not insert missing type 1 attributes and/or their
+values. Type 2 attributes will be inserted. Note that in this case it must be
+assured that all type 1 attributes are provided by other means, i. e. by adding
+them with the \e --key option. Otherwise, \b img2dcm will report an error and
+will stop converting.
 </li>
 
-<li>6) Same as 1), but overtakes APPn information like EXIF into the 
-DICOM object's resulting JPEG stream. Further, \e --insist-on-jfif
-will force \b img2dcm to abort if no JFIF information is existent in
-the source file.
+<li>
 img2dcm image.jpg out.dcm --keep-appn --insist-on-jfif
+<br>Same as 1), but takes over APPn information like EXIF into the DICOM
+object's resulting JPEG stream. Further, \e --insist-on-jfif will force
+\b img2dcm to abort if no JFIF information is existent in the source file.
 </li>
 
 </ol>
@@ -412,13 +419,19 @@ a semicolon (";") is used as a separator.  The data dictionary code will
 attempt to load each file specified in the \e DCMDICTPATH environment variable.
 It is an error if no data dictionary can be loaded.
 
+\section files FILES
+
+<em><datadir>/SC.dump</em> - Sample dump file for Secondary Capture images
+\n<em><datadir>/VLP.dump</em> - Sample dump file for Visible Light Photographic
+images
+
 \section see_also SEE ALSO
 
 <b>dcm2pnm</b>(1), <b> dcmj2pnm</b>(1), <b>dump2dcm</b>(1), <b>dcmconv</b>(1)
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2007-2008 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

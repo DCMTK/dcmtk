@@ -112,11 +112,12 @@ handling of undefined length UN elements:
          read undefined len UN as explicit VR
 
 handling of defined length UN elements:
-  -uc   --retain-un
-          retain elements as UN (default)
 
-  +uc   --convert-un
-          convert to real VR if known
+  -uc  --retain-un
+         retain elements as UN (default)
+
+  +uc  --convert-un
+         convert to real VR if known
 
 automatic data correction:
 
@@ -161,7 +162,7 @@ printing:
          print header with filename only for those input files
          that contain one of the searched tags
 
- error handling:
+error handling:
 
   -E   --stop-on-error
          do not print if file is damaged (default)
@@ -239,7 +240,7 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1994-2008 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
