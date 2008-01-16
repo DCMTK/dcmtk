@@ -37,7 +37,7 @@ include-all:
 
 libsrc-all: include-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" all)
-	(cd libi2d && $(MAKE) ARCH="$(ARCH)" install)
+	(cd libi2d && $(MAKE) ARCH="$(ARCH)" all)
 
 apps-all: libsrc-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" all)
@@ -51,6 +51,7 @@ include-install:
 
 libsrc-install: libsrc-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install-lib)
+	(cd libi2d && $(MAKE) ARCH="$(ARCH)" install-lib)	
 
 libsrc-install-support:
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install-support)
