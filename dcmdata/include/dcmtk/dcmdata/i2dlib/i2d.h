@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-11 14:17:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-01-16 14:52:18 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,10 +35,10 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/i2dlib/i2doutpl.h"
-#include "dcmtk/dcmdata/i2dlib/i2dplvlp.h"
-#include "dcmtk/dcmdata/i2dlib/i2dplsc.h"
-#include "dcmtk/dcmdata/i2dlib/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2doutpl.h"
+#include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
+#include "dcmtk/dcmdata/libi2d/i2dplsc.h"
+#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
 
 class Image2Dcm
 {
@@ -307,6 +307,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.4  2008-01-16 14:52:18  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
  * Revision 1.2  2008-01-11 14:17:53  onken
  * Added various options to i2dlib. Changed logging to use a configurable
  * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
