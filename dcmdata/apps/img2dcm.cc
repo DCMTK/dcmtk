@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-01-14 16:51:11 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-01-16 15:19:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,11 +34,11 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/i2dlib/i2d.h"
-#include "dcmtk/dcmdata/i2dlib/i2djpgs.h"
-#include "dcmtk/dcmdata/i2dlib/i2dplsc.h"
-#include "dcmtk/dcmdata/i2dlib/i2dplvlp.h"
-#include "dcmtk/dcmdata/i2dlib/i2dplnsc.h"
+#include "dcmtk/dcmdata/libi2d/i2d.h"
+#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2dplsc.h"
+#include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
+#include "dcmtk/dcmdata/libi2d/i2dplnsc.h"
 
 #define OFFIS_CONSOLE_APPLICATION "img2dcm"
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -530,6 +530,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.5  2008-01-16 15:19:41  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
  * Revision 1.4  2008-01-14 16:51:11  joergr
  * Fixed minor inconsistencies.
  *

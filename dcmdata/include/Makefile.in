@@ -19,9 +19,9 @@ install:
 	for file in dcmtk/dcmdata/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmdata ;\
 	done
-	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmdata/i2dlib
-	for file in dcmtk/dcmdata/i2dlib/*.h ; do \
-		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmdata/i2dlib ;\
+	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/dcmdata/libi2d
+	for file in dcmtk/dcmdata/libi2d/*.h ; do \
+		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/dcmdata/libi2d ;\
 	done
 
 

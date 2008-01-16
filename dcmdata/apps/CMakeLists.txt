@@ -21,4 +21,4 @@ FOREACH(PROGRAM dcm2xml dcmconv dcmcrle dcmdrle dcmdump dcmgpdir dcmodify dump2d
 ENDFOREACH(PROGRAM)
 TARGET_LINK_LIBRARIES(dcmftest ofstd ${ZLIB_LIBS})
 TARGET_LINK_LIBRARIES(xml2dcm ${LIBXML_LIBS})
-TARGET_LINK_LIBRARIES(img2dcm i2dlib)
+TARGET_LINK_LIBRARIES(img2dcm libi2d)
