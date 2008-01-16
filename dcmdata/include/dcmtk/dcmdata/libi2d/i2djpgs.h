@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-11 14:17:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-01-16 15:09:17 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/i2dlib/i2dimgs.h"
+#include "dcmtk/dcmdata/libi2d/i2dimgs.h"
 
 /**
  * JPEG markers consist of one or more 0xFF bytes, followed by a marker
@@ -340,6 +340,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
+ * Revision 1.1  2008-01-16 15:09:17  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
  * Revision 1.2  2008-01-11 14:17:53  onken
  * Added various options to i2dlib. Changed logging to use a configurable
  * logstream. Added output plugin for the new Multiframe Secondary Capture SOP

@@ -22,7 +22,7 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-11 14:17:53 $
+ *  Update Date:      $Date: 2008-01-16 15:10:20 $
  *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
@@ -233,6 +233,12 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.2  2008-01-16 15:10:20  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
+ * Revision 1.1  2008-01-16 15:10:16  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
  * Revision 1.2  2008-01-11 14:17:53  onken
  * Added various options to i2dlib. Changed logging to use a configurable
  * logstream. Added output plugin for the new Multiframe Secondary Capture SOP
