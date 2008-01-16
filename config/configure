@@ -20305,7 +20305,7 @@ _ACEOF
 
 
 cat >>confdefs.h <<\_ACEOF
-#define _LARGEFILE64_SOURCE
+#define _LARGEFILE64_SOURCE 1
 _ACEOF
 
   fi

@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.39 $
+dnl Revision:     $Revision: 1.40 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1511,7 +1511,7 @@ AC_DEFUN([AC_LFS64],
 
   if test "$ac_cv_lfs64_support" = yes; then
     AC_DEFINE(HAVE_LFS_SUPPORT,, [Define if LFS (long file support) is available])
-    AC_DEFINE(_LARGEFILE64_SOURCE,, [Define to enable LFS64 (explicit long file support) if available])
+    AC_DEFINE(_LARGEFILE64_SOURCE, 1, [Define to enable LFS64 (explicit long file support) if available])
   fi
 ])
 
@@ -1639,7 +1639,10 @@ AC_DEFUN([AC_STDIO_NAMESPACE],
 
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.39  2006-08-21 12:32:11  meichel
+dnl Revision 1.40  2008-01-16 13:43:11  meichel
+dnl Minor configure update that removes certain compile warnings on Debian
+dnl
+dnl Revision 1.39  2006/08/21 12:32:11  meichel
 dnl Added configure tests and command line options to enable/disable
 dnl   long file support (LFS). Also added test that checks whether or not
 dnl   stdio functions like fopen are in namespace std when cstdio is included

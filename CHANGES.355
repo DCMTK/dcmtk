@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.01.16 (eichelberg)
+
+- Minor configure update that removes certain compile warnings on Debian
+  Affects: config/aclocal.m4
+           config/configure
+
 **** Changes from 2008.01.14 (riesmeier)
 
 - Fixed minor inconsistencies.
