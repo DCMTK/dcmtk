@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.01.16 (riesmeier)
+
+- Fixed issue with installation of HTML documentation.
+  Affects: doxygen/CMakeLists.txt
+
 **** Changes from 2008.01.16 (eichelberg)
 
 - Minor configure update that removes certain compile warnings on Debian
