@@ -1,5 +1,5 @@
 #
-#	Makefile for dcmdata/libsrc/i2dlib
+#	Makefile for dcmdata/libi2d
 #
 
 @SET_MAKE@
@@ -15,12 +15,12 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 dcmdatadir = $(top_srcdir)/../dcmdata
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmdatadir)/include/i2dlib
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmdatadir)/include/libi2d
 LOCALDEFS =
 
 objs = i2d.o i2dplvlp.o i2djpgs.o i2dplsc.o i2dplnsc.o
 
-library = libi2dlib.$(LIBEXT)
+library = libi2d.$(LIBEXT)
 
 
 all: $(library)

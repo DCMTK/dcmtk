@@ -22,8 +22,8 @@
  *  Purpose: Implements conversion from image into DICOM SC IOD
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-11 14:19:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2008-01-16 14:40:43 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/i2dlib/i2dplsc.h"
+#include "dcmtk/dcmdata/libi2d/i2dplsc.h"
 
 
 I2DOutputPlugSC::I2DOutputPlugSC()
@@ -85,6 +85,9 @@ I2DOutputPlugSC::~I2DOutputPlugSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.cc,v $
+ * Revision 1.1  2008-01-16 14:40:43  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
  * Revision 1.3  2008-01-11 14:19:28  onken
  * *** empty log message ***
  *

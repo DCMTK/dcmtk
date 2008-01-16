@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-11 14:19:28 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-01-16 14:38:17 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/i2dlib/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2djpgs.h"
 
 
 I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(),
@@ -916,6 +916,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.1  2008-01-16 14:38:17  onken
+ * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ *
  * Revision 1.2  2008-01-11 14:19:28  onken
  * *** empty log message ***
  *
