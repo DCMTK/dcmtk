@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 15:07:37 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2008-01-16 16:32:23 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -307,10 +307,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
- * Revision 1.1  2008-01-16 15:07:37  onken
- * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
+ * Revision 1.3  2008-01-16 16:32:23  onken
+ * Fixed some empty or doubled log messages in libi2d files.
  *
- * Revision 1.4  2008-01-16 14:52:18  onken
+ * Revision 1.2  2008-01-16 15:07:40  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
  *
  * Revision 1.2  2008-01-11 14:17:53  onken

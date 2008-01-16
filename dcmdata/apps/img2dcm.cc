@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 15:19:41 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2008-01-16 16:32:14 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -530,6 +530,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.6  2008-01-16 16:32:14  onken
+ * Fixed some empty or doubled log messages in libi2d files.
+ *
  * Revision 1.5  2008-01-16 15:19:41  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
  *
@@ -542,9 +545,6 @@ int main(int argc, char *argv[])
  * Classes. Added mode for JPEG plugin to copy exsiting APPn markers (except
  * JFIF). Changed img2dcm default behaviour to invent type1/type2 attributes (no
  * need for templates any more). Added some bug fixes.
- *
- * Revision 1.2  2007/11/08 18:08:56  onken
- * *** empty log message ***
  *
  * Revision 1.1  2007/11/08 16:00:34  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.

@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 14:36:02 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2008-01-16 16:32:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -687,11 +687,11 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.2  2008-01-16 16:32:31  onken
+ * Fixed some empty or doubled log messages in libi2d files.
+ *
  * Revision 1.1  2008-01-16 14:36:02  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.2  2008-01-11 14:19:28  onken
- * *** empty log message ***
  *
  * Revision 1.1  2007/11/08 15:55:17  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.

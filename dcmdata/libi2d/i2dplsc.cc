@@ -22,8 +22,8 @@
  *  Purpose: Implements conversion from image into DICOM SC IOD
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 14:40:43 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2008-01-16 16:32:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,14 +85,11 @@ I2DOutputPlugSC::~I2DOutputPlugSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.cc,v $
+ * Revision 1.2  2008-01-16 16:32:31  onken
+ * Fixed some empty or doubled log messages in libi2d files.
+ *
  * Revision 1.1  2008-01-16 14:40:43  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
- *
- * Revision 1.3  2008-01-11 14:19:28  onken
- * *** empty log message ***
- *
- * Revision 1.2  2007/11/08 18:08:58  onken
- * *** empty log message ***
  *
  * Revision 1.1  2007/11/08 15:55:17  onken
  * Initial checkin of img2dcm application and corresponding library i2dlib.

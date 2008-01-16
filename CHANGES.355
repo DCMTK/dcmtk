@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2008.01.16 (onken)
 
+- Fixed some empty or doubled log messages in libi2d files.
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libi2d/i2dplnsc.cc
+           dcmdata/libi2d/i2dplsc.cc
+           dcmdata/libi2d/i2dplvlp.cc
+
+**** Changes from 2008.01.16 (onken)
+
 - Fixed installation of doxygen documentation under Windows.
   Affects:  doxygen/CMakeLists.txt
 
