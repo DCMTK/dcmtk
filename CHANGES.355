@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.01.23 (riesmeier)
+
+- Restructured code in order to avoid empty output file in case the input file
+  could not be read.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmsr/apps/dsr2xml.cc
+
 **** Changes from 2008.01.16 (onken)
 
 - Fixed some empty or doubled log messages in libi2d files.
@@ -12,8 +19,6 @@ Changes between releases are documented here.
            dcmdata/libi2d/i2dplnsc.cc
            dcmdata/libi2d/i2dplsc.cc
            dcmdata/libi2d/i2dplvlp.cc
-
-**** Changes from 2008.01.16 (onken)
 
 - Fixed installation of doxygen documentation under Windows.
   Affects:  doxygen/CMakeLists.txt
@@ -35,7 +40,6 @@ Changes between releases are documented here.
             dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplsc.h
             dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplnsc.h
             dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplvlp.h
-
   Added:    dcmdata/libi2d/CMakeLists.txt
             dcmdata/libi2d/i2dlib/Makefile.dep
             dcmdata/libi2d/i2dlib/Makefile.in
@@ -51,7 +55,6 @@ Changes between releases are documented here.
             dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplsc.h
             dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplnsc.h
             dcmdata/include/dcmtk/dcmdata/i2dlib/i2dplvlp.h
-
   Affects:  dcmdata/Makefile.in
             dcmdata/apps/CMakeLists.txt
             dcmdata/apps/img2dcm.cc

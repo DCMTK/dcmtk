@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:22:42 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2008-01-23 15:13:26 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -56,41 +56,16 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const char *ifname,
-                             const E_FileReadMode readMode,
-                             const E_TransferSyntax xfer,
+                             DcmDataset *dset,
                              const size_t readFlags,
                              const size_t writeFlags,
                              const char *defaultCharset,
                              const OFBool debugMode,
                              const OFBool checkAllStrings)
 {
-    OFCondition result = EC_Normal;
-
-    if ((ifname == NULL) || (strlen(ifname) == 0))
+    OFCondition result = EC_IllegalParameter;
+    if ((ifname != NULL) && (dset != NULL))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
-        return EC_IllegalParameter;
-    }
-
-    DcmFileFormat *dfile = new DcmFileFormat();
-    if (dfile != NULL)
-    {
-        if (readMode == ERM_dataset)
-            result = dfile->getDataset()->loadFile(ifname, xfer);
-        else
-            result = dfile->loadFile(ifname, xfer);
-        if (result.bad())
-        {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                 << ") reading file: "<< ifname << OFendl;
-        }
-    } else
-        result = EC_MemoryExhausted;
-
-    if (result.good())
-    {
-        result = EC_CorruptedData;
-        DcmDataset *dset = dfile->getDataset();
         DSRDocument *dsrdoc = new DSRDocument();
         if (dsrdoc != NULL)
         {
@@ -100,7 +75,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
             if (result.good())
             {
                 // check extended character set
-
                 const char *charset = dsrdoc->getSpecificCharacterSet();
                 if ((charset == NULL || strlen(charset) == 0) && dset->containsExtendedCharacters(checkAllStrings))
                 {
@@ -139,11 +113,10 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                      << ") parsing file: "<< ifname << OFendl;
             }
-        }
+        } else
+            result = EC_MemoryExhausted;
         delete dsrdoc;
     }
-    delete dfile;
-
     return result;
 }
 
@@ -341,23 +314,40 @@ int main(int argc, char *argv[])
     }
 
     int result = 0;
+    /* first parameter is treated as the input filename */
     const char *ifname = NULL;
     cmd.getParam(1, ifname);
-    if (cmd.getParamCount() == 2)
+    /* check input file */
+    if ((ifname != NULL) && (strlen(ifname) > 0))
     {
-        const char *ofname = NULL;
-        cmd.getParam(2, ofname);
-        STD_NAMESPACE ofstream stream(ofname);
-        if (stream.good())
+        /* read DICOM file or data set */
+        DcmFileFormat dfile;
+        OFCondition status = dfile.loadFile(ifname, opt_ixfer);
+        if (status.good())
         {
-            if (writeFile(stream, ifname, opt_readMode, opt_ixfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
-                result = 2;
+            DcmDataset *dset = dfile.getDataset();
+            /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
+            if (cmd.getParamCount() == 2)
+            {
+                const char *ofname = NULL;
+                cmd.getParam(2, ofname);
+                STD_NAMESPACE ofstream stream(ofname);
+                if (stream.good())
+                {
+                    /* write content in XML format to file */
+                    if (writeFile(stream, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
+                        result = 2;
+                } else
+                    result = 1;
+            } else {
+                /* write content in XML format to standard output */
+                if (writeFile(COUT, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
+                    result = 3;
+            }
         } else
-            result = 1;
-    } else {
-        if (writeFile(COUT, ifname, opt_readMode, opt_ixfer, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
-            result = 3;
-    }
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname << OFendl;
+    } else
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
 
     return result;
 }
@@ -366,7 +356,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.35  2007-11-15 16:22:42  joergr
+ * Revision 1.36  2008-01-23 15:13:26  joergr
+ * Restructured code in order to avoid empty output file in case the input file
+ * could not be read.
+ *
+ * Revision 1.35  2007/11/15 16:22:42  joergr
  * Fixed coding style to be more consistent.
  *
  * Revision 1.34  2006/12/13 14:16:15  joergr
