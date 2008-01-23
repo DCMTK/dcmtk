@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-13 14:21:56 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2008-01-23 15:09:26 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,33 +56,17 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 static OFCondition writeFile(STD_NAMESPACE ostream&out,
                              const char *ifname,
+                             DcmFileFormat *dfile,
                              const E_FileReadMode readMode,
-                             const E_TransferSyntax xfer,
                              const OFBool loadIntoMemory,
-                             const Uint32 maxReadLength,
                              const char *defaultCharset,
                              const size_t writeFlags,
                              const OFBool checkAllStrings)
 {
-    OFCondition result = EC_Normal;
-
-    if ((ifname == NULL) || (strlen(ifname) == 0))
+    OFCondition result = EC_IllegalParameter;
+    if ((ifname != NULL) && (dfile != NULL))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
-        return EC_IllegalParameter;
-    }
-
-    /* read DICOM file or data set */
-    DcmFileFormat dfile;
-    result = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
-
-    if (result.bad())
-    {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-             << ") reading file: "<< ifname << OFendl;
-    } else {
-        DcmDataset *dset = dfile.getDataset();
-        /* write content to XML format */
+        DcmDataset *dset = dfile->getDataset();
         if (loadIntoMemory)
             dset->loadAllDataIntoMemory();
         /* determine dataset character encoding */
@@ -217,7 +201,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream&out,
         if (readMode == ERM_dataset)
             result = dset->writeXML(out, writeFlags);
         else
-            result = dfile.writeXML(out, writeFlags);
+            result = dfile->writeXML(out, writeFlags);
     }
     return result;
 }
@@ -231,12 +215,12 @@ int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
     size_t opt_writeFlags = 0;
-    OFBool loadIntoMemory = OFFalse;
+    OFBool opt_loadIntoMemory = OFFalse;
     OFBool opt_checkAllStrings = OFFalse;
     const char *opt_defaultCharset = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
-    OFCmdUnsignedInt maxReadLength = 4096; // default is 4 KB
+    OFCmdUnsignedInt opt_maxReadLength = 4096; // default is 4 KB
 
     SetDebugLevel(( 0 ));
 
@@ -344,14 +328,14 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--max-read-length"))
         {
-            app.checkValue(cmd.getValueAndCheckMinMax(maxReadLength, 4, 4194302));
-            maxReadLength *= 1024; // convert kbytes to bytes
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReadLength, 4, 4194302));
+            opt_maxReadLength *= 1024; // convert kbytes to bytes
         }
         cmd.beginOptionBlock();
         if (cmd.findOption("--load-all"))
-            loadIntoMemory = OFTrue;
+            opt_loadIntoMemory = OFTrue;
         if (cmd.findOption("--load-short"))
-            loadIntoMemory = OFFalse;
+            opt_loadIntoMemory = OFFalse;
         cmd.endOptionBlock();
 
         /* processing options */
@@ -431,22 +415,36 @@ int main(int argc, char *argv[])
     /* first parameter is treated as the input filename */
     const char *ifname = NULL;
     cmd.getParam(1, ifname);
-    /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
-    if (cmd.getParamCount() == 2)
+    /* check input file */
+    if ((ifname != NULL) && (strlen(ifname) > 0))
     {
-        const char *ofname = NULL;
-        cmd.getParam(2, ofname);
-        STD_NAMESPACE ofstream stream(ofname);
-        if (stream.good())
+        /* read DICOM file or data set */
+        DcmFileFormat dfile;
+        OFCondition status = dfile.loadFile(ifname, opt_ixfer, EGL_noChange, opt_maxReadLength, opt_readMode);
+        if (status.good())
         {
-            if (writeFile(stream, ifname, opt_readMode, opt_ixfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
-                result = 2;
+            /* if second parameter is present, it is treated as the output filename ("stdout" otherwise) */
+            if (cmd.getParamCount() == 2)
+            {
+                const char *ofname = NULL;
+                cmd.getParam(2, ofname);
+                STD_NAMESPACE ofstream stream(ofname);
+                if (stream.good())
+                {
+                    /* write content in XML format to file */
+                    if (writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
+                        result = 2;
+                } else
+                    result = 1;
+            } else {
+                /* write content in XML format to standard output */
+                if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
+                    result = 3;
+            }
         } else
-            result = 1;
-    } else {
-        if (writeFile(COUT, ifname, opt_readMode, opt_ixfer, loadIntoMemory, maxReadLength, opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
-            result = 3;
-    }
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname << OFendl;
+    } else
+        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
 
     return result;
 }
@@ -455,7 +453,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.28  2006-12-13 14:21:56  joergr
+ * Revision 1.29  2008-01-23 15:09:26  joergr
+ * Restructured code in order to avoid empty output file in case the input file
+ * could not be read.
+ *
+ * Revision 1.28  2006/12/13 14:21:56  joergr
  * Removed dependence of the new command line option "--charset-check-all" from
  * option "--charset-assume".
  *
