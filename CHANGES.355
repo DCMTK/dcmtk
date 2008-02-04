@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.02.04 (onken)
+
+- Added missing VR lookup for function findTagFromName().
+  Affects: dcmdata/libsrc/dctag.cc
+
 **** Changes from 2008.01.23 (riesmeier)
 
 - Restructured code in order to avoid empty output file in case the input file

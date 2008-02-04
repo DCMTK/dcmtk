@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmTag
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:39 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-02-04 11:51:56 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,13 +211,17 @@ OFCondition DcmTag::findTagFromName(const char *name,
         {
             /* store resulting tag value */
             value.set(OFstatic_cast(Uint16, grp), OFstatic_cast(Uint16, elm));
+            value.lookupVRinDictionary();
         } else {
             /* it is a name: look up in the dictionary */
             const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
             const DcmDictEntry *dicent = globalDataDict.findEntry(name);
             /* store resulting tag value */
             if (dicent != NULL)
-                value.set(dicent->getKey());
+            {
+              value.set(dicent->getKey());
+              value.setVR(dicent->getVR());
+            }
             else
                 result = EC_TagNotFound;
             dcmDataDict.unlock();
@@ -265,6 +269,9 @@ void DcmTag::updatePrivateCreator(const char *c)
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
+** Revision 1.22  2008-02-04 11:51:56  onken
+** Added missing VR lookup for function findTagFromName().
+**
 ** Revision 1.21  2005-12-08 15:41:39  meichel
 ** Changed include path schema for all DCMTK header files
 **
