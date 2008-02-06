@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.02.06 (riesmeier)
+
+- Added check of the return value of DcmElement::getXXX() methods.
+  Affects: dcmimgle/libsrc/didocu.cc
+
 **** Changes from 2008.02.04 (onken)
 
 - Added missing VR lookup for function findTagFromName().

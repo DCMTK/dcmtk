@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-02-06 13:39:10 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ DiDocument::DiDocument(DcmObject *object,
     {
         if (object->ident() == EVR_fileFormat)
         {
-            /* store reference to DICOM file format to be deleted on object destruction */
+            // store reference to DICOM file format to be deleted on object destruction
             if (Flags & CIF_TakeOverExternalDataset)
                 FileFormat = OFstatic_cast(DcmFileFormat *, object);
             Object = OFstatic_cast(DcmFileFormat *, object)->getDataset();
@@ -120,7 +120,8 @@ void DiDocument::convertPixelData()
         pstack.clear();
         // push reference to DICOM dataset on the stack (required for decompression process)
         pstack.push(Object);
-        pstack.push(pixel);                         // dummy stack entry
+        // dummy stack entry
+        pstack.push(pixel);
         if ((pixel != NULL) && pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
         {
             // set transfer syntax to unencapsulated/uncompressed
@@ -149,16 +150,17 @@ void DiDocument::convertPixelData()
 
 DiDocument::~DiDocument()
 {
-    /* DICOM image loaded from file: delete file format (and data set) */
+    // DICOM image loaded from file: delete file format (and data set)
     if (FileFormat != NULL)
         delete FileFormat;
-    /* DICOM image loaded from external data set: only delete if flag is set */
+    // DICOM image loaded from external data set: only delete if flag is set
     else if (Flags & CIF_TakeOverExternalDataset)
         delete Object;
 }
 
 
 /********************************************************************/
+
 
 DcmElement *DiDocument::search(const DcmTagKey &tag,
                                DcmObject *obj) const
@@ -176,6 +178,7 @@ DcmElement *DiDocument::search(const DcmTagKey &tag,
 
 
 /********************************************************************/
+
 
 int DiDocument::search(const DcmTagKey &tag,
                        DcmStack &pstack) const
@@ -218,8 +221,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
     DcmElement *elem = search(tag);
     if (elem != NULL)
     {
-        elem->getSint16(returnVal, pos);
-        return elem->getVM();
+        if (elem->getSint16(returnVal, pos).good())
+            return elem->getVM();
     }
     return 0;
 }
@@ -232,8 +235,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
     DcmElement *elem = search(tag);
     if (elem != NULL)
     {
-        elem->getUint32(returnVal, pos);
-        return elem->getVM();
+        if (elem->getUint32(returnVal, pos).good())
+            return elem->getVM();
     }
     return 0;
 }
@@ -246,8 +249,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
     DcmElement *elem = search(tag);
     if (elem != NULL)
     {
-        elem->getSint32(returnVal, pos);
-        return elem->getVM();
+        if (elem->getSint32(returnVal, pos).good())
+            return elem->getVM();
     }
     return 0;
 }
@@ -260,8 +263,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
     DcmElement *elem = search(tag);
     if (elem != NULL)
     {
-        elem->getFloat64(returnVal, pos);
-        return elem->getVM();
+        if (elem->getFloat64(returnVal, pos).good())
+            return elem->getVM();
     }
     return 0;
 }
@@ -275,12 +278,14 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
     if (elem != NULL)
     {
         Uint16 *val;
-        elem->getUint16Array(val);
-        returnVal = val;
-        const DcmEVR vr = elem->getVR();
-        if ((vr == EVR_OW) || (vr == EVR_lt))
-            return elem->getLength(Xfer) / sizeof(Uint16);
-        return elem->getVM();
+        if (elem->getUint16Array(val).good())
+        {
+            returnVal = val;
+            const DcmEVR vr = elem->getVR();
+            if ((vr == EVR_OW) || (vr == EVR_lt))
+                return elem->getLength(Xfer) / sizeof(Uint16);
+            return elem->getVM();
+        }
     }
     return 0;
 }
@@ -319,8 +324,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        OFconst_cast(DcmElement *, elem)->getUint16(returnVal, pos);  // remove 'const' to use non-const methods
-        return OFconst_cast(DcmElement *, elem)->getVM();
+        // remove 'const' to use non-const methods
+        if (OFconst_cast(DcmElement *, elem)->getUint16(returnVal, pos).good())
+            return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
 }
@@ -331,13 +337,16 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        Uint16 *val;                                            // parameter has no 'const' qualifier
-        OFconst_cast(DcmElement *, elem)->getUint16Array(val);  // remove 'const' to use non-const methods
-        returnVal = val;
-        const DcmEVR vr = OFconst_cast(DcmElement *, elem)->getVR();
-        if ((vr == EVR_OW) || (vr == EVR_lt))
-            return OFconst_cast(DcmElement *, elem)->getLength(/*Xfer*/) / sizeof(Uint16);
-        return OFconst_cast(DcmElement *, elem)->getVM();
+        Uint16 *val;
+        // remove 'const' to use non-const methods
+        if (OFconst_cast(DcmElement *, elem)->getUint16Array(val).good())
+        {
+            returnVal = val;
+            const DcmEVR vr = OFconst_cast(DcmElement *, elem)->getVR();
+            if ((vr == EVR_OW) || (vr == EVR_lt))
+                return OFconst_cast(DcmElement *, elem)->getLength(/*Xfer*/) / sizeof(Uint16);
+            return OFconst_cast(DcmElement *, elem)->getVM();
+        }
     }
     return 0;
 }
@@ -348,10 +357,13 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        char *val;                                         // parameter has no 'const' qualifier
-        OFconst_cast(DcmElement *, elem)->getString(val);  // remove 'const' to use non-const methods
-        returnVal = val;
-        return OFconst_cast(DcmElement *, elem)->getVM();
+        char *val;
+        // remove 'const' to use non-const methods
+        if (OFconst_cast(DcmElement *, elem)->getString(val).good())
+        {
+            returnVal = val;
+            return OFconst_cast(DcmElement *, elem)->getVM();
+        }
     }
     return 0;
 }
@@ -363,8 +375,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        OFconst_cast(DcmElement *, elem)->getOFString(returnVal, pos);  // remove 'const' to use non-const methods
-        return OFconst_cast(DcmElement *, elem)->getVM();
+        // remove 'const' to use non-const methods
+        if (OFconst_cast(DcmElement *, elem)->getOFString(returnVal, pos).good())
+            return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
 }
@@ -374,7 +387,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.19  2006-08-15 16:30:11  meichel
+ * Revision 1.20  2008-02-06 13:39:10  joergr
+ * Added check of the return value of DcmElement::getXXX() methods.
+ *
+ * Revision 1.19  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
