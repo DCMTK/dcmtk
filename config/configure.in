@@ -687,6 +687,9 @@ AC_CHECK_PROTOTYPE(gethostname, unistd.h libc.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(strerror_r, string.h)
+if test $ac_cv_prototype_strerror_r = yes ; then
+AC_CHECK_CHARP_STRERROR_R(string.h)
+fi
 if test $ac_cv_prototype_getsockopt = yes ; then
 AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
 fi

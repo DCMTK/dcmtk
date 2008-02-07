@@ -90,6 +90,10 @@
 /* Define to 1 if you have the `bzero' function. */
 /* #undef  HAVE_BZERO */
 
+/* Define if your system declares the return type of strerror_r as char *
+   instead of int */
+/* #undef HAVE_CHARP_STRERROR_R */
+
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
 

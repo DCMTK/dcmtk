@@ -25306,6 +25306,91 @@ else
 echo "${ECHO_T}no" >&6; }
 fi
 
+if test $ac_cv_prototype_strerror_r = yes ; then
+{ echo "$as_me:$LINENO: checking if strerror_r() returns a char * (in string.h)" >&5
+echo $ECHO_N "checking if strerror_r() returns a char * (in string.h)... $ECHO_C" >&6; }
+
+
+ac_includes=""
+for ac_header in string.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+if test "${ac_cv_prototype_charp_strerror_r+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+
+
+int
+main ()
+{
+
+  char *buf = 0;
+  int i = strerror_r(0, buf, 100)
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  eval "ac_cv_prototype_charp_strerror_r=no"
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	eval "ac_cv_prototype_charp_strerror_r=yes"
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+if eval "test \"`echo $ac_cv_prototype_charp_strerror_r`\" = yes"; then
+  { echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6; }
+  ac_tr_prototype=HAVE_CHARP_STRERROR_R
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_prototype 1
+_ACEOF
+
+  :
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+
+fi
+
+fi
 if test $ac_cv_prototype_getsockopt = yes ; then
 { echo "$as_me:$LINENO: checking if getsockopt() needs int* parameters (in sys/types.h sys/socket.h)" >&5
 echo $ECHO_N "checking if getsockopt() needs int* parameters (in sys/types.h sys/socket.h)... $ECHO_C" >&6; }
@@ -27230,7 +27315,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27233 "configure"
+#line 27318 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -27787,7 +27872,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27790 "configure"
+#line 27875 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -27860,7 +27945,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27863 "configure"
+#line 27948 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -27933,7 +28018,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27936 "configure"
+#line 28021 "configure"
 #include "confdefs.h"
 
 template <class T>

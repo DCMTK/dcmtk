@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.40 $
+dnl Revision:     $Revision: 1.41 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1637,8 +1637,61 @@ AC_DEFUN([AC_STDIO_NAMESPACE],
 ])
 
 
+dnl AC_CHECK_CHARP_STRERROR_R checks if the prototype for strerror_r()
+dnl specifies a return type of char * instead of int. This is the case
+dnl for the GNU version, whereas the XOPEN (XSI-compliant) version returns int.
+
+dnl AC_CHECK_CHARP_STRERROR_R(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_CHARP_STRERROR_R,
+[AC_MSG_CHECKING([ifelse([$1], , [if strerror_r() returns a char *], 
+[if strerror_r() returns a char * (in $1)])])
+AH_TEMPLATE([HAVE_CHARP_STRERROR_R], [Define if your system declares the return type of strerror_r
+   as char * instead of int])
+ifelse([$1], , [ac_includes=""
+],
+[ac_includes=""
+for ac_header in $1
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done])
+AC_CACHE_VAL(ac_cv_prototype_charp_strerror_r,
+[AC_TRY_COMPILE(
+[#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+]
+,
+[
+  char *buf = 0;
+  int i = strerror_r(0, buf, 100)
+],
+eval "ac_cv_prototype_charp_strerror_r=no", 
+eval "ac_cv_prototype_charp_strerror_r=yes"
+)])
+if eval "test \"`echo $ac_cv_prototype_charp_strerror_r`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_CHARP_STRERROR_R
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$2], , :, [$2])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+fi
+])
+
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.41  2008-02-07 16:55:45  meichel
+dnl Added configure test AC_CHECK_CHARP_STRERROR_R that checks whether strerror_r
+dnl   is the GNU version or the X/OPEN version.
+dnl
 dnl Revision 1.40  2008-01-16 13:43:11  meichel
 dnl Minor configure update that removes certain compile warnings on Debian
 dnl
