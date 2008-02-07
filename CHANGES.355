@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2008.02.07 (eichelberg)
 
+- Class OFFile now makes use of HAVE_CHARP_STRERROR_R to use the
+  correct version of strerror_r.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 - Added configure test AC_CHECK_CHARP_STRERROR_R that checks whether strerror_r
   is the GNU version or the X/OPEN version.
   Affects: config/aclocal.m4

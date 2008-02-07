@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2007-06-06 13:55:58 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-02-07 16:57:46 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -682,10 +682,18 @@ public:
   {
 #ifdef HAVE_PROTOTYPE_STRERROR_R
     char buf[1000];
+    buf[0] = 0; // be paranoid and initialize the buffer to empty string.
+    
     // two incompatible interfaces for strerror_r with different return types exist.
-    // Ignore return value to work around this problem.
+#ifdef HAVE_CHARP_STRERROR_R
+    // we're using the GNU specific version that returns the result, which may
+    // or may not be a pointer to buf
+    s = strerror_r(lasterror_, buf, 1000);
+#else
+    // we're using the X/OPEN version that always stores the result in buf.
     (void) strerror_r(lasterror_, buf, 1000);
     s = buf;
+#endif
 #else
     // we only have strerror() which is thread unsafe on Posix platforms, but thread safe on Windows.
     s = STDIO_NAMESPACE strerror(lasterror_);
@@ -814,7 +822,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
- * Revision 1.3  2007-06-06 13:55:58  onken
+ * Revision 1.4  2008-02-07 16:57:46  meichel
+ * Class OFFile now makes use of HAVE_CHARP_STRERROR_R to use the
+ *   correct version of strerror_r.
+ *
+ * Revision 1.3  2007/06/06 13:55:58  onken
  * Fixed compilation for Mac OS X with making large file support function calls
  * implicit for this OS (Mac OS X misleadingly defines _LARGEFILE64_SOURCE).
  *
