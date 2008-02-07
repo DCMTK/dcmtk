@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.02.07 (eichelberg)
+
+- Added configure test AC_CHECK_CHARP_STRERROR_R that checks whether strerror_r
+  is the GNU version or the X/OPEN version.
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/cfunix.h.in
+           config/include/dcmtk/config/cfwin32.h
+  
 **** Changes from 2008.02.06 (riesmeier)
 
 - Added check of the return value of DcmElement::getXXX() methods.
