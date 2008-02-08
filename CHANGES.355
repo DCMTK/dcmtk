@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.02.08 (eichelberg)
+
+- Removed "GenericGroupLengthToEnd" from the built-in skeleton dictionary.
+  Affects: dcmdata/libsrc/dcdict.cc
+
 **** Changes from 2008.02.07 (eichelberg)
 
 - Class OFFile now makes use of HAVE_CHARP_STRERROR_R to use the

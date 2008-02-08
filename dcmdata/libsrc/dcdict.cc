@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2008-02-08 16:28:51 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,10 +95,7 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
                       EVR_UL, "GenericGroupLength", 1, 1, "GENERIC",
                       DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
     addEntry(e);
-    e = makeSkelEntry(0x0000, 0x0001, 0xffff, 0x0001,
-                      EVR_UL, "GenericGroupLengthToEnd", 1, 1, "GENERIC",
-                      DcmDictRange_Unspecified, DcmDictRange_Unspecified, NULL);
-    addEntry(e);
+
     /*
     ** We need to know about Items and Delimitation Items to parse
     ** (and construct) sequences.
@@ -839,7 +836,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.37  2006-08-15 15:49:54  meichel
+** Revision 1.38  2008-02-08 16:28:51  meichel
+** Removed "GenericGroupLengthToEnd" from the built-in skeleton dictionary.
+**
+** Revision 1.37  2006/08/15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
