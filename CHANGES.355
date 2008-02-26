@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.02.26 (riesmeier)
+
+- Added new command line option that disables the mapping of well-known UID
+  numbers to their associated names (e.g. transfer syntax or SOP class).
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
+- Added new print flag that disables the mapping of well-known UID numbers to
+  their associated names (e.g. transfer syntax or SOP class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dctypes.cc
+           dcmdata/libsrc/dcvrui.cc
+
 **** Changes from 2008.02.08 (eichelberg)
 
 - Removed "GenericGroupLengthToEnd" from the built-in skeleton dictionary.
@@ -19,7 +32,7 @@ Changes between releases are documented here.
            config/configure.in
            config/include/dcmtk/config/cfunix.h.in
            config/include/dcmtk/config/cfwin32.h
-  
+
 **** Changes from 2008.02.06 (riesmeier)
 
 - Added check of the return value of DcmElement::getXXX() methods.
