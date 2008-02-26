@@ -18,8 +18,9 @@ The \b dcmdump utility dumps the contents of a DICOM file (file format or raw
 data set) to stdout in textual form.  Attributes with very large value fields
 (e.g. pixel data) can be described as "(not loaded)".  String value fields
 will be delimited with square brackets ([]).  Known UIDs will be displayed by
-their names prefixed by an equals sign (e.g. "=MRImageStorage").  Empty value
-fields are described as "(no value available)".
+their names prefixed by an equals sign (e.g. "=MRImageStorage") unless this
+mapping would be explicitly switched off.  Empty value fields are described as
+"(no value available)".
 
 If \b dcmdump reads a raw data set (DICOM data without a file format
 meta-header) it will attempt to guess the transfer syntax by examining the
@@ -162,7 +163,13 @@ printing:
          print header with filename only for those input files
          that contain one of the searched tags
 
-error handling:
+  +Un  --map-uid-names
+         map well-known UID numbers to names (default)
+
+  -Un  --no-uid-names
+         do not map well-known UID numbers to names
+
+ error handling:
 
   -E   --stop-on-error
          do not print if file is damaged (default)
