@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-02-26 16:59:55 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,8 +99,12 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
         getString(stringVal);
         if (stringVal != NULL)
         {
-            /* check whether UID number can be mapped to a UID name */
-            const char *symbol = dcmFindNameOfUID(stringVal);
+            const char *symbol = NULL;
+            if (!(flags & DCMTypes::PF_doNotMapUIDsToNames))
+            {
+                /* check whether UID number can be mapped to a UID name */
+                symbol = dcmFindNameOfUID(stringVal);
+            }
             if ((symbol != NULL) && (strlen(symbol) > 0))
             {
                 const size_t bufSize = strlen(symbol) + 1 /* for "=" */ + 1;
@@ -115,12 +119,12 @@ void DcmUniqueIdentifier::print(STD_NAMESPACE ostream &out,
                     delete[] buffer;
                 } else /* could not allocate buffer */
                     DcmByteString::print(out, flags, level);
-            } else /* no symbol (UID name) found */
+            } else /* no symbol (UID name) found or mapping switched off */
                 DcmByteString::print(out, flags, level);
         } else
-            printInfoLine(out, flags, level, "(no value available)" );
+            printInfoLine(out, flags, level, "(no value available)");
     } else
-        printInfoLine(out, flags, level, "(not loaded)" );
+        printInfoLine(out, flags, level, "(not loaded)");
 }
 
 
@@ -174,7 +178,11 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.26  2007-06-29 14:17:49  meichel
+** Revision 1.27  2008-02-26 16:59:55  joergr
+** Added new print flag that disables the mapping of well-known UID numbers to
+** their associated names (e.g. transfer syntax or SOP class).
+**
+** Revision 1.26  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **

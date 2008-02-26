@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-02-26 16:56:15 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,23 +65,23 @@ typedef enum {
 /// handling of group length elements when reading/writing a dataset
 typedef enum {
     /// no change of group length values, WARNING: DO NOT USE THIS VALUE FOR WRITE OPERATIONS
-    EGL_noChange = 0,       
+    EGL_noChange = 0,
     /// remove group length tags
-    EGL_withoutGL = 1,      
+    EGL_withoutGL = 1,
     /// add group length tags for every group
-    EGL_withGL = 2,         
+    EGL_withGL = 2,
     /// recalculate values for existing group length tags
-    EGL_recalcGL = 3        
+    EGL_recalcGL = 3
 } E_GrpLenEncoding;
 
 /// handling of dataset trailing padding
 typedef enum {
     /// no change of padding tags
-    EPD_noChange = 0,       
+    EPD_noChange = 0,
     /// remove all padding tags
-    EPD_withoutPadding = 1, 
+    EPD_withoutPadding = 1,
     /// add padding tags
-    EPD_withPadding = 2    
+    EPD_withPadding = 2
 } E_PaddingEncoding;
 
 /// search mode for hierarchical search operations
@@ -111,9 +111,9 @@ typedef enum {
     /// auto detect: fileformat or dataset
     ERM_autoDetect = 0,
     /// read as dataset (assume no meta header present)
-    ERM_dataset = 1,        
+    ERM_dataset = 1,
     /// read file format only, refuse if no meta-header
-    ERM_fileOnly = 2        
+    ERM_fileOnly = 2
 } E_FileReadMode;
 
 
@@ -133,6 +133,9 @@ struct DCMTypes
 
     /// show hierarchical tree structure of the dataset
     static const size_t PF_showTreeStructure;
+
+    /// do not map well-known UID numbers to UID names (e.g. Transfer Syntax and SOP Class)
+    static const size_t PF_doNotMapUIDsToNames;
 
     /// internal: current entry is the last one on the level
     static const size_t PF_lastEntry;
@@ -176,7 +179,11 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.24  2007-11-29 14:30:35  meichel
+ * Revision 1.25  2008-02-26 16:56:15  joergr
+ * Added new print flag that disables the mapping of well-known UID numbers to
+ * their associated names (e.g. transfer syntax or SOP class).
+ *
+ * Revision 1.24  2007/11/29 14:30:35  meichel
  * Updated doxygen API documentation
  *
  * Revision 1.23  2006/05/11 08:55:22  joergr
