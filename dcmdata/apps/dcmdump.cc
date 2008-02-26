@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-10-24 17:13:33 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2008-02-26 16:54:12 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -216,6 +216,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-short",        "-L",     "print long tag values shortened (default)");
         cmd.addOption("--print-filename",     "+F",     "print header with filename for each input file");
         cmd.addOption("--print-file-search",  "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
+        cmd.addOption("--map-uid-names",      "+Un",    "map well-known UID numbers to names (default)");
+        cmd.addOption("--no-uid-names",       "-Un",    "do not map well-known UID numbers to names");
 
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",      "-E",     "do not print if file is damaged (default)");
@@ -394,6 +396,11 @@ int main(int argc, char *argv[])
         printFileSearch = OFTrue;
         printFilename = OFFalse;
       }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--map-uid-names")) printFlags &= ~DCMTypes::PF_doNotMapUIDsToNames;
+      if (cmd.findOption("--no-uid-names")) printFlags |= DCMTypes::PF_doNotMapUIDsToNames;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -635,7 +642,11 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.60  2007-10-24 17:13:33  joergr
+ * Revision 1.61  2008-02-26 16:54:12  joergr
+ * Added new command line option that disables the mapping of well-known UID
+ * numbers to their associated names (e.g. transfer syntax or SOP class).
+ *
+ * Revision 1.60  2007/10/24 17:13:33  joergr
  * Added new command line option which prints a header with the filename only
  * for those input files that contain one of the searched tags.
  * Fixed small layout and formatting issues in the dump output (missing
