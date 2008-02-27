@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.02.27 (riesmeier)
+
+- Check HAVE_CHARP_STRERROR_R in order to use the correct version of
+  strerror_r().
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2008.02.26 (riesmeier)
 
 - Added new command line option that disables the mapping of well-known UID

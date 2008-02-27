@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-08 14:57:56 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2008-02-27 09:54:30 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1098,17 +1098,21 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
         } else {
             /* create error message "No such file or directory" from error code */
             const char *text = NULL;
-#if defined(_REENTRANT) && defined(HAVE_STRERROR_R)
-            /* # tbd: HAVE_STRERROR_R not yet defined/tested */
+#ifdef HAVE_PROTOTYPE_STRERROR_R
             char buffer[255];
-            if (strerror_r(ENOENT, buffer, sizeof(buffer)) == 0)
-                text = buffer;
-            else
+#ifdef HAVE_CHARP_STRERROR_R
+            /* use the GNU specific version that returns the result, which may or may not be a pointer to buffer */
+            text = strerror_r(ENOENT, buffer, 255);
 #else
-                /* warning: function call is not thread-safe */
-                text = strerror(ENOENT);
-            if (text == NULL)
+            /* use the X/OPEN version that always stores the result in buffer */
+            (void) strerror_r(ENOENT, buffer, 255);
+            text = buffer;
 #endif
+#else
+            /* warning: function call is not thread-safe on Unix systems */
+            text = strerror(ENOENT);
+#endif
+            if ((text == NULL) || (strlen(text) == 0))
                 text = "(unknown error code)";
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
@@ -1160,17 +1164,21 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
         } else {
             /* create error message "No such file or directory" from error code */
             const char *text = NULL;
-#if defined(_REENTRANT) && defined(HAVE_STRERROR_R)
-            /* # tbd: HAVE_STRERROR_R not yet defined/tested */
+#ifdef HAVE_PROTOTYPE_STRERROR_R
             char buffer[255];
-            if (strerror_r(ENOENT, buffer, sizeof(buffer)) == 0)
-                text = buffer;
-            else
+#ifdef HAVE_CHARP_STRERROR_R
+            /* use the GNU specific version that returns the result, which may or may not be a pointer to buffer */
+            text = strerror_r(ENOENT, buffer, 255);
 #else
-                /* warning: function call is not thread-safe */
-                text = strerror(ENOENT);
-            if (text == NULL)
+            /* use the X/OPEN version that always stores the result in buffer */
+            (void) strerror_r(ENOENT, buffer, 255);
+            text = buffer;
 #endif
+#else
+            /* warning: function call is not thread-safe on Unix systems */
+            text = strerror(ENOENT);
+#endif
+            if ((text == NULL) || (strlen(text) == 0))
                 text = "(unknown error code)";
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
@@ -5051,7 +5059,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.24  2007-06-08 14:57:56  joergr
+ *  Revision 1.25  2008-02-27 09:54:30  joergr
+ *  Check HAVE_CHARP_STRERROR_R in order to use the correct version of
+ *  strerror_r().
+ *
+ *  Revision 1.24  2007/06/08 14:57:56  joergr
  *  Replaced helper function findAndCopyElement() by new optional parameter
  *  'createCopy' in various findAndGetXXX() functions.
  *
