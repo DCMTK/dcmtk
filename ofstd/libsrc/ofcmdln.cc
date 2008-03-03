@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2007, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:20:44 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2008-03-03 13:16:39 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1053,22 +1053,67 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
     /* check for command file parameter (syntax: "@filename") */
     if ((argValue != NULL) && (strlen(argValue) > 1) && (argValue[0] == COMMAND_FILE_PREFIX))
     {
+        /* skip '@' symbol in filename */
+        const char *filename = argValue + 1;
         /* open command file */
 #ifdef HAVE_IOS_NOCREATE
-        STD_NAMESPACE ifstream cmdFile(argValue + 1, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
+        STD_NAMESPACE ifstream cmdFile(filename, STD_NAMESPACE ios::in|STD_NAMESPACE ios::nocreate);
 #else
-        STD_NAMESPACE ifstream cmdFile(argValue + 1, STD_NAMESPACE ios::in);
+        STD_NAMESPACE ifstream cmdFile(filename, STD_NAMESPACE ios::in);
 #endif
         if (cmdFile)
         {
+            char c, block = 0;
             OFString value;
-            /* append comand file content to the list of arguments */
-            while (!cmdFile.eof())
+            /* append command file content to the list of arguments */
+            while (cmdFile.get(c))
             {
-                /* read formatted input (ignore whitespaces) */
-                cmdFile >> value;
-                if (!value.empty())
-                    argList.push_back(value);
+                /* double or single quote */
+                if ((c == '"') or (c == '\''))
+                {
+                    if (block == c)
+                    {
+                        /* closing current quote block (also empty value) */
+                        argList.push_back(value);
+                        value.clear();
+                        block = 0;
+                    }
+                    else if (block == 0)
+                    {
+                        /* starting new quote block */
+                        block = c;
+                    } else {
+                        /* append character */
+                        value += c;
+                    }
+                }
+                /* space, tab, newline or return */
+                else if ((c == ' ') || (c == '\t') || (c == '\n') || (c == '\r'))
+                {
+                    /* outside block quote? */
+                    if (block == 0)
+                    {
+                        if (!value.empty())
+                        {
+                            argList.push_back(value);
+                            value.clear();
+                        }
+                    } else
+                        value += c;
+                } else
+                    value += c;
+            }
+            /* append remaining argument (if any) */
+            if (!value.empty())
+            {
+                argList.push_back(value);
+#ifdef DEBUG
+                if (block != 0)
+                {
+                    ofConsole.lockCerr() << "WARNING: closing quotation mark (" << block << ") missing in command file " << filename << OFendl;
+                    ofConsole.unlockCerr();
+                }
+#endif
             }
             result = PS_Normal;
         } else
@@ -1478,8 +1523,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.41  2007-03-16 11:20:44  joergr
- * Fixed wrong warning messge about unchecked options in debug mode.
+ * Revision 1.42  2008-03-03 13:16:39  joergr
+ * Enhanced support for quotation marks in command files.
+ *
+ * Revision 1.41  2007/03/16 11:20:44  joergr
+ * Fixed wrong warning message about unchecked options in debug mode.
  *
  * Revision 1.40  2006/08/21 12:41:52  meichel
  * Updated code to correctly compile when
