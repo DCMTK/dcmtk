@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -12,7 +12,7 @@ dump2dcm [options] dumpfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdump2dcm\fP utility converts an ASCII dumpfile to a dicom file. The dumpfile has the same format as the output of \fBdcmdump\fP. Thus it is possible to capture the output of \fBdcmdump\fP into a file, modify some attributes and create a new dicom file. However, \fBdump2dcm\fP is not really suitable for generating dicom files containing pixel data.
+The \fBdump2dcm\fP utility converts an ASCII dumpfile to a dicom file. The dumpfile has the same format as the output of \fBdcmdump\fP. Thus it is possible to capture the output of \fBdcmdump\fP into a file, modify some attributes and create a new DICOM file.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -47,7 +47,7 @@ dcmfile-out  DICOM output filename
 .nf
 
   +l   --line  [m]ax-length: integer
-         maximum line length m (default 4096)
+         maximum line length m (default: 4096)
 .fi
 .PP
 .SS "output options"
@@ -64,8 +64,11 @@ output file format:
 
 output transfer syntax:
 
+  +t=  --write-xfer-same
+         write with same TS as input (default)
+
   +te  --write-xfer-little
-         write with explicit VR little endian (default)
+         write with explicit VR little endian
 
   +tb  --write-xfer-big
          write with explicit VR big endian TS
@@ -124,28 +127,28 @@ data set trailing padding (not with --write-dataset):
 .SH "NOTES"
 .PP
 .SS "Dump File Description"
-The input file can be an output of dcmdump. One element (Tag, VR, value) must be written into one line separated by arbitrary spaces or tab characters. A # begins a comment that ends at the line end. Empty lines are allowed.
+The input file can be an output of dcmdump. One element (tag, VR, value) must be written into one line separated by arbitrary spaces or tab characters. A '#' begins a comment that ends at the line end. Empty lines are allowed.
 .PP
-The parts of a line have the following syntax:
+The individual parts of a line have the following syntax:
 .PP
 .PP
 .nf
 
 Tag:   (gggg,eeee)
        with gggg and eeee are 4 character hexadecimal values
-       representing group and element tag.  Spaces and Tabs can be
-       anywhere in a Tag specification
+       representing group and element tag.  Spaces and tabs can be
+       anywhere in a tag specification.
 VR:    Value Representation must be written as 2 characters as in
-       Part 6 of the DICOM standard.  No Spaces or Tabs are allowed
+       Part 6 of the DICOM standard.  No spaces or tabs are allowed
        between the two characters.  If the VR can be determined from
-       the Tag, this part of a line is optional.
+       the tag, this part of a line is optional.
 Value: There are several rules for writing values:
        1. US, SS, SL, UL, FD, FL are written as decimal strings that
-          can be read by scanf.
+          can be read by scanf().
        2. AT is written as '(gggg,eeee)' with additional spaces
           stripped off automatically and gggg and eeee being decimal
-          strings that can be read by scanf.
-       3. OB, OW values are written as byte or word hexadecimal
+          strings that can be read by scanf().
+       3. OB and OW values are written as byte or word hexadecimal
           values separated by '\\' character.  Alternatively, OB or OW
           values can be read from a separate file by writing the
           filename prefixed by a '=' character (e.g. '=largepix.dat').
@@ -154,19 +157,22 @@ Value: There are several rules for writing values:
           necessary.  No checks will be made to ensure that the amount
           of data is reasonable in terms of other attributes such as
           Rows or Columns.
+          In case of compressed pixel data, the line should start with
+          '(7fe0,0010) OB (PixelSequence' in order to distinguish from
+          uncompressed pixel data.
        4. UI is written as '=Name' in data dictionary or as unique
-          identifer string (see 6.), e.g. '[1.2.840.....]'.
+          identifier string (see 6.), e.g. '[1.2.840.....]'.
        5. Strings without () <> [] spaces, tabs and # can be written
           directly.
-       6. Other strings with must be surrounded by [ ].  No bracket
+       6. Other strings must be surrounded by '[' and ']'.  No bracket
           structure is passed.  The value ends at the last ']' in the
           line.  Anything after the ']' is interpreted as comment.
        7. '(' and '<' are interpreted special and may not be used when
           writing an input file by hand as beginning characters of a
-          string. Multiple Value are separated by '\\'.  The lines need
-          not be sorted into ascending tag order.  References in DICOM
-          Directories are not supported.  Semantic errors are not
-          detected.
+          string.  Multiple Value are separated by '\\'.  The lines
+          need not be sorted into ascending tag order.  References in
+          DICOM Directories are not supported.  Semantic errors are
+          not detected.
 .fi
 .PP
 .SS "Example"
@@ -182,21 +188,23 @@ Value: There are several rules for writing values:
  (0002,0001) OB 01\\00
 .fi
 .PP
+.SS "Limitations"
+Please note that \fBdump2dcm\fP currently does not fully support DICOMDIR files. Specifically, the value of the various offset data elements is not updated automatically by this tool.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
 .PP
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBdump2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdump2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "SEE ALSO"
 .PP
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

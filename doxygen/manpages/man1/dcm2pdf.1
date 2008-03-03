@@ -1,4 +1,4 @@
-.TH "dcm2pdf" 1 "8 Nov 2007" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pdf" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pdf \- Extract PDF file from DICOM encapsulated PDF
@@ -132,7 +132,7 @@ All command line tools use the following notation for parameters: square bracket
 .PP
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
 The \fBdcm2pdf\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
@@ -143,4 +143,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBpdf2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2007-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

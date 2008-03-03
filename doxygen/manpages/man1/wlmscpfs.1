@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -39,22 +39,26 @@ port  tcp/ip port number to listen on
   -d    --debug
           debug mode, print debug information
 
-  -s    --single-process
-          single process mode
-
   -nse  --no-sq-expansion
           disable expansion of empty sequences
           in C-FIND request messages
 
-  -dfp  --data-files-path  [p]ath: string
-          path to worklist data files (default: /home/www/wlist)
+  -dfp  --data-files-path  [p]ath: string (default: /home/www/wlist)
+          path to worklist data files
 
-  -efr    --enable-file-reject
-          enable rejection of incomplete worklist-files
-          (default)
+  -efr  --enable-file-reject
+          enable rejection of incomplete worklist-files (default)
 
-  -dfr    --disable-file-reject
+  -dfr  --disable-file-reject
           disable rejection of incomplete worklist-files
+.fi
+.PP
+.SS "multi-process options"
+.PP
+.nf
+
+  -s    --single-process
+          single process mode
 .fi
 .PP
 .SS "returned character set options"
@@ -66,6 +70,10 @@ port  tcp/ip port number to listen on
 
   -cs1  --return-iso-ir-100
           return specific character set ISO IR 100
+
+  -csk  --keep-char-set
+          return character set provided in file
+
 .fi
 .PP
 .SS "network options"
@@ -125,26 +133,6 @@ other network options:
 
   -dhl  --disable-host-lookup
           disable hostname lookup
-
-group length encoding (when sending C-FIND response data):
-
-  +g=   --group-length-recalc
-          recalculate group lengths if present (default)
-
-  +g    --group-length-create
-          always write with group length elements
-
-  -g    --group-length-remove
-          always write without group length elements
-
-length encoding in sequences and items
-(when sending C-FIND response data):
-
-  +e    --length-explicit
-          write with explicit lengths (default)
-
-  -e    --length-undefined
-          write with undefined lengths
 .fi
 .PP
 .SS "encapsulated pixel data encoding options"
@@ -168,7 +156,7 @@ The returned character set options are intended for situations in which the wlms
 .PP
 Please note that a C-FIND request which is handled by this application may contain DICOM's Specific Character Set attribute (0008,0005), but this application will never use this attribute's value for matching. Besides, the question if DICOM's Specific Character Set attribute (0008,0005) will be contained in a C-FIND response which is returned by this application is always determined by the returned character set option which was specified when this application was started.
 .PP
-The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-Find response message. Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type').
+The options --enable-file-reject and --disable-file-reject can be used to enable or disable a file rejection mechanism which makes sure only complete worklist files will be used during the matching process. A worklist file is considered to be complete if it contains all necessary type 1 information which the SCP might have to return to an SCU in a C-FIND response message. Table K.6-1 in part 4 annex K of the DICOM standard lists all corresponding type 1 attributes (see column 'Return Key Type').
 .SS "DICOM Conformance"
 The \fBwlmscpfs\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -191,7 +179,7 @@ BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-The default behaviour of the wlmscpfs application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicitTransferSyntax over LittleEndianExplicitTransferSyntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
+The default behaviour of the wlmscpfs application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBwlmscpfs\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
 .PP
 The \fBwlmscpfs\fP application does not support extended negotiation.
 .PP
@@ -318,12 +306,12 @@ All command line tools use the following notation for parameters: square bracket
 .PP
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBwlmscpfs\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

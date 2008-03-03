@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -7,7 +7,7 @@ dcmodify \- Modify DICOM files
 .PP
 .nf
 
-dcmodify [options] [dcmfile-in...]
+dcmodify [options] dcmfile-in...
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -46,20 +46,23 @@ dcmfile-in  DICOM input filename(s) to be modified
 .PP
 .nf
 
-  -h   --help
-         print this help text and exit
+  -h    --help
+          print this help text and exit
 
-       --version
-         print version information and exit
+        --version
+          print version information and exit
 
-  -d   --debug
-         debug mode, print debug information
+  -d    --debug
+          debug mode, print debug information
 
-  -v   --verbose
-         verbose mode, print verbose output
+  -v    --verbose
+          verbose mode, print verbose output
 
-  -ie  --ignore-errors
-         continue with file, if modify error occurs
+  -ie   --ignore-errors
+          continue with file, if modify error occurs
+
+  -nb   --no-backup
+          don't backup files (DANGEROUS)
 .fi
 .PP
 .SS "input options"
@@ -68,55 +71,55 @@ dcmfile-in  DICOM input filename(s) to be modified
 
 input file format:
 
-  +f   --read-file
-         read file format or data set (default)
+  +f    --read-file
+          read file format or data set (default)
 
-  +fo  --read-file-only
-         read file format only
+  +fo   --read-file-only
+          read file format only
 
-  -f   --read-dataset
-         read data set without file meta information
+  -f    --read-dataset
+          read data set without file meta information
 
 input transfer syntax:
 
-  -t=  --read-xfer-auto
-         use TS recognition (default)
+  -t=   --read-xfer-auto
+          use TS recognition (default)
 
-  -td  --read-xfer-detect
-         ignore TS specified in the file meta header
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
 
-  -te  --read-xfer-little
-         read with explicit VR little endian TS
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
 
-  -tb  --read-xfer-big
-         read with explicit VR big endian TS
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
 
-  -ti  --read-xfer-implicit
-         read with implicit VR little endian TS
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
 
 parsing of odd-length attributes:
 
-  +ao  --accept-odd-length
-         accept odd length attributes (default)
+  +ao   --accept-odd-length
+          accept odd length attributes (default)
 
-  +ae  --assume-even-length
-         assume real length is one byte larger
+  +ae   --assume-even-length
+          assume real length is one byte larger
 
 automatic data correction:
 
-  +dc  --enable-correction
-         enable automatic data correction (default)
+  +dc   --enable-correction
+          enable automatic data correction (default)
 
-  -dc  --disable-correction
-         disable automatic data correction
+  -dc   --disable-correction
+          disable automatic data correction
 
 bitstream format of deflated input:
 
-  +bd  --bitstream-deflated
-         expect deflated bitstream (default)
+  +bd   --bitstream-deflated
+          expect deflated bitstream (default)
 
-  +bz  --bitstream-zlib
-         expect deflated zlib bitstream
+  +bz   --bitstream-zlib
+          expect deflated zlib bitstream
 .fi
 .PP
 .SS "processing options"
@@ -125,25 +128,24 @@ bitstream format of deflated input:
 
 insert mode options:
 
-  -i   --insert-tag  "tag-path=value"
-         insert (or overwrite) tag at position t
-         with value v
+  -i    --insert-tag  "tag-path=value"
+          insert (or overwrite) tag at position t with value v
 
 modify mode options:
 
-  -m   --modify-tag  "[t]ag-path=[v]alue"
-         modify tag at position t to value v
+  -m    --modify-tag  "[t]ag-path=[v]alue"
+          modify tag at position t to value v
 
-  -ma  --modify-all-tags  "[t]ag=[v]value"
-         modify ALL matching tags t in file to value v
+  -ma   --modify-all-tags  "[t]ag=[v]value"
+          modify ALL matching tags t in file to value v
 
 erase mode options:
 
-  -e   --erase-tag  "[t]ag-path"
-         erase tag at position t
+  -e    --erase-tag  "[t]ag-path"
+          erase tag at position t
 
-  -ea  --erase-all-tags  "[t]ag"
-         erase ALL matching tags t in file
+  -ea   --erase-all-tags  "[t]ag"
+          erase ALL matching tags t in file
 
 uid options:
 
@@ -157,10 +159,9 @@ uid options:
           generate new SOP Instance UID
 
   -nmu  --no-meta-uid
-          don't update metaheader UIDs
-          UIDs in the metaheader won't be changed,
-          if related UIDs in dataset are modified
-          via options -m, -i or -ma
+          don't update metaheader UIDs;
+          UIDs in the metaheader won't be changed, if related UIDs in
+          the dataset are modified via options -m, -i or -ma
 .fi
 .PP
 .SS "output options"
@@ -169,71 +170,71 @@ uid options:
 
 output file format:
 
-  +F   --write-file
-         write file format (default)
+  +F    --write-file
+          write file format (default)
 
-  -F   --write-dataset
-         write data set without file meta information
+  -F    --write-dataset
+          write data set without file meta information
 
 output transfer syntax:
 
-  +t=  --write-xfer-same
-         write with same TS as input (default)
+  +t=   --write-xfer-same
+          write with same TS as input (default)
 
-  +te  --write-xfer-little
-         write with explicit VR little endian TS
+  +te   --write-xfer-little
+          write with explicit VR little endian TS
 
-  +tb  --write-xfer-big
-         write with explicit VR big endian TS
+  +tb   --write-xfer-big
+          write with explicit VR big endian TS
 
-  +ti  --write-xfer-implicit
-         write with implicit VR little endian TS
+  +ti   --write-xfer-implicit
+          write with implicit VR little endian TS
 
 post-1993 value representations:
 
-  +u   --enable-new-vr
-         enable support for new VRs (UN/UT) (default)
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
 
-  -u   --disable-new-vr
-         disable support for new VRs, convert to OB
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
 
 group length encoding:
 
-  +g=  --group-length-recalc
-         recalculate group lengths if present (default)
+  +g=   --group-length-recalc
+          recalculate group lengths if present (default)
 
-  +g   --group-length-create
-         always write with group length elements
+  +g    --group-length-create
+          always write with group length elements
 
-  -g   --group-length-remove
-         always write without group length elements
+  -g    --group-length-remove
+          always write without group length elements
 
 length encoding in sequences and items:
 
-  +le  --length-explicit
-         write with explicit lengths (default)
+  +le   --length-explicit
+          write with explicit lengths (default)
 
-  -le  --length-undefined
-         write with undefined lengths
+  -le   --length-undefined
+          write with undefined lengths
 
 data set trailing padding (not with --write-dataset):
 
-  -p=  --padding-retain
-         do not change padding (default if not --write-dataset)
+  -p=   --padding-retain
+          do not change padding (default if not --write-dataset)
 
-  -p   --padding-off
-         no padding (implicit if --write-dataset)
+  -p    --padding-off
+          no padding (implicit if --write-dataset)
 
-  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
-         align file on multiple of f bytes and items on
-         multiple of i bytes
+  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+          align file on multiple of f bytes and items on
+          multiple of i bytes
 .fi
 .PP
 .SH "PRIVATE TAGS"
 .PP
 There are some points you've got to consider when working with private tags. The insertion or modification of a reservation tag (gggg,00xx) should always work.
 .SS "insertions"
-If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see dcmdata/docs/datadict.txt for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN and empty value. Please note, that the usage of option '-u' will change the VR from UN to OB when saving.
+If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see \fI<docdir>/datadict.txt\fP for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN and empty value. Please note, that the usage of option '-u' will change the VR from UN to OB when saving.
 .PP
 If you've got your private tag in the dictionary, \fBdcmodify\fP acts as follows: When it finds a reservation in the tags enclosing dataset, whose private creator matches, insertion is done with the VR found in dictionary and the value, you entered at commandline. But if the private creator doesn't match the one found in dictionary, \fBdcmodify\fP inserts the tag with VR Unknown (UN) and an empty value.
 .SS "modifications"
@@ -246,7 +247,7 @@ When you use \fBdcmodify\fP to delete a private reservation tag, please note, th
 For deletion of private non-reservation tags there are no special issues.
 .SH "CHANGING UIDs"
 .PP
-\fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options. You can disable this behaviour by using the '-nmu option.
+\fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options. You can disable this behaviour by using the '-nmu' option.
 .PP
 If you generate new UID's with '-gst', '-gse' or '-gin', this will only affect the UID you choosed to generate. So if you use '-gst' to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value seperately. Normally you would also modify the 'underlying' UIDs. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' dicom files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary.
 .PP
@@ -328,12 +329,12 @@ All command line tools use the following notation for parameters: square bracket
 .PP
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2003-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2003-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

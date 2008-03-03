@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -12,7 +12,7 @@ dcmdump [options] dcmfile-in...
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square brackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage'). Empty value fields are described as '(no value available)'.
+The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square brackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage') unless this mapping would be explicitly switched off. Empty value fields are described as '(no value available)'.
 .PP
 If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcmdump\fP to read a dataset with a particular transfer syntax.
 .SH "PARAMETERS"
@@ -20,7 +20,7 @@ If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta-hea
 .PP
 .nf
 
-dcmfile-in  DICOM input filename to be dumped
+dcmfile-in  DICOM input file or directory to be dumped
 .fi
 .PP
 .SH "OPTIONS"
@@ -71,6 +71,22 @@ input transfer syntax:
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
 
+input files:
+
+  +sd  --scan-directories
+         scan directories for input files (dcmfile-in)
+
+  +sp  --scan-pattern  [p]attern : string (only with --scan-directories)
+         pattern for filename matching (wildcards)
+
+         # possibly not available on all systems
+
+  -r   --no-recurse
+         do not recurse within directories (default)
+
+  +r   --recurse
+         recurse within specified directories
+
 parsing of odd-length attributes:
 
   +ao  --accept-odd-length
@@ -88,11 +104,12 @@ handling of undefined length UN elements:
          read undefined len UN as explicit VR
 
 handling of defined length UN elements:
-  -uc   --retain-un
-          retain elements as UN (default)
 
-  +uc   --convert-un
-          convert to real VR if known
+  -uc  --retain-un
+         retain elements as UN (default)
+
+  +uc  --convert-un
+         convert to real VR if known
 
 automatic data correction:
 
@@ -135,7 +152,17 @@ printing:
   +F   --print-filename
          print header with filename for each input file
 
-error handling:
+  +Fs  --print-file-search
+         print header with filename only for those input files
+         that contain one of the searched tags
+
+  +Un  --map-uid-names
+         map well-known UID numbers to names (default)
+
+  -Un  --no-uid-names
+         do not map well-known UID numbers to names
+
+ error handling:
 
   -E   --stop-on-error
          do not print if file is damaged (default)
@@ -176,15 +203,15 @@ All command line tools use the following notation for parameters: square bracket
 .PP
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmdump\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmdump\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "SEE ALSO"
 .PP
 \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

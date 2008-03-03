@@ -1,4 +1,4 @@
-.TH "dcmgpdir" 1 "20 Dec 2005" "Version Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmgpdir" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmgpdir \- Create a general purpose DICOMDIR
@@ -7,7 +7,7 @@ dcmgpdir \- Create a general purpose DICOMDIR
 .PP
 .nf
 
-dcmgpdir [options] dcmfile-in...
+dcmgpdir [options] [dcmfile-in...]
 .fi
 .PP
 .SH "DESCRIPTION"
@@ -74,15 +74,6 @@ DICOMDIR identifiers:
           add a specific character set for descriptor
           (default: "ISO_IR 100" if descriptor present)
 
-type 1 attributes:
-
-  -I    --strict
-          exit with error if DICOMDIR type 1 attributes
-          are missing in DICOM file (default)
-
-  +I    --invent
-          invent DICOMDIR type 1 attributes if missing in DICOM file
-
 reading:
 
   +id   --input-directory  [d]irectory : string
@@ -106,8 +97,13 @@ reading:
           pattern for filename matching (wildcards)
 
           # possibly not available on all systems
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
 
-checking:
+consistency check:
 
   -W    --no-consistency-check
           do not check files for consistency
@@ -118,9 +114,28 @@ checking:
   -a    --abort-inconsist-file
           abort on first inconsistent file
 
+type 1 attributes:
+
+  -I    --strict
+          exit with error if DICOMDIR type 1 attributes
+          are missing in DICOM file (default)
+
+  +I    --invent
+          invent DICOMDIR type 1 attributes if missing in DICOM file
+
   +Ipi  --invent-patient-id
           invent new PatientID in case of inconsistent
           PatientsName attributes
+
+other checks:
+
+  +Nrs  --allow-retired-sop
+          allow retired SOP classes defined in previous editions
+          of the DICOM standard
+
+  -Nxc  --no-xfer-check
+          do not reject images with non-standard transfer syntax
+          (just warn)
 .fi
 .PP
 .SS "output options"
@@ -131,8 +146,12 @@ writing:
 
   -A    --replace
           replace existing DICOMDIR (default)
+
   +A    --append
           append to existing DICOMDIR
+
+  +U    --update
+          update existing DICOMDIR
 
   -w    --discard
           do not write out DICOMDIR
@@ -170,21 +189,23 @@ length encoding in sequences and items:
 All files specified on the command line (or discovered by recursivly examining the contents of directories with the \fI+r\fP option) are first evaluated for their compatibility with the General Purpose CD-R Image Interchange Profile (Supplement 19). Only appropriate files encoded using the Explicit VR Little Endian Uncompressed Transfer Syntax will be accepted. Files having invalid filenames will be rejected (the rules can be relaxed via the \fI+m\fP option). Files missing required attributes will be rejected (the \fI+I\fP option can relax this behaviour).
 .PP
 A \fIDICOMDIR\fP file will only be constructed if all files have passed initial tests.
+.PP
+The \fBdcmgpdir\fP utility also allows to append new entries to and to update existing entries in a \fIDICOMDIR\fP file. Using option \fI+A\fP new entries are only appended to the DICOMDIR, i.e. existing records like the ones for PATIENT information are not updated. Using option \fI+U\fP also existing records are updated according to the information found in the referenced DICOM files. Please note that this update process might be slower that just appending new entries. However, it makes sure that additional information that is required for the selected application profile is also added to existing records.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
 .PP
 Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
 .PP
-In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIshare/data/dumppat.txt\fP).
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
 .SH "ENVIRONMENT"
 .PP
-The \fBdcmgpdir\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+The \fBdcmgpdir\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
 .PP
-The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "SEE ALSO"
 .PP
 \fBdcmmkdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
