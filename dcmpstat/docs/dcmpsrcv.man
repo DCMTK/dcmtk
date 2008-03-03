@@ -65,11 +65,12 @@ standard evaluation rules of common Unix shells.
 In addition, one or more command files can be specified using an '@' sign as a
 prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
-whitespaces are treated as a single separator) prior to any further
-evaluation.  Please note that a command file cannot contain another command
-file.  This simple but effective approach allows to summarize common
-combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em><datadir>/dumppat.txt</em>).
+whitespaces are treated as a single separator unless they appear between two
+quotation marks) prior to any further evaluation.  Please note that a command
+file cannot contain another command file.  This simple but effective approach
+allows to summarize common combinations of options/parameters and avoids
+longish and confusing command lines (an example is provided in file
+<em><datadir>/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
@@ -97,7 +98,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2006 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
-Germany.
+Copyright (C) 1998-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
