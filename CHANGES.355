@@ -3,9 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2008.03.10 (onken)
 
-- Changed OFListIterator to OFListConstIterator in order to complile when
+- Changed OFListIterator to OFListConstIterator in order to compile when
   HAVE_STL is defined. Thanks to Markus Mertens <markus.mertens@evkb.de> for
   the report.
+  Affects: dcmdata/libi2d/i2djpgs.cc
 
 **** Changes from 2008.03.10 (riesmeier)
 
