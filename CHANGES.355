@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.03.10 (riesmeier)
+
+- Added "ofstream.h" include in order to compile when HAVE_STL is defined.
+  Thanks to Markus Mertens <markus.mertens@evkb.de> for the report.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2008.03.03 (riesmeier)
 
 - Enhanced support for quotation marks in command files.
@@ -55,7 +61,7 @@ Changes between releases are documented here.
            dcmsr/docs/dsrdump.man
            dcmsr/docs/xml2dsr.man
            dcmwlm/docs/wlmscpfs.man
-           
+
 - Added up-to-date man pages.
   Affects: doxygen/manpages/man1/*
 

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:12:53 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2008-03-10 12:02:57 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,6 +105,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CMATH
 #define INCLUDE_CFLOAT
@@ -1773,7 +1774,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.40  2007-11-15 16:12:53  joergr
+ *  Revision 1.41  2008-03-10 12:02:57  joergr
+ *  Added "ofstream.h" include in order to compile when HAVE_STL is defined.
+ *
+ *  Revision 1.40  2007/11/15 16:12:53  joergr
  *  Introduced new markup mode for convertToMarkupString() that is used to
  *  distinguish between HTML, HTML 3.2, XHTML and XML.
  *  Enhanced convertToMarkupString() in order to be more compliant to the HTML
