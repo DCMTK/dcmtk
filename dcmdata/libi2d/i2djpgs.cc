@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 16:32:31 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-03-10 13:10:01 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -873,7 +873,7 @@ void I2DJpegSource::debugDumpJPEGFileMap() const
   printMessage(m_logStream,"I2DJpegSource: Dumping JPEG marker file map: ");
   if (m_keepAPPn)
     printMessage(m_logStream, "I2DJpegSource: Keep APPn option enabled, any markers after SOFn marker will not be dumped");
-  OFListIterator(JPEGFileMapEntry*) it= m_jpegFileMap.begin();
+  OFListConstIterator(JPEGFileMapEntry*) it= m_jpegFileMap.begin();
   while (it != m_jpegFileMap.end())
   {
     if (m_logStream)
@@ -916,6 +916,10 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.3  2008-03-10 13:10:01  onken
+ * Changed OFListIterator to OFListConstIterator in order to complile when
+ * HAVE_STL is defined.
+ *
  * Revision 1.2  2008-01-16 16:32:31  onken
  * Fixed some empty or doubled log messages in libi2d files.
  *

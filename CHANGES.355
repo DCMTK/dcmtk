@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.03.10 (onken)
+
+- Changed OFListIterator to OFListConstIterator in order to complile when
+  HAVE_STL is defined. Thanks to Markus Mertens <markus.mertens@evkb.de> for
+  the report.
+
 **** Changes from 2008.03.10 (riesmeier)
 
 - Added "ofstream.h" include in order to compile when HAVE_STL is defined.
