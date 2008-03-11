@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:44:12 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2008-03-11 11:10:53 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1669,7 +1669,7 @@ DSRCodingSchemeIdentificationList &DSRDocument::getCodingSchemeIdentification()
 }
 
 
-// --- get attributes (C tmpString) ---
+// --- get attributes (C string) ---
 
 const char *DSRDocument::getModality() const
 {
@@ -1821,7 +1821,7 @@ const char *DSRDocument::getAccessionNumber() const
 }
 
 
-// --- get attributes (C++ tmpString) ---
+// --- get attributes (C++ string) ---
 
 const OFString &DSRDocument::getModality(OFString &value) const
 {
@@ -2323,7 +2323,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     {
         /* retrieve SOP class UID from internal document type */
         SOPClassUID.putString(documentTypeToSOPClassUID(getDocumentType()));
-        /* put modality tmpString depending on document type */
+        /* put modality string depending on document type */
         Modality.putString(documentTypeToModality(getDocumentType()));
 
         /* create new instance number if required (type 1) */
@@ -2377,7 +2377,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.59  2007-11-15 16:44:12  joergr
+ *  Revision 1.60  2008-03-11 11:10:53  joergr
+ *  Fixed wrong comments.
+ *
+ *  Revision 1.59  2007/11/15 16:44:12  joergr
  *  Added meta header element for the generator of the HTML/XHTML document.
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
@@ -2487,7 +2490,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
  *  Added output of SOP class name to XML document.
  *
  *  Revision 1.34  2002/05/02 14:08:35  joergr
- *  Added support for standard and non-standard tmpString streams (which one is
+ *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
  *
  *  Revision 1.33  2002/04/16 13:51:37  joergr
