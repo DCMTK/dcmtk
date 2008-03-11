@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2007, OFFIS
+ *  Copyright (C) 2005-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRXRayRadiationDoseSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-29 13:48:12 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2008-03-11 11:10:17 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,8 +140,11 @@ OFBool DSRXRayRadiationDoseSRConstraintChecker::checkContentRelationship(const E
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxrdcc.cc,v $
- *  Revision 1.3  2007-11-29 13:48:12  joergr
- *  Added support for CP 127 (CT Radiation Dose Reporting).
+ *  Revision 1.4  2008-03-11 11:10:17  joergr
+ *  Fixed wrong CVS log entry.
+ *
+ *  Revision 1.3  2007/11/29 13:48:12  joergr
+ *  Added support for Supplement 127 (CT Radiation Dose Reporting).
  *
  *  Revision 1.2  2005/12/08 15:48:26  meichel
  *  Changed include path schema for all DCMTK header files
