@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-03-03 13:16:39 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2008-03-11 16:18:56 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1105,16 +1105,14 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
             }
             /* append remaining argument (if any) */
             if (!value.empty())
-            {
                 argList.push_back(value);
 #ifdef DEBUG
-                if (block != 0)
-                {
-                    ofConsole.lockCerr() << "WARNING: closing quotation mark (" << block << ") missing in command file " << filename << OFendl;
-                    ofConsole.unlockCerr();
-                }
-#endif
+            if (block != 0)
+            {
+                ofConsole.lockCerr() << "WARNING: closing quotation mark (" << block << ") missing in command file " << filename << OFendl;
+                ofConsole.unlockCerr();
             }
+#endif
             result = PS_Normal;
         } else
             result = PS_CannotOpenCommandFile;
@@ -1523,6 +1521,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.43  2008-03-11 16:18:56  joergr
+ * Moved warning message on missing quotation mark when reading command files.
+ *
  * Revision 1.42  2008-03-03 13:16:39  joergr
  * Enhanced support for quotation marks in command files.
  *

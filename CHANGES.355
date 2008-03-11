@@ -12,6 +12,9 @@ Changes between releases are documented here.
 - Fixed small formatting issue.
   Affects: dcmdata/docs/img2dcm.man
 
+- Moved warning message on missing quotation mark when reading command files.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2008.03.10 (onken)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when
