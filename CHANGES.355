@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.03.11 (riesmeier)
+
+- Fixed wrong comments.
+  Affects: dcmsr/libsrc/dsrdoc.cc
+
+- Fixed wrong CVS log entry.
+  Affects: dcmsr/libsrc/dsrxrdcc.cc
+
+- Fixed small formatting issue.
+  Affects: dcmdata/docs/img2dcm.man
+
 **** Changes from 2008.03.10 (onken)
 
 - Changed OFListIterator to OFListConstIterator in order to compile when
