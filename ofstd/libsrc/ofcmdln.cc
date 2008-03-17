@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-03-11 16:18:56 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-03-17 10:08:41 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1069,7 +1069,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseCommandFile(const char *argValu
             while (cmdFile.get(c))
             {
                 /* double or single quote */
-                if ((c == '"') or (c == '\''))
+                if ((c == '"') || (c == '\''))
                 {
                     if (block == c)
                     {
@@ -1521,6 +1521,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.44  2008-03-17 10:08:41  onken
+ * Corrected "or" to "||".
+ *
  * Revision 1.43  2008-03-11 16:18:56  joergr
  * Moved warning message on missing quotation mark when reading command files.
  *

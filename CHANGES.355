@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.03.17 (onken)
+
+- Corrected "or" to "||".
+  Affects: ofstd/libsrc/ofcmdln.cc
+
 **** Changes from 2008.03.11 (riesmeier)
 
 - Fixed wrong comments.
