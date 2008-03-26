@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2006, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:53 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-03-26 17:01:40 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
-#define SHORTCOL 6
+#define SHORTCOL 4
 #define LONGCOL 21
 
 #ifdef WITH_ZLIB
@@ -183,10 +183,10 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             {
                 app->printHeader(OFTrue /*print host identifier*/);
 #ifdef WITH_ZLIB
-                debugMsg(OFTrue,"\nExternal libraries used: ","","");
-                debugMsg(OFTrue,"- ZLIB, Version ", zlibVersion(),"");
+                debugMsg(OFTrue, "\nExternal libraries used: ", "", "");
+                debugMsg(OFTrue, "- ZLIB, Version ", zlibVersion(), "");
 #else
-                debugMsg(OFTrue,"\nExternal libraries used: none","","");
+                debugMsg(OFTrue, "\nExternal libraries used: none", "", "");
 #endif
                 delete app;
                 delete cmd;
@@ -203,9 +203,9 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             files->push_back(current_file);
         }
         //if no files are given: return with error message
-        if (files->empty()==OFTrue)
+        if (files->empty())
         {
-            debugMsg(OFTrue,"No dicom files given!","","");
+            debugMsg(OFTrue, "No dicom files given!", "", "");
             delete app;
             delete cmd;
             exit(1);
@@ -213,7 +213,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 
         // make sure data dictionary is loaded
         if (!dcmDataDict.isDictionaryLoaded())
-            debugMsg(OFTrue,"Warning: no data dictionary loaded, ",
+            debugMsg(OFTrue, "Warning: no data dictionary loaded, ",
                 "check environment variable: ", DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 }
@@ -292,7 +292,7 @@ void MdfConsoleEngine::parseNonJobOptions()
     }
     cmd->endOptionBlock();
 
-    #ifdef WITH_ZLIB
+#ifdef WITH_ZLIB
     cmd->beginOptionBlock();
     if (cmd->findOption("--bitstream-deflated"))
     {
@@ -303,7 +303,7 @@ void MdfConsoleEngine::parseNonJobOptions()
         dcmZlibExpectRFC1950Encoding.set(OFTrue);
     }
     cmd->endOptionBlock();
-    #endif
+#endif
 
     //output options
     cmd->beginOptionBlock();
@@ -489,7 +489,7 @@ int MdfConsoleEngine::executeJob(const MdfJob &job)
     //if modify operation failed
     if (result.bad() && error_count==0)
     {
-        debugMsg(verbose_option,"Error modifying tag: ", result.text(),"");
+        debugMsg(verbose_option, "Error modifying tag: ", result.text(), "");
         error_count++;
     }
     return error_count;
@@ -507,7 +507,7 @@ int MdfConsoleEngine::startProvidingService()
     //return value of this function
     int errors=0;
     //just for better readability on console
-    if (verbose_option) debugMsg(OFTrue,"\n","","");
+    if (verbose_option) debugMsg(OFTrue, "\n", "", "");
     //parse command line into file and job list
     parseCommandLine();
     //iterators for job and file loops
@@ -538,16 +538,14 @@ int MdfConsoleEngine::startProvidingService()
                                         itempad_option, output_dataset_option);
                 if (result.bad())
                 {
-                    debugMsg(OFTrue, "error: couldn't save file: ",
-                        result.text(),"");
+                    debugMsg(OFTrue, "error: couldn't save file: ", result.text(),"");
                     errors++;
                     if (!no_backup_option)
                     {
                       result=restoreFile((*file_it).c_str());
                       if (result.bad())
                       {
-                          debugMsg(OFTrue,
-                              "error: couldnt restore file!","","");
+                          debugMsg(OFTrue, "error: couldn't restore file!", "", "");
                           errors++;
                       }
                     }
@@ -559,8 +557,7 @@ int MdfConsoleEngine::startProvidingService()
                 result=restoreFile((*file_it).c_str());
                 if (result.bad())
                 {
-                    debugMsg(OFTrue, "error: couldnt restore file!",
-                    "","");
+                    debugMsg(OFTrue, "error: couldn't restore file!", "", "");
                     errors++;
                 }
             }
@@ -569,11 +566,10 @@ int MdfConsoleEngine::startProvidingService()
         else
         {
             errors++;
-            debugMsg(OFTrue,"error: unable to load file ",*file_it,
-            "\n");
+            debugMsg(OFTrue, "error: unable to load file ", *file_it, "\n");
         }
         file_it++;
-        debugMsg(verbose_option, "------------------------------------","","");
+        debugMsg(verbose_option, "------------------------------------", "", "");
     }
     return errors;
 }
@@ -591,7 +587,7 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     //free memory
     delete ds_man;
     ds_man = new MdfDatasetManager(debug_option);
-    debugMsg(verbose_option,"Processing file: ", filename, "");
+    debugMsg(verbose_option, "Processing file: ", filename, "");
     //load file into dataset manager
     result=ds_man->loadFile(filename, read_mode_option, input_xfer_option);
     if (result.good() && !no_backup_option)
@@ -649,9 +645,7 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
         result=remove(filename);
         if (result!=0)
         {
-            debugMsg(OFTrue,
-                "Unable to delete original filename for restoring backup!",
-                "","");
+            debugMsg(OFTrue, "Unable to delete original filename for restoring backup!", "", "");
             return EC_IllegalCall;
         }
     }
@@ -660,7 +654,7 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
     //error renaming backup file
     if (result!=0)
     {
-        debugMsg(OFTrue,"Error renaming backup file to original","","");
+        debugMsg(OFTrue, "Error renaming backup file to original", "", "");
         return EC_IllegalCall;
     }
     //successfully restored, throw out message:
@@ -711,7 +705,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.22  2007-11-23 15:42:53  meichel
+** Revision 1.23  2008-03-26 17:01:40  joergr
+** Fixed various layout and formatting issues.
+**
+** Revision 1.22  2007/11/23 15:42:53  meichel
 ** Removed unwanted output on console when debug flag is not set
 **
 ** Revision 1.21  2006/12/06 09:31:49  onken
