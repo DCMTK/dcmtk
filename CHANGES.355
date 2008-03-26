@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.03.26 (riesmeier)
+
+- Slightly revised documentation.
+  Affects: dcmdata/docs/dcmodify.man
+
+- Fixed various layout and formatting issues.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/docs/dcmodify.man
+
 **** Changes from 2008.03.17 (onken)
 
 - Corrected "or" to "||".
