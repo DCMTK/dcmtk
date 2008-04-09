@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.09 (riesmeier)
+
+- Fixed wrong use of variable in "for" loop which might cause a crash.
+  Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+
 **** Changes from 2008.03.26 (riesmeier)
 
 - Slightly revised documentation.

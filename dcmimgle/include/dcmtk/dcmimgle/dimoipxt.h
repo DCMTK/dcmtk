@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-04-09 11:02:08 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ class DiMonoInputPixelTemplate
                                    const unsigned long ocnt)
     {
         int result = 0;
-        if ((sizeof(T1) <= 2) && (this->InputCount > 3 * ocnt))                     // optimization criteria
+        if ((sizeof(T1) <= 2) && (this->InputCount > 3 * ocnt))               // optimization criteria
         {                                                                     // use LUT for optimization
             lut = new T3[ocnt];
             if (lut != NULL)
@@ -179,7 +179,7 @@ class DiMonoInputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);                 // points to 'zero' entry
                         q = this->Data;
-                        for (i = this->InputCount; i != 0; --i)                                 // apply LUT
+                        for (i = this->InputCount; i != 0; --i)                           // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
@@ -264,14 +264,14 @@ class DiMonoInputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);                 // points to 'zero' entry
                         q = this->Data;
-                        for (i = this->InputCount; i != 0; --i)                                 // apply LUT
+                        for (i = this->InputCount; i != 0; --i)                           // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
                         if (slope == 1.0)
                         {
-                            for (i = this->Count; i != 0; --i)
+                            for (i = this->InputCount; i != 0; --i)
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) + intercept);
                         } else {
                             if (intercept == 0.0)
@@ -299,7 +299,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.34  2006-08-15 16:30:11  meichel
+ * Revision 1.35  2008-04-09 11:02:08  joergr
+ * Fixed wrong use of variable in "for" loop which might cause a crash.
+ *
+ * Revision 1.34  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
