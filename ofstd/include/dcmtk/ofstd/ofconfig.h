@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: OFConfigFile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:51 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2008-04-15 15:46:30 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,8 +44,8 @@
 /*
  *  Short description of configuration file structure:
  *    - The data in a configuration file have a tree structure.
- *      The tree has a fixed depth of (OFConfigFile_MaxLevel), not including
- *      the (imaginary) root node.
+ *      The tree has a depth defined at instantiation time (by default, OFConfigFile_MaxLevel), 
+ *      not including the (imaginary) root node.
  *    - A level 0 entry (a leaf) has the form: KEYWORD = VALUE,
  *      where the keyword starts on row one of a line.
  *    - A level 1 entry has the form [KEYWORD]
@@ -61,11 +61,13 @@
  *      value string. Empty lines are discarded (and also their linefeed).
  *    - The data must have a "clean" tree structure. This means that there
  *      MUST be a level 2 keyword before any level 1 keyword etc.
- *    - lines starting with "#" are interpreted as comment lines.
+ *    - lines starting with the comment char (default  is "#") are interpreted 
+ *      as comment lines.
  *
  */
 
 #define OFConfigFile_MaxLevel 2
+#define OFConfigFile_CommentChar '#'
 
 class OFConfigFile;
 class OFConfigFileNode;
@@ -171,6 +173,8 @@ private:
   OFString value_;
 };
 
+/// pointer to a OFConfigFileNode object
+typedef OFConfigFileNode *OFConfigFileNodePtr;
 
 /** structure used by class OFConfigFile to store a cursor pointing
  *  to the currently selected section and entry in the config data
@@ -180,7 +184,12 @@ class OFConfigFileCursor
 public:
   /** default constructor
    */
-  OFConfigFileCursor() { clear(); }
+  OFConfigFileCursor(unsigned int maxLevel) 
+  : array_(NULL)
+  , maxLevel_(maxLevel)
+  { 
+  	clear(); 
+  }
 
   /** copy constructor
    */
@@ -188,7 +197,10 @@ public:
 
   /** destructor
    */
-  ~OFConfigFileCursor() {}
+  ~OFConfigFileCursor() 
+  {
+    delete[] array_;
+  }
 
   /** assignment operator
    */
@@ -203,7 +215,7 @@ public:
    */
   const char *getKeyword(unsigned int level) const
   {
-    return ptr[level]->getKeyword();
+    if ((level <= maxLevel_) && array_ && array_[level]) return array_[level]->getKeyword(); else return NULL;
   }
 
   /** return value as C string
@@ -212,7 +224,7 @@ public:
    */
   const char *getValue(unsigned int level) const
   {
-    return ptr[level]->getValue();
+    if ((level <= maxLevel_) && array_ && array_[level]) return array_[level]->getValue(); else return NULL;
   }
 
   /** checks if the cursor points to a valid location up to
@@ -288,8 +300,10 @@ public:
 
 private:
   /// the cursor is an array of pointers to OFConfigFileNode objects
-  OFPConfigFileNode ptr[OFConfigFile_MaxLevel +1];
-  
+  OFConfigFileNodePtr *array_;
+
+  /// depth of tree, i.e. number of entries in array_
+  unsigned int maxLevel_;  
 };
 
 
@@ -304,8 +318,13 @@ public:
 
   /** constructor.
    *  @param infile file from which the configuration data is to be read.
+   *  @param maxLevel depth of the tree maintained in this config file, default 2
+   *  @param commentChar character to start comment lines, default '#'
    */
-  OFConfigFile(FILE *infile);
+  OFConfigFile(
+    FILE *infile, 
+    unsigned int maxLevel = OFConfigFile_MaxLevel,
+    char commentChar = OFConfigFile_CommentChar);
 
   /** destructor
    */
@@ -343,7 +362,7 @@ public:
    */
   OFBool section_valid(unsigned int level) const
   {
-    return cursor.section_valid(level);
+    return cursor_.section_valid(level);
   }
   
   /** sets cursor to the entry with keyword "key" at the given level.
@@ -357,7 +376,7 @@ public:
    */
   void set_section(unsigned int level, const char *key)
   {
-    cursor.set_section(level, key, anchor);
+    cursor_.set_section(level, key, anchor_);
   }
    
   /** sets cursor to the first entry at the given level (without
@@ -370,7 +389,7 @@ public:
    */
   void first_section(unsigned int level)
   {
-    cursor.first_section(level, anchor);
+    cursor_.first_section(level, anchor_);
   }
 
   /** sets cursor to the next entry at the given level (without
@@ -383,7 +402,7 @@ public:
    */
   void next_section(unsigned int level)
   {
-    cursor.next_section(level);
+    cursor_.next_section(level);
   }
   
   /** puts the current cursor position on a cursor stack.
@@ -395,14 +414,17 @@ public:
   void restore_cursor();
   
   /** sets the cursor to a different section. This "shortcut" method allows
-   *  to specify both section levels at the same time.
-   *  The cursor becomes invalid when the section is not found.
+   *  to specify multiple section levels at the same time.
+   *  The cursor becomes invalid when the section is not found or if parameters
+   *  for more level then present in the tree are specified.
    *  @param key1 level 1 section key, i.e. [KEY]
    *  @param key2 level 2 section key, i.e. [[KEY]]. If omitted, section 2 remains unchanged.
+   *  @param key2 level 3 section key, i.e. [[[KEY]]]. If omitted, section 3 remains unchanged.
    */
   void select_section(
     const char *key1,
-    const char *key2=NULL);
+    const char *key2=NULL,
+    const char *key3=NULL);
   
   /** sets the cursor to the given level 0 keyword and returns
    *  the string value assigned to this keyword.
@@ -452,36 +474,46 @@ private:
 
 
   /// stack of cursor positions that can be saved and restored
-  OFStack<OFConfigFileCursor> stack;
+  OFStack<OFConfigFileCursor> stack_;
 
   /// current cursor position
-  OFConfigFileCursor cursor;
+  OFConfigFileCursor cursor_;
 
   /// anchor to data tree
-  OFConfigFileNode *anchor;
+  OFConfigFileNode *anchor_;
 
   /// flag indicating whether newline during file read
-  int isnewline;
+  int isnewline_;
 
   /// flag indicating whether CR was read during file read
-  int crfound;
+  int crfound_;
 
   /// buffer during file read
-  char *buffer;
+  char *buffer_;
 
   /// index into buffer during file read
-  size_t bufptr;
+  size_t bufptr_;
 
   /// buffer size during file read
-  long bufsize;
-  
+  long bufsize_;
+
+  /// depth of tree, i.e. number of entries in array_
+  unsigned int maxLevel_;  
+
+  /// character starting comment lines  
+  char commentChar_;
 };
 
 #endif
 
 /*
  *  $Log: ofconfig.h,v $
- *  Revision 1.4  2005-12-08 16:05:51  meichel
+ *  Revision 1.5  2008-04-15 15:46:30  meichel
+ *  class OFConfigFile now supports flexible tree depths and configurable
+ *    comment characters and can, therefore, fully replace the equivalent
+ *    code in module dcmprint.
+ *
+ *  Revision 1.4  2005/12/08 16:05:51  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.3  2003/06/12 13:15:59  joergr

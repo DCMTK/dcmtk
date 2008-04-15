@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: OFConfigFileNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:52 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2008-04-15 15:46:30 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,31 +59,37 @@ OFConfigFileNode::~OFConfigFileNode()
 
 OFConfigFileCursor::OFConfigFileCursor(const OFConfigFileCursor& source)
 {
-  for (int i=0; i<=OFConfigFile_MaxLevel; i++) ptr[i]=source.ptr[i];
+  maxLevel_ = source.maxLevel_;
+  array_ = new OFConfigFileNodePtr[maxLevel_+1];
+  for (unsigned int i=0; i<=maxLevel_; i++) array_[i]=source.array_[i];
 }
 
 OFConfigFileCursor& OFConfigFileCursor::operator=(const OFConfigFileCursor& source)
 {
   if (this != &source)
   { 
-    for (int i=0; i<=OFConfigFile_MaxLevel; i++) ptr[i]=source.ptr[i];
+    delete[] array_;
+    maxLevel_ = source.maxLevel_;
+    array_ = new OFConfigFileNodePtr[maxLevel_+1];
+    for (unsigned int i=0; i<=maxLevel_; i++) array_[i]=source.array_[i];   
   }
   return *this;
 }
 
 void OFConfigFileCursor::clear()
 {
-  for (int i=0; i<= OFConfigFile_MaxLevel; i++) ptr[i]=NULL;
+  if (NULL == array_) array_ = new OFConfigFileNodePtr[maxLevel_+1];
+  for (unsigned int i=0; i<= maxLevel_; i++) array_[i]=NULL;
 }
 
 OFBool OFConfigFileCursor::section_valid(unsigned int level) const
 {
   OFBool result=OFFalse;
-  if (level <= OFConfigFile_MaxLevel)
+  if ((level <= maxLevel_) && array_)
   {
     result = OFTrue;
-    for (int i = OFConfigFile_MaxLevel; i >= OFstatic_cast(int, level); i--)
-      result = result && (ptr[i] != NULL);
+    for (int i = maxLevel_; i >= OFstatic_cast(int, level); i--)
+      result = result && (array_[i] != NULL);
   }
   return result;
 }
@@ -93,14 +99,14 @@ void OFConfigFileCursor::set_section(
     const char *key,
     OFConfigFileNode *anchor)
 {
-  int valid=(level<=OFConfigFile_MaxLevel);
+  int valid = (level <= maxLevel_) && array_;
   if (valid)
   {
-    if (level<OFConfigFile_MaxLevel) valid=section_valid(level+1); else valid=1;
+    if (level < maxLevel_) valid = section_valid(level+1); else valid=1;
     if (valid)
     {
       first_section(level, anchor);
-      while ((section_valid(level))&&(! ptr[level]->match(key)))
+      while ((section_valid(level)) && array_[level] && (! array_[level]->match(key)))
         next_section(level);
     } else clear();
   } else clear();
@@ -110,29 +116,29 @@ void OFConfigFileCursor::first_section(
   unsigned int level,
   OFConfigFileNode *anchor)
 {
-  int valid= (level<=OFConfigFile_MaxLevel);
+  int valid= (level <= maxLevel_);
   if (valid)
   {
-    if (level<OFConfigFile_MaxLevel) valid=section_valid(level+1); else valid=1;
+    if (level < maxLevel_) valid=section_valid(level+1); else valid=1;
     if (valid)
     {
-      if (level<OFConfigFile_MaxLevel) ptr[level] = ptr[level+1]->getSon();
-      else ptr[level] = anchor;
-      for (int i=level-1; i>=0; i--) ptr[i]=NULL;
+      if (level < maxLevel_) array_[level] = array_[level+1]->getSon();
+      else array_[level] = anchor;
+      for (int i=level-1; i>=0; i--) array_[i]=NULL;
     } else clear();
   } else clear();
 }
 
 void OFConfigFileCursor::next_section(unsigned int level)
 {
-  int valid= (level<=OFConfigFile_MaxLevel);
+  int valid= (level <= maxLevel_);
   if (valid)
   {
     valid=section_valid(level);
     if (valid)
     {
-      ptr[level] = ptr[level]->getBrother();
-      for (int i=level-1; i>=0; i--) ptr[i]=NULL;
+      array_[level] = array_[level]->getBrother();
+      for (int i=level-1; i>=0; i--) array_[i]=NULL;
     } else clear();
   } else clear();
 }
@@ -142,28 +148,28 @@ void OFConfigFileCursor::insert(
   OFConfigFileNode *newnode,
   OFConfigFileNode *& anchor)
 {
-  if (level==OFConfigFile_MaxLevel)
+  if (level==maxLevel_)
   {
-    if (ptr[OFConfigFile_MaxLevel])
-      ptr[OFConfigFile_MaxLevel]->setBrother(newnode);
+    if (array_[maxLevel_])
+      array_[maxLevel_]->setBrother(newnode);
       else anchor = newnode;
-    ptr[OFConfigFile_MaxLevel] = newnode;
+    array_[maxLevel_] = newnode;
   } 
   else 
   {
-    if (ptr[level])
+    if (array_[level])
     {
-      ptr[level]->setBrother(newnode);
-      ptr[level] = newnode;
+      array_[level]->setBrother(newnode);
+      array_[level] = newnode;
     } else {
-      if (ptr[level+1])
+      if (array_[level+1])
       {
-        ptr[level+1]->setSon(newnode);
-        ptr[level] = newnode;
+        array_[level+1]->setSon(newnode);
+        array_[level] = newnode;
       }
     }
   }
-  if (level > 0) for (int j=level-1; j>=0; j--) ptr[j]=NULL;
+  if (level > 0) for (int j=level-1; j>=0; j--) array_[j]=NULL;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -171,9 +177,9 @@ void OFConfigFileCursor::insert(
 const char *OFConfigFile::get_keyword(unsigned int level)
 {
   const char *result = NULL;
-  int valid=(level<=OFConfigFile_MaxLevel);
+  int valid = (level <= maxLevel_);
   if ((valid)&&(section_valid(level)))
-    result = cursor.getKeyword(level);
+    result = cursor_.getKeyword(level);
   return result;
 }
 
@@ -181,7 +187,7 @@ const char *OFConfigFile::get_value()
 {
   const char *result=NULL;
   int valid=section_valid(0);
-  if (valid) result=cursor.getValue(0);
+  if (valid) result=cursor_.getValue(0);
   return result;
 }
 
@@ -216,23 +222,24 @@ OFBool OFConfigFile::get_bool_value(OFBool defaultvalue)
 
 void OFConfigFile::save_cursor()
 {
-  stack.push(cursor);
+  stack_.push(cursor_);
 }
 
 void OFConfigFile::restore_cursor()
 {
-  OFBool empty = stack.empty();
+  OFBool empty = stack_.empty();
   if (!empty)
   {
-    cursor = stack.top();
-    stack.pop();
-  } else cursor.clear();
+    cursor_ = stack_.top();
+    stack_.pop();
+  } else cursor_.clear();
 }
 
-void OFConfigFile::select_section(const char *key1, const char *key2)
+void OFConfigFile::select_section(const char *key1, const char *key2, const char *key3)
 {
+  if (key3) set_section(3,key3);
   if (key2) set_section(2,key2);
-  if ((key1)&&(section_valid(2))) set_section(1,key1);
+  if (key1) set_section(1,key1);
 }
 
 const char *OFConfigFile::get_entry(const char *key0)
@@ -248,24 +255,24 @@ const char *OFConfigFile::get_entry(const char *key0)
 
 void OFConfigFile::store_char(char c)
 {
-  if (bufptr == OFstatic_cast(size_t, bufsize))
+  if (bufptr_ == OFstatic_cast(size_t, bufsize_))
   {
-     char *oldbuf=buffer;
-     bufsize += 1024;
-     buffer = new char[bufsize];
-     if (buffer)
+     char *oldbuf=buffer_;
+     bufsize_ += 1024;
+     buffer_ = new char[bufsize_];
+     if (buffer_)
      {
        if (oldbuf)
        {
-         strncpy(buffer, oldbuf, bufptr);
+         strncpy(buffer_, oldbuf, bufptr_);
          delete[] oldbuf;
        }
-       buffer[bufptr++] = c;
+       buffer_[bufptr_++] = c;
      } else {
-       buffer=oldbuf;
-       bufsize -= 1024;
+       buffer_=oldbuf;
+       bufsize_ -= 1024;
      }
-  } else buffer[bufptr++] = c;
+  } else buffer_[bufptr_++] = c;
 }
 
 char OFConfigFile::read_char(FILE *infile)
@@ -283,33 +290,33 @@ char OFConfigFile::read_char(FILE *infile)
       handled=1;
       done=1;
     }
-    if(!handled) if ((c==10)&&(crfound)&&(isnewline))
+    if(!handled) if ((c==10)&&(crfound_)&&(isnewline_))
     {
       handled=1;
-      crfound=0;
+      crfound_=0;
     }
     if(!handled) if ((c==10)||(c==13))
     {
       handled=1;
-      isnewline=1;
-      if (c==13) crfound=1; else crfound=0;
+      isnewline_=1;
+      if (c==13) crfound_=1; else crfound_=0;
       if (commentmode) commentmode=0; else
       {
         done=1;
         c=10;
       }
     }
-    if(!handled) if ((c=='#')&&(isnewline))
+    if(!handled) if ((c == commentChar_)&&(isnewline_))
     {
       handled=1;
       commentmode=1;
-      isnewline=0;
+      isnewline_=0;
     }
     if(!handled) if (!commentmode)
     {
       handled=1;
       done=1;
-      isnewline=0;
+      isnewline_=0;
       if (c==0) c=' '; // destroy 0 chars
     }
   } // done
@@ -378,7 +385,7 @@ void OFConfigFile::read_entry(FILE *infile)
           } else done=1;
         }
       }
-      if (level>OFConfigFile_MaxLevel) level=OFConfigFile_MaxLevel;
+      if (level > OFstatic_cast(int, maxLevel_)) level = maxLevel_;
     }
     else
     { // this is a level 0 keyword
@@ -397,9 +404,9 @@ void OFConfigFile::read_entry(FILE *infile)
     } // keyword read
     // Store the keyword.
     store_char(0);
-    OFConfigFileNode *newnode = new OFConfigFileNode(buffer);
-    if (newnode) cursor.insert(level, newnode, anchor); // new node stored
-    bufptr =0;
+    OFConfigFileNode *newnode = new OFConfigFileNode(buffer_);
+    if (newnode) cursor_.insert(level, newnode, anchor_); // new node stored
+    bufptr_ =0;
     // Read value field for level 0 keywords.
     if (level==0)
     {
@@ -437,39 +444,49 @@ void OFConfigFile::read_entry(FILE *infile)
       }
       store_char(0);
     }
-    if ((bufptr>0)&&(newnode))
+    if ((bufptr_>0)&&(newnode))
     {
       // remove trailing linefeeds
-      while ((bufptr>0)&&((buffer[bufptr-1]==10)||(buffer[bufptr-1]==0)))
-        buffer[--bufptr]=0;
-      newnode->setValue(buffer);
+      while ((bufptr_>0)&&((buffer_[bufptr_-1]==10)||(buffer_[bufptr_-1]==0)))
+        buffer_[--bufptr_]=0;
+      newnode->setValue(buffer_);
     }
-    bufptr =0;
+    bufptr_ =0;
   } // something found
 }
 
-OFConfigFile::OFConfigFile(FILE *infile)
-: stack()
-, cursor()
-, anchor(NULL)
-, isnewline(1)
-, crfound(0)
-, buffer(NULL)
-, bufptr(0)
-, bufsize(0)
+OFConfigFile::OFConfigFile(
+    FILE *infile, 
+    unsigned int maxLevel,
+    char commentChar)
+: stack_()
+, cursor_(maxLevel)
+, anchor_(NULL)
+, isnewline_(1)
+, crfound_(0)
+, buffer_(NULL)
+, bufptr_(0)
+, bufsize_(0)
+, maxLevel_(maxLevel)
+, commentChar_(commentChar)
 {
   if (infile) while ((!feof(infile))&&(!ferror(infile))) read_entry(infile);
 }
 
 OFConfigFile::~OFConfigFile()
 {
-  delete anchor;
-  delete[] buffer;
+  delete anchor_;
+  delete[] buffer_;
 }
 
 /*
  *  $Log: ofconfig.cc,v $
- *  Revision 1.4  2005-12-08 15:48:52  meichel
+ *  Revision 1.5  2008-04-15 15:46:30  meichel
+ *  class OFConfigFile now supports flexible tree depths and configurable
+ *    comment characters and can, therefore, fully replace the equivalent
+ *    code in module dcmprint.
+ *
+ *  Revision 1.4  2005/12/08 15:48:52  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.3  2003/07/09 13:58:04  meichel

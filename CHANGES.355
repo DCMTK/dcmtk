@@ -9,6 +9,12 @@ Changes between releases are documented here.
            dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
            dcmqrdb/libsrc/dcmqrdbi.cc
 
+- class OFConfigFile now supports flexible tree depths and configurable
+  comment characters and can, therefore, fully replace the equivalent
+  code in module dcmprint.
+  Affects: ofstd/include/dcmtk/ofstd/ofconfig.h
+           ofstd/libsrc/ofconfig.cc
+
 **** Changes from 2008.04.09 (riesmeier)
 
 - Fixed wrong use of variable in "for" loop which might cause a crash.
