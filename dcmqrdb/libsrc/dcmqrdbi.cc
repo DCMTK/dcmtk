@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:09:34 $
+ *  Update Date:      $Date: 2008-04-15 15:43:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -459,15 +459,15 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRead (int idx, IdxRecord 
     /*** Goto the right index in file
     **/
 
-    DB_lseek (handle -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, (long) (SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET) ;
 
     /*** Read the record
     **/
 
-    if (read (handle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
+    if (read (handle_ -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) != SIZEOF_IDXRECORD)
         return (DcmQRIndexDatabaseError) ;
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
     /*** Initialize record links
     **/
@@ -523,9 +523,9 @@ static OFCondition DB_IdxAdd (DB_Private_Handle *phandle, int *idx, IdxRecord *i
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRecord *pStudyDesc)
 {
     OFCondition cond = EC_Normal;
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
-    if (write (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC) cond = DcmQRIndexDatabaseError;
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    if (write (handle_ -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) != SIZEOF_STUDYDESC) cond = DcmQRIndexDatabaseError;
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
     return cond ;
 }
 
@@ -535,7 +535,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_StudyDescChange(StudyDescRec
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxInitLoop(int *idx)
 {
-    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, SIZEOF_STUDYDESC, SEEK_SET) ;
     *idx = -1 ;
     return EC_Normal ;
 }
@@ -549,8 +549,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
 {
 
     (*idx)++ ;
-    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ;
-    while (read (handle -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
+    DB_lseek (handle_ -> pidx, SIZEOF_STUDYDESC + (long)(*idx) * SIZEOF_IDXRECORD, SEEK_SET) ;
+    while (read (handle_ -> pidx, (char *) idxRec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD) {
         if (idxRec -> filename [0] != '\0') {
             DB_IdxInitRecord (idxRec, 1) ;
 
@@ -559,7 +559,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
         (*idx)++ ;
     }
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
     return DcmQRIndexDatabaseError ;
 }
@@ -573,11 +573,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxGetNext(int *idx, IdxReco
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_GetStudyDesc (StudyDescRecord *pStudyDesc)
 {
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
-    if ( read (handle -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC )
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
+    if ( read (handle_ -> pidx, (char *) pStudyDesc, SIZEOF_STUDYDESC) == SIZEOF_STUDYDESC )
         return EC_Normal ;
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
     return DcmQRIndexDatabaseError ;
 }
@@ -593,17 +593,17 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_IdxRemove(int idx)
     IdxRecord   rec ;
     OFCondition cond = EC_Normal;
 
-    DB_lseek (handle -> pidx, SIZEOF_STUDYDESC + (long)idx * SIZEOF_IDXRECORD, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, SIZEOF_STUDYDESC + (long)idx * SIZEOF_IDXRECORD, SEEK_SET) ;
     DB_IdxInitRecord (&rec, 0) ;
 
     rec. filename [0] = '\0' ;
-    if (write (handle -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD)
+    if (write (handle_ -> pidx, (char *) &rec, SIZEOF_IDXRECORD) == SIZEOF_IDXRECORD)
         cond = EC_Normal ;
 
     else
         cond = DcmQRIndexDatabaseError ;
 
-    DB_lseek (handle -> pidx, 0L, SEEK_SET) ;
+    DB_lseek (handle_ -> pidx, 0L, SEEK_SET) ;
 
     return cond ;
 }
@@ -617,7 +617,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_lock(OFBool exclusive)
     } else {
         lockmode = LOCK_SH;     /* shared lock */
     }
-    if (dcmtk_flock(handle->pidx, lockmode) < 0) {
+    if (dcmtk_flock(handle_->pidx, lockmode) < 0) {
         dcmtk_plockerr("DB_lock");
         return DcmQRIndexDatabaseError;
     }
@@ -626,7 +626,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_lock(OFBool exclusive)
 
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::DB_unlock()
 {
-    if (dcmtk_flock(handle->pidx, LOCK_UN) < 0) {
+    if (dcmtk_flock(handle_->pidx, LOCK_UN) < 0) {
         dcmtk_plockerr("DB_unlock");
         return DcmQRIndexDatabaseError;
     }
@@ -1640,12 +1640,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     if (strcmp( SOPClassUID, UID_FINDPatientRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = PATIENT_ROOT ;
+        handle_->rootLevel = PATIENT_ROOT ;
     else if (strcmp( SOPClassUID, UID_FINDStudyRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = STUDY_ROOT ;
+        handle_->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
     else if (strcmp( SOPClassUID, UID_FINDPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = PATIENT_STUDY ;
+        handle_->rootLevel = PATIENT_STUDY ;
 #endif
     else {
         status->setStatus(STATUS_FIND_Refused_SOPClassNotSupported);
@@ -1658,7 +1658,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     **** of query identifiers
     ***/
 
-    handle->findRequestList = NULL ;
+    handle_->findRequestList = NULL ;
 
     int elemCount = (int)(findRequestIdentifiers->card());
     for (int elemIndex=0; elemIndex<elemCount; elemIndex++) {
@@ -1697,16 +1697,16 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
                 if (strncmp (level, PATIENT_LEVEL_STRING,
                              strlen (PATIENT_LEVEL_STRING)) == 0)
-                    handle->queryLevel = PATIENT_LEVEL ;
+                    handle_->queryLevel = PATIENT_LEVEL ;
                 else if (strncmp (level, STUDY_LEVEL_STRING,
                                   strlen (STUDY_LEVEL_STRING)) == 0)
-                    handle->queryLevel = STUDY_LEVEL ;
+                    handle_->queryLevel = STUDY_LEVEL ;
                 else if (strncmp (level, SERIE_LEVEL_STRING,
                                   strlen (SERIE_LEVEL_STRING)) == 0)
-                    handle->queryLevel = SERIE_LEVEL ;
+                    handle_->queryLevel = SERIE_LEVEL ;
                 else if (strncmp (level, IMAGE_LEVEL_STRING,
                                   strlen (IMAGE_LEVEL_STRING)) == 0)
-                    handle->queryLevel = IMAGE_LEVEL ;
+                    handle_->queryLevel = IMAGE_LEVEL ;
                 else {
                     if (elem. PValueField)
                         free (elem. PValueField) ;
@@ -1730,8 +1730,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
                     }
                     plist->next = NULL ;
                     DB_DuplicateElement (&elem, &(plist->elem)) ;
-                    if (handle->findRequestList == NULL) {
-                        handle->findRequestList = last = plist ;
+                    if (handle_->findRequestList == NULL) {
+                        handle_->findRequestList = last = plist ;
                     } else {
                         last->next = plist ;
                         last = plist ;
@@ -1749,13 +1749,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass);
         CERR << "DB_startFindRequest(): missing Query/Retrieve Level" << OFendl;
-        handle->idxCounter = -1 ;
-        DB_FreeElementList (handle->findRequestList) ;
-        handle->findRequestList = NULL ;
+        handle_->idxCounter = -1 ;
+        DB_FreeElementList (handle_->findRequestList) ;
+        handle_->findRequestList = NULL ;
         return (DcmQRIndexDatabaseError) ;
     }
 
-    switch (handle->rootLevel)
+    switch (handle_->rootLevel)
     {
       case PATIENT_ROOT :
         qLevel = PATIENT_LEVEL ;
@@ -1775,11 +1775,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     if (doCheckFindIdentifier) {
-        cond = testFindRequestList (handle->findRequestList, handle->queryLevel, qLevel, lLevel) ;
+        cond = testFindRequestList (handle_->findRequestList, handle_->queryLevel, qLevel, lLevel) ;
         if (cond != EC_Normal) {
-            handle->idxCounter = -1 ;
-            DB_FreeElementList (handle->findRequestList) ;
-            handle->findRequestList = NULL ;
+            handle_->idxCounter = -1 ;
+            DB_FreeElementList (handle_->findRequestList) ;
+            handle_->findRequestList = NULL ;
 #ifdef DEBUG
             dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
 #endif
@@ -1794,7 +1794,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
 
     DB_lock(OFFalse);
 
-    DB_IdxInitLoop (&(handle->idxCounter)) ;
+    DB_IdxInitLoop (&(handle_->idxCounter)) ;
     MatchFound = OFFalse ;
     cond = EC_Normal ;
 
@@ -1803,13 +1803,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
         /*** Exit loop if read error (or end of file)
         **/
 
-        if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
+        if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
         /*** Exit loop if error or matching OK
         **/
 
-        cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
+        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound) ;
         if (cond != EC_Normal)
             break ;
         if (MatchFound)
@@ -1821,9 +1821,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     if (cond != EC_Normal) {
-        handle->idxCounter = -1 ;
-        DB_FreeElementList (handle->findRequestList) ;
-        handle->findRequestList = NULL ;
+        handle_->idxCounter = -1 ;
+        DB_FreeElementList (handle_->findRequestList) ;
+        handle_->findRequestList = NULL ;
 #ifdef DEBUG
         dbdebug(1, "DB_startFindRequest () : STATUS_FIND_Failed_UnableToProcess\n") ;
 #endif
@@ -1842,8 +1842,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     if (MatchFound) {
-        DB_UIDAddFound (handle, &idxRec) ;
-        makeResponseList (handle, &idxRec) ;
+        DB_UIDAddFound (handle_, &idxRec) ;
+        makeResponseList (handle_, &idxRec) ;
 #ifdef DEBUG
         dbdebug(1, "DB_startFindRequest () : STATUS_Pending\n") ;
 #endif
@@ -1857,9 +1857,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startFindRequest(
     ***/
 
     else {
-        handle->idxCounter = -1 ;
-        DB_FreeElementList (handle->findRequestList) ;
-        handle->findRequestList = NULL ;
+        handle_->idxCounter = -1 ;
+        DB_FreeElementList (handle_->findRequestList) ;
+        handle_->findRequestList = NULL ;
 #ifdef DEBUG
         dbdebug(1, "DB_startFindRequest () : STATUS_Success\n") ;
 #endif
@@ -1888,7 +1888,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     const char          *queryLevelString = NULL;
     OFCondition         cond = EC_Normal;
 
-    if (handle->findResponseList == NULL) {
+    if (handle_->findResponseList == NULL) {
 #ifdef DEBUG
         dbdebug(1, "DB_nextFindResponse () : STATUS_Success\n") ;
 #endif
@@ -1910,7 +1910,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         /*** Put responses
         **/
 
-        for ( plist = handle->findResponseList ; plist != NULL ; plist = plist->next ) {
+        for ( plist = handle_->findResponseList ; plist != NULL ; plist = plist->next ) {
             DcmTag t(plist->elem.XTag);
             DcmElement *dce = newDicomElement(t);
             if (dce == NULL) {
@@ -1937,7 +1937,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         /*** Append the Query level
         **/
 
-        switch (handle->queryLevel) {
+        switch (handle_->queryLevel) {
         case PATIENT_LEVEL :
             queryLevelString = PATIENT_LEVEL_STRING ;
             break ;
@@ -1967,7 +1967,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         return (DcmQRIndexDatabaseError) ;
     }
 
-    switch (handle->rootLevel) {
+    switch (handle_->rootLevel) {
     case PATIENT_ROOT : qLevel = PATIENT_LEVEL ;        break ;
     case STUDY_ROOT :   qLevel = STUDY_LEVEL ;          break ;
     case PATIENT_STUDY: qLevel = PATIENT_LEVEL ;        break ;
@@ -1976,8 +1976,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     /***** Free the last response...
     ****/
 
-    DB_FreeElementList (handle->findResponseList) ;
-    handle->findResponseList = NULL ;
+    DB_FreeElementList (handle_->findResponseList) ;
+    handle_->findResponseList = NULL ;
 
     /***** ... and find the next one
     ****/
@@ -1990,19 +1990,19 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
         /*** Exit loop if read error (or end of file)
         **/
 
-        if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
+        if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
         /*** If Response already found
         **/
 
-        if (DB_UIDAlreadyFound (handle, &idxRec))
+        if (DB_UIDAlreadyFound (handle_, &idxRec))
             continue ;
 
         /*** Exit loop if error or matching OK
         **/
 
-        cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
+        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound) ;
         if (cond != EC_Normal)
             break ;
         if (MatchFound)
@@ -2015,9 +2015,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ***/
 
     if (cond != EC_Normal) {
-        handle->idxCounter = -1 ;
-        DB_FreeElementList (handle->findRequestList) ;
-        handle->findRequestList = NULL ;
+        handle_->idxCounter = -1 ;
+        DB_FreeElementList (handle_->findRequestList) ;
+        handle_->findRequestList = NULL ;
 #ifdef DEBUG
         dbdebug(1, "DB_nextFindResponse () : STATUS_FIND_Failed_UnableToProcess\n") ;
 #endif
@@ -2035,8 +2035,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ***/
 
     if (MatchFound) {
-        DB_UIDAddFound (handle, &idxRec) ;
-        makeResponseList (handle, &idxRec) ;
+        DB_UIDAddFound (handle_, &idxRec) ;
+        makeResponseList (handle_, &idxRec) ;
 #ifdef DEBUG
         dbdebug(1, "DB_nextFindResponse () : STATUS_Pending\n") ;
 #endif
@@ -2050,11 +2050,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
     ***/
 
     else {
-        handle->idxCounter = -1 ;
-        DB_FreeElementList (handle->findRequestList) ;
-        handle->findRequestList = NULL ;
-        DB_FreeUidList (handle->uidList) ;
-        handle->uidList = NULL ;
+        handle_->idxCounter = -1 ;
+        DB_FreeElementList (handle_->findRequestList) ;
+        handle_->findRequestList = NULL ;
+        DB_FreeUidList (handle_->uidList) ;
+        handle_->uidList = NULL ;
     }
 
 
@@ -2072,13 +2072,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextFindResponse (
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelFindRequest (DcmQueryRetrieveDatabaseStatus *status)
 {
 
-    handle->idxCounter = -1 ;
-    DB_FreeElementList (handle->findRequestList) ;
-    handle->findRequestList = NULL ;
-    DB_FreeElementList (handle->findResponseList) ;
-    handle->findResponseList = NULL ;
-    DB_FreeUidList (handle->uidList) ;
-    handle->uidList = NULL ;
+    handle_->idxCounter = -1 ;
+    DB_FreeElementList (handle_->findRequestList) ;
+    handle_->findRequestList = NULL ;
+    DB_FreeElementList (handle_->findResponseList) ;
+    handle_->findResponseList = NULL ;
+    DB_FreeUidList (handle_->uidList) ;
+    handle_->uidList = NULL ;
 
     status->setStatus(STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest);
 
@@ -2231,22 +2231,22 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     ***/
 
     if (strcmp( SOPClassUID, UID_MOVEPatientRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = PATIENT_ROOT ;
+        handle_->rootLevel = PATIENT_ROOT ;
     else if (strcmp( SOPClassUID, UID_MOVEStudyRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = STUDY_ROOT ;
+        handle_->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
     else if (strcmp( SOPClassUID, UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = PATIENT_STUDY ;
+        handle_->rootLevel = PATIENT_STUDY ;
 #endif
 #ifndef NO_GET_SUPPORT
     /* experimental support for GET */
     else if (strcmp( SOPClassUID, UID_GETPatientRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = PATIENT_ROOT ;
+        handle_->rootLevel = PATIENT_ROOT ;
     else if (strcmp( SOPClassUID, UID_GETStudyRootQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = STUDY_ROOT ;
+        handle_->rootLevel = STUDY_ROOT ;
 #ifndef NO_PATIENTSTUDYONLY_SUPPORT
     else if (strcmp( SOPClassUID, UID_GETPatientStudyOnlyQueryRetrieveInformationModel) == 0)
-        handle->rootLevel = PATIENT_STUDY ;
+        handle_->rootLevel = PATIENT_STUDY ;
 #endif
 #endif
 
@@ -2298,16 +2298,16 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
 
                 if (strncmp (level, PATIENT_LEVEL_STRING,
                              strlen (PATIENT_LEVEL_STRING)) == 0)
-                    handle->queryLevel = PATIENT_LEVEL ;
+                    handle_->queryLevel = PATIENT_LEVEL ;
                 else if (strncmp (level, STUDY_LEVEL_STRING,
                                   strlen (STUDY_LEVEL_STRING)) == 0)
-                    handle->queryLevel = STUDY_LEVEL ;
+                    handle_->queryLevel = STUDY_LEVEL ;
                 else if (strncmp (level, SERIE_LEVEL_STRING,
                                   strlen (SERIE_LEVEL_STRING)) == 0)
-                    handle->queryLevel = SERIE_LEVEL ;
+                    handle_->queryLevel = SERIE_LEVEL ;
                 else if (strncmp (level, IMAGE_LEVEL_STRING,
                                   strlen (IMAGE_LEVEL_STRING)) == 0)
-                    handle->queryLevel = IMAGE_LEVEL ;
+                    handle_->queryLevel = IMAGE_LEVEL ;
                 else {
 #ifdef DEBUG
                     dbdebug(1,"DB_startMoveRequest : STATUS_MOVE_Failed_UnableToProcess\n") ;
@@ -2330,8 +2330,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
                 }
                 plist->next = NULL ;
                 DB_DuplicateElement (&elem, & (plist->elem)) ;
-                if (handle->findRequestList == NULL) {
-                    handle->findRequestList = last = plist ;
+                if (handle_->findRequestList == NULL) {
+                    handle_->findRequestList = last = plist ;
                 } else {
                     last->next = plist ;
                     last = plist ;
@@ -2348,13 +2348,13 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         /* The Query/Retrieve Level is missing */
         status->setStatus(STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass);
         CERR << "DB_startMoveRequest(): missing Query/Retrieve Level" << OFendl;
-        handle->idxCounter = -1 ;
-        DB_FreeElementList (handle->findRequestList) ;
-        handle->findRequestList = NULL ;
+        handle_->idxCounter = -1 ;
+        DB_FreeElementList (handle_->findRequestList) ;
+        handle_->findRequestList = NULL ;
         return (DcmQRIndexDatabaseError) ;
     }
 
-    switch (handle->rootLevel)
+    switch (handle_->rootLevel)
     {
       case PATIENT_ROOT :
         qLevel = PATIENT_LEVEL ;
@@ -2374,12 +2374,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     ***/
 
     if (doCheckMoveIdentifier) {
-        cond = testMoveRequestList (handle->findRequestList,
-                                       handle->queryLevel, qLevel, lLevel) ;
+        cond = testMoveRequestList (handle_->findRequestList,
+                                       handle_->queryLevel, qLevel, lLevel) ;
         if (cond != EC_Normal) {
-            handle->idxCounter = -1 ;
-            DB_FreeElementList (handle->findRequestList) ;
-            handle->findRequestList = NULL ;
+            handle_->idxCounter = -1 ;
+            DB_FreeElementList (handle_->findRequestList) ;
+            handle_->findRequestList = NULL ;
 #ifdef DEBUG
             dbdebug(1,"DB_startMoveRequest () : STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass - Invalid RequestList\n") ;
 #endif
@@ -2393,27 +2393,27 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     ***/
 
     MatchFound = OFFalse ;
-    handle->moveCounterList = NULL ;
-    handle->NumberRemainOperations = 0 ;
+    handle_->moveCounterList = NULL ;
+    handle_->NumberRemainOperations = 0 ;
 
     /**** Find matching images
     ***/
 
     DB_lock(OFFalse);
 
-    DB_IdxInitLoop (&(handle->idxCounter)) ;
+    DB_IdxInitLoop (&(handle_->idxCounter)) ;
     while (1) {
 
         /*** Exit loop if read error (or end of file)
         **/
 
-        if (DB_IdxGetNext (&(handle->idxCounter), &idxRec) != EC_Normal)
+        if (DB_IdxGetNext (&(handle_->idxCounter), &idxRec) != EC_Normal)
             break ;
 
         /*** If matching found
         **/
 
-        cond = hierarchicalCompare (handle, &idxRec, qLevel, qLevel, &MatchFound) ;
+        cond = hierarchicalCompare (handle_, &idxRec, qLevel, qLevel, &MatchFound) ;
         if (MatchFound) {
             pidxlist = (DB_CounterList *) malloc (sizeof( DB_CounterList ) ) ;
             if (pidxlist == NULL) {
@@ -2422,10 +2422,10 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
             }
 
             pidxlist->next = NULL ;
-            pidxlist->idxCounter = handle->idxCounter ;
-            handle->NumberRemainOperations++ ;
-            if ( handle->moveCounterList == NULL )
-                handle->moveCounterList = lastidxlist = pidxlist ;
+            pidxlist->idxCounter = handle_->idxCounter ;
+            handle_->NumberRemainOperations++ ;
+            if ( handle_->moveCounterList == NULL )
+                handle_->moveCounterList = lastidxlist = pidxlist ;
             else {
                 lastidxlist->next = pidxlist ;
                 lastidxlist = pidxlist ;
@@ -2434,14 +2434,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
         }
     }
 
-    DB_FreeElementList (handle->findRequestList) ;
-    handle->findRequestList = NULL ;
+    DB_FreeElementList (handle_->findRequestList) ;
+    handle_->findRequestList = NULL ;
 
     /**** If a matching image has been found,
     ****    status is pending
     ***/
 
-    if ( handle->NumberRemainOperations > 0 ) {
+    if ( handle_->NumberRemainOperations > 0 ) {
 #ifdef DEBUG
         dbdebug(1,"DB_startMoveRequest : STATUS_Pending\n") ;
 #endif
@@ -2455,7 +2455,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::startMoveRequest(
     ***/
 
     else {
-        handle->idxCounter = -1 ;
+        handle_->idxCounter = -1 ;
 #ifdef DEBUG
         dbdebug(1,"DB_startMoveRequest : STATUS_Success\n") ;
 #endif
@@ -2483,7 +2483,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     ****    status is success
     ***/
 
-    if ( handle->NumberRemainOperations <= 0 ) {
+    if ( handle_->NumberRemainOperations <= 0 ) {
         status->setStatus(STATUS_Success);
 
         DB_unlock();
@@ -2494,7 +2494,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     /**** Goto the next matching image number of Index File
     ***/
 
-    if (DB_IdxRead (handle->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
+    if (DB_IdxRead (handle_->moveCounterList->idxCounter, &idxRec) != EC_Normal) {
 #ifdef DEBUG
         dbdebug(1,"DB_nextMoveResponse : STATUS_MOVE_Failed_UnableToProcess\n") ;
 #endif
@@ -2509,12 +2509,12 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::nextMoveResponse(
     strcpy (SOPInstanceUID, (char *) idxRec. SOPInstanceUID) ;
     strcpy (imageFileName, (char *) idxRec. filename) ;
 
-    *numberOfRemainingSubOperations = --handle->NumberRemainOperations ;
+    *numberOfRemainingSubOperations = --handle_->NumberRemainOperations ;
 
 
-    nextlist = handle->moveCounterList->next ;
-    free (handle->moveCounterList) ;
-    handle->moveCounterList = nextlist ;
+    nextlist = handle_->moveCounterList->next ;
+    free (handle_->moveCounterList) ;
+    handle_->moveCounterList = nextlist ;
     status->setStatus(STATUS_Pending);
 #ifdef DEBUG
     dbdebug(1,"DB_nextMoveResponse : STATUS_Pending\n") ;
@@ -2528,9 +2528,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::cancelMoveRequest (DcmQueryRetr
 {
     DB_CounterList              *plist ;
 
-    while (handle->moveCounterList) {
-        plist  = handle->moveCounterList ;
-        handle->moveCounterList = handle->moveCounterList->next ;
+    while (handle_->moveCounterList) {
+        plist  = handle_->moveCounterList ;
+        handle_->moveCounterList = handle_->moveCounterList->next ;
         free (plist) ;
     }
 
@@ -2621,7 +2621,7 @@ int DcmQueryRetrieveIndexDatabaseHandle::deleteOldestStudy(StudyDescRecord *pStu
     dbdebug(1, "deleteOldestStudy\n") ;
 #endif
 
-    for ( s = 0 ; s < handle -> maxStudiesAllowed ; s++ ) {
+    for ( s = 0 ; s < handle_ -> maxStudiesAllowed ; s++ ) {
     if ( ( pStudyDesc[s]. NumberofRegistratedImages != 0 ) &&
         ( ( OldestDate == 0.0 ) || ( pStudyDesc[s]. LastRecordedDate < OldestDate ) ) ) {
         OldestDate = pStudyDesc[s]. LastRecordedDate ;
@@ -2677,11 +2677,11 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteOldestImages(StudyDescRec
     /** Find all images having the same StudyUID
      */
 
-    DB_IdxInitLoop (&(handle -> idxCounter)) ;
-    while ( DB_IdxGetNext(&(handle -> idxCounter), &idxRec) == EC_Normal ) {
+    DB_IdxInitLoop (&(handle_ -> idxCounter)) ;
+    while ( DB_IdxGetNext(&(handle_ -> idxCounter), &idxRec) == EC_Normal ) {
     if ( ! ( strncmp(idxRec. StudyInstanceUID, StudyUID, n) ) ) {
 
-        StudyArray[nbimages]. idxCounter = handle -> idxCounter ;
+        StudyArray[nbimages]. idxCounter = handle_ -> idxCounter ;
         StudyArray[nbimages]. RecordedDate = idxRec. RecordedDate ;
         StudyArray[nbimages++]. ImageSize = idxRec. ImageSize ;
     }
@@ -2769,7 +2769,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     long        RequiredSize ;
 
     s = matchStudyUIDInStudyDesc (pStudyDesc, StudyUID,
-                     (int)(handle -> maxStudiesAllowed)) ;
+                     (int)(handle_ -> maxStudiesAllowed)) ;
 
     /** If Study already exists
      */
@@ -2780,8 +2780,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
     dbdebug(1, "checkupinStudyDesc: study already exists : %d\n",s) ;
 #endif
     if ( ( pStudyDesc[s]. StudySize + imageSize )
-         > handle -> maxBytesPerStudy ) {
-        if ( imageSize > handle -> maxBytesPerStudy ) {
+         > handle_ -> maxBytesPerStudy ) {
+        if ( imageSize > handle_ -> maxBytesPerStudy ) {
 #ifdef DEBUG
         dbdebug(1,
              "checkupinStudyDesc: imageSize = %ld too large\n",
@@ -2791,7 +2791,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
         }
 
         RequiredSize = imageSize -
-        ( handle -> maxBytesPerStudy - pStudyDesc[s]. StudySize ) ;
+        ( handle_ -> maxBytesPerStudy - pStudyDesc[s]. StudySize ) ;
         deleteOldestImages(pStudyDesc, s,
                   StudyUID, RequiredSize) ;
     }
@@ -2802,14 +2802,14 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::checkupinStudyDesc(StudyDescRec
 #ifdef DEBUG
     dbdebug(1, "checkupinStudyDesc: study doesn't already exist\n") ;
 #endif
-    if ( imageSize > handle -> maxBytesPerStudy ) {
+    if ( imageSize > handle_ -> maxBytesPerStudy ) {
 #ifdef DEBUG
         dbdebug(1, "checkupinStudyDesc: imageSize = %ld too large\n",
              imageSize) ;
 #endif
         return ( DcmQRIndexDatabaseError ) ;
     }
-    if ( s > ( handle -> maxStudiesAllowed - 1 ) )
+    if ( s > ( handle_ -> maxStudiesAllowed - 1 ) )
         s = deleteOldestStudy(pStudyDesc) ;
 
     }
@@ -2848,7 +2848,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::removeDuplicateImage(
     int studyIdx = 0;
 
     studyIdx = matchStudyUIDInStudyDesc (pStudyDesc, (char*)StudyInstanceUID,
-                        (int)(handle -> maxStudiesAllowed)) ;
+                        (int)(handle_ -> maxStudiesAllowed)) ;
 
     if ( pStudyDesc[studyIdx].NumberofRegistratedImages == 0 ) {
     /* no study images, cannot be any old images */
@@ -3075,7 +3075,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::storeRequest (
 
     free (pStudyDesc) ;
 
-    if (DB_IdxAdd (handle, &i, &idxRec) == EC_Normal)
+    if (DB_IdxAdd (handle_, &i, &idxRec) == EC_Normal)
     {
     status->setStatus(STATUS_Success);
     DB_unlock();
@@ -3108,7 +3108,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
       return (DcmQRIndexDatabaseError) ;
     }
 
-    for (int i = 0 ; i < handle -> maxStudiesAllowed ; i++ )
+    for (int i = 0 ; i < handle_ -> maxStudiesAllowed ; i++ )
       pStudyDesc[i]. NumberofRegistratedImages = 0 ;
 
     DB_GetStudyDesc(pStudyDesc) ;
@@ -3121,8 +3121,8 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::pruneInvalidRecords()
         dbdebug(1,"*** Pruning Invalid DB Image Record: %s\n", idxRec.filename);
 #endif
         /* update the study info */
-        int studyIdx = matchStudyUIDInStudyDesc(pStudyDesc, idxRec.StudyInstanceUID, (int)(handle->maxStudiesAllowed)) ;
-        if (studyIdx < handle->maxStudiesAllowed)
+        int studyIdx = matchStudyUIDInStudyDesc(pStudyDesc, idxRec.StudyInstanceUID, (int)(handle_->maxStudiesAllowed)) ;
+        if (studyIdx < handle_->maxStudiesAllowed)
         {
           if (pStudyDesc[studyIdx].NumberofRegistratedImages > 0)
           {
@@ -3179,7 +3179,7 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
     handle.DB_GetStudyDesc(pStudyDesc);
 
-    for (i=0; i<handle.handle->maxStudiesAllowed; i++) {
+    for (i=0; i<handle.handle_->maxStudiesAllowed; i++) {
         if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {
             COUT << "******************************************************" << OFendl
                 << "STUDY DESCRIPTOR: " << i << OFendl
@@ -3226,12 +3226,12 @@ void DcmQueryRetrieveIndexDatabaseHandle::printIndexFile (char *storeArea)
 
 const char *DcmQueryRetrieveIndexDatabaseHandle::getStorageArea() const
 {
-  return handle->storageArea;
+  return handle_->storageArea;
 }
 
 const char *DcmQueryRetrieveIndexDatabaseHandle::getIndexFilename() const
 {
-  return handle->indexFilename;
+  return handle_->indexFilename;
 }
 
 void DcmQueryRetrieveIndexDatabaseHandle::setDebugLevel(int dLevel)
@@ -3275,7 +3275,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
     long maxStudiesPerStorageArea,
     long maxBytesPerStudy,
     OFCondition& result)
-: handle(NULL)
+: handle_(NULL)
 , quotaSystemEnabled(OFTrue)
 , doCheckFindIdentifier(OFFalse)
 , doCheckMoveIdentifier(OFFalse)
@@ -3283,7 +3283,7 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 , debugLevel(0)
 {
 
-    handle = (DB_Private_Handle *) malloc ( sizeof(DB_Private_Handle) );
+    handle_ = new DB_Private_Handle;
 
 #ifdef DEBUG
     dbdebug(1, "DB_createHandle () : Handle created for %s\n",storageArea);
@@ -3303,14 +3303,14 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
         maxBytesPerStudy = DB_UpperMaxBytesPerStudy;
     }
 
-    if (handle) {
-        sprintf (handle -> storageArea,"%s", storageArea);
-        sprintf (handle -> indexFilename,"%s%c%s", storageArea, PATH_SEPARATOR, DBINDEXFILE);
+    if (handle_) {
+        sprintf (handle_ -> storageArea,"%s", storageArea);
+        sprintf (handle_ -> indexFilename,"%s%c%s", storageArea, PATH_SEPARATOR, DBINDEXFILE);
 
         /* create index file if it does not already exist */
-        FILE* f = fopen(handle->indexFilename, "ab");
+        FILE* f = fopen(handle_->indexFilename, "ab");
         if (f == NULL) {
-            CERR << handle->indexFilename << ": " << strerror(errno) << OFendl;
+            CERR << handle_->indexFilename << ": " << strerror(errno) << OFendl;
             result = DcmQRIndexDatabaseError;
             return;
         }
@@ -3318,22 +3318,22 @@ DcmQueryRetrieveIndexDatabaseHandle::DcmQueryRetrieveIndexDatabaseHandle(
 
         /* open fd of index file */
 #ifdef O_BINARY
-        handle -> pidx = open(handle -> indexFilename, O_RDWR | O_BINARY );
+        handle_ -> pidx = open(handle_ -> indexFilename, O_RDWR | O_BINARY );
 #else
-        handle -> pidx = open(handle -> indexFilename, O_RDWR );
+        handle_ -> pidx = open(handle_ -> indexFilename, O_RDWR );
 #endif
-        if ( handle -> pidx == (-1) )
+        if ( handle_ -> pidx == (-1) )
         {
            result = DcmQRIndexDatabaseError;
            return;
         }
         else {
-            handle -> idxCounter = -1;
-            handle -> findRequestList = NULL;
-            handle -> findResponseList = NULL;
-            handle -> maxBytesPerStudy = maxBytesPerStudy;
-            handle -> maxStudiesAllowed = maxStudiesPerStorageArea;
-            handle -> uidList = NULL;
+            handle_ -> idxCounter = -1;
+            handle_ -> findRequestList = NULL;
+            handle_ -> findResponseList = NULL;
+            handle_ -> maxBytesPerStudy = maxBytesPerStudy;
+            handle_ -> maxStudiesAllowed = maxStudiesPerStorageArea;
+            handle_ -> uidList = NULL;
             result = EC_Normal;
             return;
         }
@@ -3353,7 +3353,7 @@ DcmQueryRetrieveIndexDatabaseHandle::~DcmQueryRetrieveIndexDatabaseHandle()
 {
     int closeresult;
 
-    if (handle)
+    if (handle_)
     {
 #ifndef _WIN32
       /* should not be necessary because we are closing the file handle anyway.
@@ -3363,14 +3363,14 @@ DcmQueryRetrieveIndexDatabaseHandle::~DcmQueryRetrieveIndexDatabaseHandle()
        */
       DB_unlock();
 #endif
-      closeresult = close( handle -> pidx);
+      closeresult = close( handle_ -> pidx);
 
       /* Free lists */
-      DB_FreeElementList (handle -> findRequestList);
-      DB_FreeElementList (handle -> findResponseList);
-      DB_FreeUidList (handle -> uidList);
+      DB_FreeElementList (handle_ -> findRequestList);
+      DB_FreeElementList (handle_ -> findResponseList);
+      DB_FreeUidList (handle_ -> uidList);
 
-      free ( (char *)(handle) );
+      delete handle_;
     }
 }
 
@@ -3393,7 +3393,7 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::makeNewStoreFileName(
     // unsigned int seed = fnamecreator.hashString(SOPInstanceUID);
     unsigned int seed = (unsigned int)time(NULL);
     newImageFileName[0]=0; // return empty string in case of error
-    if (! fnamecreator.makeFilename(seed, handle->storageArea, prefix, ".dcm", filename)) return DcmQRIndexDatabaseError;
+    if (! fnamecreator.makeFilename(seed, handle_->storageArea, prefix, ".dcm", filename)) return DcmQRIndexDatabaseError;
 
     strcpy(newImageFileName, filename.c_str());
     return EC_Normal;
@@ -3416,9 +3416,9 @@ OFCondition DcmQueryRetrieveIndexDatabaseHandle::instanceReviewed(int idx)
       if (result.bad()) return result;
 
       record.hstat = DVIF_objectIsNotNew;
-      DB_lseek(handle->pidx, OFstatic_cast(long, SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
-      write(handle->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD);
-      DB_lseek(handle->pidx, 0L, SEEK_SET);
+      DB_lseek(handle_->pidx, OFstatic_cast(long, SIZEOF_STUDYDESC + idx * SIZEOF_IDXRECORD), SEEK_SET);
+      write(handle_->pidx, OFreinterpret_cast(char *, &record), SIZEOF_IDXRECORD);
+      DB_lseek(handle_->pidx, 0L, SEEK_SET);
       DB_unlock();
     }
 
@@ -3470,7 +3470,11 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
- * Revision 1.10  2006-08-15 16:09:34  meichel
+ * Revision 1.11  2008-04-15 15:43:37  meichel
+ * Fixed endless recursion bug in the index file handling code when
+ *   the index file does not exist
+ *
+ * Revision 1.10  2006/08/15 16:09:34  meichel
  * Updated the code in module dcmqrdb to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

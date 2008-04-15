@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:22 $
+ *  Update Date:      $Date: 2008-04-15 15:43:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -388,7 +388,7 @@ private:
       DB_LEVEL        lowestLevel);
 
   /// database handle
-  DB_Private_Handle *handle;
+  DB_Private_Handle *handle_;
 
   /// flag indicating whether or not the quota system is enabled
   OFBool quotaSystemEnabled;
@@ -447,7 +447,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
- * Revision 1.4  2005-12-08 16:04:22  meichel
+ * Revision 1.5  2008-04-15 15:43:37  meichel
+ * Fixed endless recursion bug in the index file handling code when
+ *   the index file does not exist
+ *
+ * Revision 1.4  2005/12/08 16:04:22  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2005/04/22 15:36:34  meichel

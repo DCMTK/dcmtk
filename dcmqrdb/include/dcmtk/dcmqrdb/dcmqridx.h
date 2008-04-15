@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: enums and structures used for the database index file
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:24 $
+ *  Update Date:      $Date: 2008-04-15 15:43:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,13 +223,41 @@ struct DB_Private_Handle
     int NumberRemainOperations ;
     DB_QUERY_CLASS rootLevel ;
     DB_UidList *uidList ;
+    
+    DB_Private_Handle()
+    : pidx(0)
+    , findRequestList(NULL)
+    , findResponseList(NULL)
+    , queryLevel(STUDY_LEVEL)
+    , indexFilename()
+    , storageArea()
+    , maxBytesPerStudy(0)
+    , maxStudiesAllowed(0)
+    , idxCounter(0)
+    , moveCounterList(NULL)
+    , NumberRemainOperations(0)
+    , rootLevel(STUDY_ROOT)
+    , uidList(NULL)
+    {
+    }    
 };
 
+/** this struct defines the structure of each "Study Record" in the index.dat 
+ *  file maintained by this module. A Study Record is a direct binary copy
+ *  of an instance of this struct.
+ */ 
 struct StudyDescRecord 
 {
+    /// Study Instance UID of the study described by this record
     char StudyInstanceUID [UI_MAX_LENGTH] ;
+
+    /// combined size (in bytes) of all images of this study in the database
     long StudySize ;
+
+    /// timestamp for last update of this study. Format: output of time(2) converted to double.
     double LastRecordedDate ;
+
+    /// number of images of this study in the database
     int NumberofRegistratedImages ;
 };
 
@@ -375,7 +403,11 @@ private:
 /*
  * CVS Log
  * $Log: dcmqridx.h,v $
- * Revision 1.2  2005-12-08 16:04:24  meichel
+ * Revision 1.3  2008-04-15 15:43:37  meichel
+ * Fixed endless recursion bug in the index file handling code when
+ *   the index file does not exist
+ *
+ * Revision 1.2  2005/12/08 16:04:24  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:50  meichel
