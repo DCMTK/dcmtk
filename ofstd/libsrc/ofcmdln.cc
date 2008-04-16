@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-03-17 10:08:41 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-04-16 12:39:40 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -667,38 +667,65 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     }
     if (iter == last)
     {
-        ofConsole.lockCerr() << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << OFendl;
+        ofConsole.lockCerr() << "WARNING: unknown option " << longOpt << " in OFCommandLine::findOption() !" << OFendl;
         ofConsole.unlockCerr();
         return OFFalse;
     }
 #endif
-    OFListIterator(OFListIterator_OFString) pos_iter = (mode == FOM_Next) ? OptionPosIterator : OptionPosList.end();
-    const OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
-    OFListIterator(OFCmdParamPos *) param_iter;
-    int diropt = 0;
-    if (findParam(abs(pos), param_iter))                               // go to specified parameter position
+    // reverse direction (left to right)
+    if ((mode == FOM_FirstFromLeft) || (mode == FOM_NextFromLeft))
     {
-        diropt = (*param_iter)->DirectOption;                          // number of direct predecessors
-        if (((*param_iter)->OptionCount == 0) ||                       // no options in front of specified parameter or
-            ((pos < 0) && (diropt == 0)))                              // no 'direct' option ...
-                return OFFalse;
-        pos_iter = (*param_iter)->OptionIter;                          // first option in front of parameter
-        ++pos_iter;                                                    // goto next to facilitate loop condition
-    }
-    while (pos_iter != pos_first)
-    {
-        ArgumentIterator = *(--pos_iter);
-        if (OptionBlockMode && (pos_iter == OptionBlockIterator))      // new option is in front of alternative block option
-            return OFFalse;
-        else if (*ArgumentIterator == longOpt)                         // searched option
+#ifdef DEBUG
+        if (pos != 0)
         {
-            OptionPosIterator = pos_iter;                              // store option position
-            if (mode == FOM_Normal)
-                OptionBlockIterator = pos_iter;
-            return OFTrue;
+            ofConsole.lockCerr() << "WARNING: OFCommandLine::findOption() parameter 'pos' (" << pos << ") ignored !" << OFendl;
+            ofConsole.unlockCerr();
         }
-        else if ((pos < 0) && (--diropt <= 0))                         // search only for the direct predecessor
-            return OFFalse;
+#endif
+        OFListIterator(OFListIterator_OFString) pos_iter = OptionPosList.begin();
+        const OFListIterator(OFListIterator_OFString) pos_end = OptionPosList.end();
+        if (mode == FOM_NextFromLeft)
+            pos_iter = (OptionPosIterator == pos_end) ? pos_end : ++OptionPosIterator;
+        while (pos_iter != pos_end)
+        {
+            ArgumentIterator = *pos_iter;
+            if (*ArgumentIterator == longOpt)                              // searched option
+            {
+                OptionPosIterator = pos_iter;                              // store option position
+                return OFTrue;
+            }
+            pos_iter++;
+        }
+    } else {
+        // normal direction (right to left)
+        OFListIterator(OFListIterator_OFString) pos_iter = (mode == FOM_Next) ? OptionPosIterator : OptionPosList.end();
+        const OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
+        OFListIterator(OFCmdParamPos *) param_iter;
+        int diropt = 0;
+        if (findParam(abs(pos), param_iter))                               // go to specified parameter position
+        {
+            diropt = (*param_iter)->DirectOption;                          // number of direct predecessors
+            if (((*param_iter)->OptionCount == 0) ||                       // no options in front of specified parameter or
+                ((pos < 0) && (diropt == 0)))                              // no 'direct' option ...
+                    return OFFalse;
+            pos_iter = (*param_iter)->OptionIter;                          // first option in front of parameter
+            ++pos_iter;                                                    // goto next to facilitate loop condition
+        }
+        while (pos_iter != pos_first)
+        {
+            ArgumentIterator = *(--pos_iter);
+            if (OptionBlockMode && (pos_iter == OptionBlockIterator))      // new option is in front of alternative block option
+                return OFFalse;
+            else if (*ArgumentIterator == longOpt)                         // searched option
+            {
+                OptionPosIterator = pos_iter;                              // store option position
+                if (mode == FOM_Normal)
+                    OptionBlockIterator = pos_iter;
+                return OFTrue;
+            }
+            else if ((pos < 0) && (--diropt <= 0))                         // search only for the direct predecessor
+                return OFFalse;
+        }
     }
     return OFFalse;
 }
@@ -1521,6 +1548,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.45  2008-04-16 12:39:40  joergr
+ * Added support for reverse search direction (left to right) to findOption().
+ *
  * Revision 1.44  2008-03-17 10:08:41  onken
  * Corrected "or" to "||".
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:16:11 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2008-04-16 12:39:35 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,7 +206,11 @@ class OFCommandLine
         /// find first option
         FOM_First,
         /// find next option
-        FOM_Next
+        FOM_Next,
+        /// find first option (from left to right)
+        FOM_FirstFromLeft,
+        /// find next option (from left to right)
+        FOM_NextFromLeft
     };
 
 
@@ -598,12 +602,14 @@ class OFCommandLine
      *  predecessor of the optional defined reference parameter 'pos') and goes to the
      *  first one.
      *
-     ** @param  longOpt  name of option (in long format) to be checked
-     *  @param  pos      position of reference parameter
-     *                   (default: all parameters; if value is negative option must be a direct
-     *                    predecessor of the specified reference parameter '-pos', no further
-     *                    search processes will be performed)
-     *  @param  mode     find option mode (used to support option blocks)
+     ** @param  longOpt    name of option (in long format) to be checked
+     *  @param  pos        position of reference parameter
+     *                     (default: all parameters; if value is negative option must be a direct
+     *                      predecessor of the specified reference parameter '-pos', no further
+     *                      search processes will be performed; if search direction is left to right
+     *                      this parameter is ignored, also option blocks are not supported in this
+     *                      case)
+     *  @param  mode       find option mode (used to support option blocks and reverse search direction)
      *
      ** @return OFTrue if option exists, OFFalse otherwise
      */
@@ -969,7 +975,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.38  2006-07-27 13:16:11  joergr
+ * Revision 1.39  2008-04-16 12:39:35  joergr
+ * Added support for reverse search direction (left to right) to findOption().
+ *
+ * Revision 1.38  2006/07/27 13:16:11  joergr
  * Changed parameter "exclusive" of method addOption() from type OFBool into an
  * integer parameter "flags".
  * Added addOption() flag for internal options that are not shown in the syntax

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.16 (riesmeier)
+
+- Added support for reverse search direction (left to right) to findOption().
+  Affects: ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Changed order of command line evaluation for option --search (now: from left
+  to right).
+  Affects: dcmdata/apps/dcmdump.cc
+
 **** Changes from 2008.04.16 (eichelberg)
 
 - class OFConfigFile now supports an ordered mode where multiple
@@ -8,16 +18,16 @@ Changes between releases are documented here.
   Also added function to print content of configuration in reloadable format.
   Affects: ofstd/include/dcmtk/ofstd/ofconfig.h
            ofstd/libsrc/ofconfig.cc
-  
+
 **** Changes from 2008.04.15 (eichelberg)
 
 - Fixed endless recursion bug in the index file handling code when
-  the index file does not exist
+  the index file does not exist.
   Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
            dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
            dcmqrdb/libsrc/dcmqrdbi.cc
 
-- class OFConfigFile now supports flexible tree depths and configurable
+- Class OFConfigFile now supports flexible tree depths and configurable
   comment characters and can, therefore, fully replace the equivalent
   code in module dcmprint.
   Affects: ofstd/include/dcmtk/ofstd/ofconfig.h
