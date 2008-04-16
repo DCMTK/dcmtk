@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-02-26 16:54:12 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2008-04-16 12:36:28 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -408,14 +408,14 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--search", 0, OFCommandLine::FOM_First))
+      if (cmd.findOption("--search", 0, OFCommandLine::FOM_FirstFromLeft))
       {
         const char *tagName = NULL;
         do
         {
           app.checkValue(cmd.getValue(tagName));
           if (!addPrintTagName(tagName)) return 1;
-        } while (cmd.findOption("--search", 0, OFCommandLine::FOM_Next));
+        } while (cmd.findOption("--search", 0, OFCommandLine::FOM_NextFromLeft));
       }
 
       if (printFileSearch)
@@ -642,6 +642,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.62  2008-04-16 12:36:28  joergr
+ * Changed order of command line evaluation for option --search (now: from left
+ * to right).
+ *
  * Revision 1.61  2008-02-26 16:54:12  joergr
  * Added new command line option that disables the mapping of well-known UID
  * numbers to their associated names (e.g. transfer syntax or SOP class).
