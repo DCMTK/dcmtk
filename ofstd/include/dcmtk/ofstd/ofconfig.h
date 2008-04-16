@@ -23,8 +23,8 @@
  *    classes: OFConfigFile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-15 15:46:30 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2008-04-16 09:37:27 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstack.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -121,6 +122,15 @@ public:
     return (keyword_ == c);
   }
 
+  /** check if keyword compares "<" to given string
+   *  @param c C string, must not be NULL
+   *  @return true if equal, false otherwise
+   */
+  OFBool less(const char *c) const
+  {
+    return (keyword_ < c);
+  }
+
   /** return pointer to next object in tree on same level
    *  @return pointer to next object, NULL if empty
    */
@@ -152,6 +162,12 @@ public:
   {
     son_ = son;
   }
+
+  /** print the content of this node to an output stream
+   *  @param out output stream to print to
+   *  @param level tree depth (level)
+   */
+  void print(STD_NAMESPACE ostream& out, unsigned int level);
 
 private:
   /// private undefined copy constructor
@@ -276,11 +292,14 @@ public:
    *  @param level level of insertion
    *  @param newnode node to be inserted, must not be NULL
    *  @param anchor pointer to anchor node of tree, may be modified
+   *  @param orderedMode mode flag for processing configuration files.
+   *    See documentation of OFConfigFile::orderedMode_
    */
   void insert(
     unsigned int level,
-    OFConfigFileNode *newnode,
-    OFConfigFileNode *& anchor);
+    OFConfigFileNode *& newnode,
+    OFConfigFileNode *& anchor,
+    OFBool orderedMode);
 
   /** dummy comparison operator, needed by MSVC5 with STL.
    *  @return always false
@@ -299,6 +318,18 @@ public:
   }
 
 private:
+
+ /** helper method that is called by insert() in ordered mode
+  *  to insert a new node at a given tree level (i.e. within a list
+  *  of nodes that share the same parent node) in alphabetical order,
+  *  replacing any older node with identical keyword.
+  *  @param parent parent node of new new to be inserted
+  *  @param newnde pointer to new node to be inserted
+  */
+  void orderedInsert(
+    OFConfigFileNode *parent,
+    OFConfigFileNode *&newnode);
+
   /// the cursor is an array of pointers to OFConfigFileNode objects
   OFConfigFileNodePtr *array_;
 
@@ -320,16 +351,24 @@ public:
    *  @param infile file from which the configuration data is to be read.
    *  @param maxLevel depth of the tree maintained in this config file, default 2
    *  @param commentChar character to start comment lines, default '#'
+   *  @param orderedMode mode flag for processing configuration files.
+   *    See documentation of member variable orderedMode_
    */
   OFConfigFile(
     FILE *infile, 
     unsigned int maxLevel = OFConfigFile_MaxLevel,
-    char commentChar = OFConfigFile_CommentChar);
+    char commentChar = OFConfigFile_CommentChar,
+    OFBool orderedMode = OFFalse);
 
   /** destructor
    */
   virtual ~OFConfigFile();
 
+  /** load configuration file
+   *  @param infile configuration file, must already be open for reading.
+   */
+  void loadFile(FILE *infile);
+  
   /** gets the name of the keyword at the specified level
    *  in the cursor path. Cursor must be valid at the specified level.
    *  @param level cursor level
@@ -433,6 +472,11 @@ public:
    */
   const char *get_entry(const char *key0);
 
+  /** print the content of the configuration to an output stream
+   *  @param out output stream to print to
+   */
+  void print(STD_NAMESPACE ostream& out);
+
 private:  
 
   /** reads the next character from the input file,
@@ -502,12 +546,28 @@ private:
 
   /// character starting comment lines  
   char commentChar_;
+  
+  /** mode flag for reading configuration file. If false, new entries to the
+   *  tree containing the configuration file are just appended and not sorted.
+   *  This allows multiple entries with the same keyword to be present, only the
+   *  first of which will be found by search-by-keyword methods such as set_section,
+   *  select_section or get_entry. In ordered mode, the tree is maintained in sorted
+   *  order and a new entry will replace an older entry with identical keyword.
+   *  This permits multiple configuration files to "overlay" each other but is
+   *  somewhat slower when reading the configuration file.
+   */
+  OFBool orderedMode_;
 };
 
 #endif
 
 /*
  *  $Log: ofconfig.h,v $
+ *  Revision 1.6  2008-04-16 09:37:27  meichel
+ *  class OFConfigFile now supports an ordered mode where multiple
+ *    configuration files can be loaded and can replace entries of other.
+ *    Also added function to print content of configuration in reloadable format.
+ *
  *  Revision 1.5  2008-04-15 15:46:30  meichel
  *  class OFConfigFile now supports flexible tree depths and configurable
  *    comment characters and can, therefore, fully replace the equivalent

@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.16 (eichelberg)
+
+- class OFConfigFile now supports an ordered mode where multiple
+  configuration files can be loaded and can replace entries of other.
+  Also added function to print content of configuration in reloadable format.
+  Affects: ofstd/include/dcmtk/ofstd/ofconfig.h
+           ofstd/libsrc/ofconfig.cc
+  
 **** Changes from 2008.04.15 (eichelberg)
 
 - Fixed endless recursion bug in the index file handling code when

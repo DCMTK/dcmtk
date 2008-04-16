@@ -23,8 +23,8 @@
  *    classes: OFConfigFileNode
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-15 15:46:30 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2008-04-16 09:37:30 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,39 @@ OFConfigFileNode::~OFConfigFileNode()
   // recursively delete tree
   delete son_;
   delete brother_;
+}
+
+void OFConfigFileNode::print(STD_NAMESPACE ostream& out, unsigned int level)
+{
+  if (level > 0)
+  {
+    unsigned int i;
+    for (i = 0; i < level; ++i) out << "[";
+    out << keyword_;
+    for (i = 0; i < level; ++i) out << "]";
+    out << OFendl;
+    
+    // print subtree if present
+    if (son_)
+    { 
+      son_->print(out, level-1);
+      out << OFendl;
+    }
+  }
+  else
+  {
+    out << keyword_ << " = ";
+    const char *c = value_.c_str();
+    while (*c)
+    {
+      if (*c == '\n') out << "\n    "; else out << *c;
+      ++c;
+    }        
+    out << OFendl;
+  }
+
+  // continue print on same level if present
+  if (brother_) brother_->print(out, level);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -143,31 +176,147 @@ void OFConfigFileCursor::next_section(unsigned int level)
   } else clear();
 }
 
+void OFConfigFileCursor::orderedInsert(
+  OFConfigFileNode *parent,
+  OFConfigFileNode *&newnode)
+{
+  if (NULL == parent)
+  {
+    // parent must not be NULL, so this should never happen.
+    // Just in case, avoid memory leak.
+  	delete newnode;
+  }
+  else
+  {
+    if (NULL == parent->getSon())
+    {
+      // parent node does not have any childs yet; we're the first one
+      parent->setSon(newnode);
+    }
+    else
+    {
+      OFConfigFileNode *leftMostBrother = parent->getSon();
+      if (! leftMostBrother->less(newnode->getKeyword()))
+      {
+        // need to insert at or before leftMostBrother
+        if (leftMostBrother->match(newnode->getKeyword()))
+        {
+          // duplicate entry detected. Replace old entry.        
+          leftMostBrother->setValue(newnode->getValue());
+          delete newnode;
+          newnode = leftMostBrother;
+        }
+        else
+        {
+          // newnode is new leftmost entry
+          newnode->setBrother(leftMostBrother);
+          parent->setSon(newnode);
+        }
+      }
+      else
+      {
+        // need to insert behind leftMostBrother.
+        // skip all list entries where the keyword is less, except for the last one
+        while (leftMostBrother->getBrother() && leftMostBrother->getBrother()->less(newnode->getKeyword()))
+        {
+          leftMostBrother = leftMostBrother->getBrother();
+        }
+        
+        // now we're either at the last entry of the list, or the next entry is greater or equal.
+        if (leftMostBrother->getBrother())
+        {
+          // we're not at the end of the list
+          if (leftMostBrother->getBrother()->match(newnode->getKeyword()))
+          {
+            // duplicate entry detected. Replace old entry.        
+            leftMostBrother->getBrother()->setValue(newnode->getValue());
+            delete newnode;
+            newnode = leftMostBrother->getBrother();
+          }
+          else
+          {
+            // next entry is larger than newnode; insert here
+            newnode->setBrother(leftMostBrother->getBrother());
+            leftMostBrother->setBrother(newnode);
+          }
+        }
+        else
+        {
+          // we're at the end of the list, i.e. newnode needs to be appended.
+          leftMostBrother->setBrother(newnode);
+        }
+      }    	
+    }
+  }
+}
+	
 void OFConfigFileCursor::insert(
   unsigned int level,
-  OFConfigFileNode *newnode,
-  OFConfigFileNode *& anchor)
+  OFConfigFileNode *& newnode,
+  OFConfigFileNode *& anchor,
+  OFBool orderedMode)
 {
+  // Implement option that causes entries to be sorted and identical entries to be replaced
   if (level==maxLevel_)
   {
-    if (array_[maxLevel_])
-      array_[maxLevel_]->setBrother(newnode);
-      else anchor = newnode;
+    if (NULL == array_[maxLevel_])
+    {
+      // newnode is the first entry in the tree, store as anchor
+      anchor = newnode;
+    }
+    else
+    {
+      if (orderedMode)
+      {
+      	// we need to create the root node of the tree,
+      	// because orderedInsert() needs a parent.
+      	OFConfigFileNode rootNode("root");
+      	rootNode.setSon(anchor);
+        orderedInsert(&rootNode, newnode); 	
+        anchor = rootNode.getSon();  // anchor could have changed
+        rootNode.setSon(NULL); // destruction of root node shall not destroy whole tree
+      }
+      else
+      {
+      	array_[maxLevel_]->setBrother(newnode);
+      }
+    }
+
+    // adjust cursor
     array_[maxLevel_] = newnode;
   } 
   else 
   {
-    if (array_[level])
+    if (array_[level+1])
     {
-      array_[level]->setBrother(newnode);
-      array_[level] = newnode;
-    } else {
-      if (array_[level+1])
+      if (NULL == array_[level+1]->getSon())
       {
+        // newnode is the first child node of the parent
         array_[level+1]->setSon(newnode);
-        array_[level] = newnode;
       }
+      else
+      {
+        if (orderedMode)
+        {
+        	orderedInsert(array_[level+1], newnode);
+        }
+        else
+        {
+          if (NULL == array_[level]) array_[level] = array_[level+1]->getSon();
+          array_[level]->setBrother(newnode);
+        }
+      }
+
+      // adjust cursor
+      array_[level] = newnode;
     }
+    else
+    {
+      // this should never happen unless the caller passes the wrong level, in which case
+      // we at least avoid a memory leak
+      delete newnode;
+    }
+
   }
   if (level > 0) for (int j=level-1; j>=0; j--) array_[j]=NULL;
 }
@@ -402,10 +551,11 @@ void OFConfigFile::read_entry(FILE *infile)
         } else done=1;
       }
     } // keyword read
+
     // Store the keyword.
     store_char(0);
     OFConfigFileNode *newnode = new OFConfigFileNode(buffer_);
-    if (newnode) cursor_.insert(level, newnode, anchor_); // new node stored
+    if (newnode) cursor_.insert(level, newnode, anchor_, orderedMode_); // new node stored
     bufptr_ =0;
     // Read value field for level 0 keywords.
     if (level==0)
@@ -455,10 +605,21 @@ void OFConfigFile::read_entry(FILE *infile)
   } // something found
 }
 
+void OFConfigFile::print(STD_NAMESPACE ostream& out)
+{
+  if (anchor_) anchor_->print(out, maxLevel_);
+}
+
+void OFConfigFile::loadFile(FILE *infile)
+{
+  if (infile) while ((!feof(infile))&&(!ferror(infile))) read_entry(infile);
+}
+
 OFConfigFile::OFConfigFile(
     FILE *infile, 
     unsigned int maxLevel,
-    char commentChar)
+    char commentChar,
+    OFBool orderedMode)
 : stack_()
 , cursor_(maxLevel)
 , anchor_(NULL)
@@ -469,8 +630,9 @@ OFConfigFile::OFConfigFile(
 , bufsize_(0)
 , maxLevel_(maxLevel)
 , commentChar_(commentChar)
+, orderedMode_(orderedMode)
 {
-  if (infile) while ((!feof(infile))&&(!ferror(infile))) read_entry(infile);
+  loadFile(infile);
 }
 
 OFConfigFile::~OFConfigFile()
@@ -479,8 +641,14 @@ OFConfigFile::~OFConfigFile()
   delete[] buffer_;
 }
 
+
 /*
  *  $Log: ofconfig.cc,v $
+ *  Revision 1.6  2008-04-16 09:37:30  meichel
+ *  class OFConfigFile now supports an ordered mode where multiple
+ *    configuration files can be loaded and can replace entries of other.
+ *    Also added function to print content of configuration in reloadable format.
+ *
  *  Revision 1.5  2008-04-15 15:46:30  meichel
  *  class OFConfigFile now supports flexible tree depths and configurable
  *    comment characters and can, therefore, fully replace the equivalent
