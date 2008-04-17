@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-10-01 16:23:44 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-04-17 15:30:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,12 @@ static DcmCertificateVerification opt_certVerification = DCV_requireCertificate;
 static const char *opt_dhparam = NULL;
 #endif
 
+// User Identity Negotiation
+static T_ASC_UserIdentityNegotiationMode opt_identMode = ASC_USER_IDENTITY_NONE;
+static OFString opt_user;
+static OFString opt_password;
+static OFString opt_identFile;
+static OFBool opt_identResponse = OFFalse;
 
 static OFCondition
 addStoragePresentationContexts(T_ASC_Parameters *params, OFList<OFString> &sopClasses);
@@ -164,6 +170,12 @@ cstore(T_ASC_Association *assoc, const OFString &fname);
 
 static OFBool
 findSOPClassAndInstanceInFile(const char *fname, char *sopClass, char *sopInstance);
+
+static OFCondition
+configureUserIdentityRequest(T_ASC_Parameters *params);
+
+static OFCondition
+checkUserIdentityResponse(T_ASC_Parameters *params);
 
 #define SHORTCOL 4
 #define LONGCOL 19
@@ -342,6 +354,17 @@ int main(int argc, char *argv[])
       cmd.addOption("--verify-peer-cert",     "-vc",     "verify peer certificate if present");
       cmd.addOption("--ignore-peer-cert",     "-ic",     "don't verify peer certificate");
 #endif
+    cmd.addSubGroup("user identity negotiation:");
+      cmd.addOption("--user",                 "-usr", 1, "[u]ser name: string",
+                                                         "authenticate using user name u");
+      cmd.addOption("--password",             "-pw",  1, "[p]assword: string (only with --user)",
+                                                         "authenticate using password p");
+      cmd.addOption("--empty-password",       "-epw",    "send empty password (only with --user)");
+      cmd.addOption("--kerberos",             "-kt",  1, "[f]ilename: string",
+                                                         "read kerberos ticket from file f");
+      cmd.addOption("--saml",                         1, "[f]ilename: string",
+                                                         "read SAML request from file f");
+      cmd.addOption("--pos-response",         "-rsp",    "Expect positive response");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -643,6 +666,40 @@ int main(int argc, char *argv[])
 
 #endif
 
+      // User Identity Negotiation
+      if (cmd.findOption("--user"))
+      {
+        app.checkValue(cmd.getValue(opt_user));
+        opt_identMode = ASC_USER_IDENTITY_USER;
+        app.checkConflict("--user", "--kerberos", cmd.findOption("--kerberos"));
+        app.checkConflict("--user", "--kerberos", cmd.findOption("--saml"));
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--password"))
+        {
+          app.checkValue(cmd.getValue(opt_password));
+          opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
+        }
+        if (cmd.findOption("--empty-password"))
+        {
+          opt_password= "";
+          opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
+        }
+        cmd.endOptionBlock();
+      }
+      else if (cmd.findOption("--kerberos"))
+      {
+        app.checkValue(cmd.getValue(opt_identFile));
+        opt_identMode = ASC_USER_IDENTITY_KERBEROS;
+      }
+      else if (cmd.findOption("--saml"))
+      {
+        app.checkValue(cmd.getValue(opt_identFile));
+        opt_identMode = ASC_USER_IDENTITY_SAML;
+        app.checkConflict("--kerberos", "--kerberos", cmd.findOption("--kerberos"));
+      }
+      if ( (opt_identMode != ASC_USER_IDENTITY_NONE) && (cmd.findOption("--pos-response")) )
+        opt_identResponse = OFTrue;
+
       /* finally, create list of input files */
       const char *paramString = NULL;
       const int paramCount = cmd.getParamCount();
@@ -857,6 +914,14 @@ int main(int argc, char *argv[])
     sprintf(peerHost, "%s:%d", opt_peer, (int)opt_port);
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
+    /* Configure User Identity Negotiation*/
+    if (opt_identMode != ASC_USER_IDENTITY_NONE)
+    {
+      cond = configureUserIdentityRequest(params);
+      if (cond.bad())
+        return 1;
+    }
+
     if (opt_profileName)
     {
       /* perform name mangling for config file key */
@@ -930,6 +995,13 @@ int main(int argc, char *argv[])
       return 1;
     }
 
+    /* check user authentication response (if applicable) */
+    cond = checkUserIdentityResponse(params);
+    if (cond.bad())
+    {
+      DimseCondition::dump(cond);
+      return 1;
+    }
     /* dump general information concerning the establishment of the network connection if required */
     if (opt_verbose)
       COUT << "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
@@ -1575,9 +1647,104 @@ findSOPClassAndInstanceInFile(
 }
 
 
+static OFCondition
+configureUserIdentityRequest(T_ASC_Parameters *params)
+{
+  OFCondition cond = EC_Normal;
+  switch (opt_identMode)
+  {
+    case ASC_USER_IDENTITY_USER:
+    {
+      cond = ASC_setIdentRQUserOnly(params, opt_user, opt_identResponse);
+      return cond;
+    }
+    case ASC_USER_IDENTITY_USER_PASSWORD:
+    {
+      cond = ASC_setIdentRQUserPassword(params, opt_user, opt_password, opt_identResponse);
+      return cond;
+    }
+    case ASC_USER_IDENTITY_KERBEROS:
+    case ASC_USER_IDENTITY_SAML:
+    {
+      OFFile identFile;
+      if (!identFile.fopen(opt_identFile.c_str(), "rb"))
+      {
+        OFString openerror;
+        identFile.getLastErrorString(openerror);
+        CERR << "Unable to open Kerberos or SAML file: " << openerror << OFendl;
+        return EC_IllegalCall;
+      }
+      // determine file size
+      offile_off_t result = identFile.fseek(0, SEEK_END);
+      if (result != 0)
+        return EC_IllegalParameter;
+      offile_off_t filesize = identFile.ftell();
+      identFile.rewind();
+      if (filesize > 65535)
+      {
+        if (opt_debug)
+          CERR << "Warning: Kerberos or SAML file is larger than 65535 bytes, bytes after that position are ignored" << OFendl;
+        filesize = 65535;
+      }
+
+      char *buf = new char[(unsigned int)filesize];
+      size_t bytesRead = identFile.fread(buf, 1, filesize);
+      identFile.fclose();
+      if (bytesRead == 0)
+      {
+        CERR << "Unable to read Kerberos or SAML info from file: File empty?" << OFendl;
+        delete[] buf;
+        return EC_IllegalCall;
+      }
+      if (opt_identMode == ASC_USER_IDENTITY_KERBEROS)
+        cond = ASC_setIdentRQKerberos(params, buf, bytesRead, opt_identResponse);
+      else
+        cond = ASC_setIdentRQSaml(params, buf, bytesRead, opt_identResponse);
+      delete[] buf;
+      break;
+    }
+    default:
+    {
+      cond = EC_IllegalCall;
+    }
+  }
+  if (cond.bad())
+    DimseCondition::dump(cond);
+  return cond;
+}
+
+static OFCondition
+checkUserIdentityResponse(T_ASC_Parameters *params)
+{
+  if (params == NULL)
+    return ASC_NULLKEY;
+
+  /* So far it is only checked whether a requested, positive response was
+     actually received */
+
+  // In case we sent no user identity request, there are no checks at all
+  if ((opt_identMode == ASC_USER_IDENTITY_NONE) || (!opt_identResponse))
+    return EC_Normal;
+
+  // If positive response was requested, we expect a corresponding response
+  if ((opt_identMode == ASC_USER_IDENTITY_USER) || (opt_identMode == ASC_USER_IDENTITY_USER_PASSWORD))
+  {
+    UserIdentityNegotiationSubItemAC *rsp = params->DULparams.ackUserIdentNeg;
+    if (rsp == NULL)
+    {
+      CERR << "User Identity Negotiation failed: Positive response requested but none received" << OFendl;
+      return ASC_USERIDENTIFICATIONFAILED;
+    }
+  }
+  return EC_Normal;
+}
+
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.70  2008-04-17 15:30:21  onken
+** Added command line options for User Identity Negotiation.
+**
 ** Revision 1.69  2007-10-01 16:23:44  joergr
 ** Renamed command line option --pattern (+p) to --scan-pattern (+sp).
 **
