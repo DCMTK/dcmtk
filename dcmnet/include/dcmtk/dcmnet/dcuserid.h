@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-04-17 15:28:33 $
+** Update Date:         $Date: 2008-04-17 16:09:32 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcuserid.h,v $
-** CVS/RCS Revision:    $Revision: 1.1 $
+** CVS/RCS Revision:    $Revision: 1.2 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ public:
     * @param length - [out] The total ength of the item in bytes
     * @return EC_Normal if successful, error code otherwise 
     */
-  virtual OFCondition streamedLength(unsigned long& length) = 0;
+  virtual OFCondition streamedLength(unsigned long& length) const = 0;
 
   /** Parse item from buffer. The buffer has to start with the correct user 
    *  item type.
@@ -88,7 +88,7 @@ public:
    *  @return EC_Normal, if successful, error code otherwise
    */
   virtual OFCondition stream(unsigned char *targetBuffer, 
-                             unsigned long& lengthWritten) =0;
+                             unsigned long& lengthWritten) const =0;
 
   /** Clears member variables and frees memory
    *  @return none
@@ -211,13 +211,13 @@ public:
    *  @return EC_Normal, if successful, error code otherwise
    */
   OFCondition stream(unsigned char *targetBuffer, 
-                     unsigned long& lengthWritten);
+                     unsigned long& lengthWritten) const;
 
   /** Computes total length of item if streamed into buffer
     * @param length - [out] The total length of the item in bytes
     * @return EC_Normal if successful, error code otherwise 
     */
-  OFCondition streamedLength(unsigned long& length);
+  OFCondition streamedLength(unsigned long& length) const;
 
   /** Parse sub item from buffer. The buffer has to start with the correct user 
    *  item type.
@@ -308,7 +308,7 @@ public:
     * @param length - [out] The length of the item if streamed
     * @return EC_Normal if successful, error code otherwise 
     */
-  OFCondition streamedLength(unsigned long& length);
+  OFCondition streamedLength(unsigned long& length) const;
 
   /** Stream the package into a byte stream for network transmission 
    *  @param targetBuffer  - [out] The buffer to stream to.
@@ -316,7 +316,7 @@ public:
    *  @return EC_Normal, if successful, error code otherwise
    */
   OFCondition stream(unsigned char *targetBuffer, 
-                     unsigned long& lengthWritten);
+                     unsigned long& lengthWritten) const;
 
   /** Parse sub item from buffer. The buffer has to start with the correct user 
    *  item type.
@@ -364,6 +364,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.2  2008-04-17 16:09:32  onken
+** Added some const definitions to functions.
+**
 ** Revision 1.1  2008-04-17 15:28:33  onken
 ** Reworked and extended User Identity Negotiation code.
 **

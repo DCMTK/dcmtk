@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-04-17 15:27:35 $
+** Update Date:         $Date: 2008-04-17 16:09:13 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
-** CVS/RCS Revision:    $Revision: 1.1 $
+** CVS/RCS Revision:    $Revision: 1.2 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -182,13 +182,13 @@ UserIdentityNegotiationSubItemRQ::getSecField(char*& resultBuf,
 // Enables/disables requesting of a positive identity response
 void UserIdentityNegotiationSubItemRQ::setReqPosResponse(const OFBool& reqPosRsp)
 {
-  m_posRspRequested =reqPosRsp ? 1 : 0;
+  m_posRspRequested = reqPosRsp ? 1 : 0;
 }
 
 
 // Stream the package into a byte stream for network transmission
 OFCondition UserIdentityNegotiationSubItemRQ::stream(unsigned char *targetBuffer,
-                                                     unsigned long& lengthWritten)
+                                                     unsigned long& lengthWritten) const
 {
   // recompute the length fields
   streamedLength(lengthWritten);
@@ -219,7 +219,7 @@ OFCondition UserIdentityNegotiationSubItemRQ::stream(unsigned char *targetBuffer
 
 
 // Calculates length values and returns total length of the user item if streamed
-OFCondition UserIdentityNegotiationSubItemRQ::streamedLength(unsigned long& length)
+OFCondition UserIdentityNegotiationSubItemRQ::streamedLength(unsigned long& length) const
 {
   // content length = userIdentityType + positive Response Requested + primary field length field + primary field length + 2nd field length (2) (+ 2nd field)
   length = 1 + 1 + 2 + m_primFieldLength;
@@ -455,7 +455,7 @@ UserIdentityNegotiationSubItemAC::getServerResponse(char*& targetBuffer,
 
 
 // Computes and returns total length of the user item if streamed
-OFCondition UserIdentityNegotiationSubItemAC::streamedLength(unsigned long& length)
+OFCondition UserIdentityNegotiationSubItemAC::streamedLength(unsigned long& length) const
 {
   // content length: server response length field (2) + length of server response field
   length = 2 + m_rspLength;
@@ -467,7 +467,7 @@ OFCondition UserIdentityNegotiationSubItemAC::streamedLength(unsigned long& leng
 
 /// Stream the package into a byte stream for network transmission
 OFCondition UserIdentityNegotiationSubItemAC::stream(unsigned char *targetBuffer,
-                                                     unsigned long& lengthWritten)
+                                                     unsigned long& lengthWritten) const
 {
   if (OFstatic_cast(unsigned long, m_rspLength) + 2 > (unsigned long)65535 /* for response length field */)
   {
@@ -559,6 +559,9 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.2  2008-04-17 16:09:13  onken
+** Added some const definitions to functions.
+**
 ** Revision 1.1  2008-04-17 15:27:35  onken
 ** Reworked and extended User Identity Negotiation code.
 **
