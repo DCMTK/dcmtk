@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2008-04-17 14:48:39 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,6 +426,13 @@ class DcmObject
      */
     virtual OFCondition loadAllDataIntoMemory() = 0;
 
+    /** return the current value of the Length field (which is different from the functionality
+     *  of the public getLength method). Only needed for internal purposes and for checker tools
+     *  that verify values against the length field.
+     *  @return current value of length field
+     */
+    Uint32 getLengthField() const { return Length; }
+
  protected:
 
     /** print line indentation, e.g. a couple of spaces for each nesting level.
@@ -547,12 +554,6 @@ class DcmObject
      */
     void incTransferredBytes(Uint32 val) { fTransferredBytes += val; }
 
-    /** return the current value of the Length field (which is different from the functionality
-     *  of the public getLength method).
-     *  @return current value of length field
-     */
-    Uint32 getLengthField() const { return Length; }
-
     /** set the current value of the Length field 
      *  @param val new value of the Length field 
      */
@@ -588,7 +589,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.48  2007-11-29 14:30:19  meichel
+ * Revision 1.49  2008-04-17 14:48:39  meichel
+ * Method DcmObject::getLengthField now public, needed by dcmcheck
+ *
+ * Revision 1.48  2007/11/29 14:30:19  meichel
  * Write methods now handle large raw data elements (such as pixel data)
  *   without loading everything into memory. This allows very large images to
  *   be sent over a network connection, or to be copied without ever being

@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.17 (eichelberg)
+
+- Method DcmObject::getLengthField now public, needed by dcmcheck.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+
 **** Changes from 2008.04.16 (riesmeier)
 
 - Added support for reverse search direction (left to right) to findOption().
