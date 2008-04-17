@@ -18,10 +18,8 @@ Changes between releases are documented here.
            dcmnet/libsrc/dulfsm.cc
            dcmnet/libsrc/dulparse.cc
            dcmnet/libsrc/dulstruc.h
-
   Added:   dcmnet/include/dcmtk/dcuserid.h
            dcmnet/libsrc/dcuserid.cc
-
   Removed: dcmnet/include/dcmtk/dcextusr.h
            dcmnet/libsrc/dcextusr.cc
 
