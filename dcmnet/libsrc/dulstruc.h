@@ -34,13 +34,13 @@
 ** @$=@$=@$=
 */
 /*
-**				DICOM 93
-**		     Electronic Radiology Laboratory
-**		   Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**        DICOM 93
+**         Electronic Radiology Laboratory
+**       Mallinckrodt Institute of Radiology
+**    Washington University School of Medicine
 **
 ** Module Name(s):
-** Author, Date:	Stephen M. Moore, 19-May-93
+** Author, Date:  Stephen M. Moore, 19-May-93
 ** Intent:
 **  This header contains private typedefs for the DICOM Upper Layer
 **  (DUL) protocol package.  This is to be used to compile the DUL
@@ -50,10 +50,10 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: onken $, $Date: 2007-09-07 08:47:54 $
-** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.10 $
-** Status:		$State: Exp $
+** Last Update:   $Author: onken $, $Date: 2008-04-17 15:27:36 $
+** Source File:   $RCSfile: dulstruc.h,v $
+** Revision:    $Revision: 1.11 $
+** Status:    $State: Exp $
 */
 
 #ifndef DULSTRUC_H
@@ -61,13 +61,13 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/extneg.h"
-#include "dcmtk/dcmnet/dcextusr.h"
+#include "dcmtk/dcmnet/dcuserid.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
 
-#define	NETWORK_DISCONNECTED	2
-#define	NETWORK_CONNECTED	3
+#define NETWORK_DISCONNECTED  2
+#define NETWORK_CONNECTED 3
 
 typedef enum {
     DUL_ASSOC_WAITINGFORACK,
@@ -77,9 +77,9 @@ typedef enum {
     DUL_ASSOC_DROPPED
 }   DUL_ASSOC_STATE;
 
-#define ASSOCIATION_DISCONNECTED	2
-#define ASSOCIATION_ABORTED		4
-#define ASSOCIATION_RELEASED		5
+#define ASSOCIATION_DISCONNECTED  2
+#define ASSOCIATION_ABORTED   4
+#define ASSOCIATION_RELEASED    5
 
 typedef struct {
     char keyType[40];
@@ -89,12 +89,12 @@ typedef struct {
     int timeout;
     unsigned long options;
     union {
-	struct {
-	    int port;
-	    int listenSocket;
+  struct {
+      int port;
+      int listenSocket;
             DcmTransportLayer *tLayer;
             int tLayerOwned;
-	}   TCP;
+  }   TCP;
     }   networkSpecific;
 }   PRIVATE_NETWORKKEY;
 
@@ -140,28 +140,28 @@ typedef struct {
     DUL_ModeCallback *modeCallback;
 }   PRIVATE_ASSOCIATIONKEY;
 
-#define KEY_NETWORK	"KEY NETWORK"
-#define	KEY_ASSOCIATION	"KEY ASSOCIATION"
+#define KEY_NETWORK "KEY NETWORK"
+#define KEY_ASSOCIATION "KEY ASSOCIATION"
 
-#define	AE_REQUESTOR	"AE REQUESTOR"
-#define	AE_ACCEPTOR	"AE ACCEPTOR"
-#define	AE_BOTH		"AE BOTH"
+#define AE_REQUESTOR  "AE REQUESTOR"
+#define AE_ACCEPTOR "AE ACCEPTOR"
+#define AE_BOTH   "AE BOTH"
 
-#define	NO_PDU		1
-#define	PDU_HEAD	2
-#define	PDU_DATA	2
+#define NO_PDU    1
+#define PDU_HEAD  2
+#define PDU_DATA  2
 
 /* Default timeout for waiting for PDUs.  100 seconds is high,
 ** but used for development so we have time to do things with the
 ** debugger.  A lower value would be used in a production system.
 */
 
-#define	DEFAULT_TIMEOUT			100
+#define DEFAULT_TIMEOUT     100
 
 /*  Private definitions */
 
 typedef struct dul_subitem {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -169,7 +169,7 @@ typedef struct dul_subitem {
 }   DUL_SUBITEM;
 
 typedef struct dul_maxlength {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -199,7 +199,7 @@ typedef struct {
 }   PRV_IMPLEMENTATIONVERSIONNAME;
 
 typedef struct {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -210,7 +210,7 @@ typedef struct {
 }   PRV_SCUSCPROLE;
 
 typedef struct dul_presentationcontext {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -224,7 +224,7 @@ typedef struct dul_presentationcontext {
 }   PRV_PRESENTATIONCONTEXTITEM;
 
 typedef struct user_info {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned short length;
@@ -235,11 +235,11 @@ typedef struct user_info {
     LST_HEAD *SCUSCPRoleList;                            // 54H: SCP/SCU role selection
     SOPClassExtendedNegotiationSubItemList *extNegList;  // 56H: extended negotiation
                                                          // 57H: SOP CLASS COMMON EXTENDED NEGOTIATION (not implemented)
-    ExtendedNegotiationUserIdentitySubItem *extUsrId;    // 58H: extended negotiation of user identity RQ or AC
+    UserIdentityNegotiationSubItem *usrIdent;            // 58H: user identity negotiation RQ or AC
 }   DUL_USERINFO;
 
 typedef struct dul_associatepdu {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned long length;
@@ -255,7 +255,7 @@ typedef struct dul_associatepdu {
 }   PRV_ASSOCIATEPDU;
 
 typedef struct dul_rejectreleaseabortpdu {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned long length;
@@ -266,7 +266,7 @@ typedef struct dul_rejectreleaseabortpdu {
 }   DUL_REJECTRELEASEABORTPDU;
 
 typedef struct dul_presentationdatavalue {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned long length;
     unsigned char presentationContextID;
     unsigned char messageControlHeader;
@@ -274,42 +274,42 @@ typedef struct dul_presentationdatavalue {
 }   DUL_PRESENTATIONDATAVALUE;
 
 typedef struct dul_datapdu {
-    void *reserved[2]; 
+    void *reserved[2];
     unsigned char type;
     unsigned char rsv1;
     unsigned long length;
     DUL_PRESENTATIONDATAVALUE presentationDataValue;
 }   DUL_DATAPDU;
 
-#define DUL_PROTOCOL			(unsigned short) 0x01
+#define DUL_PROTOCOL      (unsigned short) 0x01
 
-#define DUL_TYPEAPPLICATIONCONTEXT	(unsigned char)0x10
-#define DUL_TYPEPRESENTATIONCONTEXTRQ	(unsigned char)0x20
-#define DUL_TYPEPRESENTATIONCONTEXTAC	(unsigned char)0x21
-#define DUL_TYPEABSTRACTSYNTAX		(unsigned char)0x30
-#define DUL_TYPETRANSFERSYNTAX		(unsigned char)0x40
-#define DUL_TYPEUSERINFO		(unsigned char)0x50
-#define	DUL_TYPEMAXLENGTH		(unsigned char)0x51
-#define	DUL_TYPEIMPLEMENTATIONCLASSUID	(unsigned char)0x52
-#define	DUL_TYPEASYNCOPERATIONS		(unsigned char)0x53
-#define	DUL_TYPESCUSCPROLE		(unsigned char)0x54
-#define	DUL_TYPEIMPLEMENTATIONVERSIONNAME (unsigned char)0x55
+#define DUL_TYPEAPPLICATIONCONTEXT  (unsigned char)0x10
+#define DUL_TYPEPRESENTATIONCONTEXTRQ (unsigned char)0x20
+#define DUL_TYPEPRESENTATIONCONTEXTAC (unsigned char)0x21
+#define DUL_TYPEABSTRACTSYNTAX    (unsigned char)0x30
+#define DUL_TYPETRANSFERSYNTAX    (unsigned char)0x40
+#define DUL_TYPEUSERINFO    (unsigned char)0x50
+#define DUL_TYPEMAXLENGTH   (unsigned char)0x51
+#define DUL_TYPEIMPLEMENTATIONCLASSUID  (unsigned char)0x52
+#define DUL_TYPEASYNCOPERATIONS   (unsigned char)0x53
+#define DUL_TYPESCUSCPROLE    (unsigned char)0x54
+#define DUL_TYPEIMPLEMENTATIONVERSIONNAME (unsigned char)0x55
 
-#define COPY_LONG_BIG(A,B) {	\
-	(B)[0] = (unsigned char)((A)>>24);		\
-	(B)[1] = (unsigned char)((A)>>16) ;	\
-	(B)[2] = (unsigned char)((A)>>8) ;	\
-	(B)[3] = (unsigned char)(A) ;	}
-#define COPY_SHORT_BIG(A,B) {	\
-	(B)[0] = (unsigned char)((A)>>8);		\
-	(B)[1] = (unsigned char)(A) ;	}
+#define COPY_LONG_BIG(A,B) {  \
+  (B)[0] = (unsigned char)((A)>>24);    \
+  (B)[1] = (unsigned char)((A)>>16) ; \
+  (B)[2] = (unsigned char)((A)>>8) ;  \
+  (B)[3] = (unsigned char)(A) ; }
+#define COPY_SHORT_BIG(A,B) { \
+  (B)[0] = (unsigned char)((A)>>8);   \
+  (B)[1] = (unsigned char)(A) ; }
 
-#define EXTRACT_LONG_BIG(A,B)	{			\
-	(B) = (unsigned long)(A)[3]				\
-	  | (((unsigned long)(A)[2]) << 8)		\
-	  | (((unsigned long)(A)[1]) << 16)		\
-	  | (((unsigned long)(A)[0]) << 24);	\
-	}
+#define EXTRACT_LONG_BIG(A,B) {     \
+  (B) = (unsigned long)(A)[3]       \
+    | (((unsigned long)(A)[2]) << 8)    \
+    | (((unsigned long)(A)[1]) << 16)   \
+    | (((unsigned long)(A)[0]) << 24);  \
+  }
 
 #define EXTRACT_SHORT_BIG(A,B)  { (B) = (unsigned short)(A)[1] | (((unsigned short)(A)[0]) << 8); }
 
@@ -318,6 +318,9 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
+** Revision 1.11  2008-04-17 15:27:36  onken
+** Reworked and extended User Identity Negotiation code.
+**
 ** Revision 1.10  2007-09-07 08:47:54  onken
 ** Added basic support for Extended Negotiation of User Identity. Added #ifndef
 ** guard to header file.

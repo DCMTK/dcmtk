@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: onken $, $Date: 2007-09-07 08:49:29 $
+** Last Update:         $Author: onken $, $Date: 2008-04-17 15:27:35 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.76 $
+** Revision:            $Revision: 1.77 $
 ** Status:              $State: Exp $
 */
 
@@ -198,7 +198,7 @@ static char **command_argv = NULL;
 static int command_argc = 0;
 #endif
 
-OFBool DUL_processIsForkedChild() 
+OFBool DUL_processIsForkedChild()
 {
   return processIsForkedChild;
 }
@@ -999,7 +999,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 
         cond = PRV_StateMachine(NULL, association, event, (*association)->protocolState, NULL);
         if (cond.bad()) // cond may be DUL_NETWORKCLOSED.
-        {        
+        {
           if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
           else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
           else event = INVALID_PDU;
@@ -1379,10 +1379,10 @@ DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
     {
       deleteListMembers(*params->acceptedExtNegList);
       delete params->acceptedExtNegList; params->acceptedExtNegList = NULL;
-    // Delete Extended Negotiation of User Identity request and ack structures
     }
-    delete params->reqExtNegUserIdent; params->reqExtNegUserIdent = NULL;
-    delete params->ackExtNegUserIdent; params->ackExtNegUserIdent = NULL;
+    // Delete User Identity Negotiation request and ack structures
+    delete params->reqUserIdentNeg; params->reqUserIdentNeg = NULL;
+    delete params->ackUserIdentNeg; params->ackUserIdentNeg = NULL;
     return EC_Normal;
 }
 
@@ -1620,7 +1620,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         // fork for unix
         pid = fork();
         if (pid > 0)
-        {   
+        {
             // we're the parent process, close accepted socket and return
             char buf4[256];
             close(sock);
@@ -1635,7 +1635,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             sprintf(buf5, "Error: %s, fork failed", strerror(errno));
             return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, buf5);
         }
-        else 
+        else
         {
           // we're the child process, continue normally
           processIsForkedChild = OFTrue;
@@ -1669,7 +1669,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         }
 
                 // create anonymous pipe
-        if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0)) 
+        if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0))
         {
             char buf4[256];
             sprintf(buf4, "Error %i while creating anonymous pipe",OFstatic_cast(int, GetLastError()));
@@ -1679,7 +1679,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 // create duplicate of write end handle of pipe
         if (!DuplicateHandle(GetCurrentProcess(),hChildStdInWrite,
                            GetCurrentProcess(),&hChildStdInWriteDup,0,
-                           FALSE,DUPLICATE_SAME_ACCESS)) 
+                           FALSE,DUPLICATE_SAME_ACCESS))
         {
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Error while duplicating handle");
         }
@@ -1702,21 +1702,21 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
         si.hStdInput = hChildStdInRead;
 
-                // create child process. 
+                // create child process.
         if (!CreateProcess(NULL,OFconst_cast(char *,cmdLine.c_str()),NULL,NULL,TRUE,0,NULL,NULL,&si,&pi))
         {
             char buf4[256];
             sprintf(buf4, "CreateProcess failed: (%i)",(int)GetLastError());
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
         }
-        else 
+        else
         {
             // call OpenProcess to retrieve the REAL process handle.  using
             // GetCurrentProcess() only returns a psuedo handle which may not
             // allow DuplicateHandle to create the child process socket with
             // sufficient permissions on certain versions of Windows.
             HANDLE hParentProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
-            if (hParentProcessHandle == NULL) 
+            if (hParentProcessHandle == NULL)
             {
                 // unable to get process handle...
                 // ...this should really never happen as we are opening the current process.
@@ -1730,7 +1730,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             // Now that we have a handle to the new process, we can duplicate the
             // socket handle into the new child process.
             if (DuplicateHandle(hParentProcessHandle, (HANDLE)sock, pi.hProcess,
-                &childSocketHandle, 0, TRUE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS)) 
+                &childSocketHandle, 0, TRUE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS))
             {
                 // close handles in PROCESS_INFORMATION structure
                 // and our local copy of the socket handle.
@@ -1742,7 +1742,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 DWORD bytesWritten;
                 char buf5[20];
                 sprintf(buf5,"%i",(int)childSocketHandle);
-                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5)+1, &bytesWritten, NULL)) 
+                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5)+1, &bytesWritten, NULL))
                                 {
                     CloseHandle(hChildStdInWriteDup);
                     return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while writing to anonymous pipe");
@@ -1750,12 +1750,12 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
                 // return OF_ok status code DULC_FORKEDCHILD with descriptive text
                 char buf4[256];
-                sprintf(buf4, "new child process started with pid %i, socketHandle %i", 
-                  OFstatic_cast(int, pi.dwProcessId), 
+                sprintf(buf4, "new child process started with pid %i, socketHandle %i",
+                  OFstatic_cast(int, pi.dwProcessId),
                   (int)childSocketHandle);
                 return makeDcmnetCondition (DULC_FORKEDCHILD, OF_ok, buf4);
             }
-            else 
+            else
             {
                 // unable to duplicate handle. Close handles nevertheless
                 // to avoid resource leak.
@@ -2006,7 +2006,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     // unless the socket handle has already been passed to us or
     // we are a forked child of an application acceptor, in which
     // case the socket also already exists.
-    if ((dcmExternalSocketHandle.get() < 0) && 
+    if ((dcmExternalSocketHandle.get() < 0) &&
         ((*key)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) &&
         (! processIsForkedChild))
     {
@@ -2629,6 +2629,9 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.77  2008-04-17 15:27:35  onken
+** Reworked and extended User Identity Negotiation code.
+**
 ** Revision 1.76  2007-09-07 08:49:29  onken
 ** Added basic support for Extended Negotiation of User Identity.
 **

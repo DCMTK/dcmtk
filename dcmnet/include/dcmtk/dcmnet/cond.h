@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:02:07 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-04-17 15:28:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@
  *   means that switch statements on conditions are not possible anymore.
  *   Use if/else if/else constructs instead.
  *
- * - The condition ASC_RELEASECONFIRMED has been removed. 
+ * - The condition ASC_RELEASECONFIRMED has been removed.
  *   ASC_releaseAssociation() now returns EC_Normal upon successful completion.
  *
  * - No translation of error codes that are passed from the DUL module to the
@@ -64,11 +64,11 @@
  * - DUL_PEERREQUESTEDRELEASE is now an error code, i.e. unlike prior releases
  *   SUCCESS(DUL_PEERREQUESTEDRELEASE) is false.
  *
- * - In strict mode (compiled with OFCONDITION_STRICT_MODE), additional 
+ * - In strict mode (compiled with OFCONDITION_STRICT_MODE), additional
  *   restrictions apply.  OFCondition requires explicit copy construction
  *   (not default constructor), and all compatibility aliases/typedefs
  *   are disabled. SUCCESS(cond) is undefined, use cond.good() instead.
- *             
+ *
  */
 
 // condition code constants used in the association module
@@ -79,12 +79,14 @@ const unsigned short ASCC_DUPLICATEPRESENTATIONCONTEXTID = 0x104;
 const unsigned short ASCC_MISSINGTRANSFERSYNTAX          = 0x105;
 const unsigned short ASCC_NULLKEY                        = 0x106;
 const unsigned short ASCC_SHUTDOWNAPPLICATION            = 0x107;
+const unsigned short ASCC_USERIDENTIFICATIONFAILED       = 0x108;
 
 // condition constants used in the association module
 extern const OFCondition ASC_BADPRESENTATIONCONTEXTID;   /* Bad presentation context ID */
 extern const OFCondition ASC_MISSINGTRANSFERSYNTAX;      /* Missing transfer syntax */
 extern const OFCondition ASC_NULLKEY;                    /* Caller passed in a NULL key */
 extern const OFCondition ASC_SHUTDOWNAPPLICATION;        /* Peer requested application shutdown */
+extern const OFCondition ASC_USERIDENTIFICATIONFAILED;   /* User Identity Negotiation failed */
 
 // condition code constants used in the DIMSE module
 const unsigned short DIMSEC_BADCOMMANDTYPE               = 0x201;
@@ -271,6 +273,9 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.11  2008-04-17 15:28:33  onken
+ * Reworked and extended User Identity Negotiation code.
+ *
  * Revision 1.10  2005-12-08 16:02:07  meichel
  * Changed include path schema for all DCMTK header files
  *

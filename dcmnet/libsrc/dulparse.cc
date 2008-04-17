@@ -45,9 +45,9 @@
 ** Intent:          This file contains functions for parsing Dicom
 **                  Upper Layer (DUL) Protocol Data Units (PDUs)
 **                  into logical in-memory structures.
-** Last Update:     $Author: onken $, $Date: 2007-09-07 08:49:30 $
+** Last Update:     $Author: onken $, $Date: 2008-04-17 15:27:35 $
 ** Source File:     $RCSfile: dulparse.cc,v $
-** Revision:        $Revision: 1.27 $
+** Revision:        $Revision: 1.28 $
 ** Status:          $State: Exp $
 */
 
@@ -77,7 +77,7 @@ parsePresentationContext(unsigned char type,
                          unsigned char *buf, unsigned long *itemLength);
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
-              unsigned char *buf, unsigned long *itemLength, 
+              unsigned char *buf, unsigned long *itemLength,
               unsigned char typeRQorAC);
 static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
@@ -458,7 +458,7 @@ parsePresentationContext(unsigned char type,
 
 static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
-              unsigned char *buf, 
+              unsigned char *buf,
               unsigned long *itemLength,
               unsigned char typeRQorAC)
 {
@@ -467,7 +467,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
     OFCondition cond = EC_Normal;
     PRV_SCUSCPROLE *role;
     SOPClassExtendedNegotiationSubItem *extNeg = NULL;
-    ExtendedNegotiationUserIdentitySubItem *usrIdent = NULL;
+    UserIdentityNegotiationSubItem *usrIdent = NULL;
 
     userInfo->type = *buf++;
     userInfo->rsv1 = *buf++;
@@ -554,11 +554,11 @@ parseUserInfo(DUL_USERINFO * userInfo,
             userLength -= (unsigned short) length;
             break;
 
-        case DUL_TYPEEXTENDEDNEGOTIATIONUSERIDENTITY:
+        case DUL_TYPENEGOTIATIONOFUSERIDENTITY:
           if (typeRQorAC == DUL_TYPEASSOCIATERQ)
-            usrIdent = new ExtendedNegotiationUserIdentitySubItemRQ();
+            usrIdent = new UserIdentityNegotiationSubItemRQ();
           else // assume DUL_TYPEASSOCIATEAC
-            usrIdent = new ExtendedNegotiationUserIdentitySubItemAC();
+            usrIdent = new UserIdentityNegotiationSubItemAC();
           if (usrIdent == NULL) return EC_MemoryExhausted;
           cond = usrIdent->parseFromBuffer(buf, length /*return value*/);
           if (cond.bad())
@@ -566,7 +566,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
             delete usrIdent;
             return cond;
           }
-          userInfo->extUsrId = usrIdent;
+          userInfo->usrIdent = usrIdent;
           buf += length;
           userLength -= (unsigned short) length;
           break;
@@ -797,6 +797,9 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
+** Revision 1.28  2008-04-17 15:27:35  onken
+** Reworked and extended User Identity Negotiation code.
+**
 ** Revision 1.27  2007-09-07 08:49:30  onken
 ** Added basic support for Extended Negotiation of User Identity.
 **

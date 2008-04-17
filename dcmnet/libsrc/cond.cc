@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:29 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-04-17 15:27:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,11 +42,13 @@ const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID(OFM_dcmnet, ASCC_BADPRESENT
 const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,    OF_error, "ASC Missing transfer syntax");
 const OFConditionConst ASCE_NULLKEY(                 OFM_dcmnet, ASCC_NULLKEY,                  OF_error, "ASC Caller passed in a NULL key");
 const OFConditionConst ASCE_SHUTDOWNAPPLICATION(     OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,      OF_error, "ASC Application shutdown requested");
+const OFConditionConst ASCE_USERIDENTIFICATIONFAILED(OFM_dcmnet, ASCC_USERIDENTIFICATIONFAILED, OF_error, "ASC User Identification Negotiation failed");
 
 const OFCondition ASC_BADPRESENTATIONCONTEXTID(ASCE_BADPRESENTATIONCONTEXTID);
 const OFCondition ASC_MISSINGTRANSFERSYNTAX(   ASCE_MISSINGTRANSFERSYNTAX);
 const OFCondition ASC_NULLKEY(                 ASCE_NULLKEY);
 const OFCondition ASC_SHUTDOWNAPPLICATION(     ASCE_SHUTDOWNAPPLICATION);
+const OFCondition ASC_USERIDENTIFICATIONFAILED(ASCE_USERIDENTIFICATIONFAILED);
 
 const OFConditionConst DIMSEE_BADCOMMANDTYPE(               OFM_dcmnet, DIMSEC_BADCOMMANDTYPE,               OF_error, "DIMSE Bad command type");
 const OFConditionConst DIMSEE_BADDATA(                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");
@@ -162,6 +164,9 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.16  2008-04-17 15:27:35  onken
+ * Reworked and extended User Identity Negotiation code.
+ *
  * Revision 1.15  2006-08-15 16:04:29  meichel
  * Updated the code in module dcmnet to correctly compile when
  *   all standard C++ classes remain in namespace std.

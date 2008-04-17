@@ -34,20 +34,20 @@
 ** @$=@$=@$=
 */
 /*
-**				DICOM 93
-**		    Electronic Radiology Laboratory
-**		  Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**        DICOM 93
+**        Electronic Radiology Laboratory
+**      Mallinckrodt Institute of Radiology
+**    Washington University School of Medicine
 **
 ** Module Name(s):
-** Author, Date:	Stephen M. Moore, 14-Apr-1993
-** Intent:		This file defines the public structures and constants
-**			and the function prototypes for the DUL (DICOM Upper
-**			Layer) facility.
-** Last Update:		$Author: onken $, $Date: 2007-09-07 08:49:12 $
-** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.25 $
-** Status:		$State: Exp $
+** Author, Date:  Stephen M. Moore, 14-Apr-1993
+** Intent:    This file defines the public structures and constants
+**      and the function prototypes for the DUL (DICOM Upper
+**      Layer) facility.
+** Last Update:   $Author: onken $, $Date: 2008-04-17 15:28:33 $
+** Source File:   $RCSfile: dul.h,v $
+** Revision:    $Revision: 1.26 $
+** Status:    $State: Exp $
 */
 
 
@@ -61,7 +61,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/dcmnet/extneg.h"
 #include "dcmtk/dcmnet/dicom.h"
-#include "dcmtk/dcmnet/dcextusr.h"
+#include "dcmtk/dcmnet/dcuserid.h"
 
 class DcmTransportConnection;
 class DcmTransportLayer;
@@ -94,7 +94,7 @@ extern OFGlobal<int> dcmExternalSocketHandle;   /* default -1 */
  */
 extern OFGlobal<const char *> dcmTCPWrapperDaemonName;   /* default NULL */
 
-/* Global option flag for compatibility with DCMTK releases prior to 3.0 
+/* Global option flag for compatibility with DCMTK releases prior to 3.0
  * Default (0) is automatic handling, which should work in most cases.
  */
 extern OFGlobal<unsigned long> dcmEnableBackwardCompatibility;
@@ -117,23 +117,23 @@ typedef unsigned char DUL_PRESENTATIONCONTEXTID;
  *  about node names, but the DUL_ package needs them.
  */
 
-#define DUL_LEN_TITLE  OFstatic_cast(size_t, 16)	/* required by DICOM protocol	 */
-#define DUL_LEN_NAME   OFstatic_cast(size_t, 64)	/* required by DICOM protocol	 */
-#define DUL_LEN_UID    OFstatic_cast(size_t, 64)	/* required by DICOM protocol	 */
-#define DUL_LEN_NODE   OFstatic_cast(size_t, 127)	/* should be "big enough"	 */
+#define DUL_LEN_TITLE  OFstatic_cast(size_t, 16)  /* required by DICOM protocol  */
+#define DUL_LEN_NAME   OFstatic_cast(size_t, 64)  /* required by DICOM protocol  */
+#define DUL_LEN_UID    OFstatic_cast(size_t, 64)  /* required by DICOM protocol  */
+#define DUL_LEN_NODE   OFstatic_cast(size_t, 127) /* should be "big enough"  */
 
 
 /* DICOM PDU Types */
 
-#define DUL_TYPEASSOCIATERQ		OFstatic_cast(unsigned char, 0x01)
-#define DUL_TYPEASSOCIATEAC		OFstatic_cast(unsigned char, 0x02)
-#define	DUL_TYPEASSOCIATERJ		OFstatic_cast(unsigned char, 0x03)
-#define	DUL_TYPEDATA			OFstatic_cast(unsigned char, 0x04)
-#define	DUL_TYPERELEASERQ		OFstatic_cast(unsigned char, 0x05)
-#define	DUL_TYPERELEASERP		OFstatic_cast(unsigned char, 0x06)
-#define	DUL_TYPEABORT			OFstatic_cast(unsigned char, 0x07)
+#define DUL_TYPEASSOCIATERQ   OFstatic_cast(unsigned char, 0x01)
+#define DUL_TYPEASSOCIATEAC   OFstatic_cast(unsigned char, 0x02)
+#define DUL_TYPEASSOCIATERJ   OFstatic_cast(unsigned char, 0x03)
+#define DUL_TYPEDATA      OFstatic_cast(unsigned char, 0x04)
+#define DUL_TYPERELEASERQ   OFstatic_cast(unsigned char, 0x05)
+#define DUL_TYPERELEASERP   OFstatic_cast(unsigned char, 0x06)
+#define DUL_TYPEABORT     OFstatic_cast(unsigned char, 0x07)
 
-#define DUL_MAXTYPE			OFstatic_cast(unsigned char, 0x07)
+#define DUL_MAXTYPE     OFstatic_cast(unsigned char, 0x07)
 
 class DUL_ModeCallback
 {
@@ -170,8 +170,8 @@ typedef struct {
     unsigned long peerMaxPDU;
     SOPClassExtendedNegotiationSubItemList *requestedExtNegList;
     SOPClassExtendedNegotiationSubItemList *acceptedExtNegList;
-    ExtendedNegotiationUserIdentitySubItemRQ *reqExtNegUserIdent;
-    ExtendedNegotiationUserIdentitySubItemAC *ackExtNegUserIdent;
+    UserIdentityNegotiationSubItemRQ *reqUserIdentNeg;
+    UserIdentityNegotiationSubItemAC *ackUserIdentNeg;
 
     OFBool useSecureLayer;
 }   DUL_ASSOCIATESERVICEPARAMETERS;
@@ -183,11 +183,11 @@ typedef enum {
     DUL_SC_ROLE_SCUSCP
 }   DUL_SC_ROLE;
 
-#define	DUL_PRESENTATION_ACCEPT			0
-#define	DUL_PRESENTATION_REJECT_USER		1
-#define	DUL_PRESENTATION_REJECT_NOREASON	2
-#define	DUL_PRESENTATION_REJECT_ABSTRACT_SYNTAX	3
-#define	DUL_PRESENTATION_REJECT_TRANSFER_SYNTAX	4
+#define DUL_PRESENTATION_ACCEPT     0
+#define DUL_PRESENTATION_REJECT_USER    1
+#define DUL_PRESENTATION_REJECT_NOREASON  2
+#define DUL_PRESENTATION_REJECT_ABSTRACT_SYNTAX 3
+#define DUL_PRESENTATION_REJECT_TRANSFER_SYNTAX 4
 
 typedef OFList<char *> DUL_TRANSFERSYNTAXLIST;
 
@@ -214,15 +214,15 @@ typedef struct dul_abortitems {
 }   DUL_ABORTITEMS;
 
 typedef enum {
-    DUL_COMMANDPDV,		/* A command PDV inside a data PDU */
+    DUL_COMMANDPDV,   /* A command PDV inside a data PDU */
     DUL_DATASETPDV
-}				/* A data set PDV inside a data PDU */
+}       /* A data set PDV inside a data PDU */
     DUL_DATAPDV;
 
 typedef enum {
-    DUL_BLOCK,			/* Block on an operation (read, request) */
+    DUL_BLOCK,      /* Block on an operation (read, request) */
     DUL_NOBLOCK
-}				/* Or return immediately if nothing avail */
+}       /* Or return immediately if nothing avail */
     DUL_BLOCKOPTIONS;
 
 typedef struct {
@@ -248,92 +248,92 @@ typedef struct {
 **  DICOM PDU.
 */
 
-#define	DUL_ORDERMASK		0x03	/* The bottom two bits */
-#define	DUL_ORDERLITTLEENDIAN	0x01
-#define	DUL_ORDERBIGENDIAN	0x02
+#define DUL_ORDERMASK   0x03  /* The bottom two bits */
+#define DUL_ORDERLITTLEENDIAN 0x01
+#define DUL_ORDERBIGENDIAN  0x02
 
-#define	DUL_DOMAINMASK		0x04
-#define	DUL_FULLDOMAINNAME	0x04
+#define DUL_DOMAINMASK    0x04
+#define DUL_FULLDOMAINNAME  0x04
 
-#define	DUL_AEREQUESTOR		"AE REQUESTOR"
-#define	DUL_AEACCEPTOR		"AE ACCEPTOR"
-#define	DUL_AEBOTH		"AE BOTH"
+#define DUL_AEREQUESTOR   "AE REQUESTOR"
+#define DUL_AEACCEPTOR    "AE ACCEPTOR"
+#define DUL_AEBOTH    "AE BOTH"
 
 /*  These macros define results and reasons for rejecting an association
 **  request.  Result is permanent or transient.  There are a number of
 **  different reasons for rejecting requests that occur at different layers
  */
-#define	DUL_REJ_RSLTPERMANENT		0x01
-#define	DUL_REJ_RSLTTRANSIENT		0x02
+#define DUL_REJ_RSLTPERMANENT   0x01
+#define DUL_REJ_RSLTTRANSIENT   0x02
 
 /*  These macros define parameters used to construct an ABORT PDU.
 **  These include the source of the abort (SCU or SCP) and the
 **  reason for the abort.
 */
 
-#define	DUL_SCU_INITIATED_ABORT	0x00
-#define	DUL_SCP_INITIATED_ABORT	0x02
+#define DUL_SCU_INITIATED_ABORT 0x00
+#define DUL_SCP_INITIATED_ABORT 0x02
 
-#define DUL_ABORTSERVICEUSER		0x00
-#define DUL_ABORTSERVICEPROVIDER	0x02
+#define DUL_ABORTSERVICEUSER    0x00
+#define DUL_ABORTSERVICEPROVIDER  0x02
 
 
-#define	DUL_ABORTNOREASON		0x00
-#define	DUL_ABORTUNRECOGNIZEDPDU	0x01
-#define	DUL_ABORTUNEXPECTEDPDU		0x02
-#define	DUL_ABORTUNRECOGNIZEDPDUPARAM	0x04
-#define	DUL_ABORTUNEXPECTEDPDUPARAM	0x05
-#define	DUL_ABORTINVALIDPDUPARAM	0x06
+#define DUL_ABORTNOREASON   0x00
+#define DUL_ABORTUNRECOGNIZEDPDU  0x01
+#define DUL_ABORTUNEXPECTEDPDU    0x02
+#define DUL_ABORTUNRECOGNIZEDPDUPARAM 0x04
+#define DUL_ABORTUNEXPECTEDPDUPARAM 0x05
+#define DUL_ABORTINVALIDPDUPARAM  0x06
 
 /*  These macros define parameters used to construct a REJECT PDU.
 **  These include the source of the reject (DICOM UL service-user,
 **  (DICOM UL service-provider) and the reason for the reject.
 */
-#define	DUL_REJECT_PERMANENT		0x01
-#define	DUL_REJECT_TRANSIENT		0x02
+#define DUL_REJECT_PERMANENT    0x01
+#define DUL_REJECT_TRANSIENT    0x02
 
-#define	DUL_ULSU_REJECT			0x01
-#define	DUL_ULSP_ACSE_REJECT		0x02
-#define	DUL_ULSP_PRESENTATION_REJECT	0x03
+#define DUL_ULSU_REJECT     0x01
+#define DUL_ULSP_ACSE_REJECT    0x02
+#define DUL_ULSP_PRESENTATION_REJECT  0x03
 
-#define	DUL_ULSU_REJ_NOREASON		0x01
-#define	DUL_ULSU_REJ_UNSUP_APP_CTX_NAME	0x02
-#define	DUL_ULSU_REJ_UNREC_CALLING_TITLE 0x03
-#define	DUL_ULSU_REJ_UNREC_CALLED_TITLE	0x07
+#define DUL_ULSU_REJ_NOREASON   0x01
+#define DUL_ULSU_REJ_UNSUP_APP_CTX_NAME 0x02
+#define DUL_ULSU_REJ_UNREC_CALLING_TITLE 0x03
+#define DUL_ULSU_REJ_UNREC_CALLED_TITLE 0x07
 
-#define	DUL_ULSP_ACSE_REJ_NOREASON	0x01
-#define	DUL_ULSP_ACSE_UNSUP_PROTOCOL	0x02
+#define DUL_ULSP_ACSE_REJ_NOREASON  0x01
+#define DUL_ULSP_ACSE_UNSUP_PROTOCOL  0x02
 
-#define	DUL_ULSP_PRES_REJ_TEMP_CONGEST	0x01
-#define	DUL_ULSP_PRES_REJ_LIMIT		0x02
+#define DUL_ULSP_PRES_REJ_TEMP_CONGEST  0x01
+#define DUL_ULSP_PRES_REJ_LIMIT   0x02
 
-#define	DUL_ABORTNOREASON		0x00
-#define	DUL_ABORTUNRECOGNIZEDPDU	0x01
-#define	DUL_ABORTUNEXPECTEDPDU		0x02
-#define	DUL_ABORTUNRECOGNIZEDPDUPARAM	0x04
-#define	DUL_ABORTUNEXPECTEDPDUPARAM	0x05
-#define	DUL_ABORTINVALIDPDUPARAM	0x06
+#define DUL_ABORTNOREASON   0x00
+#define DUL_ABORTUNRECOGNIZEDPDU  0x01
+#define DUL_ABORTUNEXPECTEDPDU    0x02
+#define DUL_ABORTUNRECOGNIZEDPDUPARAM 0x04
+#define DUL_ABORTUNEXPECTEDPDUPARAM 0x05
+#define DUL_ABORTINVALIDPDUPARAM  0x06
 
 /* Define a set of constants and types that let the user get information
 ** about the Association
 */
 
 typedef enum {
-    DUL_K_INTEGER,		/* An integer type */
-    DUL_K_STRING		/* A string type */
+    DUL_K_INTEGER,    /* An integer type */
+    DUL_K_STRING    /* A string type */
 }   DUL_DATA_TYPE;
 typedef enum {
     DUL_K_MAX_PDV_XMIT
 }   DUL_ASSOCIATION_PARAMETER;
 
-#define	DUL_TIMEOUT	180
+#define DUL_TIMEOUT 180
 
 /* Operating mode flags as defined in the 1993 toolkit specification.
 ** Needed for backward compatibility with DCMTK releases prior to 3.0
 ** (and possibly older CTN releases).
 */
 
-#define DUL_DULCOMPAT          2768240730UL 
+#define DUL_DULCOMPAT          2768240730UL
 #define DUL_DIMSECOMPAT        262144UL
 #define DUL_MAXPDUCOMPAT       4278190335UL
 
@@ -345,33 +345,33 @@ typedef enum {
 OFCondition
 DUL_AcknowledgeAssociationRQ(
   DUL_ASSOCIATIONKEY ** association,
-  DUL_ASSOCIATESERVICEPARAMETERS * params, 
+  DUL_ASSOCIATESERVICEPARAMETERS * params,
   int activatePDUStorage);
 
 OFCondition
 DUL_InitializeNetwork(
-  const char *mode, 
+  const char *mode,
   void *param,
-  int timeout, 
-  unsigned long 
-  options, 
+  int timeout,
+  unsigned long
+  options,
   DUL_NETWORKKEY ** network);
 
 OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** net,
-  DUL_BLOCKOPTIONS blk, 
+  DUL_BLOCKOPTIONS blk,
   int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * parameters,
-  DUL_ASSOCIATIONKEY ** association, 
+  DUL_ASSOCIATIONKEY ** association,
   int activatePDUStorage);
 
 OFCondition
 DUL_RejectAssociationRQ(
   DUL_ASSOCIATIONKEY ** association,
-  DUL_ABORTITEMS * params, 
+  DUL_ABORTITEMS * params,
   int activatePDUStorage);
-  
+
 OFCondition
 DUL_RequestAssociation(
   DUL_NETWORKKEY ** network,
@@ -391,10 +391,10 @@ OFCondition DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** association);
 */
 OFCondition
 DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** association,
-	     DUL_PDVLIST * pdvList, DUL_BLOCKOPTIONS block, int timeout);
+       DUL_PDVLIST * pdvList, DUL_BLOCKOPTIONS block, int timeout);
 OFCondition
 DUL_WritePDVs(DUL_ASSOCIATIONKEY ** association,
-	      DUL_PDVLIST * pdvList);
+        DUL_PDVLIST * pdvList);
 OFCondition DUL_NextPDV(DUL_ASSOCIATIONKEY ** association, DUL_PDV * pdv);
 
 
@@ -404,13 +404,13 @@ const char *DUL_Message(OFCondition cond);
 void DUL_Debug(OFBool flag);
 OFCondition
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** association,
-			 DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
-			 void *address, size_t length);
+       DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
+       void *address, size_t length);
 OFCondition
 DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
-		     DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
+         DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
 DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
-			const char *transferSyntax,...);
+      const char *transferSyntax,...);
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE ostream& outstream);
 
@@ -419,16 +419,16 @@ void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& lst);
 
 /*
-** Additional functions (from dulextra.cc) needed to support 
+** Additional functions (from dulextra.cc) needed to support
 ** selecting amongst several concurrent associations.
 ** Andrew Hewett, Institute OFFIS, Oldenburg, Germany.
 */
 
-OFBool 
+OFBool
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout);
-int 
+int
 DUL_networkSocket(DUL_NETWORKKEY * callerNet);
-OFBool 
+OFBool
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
 
 /*
@@ -489,6 +489,9 @@ void DUL_requestForkOnTransportConnectionReceipt(int argc, char *argv[]);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
+** Revision 1.26  2008-04-17 15:28:33  onken
+** Reworked and extended User Identity Negotiation code.
+**
 ** Revision 1.25  2007-09-07 08:49:12  onken
 ** Added basic support for Extended Negotiation of User Identity.
 **

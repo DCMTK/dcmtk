@@ -1,38 +1,38 @@
 /*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,37 +41,37 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
-** 
+** Author: Andrew Hewett    Created: 03-06-93
+**
 ** Module: association
 **
-** Purpose: 
-**	This file contains the routines which provide association management
-**	for DICOM applications.  It maintains structures which describe
-**	active associations and provides access to association specific 
-**	informtion.  Also provided are routines for aiding association
-**	negotiation (presentation contexts, abstract syntaxes, transfer
-**	syntaxes, maximum PDU length, and other extended negotiation).
+** Purpose:
+**  This file contains the routines which provide association management
+**  for DICOM applications.  It maintains structures which describe
+**  active associations and provides access to association specific
+**  informtion.  Also provided are routines for aiding association
+**  negotiation (presentation contexts, abstract syntaxes, transfer
+**  syntaxes, maximum PDU length, and other extended negotiation).
 **
-**	This package uses the facilities of the DICOM Upper Layer for
-**	receiving/sending association requests/responses.
+**  This package uses the facilities of the DICOM Upper Layer for
+**  receiving/sending association requests/responses.
 **
-**	Each active association is represented by an T_ASC_Association
-**	structure which contains all relevant information.
+**  Each active association is represented by an T_ASC_Association
+**  structure which contains all relevant information.
 **
-**	Module Prefix: ASC_
+**  Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: onken $
-** Update Date:		$Date: 2007-09-07 08:49:12 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.26 $
-** Status:		$State: Exp $
+** Last Update:   $Author: onken $
+** Update Date:   $Date: 2008-04-17 15:28:33 $
+** Source File:   $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
+** CVS/RCS Revision:  $Revision: 1.27 $
+** Status:    $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -93,14 +93,14 @@
 ** Constant Definitions
 */
 
-/* 
- * There have been reports that smaller PDUs work better in some environments. 
+/*
+ * There have been reports that smaller PDUs work better in some environments.
  * Allow a 4K minimum and a 128K maximum. Any further extension requires
  * modifications in the DUL code.
  */
-#define ASC_DEFAULTMAXPDU       16384	/* 16K is default if nothing else specified */
+#define ASC_DEFAULTMAXPDU       16384 /* 16K is default if nothing else specified */
 #define ASC_MINIMUMPDUSIZE       4096
-#define ASC_MAXIMUMPDUSIZE     131072	/* 128K - we only handle this big */
+#define ASC_MAXIMUMPDUSIZE     131072 /* 128K - we only handle this big */
 
 /*
 ** Type Definitions
@@ -113,15 +113,15 @@
 
 enum T_ASC_NetworkRole
 {
-    NET_ACCEPTOR,		/* Provider Only */
-    NET_REQUESTOR,		/* User Only */
-    NET_ACCEPTORREQUESTOR	/* User and Provider */
+    NET_ACCEPTOR,   /* Provider Only */
+    NET_REQUESTOR,    /* User Only */
+    NET_ACCEPTORREQUESTOR /* User and Provider */
 };
 
 struct T_ASC_Network
 {
     T_ASC_NetworkRole   role;
-    int             	acceptorPort;
+    int               acceptorPort;
     DUL_NETWORKKEY      *network;
 };
 
@@ -136,20 +136,20 @@ struct T_ASC_Network
  * DICOM (1998) defines 22 transfer syntaxes, this upper limit
  * should allow for sufficiently many private transfer syntaxes.
  */
-#define DICOM_MAXTRANSFERSYNTAXES	50
+#define DICOM_MAXTRANSFERSYNTAXES 50
 
 
 typedef DUL_PRESENTATIONCONTEXTID T_ASC_PresentationContextID;
 
 enum T_ASC_P_ResultReason
 { /* Part 8, pp 45. */
-    ASC_P_ACCEPTANCE             	= 0,
-    ASC_P_USERREJECTION             	= 1,
-    ASC_P_NOREASON                 	= 2,
+    ASC_P_ACCEPTANCE              = 0,
+    ASC_P_USERREJECTION               = 1,
+    ASC_P_NOREASON                  = 2,
     ASC_P_ABSTRACTSYNTAXNOTSUPPORTED    = 3,
     ASC_P_TRANSFERSYNTAXESNOTSUPPORTED  = 4,
-    ASC_P_NOTYETNEGOTIATED            	= 255
-}; 
+    ASC_P_NOTYETNEGOTIATED              = 255
+};
 
 enum T_ASC_SC_ROLE
 {
@@ -162,19 +162,19 @@ enum T_ASC_SC_ROLE
 struct T_ASC_PresentationContext
 {
     T_ASC_PresentationContextID presentationContextID;
-    DIC_UI 			abstractSyntax;
-    unsigned char 		transferSyntaxCount;
-    DIC_UI 		proposedTransferSyntaxes[DICOM_MAXTRANSFERSYNTAXES];
-    DIC_UI			acceptedTransferSyntax;
-    T_ASC_P_ResultReason 	resultReason;
-    T_ASC_SC_ROLE 		proposedRole;
-    T_ASC_SC_ROLE		acceptedRole;
+    DIC_UI      abstractSyntax;
+    unsigned char     transferSyntaxCount;
+    DIC_UI    proposedTransferSyntaxes[DICOM_MAXTRANSFERSYNTAXES];
+    DIC_UI      acceptedTransferSyntax;
+    T_ASC_P_ResultReason  resultReason;
+    T_ASC_SC_ROLE     proposedRole;
+    T_ASC_SC_ROLE   acceptedRole;
 };
 
 enum T_ASC_RejectParametersResult
-{ 
-    ASC_RESULT_REJECTEDPERMANENT			= 1, 
-    ASC_RESULT_REJECTEDTRANSIENT			= 2
+{
+    ASC_RESULT_REJECTEDPERMANENT      = 1,
+    ASC_RESULT_REJECTEDTRANSIENT      = 2
 };
 
 enum T_ASC_RejectParametersSource
@@ -184,7 +184,7 @@ enum T_ASC_RejectParametersSource
     ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED = 3
 };
 
-enum T_ASC_RejectParametersReason 
+enum T_ASC_RejectParametersReason
 { /* the following values are coded by DUL */
     /* Service User reasons */
     ASC_REASON_SU_NOREASON                          = 0x0101,
@@ -218,26 +218,26 @@ struct T_ASC_Parameters
     DUL_ASSOCIATESERVICEPARAMETERS DULparams;
     /*
      * DICOM Upper Layer service parameters.  They should only be
-     * accessed via functions defined below. 
+     * accessed via functions defined below.
      */
 
-    long ourMaxPDUReceiveSize;		/* we say what we can receive */
-    long theirMaxPDUReceiveSize;	/* they say what we can send */
+    long ourMaxPDUReceiveSize;    /* we say what we can receive */
+    long theirMaxPDUReceiveSize;  /* they say what we can send */
 
 };
 
 /*
 ** Association structure containing all association specific
-** information. 
+** information.
 */
 struct T_ASC_Association
 {
     DUL_ASSOCIATIONKEY *DULassociation;
     T_ASC_Parameters *params;
 
-    unsigned short nextMsgID;	        /* should be incremented by user */
-    unsigned long sendPDVLength;	/* max length of PDV to send out */
-    unsigned char *sendPDVBuffer;	/* buffer of size sendPDVLength */
+    unsigned short nextMsgID;         /* should be incremented by user */
+    unsigned long sendPDVLength;  /* max length of PDV to send out */
+    unsigned char *sendPDVBuffer; /* buffer of size sendPDVLength */
 };
 
 /*
@@ -264,7 +264,7 @@ OFCondition ASC_initializeNetwork(
 /** network instance destruction function (destructor)
  *  @param network T_ASC_Network will be freed by this routine
  *  @return EC_Normal if successful, an error code otherwise
- */ 
+ */
 OFCondition ASC_dropNetwork(T_ASC_Network ** network);
 
 /*
@@ -276,7 +276,7 @@ ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
     long maxReceivePDUSize);
 
-OFCondition 
+OFCondition
 ASC_destroyAssociationParameters(
     T_ASC_Parameters ** params);
 
@@ -286,53 +286,53 @@ ASC_setTransportLayerType(
     T_ASC_Parameters * params,
     OFBool useSecureLayer);
 
-OFCondition 
+OFCondition
 ASC_setAPTitles(
     T_ASC_Parameters * params,
     const char* callingAPTitle,
     const char* calledAPTitle,
     const char* respondingAPTitle);
 
-OFCondition 
+OFCondition
 ASC_getAPTitles(
     T_ASC_Parameters * params,
     char* callingAPTitle,
     char* calledAPTitle,
     char* respondingAPTitle);
 
-OFCondition 
+OFCondition
 ASC_getApplicationContextName(
     T_ASC_Parameters * params,
     char* applicationContextName);
 
-OFCondition 
+OFCondition
 ASC_setPresentationAddresses(
     T_ASC_Parameters * params,
     const char* callingPresentationAddress,
     const char* calledPresentationAddress);
 
-OFCondition 
+OFCondition
 ASC_getPresentationAddresses(
     T_ASC_Parameters * params,
     char* callingPresentationAddress,
     char* calledPresentationAddress);
 
-OFCondition 
+OFCondition
 ASC_getRejectParameters(
     T_ASC_Parameters * params,
     T_ASC_RejectParameters * rejectParameters);
 
-void 
+void
 ASC_printRejectParameters(
-    FILE *f, 
+    FILE *f,
     T_ASC_RejectParameters *rej);
 
-void 
+void
 ASC_printRejectParameters(
-    STD_NAMESPACE ostream& out, 
+    STD_NAMESPACE ostream& out,
     T_ASC_RejectParameters *rej);
 
-OFCondition 
+OFCondition
 ASC_addPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
@@ -341,21 +341,21 @@ ASC_addPresentationContext(
     int transferSyntaxListCount,
     T_ASC_SC_ROLE proposedRole = ASC_SC_ROLE_DEFAULT);
 
-int 
+int
 ASC_countPresentationContexts(
     T_ASC_Parameters * params);
 
-int 
+int
 ASC_countAcceptedPresentationContexts(
     T_ASC_Parameters * params);
 
-OFCondition 
+OFCondition
 ASC_getPresentationContext(
     T_ASC_Parameters * params,
     int listPosition,
     T_ASC_PresentationContext * presentationContext);
 
-OFCondition 
+OFCondition
 ASC_acceptPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
@@ -376,7 +376,7 @@ ASC_acceptContextsWithTransferSyntax(
     const char* abstractSyntaxes[],
     T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
-OFCondition 
+OFCondition
 ASC_refusePresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
@@ -405,9 +405,94 @@ void ASC_getAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotia
 void ASC_setRequestedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 void ASC_setAcceptedExtNegList(T_ASC_Parameters* params, SOPClassExtendedNegotiationSubItemList* extNegList);
 
-/* extended negotiation of user identity */
-void ASC_getRequestedExtUserIdentRQ(T_ASC_Parameters* params, ExtendedNegotiationUserIdentitySubItemRQ** extNegUser);
-void ASC_getRequestedExtUserIdentAC(T_ASC_Parameters* params, ExtendedNegotiationUserIdentitySubItemAC** extNegUser);
+/* user identity negotiation */
+
+/* function that returns user identity request structure from association
+ * parameters.
+ * @param params - [in] The parameters to read from
+ * @param usrIdentAC - [out] The result pointer to user identity request
+ */
+void ASC_getUserIdentRQ(T_ASC_Parameters* params, UserIdentityNegotiationSubItemRQ** usrIdentRQ);
+
+/* function that returns user identity response structure from association
+ * parameters. Note: For accessing the User Identity response value,
+ *  it is more convenient to use the function ASC_getCopyOfIdentResponse().
+ * @param params - [in] The parameters to read from
+ * @param usrIdentAC - [out] The result pointer to user identity response
+ * @return none
+ */
+void ASC_getUserIdentAC(T_ASC_Parameters* params, UserIdentityNegotiationSubItemAC** usrIdentAC);
+
+/** Sets User/Password authentication for User Identity Negotiation
+ *  request.
+ *  @param params - [in/out] The association parameters to be filled
+ *  @param userName - [in]  The username to send (in UTF-8)
+ *  @password - [in] Password in UTF-8
+ *  @return EC_Normal if user identity could be set, error otherwise
+ */
+OFCondition
+ASC_setIdentRQUserPassword(
+    T_ASC_Parameters * params,
+    const OFString& userName,
+    const OFString& password,
+    const OFBool& requestRsp = OFTrue);
+
+/** Sets User authentication (no password) for User Identity Negotiation
+ *  request.
+ *  @param params - [in/out] The association parameters to be filled
+ *  @param userName - [in]  The username to send (in UTF-8)
+ *  @return EC_Normal if user identity could be set, error otherwise
+ */
+OFCondition
+ASC_setIdentRQUserOnly(
+    T_ASC_Parameters * params,
+    const OFString& userName,
+    const OFBool& requestRsp = OFTrue);
+
+/** Sets Kerberos authentication for User Identity Negotiation request.
+ *  @param params     - [in/out] The association parameters to be filled
+ *  @param kerbTicket - [in]  The kerberos ticket to send (will be copied)
+ *  @param length     - [in] Length of kerberos ticket
+ *  @return EC_Normal if kerberos ticket could be set, error otherwise
+ */
+OFCondition
+ASC_setIdentRQKerberos(
+    T_ASC_Parameters * params,
+    const char* kerbTicket,
+    const Uint16& length,
+    const OFBool& requestRsp = OFTrue);
+
+/** Sets SAML authentication for User Identity Negotiation request.
+ *  @param params - [in/out] The association parameters to be filled
+ *  @param saml   - [in]  The SAML information to send (will be copied)
+ *  @param length - [in] Length of SAML information
+ *  @return EC_Normal if SAML info could be set, error otherwise
+ */
+OFCondition
+ASC_setIdentRQSaml(
+    T_ASC_Parameters * params,
+    const char* saml,
+    const Uint16& length,
+    const OFBool& requestRsp = OFTrue);
+
+/** Returns a copy of the User Identity Negotiation response value.
+ *  CAUTION: The returned buffer (copy of orginal data) must be freed by the
+ *  caller!
+ *  @param params - [in]  The association parameters to get response from
+ *  @param buffer - [out] The buffer to write to. Memory is allocated inside
+ *                        function, so the returned buffer memory must be freed
+ *                        by the caller. If there is no response or there was
+ *                        was a problem, NULL is returned here.
+ *  @param length - [out] Length of returned buffer. If there is a problem or no
+ *                        response at all, this is set to 0.
+ *  @return none
+ */
+void
+ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
+                           void*& buffer,
+                           unsigned short& bufferLen);
+
+/* TLS/SSL */
 
 /* get peer certificate from open association */
 unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc);
@@ -417,10 +502,10 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 OFCondition
 ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int takeoverOwnership);
 
-void 
+void
 ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream);
 
-void 
+void
 ASC_dumpPresentationContext(T_ASC_PresentationContext * presentationContext, STD_NAMESPACE ostream& outstream);
 
 void
@@ -440,24 +525,24 @@ ASC_dataWaiting(T_ASC_Association * association, int timeout);
 
 OFBool
 ASC_selectReadableAssociation(
-    T_ASC_Association* assocs[], 
+    T_ASC_Association* assocs[],
     int assocCount, int timeout);
 
 /*
  * Association Messages
  */
 
-OFCondition 
+OFCondition
 ASC_requestAssociation(
     T_ASC_Network * network,
-    T_ASC_Parameters * params,	/* params will be saved
-				 * in the association
-				 * structure */
+    T_ASC_Parameters * params,  /* params will be saved
+         * in the association
+         * structure */
     T_ASC_Association ** association,
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL);
 
-OFCondition 
+OFCondition
 ASC_receiveAssociation(
     T_ASC_Network * network,
     T_ASC_Association ** association,
@@ -481,22 +566,22 @@ ASC_rejectAssociation(
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL);
 
-OFCondition 
+OFCondition
 ASC_releaseAssociation(T_ASC_Association * association);
 
-OFCondition 
+OFCondition
 ASC_acknowledgeRelease(T_ASC_Association * association);
 
-OFCondition 
+OFCondition
 ASC_abortAssociation(T_ASC_Association * association);
 
-OFCondition 
+OFCondition
 ASC_dropSCPAssociation(T_ASC_Association * association, int timeout = DUL_TIMEOUT);
 
-OFCondition 
+OFCondition
 ASC_dropAssociation(T_ASC_Association * association);
 
-OFCondition 
+OFCondition
 ASC_destroyAssociation(T_ASC_Association ** association);
 
 
@@ -505,6 +590,9 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.27  2008-04-17 15:28:33  onken
+** Reworked and extended User Identity Negotiation code.
+**
 ** Revision 1.26  2007-09-07 08:49:12  onken
 ** Added basic support for Extended Negotiation of User Identity.
 **

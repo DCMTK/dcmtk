@@ -34,22 +34,22 @@
 ** @$=@$=@$=
 */
 /*
-**				DICOM 93
-**		     Electronic Radiology Laboratory
-**		   Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**        DICOM 93
+**         Electronic Radiology Laboratory
+**       Mallinckrodt Institute of Radiology
+**    Washington University School of Medicine
 **
-** Module Name(s):	DUL_InitializeFSM
-**			PRV_StateMachine
-**			fsmDebug
+** Module Name(s):  DUL_InitializeFSM
+**      PRV_StateMachine
+**      fsmDebug
 **
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
-** Intent:		  Define tables and provide functions that implement
-**			      the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:	  $Author: onken $, $Date: 2007-09-07 08:49:30 $
-** Source File:	  $RCSfile: dulfsm.cc,v $
-** Revision:	  $Revision: 1.62 $
-** Status:		  $State: Exp $
+** Intent:      Define tables and provide functions that implement
+**            the DICOM Upper Layer (DUL) finite state machine.
+** Last Update:   $Author: onken $, $Date: 2008-04-17 15:27:35 $
+** Source File:   $RCSfile: dulfsm.cc,v $
+** Revision:    $Revision: 1.63 $
+** Status:      $State: Exp $
 */
 
 
@@ -1001,12 +1001,12 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
             appendList(*assoc.userInfo.extNegList, *service->acceptedExtNegList);
         }
 
-        /* extended negotiation of user identity */
-        if (assoc.userInfo.extUsrId != NULL) {
-          service->ackExtNegUserIdent = 
-            new ExtendedNegotiationUserIdentitySubItemAC( *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemAC*, assoc.userInfo.extUsrId)));
-          if (service->ackExtNegUserIdent == NULL)  return EC_MemoryExhausted;
-          
+        /* user identity negotiation */
+        if (assoc.userInfo.usrIdent != NULL) {
+          service->ackUserIdentNeg =
+            new UserIdentityNegotiationSubItemAC( *(OFstatic_cast(UserIdentityNegotiationSubItemAC*, assoc.userInfo.usrIdent)));
+          if (service->ackUserIdentNeg == NULL)  return EC_MemoryExhausted;
+
         }
 
         destroyPresentationContextList(&assoc.presentationContextList);
@@ -1213,13 +1213,13 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
             appendList(*assoc.userInfo.extNegList, *service->requestedExtNegList);
         }
 
-        /* extended negotiation of user identity: Remember request values in association parameters (copy)*/
-        if (assoc.userInfo.extUsrId != NULL) {
-          service->reqExtNegUserIdent = new ExtendedNegotiationUserIdentitySubItemRQ();
-          if (service->reqExtNegUserIdent == NULL) return EC_MemoryExhausted;
-            *(service->reqExtNegUserIdent) = *(OFstatic_cast(ExtendedNegotiationUserIdentitySubItemRQ*,assoc.userInfo.extUsrId));
+        /* user identity negotiation: Remember request values in association parameters (copy)*/
+        if (assoc.userInfo.usrIdent != NULL) {
+          service->reqUserIdentNeg = new UserIdentityNegotiationSubItemRQ();
+          if (service->reqUserIdentNeg == NULL) return EC_MemoryExhausted;
+            *(service->reqUserIdentNeg) = *(OFstatic_cast(UserIdentityNegotiationSubItemRQ*,assoc.userInfo.usrIdent));
         }
-        
+
         service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
         (*association)->maxPDVRequestor =
@@ -2330,7 +2330,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
             char buf1[256];
             sprintf(buf1, "TCP Initialization Error: %s (Timeout)", strerror(errno));
             return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
-	}
+  }
 #ifndef HAVE_WINSOCK_H
         else if (rc > 0)
         {
@@ -3957,14 +3957,17 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
     /* extended negotiation */
     delete userInfo->extNegList; userInfo->extNegList = NULL;
 
-    /* extended negotiation of user identity */
-    delete userInfo->extUsrId; userInfo->extUsrId = NULL;
+    /* user identity negotiation */
+    delete userInfo->usrIdent; userInfo->usrIdent = NULL;
 }
 
 
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.63  2008-04-17 15:27:35  onken
+** Reworked and extended User Identity Negotiation code.
+**
 ** Revision 1.62  2007-09-07 08:49:30  onken
 ** Added basic support for Extended Negotiation of User Identity.
 **
