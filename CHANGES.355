@@ -25,6 +25,7 @@ Changes between releases are documented here.
 
 - Added command line options for User Identity Negotiation.
   Affects: dcmnet/apps/storescu.cc
+           dcmnet/docs/storescu.man
 
 - Added check that prevents dcmnet from sending requests containing user
   information items that (in total) exceed the 65535 bytes limit required
