@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-03-10 12:02:57 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2008-04-18 09:11:29 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -497,7 +497,7 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 {
     const size_t initialSize = fileList.size();
     OFString dirname, pathname, tmpString;
-    combineDirAndFilename(dirname, dirPrefix, directory, OFTrue /*allowEmptyDirName*/);
+    combineDirAndFilename(dirname, dirPrefix, directory);
 #ifdef HAVE_WINDOWS_H
     /* check whether given directory exists */
     if (dirExists(dirname))
@@ -1774,6 +1774,9 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.42  2008-04-18 09:11:29  joergr
+ *  Added support for current directory (".") to searchDirectoryRecursively().
+ *
  *  Revision 1.41  2008-03-10 12:02:57  joergr
  *  Added "ofstream.h" include in order to compile when HAVE_STL is defined.
  *

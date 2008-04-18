@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.18 (riesmeier)
+
+- Added support for current directory (".") to searchDirectoryRecursively().
+  Affects: ofstd/libsrc/ofstd.cc
+
+- Added further tests for combineDirAndFilename().
+  Affects: ofstd/tests/tofstd.cc
+
 **** Changes from 2008.04.18 (onken)
 
 - Renamed commandline option from -pw to --pass. Minor commandline option
