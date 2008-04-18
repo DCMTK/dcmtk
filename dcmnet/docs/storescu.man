@@ -279,7 +279,7 @@ user identity negotiation:
   -usr  --user  [u]ser name: string
           authenticate using user name u
 
-  -pass --password  [p]assword: string (only with --user)
+  -pwd  --password  [p]assword: string (only with --user)
           authenticate using password p
 
   -epw  --empty-password

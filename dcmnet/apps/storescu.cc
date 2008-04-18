@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-04-18 08:54:14 $
+ *  Update Date:      $Date: 2008-04-18 09:19:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -357,7 +357,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("user identity negotiation:");
       cmd.addOption("--user",                 "-usr", 1, "[u]ser name: string",
                                                          "authenticate using user name u");
-      cmd.addOption("--password",             "-pass",1, "[p]assword: string (only with --user)",
+      cmd.addOption("--password",             "-pwd", 1,  "[p]assword: string (only with --user)",
                                                          "authenticate using password p");
       cmd.addOption("--empty-password",       "-epw",    "send empty password (only with --user)");
       cmd.addOption("--kerberos",             "-kt",  1, "[f]ilename: string",
@@ -1742,6 +1742,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.72  2008-04-18 09:19:18  onken
+** *** empty log message ***
+**
 ** Revision 1.71  2008-04-18 08:54:14  onken
 ** Renamed commandline option from -pw to --pass. Minor commandline option
 ** formatting changes.
