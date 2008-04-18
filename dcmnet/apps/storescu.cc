@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-04-17 15:30:21 $
+ *  Update Date:      $Date: 2008-04-18 08:54:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -357,14 +357,14 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("user identity negotiation:");
       cmd.addOption("--user",                 "-usr", 1, "[u]ser name: string",
                                                          "authenticate using user name u");
-      cmd.addOption("--password",             "-pw",  1, "[p]assword: string (only with --user)",
+      cmd.addOption("--password",             "-pass",1, "[p]assword: string (only with --user)",
                                                          "authenticate using password p");
       cmd.addOption("--empty-password",       "-epw",    "send empty password (only with --user)");
       cmd.addOption("--kerberos",             "-kt",  1, "[f]ilename: string",
                                                          "read kerberos ticket from file f");
       cmd.addOption("--saml",                         1, "[f]ilename: string",
                                                          "read SAML request from file f");
-      cmd.addOption("--pos-response",         "-rsp",    "Expect positive response");
+      cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -1688,7 +1688,7 @@ configureUserIdentityRequest(T_ASC_Parameters *params)
       }
 
       char *buf = new char[(unsigned int)filesize];
-      size_t bytesRead = identFile.fread(buf, 1, filesize);
+      size_t bytesRead = identFile.fread(buf, 1, (size_t)filesize);
       identFile.fclose();
       if (bytesRead == 0)
       {
@@ -1742,6 +1742,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.71  2008-04-18 08:54:14  onken
+** Renamed commandline option from -pw to --pass. Minor commandline option
+** formatting changes.
+**
 ** Revision 1.70  2008-04-17 15:30:21  onken
 ** Added command line options for User Identity Negotiation.
 **

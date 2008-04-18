@@ -275,10 +275,11 @@ peer authentication options:
           don't verify peer certificate
 
 user identity negotiation:
+
   -usr  --user  [u]ser name: string
           authenticate using user name u
 
-  -pw   --password  [p]assword: string (only with --user)
+  -pass --password  [p]assword: string (only with --user)
           authenticate using password p
 
   -epw  --empty-password
@@ -291,7 +292,7 @@ user identity negotiation:
           read SAML request from file f
 
   -rsp  --pos-response
-          Expect positive response
+          expect positive response
 \endverbatim
 
 \section notes NOTES

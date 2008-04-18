@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.18 (onken)
+
+- Renamed commandline option from -pw to --pass. Minor commandline option
+  formatting changes.
+  Affects: dcmnet/apps/storescu.cc
+           dcmnet/docs/storescu.man
+
 **** Changes from 2008.04.17 (onken)
 
 - Reworked and extended User Identity Negotiation code.
