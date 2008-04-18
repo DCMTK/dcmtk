@@ -17,27 +17,14 @@ Changes between releases are documented here.
            dcmnet/docs/storescu.man
            
 - Fixed broken Makefile dependencies caused by new User Identity code.
-  Affects: dcmpps/libsrcdb/Makefile.dep
-           dcmpps/apps/Makefile.dep
-           dcmpps/libsrc/Makefile.dep
-           dcmpstat/tests/Makefile.dep
+  Affects: dcmpstat/tests/Makefile.dep
            dcmpstat/apps/Makefile.dep 
            dcmpstat/libsrc/Makefile.dep
-           dcmmisc/apps/Makefile.dep  
            dcmwlm/tests/Makefile.dep  
            dcmwlm/apps/Makefile.dep
            dcmwlm/libsrc/Makefile.dep 
-           dcmprint/apps/Makefile.dep 
-           dcmprint/libsrc/Makefile.dep
-           dcmprscp/apps/Makefile.dep
-           dcmprscp/libsrc/Makefile.dep
            dcmqrdb/apps/Makefile.dep
            dcmqrdb/libsrc/Makefile.dep
-           dcmppswm/apps/Makefile.dep 
-           dcmppswm/libsrc/Makefile.dep
-           
-- Fixed missing include path for building Makefile.dep.
-  Affects: dcmppswm/apps/Makefile.in
 
 **** Changes from 2008.04.17 (onken)
 
