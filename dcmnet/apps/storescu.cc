@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-04-18 09:19:18 $
+ *  Update Date:      $Date: 2008-04-18 14:09:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,7 +277,17 @@ int main(int argc, char *argv[])
       cmd.addOption("--compression-level",    "+cl",  1, "compression level: 0-9 (default 6)",
                                                          "0=uncompressed, 1=fastest, 9=best compression");
 #endif
-
+    cmd.addSubGroup("user identity negotiation:");
+      cmd.addOption("--user",                 "-usr", 1, "[u]ser name: string",
+                                                         "authenticate using user name u");
+      cmd.addOption("--password",             "-pwd", 1, "[p]assword: string (only with --user)",
+                                                         "authenticate using password p");
+      cmd.addOption("--empty-password",       "-epw",    "send empty password (only with --user)");
+      cmd.addOption("--kerberos",             "-kt",  1, "[f]ilename: string",
+                                                         "read kerberos ticket from file f");
+      cmd.addOption("--saml",                         1, "[f]ilename: string",
+                                                         "read SAML request from file f");
+      cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",              "-to",  1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       cmd.addOption("--acse-timeout",         "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
@@ -354,17 +364,6 @@ int main(int argc, char *argv[])
       cmd.addOption("--verify-peer-cert",     "-vc",     "verify peer certificate if present");
       cmd.addOption("--ignore-peer-cert",     "-ic",     "don't verify peer certificate");
 #endif
-    cmd.addSubGroup("user identity negotiation:");
-      cmd.addOption("--user",                 "-usr", 1, "[u]ser name: string",
-                                                         "authenticate using user name u");
-      cmd.addOption("--password",             "-pwd", 1,  "[p]assword: string (only with --user)",
-                                                         "authenticate using password p");
-      cmd.addOption("--empty-password",       "-epw",    "send empty password (only with --user)");
-      cmd.addOption("--kerberos",             "-kt",  1, "[f]ilename: string",
-                                                         "read kerberos ticket from file f");
-      cmd.addOption("--saml",                         1, "[f]ilename: string",
-                                                         "read SAML request from file f");
-      cmd.addOption("--pos-response",         "-rsp",    "expect positive response");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -1742,6 +1741,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.73  2008-04-18 14:09:30  onken
+** *** empty log message ***
+**
 ** Revision 1.72  2008-04-18 09:19:18  onken
 ** *** empty log message ***
 **
