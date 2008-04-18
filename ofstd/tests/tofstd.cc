@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test program for class OFStandard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-06-26 16:19:40 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2008-04-18 09:14:02 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,6 +99,8 @@ int main()
     COUT << "combineDirAndFilename(\"" << pathname6 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname6, "file") << OFendl;
     COUT << "combineDirAndFilename(\"\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, "", "file") << OFendl;
     COUT << "combineDirAndFilename(\"\", \"file\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "file", OFTrue) << OFendl;
+    COUT << "combineDirAndFilename(\"\", \".\") = " << OFStandard::combineDirAndFilename(tmpString, "", ".") << OFendl;
+    COUT << "combineDirAndFilename(\"..\", \".\") = " << OFStandard::combineDirAndFilename(tmpString, "..", ".") << OFendl;
     COUT << "combineDirAndFilename(\"\", \"\") = " << OFStandard::combineDirAndFilename(tmpString, "", "") << OFendl;
     COUT << "combineDirAndFilename(\"\", \"\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "", OFTrue) << OFendl;
 
@@ -169,13 +171,16 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
- * Revision 1.10  2007-06-26 16:19:40  joergr
+ * Revision 1.11  2008-04-18 09:14:02  joergr
+ * Added further tests for combineDirAndFilename().
+ *
+ * Revision 1.10  2007/06/26 16:19:40  joergr
  * Added new variant of encodeBase64() method that outputs directly to a stream
  * (avoids using a memory buffer for large binary data).
  *
  * Revision 1.9  2006/08/14 16:42:48  meichel
  * Updated all code in module ofstd to correctly compile if the standard
- *   namespace has not included into the global one with a "using" directive.
+ * namespace has not included into the global one with a "using" directive.
  *
  * Revision 1.8  2005/12/08 15:49:06  meichel
  * Changed include path schema for all DCMTK header files
