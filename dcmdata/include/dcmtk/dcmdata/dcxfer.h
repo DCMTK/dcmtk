@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  Update Date:      $Date: 2008-04-23 06:39:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define DCXFER_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcvr.h"
 
@@ -236,6 +235,12 @@ public:
      */
     inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
 
+    /// return true if transfer syntax is retired, false otherwise
+    inline OFBool isRetired() const
+    {
+        return retired;
+    }
+
     /// return stream compression type for this transfer syntax
     inline E_StreamCompression getStreamCompression() const { return streamCompression;}
 
@@ -272,6 +277,9 @@ private:
     /// 12-bit lossy JPEG process ID for this transfer syntax, 0 if not applicable
     Uint32              JPEGProcess12;
 
+    /// flag indicating whether this transfer syntax has been retired from DICOM
+    OFBool              retired;
+    
     /// transfer syntax stream compression type
     E_StreamCompression streamCompression;
 	
@@ -288,7 +296,11 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.19  2007-11-29 14:30:19  meichel
+ * Revision 1.20  2008-04-23 06:39:37  meichel
+ * Added new method DcmXfer::isRetired that returns true for
+ *   retired transfer syntaxes.
+ *
+ * Revision 1.19  2007/11/29 14:30:19  meichel
  * Write methods now handle large raw data elements (such as pixel data)
  *   without loading everything into memory. This allows very large images to
  *   be sent over a network connection, or to be copied without ever being

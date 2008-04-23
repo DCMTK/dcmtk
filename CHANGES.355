@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.23 (eichelberg)
+
+- Added new method DcmXfer::isRetired that returns true for 
+  retired transfer syntaxes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcxfer.h
+           dcmdata/libsrc/dcxfer.cc
+
 **** Changes from 2008.04.18 (riesmeier)
 
 - Added support for current directory (".") to searchDirectoryRecursively().
