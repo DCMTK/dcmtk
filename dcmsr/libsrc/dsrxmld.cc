@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 15:46:43 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-04-25 15:37:20 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,9 +40,11 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_LIBXML
-#include <libxml/xmlschemas.h>
+#include <libxml/xmlversion.h>
 
 #ifdef LIBXML_SCHEMAS_ENABLED
+#include <libxml/xmlschemas.h>
+
 #ifdef HAVE_VPRINTF
 // function required to avoid issue with 'std' namespace
 extern "C" void errorFunction(void *ctx, const char *msg, ...)
@@ -747,7 +749,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.11  2005-12-16 15:46:43  meichel
+ *  Revision 1.12  2008-04-25 15:37:20  joergr
+ *  Include header file for XML Schemas only if Schema support is enabled.
+ *
+ *  Revision 1.11  2005/12/16 15:46:43  meichel
  *  Declared libxml2 callback functions as extern "C"
  *
  *  Revision 1.10  2005/12/08 15:48:25  meichel

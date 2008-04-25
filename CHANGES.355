@@ -1,9 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.25 (riesmeier)
+
+- Include header file for XML Schemas only if Schema support is enabled.
+  Affects: dcmsr/libsrc/dsrxmld.cc
+
 **** Changes from 2008.04.23 (eichelberg)
 
-- Added new method DcmXfer::isRetired that returns true for 
+- Added new method DcmXfer::isRetired that returns true for
   retired transfer syntaxes.
   Affects: dcmdata/include/dcmtk/dcmdata/dcxfer.h
            dcmdata/libsrc/dcxfer.cc
@@ -22,14 +27,14 @@ Changes between releases are documented here.
   formatting changes.
   Affects: dcmnet/apps/storescu.cc
            dcmnet/docs/storescu.man
-           
+
 - Fixed broken Makefile dependencies caused by new User Identity code.
   Affects: dcmpstat/tests/Makefile.dep
-           dcmpstat/apps/Makefile.dep 
+           dcmpstat/apps/Makefile.dep
            dcmpstat/libsrc/Makefile.dep
-           dcmwlm/tests/Makefile.dep  
+           dcmwlm/tests/Makefile.dep
            dcmwlm/apps/Makefile.dep
-           dcmwlm/libsrc/Makefile.dep 
+           dcmwlm/libsrc/Makefile.dep
            dcmqrdb/apps/Makefile.dep
            dcmqrdb/libsrc/Makefile.dep
 
