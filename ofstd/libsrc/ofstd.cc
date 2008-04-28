@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-28 09:05:06 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-04-28 12:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -604,7 +604,7 @@ OFBool OFStandard::checkForMarkupConversion(const OFString &sourceString,
     do {
         c = OFstatic_cast(unsigned char, *(str++));
         if ((c == '<') || (c == '>') || (c == '&') || (c == '"') || (c == '\'') ||
-            (c == 10) || (c == 13) || (convertNonASCII && (c > 127)))
+            (c == 10) || (c == 13) || (convertNonASCII && ((c < 32) || (c >= 127))))
         {
             result = OFTrue;
             c = 0;
@@ -682,7 +682,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
         } else {
             /* other character: ... */
             const size_t charValue = OFstatic_cast(unsigned char, *str);
-            if ((convertNonASCII || (markupMode == MM_HTML32)) && ((charValue >= 127)||(charValue < 32)))
+            if ((convertNonASCII || (markupMode == MM_HTML32)) && ((charValue < 32) || (charValue >= 127)))
             {
                 char buffer[16];
                 sprintf(buffer, "%lu", OFstatic_cast(unsigned long, charValue));
@@ -1774,9 +1774,13 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.44  2008-04-28 12:02:49  joergr
+ *  Adapted OFStandard::checkForMarkupConversion() to the new behavior of
+ *  parameter "convertNonASCII" of OFStandard::convertToMarkupString().
+ *
  *  Revision 1.43  2008-04-28 09:05:06  meichel
  *  OFStandard::convertToMarkupString now also converts control characters
- *    less then 32 and 127 (which does not exist in ASCII or ISO 8859)
+ *    less than 32 and 127 (which does not exist in ASCII or ISO 8859)
  *    when run in "convert non-ASCII" or MM_HTML32 markup mode.
  *
  *  Revision 1.42  2008-04-18 09:11:29  joergr

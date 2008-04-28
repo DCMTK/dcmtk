@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.28 (riesmeier)
+
+- Adapted OFStandard::checkForMarkupConversion() to the new behavior of
+  parameter "convertNonASCII" of OFStandard::convertToMarkupString().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Fixed API documentation of OFStandard::convertToMarkupString().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+
 **** Changes from 2008.04.28 (eichelberg)
 
 - Implemented new command line option --quote-nonascii in dcmdump that quotes
@@ -9,13 +19,13 @@ Changes between releases are documented here.
            dcmdata/docs/dcmdump.man
 
 - New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
-  quote non-ASCII string content as XML markup
+  quote non-ASCII string content as XML markup.
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
            dcmdata/libsrc/dcbytstr.cc
            dcmdata/libsrc/dctypes.cc
 
 - OFStandard::convertToMarkupString now also converts control characters
-  less then 32 and 127 (which does not exist in ASCII or ISO 8859)
+  less than 32 and 127 (which does not exist in ASCII or ISO 8859)
   when run in "convert non-ASCII" or MM_HTML32 markup mode.
   Affects: ofstd/libsrc/ofstd.cc
 
