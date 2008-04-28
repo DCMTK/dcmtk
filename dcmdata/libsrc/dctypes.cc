@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-02-26 16:57:25 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-28 09:22:41 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@ const size_t DCMTypes::PF_shortenLongTagValues = 1 << 0;
 const size_t DCMTypes::PF_showTreeStructure    = 1 << 1;
 const size_t DCMTypes::PF_doNotMapUIDsToNames  = 1 << 2;
 const size_t DCMTypes::PF_lastEntry            = 1 << 3;
+const size_t DCMTypes::PF_convertToMarkup      = 1 << 4;
 
 /* writeXML flags */
 const size_t DCMTypes::XF_addDocumentType      = 1 << 0;
@@ -54,6 +55,10 @@ const size_t DCMTypes::XF_omitDataElementName  = 1 << 5;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.9  2008-04-28 09:22:41  meichel
+ * New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
+ *   quote non-ASCII string content as XML markup
+ *
  * Revision 1.8  2008-02-26 16:57:25  joergr
  * Added new print flag that disables the mapping of well-known UID numbers to
  * their associated names (e.g. transfer syntax or SOP class).

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:20 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2008-04-28 09:22:41 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,8 +160,7 @@ Uint32 DcmByteString::getLength(const E_TransferSyntax /*xfer*/,
 
 // ********************************
 
-
-void DcmByteString::print(STD_NAMESPACE ostream&out,
+void DcmByteString::print(STD_NAMESPACE ostream& out,
                           const size_t flags,
                           const int level,
                           const char * /*pixelFileName*/,
@@ -172,23 +171,29 @@ void DcmByteString::print(STD_NAMESPACE ostream&out,
         /* get string data */
         char *stringVal = NULL;
         getString(stringVal);
-        if (stringVal != NULL)
+        if (stringVal)
         {
-            unsigned long printedLength = strlen(stringVal) + 2 /* for enclosing brackets */;
             /* print line start with tag and VR */
             printInfoLineStart(out, flags, level);
             out << '[';
+
+            OFString outString;
+            if (flags && DCMTypes::PF_convertToMarkup)
+              OFStandard::convertToMarkupString(stringVal, outString, OFTrue, OFStandard::MM_XML, OFFalse);
+              else outString = stringVal;
+
+            unsigned long printedLength = outString.length() + 2 /* for enclosing brackets */;
+
             /* check whether full value text should be printed */
             if ((flags & DCMTypes::PF_shortenLongTagValues) && (printedLength > DCM_OptPrintLineLength))
             {
-                char output[DCM_OptPrintLineLength - 1 /* for "[" */ + 1];
                 /* truncate value text and append "..." */
-                OFStandard::strlcpy(output, stringVal, OFstatic_cast(size_t, DCM_OptPrintLineLength) - 4 /* for "[" and "..." */ + 1);
-                OFStandard::strlcat(output, "...", OFstatic_cast(size_t, DCM_OptPrintLineLength) - 1 /* for "[" */ + 1);
-                out << output;
+                outString.erase(DCM_OptPrintLineLength - 4);
+                out << outString << "...";
                 printedLength = DCM_OptPrintLineLength;
             } else
-                out << stringVal << ']';
+                out << outString << ']';
+
             /* print line end with length, VM and tag name */
             printInfoLineEnd(out, flags, printedLength);
         } else
@@ -620,7 +625,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.48  2007-11-29 14:30:20  meichel
+** Revision 1.49  2008-04-28 09:22:41  meichel
+** New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
+**   quote non-ASCII string content as XML markup
+**
+** Revision 1.48  2007/11/29 14:30:20  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

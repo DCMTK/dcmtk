@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-02-26 16:56:15 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-28 09:22:42 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,8 +140,9 @@ struct DCMTypes
     /// internal: current entry is the last one on the level
     static const size_t PF_lastEntry;
 
+    /// quote non-ASCII string content as XML markup
+    static const size_t PF_convertToMarkup;
     //@}
-
 
     /** @name writeXML() flags.
      *  These flags can be combined and passed to the writeXML() methods.
@@ -179,6 +180,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.26  2008-04-28 09:22:42  meichel
+ * New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
+ *   quote non-ASCII string content as XML markup
+ *
  * Revision 1.25  2008-02-26 16:56:15  joergr
  * Added new print flag that disables the mapping of well-known UID numbers to
  * their associated names (e.g. transfer syntax or SOP class).
