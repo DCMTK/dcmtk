@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.28 (eichelberg)
+
+- OFStandard::convertToMarkupString now also converts control characters
+  less then 32 and 127 (which does not exist in ASCII or ISO 8859)
+  when run in "convert non-ASCII" or MM_HTML32 markup mode.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2008.04.25 (riesmeier)
 
 - Include header file for XML Schemas only if Schema support is enabled.
