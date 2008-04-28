@@ -169,6 +169,12 @@ printing:
   -Un  --no-uid-names
          do not map well-known UID numbers to names
 
+  +Qn  --quote-nonascii      
+         quote non-ASCII and control chars as XML markup
+
+  -Qn  --print-nonascii      
+         print non-ASCII and control chars (default)
+
  error handling:
 
   -E   --stop-on-error

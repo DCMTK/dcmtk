@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2008.04.28 (eichelberg)
 
+- Implemented new command line option --quote-nonascii in dcmdump that quotes
+  non-ASCII and control characters as XML markup.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
 - New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
   quote non-ASCII string content as XML markup
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h

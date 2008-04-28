@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-16 12:36:28 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-28 09:30:10 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,6 +218,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--print-file-search",  "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
         cmd.addOption("--map-uid-names",      "+Un",    "map well-known UID numbers to names (default)");
         cmd.addOption("--no-uid-names",       "-Un",    "do not map well-known UID numbers to names");
+        cmd.addOption("--quote-nonascii",     "+Qn",    "quote non-ASCII and control chars as XML markup");
+        cmd.addOption("--print-nonascii",     "-Qn",    "print non-ASCII and control chars (default)");
 
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",      "-E",     "do not print if file is damaged (default)");
@@ -401,6 +403,11 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--map-uid-names")) printFlags &= ~DCMTypes::PF_doNotMapUIDsToNames;
       if (cmd.findOption("--no-uid-names")) printFlags |= DCMTypes::PF_doNotMapUIDsToNames;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--quote-nonascii")) printFlags |= DCMTypes::PF_convertToMarkup;
+      if (cmd.findOption("--print-nonascii")) printFlags &= ~DCMTypes::PF_convertToMarkup; 
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -642,6 +649,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.63  2008-04-28 09:30:10  meichel
+ * Implemented new command line option --quote-nonascii in dcmdump that
+ * quotes non-ASCII and control characters as XML markup.
+ *
  * Revision 1.62  2008-04-16 12:36:28  joergr
  * Changed order of command line evaluation for option --search (now: from left
  * to right).
