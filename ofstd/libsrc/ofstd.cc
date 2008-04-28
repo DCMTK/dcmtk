@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-18 09:11:29 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-28 09:05:06 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -682,11 +682,11 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
         } else {
             /* other character: ... */
             const size_t charValue = OFstatic_cast(unsigned char, *str);
-            if ((convertNonASCII || (markupMode == MM_HTML32)) && (charValue > 127))
+            if ((convertNonASCII || (markupMode == MM_HTML32)) && ((charValue >= 127)||(charValue < 32)))
             {
                 char buffer[16];
                 sprintf(buffer, "%lu", OFstatic_cast(unsigned long, charValue));
-                /* convert > #127 to Unicode (ISO Latin-1), what is about < #32 ? */
+                /* convert < #32 and >= #127 to Unicode (ISO Latin-1) */
                 markupString += "&#";
                 markupString += buffer;
                 markupString += ";";
@@ -1774,6 +1774,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.43  2008-04-28 09:05:06  meichel
+ *  OFStandard::convertToMarkupString now also converts control characters
+ *    less then 32 and 127 (which does not exist in ASCII or ISO 8859)
+ *    when run in "convert non-ASCII" or MM_HTML32 markup mode.
+ *
  *  Revision 1.42  2008-04-18 09:11:29  joergr
  *  Added support for current directory (".") to searchDirectoryRecursively().
  *
