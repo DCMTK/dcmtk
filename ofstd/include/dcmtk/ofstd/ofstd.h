@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:11:43 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2008-04-28 12:03:24 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,8 +246,8 @@ class OFStandard
      *  This check can be performed before convertToMarkupString() is called in order to
      *  speed up the process in case the conversion it not required.
      ** @param sourceString source string to be checked
-     *  @param convertNonASCII convert non-ASCII characters (> #127) to numeric value (&#nnn;)
-     *    if OFTrue
+     *  @param convertNonASCII convert non-ASCII characters (< #32 and >= #127) to numeric
+     *    value (&#nnn;) if OFTrue
      ** @return OFTrue if markup conversion is required, OFFalse otherwise
      */
     static OFBool checkForMarkupConversion(const OFString &sourceString,
@@ -256,15 +256,15 @@ class OFStandard
     /** convert character string to HTML/XHTML/XML mnenonic string.
      *  Characters with special meaning for HTML/XHTML/XML (e.g. '<' and '&') are replaced by the
      *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue,
-     *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
-     *  not allow to specify the character set).  In HTML 3.2 mode, the quotation mark (") is
-     *  converted to "&#34;" instead of "&quot;" because the latter entity is not defined.  In
-     *  HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
+     *  all characters < #32 and >= #127 are also converted (useful if only HTML 3.2 is supported
+     *  which does not allow to specify the character set).  In HTML 3.2 mode, the quotation mark
+     *  (") is converted to "&#34;" instead of "&quot;" because the latter entity is not defined.
+     *  In HTML mode, the apostrophe sign (') is converted to "&#39;" instead of "&apos;" for the
      *  same reason.
      ** @param sourceString source string to be converted
      *  @param markupString reference to character string where the result should be stored
-     *  @param convertNonASCII convert non-ASCII characters (> #127) to numeric value (&#nnn;)
-     *    if OFTrue
+     *  @param convertNonASCII convert non-ASCII characters (< # 32 and >= #127) to numeric value
+     *    (&#nnn;) if OFTrue
      *  @param markupMode convert to HTML, HTML 3.2, XHTML or XML markup string.
      *    LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the flag 'newlineAllowed'
      *    has no meaning in this case.
@@ -491,7 +491,12 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.28  2007-11-15 16:11:43  joergr
+ * Revision 1.29  2008-04-28 12:03:24  joergr
+ * Adapted OFStandard::checkForMarkupConversion() to the new behavior of
+ * parameter "convertNonASCII" of OFStandard::convertToMarkupString().
+ * Fixed API documentation of OFStandard::convertToMarkupString().
+ *
+ * Revision 1.28  2007/11/15 16:11:43  joergr
  * Introduced new markup mode for convertToMarkupString() that is used to
  * distinguish between HTML, HTML 3.2, XHTML and XML.
  *
