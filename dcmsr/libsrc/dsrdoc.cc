@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-03-11 11:10:53 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2008-04-29 13:59:21 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -968,7 +968,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             if (tmpString != "?")
                 stream << " encoding=\"" << tmpString << "\"";
             else
-                printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent XML encoding");
+                printWarningMessage(LogStream, "Cannot map SpecificCharacterSet to equivalent XML encoding");
         }
         stream << "?>" << OFendl;
 
@@ -1255,7 +1255,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 if (tmpString != "?")
                     stream << " encoding=\"" << tmpString << "\"";
                 else
-                    printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent XML encoding");
+                    printWarningMessage(LogStream, "Cannot map SpecificCharacterSet to equivalent XML encoding");
             }
             stream << "?>" << OFendl;
         }
@@ -1333,7 +1333,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                         stream << " /";
                     stream << ">" << OFendl;
                 } else
-                    printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent HTML charset");
+                    printWarningMessage(LogStream, "Cannot map SpecificCharacterSet to equivalent HTML charset");
             }
         }
         /* generator meta element referring to the DCMTK */
@@ -2377,6 +2377,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.61  2008-04-29 13:59:21  joergr
+ *  Harmonized capitalization of warning messages.
+ *
  *  Revision 1.60  2008-03-11 11:10:53  joergr
  *  Fixed wrong comments.
  *

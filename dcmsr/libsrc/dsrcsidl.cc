@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2007, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:42 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2008-04-29 13:59:21 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset,
                     putStringValueToDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, OFFalse /*allowEmpty*/);
                 else if (!item->CodingSchemeExternalID.empty())
                 {
-                    OFString message = "both CodingSchemeUID and CodingSchemeExternalID present for \"";
+                    OFString message = "Both CodingSchemeUID and CodingSchemeExternalID present for \"";
                     message += item->CodingSchemeDesignator;
                     message += "\", the latter will be ignored";
                     printWarningMessage(logStream, message.c_str());
@@ -575,7 +575,10 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.10  2007-11-15 16:45:42  joergr
+ *  Revision 1.11  2008-04-29 13:59:21  joergr
+ *  Harmonized capitalization of warning messages.
+ *
+ *  Revision 1.10  2007/11/15 16:45:42  joergr
  *  Added support for output in XHTML 1.1 format.
  *
  *  Revision 1.9  2006/08/15 16:40:03  meichel
