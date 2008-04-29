@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.29 (riesmeier)
+
+- Harmonized capitalization of warning messages.
+  Affects: dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoc.cc
+
 **** Changes from 2008.04.28 (riesmeier)
 
 - Adapted OFStandard::checkForMarkupConversion() to the new behavior of
