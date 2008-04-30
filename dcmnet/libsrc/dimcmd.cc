@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2005-12-08 15:44:38 $
+** Update Date:		$Date: 2008-04-30 12:38:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -854,19 +854,19 @@ buildCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
             e->AffectedSOPClassUID, OFFalse); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFREMAININGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfRemainingSuboperations,  
+        cond = addUS(obj, DCM_NumberOfRemainingSubOperations,  
             e->NumberOfRemainingSubOperations); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfCompletedSuboperations,  
+        cond = addUS(obj, DCM_NumberOfCompletedSubOperations,  
             e->NumberOfCompletedSubOperations); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFFAILEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfFailedSuboperations,  
+        cond = addUS(obj, DCM_NumberOfFailedSubOperations,  
             e->NumberOfFailedSubOperations); RET(cond);
     }
     if (e->opts & O_GET_NUMBEROFWARNINGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfWarningSuboperations,  
+        cond = addUS(obj, DCM_NumberOfWarningSubOperations,  
             e->NumberOfWarningSubOperations); RET(cond);
     }
     return cond;
@@ -899,19 +899,19 @@ parseCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
     if (cond.good()) e->opts |= O_GET_AFFECTEDSOPCLASSUID;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSubOperations,  
         &e->NumberOfRemainingSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFREMAININGSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSubOperations,  
         &e->NumberOfCompletedSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSubOperations,  
         &e->NumberOfFailedSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFFAILEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSubOperations,  
         &e->NumberOfWarningSubOperations);
     if (cond.good()) e->opts |= O_GET_NUMBEROFWARNINGSUBOPERATIONS;
 
@@ -985,19 +985,19 @@ buildCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
             e->AffectedSOPClassUID, OFFalse); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFREMAININGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfRemainingSuboperations,  
+        cond = addUS(obj, DCM_NumberOfRemainingSubOperations,  
             e->NumberOfRemainingSubOperations); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfCompletedSuboperations,  
+        cond = addUS(obj, DCM_NumberOfCompletedSubOperations,  
             e->NumberOfCompletedSubOperations); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFFAILEDSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfFailedSuboperations,  
+        cond = addUS(obj, DCM_NumberOfFailedSubOperations,  
             e->NumberOfFailedSubOperations); RET(cond);
     }
     if (e->opts & O_MOVE_NUMBEROFWARNINGSUBOPERATIONS) {
-        cond = addUS(obj, DCM_NumberOfWarningSuboperations,  
+        cond = addUS(obj, DCM_NumberOfWarningSubOperations,  
             e->NumberOfWarningSubOperations); RET(cond);
     }
     return cond;
@@ -1030,19 +1030,19 @@ parseCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
     if (cond.good()) e->opts |= O_MOVE_AFFECTEDSOPCLASSUID;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSubOperations,  
         &e->NumberOfRemainingSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSubOperations,  
         &e->NumberOfCompletedSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSubOperations,  
         &e->NumberOfFailedSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFFAILEDSUBOPERATIONS;
 
-    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSuboperations,  
+    cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSubOperations,  
         &e->NumberOfWarningSubOperations);
     if (cond.good()) e->opts |= O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
 
@@ -2057,7 +2057,10 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.19  2005-12-08 15:44:38  meichel
+** Revision 1.20  2008-04-30 12:38:42  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
+** Revision 1.19  2005/12/08 15:44:38  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.18  2003/10/22 16:48:54  meichel

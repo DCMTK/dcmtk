@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *   hexedecimal encoded string.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:15:48 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/writwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -292,7 +292,7 @@ addValue(int valCount, SimpleStr& val, DcmDataset& dset)
 	KeyPos(  8, DCM_PatientsBirthDate ),
 	KeyPos(  9, DCM_PatientsSex ),
 	KeyPos( 10, DCM_MedicalAlerts ),
-	KeyPos( 11, DCM_ContrastAllergies ),
+	KeyPos( 11, DCM_Allergies ),
 	KeyPos( 12, DCM_ScheduledStationAETitle, OFTrue ),
 	KeyPos( 13, DCM_ScheduledProcedureStepStartDate, OFTrue ),
 	KeyPos( 14, DCM_ScheduledProcedureStepStartTime, OFTrue ),
@@ -590,7 +590,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: writwlst.cc,v $
- *   Revision 1.5  2006-08-15 16:15:48  meichel
+ *   Revision 1.6  2008-04-30 12:38:43  meichel
+ *   Fixed compile errors due to changes in attribute tag names
+ *
+ *   Revision 1.5  2006/08/15 16:15:48  meichel
  *   Updated the code in module dcmwlm to correctly compile when
  *     all standard C++ classes remain in namespace std.
  *

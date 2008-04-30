@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ OFCondition DVPSPresentationLUT_PList::read(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
-  if (EC_Normal == dset.search(DCM_PresentationLUTContentSequence, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(DCM_RETIRED_PresentationLUTContentSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
@@ -120,7 +120,7 @@ OFCondition DVPSPresentationLUT_PList::write(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
-  dseq = new DcmSequenceOfItems(DCM_PresentationLUTContentSequence);
+  dseq = new DcmSequenceOfItems(DCM_RETIRED_PresentationLUTContentSequence);
   if (dseq)
   {
     OFListIterator(DVPSPresentationLUT *) first = list_.begin();
@@ -287,7 +287,10 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.18  2006-08-15 16:57:02  meichel
+ *  Revision 1.19  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.18  2006/08/15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

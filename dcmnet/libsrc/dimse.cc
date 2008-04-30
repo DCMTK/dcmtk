@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2008-04-30 09:05:43 $
+** Update Date:         $Date: 2008-04-30 12:38:42 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.48 $
+** CVS/RCS Revision:    $Revision: 1.49 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1326,7 +1326,7 @@ OFCondition DIMSE_createFilestream(
   OFCondition cond = EC_Normal;
   DcmElement *elem=NULL;
   DcmMetaInfo *metainfo=NULL;
-  DcmTag metaElementGroupLength(DCM_MetaElementGroupLength);
+  DcmTag metaElementGroupLength(DCM_FileMetaInformationGroupLength);
   DcmTag fileMetaInformationVersion(DCM_FileMetaInformationVersion);
   DcmTag mediaStorageSOPClassUID(DCM_MediaStorageSOPClassUID);
   DcmTag mediaStorageSOPInstanceUID(DCM_MediaStorageSOPInstanceUID);
@@ -1785,6 +1785,9 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.49  2008-04-30 12:38:42  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
 ** Revision 1.48  2008-04-30 09:05:43  meichel
 ** Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject
 **   was passed as NULL and an error condition occured.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset,
                                             OFConsole *logStream)
 {
     /* get string array from dataset */
-    DcmDateTime delem(DCM_ReferencedDatetime);
+    DcmDateTime delem(DCM_ReferencedDateTime);
     OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream, "TCOORD content item");
     if (result.good())
     {
@@ -129,7 +129,7 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
         iterator++;
     }
     /* set decimal string */
-    DcmDateTime delem(DCM_ReferencedDatetime);
+    DcmDateTime delem(DCM_ReferencedDateTime);
     result = delem.putOFStringArray(tmpString);
     /* add to dataset */
     if (result.good())
@@ -171,7 +171,10 @@ OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.13  2007-11-15 16:43:43  joergr
+ *  Revision 1.14  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.13  2007/11/15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *
  *  Revision 1.12  2006/08/15 16:40:03  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-06 15:24:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1462,7 +1462,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_PatientState                                      ||
         elementKey == DCM_PregnancyStatus                                   ||
         elementKey == DCM_MedicalAlerts                                     ||
-        elementKey == DCM_ContrastAllergies                                 ||
+        elementKey == DCM_Allergies                                         ||
         elementKey == DCM_SpecialNeeds                                      ||
         elementKey == DCM_NamesOfIntendedRecipientsOfResults                ||
         elementKey == DCM_InstitutionName                                   ||
@@ -1507,7 +1507,10 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.22  2007-11-06 15:24:07  joergr
+** Revision 1.23  2008-04-30 12:38:43  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
+** Revision 1.22  2007/11/06 15:24:07  joergr
 ** Report warning message if a query contains an empty sequence (without item).
 **
 ** Revision 1.21  2006/12/15 14:49:28  onken

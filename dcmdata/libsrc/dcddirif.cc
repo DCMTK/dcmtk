@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-02-27 09:54:30 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -804,16 +804,16 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
                 break;
             case ERT_Overlay:
                 /* try to insert based on OverlayNumber */
-                result = insertWithISCriterion(parent, child, DCM_OverlayNumber);
+                result = insertWithISCriterion(parent, child, DCM_RETIRED_OverlayNumber);
                 break;
             case ERT_Curve:
                 /* try to insert based on CurveNumber */
-                result = insertWithISCriterion(parent, child, DCM_CurveNumber);
+                result = insertWithISCriterion(parent, child, DCM_RETIRED_CurveNumber);
                 break;
             case ERT_ModalityLut:
             case ERT_VoiLut:
                 /* try to insert based on LUTNumber */
-                result = insertWithISCriterion(parent, child, DCM_LookupTableNumber);
+                result = insertWithISCriterion(parent, child, DCM_RETIRED_LookupTableNumber);
                 break;
             case ERT_SRDocument:
             case ERT_Presentation:
@@ -2157,28 +2157,28 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 case ERT_Overlay:
                     if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_OverlayNumber, filename))
+                        if (!checkExistsWithValue(dataset, DCM_RETIRED_OverlayNumber, filename))
                             result = EC_InvalidTag;
                     }
                     break;
                 case ERT_ModalityLut:
                     if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_LookupTableNumber, filename))
+                        if (!checkExistsWithValue(dataset, DCM_RETIRED_LookupTableNumber, filename))
                             result = EC_InvalidTag;
                     }
                     break;
                 case ERT_VoiLut:
                     if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_LookupTableNumber, filename))
+                        if (!checkExistsWithValue(dataset, DCM_RETIRED_LookupTableNumber, filename))
                             result = EC_InvalidTag;
                     }
                     break;
                 case ERT_Curve:
                     if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_CurveNumber, filename))
+                        if (!checkExistsWithValue(dataset, DCM_RETIRED_CurveNumber, filename))
                             result = EC_InvalidTag;
                     }
                     break;
@@ -2726,7 +2726,7 @@ DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmDirectoryRecord *re
         if (record->error().good())
         {
             /* copy attribute values from dataset to overlay record */
-            copyElementType1(dataset, DCM_OverlayNumber, record);
+            copyElementType1(dataset, DCM_RETIRED_OverlayNumber, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Overlay, "create");
             /* free memory */
@@ -2754,7 +2754,7 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmDirectoryRecord
         if (record->error().good())
         {
             /* copy attribute values from dataset to modality lut record */
-            copyElementType1(dataset, DCM_LookupTableNumber, record);
+            copyElementType1(dataset, DCM_RETIRED_LookupTableNumber, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_ModalityLut, "create");
             /* free memory */
@@ -2782,7 +2782,7 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmDirectoryRecord *rec
         if (record->error().good())
         {
             /* copy attribute values from dataset to voi lut record */
-            copyElementType1(dataset, DCM_LookupTableNumber, record);
+            copyElementType1(dataset, DCM_RETIRED_LookupTableNumber, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_VoiLut, "create");
             /* free memory */
@@ -2810,7 +2810,7 @@ DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmDirectoryRecord *reco
         if (record->error().good())
         {
             /* copy attribute values from dataset to curve record */
-            copyElementType1(dataset, DCM_CurveNumber, record);
+            copyElementType1(dataset, DCM_RETIRED_CurveNumber, record);
         } else {
             printRecordErrorMessage(record->error(), ERT_Curve, "create");
             /* free memory */
@@ -3248,7 +3248,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSpectroscopyRecord(DcmDirectoryRecor
                 copyElementType1C(dataset, DCM_SynchronizationFrameOfReferenceUID, record);
                 copyElementType1C(dataset, DCM_NumberOfFrames, record);
                 copyElementType1C(dataset, DCM_AcquisitionTimeSynchronized, record);
-                copyElementType1C(dataset, DCM_AcquisitionDatetime, record);
+                copyElementType1C(dataset, DCM_AcquisitionDateTime, record);
                 // tbd: need to examine functional groups for the following attributes
                 copyElementType1C(dataset, DCM_ReferencedImageSequence, record);
                 copyElementType1C(dataset, DCM_ImagePositionPatient, record);
@@ -3336,7 +3336,7 @@ DcmDirectoryRecord *DicomDirInterface::buildValueMapRecord(DcmDirectoryRecord *r
 
 // create or update stereometric record and copy required values from dataset
 DcmDirectoryRecord *DicomDirInterface::buildStereometricRecord(DcmDirectoryRecord *record,
-                                                               DcmItem *dataset,
+                                                               DcmItem * /* dataset */ ,
                                                                const OFString &referencedFileID,
                                                                const OFString &sourceFilename)
 {
@@ -3399,7 +3399,7 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                     copyElementType1C(dataset, DCM_SynchronizationFrameOfReferenceUID, record);
                     copyElementType1C(dataset, DCM_NumberOfFrames, record);
                     copyElementType1C(dataset, DCM_AcquisitionTimeSynchronized, record);
-                    copyElementType1C(dataset, DCM_AcquisitionDatetime, record);
+                    copyElementType1C(dataset, DCM_AcquisitionDateTime, record);
                     // tbd: need to examine functional groups for the following attributes
                     copyElementType1C(dataset, DCM_ReferencedImageSequence, record);
                     copyElementType1C(dataset, DCM_ImagePositionPatient, record);
@@ -3495,7 +3495,7 @@ DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRe
             copyElementType1(dataset, DCM_HangingProtocolDescription, record);
             copyElementType1(dataset, DCM_HangingProtocolLevel, record);
             copyElementType1(dataset, DCM_HangingProtocolCreator, record);
-            copyElementType1(dataset, DCM_HangingProtocolCreationDatetime, record);
+            copyElementType1(dataset, DCM_HangingProtocolCreationDateTime, record);
             copyElementType1(dataset, DCM_HangingProtocolDefinitionSequence, record);
             copyElementType1(dataset, DCM_NumberOfPriorsReferenced, record);
             copyElementType2(dataset, DCM_HangingProtocolUserIdentificationCodeSequence, record);
@@ -3990,17 +3990,17 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                         setDefaultValue(record, DCM_InstanceNumber, AutoInstanceNumber++);
                     break;
                 case ERT_Overlay:
-                    if (!record->tagExistsWithValue(DCM_OverlayNumber))
-                        setDefaultValue(record, DCM_OverlayNumber, AutoOverlayNumber++);
+                    if (!record->tagExistsWithValue(DCM_RETIRED_OverlayNumber))
+                        setDefaultValue(record, DCM_RETIRED_OverlayNumber, AutoOverlayNumber++);
                     break;
                 case ERT_ModalityLut:
                 case ERT_VoiLut:
-                    if (!record->tagExistsWithValue(DCM_LookupTableNumber))
-                        setDefaultValue(record, DCM_LookupTableNumber, AutoLutNumber++);
+                    if (!record->tagExistsWithValue(DCM_RETIRED_LookupTableNumber))
+                        setDefaultValue(record, DCM_RETIRED_LookupTableNumber, AutoLutNumber++);
                     break;
                 case ERT_Curve:
-                    if (!record->tagExistsWithValue(DCM_CurveNumber))
-                        setDefaultValue(record, DCM_CurveNumber, AutoCurveNumber++);
+                    if (!record->tagExistsWithValue(DCM_RETIRED_CurveNumber))
+                        setDefaultValue(record, DCM_RETIRED_CurveNumber, AutoCurveNumber++);
                     break;
                 case ERT_SRDocument:
                 case ERT_Presentation:
@@ -5059,6 +5059,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.26  2008-04-30 12:38:42  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
  *  Revision 1.25  2008-02-27 09:54:30  joergr
  *  Check HAVE_CHARP_STRERROR_R in order to use the correct version of
  *  strerror_r().

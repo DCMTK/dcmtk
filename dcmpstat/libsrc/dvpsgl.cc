@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@ DVPSGraphicLayer::DVPSGraphicLayer()
 : graphicLayer(DCM_GraphicLayer)
 , graphicLayerOrder(DCM_GraphicLayerOrder)
 , graphicLayerRecommendedDisplayGrayscaleValue(DCM_GraphicLayerRecommendedDisplayGrayscaleValue)
-, graphicLayerRecommendedDisplayRGBValue(DCM_GraphicLayerRecommendedDisplayRGBValue)
+, graphicLayerRecommendedDisplayRGBValue(DCM_RETIRED_GraphicLayerRecommendedDisplayRGBValue)
 , graphicLayerDescription(DCM_GraphicLayerDescription)
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
@@ -306,7 +306,10 @@ void DVPSGraphicLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.14  2006-08-15 16:57:02  meichel
+ *  Revision 1.15  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.14  2006/08/15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

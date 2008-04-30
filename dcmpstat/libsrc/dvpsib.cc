@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-10-31 14:16:40 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 
 DVPSImageBoxContent::DVPSImageBoxContent()
 : sOPInstanceUID(DCM_SOPInstanceUID)
-, imageBoxPosition(DCM_ImagePosition)
+, imageBoxPosition(DCM_ImageBoxPosition)
 , polarity(DCM_Polarity)
 , magnificationType(DCM_MagnificationType)
 , configurationInformation(DCM_ConfigurationInformation)
@@ -1041,7 +1041,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag.getElement() == 0x0000) /* group length */ ;
-      else if (currentTag == DCM_ImagePosition) /* OK */ ;
+      else if (currentTag == DCM_ImageBoxPosition) /* OK */ ;
       else if (currentTag == DCM_Polarity) /* OK */ ;
       else if (currentTag == DCM_RequestedDecimateCropBehavior) /* OK */ ;
       else if (currentTag == DCM_RequestedImageSize) /* OK */ ;
@@ -1502,8 +1502,8 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     // general study and general series modules are written somewhere else
 
     // Hardcopy Equipment Module
-    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_HardcopyDeviceManufacturer, "OFFIS");
-    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_RETIRED_HardcopyDeviceManufacturer, "OFFIS");
+    if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_RETIRED_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
 
     // General Image Module
     if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_InstanceNumber);
@@ -1551,7 +1551,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.35  2007-10-31 14:16:40  meichel
+ *  Revision 1.36  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.35  2007/10/31 14:16:40  meichel
  *  Fixed bug in DICOMscope support code that caused the Print SCU to send
  *    wrong values for Decimate/Crop Behavior.
  *

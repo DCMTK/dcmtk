@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *   to a WWW CGI perl script (as hexadecimal encoded ASCII via stdout).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:39 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/readwlst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
       printf("\\"); printStringElement(*dataset, DCM_PatientsBirthDate);
       printf("\\"); printStringElement(*dataset, DCM_PatientsSex);
       printf("\\"); printStringElement(*dataset, DCM_MedicalAlerts);
-      printf("\\"); printStringElement(*dataset, DCM_ContrastAllergies);
+      printf("\\"); printStringElement(*dataset, DCM_Allergies);
       DcmStack stack;
       if (dataset->search(DCM_ScheduledProcedureStepSequence, stack, ESM_fromHere, OFFalse ) == EC_Normal )
       {
@@ -169,7 +169,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log
  *   $Log: readwlst.cc,v $
- *   Revision 1.2  2005-12-08 15:48:39  meichel
+ *   Revision 1.3  2008-04-30 12:38:43  meichel
+ *   Fixed compile errors due to changes in attribute tag names
+ *
+ *   Revision 1.2  2005/12/08 15:48:39  meichel
  *   Changed include path schema for all DCMTK header files
  *
  *   Revision 1.1  2002/12/03 12:17:36  wilkens

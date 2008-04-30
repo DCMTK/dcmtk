@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -620,7 +620,7 @@ DcmDirectoryRecord *DcmDirectoryRecord::lookForReferencedMRDR()
     if (!elementList->empty())
     {
         DcmStack stack;
-        if (search(DCM_MRDRDirectoryRecordOffset, stack, ESM_fromHere, OFFalse).good())
+        if (search(DCM_RETIRED_MRDRDirectoryRecordOffset, stack, ESM_fromHere, OFFalse).good())
         {
             if (stack.top()->ident() == EVR_up)
             {
@@ -719,7 +719,7 @@ OFCondition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum)
     if (DirRecordType == ERT_Mrdr)
     {
         // insert new value
-        DcmTag numRefTag(DCM_NumberOfReferences);
+        DcmTag numRefTag(DCM_RETIRED_NumberOfReferences);
         DcmUnsignedLong *newUL = new DcmUnsignedLong(numRefTag);
         newUL->putUint32(newRefNum);
         insert(newUL, OFTrue);
@@ -741,7 +741,7 @@ Uint32 DcmDirectoryRecord::lookForNumberOfReferences()
     if (!elementList->empty())
     {
         DcmStack stack;
-        if (search(DCM_NumberOfReferences, stack, ESM_fromHere, OFFalse).good())
+        if (search(DCM_RETIRED_NumberOfReferences, stack, ESM_fromHere, OFFalse).good())
         {
             if (stack.top()->ident() == EVR_UL)
                 errorFlag = OFstatic_cast(DcmUnsignedLong *, stack.top())->getUint32(localRefNum);
@@ -904,7 +904,7 @@ OFCondition DcmDirectoryRecord::fillElementsAndReadSOP(const char *referencedFil
         delete remove(refFileTag);
     }
 
-    DcmTag mrdrOffTag(DCM_MRDRDirectoryRecordOffset);     // (0004,1504)
+    DcmTag mrdrOffTag(DCM_RETIRED_MRDRDirectoryRecordOffset);     // (0004,1504)
     if (indirectViaMRDR)
     {
         // create pointer attribute to MRDR
@@ -1454,7 +1454,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.60  2007-06-29 14:17:49  meichel
+ * Revision 1.61  2008-04-30 12:38:42  meichel
+ * Fixed compile errors due to changes in attribute tag names
+ *
+ * Revision 1.60  2007/06/29 14:17:49  meichel
  * Code clean-up: Most member variables in module dcmdata are now private,
  *   not protected anymore.
  *

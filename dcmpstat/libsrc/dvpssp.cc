@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *
 , seriesNumber(DCM_SeriesNumber)
 , manufacturer(DCM_Manufacturer)
 , originator(DCM_Originator)
-, destination(DCM_DestinationAE)
+, destination(DCM_RETIRED_DestinationAE)
 , printerName(DCM_PrinterName)
 , instanceNumber(DCM_InstanceNumber) 
 , imageDisplayFormat(DCM_ImageDisplayFormat)
@@ -360,7 +360,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_FilmBoxContentSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_FilmBoxContentSequence, stack, ESM_fromHere, OFFalse))
     {
       seq=(DcmSequenceOfItems *)stack.top();
       if (seq->card() ==1)
@@ -513,7 +513,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
   if (result==EC_Normal)
   {
     stack.clear();
-    if (EC_Normal == dset.search(DCM_PrintManagementCapabilitiesSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_PrintManagementCapabilitiesSequence, stack, ESM_fromHere, OFFalse))
     {
       OFBool haveFilmBox = OFFalse;
       OFBool haveGrayscaleImageBox = OFFalse;
@@ -599,7 +599,7 @@ OFCondition DVPSStoredPrint::read(DcmItem &dset)
     destination.clear();
     printerName.clear();
     stack.clear();
-    if (EC_Normal == dset.search(DCM_PrinterCharacteristicsSequence, stack, ESM_fromHere, OFFalse))
+    if (EC_Normal == dset.search(DCM_RETIRED_PrinterCharacteristicsSequence, stack, ESM_fromHere, OFFalse))
     {
       seq = (DcmSequenceOfItems *)stack.top();
       if (seq->card() > 0)
@@ -699,7 +699,7 @@ OFCondition DVPSStoredPrint::write(
     ditem = new DcmItem();
     if (ditem)
     {
-      dseq = new DcmSequenceOfItems(DCM_FilmBoxContentSequence);
+      dseq = new DcmSequenceOfItems(DCM_RETIRED_FilmBoxContentSequence);
       if (dseq)
       {
         ADD_TO_DATASET2(DcmShortText, imageDisplayFormat)
@@ -776,7 +776,7 @@ OFCondition DVPSStoredPrint::write(
     // write general presentation LUT only
     if (globalPresentationLUTValid)    
     {
-        dseq = new DcmSequenceOfItems(DCM_PresentationLUTContentSequence);
+        dseq = new DcmSequenceOfItems(DCM_RETIRED_PresentationLUTContentSequence);
         if (dseq)
         {
             ditem = new DcmItem();
@@ -801,7 +801,7 @@ OFCondition DVPSStoredPrint::write(
   if (EC_Normal == result) result = annotationContentList.write(dset);
 
   // write PrintManagementCapabilitiesSequence
-  dseq = new DcmSequenceOfItems(DCM_PrintManagementCapabilitiesSequence);
+  dseq = new DcmSequenceOfItems(DCM_RETIRED_PrintManagementCapabilitiesSequence);
   if (dseq)
   {
     if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicFilmSessionSOPClass);
@@ -823,7 +823,7 @@ OFCondition DVPSStoredPrint::write(
   // write PrinterCharacteristicsSequence (Type 2)
   if (EC_Normal == result)
   {
-    dseq = new DcmSequenceOfItems(DCM_PrinterCharacteristicsSequence);
+    dseq = new DcmSequenceOfItems(DCM_RETIRED_PrinterCharacteristicsSequence);
     if (dseq)
     {
      if (printerName.getLength() > 0)
@@ -3548,7 +3548,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.53  2006-08-15 16:57:02  meichel
+ *  Revision 1.54  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.53  2006/08/15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

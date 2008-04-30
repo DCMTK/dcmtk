@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:19 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::read(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmStack stack;
-  DcmTagKey key(DCM_CurveActivationLayer);
+  DcmTagKey key(DCM_RETIRED_CurveActivationLayer);
   DVPSOverlayCurveActivationLayer *newLayer = NULL;
 
   Uint16 i = 0x5000;
@@ -151,11 +151,11 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
   DcmTagKey overlayBitsAllocated(DCM_OverlayBitsAllocated);
   DcmTagKey overlayBitPosition(DCM_OverlayBitPosition);
 
-  DcmTagKey curveDimensions(DCM_CurveDimensions);
-  DcmTagKey numberOfPoints(DCM_NumberOfPoints);
-  DcmTagKey typeOfData(DCM_TypeOfData);
-  DcmTagKey dataValueRepresentation(DCM_DataValueRepresentation);
-  DcmTagKey curveData(DCM_CurveData);
+  DcmTagKey curveDimensions(DCM_RETIRED_CurveDimensions);
+  DcmTagKey numberOfPoints(DCM_RETIRED_NumberOfPoints);
+  DcmTagKey typeOfData(DCM_RETIRED_TypeOfData);
+  DcmTagKey dataValueRepresentation(DCM_RETIRED_DataValueRepresentation);
+  DcmTagKey curveData(DCM_RETIRED_CurveData);
 
   OFBool haveOverlays = OFFalse;
   /* first we handle overlays */
@@ -259,8 +259,8 @@ OFCondition DVPSOverlayCurveActivationLayer_PList::createFromImage(
       if (found)
       {
         /* read the curve dimensions and curve type from the dataset */
-        DcmUnsignedShort curveDimensionsValue(DCM_CurveDimensions);
-        DcmCodeString typeOfDataValue(DCM_TypeOfData);
+        DcmUnsignedShort curveDimensionsValue(DCM_RETIRED_CurveDimensions);
+        DcmCodeString typeOfDataValue(DCM_RETIRED_TypeOfData);
         curveDimensionsValue.setGTag(group);
         typeOfDataValue.setGTag(group);
         READ_FROM_DATASET(DcmUnsignedShort, curveDimensionsValue)
@@ -489,7 +489,10 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.14  2005-12-08 15:46:19  meichel
+ *  Revision 1.15  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.14  2005/12/08 15:46:19  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.13  2004/02/04 15:57:49  joergr

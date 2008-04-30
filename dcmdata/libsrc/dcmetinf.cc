@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:21 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -345,7 +345,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                 {
                     Uint32 headerLength = 0;
                     Uint32 bytesRead = 0;
-                    errorFlag = readGroupLength(inStream, newxfer, DCM_MetaElementGroupLength, glenc,
+                    errorFlag = readGroupLength(inStream, newxfer, DCM_FileMetaInformationGroupLength, glenc,
                         headerLength, bytesRead, maxReadLength);
 
                     setTransferredBytes(bytesRead);
@@ -526,7 +526,10 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.40  2007-11-29 14:30:21  meichel
+** Revision 1.41  2008-04-30 12:38:42  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
+** Revision 1.40  2007/11/29 14:30:21  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

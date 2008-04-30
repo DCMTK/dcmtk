@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:01 $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,13 +221,13 @@ int main(int argc, char *argv[])
     }
 
     /* create curve description data */
-    DcmUnsignedShort *curveDimensions = new DcmUnsignedShort(DCM_CurveDimensions);
-    DcmUnsignedShort *numberOfPoints = new DcmUnsignedShort(DCM_NumberOfPoints);
-    DcmCodeString    *typeOfData = new DcmCodeString(DCM_TypeOfData);
-    DcmUnsignedShort *dataValueRepresentation = new DcmUnsignedShort(DCM_DataValueRepresentation);
-    DcmLongString    *curveDescription = new DcmLongString(DCM_CurveDescription);
-    DcmShortString   *axisUnits = new DcmShortString(DCM_AxisUnits);
-    DcmLongString    *curveLabel = new DcmLongString(DCM_CurveLabel);
+    DcmUnsignedShort *curveDimensions = new DcmUnsignedShort(DCM_RETIRED_CurveDimensions);
+    DcmUnsignedShort *numberOfPoints = new DcmUnsignedShort(DCM_RETIRED_NumberOfPoints);
+    DcmCodeString    *typeOfData = new DcmCodeString(DCM_RETIRED_TypeOfData);
+    DcmUnsignedShort *dataValueRepresentation = new DcmUnsignedShort(DCM_RETIRED_DataValueRepresentation);
+    DcmLongString    *curveDescription = new DcmLongString(DCM_RETIRED_CurveDescription);
+    DcmShortString   *axisUnits = new DcmShortString(DCM_RETIRED_AxisUnits);
+    DcmLongString    *curveLabel = new DcmLongString(DCM_RETIRED_CurveLabel);
 
     if ((!curveDimensions)||(!numberOfPoints)||(!typeOfData)||(!dataValueRepresentation)
        ||(!curveDescription)||(!axisUnits)||(!curveLabel))
@@ -337,31 +337,31 @@ int main(int argc, char *argv[])
         {
           case 0: // US
             if (opt_verbose) CERR << "encoding curve data element as VR=US" << OFendl;
-            element = new DcmUnsignedShort(DcmTag(DCM_CurveData, EVR_US));
+            element = new DcmUnsignedShort(DcmTag(DCM_RETIRED_CurveData, EVR_US));
             if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
             break;
           case 1: // SS
             if (opt_verbose) CERR << "encoding curve data element as VR=SS" << OFendl;
-            element = new DcmSignedShort(DcmTag(DCM_CurveData, EVR_SS));
+            element = new DcmSignedShort(DcmTag(DCM_RETIRED_CurveData, EVR_SS));
             if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putSint16Array(OFstatic_cast(Sint16 *,rawData), byteLength/sizeof(Sint16));
             break;
           case 2: // FL
             if (opt_verbose) CERR << "encoding curve data element as VR=FL" << OFendl;
-            element = new DcmFloatingPointSingle(DcmTag(DCM_CurveData, EVR_FL));
+            element = new DcmFloatingPointSingle(DcmTag(DCM_RETIRED_CurveData, EVR_FL));
             if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putFloat32Array(OFstatic_cast(Float32 *,rawData), byteLength/sizeof(Float32));
             break;
           case 3: // FD
             if (opt_verbose) CERR << "encoding curve data element as VR=FD" << OFendl;
-            element = new DcmFloatingPointDouble(DcmTag(DCM_CurveData, EVR_FD));
+            element = new DcmFloatingPointDouble(DcmTag(DCM_RETIRED_CurveData, EVR_FD));
             if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putFloat64Array(OFstatic_cast(Float64 *,rawData), byteLength/sizeof(Float64));
             break;
           case 4: // SL
             if (opt_verbose) CERR << "encoding curve data element as VR=SL" << OFendl;
-            element = new DcmSignedLong(DcmTag(DCM_CurveData, EVR_SL));
+            element = new DcmSignedLong(DcmTag(DCM_RETIRED_CurveData, EVR_SL));
             if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
             element->putSint32Array(OFstatic_cast(Sint32 *,rawData), byteLength/sizeof(Sint32));
             break;
@@ -376,7 +376,7 @@ int main(int argc, char *argv[])
         // create little endian byte order
         if (opt_verbose) CERR << "encoding curve data element as VR=OB" << OFendl;
         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
-        element = new DcmOtherByteOtherWord(DCM_CurveData);
+        element = new DcmOtherByteOtherWord(DCM_RETIRED_CurveData);
         if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OB);
@@ -391,7 +391,7 @@ int main(int argc, char *argv[])
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
           swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawData, byteLength, sizeof(Uint16));
         }
-        element = new DcmOtherByteOtherWord(DCM_CurveData);
+        element = new DcmOtherByteOtherWord(DCM_RETIRED_CurveData);
         if (element==NULL) { CERR << "out of memory" << OFendl; return 1; }
         element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OW);
@@ -421,7 +421,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.21  2006-08-15 16:57:01  meichel
+** Revision 1.22  2008-04-30 12:38:42  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
+** Revision 1.21  2006/08/15 16:57:01  meichel
 ** Updated the code in module dcmpstat to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

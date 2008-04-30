@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-10-23 16:52:29 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1938,17 +1938,17 @@ void DiMonoImage::updateImagePixelModuleAttributes(DcmItem &dataset)
     {
         if (!dataset.tagExists(DcmTagKey(grp, DCM_OverlayData.getElement())))
         {
-            delete dataset.remove(DcmTagKey(grp, DCM_OverlayGroupLength.getElement()));
+            delete dataset.remove(DcmTagKey(grp, 0x0000)); // group length
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayRows.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayColumns.getElement()));
-            delete dataset.remove(DcmTagKey(grp, DCM_OverlayPlanes.getElement()));
+            delete dataset.remove(DcmTagKey(grp, DCM_RETIRED_OverlayPlanes.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_NumberOfFramesInOverlay.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayDescription.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayType.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlaySubtype.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayOrigin.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_ImageFrameOrigin.getElement()));
-            delete dataset.remove(DcmTagKey(grp, DCM_OverlayPlaneOrigin.getElement()));
+            delete dataset.remove(DcmTagKey(grp, DCM_RETIRED_OverlayPlaneOrigin.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayBitsAllocated.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayBitPosition.getElement()));
             delete dataset.remove(DcmTagKey(grp, DCM_OverlayLabel.getElement()));
@@ -2134,7 +2134,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.69  2007-10-23 16:52:29  joergr
+ * Revision 1.70  2008-04-30 12:38:42  meichel
+ * Fixed compile errors due to changes in attribute tag names
+ *
+ * Revision 1.69  2007/10/23 16:52:29  joergr
  * Fixed bug in writeImageToDataset() for images with BitsAllocated = 32.
  *
  * Revision 1.68  2007/03/16 11:51:43  joergr

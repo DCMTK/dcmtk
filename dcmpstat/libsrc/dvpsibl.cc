@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2005, OFFIS
+ *  Copyright (C) 1999-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:34 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
-  if (EC_Normal == dset.search(DCM_ImageBoxContentSequence, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(DCM_RETIRED_ImageBoxContentSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
@@ -123,7 +123,7 @@ OFCondition DVPSImageBoxContent_PList::write(
   OFBool working = OFTrue;
   unsigned long numWritten = 0;
   
-  dseq = new DcmSequenceOfItems(DCM_ImageBoxContentSequence);
+  dseq = new DcmSequenceOfItems(DCM_RETIRED_ImageBoxContentSequence);
   if (dseq)
   {
     OFListIterator(DVPSImageBoxContent *) first = list_.begin();
@@ -618,7 +618,10 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.28  2005-12-08 15:46:34  meichel
+ *  Revision 1.29  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.28  2005/12/08 15:46:34  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.27  2004/02/04 15:57:49  joergr

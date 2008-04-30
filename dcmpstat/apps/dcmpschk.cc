@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:01 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -860,7 +860,7 @@ int dcmchkMetaHeader(STD_NAMESPACE ostream& out, DcmMetaInfo* meta, DcmDataset* 
     }
 
     // Check the group length information
-    DcmTagKey gltag(DCM_MetaElementGroupLength);
+    DcmTagKey gltag(DCM_FileMetaInformationGroupLength);
     if (chkType1AttributeExistance(out, meta, gltag)) {
         Uint32 len = 0;
         meta->findAndGetUint32(gltag, len, 0);
@@ -1095,7 +1095,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.24  2006-08-15 16:57:01  meichel
+ * Revision 1.25  2008-04-30 12:38:43  meichel
+ * Fixed compile errors due to changes in attribute tag names
+ *
+ * Revision 1.24  2006/08/15 16:57:01  meichel
  * Updated the code in module dcmpstat to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

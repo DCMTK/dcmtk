@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2006, OFFIS
+ *  Copyright (C) 2005-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,7 @@ OFCondition createHeader(
     if (result.good()) result = dataset->insertEmptyElement(DCM_StudyID);
     if (result.good()) result = dataset->insertEmptyElement(DCM_ContentDate);
     if (result.good()) result = dataset->insertEmptyElement(DCM_ContentTime);
-    if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDatetime);
+    if (result.good()) result = dataset->insertEmptyElement(DCM_AcquisitionDateTime);
 
     if (result.good() && opt_conceptCSD && opt_conceptCV && opt_conceptCM)
     {
@@ -662,7 +662,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
-** Revision 1.6  2006-08-15 15:50:56  meichel
+** Revision 1.7  2008-04-30 12:38:42  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
+** Revision 1.6  2006/08/15 15:50:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

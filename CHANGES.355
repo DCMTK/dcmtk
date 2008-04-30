@@ -3,6 +3,41 @@ Changes between releases are documented here.
 
 **** Changes from 2008.04.30 (eichelberg)
 
+- Fixed compile errors due to changes in attribute tag names
+  Affects: dcmdata/apps/pdf2dcm.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmnet/libsrc/dimcmd.cc
+           dcmnet/libsrc/dimse.cc
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsabl.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsgl.cc
+           dcmpstat/libsrc/dvpsib.cc
+           dcmpstat/libsrc/dvpsibl.cc
+           dcmpstat/libsrc/dvpspll.cc
+           dcmpstat/libsrc/dvpssp.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmsr/libsrc/dsrtcodt.cc
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/wwwapps/readwlst.cc
+           dcmwlm/wwwapps/writwlst.cc
+
+- Rebuilt data dictionary based on 2008 DICOM edition
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+
+- Added private tags for creator 'PHILIPS IMAGING DD 001'
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/libsrc/private.dic
+  
 - Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject 
   was passed as NULL and an error condition occured.
   Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.

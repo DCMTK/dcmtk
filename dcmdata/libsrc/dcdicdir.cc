@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:21 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2008-04-30 12:38:42 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -371,7 +371,7 @@ DCM_dcmdataDebug(3, ( "DcmDicomDir::resolveAllOffsets() Item-Offset[%d]=0x%8.8lx
     resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
         DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
     resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
-        DCM_MRDRDirectoryRecordOffset );
+        DCM_RETIRED_MRDRDirectoryRecordOffset );
 
     delete[] itOffsets;
 
@@ -627,7 +627,7 @@ OFCondition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
 
     OFCondition e3 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_OffsetOfTheNextDirectoryRecord );
     OFCondition e4 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
-    OFCondition e5 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_MRDRDirectoryRecordOffset );
+    OFCondition e5 = convertGivenPointer( &localDirRecSeq, itOffsets, num, DCM_RETIRED_MRDRDirectoryRecordOffset );
 
     if ( e1 == EC_InvalidVR || e2 == EC_InvalidVR || e3 == EC_InvalidVR || e4 == EC_InvalidVR || e5 == EC_InvalidVR )
         l_error = EC_InvalidVR;
@@ -1328,7 +1328,10 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.50  2007-11-29 14:30:21  meichel
+** Revision 1.51  2008-04-30 12:38:42  meichel
+** Fixed compile errors due to changes in attribute tag names
+**
+** Revision 1.50  2007/11/29 14:30:21  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

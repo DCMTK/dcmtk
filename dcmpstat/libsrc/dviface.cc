@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:01 $
- *  CVS/RCS Revision: $Revision: 1.155 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.156 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2788,8 +2788,8 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
       if (EC_Normal==status) status = pPrint->writeHardcopyImageAttributes(*dataset);
 
       // Hardcopy Equipment Module
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_HardcopyDeviceManufacturer, "OFFIS");
-      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_RETIRED_HardcopyDeviceManufacturer, "OFFIS");
+      if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_RETIRED_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
 
       // General Image Module
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_InstanceNumber);
@@ -4388,7 +4388,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.155  2006-08-15 16:57:01  meichel
+ *  Revision 1.156  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.155  2006/08/15 16:57:01  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *

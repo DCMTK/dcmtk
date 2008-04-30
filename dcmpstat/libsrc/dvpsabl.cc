@@ -23,8 +23,8 @@
  *    classes: DVPSAnnotationContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:17 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ OFCondition DVPSAnnotationContent_PList::read(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
-  if (EC_Normal == dset.search(DCM_AnnotationContentSequence, stack, ESM_fromHere, OFFalse))
+  if (EC_Normal == dset.search(DCM_RETIRED_AnnotationContentSequence, stack, ESM_fromHere, OFFalse))
   {
     dseq=(DcmSequenceOfItems *)stack.top();
     if (dseq)
@@ -116,7 +116,7 @@ OFCondition DVPSAnnotationContent_PList::write(DcmItem &dset)
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
 
-  dseq = new DcmSequenceOfItems(DCM_AnnotationContentSequence);
+  dseq = new DcmSequenceOfItems(DCM_RETIRED_AnnotationContentSequence);
   if (dseq)
   {
     OFListIterator(DVPSAnnotationContent *) first = list_.begin();
@@ -244,7 +244,10 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
 
 /*
  *  $Log: dvpsabl.cc,v $
- *  Revision 1.11  2005-12-08 15:46:17  meichel
+ *  Revision 1.12  2008-04-30 12:38:43  meichel
+ *  Fixed compile errors due to changes in attribute tag names
+ *
+ *  Revision 1.11  2005/12/08 15:46:17  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.10  2004/02/04 15:57:49  joergr
