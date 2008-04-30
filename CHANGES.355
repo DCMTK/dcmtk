@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.30 (riesmeier)
+
+- Moved package information like version number and release date to a central
+  configuration file (one for GNU autoconf and one for CMake systems).
+  Affects: CMakeLists.txt
+           config/configure
+           config/configure.in
+           config/Makefile.def.in
+           config/include/dcmtk/config/CMakeLists.txt
+           config/include/dcmtk/config/cfunix.h.in
+           dcmdata/include/dcmtk/dcmdata/dcuid.h
+           doxygen/CMakeLists.txt
+           doxygen/Makefile.in
+           doxygen/htmldocs.cfg
+           doxygen/manpages.cfg
+  Added:   config/include/dcmtk/config/cfwin32.h.in
+  Removed: config/include/dcmtk/config/cfwin32.h
+
+- Added support for new compiler definition "DCMTK_BUILD_DATE" that can be used
+  to distinguish binaries of the current development version from the official
+  release.
+  Affects: CMakeLists.txt
+           config/configure.in
+           config/Makefile.def.in
+           dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 **** Changes from 2008.04.30 (eichelberg)
 
 - DJEncoderRegistration::registerCodecs now by default enables the
@@ -41,17 +67,17 @@ Changes between releases are documented here.
 - Added private tags for creator 'PHILIPS IMAGING DD 001'
   Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
   Affects: dcmdata/libsrc/private.dic
-  
-- Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject 
+
+- Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject
   was passed as NULL and an error condition occured.
   Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
   Affects: dcmnet/libsrc/dimse.cc
 
-- Correctly initializing SO_LINGER timeout flag for socket closing, which was 
+- Correctly initializing SO_LINGER timeout flag for socket closing, which was
   in undefined state in requestAssociationTCP
   Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
   Affects: dcmnet/libsrc/dulfsm.cc
-  
+
 **** Changes from 2008.04.29 (riesmeier)
 
 - Harmonized capitalization of warning messages.
