@@ -46,9 +46,9 @@
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
 ** Intent:      Define tables and provide functions that implement
 **            the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: onken $, $Date: 2008-04-17 15:27:35 $
+** Last Update:   $Author: meichel $, $Date: 2008-04-30 09:12:06 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:    $Revision: 1.63 $
+** Revision:    $Revision: 1.64 $
 ** Status:      $State: Exp $
 */
 
@@ -2426,6 +2426,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
           return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
         }
         sockarg.l_onoff = 0;
+        sockarg.l_linger = 0;
 
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
@@ -3965,6 +3966,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.64  2008-04-30 09:12:06  meichel
+** Correctly initializing SO_LINGER timeout flag for socket closing, which was
+**   in undefined state in requestAssociationTCP
+**
 ** Revision 1.63  2008-04-17 15:27:35  onken
 ** Reworked and extended User Identity Negotiation code.
 **

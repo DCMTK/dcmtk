@@ -8,6 +8,11 @@ Changes between releases are documented here.
   Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
   Affects: dcmnet/libsrc/dimse.cc
 
+- Correctly initializing SO_LINGER timeout flag for socket closing, which was 
+  in undefined state in requestAssociationTCP
+  Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
+  Affects: dcmnet/libsrc/dulfsm.cc
+  
 **** Changes from 2008.04.29 (riesmeier)
 
 - Harmonized capitalization of warning messages.
