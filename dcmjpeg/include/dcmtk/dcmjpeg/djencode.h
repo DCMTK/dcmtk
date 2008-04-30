@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:32 $
+ *  Update Date:      $Date: 2008-04-30 12:45:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,7 @@ public:
     OFBool pUseModalityRescale = OFFalse,
     OFBool pAcceptWrongPaletteTags = OFFalse,
     OFBool pAcrNemaCompatibility = OFFalse,
-    OFBool pRealLossless = OFFalse);
+    OFBool pRealLossless = OFTrue);
 
   /** deregisters encoders.
    *  Attention: Must not be called while other threads might still use
@@ -150,7 +150,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djencode.h,v $
- * Revision 1.6  2005-12-08 16:59:32  meichel
+ * Revision 1.7  2008-04-30 12:45:52  meichel
+ * DJEncoderRegistration::registerCodecs now by default enables the
+ *   true lossless codec instead of pseudo-lossless.
+ *
+ * Revision 1.6  2005/12/08 16:59:32  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.5  2005/11/29 15:57:05  onken

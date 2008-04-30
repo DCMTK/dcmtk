@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2008.04.30 (eichelberg)
 
+- DJEncoderRegistration::registerCodecs now by default enables the
+  true lossless codec instead of pseudo-lossless.
+  Affects: dcmjpeg/include/dcmtk/dcmjpeg/djencode.h
+
 - Fixed compile errors due to changes in attribute tag names
   Affects: dcmdata/apps/pdf2dcm.cc
            dcmdata/libsrc/dcddirif.cc
