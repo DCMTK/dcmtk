@@ -5,6 +5,22 @@ AC_CONFIG_SRCDIR(Makefile.in)
 AC_CONFIG_HEADER(include/dcmtk/config/cfunix.h)
 
 dnl -------------------------------------------------------
+dnl Additional Package Information
+dnl -------------------------------------------------------
+
+PACKAGE_VERSION_NUMBER="354"
+PACKAGE_VERSION_SUFFIX=""
+PACKAGE_DATE="2005-12-20"
+
+AC_DEFINE_UNQUOTED(PACKAGE_VERSION_NUMBER,"${PACKAGE_VERSION_NUMBER}",[Define to the version number of this package.])
+AC_DEFINE_UNQUOTED(PACKAGE_VERSION_SUFFIX,"${PACKAGE_VERSION_SUFFIX}",[Define to the version suffix of this package.])
+AC_DEFINE_UNQUOTED(PACKAGE_DATE,"${PACKAGE_DATE}",[Define to the release date of this package.])
+
+AC_SUBST(PACKAGE_VERSION_NUMBER)
+AC_SUBST(PACKAGE_VERSION_SUFFIX)
+AC_SUBST(PACKAGE_DATE)
+
+dnl -------------------------------------------------------
 dnl Identify the host platform we're compiling for,
 dnl using config.guess and config.sub.
 dnl -------------------------------------------------------
@@ -632,12 +648,11 @@ dnl -------------------------------------------------------
 dnl Check for LFS support
 dnl -------------------------------------------------------
 
-
 if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs64; then
   AC_LFS64
   if test $ac_cv_lfs64_support = yes ; then
     LFSSUPPORT="lfs64"
-  fi  
+  fi
 fi
 
 if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs; then

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-04-30 13:30:26 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ extern const int numberOfDcmImageSOPClassUIDs;
  *  @param uid pointer to buffer of 65 or more characters in which the UID is returned
  *  @param prefix prefix for UID creation
  *  @return pointer to UID, identical to uid parameter
- */  
+ */
 char *dcmGenerateUniqueIdentifier(char *uid, const char* prefix=NULL);
 
 /** performs a table lookup and returns a short modality identifier
@@ -157,31 +157,49 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 **          for OFFIS GO-Kard project: 1.2.276.0.7230010.8
 */
 
+#ifndef PACKAGE_DATE
+#error Required compiler definition PACKAGE_DATE undefined
+#endif
+#ifndef PACKAGE_VERSION
+#error Required compiler definition PACKAGE_VERSION undefined
+#endif
+#ifndef PACKAGE_VERSION_NUMBER
+#error Required compiler definition PACKAGE_VERSION_NUMBER undefined
+#endif
+
 /* NOTE: Implementation version name VR=SH may not be longer than 16 chars
  *       The second name is used to identify files written without dcmdata
  *       (i.e. using the --bit-preserving switch in various tools)
  */
 
 /// implementation version name for this version of the toolkit
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_354"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_" PACKAGE_VERSION_NUMBER
 
 /// implementation version name for this version of the toolkit, used for files received in "bit preserving" mode
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_354"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_" PACKAGE_VERSION_NUMBER
 
 /// release date of current toolkit release
-#define OFFIS_DCMTK_RELEASEDATE                 "2005-12-20"
+#ifdef DCMTK_BUILD_DATE
+#define OFFIS_DCMTK_RELEASEDATE                 DCMTK_BUILD_DATE
+#else
+#define OFFIS_DCMTK_RELEASEDATE                 PACKAGE_DATE
+#endif
 
-/// UID root for DCMTK, registered for OFFIS with DIN in Germany.
+/// UID root for DCMTK, registered for OFFIS with DIN in Germany
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
 
 /// DCMTK version number for this release
-#define OFFIS_DCMTK_VERSION_NUMBER              354
+#define OFFIS_DCMTK_VERSION_NUMBER              PACKAGE_VERSION_NUMBER
 
 /// DCMTK version number (as string) for this release
-#define OFFIS_DCMTK_VERSION_STRING              "3.5.4"
+#define OFFIS_DCMTK_VERSION_STRING              PACKAGE_VERSION
 
 /// DCMTK version number suffix string for this release
-#define OFFIS_DCMTK_VERSION_SUFFIX              ""
+#ifdef DCMTK_BUILD_DATE
+#define OFFIS_DCMTK_VERSION_SUFFIX              PACKAGE_VERSION_SUFFIX "+"
+#else
+#define OFFIS_DCMTK_VERSION_SUFFIX              PACKAGE_VERSION_SUFFIX
+#endif
 
 /// DCMTK version number string including suffix
 #define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX
@@ -240,77 +258,77 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 ** Defined Transfer Syntax UIDs
 */
 
-/// Implicit VR Little Endian: Default Transfer Syntax for DICOM 
+/// Implicit VR Little Endian: Default Transfer Syntax for DICOM
 #define UID_LittleEndianImplicitTransferSyntax  "1.2.840.10008.1.2"
-/// Explicit VR Little Endian 
+/// Explicit VR Little Endian
 #define UID_LittleEndianExplicitTransferSyntax  "1.2.840.10008.1.2.1"
-/// Explicit VR Big Endian 
+/// Explicit VR Big Endian
 #define UID_BigEndianExplicitTransferSyntax     "1.2.840.10008.1.2.2"
 /** JPEG Baseline (Process 1): Default Transfer Syntax
- * for Lossy JPEG 8 Bit Image Compression 
+ * for Lossy JPEG 8 Bit Image Compression
  */
 #define UID_JPEGProcess1TransferSyntax          "1.2.840.10008.1.2.4.50"
 /** JPEG Extended (Process 2 & 4): Default Transfer Syntax
- *  for Lossy JPEG 12 Bit Image Compression (Process 4 only) 
+ *  for Lossy JPEG 12 Bit Image Compression (Process 4 only)
  */
 #define UID_JPEGProcess2_4TransferSyntax        "1.2.840.10008.1.2.4.51"
-/// JPEG Extended (Process 3 & 5) 
+/// JPEG Extended (Process 3 & 5)
 #define UID_JPEGProcess3_5TransferSyntax        "1.2.840.10008.1.2.4.52"
-/// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8) 
+/// JPEG Spectral Selection, Non-Hierarchical (Process 6 & 8)
 #define UID_JPEGProcess6_8TransferSyntax        "1.2.840.10008.1.2.4.53"
-/// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9) 
+/// JPEG Spectral Selection, Non-Hierarchical (Process 7 & 9)
 #define UID_JPEGProcess7_9TransferSyntax        "1.2.840.10008.1.2.4.54"
-/// JPEG Full Progression, Non-Hierarchical (Process 10 & 12) 
+/// JPEG Full Progression, Non-Hierarchical (Process 10 & 12)
 #define UID_JPEGProcess10_12TransferSyntax      "1.2.840.10008.1.2.4.55"
-/// JPEG Full Progression, Non-Hierarchical (Process 11 & 13) 
+/// JPEG Full Progression, Non-Hierarchical (Process 11 & 13)
 #define UID_JPEGProcess11_13TransferSyntax      "1.2.840.10008.1.2.4.56"
-/// JPEG Lossless, Non-Hierarchical (Process 14) 
+/// JPEG Lossless, Non-Hierarchical (Process 14)
 #define UID_JPEGProcess14TransferSyntax         "1.2.840.10008.1.2.4.57"
-/// JPEG Lossless, Non-Hierarchical (Process 15) 
+/// JPEG Lossless, Non-Hierarchical (Process 15)
 #define UID_JPEGProcess15TransferSyntax         "1.2.840.10008.1.2.4.58"
-/// JPEG Extended, Hierarchical (Process 16 & 18) 
+/// JPEG Extended, Hierarchical (Process 16 & 18)
 #define UID_JPEGProcess16_18TransferSyntax      "1.2.840.10008.1.2.4.59"
-/// JPEG Extended, Hierarchical (Process 17 & 19) 
+/// JPEG Extended, Hierarchical (Process 17 & 19)
 #define UID_JPEGProcess17_19TransferSyntax      "1.2.840.10008.1.2.4.60"
-/// JPEG Spectral Selection, Hierarchical (Process 20 & 22) 
+/// JPEG Spectral Selection, Hierarchical (Process 20 & 22)
 #define UID_JPEGProcess20_22TransferSyntax      "1.2.840.10008.1.2.4.61"
-/// JPEG Spectral Selection, Hierarchical (Process 21 & 23) 
+/// JPEG Spectral Selection, Hierarchical (Process 21 & 23)
 #define UID_JPEGProcess21_23TransferSyntax      "1.2.840.10008.1.2.4.62"
-/// JPEG Full Progression, Hierarchical (Process 24 & 26) 
+/// JPEG Full Progression, Hierarchical (Process 24 & 26)
 #define UID_JPEGProcess24_26TransferSyntax      "1.2.840.10008.1.2.4.63"
-/// JPEG Full Progression, Hierarchical (Process 25 & 27) 
+/// JPEG Full Progression, Hierarchical (Process 25 & 27)
 #define UID_JPEGProcess25_27TransferSyntax      "1.2.840.10008.1.2.4.64"
-/// JPEG Lossless, Hierarchical (Process 28) 
+/// JPEG Lossless, Hierarchical (Process 28)
 #define UID_JPEGProcess28TransferSyntax         "1.2.840.10008.1.2.4.65"
-/// JPEG Lossless, Hierarchical (Process 29) 
+/// JPEG Lossless, Hierarchical (Process 29)
 #define UID_JPEGProcess29TransferSyntax         "1.2.840.10008.1.2.4.66"
 /** JPEG Lossless, Non-Hierarchical, First-Order Prediction (Process 14
- *  [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression 
+ *  [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression
  */
 #define UID_JPEGProcess14SV1TransferSyntax      "1.2.840.10008.1.2.4.70"
-/// JPEG-LS Lossless Image Compression 
+/// JPEG-LS Lossless Image Compression
 #define UID_JPEGLSLosslessTransferSyntax        "1.2.840.10008.1.2.4.80"
-/// JPEG-LS Lossy (Near-Lossless) Image Compression 
+/// JPEG-LS Lossy (Near-Lossless) Image Compression
 #define UID_JPEGLSLossyTransferSyntax           "1.2.840.10008.1.2.4.81"
-/// RLE Lossless 
+/// RLE Lossless
 #define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
-/// Deflated Explicit VR Little Endian 
+/// Deflated Explicit VR Little Endian
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
-/// JPEG 2000 Image Compression (Lossless Only) 
+/// JPEG 2000 Image Compression (Lossless Only)
 #define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
-/// JPEG 2000 Image Compression (Lossless or Lossy) 
+/// JPEG 2000 Image Compression (Lossless or Lossy)
 #define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
-/// MPEG2 Main Profile @ Main Level 
+/// MPEG2 Main Profile @ Main Level
 #define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
-/// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only) 
+/// JPEG 2000 Part 2 Multi-component Image Compression (Lossless Only)
 #define UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax "1.2.840.10008.1.2.4.92"
-/// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy) 
+/// JPEG 2000 Part 2 Multi-component Image Compression (Lossless or Lossy)
 #define UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax "1.2.840.10008.1.2.4.93"
 
 /** MIME encapsulation (Supplement 101) is only a pseudo transfer syntax used to
  *  refer to MIME encapsulated HL7 CDA documents from a DICOMDIR when stored
  *  on a DICOM storage medium. It is never used for network communication
- *  or encoding of DICOM objects. 
+ *  or encoding of DICOM objects.
  */
 #define UID_RFC2557MIMEEncapsulationTransferSyntax "1.2.840.10008.1.2.6.1"
 
@@ -597,7 +615,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.74  2007-11-29 14:30:35  meichel
+** Revision 1.75  2008-04-30 13:30:26  joergr
+** Moved package information like version number and release date to a central
+** configuration file (one for GNU autoconf and one for CMake systems).
+** Added support for new compiler definition "DCMTK_BUILD_DATE" that can be used
+** to distinguish binaries of the current development version from the official
+** release.
+**
+** Revision 1.74  2007/11/29 14:30:35  meichel
 ** Updated doxygen API documentation
 **
 ** Revision 1.73  2006/10/27 11:58:49  joergr

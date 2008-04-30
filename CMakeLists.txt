@@ -8,9 +8,19 @@ ENDIF(NOT WIN32)
 
 # check required version of CMake
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.7)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.4.7 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.7)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.8)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.4.8 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.8)
+
+# package information
+SET(PACKAGE_NAME "dcmtk")
+SET(PACKAGE_DATE "2005-12-20")
+SET(PACKAGE_VERSION "3.5.4")
+SET(PACKAGE_VERSION_NUMBER "354")
+SET(PACKAGE_VERSION_SUFFIX "")
+SET(PACKAGE_TARNAME "${PACKAGE_NAME}-${PACKAGE_VERSION}")
+SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
+SET(PACKAGE_BUGREPORT "dicom-bugs@offis.de")
 
 # default build type
 SET(CMAKE_BUILD_TYPE RELEASE)
@@ -23,7 +33,7 @@ MARK_AS_ADVANCED(FORCE EXECUTABLE_OUTPUT_PATH LIBRARY_OUTPUT_PATH)
 # define user configurable options and paths to external libraries which might be used
 
 # installation path prefix
-GET_FILENAME_COMPONENT(INSTALL_DIR "${dcmtk_SOURCE_DIR}/../dcmtk-3.5.4-cvs-win32-i386" ABSOLUTE)
+GET_FILENAME_COMPONENT(INSTALL_DIR "${dcmtk_SOURCE_DIR}/../${PACKAGE_TARNAME}-win32-i386" ABSOLUTE)
 SET(INSTALL_PREFIX "${INSTALL_DIR}" CACHE PATH "Installation path prefix.")
 
 # shared libraries (option not yet available)
@@ -49,8 +59,8 @@ FIND_PATH(WITH_LIBPNGINC "include/png.h" "${LIBPNG_DIR}" NO_DEFAULT_PATH)
 OPTION(WITH_LIBTIFF "Build with libtiff support." ON)
 GET_FILENAME_COMPONENT(LIBTIFF_DIR "${dcmtk_SOURCE_DIR}/../tiff-3.7.4" ABSOLUTE)
 FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" "${LIBTIFF_DIR}" NO_DEFAULT_PATH)
-# openssl support
-OPTION(WITH_OPENSSL "Build with openssl support." OFF)
+# OpenSSL support
+OPTION(WITH_OPENSSL "Build with OpenSSL support." OFF)
 GET_FILENAME_COMPONENT(OPENSSL_DIR "${dcmtk_SOURCE_DIR}/../openssl-0.9.8a" ABSOLUTE)
 FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" "${OPENSSL_DIR}" NO_DEFAULT_PATH)
 # zlib support
@@ -123,6 +133,9 @@ ENDIF(CMAKE_CXX_COMPILER MATCHES bcc32)
 # set general compiler flags
 ADD_DEFINITIONS(-D_REENTRANT)
 
+# pass optional build date to compiler
+#ADD_DEFINITIONS("-DDCMTK_BUILD_DATE=\\\"YYYY-MM-DD\\\"")
+
 # set precompiler switches, directories and libraries
 # according to optional settings
 
@@ -152,7 +165,7 @@ IF(WITH_LIBTIFF AND WITH_LIBTIFFINC)
   SET(LIBTIFF_LIBDIR ${WITH_LIBTIFFINC}/lib)
   SET(LIBTIFF_LIBS debug libtiff_d optimized libtiff_o)
 ENDIF(WITH_LIBTIFF AND WITH_LIBTIFFINC)
-# openssl support
+# OpenSSL support
 IF(WITH_OPENSSL AND WITH_OPENSSLINC)
   ADD_DEFINITIONS(-DWITH_OPENSSL)
   SET(OPENSSL_BINDIR ${WITH_OPENSSLINC}/bin)
