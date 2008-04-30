@@ -725,6 +725,9 @@ typedef unsigned short ushort;
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
+/* Define to the release date of this package. */
+#undef PACKAGE_DATE
+
 /* Define to the full name of this package. */
 #undef PACKAGE_NAME
 
@@ -736,6 +739,12 @@ typedef unsigned short ushort;
 
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
+
+/* Define to the version number of this package. */
+#undef PACKAGE_VERSION_NUMBER
+
+/* Define to the version suffix of this package. */
+#undef PACKAGE_VERSION_SUFFIX
 
 /* Define path separator */
 #define PATH_SEPARATOR '/'

@@ -653,6 +653,9 @@ LIBS
 build_alias
 host_alias
 target_alias
+PACKAGE_VERSION_NUMBER
+PACKAGE_VERSION_SUFFIX
+PACKAGE_DATE
 build
 build_cpu
 build_vendor
@@ -1765,6 +1768,31 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 ac_config_headers="$ac_config_headers include/dcmtk/config/cfunix.h"
+
+
+
+PACKAGE_VERSION_NUMBER="354"
+PACKAGE_VERSION_SUFFIX=""
+PACKAGE_DATE="2005-12-20"
+
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_VERSION_NUMBER "${PACKAGE_VERSION_NUMBER}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_VERSION_SUFFIX "${PACKAGE_VERSION_SUFFIX}"
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define PACKAGE_DATE "${PACKAGE_DATE}"
+_ACEOF
+
+
+
+
 
 
 
@@ -20234,7 +20262,6 @@ echo "${ECHO_T}none" >&6; }
 esac
 
 
-
 if test $LFSSUPPORT = auto -o $LFSSUPPORT = lfs64; then
 
 
@@ -27315,7 +27342,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27318 "configure"
+#line 27345 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -27872,7 +27899,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27875 "configure"
+#line 27902 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -27945,7 +27972,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27948 "configure"
+#line 27975 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -28018,7 +28045,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28021 "configure"
+#line 28048 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -30260,6 +30287,9 @@ LIBS!$LIBS$ac_delim
 build_alias!$build_alias$ac_delim
 host_alias!$host_alias$ac_delim
 target_alias!$target_alias$ac_delim
+PACKAGE_VERSION_NUMBER!$PACKAGE_VERSION_NUMBER$ac_delim
+PACKAGE_VERSION_SUFFIX!$PACKAGE_VERSION_SUFFIX$ac_delim
+PACKAGE_DATE!$PACKAGE_DATE$ac_delim
 build!$build$ac_delim
 build_cpu!$build_cpu$ac_delim
 build_vendor!$build_vendor$ac_delim
@@ -30306,7 +30336,7 @@ INSTALL_PRIVATE_DICTIONARY!$INSTALL_PRIVATE_DICTIONARY$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 81; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 84; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

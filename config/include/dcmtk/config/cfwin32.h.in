@@ -743,19 +743,28 @@ typedef unsigned short ushort;
 #define INCLUDE_MATH_H_AS_CXX 1
 
 /* Define to the address where bug reports for this package should be sent. */
-/* #undef  PACKAGE_BUGREPORT */
+#define PACKAGE_BUGREPORT "@PACKAGE_BUGREPORT@"
+
+/* Define to the release date of this package. */
+#define PACKAGE_DATE "@PACKAGE_DATE@"
 
 /* Define to the full name of this package. */
-/* #undef  PACKAGE_NAME */
+#define PACKAGE_NAME "@PACKAGE_NAME@"
 
 /* Define to the full name and version of this package. */
-/* #undef  PACKAGE_STRING */
+#define PACKAGE_STRING "@PACKAGE_STRING@"
 
 /* Define to the one symbol short name of this package. */
-/* #undef  PACKAGE_TARNAME */
+#define PACKAGE_TARNAME "@PACKAGE_TARNAME@"
 
 /* Define to the version of this package. */
-/* #undef  PACKAGE_VERSION */
+#define PACKAGE_VERSION "@PACKAGE_VERSION@"
+
+/* Define to the version number of this package. */
+#define PACKAGE_VERSION_NUMBER "@PACKAGE_VERSION_NUMBER@"
+
+/* Define to the version suffix of this package. */
+#define PACKAGE_VERSION_SUFFIX "@PACKAGE_VERSION_SUFFIX@"
 
 /* Define path separator */
 #define PATH_SEPARATOR '\\'
