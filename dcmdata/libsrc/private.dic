@@ -21,9 +21,9 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2006-11-09 17:46:52 $
-#  CVS/RCS Revision: $Revision: 1.13 $
+#  Last Update:      $Author: meichel $
+#  Update Date:      $Date: 2008-04-30 12:33:58 $
+#  CVS/RCS Revision: $Revision: 1.14 $
 #  Status:           $State: Exp $
 #
 #
@@ -1152,6 +1152,45 @@
 (2001,"Philips Imaging DD 001",63)	CS	ExaminationSource	1
 (2001,"Philips Imaging DD 001",7b)	IS	AcquisitionNumber	1
 (2001,"Philips Imaging DD 001",81)	IS	NumberOfDynamicScans	1
+
+(2001,"PHILIPS IMAGING DD 001",01)	FL	ChemicalShift	1
+(2001,"PHILIPS IMAGING DD 001",02)	IS	ChemicalShiftNumberMR	1
+(2001,"PHILIPS IMAGING DD 001",03)	FL	DiffusionB-Factor	1
+(2001,"PHILIPS IMAGING DD 001",04)	CS	DiffusionDirection	1
+(2001,"PHILIPS IMAGING DD 001",06)	CS	ImageEnhanced	1
+(2001,"PHILIPS IMAGING DD 001",07)	CS	ImageTypeEDES	1
+(2001,"PHILIPS IMAGING DD 001",08)	IS	PhaseNumber	1
+(2001,"PHILIPS IMAGING DD 001",0a)	IS	SliceNumberMR	1
+(2001,"PHILIPS IMAGING DD 001",0b)	CS	SliceOrientation	1
+(2001,"PHILIPS IMAGING DD 001",11)	FL	DiffusionEchoTime	1
+(2001,"PHILIPS IMAGING DD 001",12)	CS	DynamicSeries	1
+(2001,"PHILIPS IMAGING DD 001",13)	SL	EPIFactor	1
+(2001,"PHILIPS IMAGING DD 001",14)	SL	NumberOfEchoes	1
+(2001,"PHILIPS IMAGING DD 001",15)	SS	NumberOfLocations	1
+(2001,"PHILIPS IMAGING DD 001",16)	SS	NumberOfPCDirections	1
+(2001,"PHILIPS IMAGING DD 001",17)	SL	NumberOfPhasesMR	1
+(2001,"PHILIPS IMAGING DD 001",18)	SL	NumberOfSlicesMR	1
+(2001,"PHILIPS IMAGING DD 001",19)	CS	PartialMatrixScanned	1
+(2001,"PHILIPS IMAGING DD 001",1a)	FL	PCVelocity	1-n
+(2001,"PHILIPS IMAGING DD 001",1b)	FL	PrepulseDelay	1
+(2001,"PHILIPS IMAGING DD 001",1c)	CS	PrepulseType	1
+(2001,"PHILIPS IMAGING DD 001",1d)	IS	ReconstructionNumberMR	1
+(2001,"PHILIPS IMAGING DD 001",1f)	CS	RespirationSync	1
+(2001,"PHILIPS IMAGING DD 001",21)	CS	SPIR	1
+(2001,"PHILIPS IMAGING DD 001",22)	FL	WaterFatShift	1
+(2001,"PHILIPS IMAGING DD 001",23)	DS	FlipAnglePhilips	1
+(2001,"PHILIPS IMAGING DD 001",25)	SH	EchoTimeDisplayMR	1
+(2001,"PHILIPS IMAGING DD 001",2d)	SS	StackNumberOfSlices	1
+(2001,"PHILIPS IMAGING DD 001",32)	FL	StackRadialAngle	1
+(2001,"PHILIPS IMAGING DD 001",33)	CS	StackRadialAxis	1
+(2001,"PHILIPS IMAGING DD 001",35)	SS	StackSliceNumber	1
+(2001,"PHILIPS IMAGING DD 001",36)	CS	StackType	1
+(2001,"PHILIPS IMAGING DD 001",3f)	CS	ZoomMode	1
+(2001,"PHILIPS IMAGING DD 001",5f)	SQ	StackSequence	1-n
+(2001,"PHILIPS IMAGING DD 001",60)	SL	NumberOfStacks	1
+(2001,"PHILIPS IMAGING DD 001",63)	CS	ExaminationSource	1
+(2001,"PHILIPS IMAGING DD 001",7b)	IS	AcquisitionNumber	1
+(2001,"PHILIPS IMAGING DD 001",81)	IS	NumberOfDynamicScans	1
 
 (2005,"Philips MR Imaging DD 001",05)	CS	SynergyReconstructionType	1
 (2005,"Philips MR Imaging DD 001",20)	SL	NumberOfChemicalShifts	1
