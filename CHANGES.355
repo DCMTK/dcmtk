@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.04.30 (eichelberg)
+
+- Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject 
+  was passed as NULL and an error condition occured.
+  Thanks to Michael Doppler <m.doppler@gmail.com> for the report and fix.
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2008.04.29 (riesmeier)
 
 - Harmonized capitalization of warning messages.

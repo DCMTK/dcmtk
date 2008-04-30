@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2007-11-29 14:42:19 $
+** Update Date:         $Date: 2008-04-30 09:05:43 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.47 $
+** CVS/RCS Revision:    $Revision: 1.48 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1734,7 +1734,14 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     dset->transferEnd();
     
     /* in case an error occurred, return this error */
-    if (cond.bad()) return cond;
+    if (cond.bad())
+    {
+        if (*dataObject == NULL)
+        {
+            delete dset;
+        }
+        return cond;
+    }
 
     /* if the global variable says so, we want to save the */
     /* DIMSE command's information to a file */
@@ -1778,7 +1785,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.47  2007-11-29 14:42:19  meichel
+** Revision 1.48  2008-04-30 09:05:43  meichel
+** Fixed memory leak in DIMSE_receiveDataSetInMemory when parameter dataObject
+**   was passed as NULL and an error condition occured.
+**
+** Revision 1.47  2007/11/29 14:42:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being
