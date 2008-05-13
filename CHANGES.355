@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.13 (riesmeier)
+
+- Fixed issue with multi-frame color images: writeImageToDataset() used wrong
+  format for color-by-plane output.
+  Thanks to Michael Doppler <m.doppler@gmail.com> for the original report.
+  Affects: dcmimage/include/dcmtk/dcmimage/dicopx.h
+           dcmimage/include/dcmtk/dcmimage/dicopxt.h
+           dcmimage/libsrc/dicoimg.cc
+
+- Added new parameter to writeImageToDataset() in order to affect the planar
+  configuration of the output image/dataset. Changed behaviour: By default,
+  the output now uses the same planar configuration as the "original" image
+  (previously: always color-by-plane).
+  Affects: dcmimage/include/dcmtk/dcmimage/dicoimg.h
+           dcmimage/libsrc/dicoimg.cc
+           dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
 **** Changes from 2008.04.30 (riesmeier)
 
 - Moved package information like version number and release date to a central

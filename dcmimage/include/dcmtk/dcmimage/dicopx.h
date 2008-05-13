@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:34 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-13 10:03:34 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,17 +90,30 @@ class DiColorPixel
         return 3;
     }
 
-    /** fill given memory block with pixel data (all three image planes, RGB).
-     *  Currently, the samples are always ordered by plane, thus the DICOM attribute
-     *  'PlanarConfiguration' has to be set to '1'.
+    /** get planar configuration of the original pixel data
      *
-     ** @param  data   pointer to memory block (array of 8 or 16 bit values, OB/OW)
-     *  @param  count  number of T-size entries allocated in the 'data' array
+     ** @return planar configuration (0 = color-by-pixel, 1 = color-by-plane)
+     */
+    inline int getPlanarConfiguration() const
+    {
+        return PlanarConfiguration;
+    }
+
+    /** fill given memory block with pixel data (all three image planes, RGB)
+     *
+     ** @param  data    pointer to memory block (array of 8 or 16 bit values, OB/OW)
+     *  @param  count   number of T-size entries allocated in the 'data' array
+     *  @param  fcount  number of pixels per frame
+     *  @param  frames  total number of frames present in intermediate representation
+     *  @param  planar  flag indicating whether data shall be stored color-by-pixel or color-by-plane
      *
      ** @return OFTrue if successful, OFFalse otherwise
      */
     virtual OFBool getPixelData(void *data,
-                                const size_t count) const = 0;
+                                const unsigned long count,
+                                const unsigned long fcount,
+                                const unsigned long frames,
+                                const int planar) const = 0;
 
     /** create true color (24/32 bit) bitmap for MS Windows.
      *
@@ -169,7 +182,11 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
- * Revision 1.16  2005-12-08 16:01:34  meichel
+ * Revision 1.17  2008-05-13 10:03:34  joergr
+ * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
+ * format for color-by-plane output.
+ *
+ * Revision 1.16  2005/12/08 16:01:34  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.15  2004/10/19 12:57:47  joergr

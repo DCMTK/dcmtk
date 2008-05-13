@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-10 10:59:26 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2008-05-13 10:03:34 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,27 +181,58 @@ class DiColorPixelTemplate
         return OFstatic_cast(void *, Data);
     }
 
-    /** fill given memory block with pixel data (all three image planes, RGB).
-     *  Currently, the samples are always ordered by plane, thus the DICOM attribute
-     *  'PlanarConfiguration' has to be set to '1'.
+    /** fill given memory block with pixel data (all three image planes, RGB)
      *
-     ** @param  data   pointer to memory block (array of 8 or 16 bit values, OB/OW)
-     *  @param  count  number of T-size entries allocated in the 'data' array
+     ** @param  data    pointer to memory block (array of 8 or 16 bit values, OB/OW)
+     *  @param  count   number of T-size entries allocated in the 'data' array
+     *  @param  fcount  number of pixels per frame
+     *  @param  frames  total number of frames present in intermediate representation
+     *  @param  planar  flag indicating whether data shall be stored color-by-pixel or color-by-plane
      *
      ** @return OFTrue if successful, OFFalse otherwise
      */
     OFBool getPixelData(void *data,
-                        const size_t count) const
+                        const unsigned long count,
+                        const unsigned long fcount,
+                        const unsigned long frames,
+                        const int planar) const
     {
         OFBool result = OFFalse;
         /* check parameters and internal data */
-        if ((data != NULL) && (count >= Count * 3) &&
+        if ((data != NULL) && (count >= Count * 3) && (frames > 0) && (frames * fcount <= Count) &&
             (Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
         {
-            /* copy all three planes to the given memory block */
-            OFBitmanipTemplate<T>::copyMem(Data[0], OFstatic_cast(T *, data), Count);
-            OFBitmanipTemplate<T>::copyMem(Data[1], OFstatic_cast(T *, data) + Count, Count);
-            OFBitmanipTemplate<T>::copyMem(Data[2], OFstatic_cast(T *, data) + 2 * Count, Count);
+            register T *q = OFstatic_cast(T *, data);
+            register int j;
+            register unsigned long k;
+            register unsigned long offset = 0;
+            if (planar)
+            {
+                /* for all frames ... */
+                for (k = 0; k < frames; ++k)
+                {
+                    /* copy all three planes to the given memory block */
+                    for (j = 0; j < 3; ++j)
+                    {
+                        OFBitmanipTemplate<T>::copyMem(Data[j] + offset, q, fcount);
+                        q += fcount;
+                    }
+                    offset += fcount;
+                }
+            } else {
+                register unsigned long i;
+                /* for all frames ... */
+                for (k = 0; k < frames; ++k)
+                {
+                    /* copy pixel data values from internal representation */
+                    for (i = 0; i < fcount; ++i)
+                    {
+                        for (j = 0; j < 3; ++j)
+                            *(q++) = Data[j][i + offset];
+                    }
+                    offset += fcount;
+                }
+            }
             result = OFTrue;
         }
         return result;
@@ -564,7 +595,11 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.26  2006-07-10 10:59:26  joergr
+ * Revision 1.27  2008-05-13 10:03:34  joergr
+ * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
+ * format for color-by-plane output.
+ *
+ * Revision 1.26  2006/07/10 10:59:26  joergr
  * Fixed incorrect order of sample values in 32-bit DIB images.
  *
  * Revision 1.25  2005/12/08 16:01:35  meichel
