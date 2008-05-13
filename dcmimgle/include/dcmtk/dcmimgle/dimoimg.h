@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:56:06 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2008-05-13 09:54:40 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -725,11 +725,13 @@ class DiMonoImage
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  mode     0 = determine value of BitsStored from 'used' pixel values,
      *                   1 = determine value of BitsStored from 'possible' pixel values
+     *  @param  planar   dummy parameter (only used for color images)
      *
      ** @return true if successful, false otherwise
      */
     int writeImageToDataset(DcmItem &dataset,
-                            const int mode);
+                            const int mode,
+                            const int planar);
 
     /** write pixel data to PPM file.
      *  pixel data is written in ASCII format.
@@ -1139,7 +1141,13 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.49  2007-03-16 11:56:06  joergr
+ * Revision 1.50  2008-05-13 09:54:40  joergr
+ * Added new parameter to writeImageToDataset() in order to affect the planar
+ * configuration of the output image/dataset. Changed behaviour: By default,
+ * the output now uses the same planar configuration as the "original" image
+ * (previously: always color-by-plane).
+ *
+ * Revision 1.49  2007/03/16 11:56:06  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
  *

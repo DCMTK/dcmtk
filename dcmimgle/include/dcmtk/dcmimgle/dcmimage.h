@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:56:05 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2008-05-13 09:54:40 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -363,7 +363,7 @@ class DicomImage
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable to multi-planar/color images, otherwise ignored)
      *
@@ -390,7 +390,7 @@ class DicomImage
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable to multi-planar/color images, otherwise ignored)
      *
@@ -1564,7 +1564,7 @@ class DicomImage
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  bits     number of bits per sample (image depth, 1..MAX_BITS)
      *  @param  frame    number of frame to be rendered (0..n-1)
-     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
      *                   1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                   (only applicable to multi-planar/color images, otherwise ignored)
      *
@@ -1599,15 +1599,20 @@ class DicomImage
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  mode     0 = determine value of BitsStored from 'used' pixel values,
      *                   1 = determine value of BitsStored from 'possible' pixel values
-     *                       (used for monochrome images only)
+     *                   (used for monochrome images only)
+     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
+     *                   1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...),
+     *                   2 = same as original DICOM image (i.e. color-by-pixel or color-by-plane)
+     *                   (only applicable to multi-planar/color images, otherwise ignored)
      *
      ** @return true if successful, false otherwise
      */
     inline int writeImageToDataset(DcmItem &dataset,
-                                   const int mode = 0)
+                                   const int mode = 0,
+                                   const int planar = 2)
     {
         return (Image != NULL) ?
-            Image->writeImageToDataset(dataset, mode) : 0;
+            Image->writeImageToDataset(dataset, mode, planar) : 0;
     }
 
     /** write pixel data to PPM file (specified by filename).
@@ -1820,7 +1825,13 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.57  2007-03-16 11:56:05  joergr
+ * Revision 1.58  2008-05-13 09:54:40  joergr
+ * Added new parameter to writeImageToDataset() in order to affect the planar
+ * configuration of the output image/dataset. Changed behaviour: By default,
+ * the output now uses the same planar configuration as the "original" image
+ * (previously: always color-by-plane).
+ *
+ * Revision 1.57  2007/03/16 11:56:05  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
  *

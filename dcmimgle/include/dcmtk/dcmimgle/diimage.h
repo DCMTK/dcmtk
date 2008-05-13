@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-13 09:54:40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,9 @@ class DiInputPixel;
  *  class declaration  *
  *---------------------*/
 
-/** Base class for images
+/** Base class for images.
+ *  NB: This is an internal class of module dcmimgle/dcmimage.  Please do not
+ *      use it directly.  Instead use the main interface class DicomImage.
  */
 class DiImage
 {
@@ -451,11 +453,13 @@ class DiImage
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  mode     determine value of BitsStored from 'used' or 'possible' pixel values
+     *  @param  planar   flag, whether the output data (for multi-planar images) should be planar or not
      *
      ** @return true if successful, false otherwise
      */
     virtual int writeImageToDataset(DcmItem &dataset,
-                                    const int mode = 0) = 0;
+                                    const int mode = 0,
+                                    const int planar = 2) = 0;
 
     /** write pixel data to PPM file (abstract).
      *  pixel data is written in ASCII format.
@@ -652,7 +656,13 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.40  2006-08-15 16:30:11  meichel
+ * Revision 1.41  2008-05-13 09:54:40  joergr
+ * Added new parameter to writeImageToDataset() in order to affect the planar
+ * configuration of the output image/dataset. Changed behaviour: By default,
+ * the output now uses the same planar configuration as the "original" image
+ * (previously: always color-by-plane).
+ *
+ * Revision 1.40  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

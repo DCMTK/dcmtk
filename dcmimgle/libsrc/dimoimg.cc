@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:42 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-13 09:54:45 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1960,7 +1960,8 @@ void DiMonoImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 // --- write current image to DICOM dataset
 
 int DiMonoImage::writeImageToDataset(DcmItem &dataset,
-                                     const int mode)
+                                     const int mode,
+                                     const int /*planar*/)
 {
     int result = 0;
     if (InterData != NULL)
@@ -2134,6 +2135,12 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.71  2008-05-13 09:54:45  joergr
+ * Added new parameter to writeImageToDataset() in order to affect the planar
+ * configuration of the output image/dataset. Changed behaviour: By default,
+ * the output now uses the same planar configuration as the "original" image
+ * (previously: always color-by-plane).
+ *
  * Revision 1.70  2008-04-30 12:38:42  meichel
  * Fixed compile errors due to changes in attribute tag names
  *
