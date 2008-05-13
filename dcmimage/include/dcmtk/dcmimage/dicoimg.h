@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Header)
  *
- *  Last Update:         $Author: meichel $
- *  Update Date:         $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision:    $Revision: 1.25 $
+ *  Last Update:         $Author: joergr $
+ *  Update Date:         $Date: 2008-05-13 10:03:08 $
+ *  CVS/RCS Revision:    $Revision: 1.26 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ class DiColorImage
      *
      ** @param  frame   number of frame to be rendered
      *  @param  bits    number of bits per sample for the output pixel data (depth)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
@@ -288,11 +288,13 @@ class DiColorImage
      *
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  mode     dummy parameter (only used for monochrome images)
+     *  @param  planar   flag, whether the output data (for multi-planar images) should be planar or not
      *
      ** @return true if successful, false otherwise
      */
     int writeImageToDataset(DcmItem &dataset,
-                            const int mode);
+                            const int mode,
+                            const int planar);
 
     /** write pixel data to PPM file.
      *  pixel data is written in ASCII format.
@@ -457,7 +459,13 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.25  2006-08-15 16:35:01  meichel
+ * Revision 1.26  2008-05-13 10:03:08  joergr
+ * Added new parameter to writeImageToDataset() in order to affect the planar
+ * configuration of the output image/dataset. Changed behaviour: By default,
+ * the output now uses the same planar configuration as the "original" image
+ * (previously: always color-by-plane).
+ *
+ * Revision 1.25  2006/08/15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
