@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-11-17 15:10:59 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2008-05-13 10:05:37 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -556,7 +556,8 @@ void DiColorImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 // --- write current image to DICOM dataset
 
 int DiColorImage::writeImageToDataset(DcmItem &dataset,
-                                      const int /*mode*/)
+                                      const int /*mode*/,
+                                      const int planar)
 {
     int result = 0;
     if ((InterData != NULL) && (InterData->getCount() > 0) && (BitsPerSample > 0))
@@ -568,15 +569,19 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
             OFBool ok = OFFalse;
             /* number of samples */
             const unsigned long count = InterData->getCount() * 3 /*planes*/;
+            /* number of pixels per frame */
+            const unsigned long fcount = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
+            /* determine planar configuration */
+            const int planarConfig = (planar == 2) ? InterData->getPlanarConfiguration() : ((planar == 0) ? 0 : 1);
             switch (InterData->getRepresentation())
             {
                 case EPR_Uint8:
                 case EPR_Sint8:
                 {
-                    /* write 8 bit pixel data (OB, color by plane) */
+                    /* write 8 bit pixel data (OB) */
                     Uint8 *data = NULL;
                     if (pixel->createUint8Array(count, data).good() &&
-                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count)))
+                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count), fcount, NumberOfFrames, planarConfig))
                     {
                         ok = OFTrue;
                     }
@@ -585,10 +590,10 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                 case EPR_Uint16:
                 case EPR_Sint16:
                 {
-                    /* write 16 bit pixel data (OW, color by plane) */
+                    /* write 16 bit pixel data (OW) */
                     Uint16 *data = NULL;
                     if (pixel->createUint16Array(count, data).good() &&
-                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count)))
+                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count), fcount, NumberOfFrames, planarConfig))
                     {
                         ok = OFTrue;
                     }
@@ -597,10 +602,10 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                 case EPR_Uint32:
                 case EPR_Sint32:
                 {
-                    /* write 32 bit pixel data (OW, color by plane) */
+                    /* write 32 bit pixel data (OW) */
                     Uint16 *data = NULL;
                     if (pixel->createUint16Array(count * 2 /*double-words*/, data).good() &&
-                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count)))
+                        InterData->getPixelData(OFstatic_cast(void *, data), OFstatic_cast(size_t, count), fcount, NumberOfFrames, planarConfig))
                     {
                         ok = OFTrue;
                     }
@@ -620,7 +625,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset,
                 dataset.putAndInsertUint16(DCM_Rows, Rows);
                 dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
                 dataset.putAndInsertUint16(DCM_SamplesPerPixel, 3);
-                dataset.putAndInsertUint16(DCM_PlanarConfiguration, 1);
+                dataset.putAndInsertUint16(DCM_PlanarConfiguration, planarConfig);
                 /* set pixel encoding and data */
                 switch (InterData->getRepresentation())
                 {
@@ -742,7 +747,15 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.39  2006-11-17 15:10:59  joergr
+ * Revision 1.40  2008-05-13 10:05:37  joergr
+ * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
+ * format for color-by-plane output.
+ * Added new parameter to writeImageToDataset() in order to affect the planar
+ * configuration of the output image/dataset. Changed behaviour: By default,
+ * the output now uses the same planar configuration as the "original" image
+ * (previously: always color-by-plane).
+ *
+ * Revision 1.39  2006/11/17 15:10:59  joergr
  * Only compare stored and computed pixel count for "original" images that are
  * directly loaded from DICOM files or datasets.
  *
