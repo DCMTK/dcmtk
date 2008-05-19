@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:25:07 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2008-05-19 09:41:07 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -192,6 +192,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("additional information:");
         cmd.addOption("--processing-details",   "-Ip",    "show currently processed content item");
       cmd.addSubGroup("error handling:");
+        cmd.addOption("--unknown-relationship", "-Er",    "accept unknown/missing relationship type");
         cmd.addOption("--ignore-constraints",   "-Ec",    "ignore relationship content constraints");
         cmd.addOption("--ignore-item-errors",   "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
@@ -290,6 +291,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--processing-details"))
             opt_readFlags |= DSRTypes::RF_showCurrentlyProcessedItem;
+        if (cmd.findOption("--unknown-relationship"))
+            opt_readFlags |= DSRTypes::RF_acceptUnknownRelationshipType;
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
         if (cmd.findOption("--ignore-item-errors"))
@@ -432,7 +435,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.28  2007-11-15 16:25:07  joergr
+ * Revision 1.29  2008-05-19 09:41:07  joergr
+ * Added new command line options that enables reading of SR documents with
+ * unknown/missing relationship type(s).
+ *
+ * Revision 1.28  2007/11/15 16:25:07  joergr
  * Added support for output in XHTML 1.1 format.
  *
  * Revision 1.27  2006/08/15 16:40:02  meichel

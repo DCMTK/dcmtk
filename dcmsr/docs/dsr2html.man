@@ -92,6 +92,9 @@ additional information:
 
 error handling:
 
+  -Er  --unknown-relationship
+         accept unknown/missing relationship type
+
   -Ec  --ignore-constraints
          ignore relationship content constraints
 

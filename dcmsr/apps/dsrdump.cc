@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:22:42 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2008-05-19 09:41:07 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
 
 
 #define SHORTCOL 3
-#define LONGCOL 21
+#define LONGCOL 22
 
 
 int main(int argc, char *argv[])
@@ -135,42 +135,43 @@ int main(int argc, char *argv[])
     cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                      "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--debug",                 "-d",  "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",         "-dd", "verbose debug mode, print more details");
+      cmd.addOption("--help",                   "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                       "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--debug",                  "-d",  "debug mode, print debug information");
+      cmd.addOption("--verbose-debug",          "-dd", "verbose debug mode, print more details");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",  "read file format or data set (default)");
-        cmd.addOption("--read-file-only",      "+fo", "read file format only");
-        cmd.addOption("--read-dataset",        "-f",  "read data set without file meta information");
+        cmd.addOption("--read-file",            "+f",  "read file format or data set (default)");
+        cmd.addOption("--read-file-only",       "+fo", "read file format only");
+        cmd.addOption("--read-dataset",         "-f",  "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",      "-t=", "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",    "-td", "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",    "-te", "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb", "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti", "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",       "-t=", "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",     "-td", "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",     "-te", "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",        "-tb", "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",   "-ti", "read with implicit VR little endian TS");
 
     cmd.addGroup("parsing options:");
       cmd.addSubGroup("additional information:");
-        cmd.addOption("--processing-details",  "-Ip", "show currently processed content item");
+        cmd.addOption("--processing-details",   "-Ip", "show currently processed content item");
       cmd.addSubGroup("error handling:");
-        cmd.addOption("--ignore-constraints",  "-Ec", "ignore relationship content constraints");
-        cmd.addOption("--ignore-item-errors",  "-Ee", "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
-        cmd.addOption("--skip-invalid-items",  "-Ei", "skip invalid content items (incl. sub-tree)");
+        cmd.addOption("--unknown-relationship", "-Er", "accept unknown/missing relationship type");
+        cmd.addOption("--ignore-constraints",   "-Ec", "ignore relationship content constraints");
+        cmd.addOption("--ignore-item-errors",   "-Ee", "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
+        cmd.addOption("--skip-invalid-items",   "-Ei", "skip invalid content items (incl. sub-tree)");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
-        cmd.addOption("--print-filename",      "+Pf", "print header with filename for each document");
-        cmd.addOption("--no-document-header",  "-Ph", "do not print general document information");
-        cmd.addOption("--number-nested-items", "+Pn", "print position string in front of each line");
-        cmd.addOption("--indent-nested-items", "-Pn", "indent nested items by spaces (default)");
-        cmd.addOption("--print-long-values",   "+Pl", "print long item values completely");
-        cmd.addOption("--shorten-long-values", "-Pl", "print long item values shortened (default)");
-        cmd.addOption("--print-instance-uid",  "+Pu", "print SOP instance UID of referenced objects");
-        cmd.addOption("--print-all-codes",     "+Pc", "print all codes (incl. concept name codes)");
-        cmd.addOption("--print-template-id",   "+Pt", "print template identification information");
+        cmd.addOption("--print-filename",       "+Pf", "print header with filename for each document");
+        cmd.addOption("--no-document-header",   "-Ph", "do not print general document information");
+        cmd.addOption("--number-nested-items",  "+Pn", "print position string in front of each line");
+        cmd.addOption("--indent-nested-items",  "-Pn", "indent nested items by spaces (default)");
+        cmd.addOption("--print-long-values",    "+Pl", "print long item values completely");
+        cmd.addOption("--shorten-long-values",  "-Pl", "print long item values shortened (default)");
+        cmd.addOption("--print-instance-uid",   "+Pu", "print SOP instance UID of referenced objects");
+        cmd.addOption("--print-all-codes",      "+Pc", "print all codes (incl. concept name codes)");
+        cmd.addOption("--print-template-id",    "+Pt", "print template identification information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -231,6 +232,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--processing-details"))
             opt_readFlags |= DSRTypes::RF_showCurrentlyProcessedItem;
+        if (cmd.findOption("--unknown-relationship"))
+            opt_readFlags |= DSRTypes::RF_acceptUnknownRelationshipType;
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
         if (cmd.findOption("--ignore-item-errors"))
@@ -300,7 +303,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.27  2007-11-15 16:22:42  joergr
+ * Revision 1.28  2008-05-19 09:41:07  joergr
+ * Added new command line options that enables reading of SR documents with
+ * unknown/missing relationship type(s).
+ *
+ * Revision 1.27  2007/11/15 16:22:42  joergr
  * Fixed coding style to be more consistent.
  *
  * Revision 1.26  2006/08/15 16:40:02  meichel
