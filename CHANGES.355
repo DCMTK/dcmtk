@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.19 (onken)
+
+- Corrected img2dcm documentation (set Secondary Capture as Default SOP Class
+  and removed "SEE ALSO" section).
+  Affects: dcmdata/docs/img2dcm.man
+
 **** Changes from 2008.05.13 (riesmeier)
 
 - Fixed issue with multi-frame color images: writeImageToDataset() used wrong
@@ -168,6 +174,9 @@ Changes between releases are documented here.
            dcmwlm/libsrc/Makefile.dep
            dcmqrdb/apps/Makefile.dep
            dcmqrdb/libsrc/Makefile.dep
+
+- Fixed missing fclose() in case fseek() fails.
+  Affects: dcmnet/apps/storescu.cc
 
 **** Changes from 2008.04.17 (onken)
 
