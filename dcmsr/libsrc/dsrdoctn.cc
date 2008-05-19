@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2008-05-19 09:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -657,8 +657,8 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 {
     OFCondition result = EC_Normal;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
-    if (((valueType == VT_byReference) && (relationshipType != RT_unknown)) || (constraintChecker == NULL) ||
-        constraintChecker->checkContentRelationship(ValueType, relationshipType, valueType))
+    if ((relationshipType == RT_unknown) || ((relationshipType != RT_invalid) && ((valueType == VT_byReference) ||
+        (constraintChecker == NULL) || constraintChecker->checkContentRelationship(ValueType, relationshipType, valueType))))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
@@ -675,16 +675,16 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
             /* store new node for the next time */
             previousNode = node;
         } else {
-            if (valueType == VT_unknown)
+            if (valueType == VT_invalid)
                 result = SR_EC_UnknownValueType;
             else
                 result = EC_MemoryExhausted;
         }
     } else {
         /* summarize what went wrong */
-        if (valueType == VT_unknown)
+        if (valueType == VT_invalid)
             result = SR_EC_UnknownValueType;
-        else if (relationshipType == RT_unknown)
+        else if (relationshipType == RT_invalid)
             result = SR_EC_UnknownRelationshipType;
         else
             result = SR_EC_InvalidByValueRelationship;
@@ -721,6 +721,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                 ditem = dseq->getItem(i);
                 if (ditem != NULL)
                 {
+                    DSRDocumentTreeNode *newNode = NULL;
                     /* create current location string */
                     char buffer[20];
                     OFString location = posString;
@@ -734,21 +735,28 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     }
                     /* read RelationshipType */
                     result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1", logStream);
-                    if (result.good())
+                    if (result.good() || (flags & RF_acceptUnknownRelationshipType))
                     {
                         relationshipType = definedTermToRelationshipType(tmpString);
                         /* check relationship type */
-                        if (relationshipType == RT_unknown)
+                        if (relationshipType == RT_invalid)
+                        {
                             printUnknownValueWarningMessage(logStream, "RelationshipType", tmpString.c_str());
+                            if (flags & RF_acceptUnknownRelationshipType)
+                                relationshipType = RT_unknown;
+                        }
                         /* check for by-reference relationship */
                         DcmUnsignedLong referencedContentItemIdentifier(DCM_ReferencedContentItemIdentifier);
                         if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", logStream).good())
                         {
-                            /* create new node (by-reference) */
-                            result = createAndAppendNewNode(node, relationshipType, VT_byReference, constraintChecker);
+                            /* create new node (by-reference, no constraint checker required) */
+                            result = createAndAppendNewNode(node, relationshipType, VT_byReference);
                             /* read ReferencedContentItemIdentifier (again) */
                             if (result.good())
+                            {
+                                newNode = node;
                                 result = node->readContentItem(*ditem, logStream);
+                            }
                         } else {
                             /* read ValueType (from DocumentContentMacro) - required to create new node */
                             result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1", logStream);
@@ -757,13 +765,14 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 /* read by-value relationship */
                                 valueType = definedTermToValueType(tmpString);
                                 /* check value type */
-                                if (valueType != VT_unknown)
+                                if (valueType != VT_invalid)
                                 {
                                     /* create new node (by-value) */
                                     result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
                                     /* read RelationshipMacro */
                                     if (result.good())
                                     {
+                                        newNode = node;
                                         result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags, logStream);
                                         /* read DocumentContentMacro */
                                         if (result.good())
@@ -793,12 +802,12 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     /* check for any errors */
                     if (result.bad())
                     {
-                        printContentItemErrorMessage(logStream, "Reading", result, node, location.c_str());
+                        printContentItemErrorMessage(logStream, "Reading", result, newNode, location.c_str());
                         /* print current data set (item) that caused the error */
                         if ((logStream != NULL) && (flags & RF_verboseDebugMode))
                         {
                             logStream->lockCerr() << OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl;
-                            ditem->print(logStream->getCerr(), OFFalse /*showFullData*/, 1 /*level*/);
+                            ditem->print(logStream->getCerr(), 0 /*flags*/, 1 /*level*/);
                             logStream->getCerr() << OFString(78, '-') << OFendl;
                             logStream->unlockCerr();
                         }
@@ -1149,7 +1158,12 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.45  2007-11-15 16:45:26  joergr
+ *  Revision 1.46  2008-05-19 09:53:02  joergr
+ *  Fixed issue with wrong reference to a content item in an error message.
+ *  Added new flag that enables reading of SR documents with unknown/missing
+ *  relationship type(s).
+ *
+ *  Revision 1.45  2007/11/15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
  *  standard HTML from version 4.0 to 4.01 (strict).
