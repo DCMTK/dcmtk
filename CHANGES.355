@@ -1,6 +1,38 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.19 (riesmeier)
+
+- Added new command line options that enables reading of SR documents with
+  unknown/missing relationship type(s).
+  Affects: dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsrdump.man
+
+- Added new flag that enables reading of SR documents with unknown/missing
+  relationship type(s).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Changed parameters of checkByReferenceRelationships() method.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtypes.cc
+
+- Reset flag for all content items whether they are target of a by-reference
+  relationship (required for an reproducible behavior).
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
+           dcmsr/libsrc/dsrdoctr.cc
+
+- Fixed issue with wrong reference to a content item in an error message.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
+- Fixed typo.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctn.h
+
 **** Changes from 2008.05.19 (onken)
 
 - Corrected img2dcm documentation (set Secondary Capture as Default SOP Class
