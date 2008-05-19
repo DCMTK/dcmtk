@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2008-05-19 09:55:34 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,11 +72,12 @@
 
 /* read flags */
 const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
-const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  1;
-const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  2;
-const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  3;
-const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  4;
-const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  5;
+const size_t DSRTypes::RF_acceptUnknownRelationshipType  = 1 <<  1;
+const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  2;
+const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  3;
+const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  4;
+const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  5;
+const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  6;
 
 /* renderHTML flags */
 const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
@@ -139,6 +140,11 @@ const size_t DSRTypes::PF_printConceptNameCodes          = 1 << 3;
 const size_t DSRTypes::PF_printNoDocumentHeader          = 1 << 4;
 const size_t DSRTypes::PF_printTemplateIdentification    = 1 << 5;
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
+
+/* checkByReferenceRelationships modes */
+const size_t DSRTypes::CM_updatePositionString           = 1 << 0;
+const size_t DSRTypes::CM_updateNodeID                   = 1 << 1;
+const size_t DSRTypes::CM_resetReferenceTargetFlag       = 1 << 2;
 
 
 /*---------------------*
@@ -269,7 +275,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 
 static const S_RelationshipTypeNameMap RelationshipTypeNameMap[] =
 {
-    {DSRTypes::RT_invalid,       "",                "invalid/unknown relationship type"},
+    {DSRTypes::RT_invalid,       "",                "invalid relationship type"},
+    {DSRTypes::RT_unknown,       "",                "unknown relationship type"},
     {DSRTypes::RT_isRoot,        "",                ""},
     {DSRTypes::RT_contains,      "CONTAINS",        "contains"},
     {DSRTypes::RT_hasObsContext, "HAS OBS CONTEXT", "has obs context"},
@@ -1493,7 +1500,12 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.52  2007-11-15 16:45:26  joergr
+ *  Revision 1.53  2008-05-19 09:55:34  joergr
+ *  Added new flag that enables reading of SR documents with unknown/missing
+ *  relationship type(s).
+ *  Changed parameters of checkByReferenceRelationships() method.
+ *
+ *  Revision 1.52  2007/11/15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
  *  standard HTML from version 4.0 to 4.01 (strict).
