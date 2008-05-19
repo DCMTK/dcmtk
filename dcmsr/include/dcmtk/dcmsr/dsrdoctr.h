@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2008-05-19 09:46:40 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,16 +304,19 @@ class DSRDocumentTree
      *  acyclic graph, though this is not 100% true - see "reportlp.dcm" example).
      *  In addition, the position strings (used to encode by-reference relationships
      *  according to the DICOM standard) OR the node IDs (used internally to uniquely
-     *  identify nodes) can be updated.  Please note that the flags 'updateString' and
-     *  'updateNodeID' are mutually exclusive.
-     ** @param  updateString  update the position string using the node ID if OFTrue
-     *  @param  updateNodeID  update the node ID using the position string if OFTrue
-     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
+     *  identify nodes) can be updated.  Please note that the modes 'CM_updatePositionString'
+     *  and 'CM_updateNodeID' are mutually exclusive.
+     ** @param  mode   mode used to customize the checking process (see DSRTypes::CM_xxx)
+     *  @param  flags  flag used to customize the reading process (see DSRTypes::RF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition checkByReferenceRelationships(const OFBool updateString = OFFalse,
-                                              const OFBool updateNodeID = OFFalse,
+    OFCondition checkByReferenceRelationships(const size_t mode = 0,
                                               const size_t flags = 0);
+
+    /** reset flag for all content items whether they are target of a by-reference relationship.
+     *  This function calls 'setReferenceTarget(OFFalse)' for all content items.
+     */
+    void resetReferenceTargetFlag();
 
 
   private:
@@ -352,7 +355,12 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.20  2007-11-15 16:33:30  joergr
+ *  Revision 1.21  2008-05-19 09:46:40  joergr
+ *  Reset flag for all content items whether they are target of a by-reference
+ *  relationship (required for an reproducible behavior).
+ *  Changed parameters of checkByReferenceRelationships() method.
+ *
+ *  Revision 1.20  2007/11/15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *
  *  Revision 1.19  2007/05/11 14:50:05  joergr
