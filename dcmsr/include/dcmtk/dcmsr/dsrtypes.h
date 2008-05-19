@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:32:48 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2008-05-19 09:48:55 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,6 +156,9 @@ class DSRTypes
 
     /// read digital signatures from dataset
     static const size_t RF_readDigitalSignatures;
+
+    /// accept unknown/missing relationship type
+    static const size_t RF_acceptUnknownRelationshipType;
 
     /// ignore relationship constraints for this document class
     static const size_t RF_ignoreRelationshipConstraints;
@@ -303,7 +306,7 @@ class DSRTypes
 
 
     /** @name print() flags
-     *  These flags can be combined and passed to the renderHMTL() methods.
+     *  These flags can be combined and passed to the print() methods.
      *  The 'shortcut' flags can be used for common combinations.
      */
     //@{
@@ -328,6 +331,22 @@ class DSRTypes
 
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
+    //@}
+
+
+    /** @name checkByReferenceRelationships() modes
+     *  These flags can be combined and passed to the checkByReferenceRelationships() method.
+     */
+    //@{
+
+    /// update the position string using the node ID
+    static const size_t CM_updatePositionString;
+
+    /// update the node ID using the position string
+    static const size_t CM_updateNodeID;
+
+    /// reset the reference target flag for all nodes
+    static const size_t CM_resetReferenceTargetFlag;
     //@}
 
 
@@ -368,7 +387,7 @@ class DSRTypes
         /// internal type used to indicate an error
         RT_invalid,
         /// internal type used to indicate an unknown relationship type (defined term)
-        RT_unknown = RT_invalid,
+        RT_unknown,
         /// internal type used for the document root
         RT_isRoot,
         /// DICOM Relationship Type: CONTAINS
@@ -395,8 +414,6 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         VT_invalid,
-        /// internal type used to indicate an unknown value type (defined term)
-        VT_unknown = VT_invalid,
         /// DICOM Value Type: TEXT
         VT_Text,
         /// DICOM Value Type: CODE
@@ -704,19 +721,19 @@ class DSRTypes
 
     /** convert DICOM defined term to relationship type
      ** @param  definedTerm  defined term to be converted
-     ** @return relationship type if successful, RT_invalid/unknown otherwise
+     ** @return relationship type if successful, RT_invalid otherwise
      */
     static E_RelationshipType definedTermToRelationshipType(const OFString &definedTerm);
 
     /** convert DICOM defined term to value type
      ** @param  definedTerm  defined term to be converted
-     ** @return value type if successful, VT_invalid/unknown otherwise
+     ** @return value type if successful, VT_invalid otherwise
      */
     static E_ValueType definedTermToValueType(const OFString &definedTerm);
 
     /** convert XML tag name to value type
      ** @param  xmlTagName  XML tag name to be converted
-     ** @return value type if successful, VT_invalid/unknown otherwise
+     ** @return value type if successful, VT_invalid otherwise
      */
     static E_ValueType xmlTagNameToValueType(const OFString &xmlTagName);
 
@@ -752,7 +769,7 @@ class DSRTypes
 
     /** convert DICOM defined term to character set
      ** @param  definedTerm  defined term to be converted
-     ** @return character set if successful, CS_invalid/unknown otherwise
+     ** @return character set if successful, CS_invalid otherwise
      */
     static E_CharacterSet definedTermToCharacterSet(const OFString &definedTerm);
 
@@ -879,7 +896,7 @@ class DSRTypes
      *  does not allow to specify the character set).
      ** @param  sourceString     source string to be converted
      *  @param  markupString     reference to character string where the result should be stored
-     *  @param  flags            optional flags, checking HF_convertNonASCIICharacters,  
+     *  @param  flags            optional flags, checking HF_convertNonASCIICharacters,
                                  HF_HTML32Compatibility and HF_XHTML11Compatibility only
      *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
      *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
@@ -902,7 +919,7 @@ class DSRTypes
                                               OFString &markupString);
 
     /** check string for valid UID format.
-     *  The string should be non-empty and consist only of interger numbers separated by "." where
+     *  The string should be non-empty and consist only of integer numbers separated by "." where
      *  the first and the last character of the string are always figures (0..9). Example: 1 or 1.2.3.
      *  Please note that this test is not as strict as specified for value representation UI in the
      *  DICOM standard (e.g. regarding even length padding or leading '0' for the numbers).
@@ -1232,7 +1249,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.50  2007-11-15 16:32:48  joergr
+ *  Revision 1.51  2008-05-19 09:48:55  joergr
+ *  Changed parameters of checkByReferenceRelationships() method.
+ *
+ *  Revision 1.50  2007/11/15 16:32:48  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
  *  standard HTML from version 4.0 to 4.01 (strict).
