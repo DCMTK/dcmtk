@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2008-05-19 09:48:32 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,7 @@ class DSRDocumentTreeNode
         MarkFlag = flag;
     }
 
-    /** check whether the current content item is target of an by-reference relationship
+    /** check whether the current content item is target of a by-reference relationship
      ** @return OFTrue if the content item is target, OFFalse otherwise
      */
     inline OFBool isReferenceTarget() const
@@ -221,7 +221,7 @@ class DSRDocumentTreeNode
         return ReferenceTarget;
     }
 
-    /** specify whether the current content item is target of an by-reference relationship
+    /** specify whether the current content item is target of a by-reference relationship
      ** @param  isTarget  OFTrue if the content item is target (default), OFFalse otherwise
      */
     inline void setReferenceTarget(const OFBool isTarget = OFTrue)
@@ -617,6 +617,9 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
+ *  Revision 1.25  2008-05-19 09:48:32  joergr
+ *  Fixed typo.
+ *
  *  Revision 1.24  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *
