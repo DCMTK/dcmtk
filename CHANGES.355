@@ -55,6 +55,12 @@ Changes between releases are documented here.
   conversion).
   Affects: dcmsr/apps/dsr2html.cc
 
+- Fixed small issue in bicubic image scaling algorithm (in clipping mode).
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
+- Added more checks on parameters for combined scaling and clipping.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
 **** Changes from 2008.05.19 (riesmeier)
 
 - Added new command line option that enables reading of SR documents with
