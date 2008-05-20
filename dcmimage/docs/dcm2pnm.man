@@ -127,7 +127,7 @@ scaling:
           ignore pixel aspect ratio when scaling
 
   +i    --interpolate  [n]umber of algorithm : integer
-          use interpolation when scaling (1..2, default: 1)
+          use interpolation when scaling (1..4, default: 1)
 
   -i    --no-interpolation
           no interpolation when scaling
@@ -362,6 +362,14 @@ other transformations:
 \endverbatim
 
 \section notes NOTES
+
+The following preferred interpolation algorithms can be selected using the
+\e --interpolate option:
+
+\li 1 = free scaling algorithm with interpolation from pbmplus toolkit
+\li 2 = free scaling algorithm with interpolation from c't magazine
+\li 3 = magnification algorithm with bilinear interpolation from E. Stanescu
+\li 4 = magnification algorithm with bicubic interpolation from E. Stanescu
 
 The \e --write-tiff option is only available when DCMTK has been configured
 and compiled with support for the external \b libtiff TIFF library.  The

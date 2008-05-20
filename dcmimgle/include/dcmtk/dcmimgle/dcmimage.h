@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-13 09:54:40 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2008-05-20 10:02:33 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1292,8 +1292,10 @@ class DicomImage
      *
      ** @param  width        width of new image (in pixels)
      *  @param  height       height of new image (in pixels)
-     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary).
+     *                       default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                         1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                         4 = bicubic magnification
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -1310,8 +1312,10 @@ class DicomImage
      *
      ** @param  xfactor      width of new image is multiplied with this factor (> 0)
      *  @param  yfactor      height of new image is multiplied with this factor (> 0)
-     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary).
+     *                       default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                         1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                         4 = bicubic magnification
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -1334,8 +1338,10 @@ class DicomImage
      *  @param  clip_height   height of area to be scaled
      *  @param  scale_width   width of scaled image (in pixels)
      *  @param  scale_height  height of scaled image (in pixels)
-     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
-     *                        default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary).
+     *                        default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                          1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                          4 = bicubic magnification
      *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
      *                        (if true, width OR height should be 0, i.e. this component will be calculated
      *                         automatically)
@@ -1364,8 +1370,10 @@ class DicomImage
      *  @param  height       height of area to be scaled
      *  @param  xfactor      width of new image is multiplied with this factor (> 0)
      *  @param  yfactor      height of new image is multiplied with this factor (> 0)
-     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary).
+     *                       default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                         1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                         4 = bicubic magnification
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -1825,6 +1833,9 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.59  2008-05-20 10:02:33  joergr
+ * Added new bilinear and bicubic scaling algorithms for image magnification.
+ *
  * Revision 1.58  2008-05-13 09:54:40  joergr
  * Added new parameter to writeImageToDataset() in order to affect the planar
  * configuration of the output image/dataset. Changed behaviour: By default,

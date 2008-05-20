@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochrome2Image (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:47 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-20 10:03:53 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,8 +173,10 @@ class DiMono2Image
      *  @param  clip_height   height of area to be scaled
      *  @param  scale_width   width of scaled image (in pixels)
      *  @param  scale_height  height of scaled image (in pixels)
-     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
-     *                        default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary).
+     *                        default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                          1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                          4 = bicubic magnification
      *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
      *                        (if true, width OR height should be 0, i.e. this component will be calculated
      *                         automatically)
@@ -256,8 +258,10 @@ class DiMono2Image
      *  @param  src_rows      height of area to be scaled
      *  @param  dest_cols     width of scaled image (in pixels)
      *  @param  dest_rows     height of scaled image (in pixels)
-     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
-     *                        default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary).
+     *                        default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                          1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                          4 = bicubic magnification
      *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
      *                        (if true, width OR height should be 0, i.e. this component will be calculated
      *                         automatically)
@@ -301,7 +305,10 @@ class DiMono2Image
  *
  * CVS/RCS Log:
  * $Log: dimo2img.h,v $
- * Revision 1.15  2005-12-08 16:47:47  meichel
+ * Revision 1.16  2008-05-20 10:03:53  joergr
+ * Added new bilinear and bicubic scaling algorithms for image magnification.
+ *
+ * Revision 1.15  2005/12/08 16:47:47  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.14  2004/02/06 11:07:50  joergr
