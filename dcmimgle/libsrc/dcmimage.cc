@@ -22,8 +22,8 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:01:33 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2008-05-20 15:27:51 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -422,41 +422,44 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
     const unsigned long gh = getHeight();
     if ((Image != NULL) && (gw > 0) && (gh > 0))
     {
-        if (clip_width == 0)                                         // set 'width' if parameter is missing
+        if ((clip_width == 0) && (left_pos < OFstatic_cast(signed long, gw)))  // set 'width' if parameter is missing
             clip_width = gw - left_pos;
-        if (clip_height == 0)                                        // same for 'height'
+        if ((clip_height == 0) && (top_pos < OFstatic_cast(signed long, gh)))  // same for 'height'
             clip_height = gh - top_pos;
         if ((scale_width == 0) && (scale_height == 0))
         {
             scale_width = clip_width;                                // auto-set width/height
             scale_height = clip_height;
         }
-        if (aspect)                                                  // maintain pixel aspect ratio
+        else if ((clip_width > 0) && (clip_height > 0))
         {
-            if (scale_width == 0)
-                scale_width = OFstatic_cast(unsigned long, getWidthHeightRatio() * OFstatic_cast(double, scale_height * clip_width) / clip_height);
-            else if (scale_height == 0)
-                scale_height = OFstatic_cast(unsigned long, getHeightWidthRatio() * OFstatic_cast(double, scale_width * clip_height) / clip_width);
-            else
-                aspect = 0;                                           // ignore pixel aspect ratio
-        }
-        else                                                          // ignore pixel aspect ratio
-        {
-            if (scale_width == 0)
-                scale_width = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_height * clip_width) / clip_height);
-            else if (scale_height == 0)
-                scale_height = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_width * clip_height) / clip_width);
+            if (aspect)                                              // maintain pixel aspect ratio
+            {
+                if (scale_width == 0)
+                    scale_width = OFstatic_cast(unsigned long, getWidthHeightRatio() * OFstatic_cast(double, scale_height * clip_width) / clip_height);
+                else if (scale_height == 0)
+                    scale_height = OFstatic_cast(unsigned long, getHeightWidthRatio() * OFstatic_cast(double, scale_width * clip_height) / clip_width);
+                else
+                    aspect = 0;                                      // ignore pixel aspect ratio
+            }
+            else                                                     // ignore pixel aspect ratio
+            {
+                if (scale_width == 0)
+                    scale_width = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_height * clip_width) / clip_height);
+                else if (scale_height == 0)
+                    scale_height = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_width * clip_height) / clip_width);
+            }
         }
         const unsigned long maxvalue = DicomImageClass::maxval(bitsof(Uint16));
         if (scale_width > maxvalue)
-            scale_width = maxvalue;                                   // limit 'width' to maximum value (65535)
+            scale_width = maxvalue;                                  // limit 'width' to maximum value (65535)
         if (scale_height > maxvalue)
-            scale_height = maxvalue;                                  // same for 'height'
+            scale_height = maxvalue;                                 // same for 'height'
 
         /* need to limit clipping region ... !? */
 
-        if (((left_pos < 0) || (top_pos < 0) || (OFstatic_cast(unsigned long, left_pos + clip_width) > gw) ||
-            (OFstatic_cast(unsigned long, top_pos + clip_height) > gh)) &&
+        if (((left_pos < 0) || (OFstatic_cast(unsigned long, left_pos + clip_width) > gw) ||
+            (top_pos < 0) || (OFstatic_cast(unsigned long, top_pos + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -496,9 +499,9 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
     {
         const unsigned long gw = getWidth();
         const unsigned long gh = getHeight();
-        if (width == 0)                                     // set 'width' if parameter is missing (0)
+        if ((width == 0) && (left_pos < OFstatic_cast(signed long, gw)))  // set 'width' if parameter is missing (0)
             width = gw - left_pos;
-        if (height == 0)                                    // same for 'height'
+        if ((height == 0) && (top_pos < OFstatic_cast(signed long, gh)))  // same for 'height'
             height = gh - top_pos;
         return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned long, xfactor * width),
             OFstatic_cast(unsigned long, yfactor * height), interpolate, aspect, pvalue);
@@ -824,6 +827,9 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.30  2008-05-20 15:27:51  joergr
+ * Added more checks on parameters for combined scaling and clipping.
+ *
  * Revision 1.29  2008-05-20 10:01:33  joergr
  * Fixed issue with wrong image aspect ratio in combined scaling/clipping mode.
  *
