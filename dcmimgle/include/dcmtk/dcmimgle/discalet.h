@@ -22,8 +22,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 13:16:38 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2008-05-20 15:26:45 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -960,7 +960,7 @@ class DiScaleTemplate
 #ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: using magnification algorithm with bilinear interpolation contributed by E. Stanescu" << OFendl;
+            ofConsole.lockCerr() << "INFO: using magnification algorithm with bilinear interpolation contributed by Eduard Stanescu" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -1088,7 +1088,7 @@ class DiScaleTemplate
 #ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: using magnification algorithm with bicubic interpolation contributed by E. Stanescu" << OFendl;
+            ofConsole.lockCerr() << "INFO: using magnification algorithm with bicubic interpolation contributed by Eduard Stanescu" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -1202,7 +1202,7 @@ class DiScaleTemplate
                     }
                     // last column, just copy the source data column Src_X
                     pCurrTemp = pTemp + this->Dest_X - 1;
-                    pCurrSrc = pF + Columns - 1;
+                    pCurrSrc = pF + this->Src_X - 1;
                     for (y = this->Src_Y; y != 0; --y)
                     {
                         *(pCurrTemp) = *(pCurrSrc);
@@ -1279,6 +1279,9 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.29  2008-05-20 15:26:45  joergr
+ * Fixed small issue in bicubic image scaling algorithm (in clipping mode).
+ *
  * Revision 1.28  2008-05-20 13:16:38  joergr
  * Fixed issue with signed pixel data in bicubic interpolation algorithm.
  * Use the pbmplus scaling algorithm as the second best fallback if the c't
