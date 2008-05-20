@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-20 10:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,13 +52,16 @@
 #define SCALE_FACTOR 4096
 #define HALFSCALE_FACTOR 2048
 
+// macros that implement the cubicValue method (significant speed improvement)
+#define CUBIC_TEST(v) v < 0 ? 0 : v
+#define CUBIC_VALUE(v1, v2, v3, v4, dD) CUBIC_TEST(((((-v1 + 3 * v2 - 3 * v3 + v4) * dD + (2 * v1 - 5 * v2 + 4 * v3 - v4)) * dD + (-v1 + v3)) * dD + (v2 + v2)) / 2.0)
+
 
 /*--------------------*
  *  helper functions  *
  *--------------------*/
 
 // help function to set scaling values
-
 static inline void setScaleValues(Uint16 data[],
                                   const Uint16 min,
                                   const Uint16 max)
@@ -86,6 +89,19 @@ static inline void setScaleValues(Uint16 data[],
         else
             data[i] = step0;
     }
+}
+
+
+// cubic value interpolation using Catmull-Rom formula.
+// the interpolated pixel lies between the second and the third original pixels
+static inline double cubicValue(double v1,
+                                double v2,
+                                double v3,
+                                double v4,
+                                double dD)
+{
+    double dVal = 0.5 * ((((-v1 + 3 * v2 - 3 * v3 + v4) * dD + (2 * v1 - 5 * v2 + 4 * v3 - v4)) * dD + (-v1 + v3)) * dD + (v2 + v2));
+    return (dVal < 0.0) ? 0.0 : dVal;
 }
 
 
@@ -171,10 +187,11 @@ class DiScaleTemplate
      *
      ** @param  src          array of pointers to source image pixels
      *  @param  dest         array of pointers to destination image pixels
-     *  @param  interpolate  interpolation algorithm (0 = no interpolation, 1 = pbmplus algorithm, 2 = c't algorithm)
+     *  @param  interpolate  preferred interpolation algorithm (0 = no interpolation, 1 = pbmplus algorithm,
+     *                       2 = c't algorithm, 3 = bilinear magnification, 4 = bicubic magnification)
      *  @param  value        value to be set outside the image boundaries (used for clipping, default: 0)
      */
-    void scaleData(const T *src[],               // combined clipping and scaling UNTESTED for multi-frame images !!
+    void scaleData(const T *src[],
                    T *dest[],
                    const int interpolate,
                    const T value = 0)
@@ -184,16 +201,16 @@ class DiScaleTemplate
 #ifdef DEBUG
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_DebugMessages))
             {
-                ofConsole.lockCout() << "C/R: " << Columns << " " << Rows << OFendl
-                                     << "L/T: " << Left << " " << Top << OFendl
-                                     << "SX/Y: " << this->Src_X << " " << this->Src_Y << OFendl
-                                     << "DX/Y: " << this->Dest_X << " " << this->Dest_Y << OFendl;
+                ofConsole.lockCout() << "Col/Rows: " << Columns << " " << Rows << OFendl
+                                     << "Left/Top: " << Left << " " << Top << OFendl
+                                     << "Src  X/Y: " << this->Src_X << " " << this->Src_Y << OFendl
+                                     << "Dest X/Y: " << this->Dest_X << " " << this->Dest_Y << OFendl;
                 ofConsole.unlockCout();
             }
 #endif
             if ((Left + OFstatic_cast(signed long, this->Src_X) <= 0) || (Top + OFstatic_cast(signed long, this->Src_Y) <= 0) ||
                 (Left >= OFstatic_cast(signed long, Columns)) || (Top >= OFstatic_cast(signed long, Rows)))
-            {                                                                   // no image to be displayed
+            {                                                                         // no image to be displayed
 #ifdef DEBUG
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
@@ -201,30 +218,34 @@ class DiScaleTemplate
                     ofConsole.unlockCerr();
                 }
 #endif
-                fillPixel(dest, value);                                         // ... fill bitmap
+                fillPixel(dest, value);                                               // ... fill bitmap
             }
-            else if ((this->Src_X == this->Dest_X) && (this->Src_Y == this->Dest_Y))                    // no scaling
+            else if ((this->Src_X == this->Dest_X) && (this->Src_Y == this->Dest_Y))  // no scaling
             {
                 if ((Left == 0) && (Top == 0) && (Columns == this->Src_X) && (Rows == this->Src_Y))
-                    copyPixel(src, dest);                                       // copying
+                    copyPixel(src, dest);                                             // copying
                 else if ((Left >= 0) && (OFstatic_cast(Uint16, Left + this->Src_X) <= Columns) &&
                          (Top >= 0) && (OFstatic_cast(Uint16, Top + this->Src_Y) <= Rows))
-                    clipPixel(src, dest);                                       // clipping
+                    clipPixel(src, dest);                                             // clipping
                 else
-                    clipBorderPixel(src, dest, value);                          // clipping (with border)
+                    clipBorderPixel(src, dest, value);                                // clipping (with border)
             }
-            else if ((interpolate == 1) && (this->Bits <= MAX_INTERPOLATION_BITS))    // interpolation (pbmplus)
-                interpolatePixel(src, dest);
-            else if ((interpolate == 2) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y))    // interpolated expansion (c't)
-                expandPixel(src, dest);
-            else if ((interpolate == 2) && (this->Src_X >= this->Dest_X) && (this->Src_Y >= this->Dest_Y))    // interpolated reduction (c't)
-                reducePixel(src, dest);
-            else if ((this->Dest_X % this->Src_X == 0) && (this->Dest_Y % this->Src_Y == 0))            // replication
-                replicatePixel(src, dest);
-            else if ((this->Src_X % this->Dest_X == 0) && (this->Src_Y % this->Dest_Y == 0))            // supression
-                suppressPixel(src, dest);
-            else                                                                // general scaling
-                scalePixel(src, dest);
+            else if ((interpolate == 1) && (this->Bits <= MAX_INTERPOLATION_BITS))
+                interpolatePixel(src, dest);                                          // interpolation (pbmplus)
+            else if ((interpolate == 3) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y) && (this->Src_X >= 2) && (this->Src_Y >= 2))
+                bilinearPixel(src, dest);                                             // bilinear magnification
+            else if ((interpolate == 4) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y) && (this->Src_X >= 3) && (this->Src_Y >= 3))
+                bicubicPixel(src, dest);                                              // bicubic magnification
+            else if ((interpolate >= 1) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y))
+                expandPixel(src, dest);                                               // interpolated expansion (c't)
+            else if ((interpolate >= 1) && (this->Src_X >= this->Dest_X) && (this->Src_Y >= this->Dest_Y))
+                reducePixel(src, dest);                                               // interpolated reduction (c't)
+            else if ((this->Dest_X % this->Src_X == 0) && (this->Dest_Y % this->Src_Y == 0))
+                replicatePixel(src, dest);                                            // replication
+            else if ((this->Src_X % this->Dest_X == 0) && (this->Src_Y % this->Dest_Y == 0))
+                suppressPixel(src, dest);                                             // supression
+            else
+                scalePixel(src, dest);                                                // general scaling
         }
     }
 
@@ -251,6 +272,13 @@ class DiScaleTemplate
     void clipPixel(const T *src[],
                    T *dest[])
     {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using clip image to specified area algorithm" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
         const unsigned long x_feed = Columns - this->Src_X;
         const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
         register Uint16 x;
@@ -274,8 +302,7 @@ class DiScaleTemplate
         }
     }
 
-    /** clip image to specified area and add a border if necessary.
-     *  NOT fully tested - UNTESTED for multi-frame and multi-plane images !!
+    /** clip image to specified area and add a border if necessary
      *
      ** @param  src    array of pointers to source image pixels
      *  @param  dest   array of pointers to destination image pixels
@@ -285,6 +312,13 @@ class DiScaleTemplate
                          T *dest[],
                          const T value)
     {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using clip image to specified area and add border algorithm" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
         const Uint16 s_left = (Left > 0) ? OFstatic_cast(Uint16, Left) : 0;
         const Uint16 s_top = (Top > 0) ? OFstatic_cast(Uint16, Top) : 0;
         const Uint16 d_left = (Left < 0 ? OFstatic_cast(Uint16, -Left) : 0);
@@ -336,7 +370,7 @@ class DiScaleTemplate
                         *(q++) = *(p++);
                         ++x;
                     }
-                    while (x < this->Src_X)                       // - right
+                    while (x < this->Src_X)                 // - right
                     {
                         *(q++) = value;
                         ++x;
@@ -359,6 +393,13 @@ class DiScaleTemplate
     void replicatePixel(const T *src[],
                         T *dest[])
     {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using replicate pixel scaling algorithm without interpolation" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
         const Uint16 x_factor = this->Dest_X / this->Src_X;
         const Uint16 y_factor = this->Dest_Y / this->Src_Y;
         const unsigned long x_feed = Columns;
@@ -375,7 +416,7 @@ class DiScaleTemplate
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = this->Frames; f != 0; --f)
+            for (unsigned long f = this->Frames; f != 0; --f)
             {
                 for (y = this->Src_Y; y != 0; --y)
                 {
@@ -395,7 +436,7 @@ class DiScaleTemplate
         }
     }
 
-    /** shrink image by an integer divisor
+    /** shrink image by an integer divisor.
      *  Pixels are suppressed independently in both directions.
      *
      ** @param  src   array of pointers to source image pixels
@@ -404,6 +445,13 @@ class DiScaleTemplate
     void suppressPixel(const T *src[],
                        T *dest[])
     {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using suppress pixel scaling algorithm without interpolation" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
         const unsigned int x_divisor = this->Src_X / this->Dest_X;
         const unsigned long x_feed = OFstatic_cast(unsigned long, this->Src_Y / this->Dest_Y) * OFstatic_cast(unsigned long, Columns) - this->Src_X;
         const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
@@ -415,7 +463,7 @@ class DiScaleTemplate
         {
             p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = this->Frames; f != 0; --f)
+            for (unsigned long f = this->Frames; f != 0; --f)
             {
                 for (y = this->Dest_Y; y != 0; --y)
                 {
@@ -440,8 +488,15 @@ class DiScaleTemplate
     void scalePixel(const T *src[],
                     T *dest[])
     {
-        const Uint16 xmin = (this->Dest_X < this->Src_X) ? this->Dest_X : this->Src_X;      // minimum width
-        const Uint16 ymin = (this->Dest_Y < this->Src_Y) ? this->Dest_Y : this->Src_Y;      // minimum height
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using free scaling algorithm without interpolation" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
+        const Uint16 xmin = (this->Dest_X < this->Src_X) ? this->Dest_X : this->Src_X;  // minimum width
+        const Uint16 ymin = (this->Dest_Y < this->Src_Y) ? this->Dest_Y : this->Src_Y;  // minimum height
         Uint16 *x_step = new Uint16[xmin];
         Uint16 *y_step = new Uint16[ymin];
         Uint16 *x_fact = new Uint16[xmin];
@@ -464,7 +519,7 @@ class DiScaleTemplate
                 OFBitmanipTemplate<Uint16>::setMem(x_fact, 1, xmin);  // initialize with default values
             if (this->Dest_X >= this->Src_X)
                 OFBitmanipTemplate<Uint16>::setMem(x_step, 1, xmin);  // initialize with default values
-            x_step[xmin - 1] += Columns - this->Src_X;                      // skip to next line
+            x_step[xmin - 1] += Columns - this->Src_X;                // skip to next line
             if (this->Dest_Y < this->Src_Y)
                 setScaleValues(y_step, this->Dest_Y, this->Src_Y);
             else if (this->Dest_Y > this->Src_Y)
@@ -473,7 +528,7 @@ class DiScaleTemplate
                 OFBitmanipTemplate<Uint16>::setMem(y_fact, 1, ymin);  // initialize with default values
             if (this->Dest_Y >= this->Src_Y)
                 OFBitmanipTemplate<Uint16>::setMem(y_step, 1, ymin);  // initialize with default values
-            y_step[ymin - 1] += Rows - this->Src_Y;                         // skip to next frame
+            y_step[ymin - 1] += Rows - this->Src_Y;                   // skip to next frame
             const T *sp;
             register Uint16 dx;
             register Uint16 dy;
@@ -484,7 +539,7 @@ class DiScaleTemplate
             {
                 sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
                 q = dest[j];
-                for (Uint32 f = 0; f < this->Frames; ++f)
+                for (unsigned long f = 0; f < this->Frames; ++f)
                 {
                     for (y = 0; y < ymin; ++y)
                     {
@@ -510,7 +565,7 @@ class DiScaleTemplate
     }
 
 
-    /** free scaling method with interpolation.
+    /** free scaling method with interpolation
      *
      ** @param  src   array of pointers to source image pixels
      *  @param  dest  array of pointers to destination image pixels
@@ -518,6 +573,13 @@ class DiScaleTemplate
     void interpolatePixel(const T *src[],
                           T *dest[])
     {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using scaling algorithm with interpolation from pbmplus toolkit" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
         if ((this->Src_X != Columns) || (this->Src_Y != Rows))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -558,18 +620,13 @@ class DiScaleTemplate
                 ofConsole.lockCerr() << "ERROR: can't allocate temporary buffers for interpolation scaling !" << OFendl;
                 ofConsole.unlockCerr();
             }
-
-            const unsigned long count = OFstatic_cast(unsigned long, this->Dest_X) * OFstatic_cast(unsigned long, this->Dest_Y) * this->Frames;
-            for (int j = 0; j < this->Planes; ++j)
-                OFBitmanipTemplate<T>::zeroMem(dest[j], count);     // delete destination buffer
-        }
-        else
-        {
+            clearPixel(dest);
+        } else {
             for (int j = 0; j < this->Planes; ++j)
             {
                 fp = src[j];
                 sq = dest[j];
-                for (Uint32 f = this->Frames; f != 0; --f)
+                for (unsigned long f = this->Frames; f != 0; --f)
                 {
                     for (x = 0; x < this->Src_X; ++x)
                         xvalue[x] = HALFSCALE_FACTOR;
@@ -684,7 +741,7 @@ class DiScaleTemplate
     }
 
 
-    /** free scaling method with interpolation (only for expansion).
+    /** free scaling method with interpolation (only for magnification).
      *
      ** @param  src   array of pointers to source image pixels
      *  @param  dest  array of pointers to destination image pixels
@@ -695,7 +752,7 @@ class DiScaleTemplate
 #ifdef DEBUG
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: expandPixel with interpolated c't algorithm" << OFendl;
+            ofConsole.lockCerr() << "INFO: using expand pixel scaling algorithm with interpolation from c't magazine" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -728,7 +785,7 @@ class DiScaleTemplate
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < this->Frames; ++f)
+            for (unsigned long f = 0; f < this->Frames; ++f)
             {
                 for (y = 0; y < this->Dest_Y; ++y)
                 {
@@ -781,7 +838,7 @@ class DiScaleTemplate
                         *(q++) = OFstatic_cast(T, value + 0.5);
                     }
                 }
-                sp += f_size;                                        // skip to next frame start: UNTESTED
+                sp += f_size;
             }
         }
     }
@@ -793,12 +850,12 @@ class DiScaleTemplate
      *  @param  dest  array of pointers to destination image pixels
      */
     void reducePixel(const T *src[],
-                          T *dest[])
+                     T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << OFendl;
+            ofConsole.lockCerr() << "INFO: using reduce pixel scaling algorithm with interpolation from c't magazine" << OFendl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -831,7 +888,7 @@ class DiScaleTemplate
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < this->Frames; ++f)
+            for (unsigned long f = 0; f < this->Frames; ++f)
             {
                 for (y = 0; y < this->Dest_Y; ++y)
                 {
@@ -854,10 +911,9 @@ class DiScaleTemplate
                             --exi;
                         l_factor = 1 + OFstatic_cast(double, bxi) - bx;
                         r_factor = ex - OFstatic_cast(double, exi);
-                        offset = OFstatic_cast(unsigned long, byi - 1) * OFstatic_cast(unsigned long, Columns);
+                        offset = OFstatic_cast(unsigned long, byi) * OFstatic_cast(unsigned long, Columns);
                         for (yi = byi; yi <= eyi; ++yi)
                         {
-                            offset += Columns;
                             p = sp + offset + OFstatic_cast(unsigned long, bxi);
                             for (xi = bxi; xi <= exi; ++xi)
                             {
@@ -872,13 +928,334 @@ class DiScaleTemplate
                                     sum *= t_factor;
                                 value += sum;
                             }
+                            offset += Columns;
                         }
                         *(q++) = OFstatic_cast(T, value + 0.5);
                     }
                 }
-                sp += f_size;                                        // skip to next frame start: UNTESTED
+                sp += f_size;
             }
         }
+    }
+
+   /** bilinear interpolation method (only for magnification)
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
+    void bilinearPixel(const T *src[],
+                       T *dest[])
+    {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using magnification algorithm with bilinear interpolation contributed by E. Stanescu" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
+        const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
+        const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
+        const unsigned long f_size = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns);
+        const unsigned long l_offset = OFstatic_cast(unsigned long, this->Src_Y - 1) * OFstatic_cast(unsigned long, this->Dest_X);
+        register Uint16 x;
+        register Uint16 y;
+        register T *pD;
+        register T *pCurrTemp;
+        register const T *pCurrSrc;
+        Uint16 nSrcIndex;
+        double dOff;
+        T *pT;
+        const T *pS;
+        const T *pF;
+
+        // buffer used for storing temporarily the interpolated lines
+        T *pTemp = new T[OFstatic_cast(unsigned long, this->Src_Y) * OFstatic_cast(unsigned long, this->Dest_X)];
+        if (pTemp == NULL)
+        {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffer for interpolation scaling !" << OFendl;
+                ofConsole.unlockCerr();
+            }
+            clearPixel(dest);
+        } else {
+
+            /*
+             *   based on scaling algorithm contributed by Eduard Stanescu
+             */
+
+            for (int j = 0; j < this->Planes; ++j)
+            {
+                pF = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+                pD = dest[j];
+                for (unsigned long f = this->Frames; f != 0; --f)
+                {
+                    pT = pCurrTemp = pTemp;
+                    pS = pCurrSrc = pF;
+                    // first, interpolate the columns:
+                    // column 0, just copy the source data column 0
+                    for (y = this->Src_Y; y != 0; --y)
+                    {
+                        *(pCurrTemp) = *(pCurrSrc);
+                        pCurrSrc += Columns;
+                        pCurrTemp += this->Dest_X;
+                    }
+                    pCurrSrc = pS;
+                    nSrcIndex = 0;
+                    // column 1 to column Dest_X - 1
+                    for (x = 1; x < this->Dest_X - 1; ++x)
+                    {
+                        pCurrTemp = ++pT;
+                        dOff = x * x_factor - nSrcIndex;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (y = 0; y < this->Src_Y; ++y)
+                        {
+                            *(pCurrTemp) = OFstatic_cast(T, *(pCurrSrc) + (*(pCurrSrc + 1) - *(pCurrSrc)) * dOff);
+                            pCurrSrc += Columns;
+                            pCurrTemp += this->Dest_X;
+                        }
+                        // don't go beyond the source data
+                        if ((nSrcIndex < this->Src_X - 2) &&  (x * x_factor >= nSrcIndex + 1))
+                        {
+                            pS++;
+                            nSrcIndex++;
+                        }
+                        pCurrSrc = pS;
+                    }
+                    pCurrTemp = ++pT;
+                    // last column, just copy the source data column Src_X
+                    for (y = this->Src_Y; y != 0; --y)
+                    {
+                        *(pCurrTemp) = *(pCurrSrc);
+                        pCurrSrc += Columns;
+                        pCurrTemp += this->Dest_X;
+                    }
+                    // now the columns are interpolated in temp buffer, so interpolate the lines
+                    pT = pCurrTemp = pTemp;
+                    // line 0, just copy the temp buffer line 0
+                    for (x = this->Dest_X; x != 0; --x)
+                       *(pD++) = *(pCurrTemp++);
+                    nSrcIndex = 0;
+                    pCurrTemp = pTemp;
+                    for (y = 1; y < this->Dest_Y - 1; ++y)
+                    {
+                        dOff = y * y_factor - nSrcIndex;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (x = this->Dest_X; x != 0; --x)
+                        {
+                            *(pD++) = OFstatic_cast(T, *(pCurrTemp) + (*(pCurrTemp + this->Dest_X) - *(pCurrTemp)) * dOff);
+                            pCurrTemp++;
+                        }
+                        // don't go beyond the source data
+                        if ((nSrcIndex < this->Src_Y - 2) && (y * y_factor >= nSrcIndex + 1))
+                        {
+                            pT += this->Dest_X;
+                            nSrcIndex++;
+                        }
+                        pCurrTemp = pT;
+                    }
+                    // the last line, just copy the temp buffer line Src_X
+                    pCurrTemp = pTemp + l_offset;
+                    for (x = this->Dest_X; x != 0; --x)
+                        *(pD++) = *(pCurrTemp++);
+                    // skip to next frame
+                    pF += f_size;
+                }
+            }
+        }
+        delete[] pTemp;
+    }
+
+   /** bicubic interpolation method (only for magnification)
+    *
+    ** @param  src   array of pointers to source image pixels
+    *  @param  dest  array of pointers to destination image pixels
+    */
+    void bicubicPixel(const T *src[],
+                      T *dest[])
+    {
+#ifdef DEBUG
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+        {
+            ofConsole.lockCerr() << "INFO: using magnification algorithm with bicubic interpolation contributed by E. Stanescu" << OFendl;
+            ofConsole.unlockCerr();
+        }
+#endif
+        const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
+        const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
+        const Uint16 xDelta = OFstatic_cast(Uint16, 1 / x_factor);
+        const Uint16 yDelta = OFstatic_cast(Uint16, 1 / y_factor);
+        const unsigned long f_size = OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns);
+        const unsigned long l_offset = OFstatic_cast(unsigned long, this->Src_Y - 1) * OFstatic_cast(unsigned long, this->Dest_X);
+        register Uint16 x;
+        register Uint16 y;
+        register T *pD;
+        register T *pCurrTemp;
+        register const T *pCurrSrc;
+        Uint16 nSrcIndex;
+        double dOff;
+        T *pT;
+        const T *pS;
+        const T *pF;
+
+        // buffer used for storing temporarily the interpolated lines
+        T *pTemp = pT = pCurrTemp = new T[OFstatic_cast(unsigned long, this->Src_Y) * OFstatic_cast(unsigned long, this->Dest_X)];
+        if (pTemp == NULL)
+        {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffer for interpolation scaling !" << OFendl;
+                ofConsole.unlockCerr();
+            }
+            clearPixel(dest);
+        } else {
+
+            /*
+             *   based on scaling algorithm contributed by Eduard Stanescu
+             */
+
+            for (int j = 0; j < this->Planes; ++j)
+            {
+                pF = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
+                pD = dest[j];
+                for (unsigned long f = this->Frames; f != 0; --f)
+                {
+                    pT = pCurrTemp = pTemp;
+                    pS = pCurrSrc = pF;
+                    // first, interpolate the columns:
+                    // column 0, just copy the source data column 0
+                    for (y = this->Src_Y; y != 0; --y)
+                    {
+                        *(pCurrTemp) = *(pCurrSrc);
+                        pCurrSrc += Columns;
+                        pCurrTemp += this->Dest_X;
+                    }
+                    pCurrSrc = pS;
+                    // for the next few columns, linear interpolation
+                    for (x = 1; x < xDelta + 1; ++x)
+                    {
+                        pCurrSrc = pS;
+                        pCurrTemp = ++pT;
+                        dOff = x * x_factor;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (y = this->Src_Y; y != 0; --y)
+                        {
+                            *(pCurrTemp) = OFstatic_cast(T, *(pCurrSrc) + (*(pCurrSrc + 1) - *(pCurrSrc)) * dOff);
+                            pCurrSrc += Columns;
+                            pCurrTemp += this->Dest_X;
+                        }
+                    }
+                    nSrcIndex = 1;
+                    pCurrSrc = ++pS;
+                    // the majority of the columns
+                    for (x = xDelta + 1; x < this->Dest_X - 2 * xDelta; ++x)
+                    {
+                        pCurrTemp = ++pT;
+                        dOff = x * x_factor - nSrcIndex;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (y = this->Src_Y; y != 0; --y)
+                        {
+                            *(pCurrTemp) = OFstatic_cast(T, CUBIC_VALUE(*(pCurrSrc - 1), *(pCurrSrc), *(pCurrSrc + 1), *(pCurrSrc + 2), dOff));
+                            pCurrSrc += Columns;
+                            pCurrTemp += this->Dest_X;
+                        }
+                        // don't go beyond the source data
+                        if ((nSrcIndex < this->Src_X - 3) && (x * x_factor >= nSrcIndex + 1))
+                        {
+                            pS++;
+                            nSrcIndex++;
+                        }
+                        pCurrSrc = pS;
+                    }
+                    // last few columns except the very last one, linear interpolation
+                    for (x = this->Dest_X - 2 * xDelta; x < this->Dest_X - 1; ++x)
+                    {
+                        pCurrTemp = ++pT;
+                        dOff = x * x_factor - nSrcIndex;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (y = this->Src_Y; y != 0; --y)
+                        {
+                            *(pCurrTemp) = OFstatic_cast(T, *(pCurrSrc) + (*(pCurrSrc + 1) - *(pCurrSrc)) * dOff);
+                            pCurrSrc += Columns;
+                            pCurrTemp += this->Dest_X;
+                        }
+                        // don't go beyond the source data
+                        if ((nSrcIndex < this->Src_X - 2) && (x * x_factor >= nSrcIndex + 1))
+                        {
+                            pS++;
+                            nSrcIndex++;
+                        }
+                        pCurrSrc = pS;
+                    }
+                    // last column, just copy the source data column Src_X
+                    pCurrTemp = pTemp + this->Dest_X - 1;
+                    pCurrSrc = pF + Columns - 1;
+                    for (y = this->Src_Y; y != 0; --y)
+                    {
+                        *(pCurrTemp) = *(pCurrSrc);
+                        pCurrSrc += Columns;
+                        pCurrTemp += this->Dest_X;
+                    }
+                    // now the columns are interpolated in temp buffer, so interpolate the lines
+                    pT = pCurrTemp = pTemp;
+                    // line 0, just copy the temp buffer line 0
+                    for (x = this->Dest_X; x != 0; --x)
+                        *(pD++) = *(pCurrTemp++);
+                    // for the next few lines, linear interpolation between line 0 and 1 of the temp buffer
+                    for (y = 1; y < yDelta + 1; ++y)
+                    {
+                        pCurrTemp = pTemp;
+                        dOff = y * y_factor;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (x = this->Dest_X; x != 0; --x)
+                        {
+                            *(pD++) = OFstatic_cast(T, *(pCurrTemp) + (*(pCurrTemp + this->Dest_X) - *(pCurrTemp)) * dOff);
+                            pCurrTemp++;
+                        }
+                    }
+                    nSrcIndex = 1;
+                    pCurrTemp = pT = pTemp + this->Dest_X;
+                    for (y = yDelta + 1; y < this->Dest_Y - yDelta - 1; ++y)
+                    {
+                        dOff = y * y_factor - nSrcIndex;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (x = this->Dest_X; x != 0; --x)
+                        {
+                            *(pD++) = OFstatic_cast(T, CUBIC_VALUE(*(pCurrTemp - this->Dest_X),*(pCurrTemp), *(pCurrTemp + this->Dest_X),
+                                                                   *(pCurrTemp + this->Dest_X + this->Dest_X), dOff));
+                            pCurrTemp++;
+                        }
+                        // don't go beyond the source data
+                        if ((nSrcIndex < this->Src_Y - 3) && (y * y_factor >= nSrcIndex + 1))
+                        {
+                            pT += this->Dest_X;
+                            nSrcIndex++;
+                        }
+                        pCurrTemp = pT;
+                    }
+                    // the last few lines except the very last one, linear interpolation in between the second last and the last lines
+                    pCurrTemp = pT = pTemp + OFstatic_cast(unsigned long, this->Src_Y - 2) * OFstatic_cast(unsigned long, this->Dest_X);
+                    for (y = this->Dest_Y - yDelta - 1; y < this->Dest_Y - 1; ++y)
+                    {
+                        dOff = y * y_factor - nSrcIndex;
+                        dOff = (1.0 < dOff) ? 1.0 : dOff;
+                        for (x = this->Dest_X; x != 0; --x)
+                        {
+                            *(pD++) = OFstatic_cast(T, *(pCurrTemp) + (*(pCurrTemp + this->Dest_X) - *(pCurrTemp)) * dOff);
+                            pCurrTemp++;
+                        }
+                        pCurrTemp = pT;
+                    }
+                    // the the last line, just copy the temp buffer line Src_X
+                    pCurrTemp = pTemp + l_offset;
+                    for (x = this->Dest_X; x != 0; --x)
+                        *(pD++) = *(pCurrTemp++);
+                    // skip to next frame
+                    pF += f_size;
+                }
+            }
+        }
+        delete[] pTemp;
     }
 };
 
@@ -889,7 +1266,13 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.26  2006-08-15 16:30:11  meichel
+ * Revision 1.27  2008-05-20 10:37:00  joergr
+ * Added new bilinear and bicubic scaling algorithms for image magnification.
+ * Now the c't scaling algorithm is used as a fallback if the preferred
+ * algorithm with interpolation is not applicable.
+ * Fixed bug in c't scaling algorithm (reducePixel) which could cause a crash.
+ *
+ * Revision 1.26  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
