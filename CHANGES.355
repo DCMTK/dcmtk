@@ -39,6 +39,18 @@ Changes between releases are documented here.
 - Enhanced error message when scaling process or grayscale conversion fail.
   Affects: dcmimage/apps/dcm2pnm.cc
 
+- Use the pbmplus scaling algorithm as the second best fallback if the c't
+  algorithm cannot be used (e.g. up and down-scaling on different axes).
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
+- Fixed issue with signed pixel data in bicubic interpolation algorithm.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimosct.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Replaced macro call by inline function (approx. same performance).
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
 **** Changes from 2008.05.19 (riesmeier)
 
 - Added new command line option that enables reading of SR documents with

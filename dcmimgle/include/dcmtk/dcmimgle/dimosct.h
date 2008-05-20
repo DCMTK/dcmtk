@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-20 13:12:48 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,7 @@ class DiMonoScaleTemplate
      *  @param  dest_cols    width of destination image (scaled image)
      *  @param  dest_rows    height of destination image
      *  @param  frames       number of frames
+     *  @param  bits         number of bits per plane/pixel
      *  @param  interpolate  use of interpolation when scaling
      *  @param  pvalue       value possibly used for regions outside the image boundaries
      */
@@ -81,10 +82,11 @@ class DiMonoScaleTemplate
                         const Uint16 dest_cols,
                         const Uint16 dest_rows,
                         const Uint32 frames,
+                        const int bits,
                         const int interpolate,
                         const Uint16 pvalue)
       : DiMonoPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
-        DiScaleTemplate<T>(1, columns, rows, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, frames)
+        DiScaleTemplate<T>(1, columns, rows, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, frames, bits)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
@@ -144,7 +146,10 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
- * Revision 1.15  2006-08-15 16:30:11  meichel
+ * Revision 1.16  2008-05-20 13:12:48  joergr
+ * Fixed issue with signed pixel data in bicubic interpolation algorithm.
+ *
+ * Revision 1.15  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-13 09:54:45 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2008-05-20 13:12:02 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,31 +346,38 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     Overlays[1] = NULL;
     if (image->InterData != NULL)
     {
+        const unsigned int bits = image->InterData->getBits();
         switch (image->InterData->getRepresentation())
         {
             case EPR_Uint8:
                 InterData = new DiMonoScaleTemplate<Uint8>(image->InterData, image->Columns, image->Rows,
-                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames,
+                    bits, interpolate, pvalue);
                 break;
             case EPR_Sint8:
                 InterData = new DiMonoScaleTemplate<Sint8>(image->InterData, image->Columns, image->Rows,
-                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames,
+                    bits, interpolate, pvalue);
                 break;
             case EPR_Uint16:
                 InterData = new DiMonoScaleTemplate<Uint16>(image->InterData, image->Columns, image->Rows,
-                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames,
+                    bits, interpolate, pvalue);
                 break;
             case EPR_Sint16:
                 InterData = new DiMonoScaleTemplate<Sint16>(image->InterData, image->Columns, image->Rows,
-                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames,
+                    bits, interpolate, pvalue);
                 break;
             case EPR_Uint32:
                 InterData = new DiMonoScaleTemplate<Uint32>(image->InterData, image->Columns, image->Rows,
-                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames,
+                    bits, interpolate, pvalue);
                 break;
             case EPR_Sint32:
                 InterData = new DiMonoScaleTemplate<Sint32>(image->InterData, image->Columns, image->Rows,
-                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames,
+                    bits, interpolate, pvalue);
                 break;
         }
     }
@@ -2135,6 +2142,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.72  2008-05-20 13:12:02  joergr
+ * Fixed issue with signed pixel data in bicubic interpolation algorithm.
+ *
  * Revision 1.71  2008-05-13 09:54:45  joergr
  * Added new parameter to writeImageToDataset() in order to affect the planar
  * configuration of the output image/dataset. Changed behaviour: By default,
