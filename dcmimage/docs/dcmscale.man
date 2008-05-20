@@ -190,8 +190,8 @@ The following preferred interpolation algorithms can be selected using the
 
 \li 1 = free scaling algorithm with interpolation from pbmplus toolkit
 \li 2 = free scaling algorithm with interpolation from c't magazine
-\li 3 = magnification algorithm with bilinear interpolation from E. Stanescu
-\li 4 = magnification algorithm with bicubic interpolation from E. Stanescu
+\li 3 = magnification algorithm with bilinear interpolation from Eduard Stanescu
+\li 4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
 
 \section command_line COMMAND LINE
 
