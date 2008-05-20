@@ -22,8 +22,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:37:00 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2008-05-20 13:16:38 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,10 +51,6 @@
 
 #define SCALE_FACTOR 4096
 #define HALFSCALE_FACTOR 2048
-
-// macros that implement the cubicValue method (significant speed improvement)
-#define CUBIC_TEST(v) v < 0 ? 0 : v
-#define CUBIC_VALUE(v1, v2, v3, v4, dD) CUBIC_TEST(((((-v1 + 3 * v2 - 3 * v3 + v4) * dD + (2 * v1 - 5 * v2 + 4 * v3 - v4)) * dD + (-v1 + v3)) * dD + (v2 + v2)) / 2.0)
 
 
 /*--------------------*
@@ -94,14 +90,16 @@ static inline void setScaleValues(Uint16 data[],
 
 // cubic value interpolation using Catmull-Rom formula.
 // the interpolated pixel lies between the second and the third original pixels
-static inline double cubicValue(double v1,
-                                double v2,
-                                double v3,
-                                double v4,
-                                double dD)
+static inline double cubicValue(const double v1,
+                                const double v2,
+                                const double v3,
+                                const double v4,
+                                const double dD,
+                                const double minVal,
+                                const double maxVal)
 {
     double dVal = 0.5 * ((((-v1 + 3 * v2 - 3 * v3 + v4) * dD + (2 * v1 - 5 * v2 + 4 * v3 - v4)) * dD + (-v1 + v3)) * dD + (v2 + v2));
-    return (dVal < 0.0) ? 0.0 : dVal;
+    return (dVal < minVal) ? minVal : ((dVal > maxVal) ? maxVal : dVal);
 }
 
 
@@ -183,12 +181,22 @@ class DiScaleTemplate
     {
     }
 
+    /** check whether template type T is signed or not
+     *
+     ** @return true if signed, false otherwise
+     */
+    inline int isSigned() const
+    {
+        const DiPixelRepresentationTemplate<T> rep;
+        return rep.isSigned();
+    }
+
     /** choose scaling/clipping algorithm depending on specified parameters.
      *
      ** @param  src          array of pointers to source image pixels
      *  @param  dest         array of pointers to destination image pixels
      *  @param  interpolate  preferred interpolation algorithm (0 = no interpolation, 1 = pbmplus algorithm,
-     *                       2 = c't algorithm, 3 = bilinear magnification, 4 = bicubic magnification)
+     *                         2 = c't algorithm, 3 = bilinear magnification, 4 = bicubic magnification)
      *  @param  value        value to be set outside the image boundaries (used for clipping, default: 0)
      */
     void scaleData(const T *src[],
@@ -232,14 +240,18 @@ class DiScaleTemplate
             }
             else if ((interpolate == 1) && (this->Bits <= MAX_INTERPOLATION_BITS))
                 interpolatePixel(src, dest);                                          // interpolation (pbmplus)
-            else if ((interpolate == 3) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y) && (this->Src_X >= 2) && (this->Src_Y >= 2))
-                bilinearPixel(src, dest);                                             // bilinear magnification
-            else if ((interpolate == 4) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y) && (this->Src_X >= 3) && (this->Src_Y >= 3))
+            else if ((interpolate == 4) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y) &&
+                     (this->Src_X >= 3) && (this->Src_Y >= 3))
                 bicubicPixel(src, dest);                                              // bicubic magnification
+            else if ((interpolate >= 3) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y) &&
+                     (this->Src_X >= 2) && (this->Src_Y >= 2))
+                bilinearPixel(src, dest);                                             // bilinear magnification
             else if ((interpolate >= 1) && (this->Dest_X >= this->Src_X) && (this->Dest_Y >= this->Src_Y))
                 expandPixel(src, dest);                                               // interpolated expansion (c't)
             else if ((interpolate >= 1) && (this->Src_X >= this->Dest_X) && (this->Src_Y >= this->Dest_Y))
                 reducePixel(src, dest);                                               // interpolated reduction (c't)
+            else if ((interpolate >= 1) && (this->Bits <= MAX_INTERPOLATION_BITS))
+                interpolatePixel(src, dest);                                          // interpolation (pbmplus), fallback
             else if ((this->Dest_X % this->Src_X == 0) && (this->Dest_Y % this->Src_Y == 0))
                 replicatePixel(src, dest);                                            // replication
             else if ((this->Src_X % this->Dest_X == 0) && (this->Src_Y % this->Dest_Y == 0))
@@ -607,8 +619,7 @@ class DiScaleTemplate
 
         const unsigned long sxscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_X) / OFstatic_cast(double, this->Src_X)) * SCALE_FACTOR);
         const unsigned long syscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_Y) / OFstatic_cast(double, this->Src_Y)) * SCALE_FACTOR);
-        DiPixelRepresentationTemplate<T> rep;
-        const signed long maxvalue = DicomImageClass::maxval(this->Bits - rep.isSigned());
+        const signed long maxvalue = DicomImageClass::maxval(this->Bits - isSigned());
 
         T *xtemp = new T[this->Src_X];
         signed long *xvalue = new signed long[this->Src_X];
@@ -1081,6 +1092,8 @@ class DiScaleTemplate
             ofConsole.unlockCerr();
         }
 #endif
+        const double minVal = (isSigned()) ? -OFstatic_cast(double, DicomImageClass::maxval(this->Bits - 1, 0)) : 0.0;
+        const double maxVal = OFstatic_cast(double, DicomImageClass::maxval(this->Bits - isSigned()));
         const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
         const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
         const Uint16 xDelta = OFstatic_cast(Uint16, 1 / x_factor);
@@ -1155,7 +1168,7 @@ class DiScaleTemplate
                         dOff = (1.0 < dOff) ? 1.0 : dOff;
                         for (y = this->Src_Y; y != 0; --y)
                         {
-                            *(pCurrTemp) = OFstatic_cast(T, CUBIC_VALUE(*(pCurrSrc - 1), *(pCurrSrc), *(pCurrSrc + 1), *(pCurrSrc + 2), dOff));
+                            *(pCurrTemp) = OFstatic_cast(T, cubicValue(*(pCurrSrc - 1), *(pCurrSrc), *(pCurrSrc + 1), *(pCurrSrc + 2), dOff, minVal, maxVal));
                             pCurrSrc += Columns;
                             pCurrTemp += this->Dest_X;
                         }
@@ -1221,8 +1234,8 @@ class DiScaleTemplate
                         dOff = (1.0 < dOff) ? 1.0 : dOff;
                         for (x = this->Dest_X; x != 0; --x)
                         {
-                            *(pD++) = OFstatic_cast(T, CUBIC_VALUE(*(pCurrTemp - this->Dest_X),*(pCurrTemp), *(pCurrTemp + this->Dest_X),
-                                                                   *(pCurrTemp + this->Dest_X + this->Dest_X), dOff));
+                            *(pD++) = OFstatic_cast(T, cubicValue(*(pCurrTemp - this->Dest_X),*(pCurrTemp), *(pCurrTemp + this->Dest_X),
+                                                                  *(pCurrTemp + this->Dest_X + this->Dest_X), dOff, minVal, maxVal));
                             pCurrTemp++;
                         }
                         // don't go beyond the source data
@@ -1266,6 +1279,12 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.28  2008-05-20 13:16:38  joergr
+ * Fixed issue with signed pixel data in bicubic interpolation algorithm.
+ * Use the pbmplus scaling algorithm as the second best fallback if the c't
+ * algorithm cannot be used (e.g. up and down-scaling on different axes).
+ * Replaced macro call by inline function (approx. same performance).
+ *
  * Revision 1.27  2008-05-20 10:37:00  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  * Now the c't scaling algorithm is used as a fallback if the preferred
@@ -1309,7 +1328,7 @@ class DiScaleTemplate
  * (#ifndef DEBUG).
  *
  * Revision 1.16  2000/04/28 12:32:33  joergr
- * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ * DebugLevel - global for the module - now derived from OFGlobal (MT-safe).
  *
  * Revision 1.15  2000/04/27 13:08:42  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
