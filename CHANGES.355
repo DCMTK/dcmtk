@@ -51,6 +51,10 @@ Changes between releases are documented here.
 - Replaced macro call by inline function (approx. same performance).
   Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
 
+- Modified code to avoid warning message on MSVC compiler (implicit type
+  conversion).
+  Affects: dcmsr/apps/dsr2html.cc
+
 **** Changes from 2008.05.19 (riesmeier)
 
 - Added new command line option that enables reading of SR documents with

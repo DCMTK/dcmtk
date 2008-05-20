@@ -23,8 +23,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:41:07 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2008-05-20 13:46:39 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -336,13 +336,13 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--css-reference"))
         {
-          	app.checkConflict("--css-reference", "--html-3.2", opt_renderFlags & DSRTypes::HF_HTML32Compatibility);
+          	app.checkConflict("--css-reference", "--html-3.2", (opt_renderFlags & DSRTypes::HF_HTML32Compatibility) > 0);
             opt_renderFlags &= ~DSRTypes::HF_copyStyleSheetContent;
             app.checkValue(cmd.getValue(opt_cssName));
         }
         if (cmd.findOption("--css-file"))
         {
-          	app.checkConflict("--css-file", "--html-3.2", opt_renderFlags & DSRTypes::HF_HTML32Compatibility);
+          	app.checkConflict("--css-file", "--html-3.2", (opt_renderFlags & DSRTypes::HF_HTML32Compatibility) > 0);
             opt_renderFlags |= DSRTypes::HF_copyStyleSheetContent;
             app.checkValue(cmd.getValue(opt_cssName));
         }
@@ -394,7 +394,7 @@ int main(int argc, char *argv[])
             opt_renderFlags |= DSRTypes::HF_renderAllCodes;
         if (cmd.findOption("--code-details-tooltip"))
         {
-          	app.checkConflict("--code-details-tooltip", "--html-3.2", opt_renderFlags & DSRTypes::HF_HTML32Compatibility);
+          	app.checkConflict("--code-details-tooltip", "--html-3.2", (opt_renderFlags & DSRTypes::HF_HTML32Compatibility) > 0);
             opt_renderFlags |= DSRTypes::HF_useCodeDetailsTooltip;
         }
     }
@@ -435,6 +435,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.30  2008-05-20 13:46:39  joergr
+ * Modified code to avoid warning message on MSVC compiler (implicit type
+ * conversion).
+ *
  * Revision 1.29  2008-05-19 09:41:07  joergr
  * Added new command line options that enables reading of SR documents with
  * unknown/missing relationship type(s).
