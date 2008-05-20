@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:44:54 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2008-05-20 09:57:53 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio (default)");
       cmd.addOption("--ignore-aspect",      "-a",      "ignore pixel aspect ratio when scaling");
       cmd.addOption("--interpolate",        "+i",   1, "[n]umber of algorithm : integer",
-                                                       "use interpolation when scaling (1..2, def: 1)");
+                                                       "use interpolation when scaling (1..4, def: 1)");
       cmd.addOption("--no-interpolation",   "-i",      "no interpolation when scaling");
       cmd.addOption("--no-scaling",         "-S",      "no scaling, ignore pixel aspect ratio (default)");
       cmd.addOption("--scale-x-factor",     "+Sxf", 1, "[f]actor : float",
@@ -544,8 +544,8 @@ int main(int argc, char *argv[])
         {
             app.checkValue(cmd.getValue(opt_left));
             app.checkValue(cmd.getValue(opt_top));
-            app.checkValue(cmd.getValueAndCheckMin(opt_width, 1));
-            app.checkValue(cmd.getValueAndCheckMin(opt_height, 1));
+            app.checkValue(cmd.getValue(opt_width));
+            app.checkValue(cmd.getValue(opt_height));
             opt_useClip = 1;
         }
 
@@ -582,7 +582,7 @@ int main(int argc, char *argv[])
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--interpolate"))
-            app.checkValue(cmd.getValueAndCheckMinMax(opt_useInterpolation, 1, 2));
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_useInterpolation, 1, 4));
         if (cmd.findOption("--no-interpolation"))
             opt_useInterpolation = 0;
         cmd.endOptionBlock();
@@ -1059,7 +1059,7 @@ int main(int argc, char *argv[])
 
              DicomImage *newimage = di->createMonochromeImage();
              if (newimage == NULL)
-                 app.printError("Out of memory.\n");
+                 app.printError("Out of memory or cannot convert to monochrome image");
              else if (newimage->getStatus() != EIS_Normal)
                  app.printError(DicomImage::getString(newimage->getStatus()));
              else
@@ -1225,7 +1225,7 @@ int main(int argc, char *argv[])
              if (opt_verboseMode > 1)
                  OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << OFendl;
              DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
-             if (newimage==NULL)
+             if (newimage == NULL)
              {
                  OFOStringStream oss;
                  oss << "clipping to (" << opt_left << "," << opt_top << "," << opt_width << ","
@@ -1340,8 +1340,8 @@ int main(int argc, char *argv[])
                     newimage = NULL;
                     break;
             }
-            if (newimage==NULL)
-                app.printError("Out of memory.\n");
+            if (newimage == NULL)
+                app.printError("Out of memory or cannot scale image");
             else if (newimage->getStatus() != EIS_Normal)
                 app.printError(DicomImage::getString(newimage->getStatus()));
             else
@@ -1521,7 +1521,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.88  2007-03-16 11:44:54  joergr
+ * Revision 1.89  2008-05-20 09:57:53  joergr
+ * Added new bilinear and bicubic scaling algorithms for image magnification.
+ * Allow width and height of the clipping area to be 0 (compute automatically).
+ * Enhanced error message when scaling process or grayscale conversion fail.
+ *
+ * Revision 1.88  2007/03/16 11:44:54  joergr
  * Added new command line option --check-lut-depth that can be used to re-enable
  * the old behavior of how the third value of the LUT descriptor is treated.
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
