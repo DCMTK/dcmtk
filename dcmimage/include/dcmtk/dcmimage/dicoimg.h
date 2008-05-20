@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2008-05-13 10:03:08 $
- *  CVS/RCS Revision:    $Revision: 1.26 $
+ *  Update Date:         $Date: 2008-05-20 10:38:50 $
+ *  CVS/RCS Revision:    $Revision: 1.27 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,8 +163,10 @@ class DiColorImage
      *  @param  src_rows      height of area to be scaled
      *  @param  dest_cols     width of scaled image (in pixels)
      *  @param  dest_rows     height of scaled image (in pixels)
-     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary)
-     *                        default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate   specifies whether scaling algorithm should use interpolation (if necessary).
+     *                        default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                          1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                          4 = bicubic magnification
      *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
      *                        (if true, width OR height should be 0, i.e. this component will be calculated
      *                         automatically)
@@ -369,8 +371,10 @@ class DiColorImage
      *  @param  src_rows     height of area to be scaled
      *  @param  dest_cols    width of scaled image (in pixels)
      *  @param  dest_rows    height of scaled image (in pixels)
-     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary)
-     *                       default: no interpolation (0), 1 = pbmplus algorithm, 2 = c't algorithm
+     *  @param  interpolate  specifies whether scaling algorithm should use interpolation (if necessary).
+     *                       default: no interpolation (0), preferred interpolation algorithm (if applicable):
+     *                         1 = pbmplus algorithm, 2 = c't algorithm, 3 = bilinear magnification,
+     *                         4 = bicubic magnification
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
@@ -459,6 +463,9 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
+ * Revision 1.27  2008-05-20 10:38:50  joergr
+ * Added new bilinear and bicubic scaling algorithms for image magnification.
+ *
  * Revision 1.26  2008-05-13 10:03:08  joergr
  * Added new parameter to writeImageToDataset() in order to affect the planar
  * configuration of the output image/dataset. Changed behaviour: By default,

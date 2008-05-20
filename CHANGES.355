@@ -1,9 +1,47 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.20 (riesmeier)
+
+- Added new bilinear and bicubic scaling algorithms for image magnification.
+  Thanks to Eduard Stanescu <eduard_stanescu@yahoo.com> for his contribution.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmscale.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmscale.man
+           dcmimage/include/dcmtk/dcmimage/dicoimg.h
+           dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+           dcmimgle/include/dcmtk/dcmimgle/dimo1img.h
+           dcmimgle/include/dcmtk/dcmimgle/dimo2img.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmjpeg/docs/dcmj2pnm.man
+
+- Added new method that clears the destination image (set pixel values to 0).
+  Affects: dcmimgle/include/dcmtk/dcmimgle/ditranst.h
+
+- Now the c't scaling algorithm is used as a fallback if the preferred
+  algorithm with interpolation is not applicable.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
+- Fixed bug in c't scaling algorithm (reducePixel) which could cause a crash.
+  Thanks to Alexander Fedotov <fedotov@elektron.ru> for the bug report.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
+- Fixed issue with wrong image aspect ratio in combined scaling/clipping mode.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
+- Allow width and height of the clipping area to be 0 (compute automatically).
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmscale.cc
+
+- Enhanced error message when scaling process or grayscale conversion fail.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2008.05.19 (riesmeier)
 
-- Added new command line options that enables reading of SR documents with
+- Added new command line option that enables reading of SR documents with
   unknown/missing relationship type(s).
   Affects: dcmsr/apps/dsr2html.cc
            dcmsr/apps/dsrdump.cc
@@ -22,8 +60,8 @@ Changes between releases are documented here.
            dcmsr/libsrc/dsrdoctr.cc
            dcmsr/libsrc/dsrtypes.cc
 
-- Reset flag for all content items whether they are target of a by-reference
-  relationship (required for an reproducible behavior).
+- Reset flag for all content items indicating whether they are target of a
+  by-reference relationship (required for an reproducible behavior).
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoctr.h
            dcmsr/libsrc/dsrdoctr.cc
 
