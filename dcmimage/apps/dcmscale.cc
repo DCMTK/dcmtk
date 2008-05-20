@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:00 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-20 09:58:22 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--recognize-aspect",    "+a",      "recognize pixel aspect ratio (default)");
       cmd.addOption("--ignore-aspect",       "-a",      "ignore pixel aspect ratio when scaling");
       cmd.addOption("--interpolate",         "+i",   1, "[n]umber of algorithm : integer",
-                                                        "use interpolation when scaling (1..2, def: 1)");
+                                                        "use interpolation when scaling (1..4, def: 1)");
       cmd.addOption("--no-interpolation",    "-i",      "no interpolation when scaling");
       cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio (default)");
       cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor : float",
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--interpolate"))
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_useInterpolation, 1, 2));
+          app.checkValue(cmd.getValueAndCheckMinMax(opt_useInterpolation, 1, 4));
       if (cmd.findOption("--no-interpolation"))
           opt_useInterpolation = 0;
       cmd.endOptionBlock();
@@ -318,8 +318,8 @@ int main(int argc, char *argv[])
       {
           app.checkValue(cmd.getValue(opt_left));
           app.checkValue(cmd.getValue(opt_top));
-          app.checkValue(cmd.getValueAndCheckMin(opt_width, 1));
-          app.checkValue(cmd.getValueAndCheckMin(opt_height, 1));
+          app.checkValue(cmd.getValue(opt_width));
+          app.checkValue(cmd.getValue(opt_height));
           opt_useClip = OFTrue;
       }
 
@@ -657,7 +657,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.16  2006-08-15 16:35:00  meichel
+ * Revision 1.17  2008-05-20 09:58:22  joergr
+ * Added new bilinear and bicubic scaling algorithms for image magnification.
+ * Allow width and height of the clipping area to be 0 (compute automatically).
+ *
+ * Revision 1.16  2006/08/15 16:35:00  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
