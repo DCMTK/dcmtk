@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-05-20 10:01:33 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -434,18 +434,18 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
         if (aspect)                                                  // maintain pixel aspect ratio
         {
             if (scale_width == 0)
-                scale_width = OFstatic_cast(unsigned long, getWidthHeightRatio() * OFstatic_cast(double, scale_height * gw) / gh);
+                scale_width = OFstatic_cast(unsigned long, getWidthHeightRatio() * OFstatic_cast(double, scale_height * clip_width) / clip_height);
             else if (scale_height == 0)
-                scale_height = OFstatic_cast(unsigned long, getHeightWidthRatio() * OFstatic_cast(double, scale_width * gh) / gw);
+                scale_height = OFstatic_cast(unsigned long, getHeightWidthRatio() * OFstatic_cast(double, scale_width * clip_height) / clip_width);
             else
                 aspect = 0;                                           // ignore pixel aspect ratio
         }
         else                                                          // ignore pixel aspect ratio
         {
             if (scale_width == 0)
-                scale_width = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_height * gw) / gh);
+                scale_width = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_height * clip_width) / clip_height);
             else if (scale_height == 0)
-                scale_height = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_width * gh) / gw);
+                scale_height = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_width * clip_height) / clip_width);
         }
         const unsigned long maxvalue = DicomImageClass::maxval(bitsof(Uint16));
         if (scale_width > maxvalue)
@@ -824,7 +824,10 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.28  2006-08-15 16:30:11  meichel
+ * Revision 1.29  2008-05-20 10:01:33  joergr
+ * Fixed issue with wrong image aspect ratio in combined scaling/clipping mode.
+ *
+ * Revision 1.28  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
