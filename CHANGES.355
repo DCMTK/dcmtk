@@ -10,6 +10,13 @@ Changes between releases are documented here.
 - Added copyright note on the "pbmplus" image scaling algorithm.
   Affects: COPYRIGHT
 
+- Added new constructor and new setDateTime() method.
+  Affects: ofstd/include/dcmtk/ofstd/ofdatime.h
+           ofstd/libsrc/ofdatime.cc
+
+- Reimplemented tests for OFDate, OFTime and OFDateTime classes.
+  Affects: ofstd/tests/tofdatim.cc
+
 **** Changes from 2008.05.20 (riesmeier)
 
 - Added new bilinear and bicubic scaling algorithms for image magnification.
