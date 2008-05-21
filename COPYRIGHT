@@ -163,9 +163,23 @@ Group Toolkit is located in dcmjpeg/docs/ijg_readme.txt.
  *  assumed by the product vendor.
  */
 
+The code for the interpolatePixel() image scaling algorithm in module dcmimgle
+has been derived from code written by Jef Poskanzer for the "Extended Portable
+Bitmap Toolkit" (pbmplus10dec91) which has the following copyright:
+
+/*
+ * Copyright (C) 1991 by Jef Poskanzer.
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation.  This software is provided "as is" without express or
+ * implied warranty.
+ */
 
 The color quantization code in module dcmimage (dcmquant and the related
-classes) is derived from code written by Jef Poskanzer for the NetPBM
+classes) has been derived from code written by Jef Poskanzer for the NetPBM
 toolkit which has the following copyright:
 
 /*
@@ -178,7 +192,6 @@ toolkit which has the following copyright:
  * documentation.  This software is provided "as is" without express or
  * implied warranty.
  */
-
 
 The code for the OFStandard::strlcpy and OFStandard::strlcat helper
 functions in ofstd/libsrc/ofstd.cc has been derived from the BSD
@@ -211,7 +224,6 @@ following copyright notice:
  *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 The code for the OFStandard::atof helper function in
 ofstd/libsrc/ofstd.cc has been derived from an implementation which
@@ -312,4 +324,3 @@ the following copyright.
  *  RISK ACTIVITIES").  THE COPYRIGHT HOLDERS SPECIFICALLY DISCLAIM ANY
  *  EXPRESS OR IMPLIED WARRANTY OF FITNESS FOR HIGH RISK ACTIVITIES.
  */
-
