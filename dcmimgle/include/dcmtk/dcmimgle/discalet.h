@@ -22,8 +22,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 15:26:45 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2008-05-21 10:12:27 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -606,15 +606,16 @@ class DiScaleTemplate
 
         /*
          *   based on scaling algorithm from "Extended Portable Bitmap Toolkit" (pbmplus10dec91)
-         *   (adapted to be used with signed pixel representation and inverse images - mono2)
+         *   (adapted to be used with signed pixel representation, inverse images - mono1,
+         *    various bit depths, multi-frame and multi-plane/color images)
          */
 
         register Uint16 x;
         register Uint16 y;
         register const T *p;
         register T *q;
-        T const *sp = NULL;                         // initialization avoids compiler warning
-        T const *fp;
+        const T *sp = NULL;                         // initialization avoids compiler warning
+        const T *fp;
         T *sq;
 
         const unsigned long sxscale = OFstatic_cast(unsigned long, (OFstatic_cast(double, this->Dest_X) / OFstatic_cast(double, this->Src_X)) * SCALE_FACTOR);
@@ -677,9 +678,10 @@ class DiScaleTemplate
                                 ++ysrc;
                                 yneed = 0;
                             }
+                            register signed long v;
                             for (x = 0, p = sp, q = xtemp; x < this->Src_X; ++x)
                             {
-                                register signed long v = xvalue[x] + yfill * OFstatic_cast(signed long, *(p++));
+                                v = xvalue[x] + yfill * OFstatic_cast(signed long, *(p++));
                                 v /= SCALE_FACTOR;
                                 *(q++) = OFstatic_cast(T, (v > maxvalue) ? maxvalue : v);
                                 xvalue[x] = HALFSCALE_FACTOR;
@@ -752,7 +754,7 @@ class DiScaleTemplate
     }
 
 
-    /** free scaling method with interpolation (only for magnification).
+    /** free scaling method with interpolation (only for magnification)
      *
      ** @param  src   array of pointers to source image pixels
      *  @param  dest  array of pointers to destination image pixels
@@ -789,7 +791,8 @@ class DiScaleTemplate
 
         /*
          *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
-         *   (adapted to be used with signed pixel representation and inverse images - mono1)
+         *   (adapted to be used with signed pixel representation, inverse images - mono1,
+         *    various bit depths, multi-frame and multi-plane/color images, combined clipping/scaling)
          */
 
         for (int j = 0; j < this->Planes; ++j)
@@ -821,11 +824,10 @@ class DiScaleTemplate
                         x_part = OFstatic_cast(double, exi) / x_factor;
                         l_factor = x_part - OFstatic_cast(double, x);
                         r_factor = (OFstatic_cast(double, x) + 1.0) - x_part;
-                        offset = OFstatic_cast(unsigned long, byi - 1) * OFstatic_cast(unsigned long, Columns);
+                        offset = OFstatic_cast(unsigned long, byi) * OFstatic_cast(unsigned long, Columns);
                         for (yi = byi; yi <= eyi; ++yi)
                         {
-                            offset += Columns;
-                            p = sp + offset + OFstatic_cast(unsigned long, bxi);
+                            p = sp + offset + bxi;
                             for (xi = bxi; xi <= exi; ++xi)
                             {
                                 sum = OFstatic_cast(double, *(p++));
@@ -845,6 +847,7 @@ class DiScaleTemplate
                                 }
                                 value += sum;
                             }
+                            offset += Columns;
                         }
                         *(q++) = OFstatic_cast(T, value + 0.5);
                     }
@@ -855,7 +858,7 @@ class DiScaleTemplate
     }
 
 
-    /** free scaling method with interpolation (only for reduction).
+    /** free scaling method with interpolation (only for reduction)
      *
      ** @param  src   array of pointers to source image pixels
      *  @param  dest  array of pointers to destination image pixels
@@ -892,7 +895,8 @@ class DiScaleTemplate
 
         /*
          *   based on scaling algorithm from "c't - Magazin fuer Computertechnik" (c't 11/94)
-         *   (adapted to be used with signed pixel representation and inverse images - mono1)
+         *   (adapted to be used with signed pixel representation, inverse images - mono1,
+         *    various bit depths, multi-frame and multi-plane/color images, combined clipping/scaling)
          */
 
         for (int j = 0; j < this->Planes; ++j)
@@ -925,7 +929,7 @@ class DiScaleTemplate
                         offset = OFstatic_cast(unsigned long, byi) * OFstatic_cast(unsigned long, Columns);
                         for (yi = byi; yi <= eyi; ++yi)
                         {
-                            p = sp + offset + OFstatic_cast(unsigned long, bxi);
+                            p = sp + offset + bxi;
                             for (xi = bxi; xi <= exi; ++xi)
                             {
                                 sum = OFstatic_cast(double, *(p++)) / xy_factor;
@@ -993,6 +997,8 @@ class DiScaleTemplate
 
             /*
              *   based on scaling algorithm contributed by Eduard Stanescu
+             *   (adapted to be used with signed pixel representation, inverse images - mono1,
+             *    various bit depths, multi-frame multi-plane/color images, combined clipping/scaling)
              */
 
             for (int j = 0; j < this->Planes; ++j)
@@ -1125,6 +1131,8 @@ class DiScaleTemplate
 
             /*
              *   based on scaling algorithm contributed by Eduard Stanescu
+             *   (adapted to be used with signed pixel representation, inverse images - mono1,
+             *    various bit depths, multi-frame multi-plane/color images, combined clipping/scaling)
              */
 
             for (int j = 0; j < this->Planes; ++j)
@@ -1279,6 +1287,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.30  2008-05-21 10:12:27  joergr
+ * Fixed bug in c't scaling algorithm (expandPixel) which could cause a crash
+ * (possible integer underflow/overflow).
+ *
  * Revision 1.29  2008-05-20 15:26:45  joergr
  * Fixed small issue in bicubic image scaling algorithm (in clipping mode).
  *

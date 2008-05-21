@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.21 (riesmeier)
+
+- Fixed bug in c't scaling algorithm (expandPixel) which could cause a crash
+  (possible integer underflow/overflow).
+  Affects: dcmimgle/include/dcmtk/dcmimgle/discalet.h
+
+- Added copyright note on the "pbmplus" image scaling algorithm.
+  Affects: COPYRIGHT
+
 **** Changes from 2008.05.20 (riesmeier)
 
 - Added new bilinear and bicubic scaling algorithms for image magnification.
