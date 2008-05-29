@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2008-05-29 10:43:21 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 // forward declarations
 class DcmInputStreamFactory;
 class DcmFileCache;
-
+class DcmItem;
 
 /** abstract base class for all DICOM elements
  */
@@ -588,6 +588,69 @@ class DcmElement
      */
     virtual OFCondition createUint16Array(const Uint32 numWords, Uint16 *&words);
 
+    /** replace the attribute value with the content of the given temporary file.
+     *  The temporary file is not opened/loaded until the attribute value is accessed,
+     *  very much like large attributes that remain in file during a read operation.
+     *  @param factory a factory object that is able to create an input stream
+     *    to the temporary file at the right location. 
+     *  @param length attribute value length, in bytes. Must be even length.
+     *    The length is not checked against the real length of the temporary file,
+     *    which might be written or completed after the call to this method.
+     *  @param byteOrder byte order in the temporary file
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    virtual OFCondition createValueFromTempFile(
+      DcmInputStreamFactory *factory, 
+      const Uint32 length,
+      const E_ByteOrder byteOrder);
+
+    /** remove the attribute value from memory if the attribute value can
+     *  be loaded from file when needed again. Otherwise do nothing.
+     */
+    virtual void compact();
+
+    /** compute uncompressed frame size of a single frame of this image.
+     *  @param dataset dataset in which this pixel data element is contained
+     *  @param frameSize frame size in bytes returned in this parameter upon success
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getUncompressedFrameSize(
+        DcmItem *dataset,
+        Uint32 & frameSize) const;
+
+    /** access single frame without decompressing or loading a complete
+     *  multi-frame object. The frame is copied into the buffer passed by the caller
+     *  which must be large enough to contain a complete frame.
+     *  @param dataset pointer to DICOM dataset in which this pixel data object is located.
+     *    Used to access rows, columns, samples per pixel etc.
+     *  @param frameNo numer of frame, starting with 0 for the first frame.
+     *  @param startFragment index of the compressed fragment that contains
+     *    all or the first part of the compressed bitstream for the given frameNo.
+     *    Upon successful return this parameter is updated to contain the index
+     *    of the first compressed fragment of the next frame.
+     *    When unknown, zero should be passed. In this case the decompression
+     *    algorithm will try to determine the index by itself, which will always
+     *    work if frames are decompressed in increasing order from first to last,
+     *    but may fail if frames are decompressed in random order, multiple fragments
+     *    per frame and multiple frames are present in the dataset, and the offset
+     *    table is empty.
+     *  @param buffer pointer to buffer allocated by the caller. The buffer
+     *    must be large enough for one frame of this image.
+     *  @param bufSize size of buffer, in bytes
+     *  @param decompressedColorModel upon successful return, the color model
+     *    of the decompressed image (which may be different from the one used
+     *    in the compressed images) is returned in this parameter.
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getUncompressedFrame(
+        DcmItem *dataset,
+        Uint32 frameNo,
+        Uint32& startFragment,
+        void *buffer,
+        Uint32 bufSize,
+        OFString& decompressedColorModel,
+        DcmFileCache *cache=NULL);
+
   protected:
 
     /** This function returns this element's value. The returned value
@@ -700,7 +763,16 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.35  2007-11-29 14:30:19  meichel
+** Revision 1.36  2008-05-29 10:43:21  meichel
+** Implemented new method createValueFromTempFile that allows the content of
+**   a temporary file to be set as the new value of a DICOM element.
+**   Also added a new method compact() that removes the value field if the
+**   value field can still be reconstructed from file. For large attribute
+**   value the file reference is now kept in memory even when the value has
+**   been loaded once. Finally, added new helper method getUncompressedFrameSize
+**   that computes the size of an uncompressed frame for a given dataset.
+**
+** Revision 1.35  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

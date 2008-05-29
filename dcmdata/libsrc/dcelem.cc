@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:21 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2008-05-29 10:43:20 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,6 +48,8 @@
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcfcache.h"    /* for class DcmFileCache */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
+#include "dcmtk/dcmdata/dcitem.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 #define SWAPBUFFER_SIZE 16  /* sufficient for all DICOM VRs as per the 2007 edition */
 
@@ -437,17 +439,20 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
     {
         DcmInputStream *readStream = inStream;
         OFBool isStreamNew = OFFalse;
-        /* if the NULL pointer was passed and the fLoadValue contains a non NULL pointer */
-        if (!readStream && fLoadValue)
+
+        // if the NULL pointer was passed (i.e. we're not in the middle of
+        // a read() cycle, and fValue is NULL (i.e. the attribute value still
+        // remains in file and fLoadValue is not NULL (i.e. we know how to
+        // load the value from that file, then let's do it..
+        if (!readStream && fLoadValue && !fValue)
         {
             /* we need to read information from the stream which is */
             /* accessible through fLoadValue. Hence, reassign readStream */
             readStream = fLoadValue->create();
+
             /* set isStreamNew to OFTrue */
             isStreamNew = OFTrue;
-            /* and delete the fLoadValue object which is superfluous now */
-            delete fLoadValue;
-            fLoadValue = NULL;
+
             /* reset number of transferred bytes to zero */
             setTransferredBytes(0);            
         }
@@ -1306,14 +1311,14 @@ OFCondition DcmElement::getPartialValue(
       partialvalue = valueWidth - partialoffset;
       
       // we need to read a single data element into the swap buffer
-      if (valueWidth != readStream->read(swapBuffer, valueWidth))
+      if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
       	return EC_InvalidStream;
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
       swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
 
       // copy to target buffer and adjust values
-      if (partialvalue > numBytes)
+      if (partialvalue > OFstatic_cast(size_t, numBytes))
       {
         memcpy(targetBufferChar, &swapBuffer[partialoffset], numBytes);
         targetBufferChar += numBytes;
@@ -1356,7 +1361,7 @@ OFCondition DcmElement::getPartialValue(
       readStream->mark();
 
       // we need to read a single data element into the swap buffer
-      if (valueWidth != readStream->read(swapBuffer, valueWidth))
+      if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
       	return EC_InvalidStream;
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
@@ -1375,10 +1380,83 @@ OFCondition DcmElement::getPartialValue(
 }  
 
 
+void DcmElement::compact()
+{
+  if (fLoadValue && fValue)
+  {
+    delete[] fValue;
+    fValue = NULL;
+    setTransferredBytes(0);       
+  }
+}
+
+OFCondition DcmElement::createValueFromTempFile(
+  DcmInputStreamFactory *factory, 
+  const Uint32 length,
+  const E_ByteOrder byteOrder)
+{
+    if (factory && (0 == length & 1))
+    {
+        delete[] fValue;
+        fValue = 0;
+        delete fLoadValue;
+        fLoadValue = factory;
+        fByteOrder = byteOrder;
+        setLengthField(length);
+        return EC_Normal;
+    } 
+    else return EC_IllegalCall;
+}
+
+OFCondition DcmElement::getUncompressedFrameSize(
+       DcmItem *dataset,
+       Uint32 & frameSize) const
+{
+  if (dataset == NULL) return EC_IllegalCall;
+  Uint16 rows = 0; 
+  Uint16 cols = 0;
+  Uint16 samplesPerPixel = 0;
+  Uint16 bitsAllocated = 0;
+  // retrieve values from dataset
+  OFCondition result = EC_Normal;
+  if (result.good()) result = dataset->findAndGetUint16(DCM_Columns, cols);
+  if (result.good()) result = dataset->findAndGetUint16(DCM_Rows, rows);
+  if (result.good()) result = dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
+  if (result.good()) result = dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
+  // compute frame size
+  Uint16 bytesAllocated = (bitsAllocated > 8) ? 2 : 1;
+  frameSize = bytesAllocated * rows * cols * samplesPerPixel;
+
+  // make sure we have enough room for correctly byte-swapping the pixel data if needed
+  if (frameSize & 1) ++frameSize;
+  return result;
+}
+
+OFCondition DcmElement::getUncompressedFrame(
+        DcmItem * /* dataset */ ,
+        Uint32 /* frameNo */ ,
+        Uint32& /* startFragment */ ,
+        void * /* buffer */ ,
+        Uint32 /* bufSize */ ,
+        OFString& /* decompressedColorModel */ ,
+        DcmFileCache * /* cache */ )
+{
+  return EC_IllegalCall;
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.60  2007-11-29 14:30:21  meichel
+** Revision 1.61  2008-05-29 10:43:20  meichel
+** Implemented new method createValueFromTempFile that allows the content of
+**   a temporary file to be set as the new value of a DICOM element.
+**   Also added a new method compact() that removes the value field if the
+**   value field can still be reconstructed from file. For large attribute
+**   value the file reference is now kept in memory even when the value has
+**   been loaded once. Finally, added new helper method getUncompressedFrameSize
+**   that computes the size of an uncompressed frame for a given dataset.
+**
+** Revision 1.60  2007/11/29 14:30:21  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being
