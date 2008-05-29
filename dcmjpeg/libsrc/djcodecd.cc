@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:26 $
+ *  Update Date:      $Date: 2008-05-29 10:48:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,8 @@ OFCondition DJCodecDecoder::decode(
     OFBool createPlanarConfiguration = OFFalse;
     OFBool createPlanarConfigurationInitialized = OFFalse;
     EP_Interpretation colorModel = EPI_Unknown;
-    OFBool isSigned = OFFalse; Uint16 pixelRep = 0; // needed to decline color conversion of signed pixel data to RGB
+    OFBool isSigned = OFFalse; 
+    Uint16 pixelRep = 0; // needed to decline color conversion of signed pixel data to RGB
 
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Rows, imageRows);
@@ -311,6 +312,184 @@ OFCondition DJCodecDecoder::decode(
     }
 
   }
+  return result;
+}
+
+
+OFCondition DJCodecDecoder::decodeFrame(
+    const DcmRepresentationParameter *fromParam,
+    DcmPixelSequence *fromPixSeq,
+    const DcmCodecParameter *cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel) const
+{
+
+  OFCondition result = EC_Normal;
+  // assume we can cast the codec parameter to what we need
+  const DJCodecParameter *djcp = (const DJCodecParameter *)cp;
+
+  if ((!dataset)||((dataset->ident()!= EVR_dataset) && (dataset->ident()!= EVR_item))) result = EC_InvalidTag;
+  else
+  {
+    Uint16 imageSamplesPerPixel = 0;
+    Uint16 imageRows = 0;
+    Uint16 imageColumns = 0;
+    Sint32 imageFrames = 1;
+    Uint16 imageBitsStored = 0;
+    Uint16 imageHighBit = 0;
+    Uint16 planarConfig = 0;
+    OFString photometricInterpretation;
+    OFBool isSigned = OFFalse; 
+    Uint16 pixelRep = 0; // needed to decline color conversion of signed pixel data to RGB
+
+    if (result.good()) result = dataset->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
+    if (result.good()) result = dataset->findAndGetUint16(DCM_Rows, imageRows);
+    if (result.good()) result = dataset->findAndGetUint16(DCM_Columns, imageColumns);
+    if (result.good()) result = dataset->findAndGetUint16(DCM_BitsStored, imageBitsStored);
+    if (result.good()) result = dataset->findAndGetUint16(DCM_HighBit, imageHighBit);
+    if (result.good()) result = dataset->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
+    if (result.good()) result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, photometricInterpretation);
+    if (imageSamplesPerPixel > 1)
+    {
+      if (result.good()) result = dataset->findAndGetUint16(DCM_PlanarConfiguration, planarConfig);
+    }
+
+    isSigned = (pixelRep == 0) ? OFFalse : OFTrue;
+
+    // number of frames is an optional attribute - we don't mind if it isn't present.
+    if (result.good()) dataset->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
+
+    EP_Interpretation dicomPI = DcmJpegHelper::getPhotometricInterpretation(dataset);
+
+    OFBool isYBR = OFFalse;
+    if ((dicomPI == EPI_YBR_Full)||(dicomPI == EPI_YBR_Full_422)||(dicomPI == EPI_YBR_Partial_422)) isYBR = OFTrue;
+
+    if (imageFrames < 1) imageFrames = 1; // default in case this attribute contains garbage
+             
+    // determine the corresponding item (first fragment) for this frame
+    Uint32 currentItem = startFragment;
+
+    // if the user has provided this information, we trust him.
+    // If the user has passed a zero, try to find out ourselves.
+    if (currentItem == 0 && result.good())
+    {
+      result = determineStartFragment(frameNo, imageFrames, fromPixSeq, currentItem);
+    }
+
+    // book-keeping needed to clean-up memory the end of this routine
+    Uint32 firstFragmentUsed = currentItem;
+    Uint32 pastLastFragmentUsed  = firstFragmentUsed;
+
+    // now access and decompress the frame starting at the item we have identified   
+    if (result.good())
+    {
+      DcmPixelItem *pixItem = NULL;
+      Uint8 * jpegData = NULL;
+      result = fromPixSeq->getItem(pixItem, currentItem); 
+      if (result.good())
+      {
+        Uint32 fragmentLength = pixItem->getLength();
+        result = pixItem->getUint8Array(jpegData);
+        if (result.good())
+        {
+          Uint8 precision = scanJpegDataForBitDepth(jpegData, fragmentLength);
+          if (precision == 0) result = EC_CannotChangeRepresentation; // something has gone wrong, bail out
+          else
+          {
+            Uint32 frameSize = ((precision > 8) ? sizeof(Uint16) : sizeof(Uint8)) * imageRows * imageColumns * imageSamplesPerPixel;
+            if (frameSize > bufSize) return EC_IllegalCall;
+
+            DJDecoder *jpeg = createDecoderInstance(fromParam, djcp, precision, isYBR);
+            if (jpeg == NULL) result = EC_MemoryExhausted;
+            else
+            {
+              result = jpeg->init();
+              if (result.good())
+              {
+                result = EJ_Suspension;
+                while (EJ_Suspension == result)
+                {
+                  result = fromPixSeq->getItem(pixItem, currentItem++);
+                  if (result.good())
+                  {
+                    fragmentLength = pixItem->getLength();
+                    result = pixItem->getUint8Array(jpegData);
+                    if (result.good())
+                    {
+                      result = jpeg->decode(jpegData, fragmentLength, (Uint8 *)buffer, frameSize, isSigned);
+                      pastLastFragmentUsed = currentItem;
+                    }
+                  }
+                }
+                if (result.good())
+                {
+                  // convert planar configuration to color by plane if necessary
+                  if ((imageSamplesPerPixel == 3) && (planarConfig == 1))
+                  {
+                    if (precision > 8)
+                      result = createPlanarConfigurationWord((Uint16 *)buffer, imageColumns, imageRows);
+                    else result = createPlanarConfigurationByte((Uint8 *)buffer, imageColumns, imageRows);
+                  }
+                }
+                
+                if (result.good())
+                {
+                  // decompression is complete, finally adjust byte order if necessary
+                  if (jpeg->bytesPerSample() == 1) // we're writing bytes into words
+                  {
+                    result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, (Uint16 *)buffer, frameSize, sizeof(Uint16));
+                  }
+                }
+              
+                
+                if (result.good())
+                {
+                  // compression was successful. Now update output parameters
+                  startFragment = pastLastFragmentUsed;
+                  decompressedColorModel = photometricInterpretation; // this is the default
+
+                  // now see if we have to change the photometric interpretation
+                  // because the decompression has changed something
+                  switch (jpeg->getDecompressedColorModel())
+                  {
+                    case EPI_Monochrome2:
+                      decompressedColorModel = "MONOCHROME2";
+                      break;
+                    case EPI_YBR_Full:
+                      decompressedColorModel = "YBR_FULL";
+                      break;
+                    case EPI_RGB:
+                      decompressedColorModel = "RGB";
+                      break;
+                    default:
+                      if ((dicomPI == EPI_YBR_Full_422)||(dicomPI == EPI_YBR_Partial_422))
+                      {
+                        // decompression always eliminates subsampling
+                        decompressedColorModel = "YBR_FULL";
+                      }
+                      break;
+                  }                                   
+                }
+
+                delete jpeg;
+
+                /* remove all used fragments from memory */
+                while (firstFragmentUsed < pastLastFragmentUsed) 
+                {
+                  fromPixSeq->getItem(pixItem, firstFragmentUsed++);
+                  pixItem->compact();
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  } 
   return result;
 }
 
@@ -581,7 +760,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.8  2005-12-08 15:43:26  meichel
+ * Revision 1.9  2008-05-29 10:48:18  meichel
+ * Experimental implementation of decodeFrame method for
+ *   JPEG decoder added.
+ *
+ * Revision 1.8  2005/12/08 15:43:26  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2005/11/30 14:15:50  onken
