@@ -1,6 +1,52 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.29 (eichelberg)
+
+- Experimental implementation of decodeFrame method for
+  JPEG decoder added.
+  Affects: dcmjpeg/libsrc/djcodecd.cc
+  
+- Implemented new method DcmPixelData::getUncompressedFrame
+  that permits frame-wise access to compressed and uncompressed
+  objects without ever loading the complete object into main memory.
+  For this new method to work with compressed images, all classes derived from 
+  DcmCodec need to implement a new method decodeFrame(). For now, only
+  dummy implementations returning an error code have been defined.
+  Affects: dcmdata/include/dcmtk/dcmdata/dccodec.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcrleccd.h
+           dcmdata/include/dcmtk/dcmdata/dcrlecce.h
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodecd.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djcodece.h
+           dcmjpeg/libsrc/djcodece.cc
+
+- Implemented new method createValueFromTempFile that allows the content of
+  a temporary file to be set as the new value of a DICOM element.
+  Also added a new method compact() that removes the value field if the
+  value field can still be reconstructed from file. For large attribute
+  value the file reference is now kept in memory even when the value has
+  been loaded once. Finally, added new helper method getUncompressedFrameSize
+  that computes the size of an uncompressed frame for a given dataset.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/libsrc/dcelem.cc
+
+- Implemented new classes DcmTempFileHandler and DcmInputTempFileStreamFactory
+  that perform thread-safe reference counted life cycle management of a
+  temporary file and are needed for DcmElement temporary file extensions to come.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcistrmf.h
+           dcmdata/libsrc/dcistrmf.cc
+
+- Fixed compile error on Cygwin where no wide-char FILE functions are available
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
+- Updated Makefile dependencies
+  Affects: */*/Makefile.dep
+
 **** Changes from 2008.05.21 (riesmeier)
 
 - Fixed bug in c't scaling algorithm (expandPixel) which could cause a crash
