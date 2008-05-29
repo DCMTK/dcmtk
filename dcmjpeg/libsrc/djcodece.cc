@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-16 16:30:21 $
+ *  Update Date:      $Date: 2008-05-29 10:48:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,23 @@ OFCondition DJCodecEncoder::decode(
   // we are an encoder only
   return EC_IllegalCall;
 }
+
+
+OFCondition DJCodecEncoder::decodeFrame(
+    const DcmRepresentationParameter * /* fromParam */ ,
+    DcmPixelSequence * /* fromPixSeq */ ,
+    const DcmCodecParameter * /* cp */ ,
+    DcmItem * /* dataset */ ,
+    Uint32 /* frameNo */ ,
+    Uint32& /* startFragment */ ,
+    void * /* buffer */ ,
+    Uint32 /* bufSize */ ,
+    OFString& /* decompressedColorModel */ ) const
+{
+  // we are an encoder only
+  return EC_IllegalCall;
+}    
+
 
 OFCondition DJCodecEncoder::encode(
     const E_TransferSyntax /* fromRepType */,
@@ -1450,7 +1467,15 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.24  2006-08-16 16:30:21  meichel
+ * Revision 1.25  2008-05-29 10:48:46  meichel
+ * Implemented new method DcmPixelData::getUncompressedFrame
+ *   that permits frame-wise access to compressed and uncompressed
+ *   objects without ever loading the complete object into main memory.
+ *   For this new method to work with compressed images, all classes derived from
+ *   DcmCodec need to implement a new method decodeFrame(). For now, only
+ *   dummy implementations returning an error code have been defined.
+ *
+ * Revision 1.24  2006/08/16 16:30:21  meichel
  * Updated all code in module dcmjpeg to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

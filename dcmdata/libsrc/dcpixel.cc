@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:21 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2008-05-29 10:46:16 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dccodec.h"
 #include "dcmtk/dcmdata/dcpixseq.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 
 //
 // class DcmRepresentationEntry
@@ -1035,11 +1036,61 @@ void DcmPixelData::setNonEncapsulationFlag(OFBool flag)
    alwaysUnencapsulated = flag;
 }
 
+OFCondition DcmPixelData::getUncompressedFrame(
+        DcmItem *dataset,
+        Uint32 frameNo,
+        Uint32& startFragment,
+        void *buffer,
+        Uint32 bufSize,
+        OFString& decompressedColorModel,
+        DcmFileCache *cache)
+{
+    if ((dataset == NULL) || (buffer == NULL)) return EC_IllegalCall;
+
+    Sint32 numberOfFrames = 1;
+    dataset->findAndGetSint32(DCM_NumberOfFrames, numberOfFrames); // don't fail if absent
+    if (numberOfFrames < 1) numberOfFrames = 1;
+
+    Uint32 frameSize; 
+    OFCondition result = getUncompressedFrameSize(dataset, frameSize);
+    if (result.bad()) return result;
+    if (bufSize < frameSize) return EC_IllegalCall;
+    
+    // check frame number
+    if (frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+
+    if (existUnencapsulated)
+    {
+      // we already have an uncompressed version of the pixel data
+      // either in memory or in file. We can directly access this using
+      // DcmElement::getPartialValue.
+      result = getPartialValue(buffer, frameNo * frameSize, frameSize, cache);
+    }
+    else
+    {
+      // we only have a compressed version of the pixel data.
+      // Identify a codec for decompressing the frame.
+      result = DcmCodecList::decodeFrame(
+      	(*original)->repType, (*original)->repParam, (*original)->pixSeq, 
+        dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
+    }
+    return result;
+}
+
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.40  2007-11-29 14:30:21  meichel
+** Revision 1.41  2008-05-29 10:46:16  meichel
+** Implemented new method DcmPixelData::getUncompressedFrame
+**   that permits frame-wise access to compressed and uncompressed
+**   objects without ever loading the complete object into main memory.
+**   For this new method to work with compressed images, all classes derived from
+**   DcmCodec need to implement a new method decodeFrame(). For now, only
+**   dummy implementations returning an error code have been defined.
+**
+** Revision 1.40  2007/11/29 14:30:21  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

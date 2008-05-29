@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:40:58 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2008-05-29 10:46:16 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,9 @@
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
 #include "dcmtk/dcmdata/dcitem.h"    /* for class DcmItem */
 #include "dcmtk/dcmdata/dcsequen.h"  /* for DcmSequenceOfItems */
+#include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpxitem.h"  /* for DcmPixelItem */
+#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
 
 // static member variables
 OFList<DcmCodecList *> DcmCodecList::registeredCodecs;
@@ -227,6 +230,86 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
   return dataset->putAndInsertString(DCM_ImageType, imageType.c_str(), OFTrue);
 }
 
+
+OFCondition DcmCodec::determineStartFragment(
+    Uint32 frameNo, 
+    Sint32 numberOfFrames,
+    DcmPixelSequence * fromPixSeq,
+    Uint32& currentItem)
+{
+    Uint32 numberOfFragments = fromPixSeq->card();
+    if (numberOfFrames < 1 || numberOfFragments <= OFstatic_cast(Uint32, numberOfFrames) || frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+
+    if (frameNo == 0)
+    {
+      // simple case: first frame is always at second fragment
+      currentItem = 1;
+      return EC_Normal;      
+    }
+
+    if (numberOfFragments == OFstatic_cast(Uint32, numberOfFrames) + 1)
+    {
+      // standard case: there is one fragment per frame.
+      currentItem = frameNo + 1;
+      return EC_Normal;
+    }
+
+    // non-standard case: mulitple fragments per frame.
+    // We now try to consult the offset table.
+    DcmPixelItem *pixItem = NULL;
+    Uint8 * rawOffsetTable = NULL;
+
+    // get first pixel item, i.e. the fragment containing the offset table
+    OFCondition result = fromPixSeq->getItem(pixItem, 0); 
+    if (result.good())
+    {
+      Uint32 tableLength = pixItem->getLength();
+      result = pixItem->getUint8Array(rawOffsetTable);
+      if (result.good())
+      {
+        // check if the offset table has the right size: 4 bytes for each frame (not fragment!)
+        if (tableLength != 4* OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
+        
+        // byte swap offset table into local byte order. In file, the offset table is always in little endian
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));                    
+
+        // cast offset table to Uint32.
+        Uint32 *offsetTable = OFreinterpret_cast(Uint32 *, rawOffsetTable);
+        
+        // now access offset of the frame we're looking for
+        Uint32 offset = offsetTable[frameNo];
+
+        // OK, now let's look if we can find a fragment that actually corresponds to that offset.
+        // In counter we compute the offset for each frame by adding all fragment lenghts
+        Uint32 counter = 0;
+        // now iterate over all fragments except the index table. The start of the first fragment
+        // is defined as zero.
+        for (Uint32 idx = 1; idx < numberOfFragments; ++idx)
+        {
+          if (counter == offset)
+          {
+            // hooray, we are lucky. We have found the fragment we're looking for
+            currentItem = idx;
+            return EC_Normal;
+          }
+
+          // access pixel item in order to determine its length          
+          result = fromPixSeq->getItem(pixItem, idx);
+          if (result.bad()) return result;
+
+          // add pixel item length plus 8 bytes overhead for the item tag and length field
+          counter += pixItem->getLength() + 8;
+        }
+        
+        // bad luck. We have not found a fragment corresponding to the offset in the offset table.
+        // Either we cannot correctly add numbers, or they cannot :-)
+        return EC_TagNotFound;
+      }
+    }
+    return result;
+}
+
+
 /* --------------------------------------------------------------- */
 
 DcmCodecList::DcmCodecList(
@@ -378,6 +461,48 @@ OFCondition DcmCodecList::decode(
   return result;
 }
 
+
+OFCondition DcmCodecList::decodeFrame(
+    const DcmXfer & fromType,
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel)
+{
+#ifdef _REENTRANT
+  if (! codecLock.initialized()) return EC_IllegalCall; // should never happen
+#endif
+  OFCondition result = EC_CannotChangeRepresentation;
+
+  // acquire write lock on codec list.  Will block if some write lock is currently active.
+#ifdef _REENTRANT
+  if (0 == codecLock.rdlock())
+  {
+#endif
+    E_TransferSyntax fromXfer = fromType.getXfer();
+    OFListIterator(DcmCodecList *) first = registeredCodecs.begin();
+    OFListIterator(DcmCodecList *) last = registeredCodecs.end();
+    while (first != last)
+    {
+      if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
+      {
+        result = (*first)->codec->decodeFrame(fromParam, fromPixSeq, (*first)->codecParameter, 
+                 dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
+        first = last;
+      } else ++first;
+    }
+#ifdef _REENTRANT
+    codecLock.unlock();
+  } else result = EC_IllegalCall;
+#endif
+  return result;
+}
+
+
 OFCondition DcmCodecList::encode(
     const E_TransferSyntax fromRepType,
     const DcmRepresentationParameter * fromParam,
@@ -493,7 +618,15 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.14  2005-12-08 15:40:58  meichel
+** Revision 1.15  2008-05-29 10:46:16  meichel
+** Implemented new method DcmPixelData::getUncompressedFrame
+**   that permits frame-wise access to compressed and uncompressed
+**   objects without ever loading the complete object into main memory.
+**   For this new method to work with compressed images, all classes derived from
+**   DcmCodec need to implement a new method decodeFrame(). For now, only
+**   dummy implementations returning an error code have been defined.
+**
+** Revision 1.14  2005/12/08 15:40:58  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.13  2004/08/24 14:54:20  meichel

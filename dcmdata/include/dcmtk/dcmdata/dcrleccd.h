@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:33 $
+ *  Update Date:      $Date: 2008-05-29 10:46:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcrleccd.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,42 @@ public:
     DcmPolymorphOBOW& uncompressedPixelData,
     const DcmCodecParameter * cp,
     const DcmStack& objStack) const;
+
+  /** decompresses a single frame from the given pixel sequence and
+   *  stores the result in the given buffer.
+   *  @param fromParam representation parameter of current compressed
+   *    representation, may be NULL.
+   *  @param fromPixSeq compressed pixel sequence
+   *  @param cp codec parameters for this codec
+   *  @param dataset pointer to dataset in which pixel data element is contained
+   *  @param frameNo number of frame, starting with 0 for the first frame
+   *  @param startFragment index of the compressed fragment that contains
+   *    all or the first part of the compressed bitstream for the given frameNo.
+   *    Upon successful return this parameter is updated to contain the index
+   *    of the first compressed fragment of the next frame.
+   *    When unknown, zero should be passed. In this case the decompression
+   *    algorithm will try to determine the index by itself, which will always
+   *    work if frames are decompressed in increasing order from first to last,
+   *    but may fail if frames are decompressed in random order, multiple fragments
+   *    per frame and multiple frames are present in the dataset, and the offset
+   *    table is empty.
+   *  @param buffer pointer to buffer where frame is to be stored
+   *  @param bufSize size of buffer in bytes
+   *  @param decompressedColorModel upon successful return, the color model
+   *    of the decompressed image (which may be different from the one used
+   *    in the compressed images) is returned in this parameter.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  virtual OFCondition decodeFrame(
+    const DcmRepresentationParameter * fromParam,
+    DcmPixelSequence * fromPixSeq,
+    const DcmCodecParameter * cp,
+    DcmItem *dataset,
+    Uint32 frameNo,
+    Uint32& startFragment,
+    void *buffer,
+    Uint32 bufSize,
+    OFString& decompressedColorModel) const;
 
   /** compresses the given uncompressed DICOM image and stores
    *  the result in the given pixSeq element.
@@ -140,7 +176,15 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.h,v $
- * Revision 1.3  2005-12-08 16:28:33  meichel
+ * Revision 1.4  2008-05-29 10:46:13  meichel
+ * Implemented new method DcmPixelData::getUncompressedFrame
+ *   that permits frame-wise access to compressed and uncompressed
+ *   objects without ever loading the complete object into main memory.
+ *   For this new method to work with compressed images, all classes derived from
+ *   DcmCodec need to implement a new method decodeFrame(). For now, only
+ *   dummy implementations returning an error code have been defined.
+ *
+ * Revision 1.3  2005/12/08 16:28:33  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2003/03/21 13:06:46  meichel

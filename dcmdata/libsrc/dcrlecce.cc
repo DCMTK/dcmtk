@@ -22,9 +22,9 @@
  *  Purpose: encoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:30 $
+ *  Update Date:      $Date: 2008-05-29 10:46:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,6 +87,22 @@ OFCondition DcmRLECodecEncoder::decode(
   // we are an encoder only
   return EC_IllegalCall;
 }
+
+
+OFCondition DcmRLECodecEncoder::decodeFrame(
+    const DcmRepresentationParameter * /* fromParam */ ,
+    DcmPixelSequence * /* fromPixSeq */ ,
+    const DcmCodecParameter * /* cp */ ,
+    DcmItem * /* dataset */ ,
+    Uint32 /* frameNo */ ,
+    Uint32& /* startFragment */ ,
+    void * /* buffer */ ,
+    Uint32 /* bufSize */ ,
+    OFString& /* decompressedColorModel */ ) const
+{
+  // we are an encoder only
+  return EC_IllegalCall;
+}    
 
 
 OFCondition DcmRLECodecEncoder::encode(
@@ -419,7 +435,15 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.11  2005-12-08 15:41:30  meichel
+ * Revision 1.12  2008-05-29 10:46:16  meichel
+ * Implemented new method DcmPixelData::getUncompressedFrame
+ *   that permits frame-wise access to compressed and uncompressed
+ *   objects without ever loading the complete object into main memory.
+ *   For this new method to work with compressed images, all classes derived from
+ *   DcmCodec need to implement a new method decodeFrame(). For now, only
+ *   dummy implementations returning an error code have been defined.
+ *
+ * Revision 1.11  2005/12/08 15:41:30  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.10  2004/08/24 14:54:20  meichel
