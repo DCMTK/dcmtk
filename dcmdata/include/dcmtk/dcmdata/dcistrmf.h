@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    implements streamed input from files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:41 $
+ *  Update Date:      $Date: 2008-05-29 10:39:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmf.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,13 +205,121 @@ private:
   OFString filename_;
 };
 
+/** class that manages the life cycle of a temporary file. 
+ *  It maintains a thread-safe reference counter, and when this counter
+ *  is decreased to zero, unlinks (deletes) the file and then the handler
+ *  object itself.
+ */
+class DcmTempFileHandler
+{
+public:
+
+  /** static method that permits creation of instances of
+   *  this class (only) on the heap, never on the stack.
+   *  A newly created instance always has a reference counter of 1.
+   *  @param fname path to temporary file
+   */
+      
+  static DcmTempFileHandler *newInstance(const char *fname);
+
+  /** create an input stream that permits reading from the temporary file
+   *  @return pointer to input stream. Note that there is no guarantee
+   *    that the input stream actually permits reading, i.e. the presence of the
+   *    temporary file is not checked.
+   */
+  DcmInputStream *create() const;
+
+  /// increase reference counter for this object
+  void increaseRefCount();
+
+  /** decreases reference counter for this object and deletes
+   *  the temporary file and this object if the reference counter becomes zero.
+   */
+  void decreaseRefCount();
+
+private:
+
+  /** private constructor.
+   *  Instances of this class are always created through newInstance().
+   *  @param fname path to temporary file
+   */  
+  DcmTempFileHandler(const char *fname);
+
+  /** private destructor. Instances of this class
+   *  are always deleted through the reference counting methods
+   */
+  virtual ~DcmTempFileHandler();
+
+  /// private undefined copy constructor
+  DcmTempFileHandler(const DcmTempFileHandler& arg);
+
+  /// private undefined copy assignment operator
+  DcmTempFileHandler& operator=(const DcmTempFileHandler& arg);
+
+  /** number of references to temporary file. 
+   *  Default initialized to 1 upon construction of this object
+   */
+  size_t refCount_;
+
+#ifdef _REENTRANT
+  /// mutex for MT-safe reference counting
+  OFMutex mutex_;
+#endif
+
+  /// path to temporary file
+  OFString filename_;
+
+};
+
+/** input stream factory for temporary file handlers
+ */
+class DcmInputTempFileStreamFactory: public DcmInputStreamFactory
+{
+public:
+
+  /** constructor
+   *  @param handler pointer to temporary file handler.
+   *    Reference counter of temporary file handler is increased by this operation.   
+   */
+  DcmInputTempFileStreamFactory(DcmTempFileHandler *handler);
+
+  /// copy constructor
+  DcmInputTempFileStreamFactory(const DcmInputTempFileStreamFactory &arg);
+
+  /// destructor, decreases reference counter of temporary file handler
+  virtual ~DcmInputTempFileStreamFactory();
+
+  /** create a new input stream object
+   *  @return pointer to new input stream object
+   */
+  virtual DcmInputStream *create() const;
+
+  /** returns a pointer to a copy of this object
+   */
+  virtual DcmInputStreamFactory *clone() const;
+
+private:
+
+  /// private unimplemented copy assignment operator
+  DcmInputTempFileStreamFactory& operator=(const DcmInputTempFileStreamFactory&);
+
+  /// handler for temporary file
+  DcmTempFileHandler *fileHandler_;
+
+};
+
 
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.h,v $
- * Revision 1.4  2007-02-19 15:45:41  meichel
+ * Revision 1.5  2008-05-29 10:39:43  meichel
+ * Implemented new classes DcmTempFileHandler and DcmInputTempFileStreamFactory
+ *   that perform thread-safe reference counted life cycle management of a
+ *   temporary file and are needed for DcmElement temporary file extensions to come.
+ *
+ * Revision 1.4  2007/02/19 15:45:41  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.
  *

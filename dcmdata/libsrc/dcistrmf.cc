@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    implements streamed input from files.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:31 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2008-05-29 10:39:41 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,11 +191,91 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
   return result;
 }
 
+/* ======================================================================= */
+
+DcmInputStream *DcmTempFileHandler::create() const
+{
+    return new DcmInputFileStream(filename_.c_str(), 0);
+}
+
+DcmTempFileHandler::DcmTempFileHandler(const char *fname) 
+: refCount_(1), filename_(fname)
+{
+}
+
+DcmTempFileHandler::~DcmTempFileHandler() 
+{
+    unlink(filename_.c_str());
+}
+
+DcmTempFileHandler *DcmTempFileHandler::newInstance(const char *fname)
+{
+    return new DcmTempFileHandler(fname);
+}
+
+void DcmTempFileHandler::increaseRefCount()
+{
+#ifdef _REENTRANT
+    mutex_.lock();
+#endif
+    ++refCount_;
+#ifdef _REENTRANT
+    mutex_.unlock();
+#endif
+}
+
+void DcmTempFileHandler::decreaseRefCount()
+{
+#ifdef _REENTRANT
+    mutex_.lock();
+#endif
+    size_t result = --refCount_;
+#ifdef _REENTRANT
+    mutex_.unlock();
+#endif
+    if (result == 0) delete this;
+}
+
+/* ======================================================================= */
+
+DcmInputTempFileStreamFactory::DcmInputTempFileStreamFactory(DcmTempFileHandler *handler)
+: DcmInputStreamFactory() 
+, fileHandler_(handler)
+{
+    fileHandler_->increaseRefCount();
+}
+
+DcmInputTempFileStreamFactory::DcmInputTempFileStreamFactory(const DcmInputTempFileStreamFactory &arg)
+: DcmInputStreamFactory(arg)
+, fileHandler_(arg.fileHandler_)
+{
+    fileHandler_->increaseRefCount();
+}    
+
+DcmInputTempFileStreamFactory::~DcmInputTempFileStreamFactory()
+{
+    fileHandler_->decreaseRefCount();
+}
+
+DcmInputStream *DcmInputTempFileStreamFactory::create() const
+{
+    return fileHandler_->create();
+}
+
+DcmInputStreamFactory *DcmInputTempFileStreamFactory::clone() const
+{
+    return new DcmInputTempFileStreamFactory(*this);
+}
 
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
- * Revision 1.6  2007-02-19 15:45:31  meichel
+ * Revision 1.7  2008-05-29 10:39:41  meichel
+ * Implemented new classes DcmTempFileHandler and DcmInputTempFileStreamFactory
+ *   that perform thread-safe reference counted life cycle management of a
+ *   temporary file and are needed for DcmElement temporary file extensions to come.
+ *
+ * Revision 1.6  2007/02/19 15:45:31  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.
  *
