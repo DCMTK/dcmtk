@@ -22,8 +22,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-02-07 16:57:46 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2008-05-29 10:37:11 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -699,6 +699,9 @@ public:
     s = STDIO_NAMESPACE strerror(lasterror_);
 #endif
   }
+
+// Cygwin does not support the wide character functions
+#ifndef __CYGWIN__
   
   /** When mode is zero, the fwide function determines the current orientation 
    *  of stream. It returns a value > 0 if stream is wide-character oriented, 
@@ -797,6 +800,8 @@ public:
   // we cannot emulate fwscanf because we would need vfwscanf for this
   // purpose, which does not exist, e.g. on Win32.
 
+#endif /* __CYGWIN__ */
+
 private:
 
   /// the file maintained by this object
@@ -822,6 +827,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.5  2008-05-29 10:37:11  meichel
+ *  Fixed compile error on Cygwin where no wide-char FILE functions are available
+ *
  * Revision 1.4  2008-02-07 16:57:46  meichel
  * Class OFFile now makes use of HAVE_CHARP_STRERROR_R to use the
  *   correct version of strerror_r.
