@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.05.30 (eichelberg)
+
+- Increased output precision to 8 (FLT_DIG+2) when converting an FL element to string.
+  Thanks to Niels Dekker <dicomrelatedmail@xs4all.nl> for the suggestion.
+  Affects: dcmdata/libsrc/dcvrfl.cc
+
 **** Changes from 2008.05.29 (eichelberg)
 
 - Experimental implementation of decodeFrame method for

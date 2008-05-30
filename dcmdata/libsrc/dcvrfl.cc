@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2008-05-30 12:50:05 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,11 +115,11 @@ void DcmFloatingPointSingle::print(STD_NAMESPACE ostream&out,
             {
                 /* check whether first value is printed (omit delimiter) */
                 if (i == 0)
-                    OFStandard::ftoa(buffer, sizeof(buffer), *floatVals);
+                    OFStandard::ftoa(buffer, sizeof(buffer), *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
                 else
                 {
                     buffer[0] = '\\';
-                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals);
+                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
                 }
                 /* check whether current value sticks to the length limit */
                 newLength = printedLength + strlen(buffer);
@@ -193,7 +193,7 @@ OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
     {
         /* ... and convert it to a character string */
         char buffer[64];
-        OFStandard::ftoa(buffer, sizeof(buffer), floatVal);
+        OFStandard::ftoa(buffer, sizeof(buffer), floatVal, 0, 0, 8 /* FLT_DIG + 2 for DICOM FL */);
         /* assign result */
         value = buffer;
     }
@@ -297,7 +297,10 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.31  2007-06-29 14:17:49  meichel
+** Revision 1.32  2008-05-30 12:50:05  meichel
+** Increased output precision to 8 (FLT_DIG+2) when converting an FL element to string.
+**
+** Revision 1.31  2007/06/29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.
 **
