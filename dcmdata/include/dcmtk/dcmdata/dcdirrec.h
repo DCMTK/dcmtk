@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2008-06-03 13:41:40 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,6 +360,9 @@ public:
     /// get the filename from which this directory record was read from, NULL íf not set
     virtual const char* getRecordsOriginFile();
 
+    /// get the offset in file of this directory record
+    Uint32 getFileOffset() const;
+
 protected:
 
     // side-effect-free conversion routines:
@@ -377,7 +380,6 @@ protected:
     const char*         getReferencedFileName();      // local or in MRDR
     OFCondition         setRecordInUseFlag(const Uint16 newFlag);
     Uint16              lookForRecordInUseFlag();
-    Uint32              getFileOffset();
     Uint32              setFileOffset(Uint32 position);
 
 
@@ -426,7 +428,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.37  2007-11-29 14:30:35  meichel
+** Revision 1.38  2008-06-03 13:41:40  meichel
+** DcmDirectoryRecord::getFileOffset() is now const and public.
+**
+** Revision 1.37  2007/11/29 14:30:35  meichel
 ** Updated doxygen API documentation
 **
 ** Revision 1.36  2007/06/29 14:17:49  meichel

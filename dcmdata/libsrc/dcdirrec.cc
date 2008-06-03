@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:42 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2008-06-03 13:41:40 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -694,7 +694,7 @@ Uint16 DcmDirectoryRecord::lookForRecordInUseFlag()
 // ********************************
 
 
-Uint32 DcmDirectoryRecord::getFileOffset()
+Uint32 DcmDirectoryRecord::getFileOffset() const
 {
     return offsetInFile;
 }
@@ -1454,6 +1454,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.62  2008-06-03 13:41:40  meichel
+ * DcmDirectoryRecord::getFileOffset() is now const and public.
+ *
  * Revision 1.61  2008-04-30 12:38:42  meichel
  * Fixed compile errors due to changes in attribute tag names
  *

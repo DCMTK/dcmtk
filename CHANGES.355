@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.06.03 (eichelberg)
+
+- DcmDirectoryRecord::getFileOffset() is now const and public.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
 **** Changes from 2008.05.30 (eichelberg)
 
 - Increased output precision to 8 (FLT_DIG+2) when converting an FL element to string.
