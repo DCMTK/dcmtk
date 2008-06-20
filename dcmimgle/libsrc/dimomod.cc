@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:51:15 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2008-06-20 12:07:26 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,8 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             const char *sopClassUID = NULL;                             // check for XA and XRF image (ignore MLUT)
             if ((docu->getValue(DCM_SOPClassUID, sopClassUID) == 0) || (sopClassUID == NULL) ||
                ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) != 0) &&
-                (strcmp(sopClassUID, UID_XRayFluoroscopyImageStorage) != 0)))
+                (strcmp(sopClassUID, UID_XRayFluoroscopyImageStorage) != 0) &&
+                (strcmp(sopClassUID, UID_RETIRED_XRayAngiographicBiPlaneImageStorage) != 0)))
             {
                 EL_BitsPerTableEntry descMode = ELM_UseValue;
                 if (docu->getFlags() & CIF_IgnoreModalityLutBitDepth)
@@ -275,7 +276,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.23  2007-03-16 11:51:15  joergr
+ * Revision 1.24  2008-06-20 12:07:26  joergr
+ * Added check for retired SOP Class 'X-Ray Angiographic Bi-Plane Image Storage'
+ * since the Modality LUT should not be applied to the pixel data in this case.
+ *
+ * Revision 1.23  2007/03/16 11:51:15  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
  *

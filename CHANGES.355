@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.06.20 (riesmeier)
+
+- Added check for retired SOP Class 'X-Ray Angiographic Bi-Plane Image Storage'
+  since the Modality LUT should not be applied to the pixel data in this case.
+  Affects: dcmimgle/libsrc/dimomod.cc
+
 **** Changes from 2008.06.03 (eichelberg)
 
 - DcmDirectoryRecord::getFileOffset() is now const and public.
@@ -18,11 +24,11 @@ Changes between releases are documented here.
 - Experimental implementation of decodeFrame method for
   JPEG decoder added.
   Affects: dcmjpeg/libsrc/djcodecd.cc
-  
+
 - Implemented new method DcmPixelData::getUncompressedFrame
   that permits frame-wise access to compressed and uncompressed
   objects without ever loading the complete object into main memory.
-  For this new method to work with compressed images, all classes derived from 
+  For this new method to work with compressed images, all classes derived from
   DcmCodec need to implement a new method decodeFrame(). For now, only
   dummy implementations returning an error code have been defined.
   Affects: dcmdata/include/dcmtk/dcmdata/dccodec.h
