@@ -9,7 +9,8 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcddirif.cc
 
 - Fixed inconsistencies in Doxygen API documentation.
-  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+  Affects: dcmdata/apps/mdfconen.h
+           dcmdata/include/dcmtk/dcmdata/dcbytstr.h
            dcmdata/include/dcmtk/dcmdata/dcdatset.h
            dcmdata/include/dcmtk/dcmdata/dcelem.h
            dcmdata/include/dcmtk/dcmdata/dcfilefo.h

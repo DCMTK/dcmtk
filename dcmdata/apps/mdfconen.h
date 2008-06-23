@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-06 09:31:49 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 13:39:16 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ protected:
     /** This function splits a modify option (inclusive value) as
      *  found on commandline into to parts (path and value)
      *  e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
-     *  @param string to be splitted
+     *  @param whole string to be splitted
      *  @param path returns part containing the path
      *  @param value returns part containing the value(if theres one)
      */
@@ -133,7 +133,7 @@ protected:
     OFCondition backupFile(const char *file_name);
 
     /** Restore given file from file.bak to original (without .bak)
-     *  @param restore "filename".bak to original without .bak
+     *  @param filename restore "filename".bak to original without .bak
      *  @return OFCondition, whether restoring was successful
      */
     OFCondition restoreFile(const char *filename);
@@ -143,7 +143,7 @@ protected:
      *  @param condition message is printed, if condition is true
      *  @param s1 first message string
      *  @param s2 second message string
-     *  @param s2 third message string
+     *  @param s3 third message string
      */
     void debugMsg(const OFBool &condition,
                   const OFString &s1,
@@ -222,7 +222,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.14  2006-12-06 09:31:49  onken
+** Revision 1.15  2008-06-23 13:39:16  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.14  2006/12/06 09:31:49  onken
 ** Added "--no-backup" option to prevent dcmodify from creating backup files
 **
 ** Revision 1.13  2006/11/23 15:32:58  onken
