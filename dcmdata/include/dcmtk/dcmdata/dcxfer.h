@@ -21,10 +21,9 @@
  *
  *  Purpose: Handling of transfer syntaxes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-23 06:39:37 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +139,7 @@ typedef enum {
     EJE_Encapsulated = 1
 } E_JPEGEncapsulated;
 
-/** enumeration of stream compression techniques 
+/** enumeration of stream compression techniques
  */
 typedef enum
 {
@@ -157,7 +156,7 @@ typedef enum
 
 /** a class that allows for a lookup of Transfer Syntax properties and readable descriptions
  */
-class DcmXfer 
+class DcmXfer
 {
 public:
     /** constructor
@@ -224,14 +223,14 @@ public:
     /** return 8-bit JPEG process ID for this transfer syntax.
      *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes - 8 and 12 bits.
      *  When called for a non-JPEG transfer syntax, returns 0.
-     *  @return 8-bit JPEG process ID 
+     *  @return 8-bit JPEG process ID
      */
     inline Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
 
     /** return 12-bit JPEG process ID for this transfer syntax.
      *  Lossy JPEG transfer syntaxes support two alternative JPEG encoding processes - 8 and 12 bits.
      *  When called for a non-JPEG transfer syntax, returns 0.
-     *  @return 12-bit JPEG process ID 
+     *  @return 12-bit JPEG process ID
      */
     inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
 
@@ -248,7 +247,7 @@ public:
      *  and any reserved fields for this transfer syntax when encoding the
      *  specified VR.
      *  @param evr value representation to be encoded in this transfer syntax
-     *  @param number of bytes needed
+     *  @return number of bytes needed
      */
     Uint32 sizeofTagHeader(DcmEVR evr) const;
 
@@ -279,10 +278,10 @@ private:
 
     /// flag indicating whether this transfer syntax has been retired from DICOM
     OFBool              retired;
-    
+
     /// transfer syntax stream compression type
     E_StreamCompression streamCompression;
-	
+
 };
 
 /** global constant describing the byte order on the machine the application
@@ -296,6 +295,9 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
+ * Revision 1.21  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
  * Revision 1.20  2008-04-23 06:39:37  meichel
  * Added new method DcmXfer::isRetired that returns true for
  *   retired transfer syntaxes.

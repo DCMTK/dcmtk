@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcbytstr.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,8 +141,8 @@ class DcmByteString: public DcmElement
 
     /** write data element to a stream
      *  @param outStream output stream
-     *  @param writeXfer transfer syntax used to write the data
-     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param oxfer transfer syntax used to write the data
+     *  @param enctype flag, specifying the encoding with undefined or explicit length
      *  @param wcache pointer to write cache object, may be NULL
      */
     virtual OFCondition write(DcmOutputStream &outStream,
@@ -153,8 +152,8 @@ class DcmByteString: public DcmElement
 
     /** write data element to a stream as required for the creation of digital signatures
      *  @param outStream output stream
-     *  @param writeXfer transfer syntax used to write the data
-     *  @param encodingType flag, specifying the encoding with undefined or explicit length
+     *  @param oxfer transfer syntax used to write the data
+     *  @param enctype flag, specifying the encoding with undefined or explicit length
      *  @param wcache pointer to write cache object, may be NULL
      */
     virtual OFCondition writeSignatureFormat(
@@ -248,14 +247,14 @@ class DcmByteString: public DcmElement
      */
     OFCondition getStringValue(OFString &stringVal);
 
-    /** set the end-of-string padding character 
+    /** set the end-of-string padding character
      *  @param c end-of-string padding character
-     */    
+     */
     void setPaddingChar(char c) { paddingChar = c; }
 
     /** set the max length of string
      *  @param val max length of string
-     */    
+     */
     void setMaxLength(Uint32 val) { maxLength = val; }
 
 private:
@@ -320,7 +319,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.36  2007-11-29 14:30:19  meichel
+** Revision 1.37  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.36  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

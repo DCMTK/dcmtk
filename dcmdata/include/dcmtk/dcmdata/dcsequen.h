@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
 #include "dcmtk/dcmdata/dclist.h"
 #include "dcmtk/dcmdata/dcstack.h"
 
-/** class representing a DICOM Sequence of Items (SQ). 
+/** class representing a DICOM Sequence of Items (SQ).
  *  This class is derived from class DcmElement (and not from DcmObject) despite the fact
  *  that sequences have no value field as such, they maintain a list of items. However,
  *  all APIs in class DcmItem and class DcmDataset accept DcmElements.
@@ -57,7 +57,7 @@ public:
     /** constructor
      *  @param tag attribute tag
      *  @param len length of the attribute value
-     *  @param readAsUN flag indicating whether the sequence should be 
+     *  @param readAsUN flag indicating whether the sequence should be
      *  read (interpreted) as a UN element with Implicit VR Little Endian encoding
      */
     DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0, OFBool readAsUN = OFFalse);
@@ -157,7 +157,7 @@ public:
                              const Uint32 subPadlen = 0,
                              Uint32 instanceLength = 0);
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -336,16 +336,16 @@ public:
      *    container object will be traversed (e.g., all elements of an item
      *    or all items of a sequence).
      *  @return EC_Normal if value length is correct, an error code otherwise
-     */     
+     */
     virtual OFCondition nextObject(DcmStack &stack, const OFBool intoSub);
 
     /** this method is only used in container classes,
-     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the 
+     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the
      *  next object in the list AFTER the given object. If the caller passes NULL,
      *  a pointer to the first object in the list is returned. If the given object
-     *  is not found, the given object is the last one in the list or the list is empty, 
+     *  is not found, the given object is the last one in the list or the list is empty,
      *  NULL is returned.
-     *  @param obj pointer to one object in the container; we are looking for the 
+     *  @param obj pointer to one object in the container; we are looking for the
      *    next entry after this one. NULL if looking for the first entry.
      *  @return pointer to next object in container or NULL if not found
      */
@@ -362,7 +362,7 @@ public:
     /** remove item from list. If found, the item is not deleted but
      *  returned to the caller who is responsible for further management of the
      *  DcmItem object.
-     *  @param elem pointer to item to be removed from list
+     *  @param item pointer to item to be removed from list
      *  @return pointer to item if found, NULL otherwise
      */
     virtual DcmItem *remove(DcmItem *item);
@@ -385,9 +385,9 @@ public:
      *  @param resultStack Depending on the search mode (see below), this parameter
      *     either serves as an input and output parameter, or as an output parameter
      *     only (the latter being the default). When used as an input parameter,
-     *     the cursor stack defines the start position for the search within a 
+     *     the cursor stack defines the start position for the search within a
      *     hierarchical DICOM dataset. Upon successful return, the stack contains
-     *     the position of the element found, in the form of a pointer to each dataset, 
+     *     the position of the element found, in the form of a pointer to each dataset,
      *     sequence, item and element from the main dataset down to the found element.
      *  @param mode search mode, controls how the search stack is handled.
      *     In the default mode, ESM_fromHere, the stack is ignored on input, and
@@ -398,7 +398,7 @@ public:
      *    into the sequences and items of the dataset. If false, only the current container
      *    (sequence or item) will be traversed.
      *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something went wrong.
-     */     
+     */
     virtual OFCondition search(const DcmTagKey &xtag,             // in
                                DcmStack &resultStack,             // inout
                                E_SearchMode mode = ESM_fromHere,  // in
@@ -423,7 +423,7 @@ public:
      *  @param offset byte offset within the attribute value from where to start
      *    copying
      *  @param numBytes number of bytes to copy.
-     *  @cache file cache object that may be passed to multiple subsequent calls
+     *  @param cache file cache object that may be passed to multiple subsequent calls
      *    to this method for the same file; the file cache will then keep a file
      *    handle open, thus improving performance. Optional, may be NULL
      *  @param byteOrder byte order desired byte order of attribute value in memory buffer.
@@ -431,9 +431,9 @@ public:
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition getPartialValue(
-      void *targetBuffer, 
-      offile_off_t offset, 
-      offile_off_t numBytes, 
+      void *targetBuffer,
+      offile_off_t offset,
+      offile_off_t numBytes,
       DcmFileCache *cache = NULL,
       E_ByteOrder byteOrder = gLocalByteOrder);
 
@@ -464,7 +464,7 @@ protected:
      *  appropriate type depending on the tag.
      *  @param subObject upon success, a pointer to the newly created object is returned in this parameter
      *  @param newTag tag of the sub-object to be created
-     *  @newLength length of the sub-object to be created
+     *  @param newLength length of the sub-object to be created
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition makeSubObject(DcmObject *&subObject,
@@ -475,7 +475,7 @@ protected:
      *  and call read() for this sub-object.
      *  @param inStream      The stream which contains the information.
      *  @param newTag        attribute tag for sub-object
-     *  @newLength length of the sub-object to be created
+     *  @param newLength     length of the sub-object to be created
      *  @param xfer          The transfer syntax which was used to encode
      *                       the information in inStream.
      *  @param glenc         Encoding type for group length; specifies
@@ -507,7 +507,7 @@ protected:
 
 private:
 
-    /* static helper method used in writeSignatureFormat().
+    /** static helper method used in writeSignatureFormat().
      * This function resembles DcmObject::writeTagAndLength()
      * but only writes the tag, VR and reserved field.
      * @param outStream stream to write to
@@ -548,7 +548,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.39  2007-11-29 14:30:19  meichel
+** Revision 1.40  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.39  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

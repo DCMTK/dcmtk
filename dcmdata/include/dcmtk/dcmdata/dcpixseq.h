@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +97,7 @@ public:
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -122,6 +121,7 @@ public:
 
     /** access a pixel item from the pixel sequence. This method returns a pointer to one
      *  of the pixel items in the list, and not a copy.
+     *  @param item upon success, a pointer to the selected pixel item is returned in this parameter
      *  @param num index number of pixel item, must be < card()
      *  @return pointer to item if found, NULL if num >= card()
      */
@@ -136,7 +136,7 @@ public:
      */
     virtual OFCondition remove(DcmPixelItem * & item, const unsigned long num);
 
-    /** remove pixel item from list. Tthe pixel item is not deleted; 
+    /** remove pixel item from list. Tthe pixel item is not deleted;
      *  the caller is responsible for further management of the DcmPixelItem object.
      *  @param item pointer to element to be removed from list
      *  @return EC_Normal if successful, an error code otherwise
@@ -216,14 +216,14 @@ public:
           Uint8 *compressedData,
           Uint32 compressedLen,
           Uint32 fragmentSize);
-    
+
 protected:
 
     /** helper function for read(). Create sub-object (pixel item) of the
      *  appropriate type depending on the tag.
      *  @param newObject upon success, a pointer to the newly created object is returned in this parameter
      *  @param newTag tag of the sub-object to be created
-     *  @newLength newLength of the sub-object to be created
+     *  @param newLength length of the sub-object to be created
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition makeSubObject(DcmObject * & newObject, // out
@@ -270,7 +270,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.29  2007-11-29 14:30:19  meichel
+** Revision 1.30  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.29  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

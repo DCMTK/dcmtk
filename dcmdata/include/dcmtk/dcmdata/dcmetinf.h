@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +116,7 @@ class DcmMetaInfo
      */
     virtual void transferEnd();
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -132,11 +131,11 @@ class DcmMetaInfo
 
     /** read object from a stream.
      *  @param inStream DICOM input stream
-     *  @param ixfer transfer syntax to use when parsing
+     *  @param xfer transfer syntax to use when parsing
      *  @param glenc handling of group length parameters
      *  @param maxReadLength attribute values larger than this value are skipped
      *    while parsing and read later upon first access if the stream type supports
-     *    this. 
+     *    this.
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmInputStream &inStream,
@@ -179,7 +178,7 @@ class DcmMetaInfo
      *  the transfer syntax of the meta-header and return in parameter
      *  newxfer. If not, reset stream to start position.
      *  @param inStream input stream, should be at start position
-     *  @newxfer as input parameter contains the expected transfer syntax,
+     *  @param newxfer as input parameter contains the expected transfer syntax,
      *    as output parameter returns the real transfer syntax of the
      *    meta-header as determined heuristically
      *  @return true if meta-header found and read, false otherwise
@@ -201,7 +200,7 @@ class DcmMetaInfo
      *  @param xtag attribute tag for group length
      *  @param glenc handling of group length encoding element in dataset
      *  @param headerLen output parameter; length of meta-header as encoded in group length element
-     *  @param bytesRead output parameter; number of bytes read when reading group length (for counting the remaining number of meta-header bytes) 
+     *  @param bytesRead output parameter; number of bytes read when reading group length (for counting the remaining number of meta-header bytes)
      *  @param maxReadLength max read length for elements
      *  @return EC_Normal if successful, an error code otherwise
      */
@@ -232,7 +231,10 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.25  2007-11-29 14:30:19  meichel
+** Revision 1.26  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.25  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

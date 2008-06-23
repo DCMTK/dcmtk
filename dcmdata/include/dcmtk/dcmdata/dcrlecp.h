@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: codec parameter for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:35 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcrlecp.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +48,7 @@ public:
    *    upon compression/decompression
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @param pCreateOffsetTable create offset table during image compression?
-   *  @param pConvertToSC flag indicating whether image should be converted to 
+   *  @param pConvertToSC flag indicating whether image should be converted to
    *    Secondary Capture upon compression
    *  @param pReverseDecompressionByteOrder flag indicating whether the byte order should
    *    be reversed upon decompression. Needed to correctly decode some incorrectly encoded
@@ -81,7 +80,7 @@ public:
   virtual const char *className() const;
 
   /** returns maximum fragment size (in kbytes) for compression, 0 for unlimited.
-   *  @returnmaximum fragment size for compression
+   *  @return maximum fragment size for compression
    */
   Uint32 getFragmentSize() const
   {
@@ -150,7 +149,7 @@ private:
    *  decompress certain incorrectly encoded RLE images
    */
   OFBool reverseDecompressionByteOrder;
-  
+
   /// verbose mode flag. If true, warning messages are printed to console
   OFBool verboseMode;
 };
@@ -161,7 +160,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrlecp.h,v $
- * Revision 1.3  2005-12-08 16:28:35  meichel
+ * Revision 1.4  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
+ * Revision 1.3  2005/12/08 16:28:35  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2005/07/26 17:08:33  meichel

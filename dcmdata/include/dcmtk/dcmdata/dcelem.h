@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:43:21 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ class DcmElement
      */
     DcmElement &operator=(const DcmElement &obj);
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -384,10 +384,10 @@ class DcmElement
      */
     virtual OFCondition getFloat64Array(Float64 *&val);
 
-    /** detach the value field from the DICOM element (i.e., this object). 
-     *  After detaching the calling part of the application has total control 
-     *  over the element value, especially the value must be deleted from the 
-     *  heap after use. The DICOM element remains a copy of the value if the 
+    /** detach the value field from the DICOM element (i.e., this object).
+     *  After detaching the calling part of the application has total control
+     *  over the element value, especially the value must be deleted from the
+     *  heap after use. The DICOM element remains a copy of the value if the
      *  copy parameter is OFTrue; otherwise the value is erased in the DICOM element.
      *  @param copy if true, copy value field before detaching; if false, do not retain a copy.
      *  @return EC_Normal upon success, an error code otherwise
@@ -408,7 +408,7 @@ class DcmElement
 
     /** replace the element value by a copy of the given string (which is possibly multi-valued).
      *  Requires element to be of corresponding VR, otherwise an error is returned.
-     *  @param stringValue new attribute value
+     *  @param val new attribute value
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition putString(const char *val);
@@ -417,7 +417,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -428,7 +428,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -439,7 +439,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -450,7 +450,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -461,7 +461,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -472,7 +472,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param val new value to be inserted
-     *  @param po position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -483,7 +483,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Requires element to be of corresponding VR, otherwise an error is returned.
      *  @param attrTag new value to be inserted
-     *  @param pos position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param pos position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @return EC_Normal upon success, an error code otherwise
@@ -556,7 +556,7 @@ class DcmElement
      *  @param offset byte offset within the attribute value from where to start
      *    copying
      *  @param numBytes number of bytes to copy.
-     *  @cache file cache object that may be passed to multiple subsequent calls
+     *  @param cache file cache object that may be passed to multiple subsequent calls
      *    to this method for the same file; the file cache will then keep a file
      *    handle open, thus improving performance. Optional, may be NULL
      *  @param byteOrder byte order desired byte order of attribute value in memory buffer.
@@ -564,9 +564,9 @@ class DcmElement
      *  @return EC_Normal upon success, an error code otherwise
      */
     virtual OFCondition getPartialValue(
-      void *targetBuffer, 
-      offile_off_t offset, 
-      offile_off_t numBytes, 
+      void *targetBuffer,
+      offile_off_t offset,
+      offile_off_t numBytes,
       DcmFileCache *cache = NULL,
       E_ByteOrder byteOrder = gLocalByteOrder);
 
@@ -592,7 +592,7 @@ class DcmElement
      *  The temporary file is not opened/loaded until the attribute value is accessed,
      *  very much like large attributes that remain in file during a read operation.
      *  @param factory a factory object that is able to create an input stream
-     *    to the temporary file at the right location. 
+     *    to the temporary file at the right location.
      *  @param length attribute value length, in bytes. Must be even length.
      *    The length is not checked against the real length of the temporary file,
      *    which might be written or completed after the call to this method.
@@ -600,7 +600,7 @@ class DcmElement
      *  @return EC_Normal upon success, an error code otherwise.
      */
     virtual OFCondition createValueFromTempFile(
-      DcmInputStreamFactory *factory, 
+      DcmInputStreamFactory *factory,
       const Uint32 length,
       const E_ByteOrder byteOrder);
 
@@ -640,6 +640,9 @@ class DcmElement
      *  @param decompressedColorModel upon successful return, the color model
      *    of the decompressed image (which may be different from the one used
      *    in the compressed images) is returned in this parameter.
+     *  @param cache file cache object that may be passed to multiple subsequent calls
+     *    to this method for the same file; the file cache will then keep a file
+     *    handle open, thus improving performance. Optional, may be NULL
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUncompressedFrame(
@@ -665,7 +668,7 @@ class DcmElement
      *  attribute is multi-valued, all other values remain untouched.
      *  Only works for fixed-size VRs, not for strings.
      *  @param value new value to be inserted
-     *  @param position position for insert operation. Value: pos <= getVM(), i.e. 
+     *  @param position position for insert operation. Value: pos <= getVM(), i.e.
      *  a value can be appended to the end of the current element or inserted within
      *  the existing value field.
      *  @param num number of bytes for each value in the value field.
@@ -763,6 +766,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.37  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
 ** Revision 1.36  2008-05-29 10:43:21  meichel
 ** Implemented new method createValueFromTempFile that allows the content of
 **   a temporary file to be set as the new value of a DICOM element.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,9 @@
  *  Purpose: DcmInputBufferStream and related classes,
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmb.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,19 +80,19 @@ public:
   /** reads as many bytes as possible into the given block.
    *  @param buf pointer to memory block, must not be NULL
    *  @param buflen length of memory block
-   *  @return number of bytes actually read. 
+   *  @return number of bytes actually read.
    */
   virtual offile_off_t read(void *buf, offile_off_t buflen);
 
   /** skips over the given number of bytes (or less)
    *  @param skiplen number of bytes to skip
-   *  @return number of bytes actually skipped. 
+   *  @return number of bytes actually skipped.
    */
   virtual offile_off_t skip(offile_off_t skiplen);
 
   /** resets the stream to the position by the given number of bytes.
    *  @param num number of bytes to putback. If the putback operation
-   *    fails, the producer status becomes bad. 
+   *    fails, the producer status becomes bad.
    */
   virtual void putback(offile_off_t num);
 
@@ -159,9 +158,6 @@ class DcmInputBufferStream: public DcmInputStream
 {
 public:
   /** constructor
-   *  @param buf buffer from which data is read. Must be allocated
-   *    by caller and remain valid during the lifetime of this object.
-   *  @param bufLen buffer length, must be even number > 0.
    */
   DcmInputBufferStream();
 
@@ -182,7 +178,7 @@ public:
   /** adds the content of the given buffer to the input stream.
    *  @param buf buffer from which data is read. Must be allocated
    *    by caller and remain valid until releaseBuffer() is called
-   *  @param bufLen buffer length, must be even number > 0.
+   *  @param buflen buffer length, must be even number > 0.
    */
   virtual void setBuffer(const void *buf, offile_off_t buflen);
 
@@ -218,7 +214,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.h,v $
- * Revision 1.4  2007-02-19 15:45:41  meichel
+ * Revision 1.5  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
+ * Revision 1.4  2007/02/19 15:45:41  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.
  *

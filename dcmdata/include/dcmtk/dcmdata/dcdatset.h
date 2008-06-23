@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +100,7 @@ class DcmDataset
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -178,7 +177,7 @@ class DcmDataset
      *  @param subPadlen      For sequences (ie sub elements), the length up to which
      *                        item shall be padded, if padding is desired.
      *  @param instanceLength Number of extra bytes added to the item/dataset length
-     *                        used when computing the padding; this parameter is for 
+     *                        used when computing the padding; this parameter is for
      *                        instance used to pass the length of the file meta header
      *                        from the DcmFileFormat to the DcmDataset object.
      *  @return status, EC_Normal if successful, an error code otherwise
@@ -197,6 +196,7 @@ class DcmDataset
      *  @param outStream DICOM output stream
      *  @param oxfer output transfer syntax
      *  @param enctype encoding types (undefined or explicit length)
+     *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeSignatureFormat(
@@ -268,8 +268,8 @@ class DcmDataset
                                      const DcmRepresentationParameter *repParam);
 
     /** check if all PixelData elements in this dataset have a representation conforming
-     *  to the given transfer syntax and representation parameters (see dcpixel.h for 
-     *  definition of "conforming"). 
+     *  to the given transfer syntax and representation parameters (see dcpixel.h for
+     *  definition of "conforming").
      *  @param repType desired transfer syntax
      *  @param repParam desired representation parameter (e.g. quality factor for lossy compression)
      *  @return true if all pixel elements have the desired representation, false otherwise
@@ -303,7 +303,10 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.27  2007-11-29 14:30:19  meichel
+** Revision 1.28  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.27  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being

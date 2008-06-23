@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,16 +150,16 @@ enum DcmEVR
     EVR_lt,
 
     /// na="not applicable", for data which has no VR
-    EVR_na,  
+    EVR_na,
 
     /// up="unsigned pointer", used internally for DICOMDIR suppor
-    EVR_up,  
+    EVR_up,
 
     /// used internally for items
     EVR_item,
 
     /// used internally for meta info datasets
-    EVR_metainfo, 
+    EVR_metainfo,
 
     /// used internally for datasets
     EVR_dataset,
@@ -209,27 +208,29 @@ public:
     {
     }
 
-    /** constructor 
+    /** constructor
      *  @param evr enumerated VR value
      */
     DcmVR(DcmEVR evr)
     : vr(EVR_UNKNOWN)
-    { 
+    {
       // the set method is safeguarded against incorrect passing of integer values
       setVR(evr);
     }
 
-    /** constructor 
+    /** constructor
      *  @param vrName symbolic name of value representation
      */
-    DcmVR(const char* vrName) 
+    DcmVR(const char* vrName)
     : vr(EVR_UNKNOWN)
-    { 
+    {
       setVR(vrName);
     }
 
-    /// copy constructor
-    DcmVR(const DcmVR& avr) 
+    /** copy constructor
+     *  @param avr VR value
+     */
+    DcmVR(const DcmVR& avr)
     : vr(avr.vr)
     {
     }
@@ -292,8 +293,8 @@ public:
      */
     size_t getValueWidth() const;
 
-    /** returns true if VR is a standard DICOM VR 
-     *  @return true if VR is a standard DICOM VR 
+    /** returns true if VR is a standard DICOM VR
+     *  @return true if VR is a standard DICOM VR
      */
     OFBool isStandard() const;
 
@@ -346,7 +347,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.25  2007-11-29 14:30:35  meichel
+ * Revision 1.26  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
+ * Revision 1.25  2007/11/29 14:30:35  meichel
  * Updated doxygen API documentation
  *
  * Revision 1.24  2005/12/08 16:28:50  meichel

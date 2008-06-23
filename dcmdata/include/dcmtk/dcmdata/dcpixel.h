@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:46:13 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ private:
      *  present in uncompressed format.
      */
     OFBool alwaysUnencapsulated;
-    
+
     /// value representation of unencapsulated data
     DcmEVR unencapsulatedVR;
 
@@ -515,11 +515,11 @@ public:
         const E_TransferSyntax repType,
         const DcmRepresentationParameter * repParam);
 
-    /** set or clear the flag that indicates that this pixel data element will be 
-     *  written in uncompressed (defined length) format even if the dataset 
-     *  itself is written in a compressed syntax where pixel data is normally 
-     *  written in encapsulated (undefined length) format. By default this flag 
-     *  is false, unless the dataset was read in an encapsulated transfer syntax 
+    /** set or clear the flag that indicates that this pixel data element will be
+     *  written in uncompressed (defined length) format even if the dataset
+     *  itself is written in a compressed syntax where pixel data is normally
+     *  written in encapsulated (undefined length) format. By default this flag
+     *  is false, unless the dataset was read in an encapsulated transfer syntax
      *  and this pixel data element was already present in uncompressed format.
      *  This flag should never be enabled for pixel data elements on the main dataset
      *  level, only for pixel data elements within the icon image sequence or some
@@ -551,6 +551,9 @@ public:
      *  @param decompressedColorModel upon successful return, the color model
      *    of the decompressed image (which may be different from the one used
      *    in the compressed images) is returned in this parameter.
+     *  @param cache file cache object that may be passed to multiple subsequent calls
+     *    to this method for the same file; the file cache will then keep a file
+     *    handle open, thus improving performance. Optional, may be NULL
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUncompressedFrame(
@@ -570,6 +573,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
+** Revision 1.33  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
 ** Revision 1.32  2008-05-29 10:46:13  meichel
 ** Implemented new method DcmPixelData::getUncompressedFrame
 **   that permits frame-wise access to compressed and uncompressed

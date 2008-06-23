@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:41 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrmz.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +134,7 @@ private:
    *  complete or no more input is available in the input ring buffer.
    *  does not re-fill the input ring buffer from the producer.
    *  @param buf pointer to input data
-   *  @param number of bytes in buf
+   *  @param buflen number of bytes in buf
    *  @return number of bytes processed
    */   
   offile_off_t decompress(const void *buf, offile_off_t buflen);
@@ -154,7 +153,7 @@ private:
   /** copies as much of the given block of data as possible
    *  in the input ring buffer
    *  @param buf pointer to input data
-   *  @param number of bytes in buf
+   *  @param buflen number of bytes in buf
    *  @return number of bytes copied to input ring buffer
    */
   offile_off_t fillInputBuffer(const void *buf, offile_off_t buflen);
@@ -212,7 +211,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.h,v $
- * Revision 1.3  2007-02-19 15:45:41  meichel
+ * Revision 1.4  2008-06-23 12:09:13  joergr
+ * Fixed inconsistencies in Doxygen API documentation.
+ *
+ * Revision 1.3  2007/02/19 15:45:41  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.
  *

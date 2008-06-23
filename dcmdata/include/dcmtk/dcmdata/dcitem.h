@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-06-23 12:09:13 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ class DcmItem
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -273,17 +273,17 @@ class DcmItem
      *    container object will be traversed (e.g., all elements of an item
      *    or all items of a sequence).
      *  @return EC_Normal if value length is correct, an error code otherwise
-     */     
+     */
     virtual OFCondition nextObject(DcmStack &stack,
                                    const OFBool intoSub);
 
     /** this method is only used in container classes,
-     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the 
+     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the
      *  next object in the list AFTER the given object. If the caller passes NULL,
      *  a pointer to the first object in the list is returned. If the given object
-     *  is not found, the given object is the last one in the list or the list is empty, 
+     *  is not found, the given object is the last one in the list or the list is empty,
      *  NULL is returned.
-     *  @param obj pointer to one object in the container; we are looking for the 
+     *  @param obj pointer to one object in the container; we are looking for the
      *    next entry after this one. NULL if looking for the first entry.
      *  @return pointer to next object in container or NULL if not found
      */
@@ -331,9 +331,9 @@ class DcmItem
      *  @param resultStack Depending on the search mode (see below), this parameter
      *     either serves as an input and output parameter, or as an output parameter
      *     only (the latter being the default). When used as an input parameter,
-     *     the cursor stack defines the start position for the search within a 
+     *     the cursor stack defines the start position for the search within a
      *     hierarchical DICOM dataset. Upon successful return, the stack contains
-     *     the position of the element found, in the form of a pointer to each dataset, 
+     *     the position of the element found, in the form of a pointer to each dataset,
      *     sequence, item and element from the main dataset down to the found element.
      *  @param mode search mode, controls how the search stack is handled.
      *     In the default mode, ESM_fromHere, the stack is ignored on input, and
@@ -344,7 +344,7 @@ class DcmItem
      *    into the sequences and items of the dataset. If false, only the current container
      *    (sequence or item) will be traversed.
      *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something went wrong.
-     */     
+     */
     virtual OFCondition search(const DcmTagKey &xtag,              // in
                                DcmStack &resultStack,              // inout
                                E_SearchMode mode = ESM_fromHere,   // in
@@ -398,8 +398,8 @@ class DcmItem
 
     /** check if an element with the given attribute tag exists in the dataset
      *  @param key tag key to be searched
-     *  @param if true, do hierarchical search within sequences, if false only
-     *    search through this dataset
+     *  @param searchIntoSub if true, do hierarchical search within sequences,
+     *    if false only search through this dataset
      *  @return true if tag found, false otherwise
      */
     OFBool tagExists(
@@ -409,8 +409,8 @@ class DcmItem
     /** check if an element with the given attribute tag exists in the dataset
      *  and has a non-empty value (i.e., length > 0)
      *  @param key tag key to be searched
-     *  @param if true, do hierarchical search within sequences, if false only
-     *    search through this dataset
+     *  @param searchIntoSub if true, do hierarchical search within sequences,
+     *    if false only search through this dataset
      *  @return true if tag found and element non-empty, false otherwise
      */
     OFBool tagExistsWithValue(
@@ -1046,7 +1046,7 @@ class DcmItem
                                   DcmStack &resultStack,         // inout
                                   OFBool searchIntoSub );        // in
 
-    /** helper function that interprets the given pointer as a pointer to an 
+    /** helper function that interprets the given pointer as a pointer to an
      *  array of two characters and checks whether these two characters form
      *  a valid standard DICOM VR.
      *  @param atposition pointer to array of (at least) two bytes interpreted as VR
@@ -1113,7 +1113,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.64  2007-11-29 14:30:19  meichel
+** Revision 1.65  2008-06-23 12:09:13  joergr
+** Fixed inconsistencies in Doxygen API documentation.
+**
+** Revision 1.64  2007/11/29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to
 **   be sent over a network connection, or to be copied without ever being
