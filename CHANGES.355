@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.06.23 (riesmeier)
+
+- Added check on value representation of data elements copied from the
+  referenced DICOM file to the DICOMDIR (compare VR with data dictionary).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+
+- Fixed inconsistencies in Doxygen API documentation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcistrmb.h
+           dcmdata/include/dcmtk/dcmdata/dcistrmz.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/include/dcmtk/dcmdata/dcostrmz.h
+           dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/include/dcmtk/dcmdata/dcpixseq.h
+           dcmdata/include/dcmtk/dcmdata/dcrlecp.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/include/dcmtk/dcmdata/dcvr.h
+           dcmdata/include/dcmtk/dcmdata/dcxfer.h
+
 **** Changes from 2008.06.20 (riesmeier)
 
 - Added check for retired SOP Class 'X-Ray Angiographic Bi-Plane Image Storage'
