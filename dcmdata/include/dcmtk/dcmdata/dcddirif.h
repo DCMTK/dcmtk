@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-02 16:01:51 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2008-06-23 12:05:37 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1278,12 +1278,14 @@ class DicomDirInterface
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
+     *  @param sourceFilename name of the source DICOM file
      *  @param optional flag indicating whether the element is optional or required
      *  @param copyEmpty flag indicating whether to copy an empty element (no value)
      */
     void copyElement(DcmItem *dataset,
                      const DcmTagKey &key,
                      DcmDirectoryRecord *record,
+                     const OFString &sourceFilename,
                      const OFBool optional = OFFalse,
                      const OFBool copyEmpty = OFTrue);
 
@@ -1291,48 +1293,56 @@ class DicomDirInterface
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
+     *  @param sourceFilename name of the source DICOM file
      */
     void copyElementType1(DcmItem *dataset,
                           const DcmTagKey &key,
-                          DcmDirectoryRecord *record)
+                          DcmDirectoryRecord *record,
+                          const OFString &sourceFilename)
     {
-        copyElement(dataset, key, record, OFFalse /*optional*/, OFFalse /*copyEmpty*/);
+        copyElement(dataset, key, record, sourceFilename, OFFalse /*optional*/, OFFalse /*copyEmpty*/);
     }
 
     /** copy type 1C element from dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
+     *  @param sourceFilename name of the source DICOM file
      */
     void copyElementType1C(DcmItem *dataset,
                           const DcmTagKey &key,
-                          DcmDirectoryRecord *record)
+                          DcmDirectoryRecord *record,
+                          const OFString &sourceFilename)
     {
-        copyElement(dataset, key, record, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
+        copyElement(dataset, key, record, sourceFilename, OFTrue /*optional*/, OFFalse /*copyEmpty*/);
     }
 
     /** copy type 2 element from dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
+     *  @param sourceFilename name of the source DICOM file
      */
     void copyElementType2(DcmItem *dataset,
                           const DcmTagKey &key,
-                          DcmDirectoryRecord *record)
+                          DcmDirectoryRecord *record,
+                          const OFString &sourceFilename)
     {
-        copyElement(dataset, key, record, OFFalse /*optional*/, OFTrue /*copyEmpty*/);
+        copyElement(dataset, key, record, sourceFilename, OFFalse /*optional*/, OFTrue /*copyEmpty*/);
     }
 
     /** copy type 3 element from dataset to directory record
      *  @param dataset DICOM dataset containing the original data
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
+     *  @param sourceFilename name of the source DICOM file
      */
     void copyElementType3(DcmItem *dataset,
                           const DcmTagKey &key,
-                          DcmDirectoryRecord *record)
+                          DcmDirectoryRecord *record,
+                          const OFString &sourceFilename)
     {
-        copyElement(dataset, key, record, OFTrue /*optional*/, OFTrue /*copyEmpty*/);
+        copyElement(dataset, key, record, sourceFilename, OFTrue /*optional*/, OFTrue /*copyEmpty*/);
     }
 
     /** copy optional string value from dataset to directory record
@@ -1479,7 +1489,11 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.12  2007-02-02 16:01:51  joergr
+ * Revision 1.13  2008-06-23 12:05:37  joergr
+ * Added check on value representation of data elements copied from the
+ * referenced DICOM file to the DICOMDIR (compare VR with data dictionary).
+ *
+ * Revision 1.12  2007/02/02 16:01:51  joergr
  * Added error message when existing SOP instance is inconsistent with new
  * directory record in update mode (e.g. different SOP class UID).
  * Fixed incomplete warning message in update mode (filename was missing).
