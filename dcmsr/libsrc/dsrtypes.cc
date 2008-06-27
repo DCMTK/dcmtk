@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:55:34 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2008-06-27 10:50:00 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -820,7 +820,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         vmText = " VM";
     }
     /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
-    if (((type == "1") || (type == "2")) && (searchCond.bad()))
+    if (((type == "1") || (type == "2")) && searchCond.bad())
     {
         message += " absent in ";
         message += module;
@@ -850,7 +850,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         message += module;
         result = OFFalse;
     }
-    else if ((vm == "2") && (vmNum != 2))
+    else if ((vm == "2") && (vmNum != 2) && searchCond.good())
     {
         message += vmText;
         message += " != 2 in ";
@@ -1500,6 +1500,10 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.54  2008-06-27 10:50:00  joergr
+ *  Fixed condition that could lead to a wrong error message in method
+ *  checkElementValue().
+ *
  *  Revision 1.53  2008-05-19 09:55:34  joergr
  *  Added new flag that enables reading of SR documents with unknown/missing
  *  relationship type(s).

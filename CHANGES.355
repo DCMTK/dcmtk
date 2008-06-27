@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.06.27 (riesmeier)
+
+- Fixed condition that could lead to a wrong error message in method
+  checkElementValue().
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2008.06.23 (riesmeier)
 
 - Added check on value representation of data elements copied from the

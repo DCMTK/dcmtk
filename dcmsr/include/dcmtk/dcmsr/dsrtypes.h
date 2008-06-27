@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:48:55 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2008-06-27 10:49:51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1249,7 +1249,13 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.52  2008-06-27 10:49:51  joergr
+ *  Fixed condition that could lead to a wrong error message in method
+ *  checkElementValue().
+ *
  *  Revision 1.51  2008-05-19 09:48:55  joergr
+ *  Added new flag that enables reading of SR documents with unknown/missing
+ *  relationship type(s).
  *  Changed parameters of checkByReferenceRelationships() method.
  *
  *  Revision 1.50  2007/11/15 16:32:48  joergr
