@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 13:13:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-07-10 10:59:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define PEERAPPLICATIONTITLE    "ANY-SCP"
 
 #define SHORTCOL 4
-#define LONGCOL 16
+#define LONGCOL 18
 
 int main(int argc, char *argv[])
 {
@@ -459,7 +459,7 @@ int main(int argc, char *argv[])
         DimseCondition::dump(cond);
         return 1;
     }
-    
+
 #ifdef WITH_OPENSSL
 
     DcmTLSTransportLayer *tLayer = NULL;
@@ -557,8 +557,8 @@ int main(int argc, char *argv[])
       opt_secureConnection,
       opt_abortAssociation,
       opt_repeatCount,
-      opt_extractResponsesToFile, 
-      opt_cancelAfterNResponses, 
+      opt_extractResponsesToFile,
+      opt_cancelAfterNResponses,
       overrideKeys,
       NULL, /* we want to use the default callback */
       &fileNameList);
@@ -597,7 +597,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.51  2007-02-19 13:13:26  meichel
+** Revision 1.52  2008-07-10 10:59:27  joergr
+** Fixed layout of the usage output (--help).
+**
+** Revision 1.51  2007/02/19 13:13:26  meichel
 ** Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet
 **   library, and a short command line tool that only evaluates command line
 **   parameters and then makes use of this class. This facilitates re-use of the
