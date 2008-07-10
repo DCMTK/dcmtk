@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.07.10 (riesmeier)
+
+- Fixed layout of the usage output (--help).
+  Affects: dcmnet/apps/findscu.cc
+
 **** Changes from 2008.06.27 (riesmeier)
 
 - Fixed condition that could lead to a wrong error message in method
