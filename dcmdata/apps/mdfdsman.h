@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-11-23 15:32:58 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-07-11 08:37:45 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,7 +246,7 @@ protected:
      *  @param condition message is printed, if condition is true
      *  @param s1 first message string
      *  @param s2 second message string
-     *  @param s2 third message string
+     *  @param s3 third message string
      */
     void debugMsg(const OFBool &condition,
                   const OFString &s1,
@@ -281,7 +281,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.17  2006-11-23 15:32:58  onken
+** Revision 1.18  2008-07-11 08:37:45  joergr
+** Fixed typo in API documentation.
+**
+** Revision 1.17  2006/11/23 15:32:58  onken
 ** Made member variables private (before: protected)
 **
 ** Revision 1.16  2005/12/08 15:46:50  meichel

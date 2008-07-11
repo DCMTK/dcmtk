@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:02:33 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2008-07-11 08:35:28 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -363,7 +363,7 @@ class DicomImage
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G3B3...),
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable to multi-planar/color images, otherwise ignored)
      *
@@ -390,7 +390,7 @@ class DicomImage
      *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G3B3...),
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable to multi-planar/color images, otherwise ignored)
      *
@@ -1572,7 +1572,7 @@ class DicomImage
      ** @param  dataset  reference to DICOM dataset where the image attributes are stored
      *  @param  bits     number of bits per sample (image depth, 1..MAX_BITS)
      *  @param  frame    number of frame to be rendered (0..n-1)
-     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
+     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G3B3...),
      *                   1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                   (only applicable to multi-planar/color images, otherwise ignored)
      *
@@ -1608,7 +1608,7 @@ class DicomImage
      *  @param  mode     0 = determine value of BitsStored from 'used' pixel values,
      *                   1 = determine value of BitsStored from 'possible' pixel values
      *                   (used for monochrome images only)
-     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
+     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G3B3...),
      *                   1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...),
      *                   2 = same as original DICOM image (i.e. color-by-pixel or color-by-plane)
      *                   (only applicable to multi-planar/color images, otherwise ignored)
@@ -1833,6 +1833,9 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.60  2008-07-11 08:35:28  joergr
+ * Fixed typo in API documentation.
+ *
  * Revision 1.59  2008-05-20 10:02:33  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  *

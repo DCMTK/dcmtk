@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2008-05-20 10:38:50 $
- *  CVS/RCS Revision:    $Revision: 1.27 $
+ *  Update Date:         $Date: 2008-07-11 08:36:05 $
+ *  CVS/RCS Revision:    $Revision: 1.28 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ class DiColorImage
      *
      ** @param  frame   number of frame to be rendered
      *  @param  bits    number of bits per sample for the output pixel data (depth)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...),
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G3B3...),
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *
      ** @return untyped pointer to the pixel data if successful, NULL otherwise
@@ -119,7 +119,7 @@ class DiColorImage
      *  @param  size    size of the memory buffer in bytes (will be checked)
      *  @param  frame   number of frame to be rendered
      *  @param  bits    number of bits per sample for the output pixel data (depth)
-     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G3B3...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *
      ** @return status, true if successful, false otherwise
@@ -463,6 +463,9 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
+ * Revision 1.28  2008-07-11 08:36:05  joergr
+ * Fixed typo in API documentation.
+ *
  * Revision 1.27  2008-05-20 10:38:50  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  *
