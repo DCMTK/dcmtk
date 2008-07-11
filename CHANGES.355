@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.07.11 (riesmeier)
+
+- Fixed typo in API documentation.
+  Affects: dcmdata/apps/mdfdsman.h
+           dcmimage/include/dcmtk/dcmimage/dicoimg.h
+           dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+
 **** Changes from 2008.07.10 (riesmeier)
 
 - Fixed layout of the usage output (--help).
