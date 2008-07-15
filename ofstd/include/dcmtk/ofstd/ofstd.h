@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-28 12:03:24 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2008-07-15 09:49:33 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,16 +426,6 @@ class OFStandard
 
      //@}
 
-    /** Checks if a given string consists only of characters which are specified in a
-     *  given charset. Note that in case one of the parameters equals NULL, OFTrue will
-     *  be returned.
-     *  @param str String which shall be checked.
-     *  @param charset Possible character set for s.
-     *  @return OFTrue if the given string consists only of characters which are specified
-     *    in the given charset; OFFalse otherwise.
-     */
-     static OFBool stringMatchesCharacterSet( const char *str, const char *charset );
-
     /** makes the current process sleep until seconds seconds have
      *  elapsed or a signal arrives which is not ignored.
      *  @param seconds number of seconds to sleep
@@ -491,6 +481,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.30  2008-07-15 09:49:33  joergr
+ * Removed unused function OFStandard::stringMatchesCharacterSet().
+ *
  * Revision 1.29  2008-04-28 12:03:24  joergr
  * Adapted OFStandard::checkForMarkupConversion() to the new behavior of
  * parameter "convertNonASCII" of OFStandard::convertToMarkupString().

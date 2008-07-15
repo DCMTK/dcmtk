@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-28 12:02:49 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2008-07-15 09:49:38 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1727,31 +1727,6 @@ void OFStandard::ftoa(
 #endif /* DISABLE_OFSTD_FTOA */
 
 
-OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *charset )
-{
-  if( charset == NULL || str == NULL )
-    return OFTrue;
-
-  OFBool result = OFTrue;
-  unsigned int lenStr = strlen( str );
-  unsigned int lenCharset = strlen( charset );
-  for( unsigned int i=0 ; i<lenStr && result ; i++ )
-  {
-    OFBool charFound = OFFalse;
-    for( unsigned int j=0 ; j<lenCharset && !charFound ; j++ )
-    {
-      if( str[i] == charset[j] )
-        charFound = OFTrue;
-    }
-
-    if( !charFound )
-      result = OFFalse;
-  }
-
-  return( result );
-}
-
-
 unsigned int OFStandard::my_sleep(unsigned int seconds)
 {
 #ifdef HAVE_WINDOWS_H
@@ -1774,6 +1749,9 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.45  2008-07-15 09:49:38  joergr
+ *  Removed unused function OFStandard::stringMatchesCharacterSet().
+ *
  *  Revision 1.44  2008-04-28 12:02:49  joergr
  *  Adapted OFStandard::checkForMarkupConversion() to the new behavior of
  *  parameter "convertNonASCII" of OFStandard::convertToMarkupString().

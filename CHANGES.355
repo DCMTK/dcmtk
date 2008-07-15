@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.07.15 (riesmeier)
+
+- Removed unused function OFStandard::stringMatchesCharacterSet().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
 **** Changes from 2008.07.11 (riesmeier)
 
 - Fixed typo in API documentation.
