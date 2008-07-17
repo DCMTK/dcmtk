@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.07.17 (riesmeier)
+
+- Replaced wrong use of assignment operator by new copyFrom() method.
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
+- Replaced call to getSequenceFromDataset() by getElementFromDataset().
+  Affects: dcmsr/libsrc/dsrcodvl.cc
+           dcmsr/libsrc/dsrcomvl.cc
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrnumvl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+
+- Removed getSequenceFromDataset() function.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2008.07.17 (onken)
 
 - Implemented copyFrom() method for complete DcmObject class hierarchy, which
