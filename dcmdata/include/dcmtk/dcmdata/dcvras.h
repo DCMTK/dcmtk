@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmAgeString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:52 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:30:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvras.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,20 @@ class DcmAgeString
       return new DcmAgeString(*this);
     }
 
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmElement* parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
+
     /** get element type identifier
      *  @return type identifier of this class (EVR_AS)
      */
@@ -92,6 +106,11 @@ class DcmAgeString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvras.h,v $
+** Revision 1.11  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.10  2005-12-08 16:28:52  meichel
 ** Changed include path schema for all DCMTK header files
 **

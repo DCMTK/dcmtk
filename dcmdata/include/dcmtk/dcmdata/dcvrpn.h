@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPersonName
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:29:05 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:30:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrpn.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,6 +78,20 @@ class DcmPersonName
     {
       return new DcmPersonName(*this);
     }
+
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmElement* parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
 
     /** get element type identifier
      *  @return type identifier of this class (EVR_PN)
@@ -244,6 +258,11 @@ class DcmPersonName
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
+** Revision 1.18  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.17  2005-12-08 16:29:05  meichel
 ** Changed include path schema for all DCMTK header files
 **

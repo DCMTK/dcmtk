@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-02-26 16:59:55 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,17 @@ DcmUniqueIdentifier &DcmUniqueIdentifier::operator=(const DcmUniqueIdentifier &o
 {
     DcmByteString::operator=(obj);
     return *this;
+}
+
+
+OFCondition DcmUniqueIdentifier::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmUniqueIdentifier&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -178,6 +189,11 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.28  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.27  2008-02-26 16:59:55  joergr
 ** Added new print flag that disables the mapping of well-known UID numbers to
 ** their associated names (e.g. transfer syntax or SOP class).

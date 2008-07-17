@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmLongText
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,17 @@ DcmLongText &DcmLongText::operator=(const DcmLongText &obj)
 {
     DcmCharString::operator=(obj);
     return *this;
+}
+
+
+OFCondition DcmLongText::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmLongText&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -107,6 +118,11 @@ OFCondition DcmLongText::getOFStringArray(OFString &stringVal,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
+** Revision 1.17  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.16  2007-06-29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.

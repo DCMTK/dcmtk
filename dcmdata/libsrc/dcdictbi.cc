@@ -19,11 +19,11 @@
  *
  *  Author:  Andrew Hewett
  *
- *  Purpose: 
+ *  Purpose:
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:05 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ DcmDataDictionary::loadBuiltinDictionary()
     **
     ** We don't want a builtin data dictionary or
     ** it is not yet created.
-    ** A complete builtin dictionary can be created 
+    ** A complete builtin dictionary can be created
     ** by mkdictbi (see mkdictbi.cc)
     */
 }
@@ -51,10 +51,15 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.13  2005-12-08 15:41:05  meichel
- * Changed include path schema for all DCMTK header files
+ * Revision 1.14  2008-07-17 10:31:31  onken
+ * Implemented copyFrom() method for complete DcmObject class hierarchy, which
+ * permits setting an instance's value from an existing object. Implemented
+ * assignment operator where necessary.
  *
- * Revision 1.12  2004/02/13 12:45:53  joergr
+ * Revision 1.7  2005-12-12 09:25:41  meichel
+ * Update for new include file structure
+ *
+ * Revision 1.6  2004/02/13 12:42:37  joergr
  * Updated copyright header.
  *
  * Revision 1.5  2001/06/01 15:49:02  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmOtherFloat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:58 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,16 @@ DcmOtherFloat &DcmOtherFloat::operator=(const DcmOtherFloat &obj)
 }
 
 
+OFCondition DcmOtherFloat::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmOtherFloat&) rhs;
+  }
+  return EC_Normal;
+}
+
 // ********************************
 
 
@@ -85,6 +95,11 @@ unsigned long DcmOtherFloat::getVM()
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
+ * Revision 1.3  2008-07-17 10:31:32  onken
+ * Implemented copyFrom() method for complete DcmObject class hierarchy, which
+ * permits setting an instance's value from an existing object. Implemented
+ * assignment operator where necessary.
+ *
  * Revision 1.2  2005-12-08 15:41:58  meichel
  * Changed include path schema for all DCMTK header files
  *

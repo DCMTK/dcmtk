@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:30:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,11 @@ class DcmUnsignedLongOffset
      */
     virtual ~DcmUnsignedLongOffset();
 
+    /** assignment operator. 
+     *  @param the offset to be copied
+     */
+    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
+
     /** clone method
      *  @return deep copy of this object
      */
@@ -72,6 +77,20 @@ class DcmUnsignedLongOffset
     {
       return new DcmUnsignedLongOffset(*this);
     }
+    
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmElement* parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);    
 
     /** get element type identifier
      *  @return type identifier of this class (internal type: EVR_up)
@@ -104,9 +123,6 @@ class DcmUnsignedLongOffset
 
     /// pointer to the referenced object. NULL means that no object is referenced.
     DcmObject *nextRecord;
-
-	/// private undefined copy assignment operator
-    DcmUnsignedLongOffset &operator=(const DcmUnsignedLongOffset &);
 };
 
 
@@ -116,6 +132,11 @@ class DcmUnsignedLongOffset
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
+** Revision 1.18  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.17  2007-06-29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.

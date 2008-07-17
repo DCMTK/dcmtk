@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-28 09:22:41 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,17 @@ DcmByteString &DcmByteString::operator=(const DcmByteString &obj)
     maxLength = obj.maxLength;
   }
   return *this;
+}
+
+
+OFCondition DcmByteString::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmByteString&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -625,6 +636,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.50  2008-07-17 10:31:31  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.49  2008-04-28 09:22:41  meichel
 ** New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
 **   quote non-ASCII string content as XML markup

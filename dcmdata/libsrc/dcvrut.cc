@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmUnlimitedText
  *           Value Representation UT is defined in Correction Proposal 101
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,17 @@ DcmUnlimitedText &DcmUnlimitedText::operator=(const DcmUnlimitedText &obj)
 {
     DcmCharString::operator=(obj);
     return *this;
+}
+
+
+OFCondition DcmUnlimitedText::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmUnlimitedText&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -109,6 +120,11 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
+** Revision 1.12  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.11  2007-06-29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.

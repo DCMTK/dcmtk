@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:09:13 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:30:23 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,20 @@ public:
     {
       return new DcmSequenceOfItems(*this);
     }
+    
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmElement* parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);    
 
     /** return identifier for this class. Every class derived from this class
      *  returns a unique value of type enum DcmEVR for this call. This is used
@@ -304,6 +318,14 @@ public:
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition append(DcmItem *item);
+
+
+    virtual OFCondition findOrCreatePath(const OFString& path,
+                                         OFList<DcmObject*>& objPath,
+                                         const OFBool createIfNecessary = OFTrue);
+
+    virtual OFCondition parseItemNoFromPath(OFString& path,        // inout
+                                            Uint32& itemNo);       // out
 
     /** insert new item a current position.
      *  The current position is stored internally in the 'itemList' member variable.
@@ -548,6 +570,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.41  2008-07-17 10:30:23  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.40  2008-06-23 12:09:13  joergr
 ** Fixed inconsistencies in Doxygen API documentation.
 **

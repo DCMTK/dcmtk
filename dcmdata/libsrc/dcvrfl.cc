@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-30 12:50:05 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,17 @@ DcmFloatingPointSingle &DcmFloatingPointSingle::operator=(const DcmFloatingPoint
 {
     DcmElement::operator=(obj);
     return *this;
+}
+
+
+OFCondition DcmFloatingPointSingle::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmFloatingPointSingle&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -297,6 +308,11 @@ OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
+** Revision 1.33  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.32  2008-05-30 12:50:05  meichel
 ** Increased output precision to 8 (FLT_DIG+2) when converting an FL element to string.
 **

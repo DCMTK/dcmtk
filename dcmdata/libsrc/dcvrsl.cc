@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,17 @@ DcmSignedLong &DcmSignedLong::operator=(const DcmSignedLong &obj)
 {
     DcmElement::operator=(obj);
     return *this;
+}
+
+
+OFCondition DcmSignedLong::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmSignedLong&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -300,6 +311,11 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
+** Revision 1.30  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.29  2007-06-29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.

@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2007-12-11 12:21:57 $
- *  CVS/RCS Revision: $Revision: 1.110 $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.111 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,6 +124,42 @@ DcmItem::DcmItem(const DcmItem &old)
             elementList->insert(old.elementList->get()->clone(), ELP_next);
         } while (old.elementList->seek(ELP_next));
     }
+}
+
+
+DcmItem& DcmItem::operator=(const DcmItem& obj)
+{
+  if (this != &obj)
+  {
+    // copy parent's member variables
+    DcmObject::operator=(obj);
+    
+    // copy DcmItem's member variables
+    lastElementComplete = obj.lastElementComplete;
+    fStartPosition = obj.fStartPosition;
+    elementList = new DcmList();
+    if (!obj.elementList->empty())
+    {
+      elementList->seek(ELP_first);
+      obj.elementList->seek(ELP_first);
+      do
+      {
+        elementList->insert(obj.elementList->get()->clone(), ELP_next);
+      } while (obj.elementList->seek(ELP_next));
+    }
+  }
+  return *this;
+}
+
+
+OFCondition DcmItem::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmItem&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -3430,6 +3466,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.111  2008-07-17 10:31:31  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.110  2007-12-11 12:21:57  onken
 ** Corrected some putAndInsert functions that returned wrong error code
 ** (EC_MemoryExhausted) in some cases.

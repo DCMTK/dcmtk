@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUnsignedShort
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,17 @@ DcmUnsignedShort &DcmUnsignedShort::operator=(const DcmUnsignedShort &obj)
 {
     DcmElement::operator=(obj);
     return *this;
+}
+
+
+OFCondition DcmUnsignedShort::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmUnsignedShort&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -284,6 +295,11 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
+** Revision 1.28  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.27  2007-06-29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.

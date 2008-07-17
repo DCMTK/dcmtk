@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmCharString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:14:44 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,17 @@ DcmCharString &DcmCharString::operator=(const DcmCharString &obj)
 }
 
 
+OFCondition DcmCharString::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmCharString&) rhs;
+  }
+  return EC_Normal;
+}
+
+
 OFBool DcmCharString::containsExtendedCharacters(const OFBool /*checkAllStrings*/)
 {
     char *c = NULL;
@@ -99,6 +110,11 @@ OFBool DcmCharString::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.cc,v $
+ * Revision 1.13  2008-07-17 10:31:31  onken
+ * Implemented copyFrom() method for complete DcmObject class hierarchy, which
+ * permits setting an instance's value from an existing object. Implemented
+ * assignment operator where necessary.
+ *
  * Revision 1.12  2006-12-15 14:14:44  joergr
  * Added new method that checks whether a DICOM object or element is affected
  * by SpecificCharacterSet (0008,0005).

@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-29 14:17:49 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,8 +57,32 @@ DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset &old)
 }
 
 
+DcmUnsignedLongOffset& DcmUnsignedLongOffset::operator=(const DcmUnsignedLongOffset& obj)
+{
+  if (this != &obj)
+  {
+    // copy parent's member variables
+    DcmUnsignedLong::operator=(obj);
+    // copy member variables
+    nextRecord = obj.nextRecord;
+  }
+  return *this;
+}
+
+
 DcmUnsignedLongOffset::~DcmUnsignedLongOffset()
 {
+}
+
+
+OFCondition DcmUnsignedLongOffset::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmUnsignedLongOffset&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -121,6 +145,11 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
+** Revision 1.28  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.27  2007-06-29 14:17:49  meichel
 ** Code clean-up: Most member variables in module dcmdata are now private,
 **   not protected anymore.

@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:46:16 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -181,6 +181,18 @@ DcmPixelData &DcmPixelData::operator=(const DcmPixelData &obj)
   }
   return *this;
 }
+
+
+OFCondition DcmPixelData::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmPixelData&) rhs;
+  }
+  return EC_Normal;
+}
+
 
 // methods in alphabetical order
 
@@ -1082,6 +1094,11 @@ OFCondition DcmPixelData::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.42  2008-07-17 10:31:31  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.41  2008-05-29 10:46:16  meichel
 ** Implemented new method DcmPixelData::getUncompressedFrame
 **   that permits frame-wise access to compressed and uncompressed

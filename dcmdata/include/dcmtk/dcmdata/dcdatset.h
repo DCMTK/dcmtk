@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:09:13 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:30:22 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,11 @@ class DcmDataset
      */
     virtual ~DcmDataset();
 
+    /** assignment operator
+     *  @param the dataset to be copied
+     */
+    DcmDataset& operator=(const DcmDataset& obj);
+
     /** clone method
      *  @return deep copy of this object
      */
@@ -76,6 +81,20 @@ class DcmDataset
     {
       return new DcmDataset(*this);
     }
+
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmElement* parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);
 
     /** get type identifier
      *  @return type identifier of this class (EVR_dataset)
@@ -289,9 +308,6 @@ class DcmDataset
 
   private:
 
-    /// private undefined copy assignment operator
-    DcmDataset& operator=(const DcmDataset&);
-
     /// current transfer syntax of the dataset
     E_TransferSyntax Xfer;
 };
@@ -303,6 +319,11 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.29  2008-07-17 10:30:22  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.28  2008-06-23 12:09:13  joergr
 ** Fixed inconsistencies in Doxygen API documentation.
 **

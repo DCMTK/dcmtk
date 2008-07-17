@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:42 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,33 @@ DcmMetaInfo::DcmMetaInfo(const DcmMetaInfo &old)
     Xfer(old.Xfer)
 {
     memcpy(filePreamble, old.filePreamble, 128);
+}
+
+
+DcmMetaInfo& DcmMetaInfo::operator=(const DcmMetaInfo& obj)
+{
+  if (this != &obj)
+  {
+    // copy parent's member variables
+    DcmItem::operator=(obj);
+    // copy DcmMetaInfo's member variables
+    preambleUsed = obj.preambleUsed;
+    fPreambleTransferState = obj.fPreambleTransferState;
+    Xfer = obj.Xfer;
+    memcpy(filePreamble, obj.filePreamble, 128);    
+  }
+  return *this;
+}
+
+
+OFCondition DcmMetaInfo::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmMetaInfo&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -526,6 +553,11 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.42  2008-07-17 10:31:31  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.41  2008-04-30 12:38:42  meichel
 ** Fixed compile errors due to changes in attribute tag names
 **

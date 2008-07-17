@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-06-03 13:41:40 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,6 +195,41 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
     numberOfReferences(old.numberOfReferences),
     offsetInFile(old.offsetInFile)
 {
+}
+
+
+// ********************************
+
+
+DcmDirectoryRecord& DcmDirectoryRecord::operator=(const DcmDirectoryRecord& obj)
+{
+  if (this != &obj)
+  {
+    // copy parent's member variables
+    DcmItem::operator=(obj);
+    // copy DcmDirectoryRecords' member variables
+    recordsOriginFile = obj.recordsOriginFile;
+    lowerLevelList = new DcmSequenceOfItems(*obj.lowerLevelList);
+    DirRecordType = obj.DirRecordType;
+    referencedMRDR = obj.referencedMRDR;
+    numberOfReferences = obj.numberOfReferences;
+    offsetInFile = obj.offsetInFile;
+  }
+  return *this;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDirectoryRecord::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmDirectoryRecord&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -1454,6 +1489,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.63  2008-07-17 10:31:31  onken
+ * Implemented copyFrom() method for complete DcmObject class hierarchy, which
+ * permits setting an instance's value from an existing object. Implemented
+ * assignment operator where necessary.
+ *
  * Revision 1.62  2008-06-03 13:41:40  meichel
  * DcmDirectoryRecord::getFileOffset() is now const and public.
  *

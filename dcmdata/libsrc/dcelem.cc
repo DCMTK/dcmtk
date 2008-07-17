@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:43:20 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:31 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,17 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 
   }
   return *this;
+}
+
+
+OFCondition DcmElement::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmElement&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -1447,6 +1458,11 @@ OFCondition DcmElement::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.62  2008-07-17 10:31:31  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.61  2008-05-29 10:43:20  meichel
 ** Implemented new method createValueFromTempFile that allows the content of
 **   a temporary file to be set as the new value of a DICOM element.

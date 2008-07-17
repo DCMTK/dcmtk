@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:21 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,17 @@ DcmPixelItem::DcmPixelItem(const DcmTag &tag,
 DcmPixelItem::DcmPixelItem(const DcmPixelItem &old)
   : DcmOtherByteOtherWord(old)
 {
+}
+
+
+OFCondition DcmPixelItem::copyFrom(const DcmObject& rhs)
+{
+  if (this != &rhs)
+  {
+    if (rhs.ident() != ident()) return EC_IllegalCall;
+    *this = (DcmPixelItem&) rhs;
+  }
+  return EC_Normal;
 }
 
 
@@ -349,6 +360,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.34  2008-07-17 10:31:32  onken
+** Implemented copyFrom() method for complete DcmObject class hierarchy, which
+** permits setting an instance's value from an existing object. Implemented
+** assignment operator where necessary.
+**
 ** Revision 1.33  2007-11-29 14:30:21  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to

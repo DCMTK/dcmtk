@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmCharString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-12-15 14:18:07 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:30:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,6 +90,20 @@ class DcmCharString
     {
       return new DcmCharString(*this);
     }
+    
+    /** Virtual object copying. This method can be used for DcmObject
+     *  and derived classes to get a deep copy of an object. Internally
+     *  the assignment operator is called if the given DcmElement* parameter
+     *  is of the same type as "this" object instance. If not, an error
+     *  is returned. This function permits copying an object by value
+     *  in a virtual way which therefore is different to just calling the
+     *  assignment operator of DcmElement which could result in slicing
+     *  the object.
+     *  @param - [in] The instance to copy from. Has to be of the same
+     *                class type as "this" object
+     *  @return EC_Normal if copying was successful, error otherwise
+     */
+    virtual OFCondition copyFrom(const DcmObject& rhs);    
 
     /** check if this element contains non-ASCII characters
      *  @param checkAllStrings not used in this class
@@ -110,6 +124,11 @@ class DcmCharString
 /*
  * CVS/RCS Log:
  * $Log: dcchrstr.h,v $
+ * Revision 1.14  2008-07-17 10:30:22  onken
+ * Implemented copyFrom() method for complete DcmObject class hierarchy, which
+ * permits setting an instance's value from an existing object. Implemented
+ * assignment operator where necessary.
+ *
  * Revision 1.13  2006-12-15 14:18:07  joergr
  * Added new method that checks whether a DICOM object or element is affected
  * by SpecificCharacterSet (0008,0005).
