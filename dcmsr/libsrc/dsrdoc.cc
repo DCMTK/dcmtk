@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-29 13:59:21 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2008-07-17 12:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -369,7 +369,7 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", LogStream);
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
-        searchCond = getSequenceFromDataset(dataset, ReferencedPerformedProcedureStep);
+        searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
         checkElementValue(ReferencedPerformedProcedureStep, "1", "2", LogStream, searchCond);
         /* remove possible signature sequences */
         removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_MACParametersSequence);
@@ -385,10 +385,10 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1", LogStream);
             getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", LogStream);
             getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", LogStream);
-            obsSearchCond = getSequenceFromDataset(dataset, VerifyingObserver);
+            obsSearchCond = getElementFromDataset(dataset, VerifyingObserver);
             PredecessorDocuments.read(dataset, LogStream);
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
-            searchCond = getSequenceFromDataset(dataset, PerformedProcedureCode);
+            searchCond = getElementFromDataset(dataset, PerformedProcedureCode);
             checkElementValue(PerformedProcedureCode, "1", "2", LogStream, searchCond);
             PertinentOtherEvidence.read(dataset, LogStream);
         }
@@ -2377,6 +2377,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.62  2008-07-17 12:00:09  joergr
+ *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
+ *
  *  Revision 1.61  2008-04-29 13:59:21  joergr
  *  Harmonized capitalization of warning messages.
  *

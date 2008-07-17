@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:53:02 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2008-07-17 12:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -507,8 +507,8 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     /* read digital signatures sequences (optional) */
     if (flags & RF_readDigitalSignatures)
     {
-        getSequenceFromDataset(dataset, MACParameters);
-        getSequenceFromDataset(dataset, DigitalSignatures);
+        getElementFromDataset(dataset, MACParameters);
+        getElementFromDataset(dataset, DigitalSignatures);
     }
     /* read ObservationDateTime (conditional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C", logStream);
@@ -1158,6 +1158,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.47  2008-07-17 12:00:09  joergr
+ *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
+ *
  *  Revision 1.46  2008-05-19 09:53:02  joergr
  *  Fixed issue with wrong reference to a content item in an error message.
  *  Added new flag that enables reading of SR documents with unknown/missing

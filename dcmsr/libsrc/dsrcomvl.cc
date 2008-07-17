@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2008-07-17 12:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,7 +179,7 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
 {
     /* read ReferencedSOPSequence */
     DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
-    OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
     if (result.good())
     {
@@ -309,6 +309,9 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
+ *  Revision 1.18  2008-07-17 12:00:09  joergr
+ *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
+ *
  *  Revision 1.17  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

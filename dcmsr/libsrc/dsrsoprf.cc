@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2008-07-17 12:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::read(DcmItem &dataset,
     getAndCheckStringValueFromDataset(dataset, DCM_StorageMediaFileSetUID, StorageMediaFileSetUID, "1", "3", logStream);
     /* then, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_ReferencedSOPSequence);
-    OFCondition result = getSequenceFromDataset(dataset, sequence);
+    OFCondition result = getElementFromDataset(dataset, sequence);
     checkElementValue(sequence, "1-n", "1", logStream, result);
     if (result.good())
     {
@@ -432,7 +432,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::read(DcmItem &dataset,
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_ReferencedSeriesSequence);
-    OFCondition result = getSequenceFromDataset(dataset, sequence);
+    OFCondition result = getElementFromDataset(dataset, sequence);
     checkElementValue(sequence, "1-n", "1", logStream, result);
     if (result.good())
     {
@@ -814,7 +814,7 @@ OFCondition DSRSOPInstanceReferenceList::read(DcmItem &dataset,
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(SequenceTag);
-    OFCondition result = getSequenceFromDataset(dataset, sequence);
+    OFCondition result = getElementFromDataset(dataset, sequence);
     checkElementValue(sequence, "1-n", "1C", logStream, result);
     if (result.good())
     {
@@ -1386,6 +1386,9 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.14  2008-07-17 12:00:09  joergr
+ *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
+ *
  *  Revision 1.13  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

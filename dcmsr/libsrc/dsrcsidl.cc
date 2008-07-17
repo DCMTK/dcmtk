@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-29 13:59:21 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2008-07-17 12:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset,
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_CodingSchemeIdentificationSequence);
-    OFCondition result = getSequenceFromDataset(dataset, sequence);
+    OFCondition result = getElementFromDataset(dataset, sequence);
     checkElementValue(sequence, "1-n", "3", logStream, result);
     if (result.good())
     {
@@ -575,6 +575,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.12  2008-07-17 12:00:09  joergr
+ *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
+ *
  *  Revision 1.11  2008-04-29 13:59:21  joergr
  *  Harmonized capitalization of warning messages.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2008-07-17 12:00:09 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,7 +218,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
 {
     /* read MeasuredValueSequence */
     DcmSequenceOfItems dseq(DCM_MeasuredValueSequence);
-    OFCondition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
     DSRTypes::checkElementValue(dseq, "1", "2", logStream, result, "NUM content item");
     if (result.good())
     {
@@ -438,6 +438,9 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
+ *  Revision 1.25  2008-07-17 12:00:09  joergr
+ *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
+ *
  *  Revision 1.24  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
