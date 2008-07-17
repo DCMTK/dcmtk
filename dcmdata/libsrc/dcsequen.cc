@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2008-07-17 10:36:38 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -857,99 +857,6 @@ OFCondition DcmSequenceOfItems::insert(DcmItem *item,
 
 // ********************************
 
-
-OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
-                                                 OFList<DcmObject*>& objPath,
-                                                 const OFBool createIfNecessary)
-{
-  if (path.length() == 0)
-    return EC_IllegalParameter;
-  // prepare variables
-  OFString restPath(path);
-  OFCondition status = EC_Normal;
-  DcmItem *resultItem = NULL;
-  Uint32 itemNo = 0;
-  Uint32 newlyCreated = 0; // number of items created (appended)
-
-  // parse item number
-  status = parseItemNoFromPath(restPath, itemNo); 
-  if (status.bad())
-    return status;
-  // if item already exists, just grab a reference
-  if (itemNo < this->card())
-    resultItem = getItem(itemNo);
-  // if item does not exist, create new if desired
-  else if (createIfNecessary)
-  {
-    // create and insert items until desired item count is reached
-    while ( (this->card() <= itemNo) || (status.bad()) )
-    {
-      resultItem = new DcmItem();
-      if (!resultItem) return EC_MemoryExhausted;
-      status = insert(resultItem);
-      if (status.bad())
-        delete resultItem;
-      else
-        newlyCreated++;
-    }
-  }
-  // item does not exist and should not be created newly, return error
-  else 
-    return EC_TagNotFound;
-
-  // push new item to result path and continue
-  if (status.good())
-  {
-    objPath.push_back(resultItem);
-    if (restPath.length() != 0)
-      status = resultItem->findOrCreatePath(restPath, objPath, createIfNecessary);
-    else
-      status = EC_Normal;
-  }
-  // cleanup (remove all inserted items) if something went wrong
-  if ( status.bad() && (resultItem != NULL) && (resultItem == objPath.back()) )
-  {
-    objPath.pop_back();
-    Uint32 numItems = card();
-    resultItem = NULL;
-    for (Uint32 i=1; i <= newlyCreated; i++)
-    {
-      resultItem = remove(numItems - i);
-      delete resultItem; resultItem = NULL;
-    }
-  }
-  return status;
-}
-
-
-// ********************************
-
-OFCondition DcmSequenceOfItems::parseItemNoFromPath(OFString& path,        // inout
-                                                    Uint32& itemNo)        // out
-{
-  // check whether there is an item to parse
-  size_t closePos = path.find_first_of(']', 0);
-  if ( (closePos != OFString_npos) && (path[0] == '[') )
-  {
-    long unsigned int parsedNo;
-    int parsed = sscanf(path.c_str(), "[%lu]", &parsedNo); // try parsing item number
-    if (parsed == 1)
-    {
-      itemNo = parsedNo;
-      if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
-        closePos ++;
-      path.erase(0, closePos + 1); // remove item from path
-      return EC_Normal;
-    }
-  }  
-  OFString errMsg = "Unable to parse item number at beginning of path: "; errMsg += path;
-  return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
-}
-
-
-// ********************************
-
-
 OFCondition DcmSequenceOfItems::insertAtCurrentPos(DcmItem* item,
                                                    OFBool before)
 {
@@ -1370,6 +1277,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.72  2008-07-17 10:36:38  onken
+** *** empty log message ***
+**
 ** Revision 1.71  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

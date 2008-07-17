@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:30:23 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2008-07-17 10:36:56 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,14 +319,6 @@ public:
      */
     virtual OFCondition append(DcmItem *item);
 
-
-    virtual OFCondition findOrCreatePath(const OFString& path,
-                                         OFList<DcmObject*>& objPath,
-                                         const OFBool createIfNecessary = OFTrue);
-
-    virtual OFCondition parseItemNoFromPath(OFString& path,        // inout
-                                            Uint32& itemNo);       // out
-
     /** insert new item a current position.
      *  The current position is stored internally in the 'itemList' member variable.
      *  @param item new item to be inserted
@@ -570,6 +562,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.42  2008-07-17 10:36:56  onken
+** *** empty log message ***
+**
 ** Revision 1.41  2008-07-17 10:30:23  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
