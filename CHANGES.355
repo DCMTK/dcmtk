@@ -1,6 +1,94 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.07.17 (onken)
+
+- Implemented copyFrom() method for complete DcmObject class hierarchy, which
+  permits setting an instance's value from an existing object. Implemented
+  assignment operator where necessary.
+  Affects:  dcmdata/libsrc/dcbytstr.cc
+            dcmdata/libsrc/dcchrstr.cc
+            dcmdata/libsrc/dcdatset.cc
+            dcmdata/libsrc/dcdictbi.cc
+            dcmdata/libsrc/dcdirrec.cc
+            dcmdata/libsrc/dcelem.cc
+            dcmdata/libsrc/dcfilefo.cc
+            dcmdata/libsrc/dcitem.cc
+            dcmdata/libsrc/dcmetinf.cc
+            dcmdata/libsrc/dcpixel.cc
+            dcmdata/libsrc/dcpixseq.cc
+            dcmdata/libsrc/dcpxitem.cc
+            dcmdata/libsrc/dcsequen.cc
+            dcmdata/libsrc/dcvrae.cc
+            dcmdata/libsrc/dcvras.cc
+            dcmdata/libsrc/dcvrat.cc
+            dcmdata/libsrc/dcvrcs.cc
+            dcmdata/libsrc/dcvrda.cc
+            dcmdata/libsrc/dcvrds.cc
+            dcmdata/libsrc/dcvrdt.cc
+            dcmdata/libsrc/dcvrfd.cc
+            dcmdata/libsrc/dcvrfl.cc
+            dcmdata/libsrc/dcvris.cc
+            dcmdata/libsrc/dcvrlo.cc
+            dcmdata/libsrc/dcvrlt.cc
+            dcmdata/libsrc/dcvrobow.cc
+            dcmdata/libsrc/dcvrof.cc
+            dcmdata/libsrc/dcvrpn.cc
+            dcmdata/libsrc/dcvrpobw.cc
+            dcmdata/libsrc/dcvrsh.cc
+            dcmdata/libsrc/dcvrsl.cc
+            dcmdata/libsrc/dcvrss.cc
+            dcmdata/libsrc/dcvrst.cc
+            dcmdata/libsrc/dcvrtm.cc
+            dcmdata/libsrc/dcvrui.cc
+            dcmdata/libsrc/dcvrul.cc
+            dcmdata/libsrc/dcvrulup.cc
+            dcmdata/libsrc/dcvrus.cc
+            dcmdata/libsrc/dcvrut.cc
+            dcmdata/include/dcmtk/dcbytstr.h
+            dcmdata/include/dcmtk/dcchrstr.h
+            dcmdata/include/dcmtk/dcdatset.h
+            dcmdata/include/dcmtk/dcdirrec.h
+            dcmdata/include/dcmtk/dcelem.h
+            dcmdata/include/dcmtk/dcfilefo.h
+            dcmdata/include/dcmtk/dcitem.h
+            dcmdata/include/dcmtk/dcmetinf.h
+            dcmdata/include/dcmtk/dcobject.h
+            dcmdata/include/dcmtk/dcovlay.h
+            dcmdata/include/dcmtk/dcpixel.h
+            dcmdata/include/dcmtk/dcpixseq.h
+            dcmdata/include/dcmtk/dcpxitem.h
+            dcmdata/include/dcmtk/dcsequen.h
+            dcmdata/include/dcmtk/dcvrae.h
+            dcmdata/include/dcmtk/dcvras.h
+            dcmdata/include/dcmtk/dcvrat.h
+            dcmdata/include/dcmtk/dcvrcs.h
+            dcmdata/include/dcmtk/dcvrda.h
+            dcmdata/include/dcmtk/dcvrds.h
+            dcmdata/include/dcmtk/dcvrdt.h
+            dcmdata/include/dcmtk/dcvrfd.h
+            dcmdata/include/dcmtk/dcvrfl.h
+            dcmdata/include/dcmtk/dcvris.h
+            dcmdata/include/dcmtk/dcvrlo.h
+            dcmdata/include/dcmtk/dcvrlt.h
+            dcmdata/include/dcmtk/dcvrobow.h
+            dcmdata/include/dcmtk/dcvrof.h
+            dcmdata/include/dcmtk/dcvrpn.h
+            dcmdata/include/dcmtk/dcvrpobw.h
+            dcmdata/include/dcmtk/dcvrsh.h
+            dcmdata/include/dcmtk/dcvrsl.h
+            dcmdata/include/dcmtk/dcvrss.h
+            dcmdata/include/dcmtk/dcvrst.h
+            dcmdata/include/dcmtk/dcvrtm.h
+            dcmdata/include/dcmtk/dcvrui.h
+            dcmdata/include/dcmtk/dcvrul.h
+            dcmdata/include/dcmtk/dcvrulup.h
+            dcmdata/include/dcmtk/dcvrus.h
+            dcmdata/include/dcmtk/dcvrut.h
+
+- Added error constant for upcoming dcmwave module.
+  Affects: dcmdata/include/dcmtk/dcerror.h
+
 **** Changes from 2008.07.15 (riesmeier)
 
 - Removed unused function OFStandard::stringMatchesCharacterSet().
