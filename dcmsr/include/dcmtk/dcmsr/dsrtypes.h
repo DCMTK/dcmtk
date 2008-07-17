@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-27 10:49:51 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2008-07-17 12:00:36 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -977,18 +977,6 @@ class DSRTypes
     static OFCondition getElementFromDataset(DcmItem &dataset,
                                              DcmElement &delem);
 
-    /** get sequence from dataset.
-     *  This method has been introduced in addition to the above one since in this case all
-     *  items contained in the sequence are also stored in the resulting parameter.
-     ** @param  dataset  reference to DICOM dataset from which the element should be retrieved.
-     *                   (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
-     *  @param  dseq     reference to DICOM sequence which should be retrieved.  The return value
-     *                   is also stored in this parameter.
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    static OFCondition getSequenceFromDataset(DcmItem &dataset,
-                                              DcmSequenceOfItems &dseq);
-
     /** get string value from element
      ** @param  delem  DICOM element from which the string value should be retrieved
      ** @return pointer to character string if successful, NULL otherwise
@@ -1249,6 +1237,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.53  2008-07-17 12:00:36  joergr
+ *  Removed getSequenceFromDataset() function.
+ *
  *  Revision 1.52  2008-06-27 10:49:51  joergr
  *  Fixed condition that could lead to a wrong error message in method
  *  checkElementValue().
