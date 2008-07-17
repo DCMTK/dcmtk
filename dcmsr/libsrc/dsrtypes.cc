@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-27 10:50:00 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2008-07-17 11:57:11 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -701,7 +701,7 @@ void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
     const size_t count = OFstatic_cast(size_t, sequence.card());
     for (size_t i = 0; i < count; i++)
     {
-        /* not very efficient, should be replaced by nextObject() */
+        /* not very efficient, should be replaced by nextObject() sometime */
         item = sequence.getItem(i);
         if (item != NULL)
         {
@@ -723,18 +723,10 @@ OFCondition DSRTypes::getElementFromDataset(DcmItem &dataset,
     DcmStack stack;
     OFCondition result = dataset.search(delem.getTag(), stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
-        delem = *OFstatic_cast(DcmElement *, stack.top());
-    return result;
-}
-
-
-OFCondition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
-                                             DcmSequenceOfItems &dseq)
-{
-    DcmStack stack;
-    OFCondition result = dataset.search(dseq.getTag(), stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
-    if (result.good())
-        dseq = *OFstatic_cast(DcmSequenceOfItems *, stack.top());
+    {
+        /* copy object from search stack */
+        result = delem.copyFrom(*stack.top());
+    }
     return result;
 }
 
@@ -1500,6 +1492,10 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.55  2008-07-17 11:57:11  joergr
+ *  Replaced wrong use of assignment operator by new copyFrom() method.
+ *  Removed getSequenceFromDataset() function.
+ *
  *  Revision 1.54  2008-06-27 10:50:00  joergr
  *  Fixed condition that could lead to a wrong error message in method
  *  checkElementValue().
