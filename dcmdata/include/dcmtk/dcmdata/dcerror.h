@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-07-17 10:28:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,7 @@ const unsigned short OFM_dcmdbsup = 16;
 const unsigned short OFM_dcmppswm = 17;
 const unsigned short OFM_dcmjp2k  = 18;
 const unsigned short OFM_dcmjpls  = 19;
+const unsigned short OFM_dcmwave  = 20;
 
 // condition constants
 
@@ -124,6 +125,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.23  2008-07-17 10:28:36  onken
+** Added error constant for upcoming dcmwave module.
+**
 ** Revision 1.22  2007-11-29 14:30:35  meichel
 ** Updated doxygen API documentation
 **
