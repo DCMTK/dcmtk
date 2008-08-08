@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2008.07.17 (riesmeier)
 
+- Fixed issue with NumberOfFrames element in writeImageToDataset().
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+**** Changes from 2008.07.17 (riesmeier)
+
 - Replaced wrong use of assignment operator by new copyFrom() method.
   Affects: dcmsr/libsrc/dsrtypes.cc
 
@@ -148,7 +153,7 @@ Changes between releases are documented here.
             dcmdata/include/dcmtk/dcvrulup.h
             dcmdata/include/dcmtk/dcvrus.h
             dcmdata/include/dcmtk/dcvrut.h
-            
+
 **** Changes from 2008.07.15 (riesmeier)
 
 - Removed unused function OFStandard::stringMatchesCharacterSet().

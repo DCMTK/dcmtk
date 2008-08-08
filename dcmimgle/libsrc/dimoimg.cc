@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 13:12:02 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2008-08-08 14:17:50 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1977,6 +1977,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
         const unsigned long count = InterData->getCount();
         if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
         {
+            char numBuf[20];
             unsigned int bits = BitsPerSample;
             /* only 'used' pixel data */
             if (!mode)
@@ -1996,7 +1997,12 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
             /* set image resolution */
             dataset.putAndInsertUint16(DCM_Columns, Columns);
             dataset.putAndInsertUint16(DCM_Rows, Rows);
-            dataset.putAndInsertSint32(DCM_NumberOfFrames, NumberOfFrames);
+#if SIZEOF_LONG == 8
+            sprintf(numBuf, "%d", NumberOfFrames);
+#else
+            sprintf(numBuf, "%ld", NumberOfFrames);
+#endif
+            dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
             dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
             /* set pixel encoding and data */
             switch (InterData->getRepresentation())
@@ -2142,6 +2148,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.73  2008-08-08 14:17:50  joergr
+ * Fixed issue with NumberOfFrames element in writeImageToDataset().
+ *
  * Revision 1.72  2008-05-20 13:12:02  joergr
  * Fixed issue with signed pixel data in bicubic interpolation algorithm.
  *
