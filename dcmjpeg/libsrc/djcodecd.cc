@@ -22,9 +22,9 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:48:18 $
+ *  Update Date:      $Date: 2008-08-15 09:18:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +120,11 @@ OFCondition DJCodecDecoder::decode(
     OFBool isYBR = OFFalse;
     if ((dicomPI == EPI_YBR_Full)||(dicomPI == EPI_YBR_Full_422)||(dicomPI == EPI_YBR_Partial_422)) isYBR = OFTrue;
 
-    if (imageFrames < 1) imageFrames = 1; // default in case this attribute contains garbage
+    if (imageFrames >= OFstatic_cast(Sint32, pixSeq->card()))
+      imageFrames = pixSeq->card() - 1; // limit number of frames to number of pixel items - 1
+    if (imageFrames < 1)
+      imageFrames = 1; // default in case the number of frames attribute contains garbage
+
     if (result.good())
     {
       DcmPixelItem *pixItem = NULL;
@@ -289,6 +293,14 @@ OFCondition DJCodecDecoder::decode(
                 if ((result.good()) && ((unsigned long)(imageHighBit+1) > (unsigned long)precision))
                 {
                   result = ((DcmItem *)dataset)->putAndInsertUint16(DCM_HighBit, precision-1);
+                }
+
+                // Number of Frames might have changed in case the previous value was wrong
+                if (result.good() && (imageFrames > 1))
+                {
+                  char numBuf[20];
+                  sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+                  result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
                 }
 
                 // Pixel Representation could be signed if lossless JPEG. For now, we just believe what we get.
@@ -760,6 +772,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.10  2008-08-15 09:18:13  meichel
+ * Decoder now gracefully handles the case of faulty images where value of
+ *   NumberOfFrames is larger than the number of compressed fragments, if and only
+ *   if there is just a single fragment per frame.
+ *
  * Revision 1.9  2008-05-29 10:48:18  meichel
  * Experimental implementation of decodeFrame method for
  *   JPEG decoder added.

@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.08.15 (eichelberg)
+
+- Decoder now gracefully handles the case of faulty images where value of 
+  NumberOfFrames is larger than the number of compressed fragments, if and only 
+  if there is just a single fragment per frame.
+  Affects: dcmdata/libsrc/dcrleccd.cc
+           dcmjpeg/libsrc/djcodecd.cc
+
 **** Changes from 2008.07.17 (riesmeier)
 
 - Fixed issue with NumberOfFrames element in writeImageToDataset().

@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:46:16 $
+ *  Update Date:      $Date: 2008-08-15 09:18:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,10 @@ OFCondition DcmRLECodecDecoder::decode(
 
     // number of frames is an optional attribute - we don't mind if it isn't present.
     if (result.good()) (void) ditem->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
-    if (imageFrames < 1) imageFrames = 1; // default in case this attribute contains garbage
+    if (imageFrames >= OFstatic_cast(Sint32, pixSeq->card()))
+      imageFrames = pixSeq->card() - 1; // limit number of frames to number of pixel items - 1
+    if (imageFrames < 1)
+      imageFrames = 1; // default in case the number of frames attribute is absent or contains garbage
 
     if (result.good())
     {
@@ -366,6 +369,14 @@ OFCondition DcmRLECodecDecoder::decode(
 
           // adjust byte order for uncompressed image to little endian
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, totalSize, sizeof(Uint16));
+
+          // Number of Frames might have changed in case the previous value was wrong
+          if (result.good() && (imageFrames > 1))
+          {
+            char numBuf[20];
+            sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
+            result = ((DcmItem *)dataset)->putAndInsertString(DCM_NumberOfFrames, numBuf);
+          }
         }
       }
     }
@@ -431,6 +442,11 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.9  2008-08-15 09:18:13  meichel
+ * Decoder now gracefully handles the case of faulty images where value of
+ *   NumberOfFrames is larger than the number of compressed fragments, if and only
+ *   if there is just a single fragment per frame.
+ *
  * Revision 1.8  2008-05-29 10:46:16  meichel
  * Implemented new method DcmPixelData::getUncompressedFrame
  *   that permits frame-wise access to compressed and uncompressed
