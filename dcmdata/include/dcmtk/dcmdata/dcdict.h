@@ -22,8 +22,8 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:09 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2008-08-15 09:27:14 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ public:
     int numberOfNormalTagEntries() const { return hashDict.size(); }
 
     /// returns the number of repeating tag entries
-    int numberOfRepeatingTagEntries() const { return repDict.size(); }
+    int numberOfRepeatingTagEntries() const { return OFstatic_cast(int, repDict.size()); }
 
     /** returns the number of dictionary entries that were loaded
      *  either from file or from a built-in dictionary or both.
@@ -296,7 +296,10 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.20  2005-12-08 16:28:09  meichel
+** Revision 1.21  2008-08-15 09:27:14  meichel
+** Added type cast to fix a warning
+**
+** Revision 1.20  2005/12/08 16:28:09  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.19  2004/01/16 14:07:27  joergr

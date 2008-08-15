@@ -22,6 +22,9 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcvrobow.h
            dcmdata/libsrc/dcvrobow.cc
 
+- Added type cast to fix a warning
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdict.h
+
 **** Changes from 2008.07.17 (riesmeier)
 
 - Fixed issue with NumberOfFrames element in writeImageToDataset().
