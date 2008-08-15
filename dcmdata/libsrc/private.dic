@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2006, OFFIS
+#  Copyright (C) 1994-2008, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -22,8 +22,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2008-04-30 12:33:58 $
-#  CVS/RCS Revision: $Revision: 1.14 $
+#  Update Date:      $Date: 2008-08-15 09:21:37 $
+#  CVS/RCS Revision: $Revision: 1.15 $
 #  Status:           $State: Exp $
 #
 #
@@ -1114,6 +1114,10 @@
 (0041,"PAPYRUS",b2)	UL	InternalOffsetToDataSet	1-n
 (0041,"PAPYRUS",b3)	UL	InternalOffsetToImage	1-n
 
+# Note: Some Philips devices use these private tags with reservation value
+# "Philips Imaging DD 001", others use "PHILIPS IMAGING DD 001". All attributes
+# should thus be present twice in this dictionary, once for each spelling variant.
+#
 (2001,"Philips Imaging DD 001",01)	FL	ChemicalShift	1
 (2001,"Philips Imaging DD 001",02)	IS	ChemicalShiftNumberMR	1
 (2001,"Philips Imaging DD 001",03)	FL	DiffusionB-Factor	1
@@ -1153,6 +1157,10 @@
 (2001,"Philips Imaging DD 001",7b)	IS	AcquisitionNumber	1
 (2001,"Philips Imaging DD 001",81)	IS	NumberOfDynamicScans	1
 
+# Note: Some Philips devices use these private tags with reservation value
+# "Philips Imaging DD 001", others use "PHILIPS IMAGING DD 001". All attributes
+# should thus be present twice in this dictionary, once for each spelling variant.
+#
 (2001,"PHILIPS IMAGING DD 001",01)	FL	ChemicalShift	1
 (2001,"PHILIPS IMAGING DD 001",02)	IS	ChemicalShiftNumberMR	1
 (2001,"PHILIPS IMAGING DD 001",03)	FL	DiffusionB-Factor	1
@@ -1192,12 +1200,25 @@
 (2001,"PHILIPS IMAGING DD 001",7b)	IS	AcquisitionNumber	1
 (2001,"PHILIPS IMAGING DD 001",81)	IS	NumberOfDynamicScans	1
 
+# Note: Some Philips devices use these private tags with reservation value
+# "Philips MR Imaging DD 001", others use "PHILIPS MR IMAGING DD 001". All attributes
+# should thus be present twice in this dictionary, once for each spelling variant.
+#
 (2005,"Philips MR Imaging DD 001",05)	CS	SynergyReconstructionType	1
 (2005,"Philips MR Imaging DD 001",20)	SL	NumberOfChemicalShifts	1
 (2005,"Philips MR Imaging DD 001",a1)	CS	SyncraScanType	1
 (2005,"Philips MR Imaging DD 001",83)	SQ	Unknown	1
 
 (2005,"Philips MR Imaging DD 005",02)	SQ	Unknown	1
+
+# Note: Some Philips devices use these private tags with reservation value
+# "Philips MR Imaging DD 001", others use "PHILIPS MR IMAGING DD 001". All attributes
+# should thus be present twice in this dictionary, once for each spelling variant.
+#
+(2005,"PHILIPS MR IMAGING DD 001",05)	CS	SynergyReconstructionType	1
+(2005,"PHILIPS MR IMAGING DD 001",20)	SL	NumberOfChemicalShifts	1
+(2005,"PHILIPS MR IMAGING DD 001",a1)	CS	SyncraScanType	1
+(2005,"PHILIPS MR IMAGING DD 001",83)	SQ	Unknown	1
 
 (0019,"PHILIPS MR R5.5/PART",1000)	DS	FieldOfView	1
 (0019,"PHILIPS MR R5.6/PART",1000)	DS	FieldOfView	1

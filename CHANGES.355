@@ -9,6 +9,10 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcrleccd.cc
            dcmjpeg/libsrc/djcodecd.cc
 
+- Added a few Philips private tags
+  Affects: dcmdata/libsrc/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2008.07.17 (riesmeier)
 
 - Fixed issue with NumberOfFrames element in writeImageToDataset().

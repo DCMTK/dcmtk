@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: caesar
-**   Date: 2008-04-30 14:36:57
+**   Date: 2008-08-15 11:21:07
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2008-04-30 14:36:57";
+const char* dcmBuiltinDictBuildDate = "2008-08-15 11:21:07";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -18312,18 +18312,34 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "SynergyReconstructionType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x0005, 0x2005, 0x0005,
+      EVR_CS, "SynergyReconstructionType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
   , { 0x2005, 0x0020, 0x2005, 0x0020,
       EVR_SL, "NumberOfChemicalShifts", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x0020, 0x2005, 0x0020,
+      EVR_SL, "NumberOfChemicalShifts", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
+  , { 0x2005, 0x0083, 0x2005, 0x0083,
+      EVR_SQ, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips MR Imaging DD 001" }
   , { 0x2005, 0x0083, 0x2005, 0x0083,
       EVR_SQ, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
-      "Philips MR Imaging DD 001" }
+      "PHILIPS MR IMAGING DD 001" }
   , { 0x2005, 0x00a1, 0x2005, 0x00a1,
       EVR_CS, "SyncraScanType", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "Philips MR Imaging DD 001" }
+  , { 0x2005, 0x00a1, 0x2005, 0x00a1,
+      EVR_CS, "SyncraScanType", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "PHILIPS MR IMAGING DD 001" }
 #endif
   , { 0x2010, 0x0010, 0x2010, 0x0010,
       EVR_ST, "ImageDisplayFormat", 1, 1, "DICOM_2008",
