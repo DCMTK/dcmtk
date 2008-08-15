@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-08-15 09:26:31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,6 +304,14 @@ class DcmOtherByteOtherWord
                     const int level,
                     const char *pixelFileName,
                     size_t *pixelCounter);
+
+private:
+
+    /** this flag is used during write operations and indicates that compact() should be
+     *  called once the write operation finishes.
+     */
+    OFBool compactAfterTransfer;
+
 };
 
 
@@ -313,6 +321,14 @@ class DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
+** Revision 1.32  2008-08-15 09:26:31  meichel
+** Under certain conditions (odd length compressed pixel data fragments)
+**   class DcmOtherByteOtherWord needs to load the attribute value into main
+**   memory during a write() operation, in order to add a pad byte. A new flag
+**   compactAfterTransfer now makes sure that the memory is released once the
+**   write operation has finished, so that only a single fragment at a time
+**   needs to fully reside in memory.
+**
 ** Revision 1.31  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

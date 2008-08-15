@@ -13,6 +13,15 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/private.dic
            dcmdata/libsrc/dcdictzz.cc
 
+- Under certain conditions (odd length compressed pixel data fragments)
+  class DcmOtherByteOtherWord needs to load the attribute value into main
+  memory during a write() operation, in order to add a pad byte. A new flag
+  compactAfterTransfer now makes sure that the memory is released once the
+  write operation has finished, so that only a single fragment at a time
+  needs to fully reside in memory.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcvrobow.h
+           dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2008.07.17 (riesmeier)
 
 - Fixed issue with NumberOfFrames element in writeImageToDataset().

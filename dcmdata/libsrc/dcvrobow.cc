@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2008-08-15 09:26:33 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,13 +50,15 @@
 
 DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmTag &tag,
                                              const Uint32 len)
-  : DcmElement(tag, len)
+: DcmElement(tag, len)
+, compactAfterTransfer(OFFalse)
 {
 }
 
 
 DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmOtherByteOtherWord &old)
-  : DcmElement(old)
+: DcmElement(old)
+, compactAfterTransfer(old.compactAfterTransfer)
 {
 }
 
@@ -69,6 +71,7 @@ DcmOtherByteOtherWord::~DcmOtherByteOtherWord()
 DcmOtherByteOtherWord &DcmOtherByteOtherWord::operator=(const DcmOtherByteOtherWord &obj)
 {
     DcmElement::operator=(obj);
+    compactAfterTransfer = obj.compactAfterTransfer;
     return *this;
 }
 
@@ -239,15 +242,19 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
 OFCondition DcmOtherByteOtherWord::alignValue()
 {
     errorFlag = EC_Normal;
-    /* add padding byte in case of 8 bit data */
-    if ((getTag().getEVR() != EVR_OW && getTag().getEVR() != EVR_lt) && (getLengthField() > 0))
+    if ((getTag().getEVR() != EVR_OW && getTag().getEVR() != EVR_lt) && (getLengthField() > 0) && ((getLengthField() & 1) != 0))
     {
-        Uint8 *bytes = NULL;
-        bytes = OFstatic_cast(Uint8 *, getValue(getByteOrder()));
-        /* check for odd length */
-        if ((bytes != NULL) && ((getLengthField() & 1) != 0))
+        // We have an odd number of bytes. This should never happen and is certainly not allowed in DICOM.
+        // To fix this problem, we will add a zero pad byte at the end of the value field.
+        // This requires us to load the value field into memory, which may very well be a problem
+        // if this is part of a very large multi-frame object. 
+        Uint8 *bytes = OFstatic_cast(Uint8 *, getValue(getByteOrder()));
+
+        if (bytes)
         {
+            // set zero pad byte
             bytes[getLengthField()] = 0;
+            // increase length field
             setLengthField(getLengthField() + 1);
         }
     }
@@ -594,10 +601,26 @@ OFCondition DcmOtherByteOtherWord::write(
         errorFlag = EC_IllegalCall;
     else
     {
-        if (getTransferState() == ERW_init) alignValue();
-        /* call inherited method */
+        if (getTransferState() == ERW_init) 
+        {
+          // if the attribute value is in file, we should call compact() if the write
+          // operation causes the value to be loaded into main memory, which can happen
+          // for odd length attributes.
+          compactAfterTransfer = ! valueLoaded();
+
+          // this call may cause the attribute to be loaded into memory
+          alignValue();
+        }
+
+        // call inherited method 
         errorFlag = DcmElement::write(outStream, oxfer, enctype, wcache);
     }
+
+    // if the write operation has completed successfully, call compact if the
+    // attribute value resided in file prior to the write operation.
+    if (errorFlag.good() && compactAfterTransfer) compact();
+
+    // return error status
     return errorFlag;
 }
 
@@ -612,10 +635,26 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
         errorFlag = EC_IllegalCall;
     else
     {
-        if (getTransferState() == ERW_init) alignValue();
-        /* call inherited method */
+        if (getTransferState() == ERW_init) 
+        {
+          // if the attribute value is in file, we should call compact() if the write
+          // operation causes the value to be loaded into main memory, which can happen
+          // for odd length attributes.
+          compactAfterTransfer = ! valueLoaded();
+
+          // this call may cause the attribute to be loaded into memory
+          alignValue();
+        }
+
+        // call inherited method 
         errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     }
+
+    // if the write operation has completed successfully, call compact if the
+    // attribute value resided in file prior to the write operation.
+    if (errorFlag.good() && compactAfterTransfer) compact();
+
+    // return error status
     return errorFlag;
 }
 
@@ -663,6 +702,14 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.53  2008-08-15 09:26:33  meichel
+** Under certain conditions (odd length compressed pixel data fragments)
+**   class DcmOtherByteOtherWord needs to load the attribute value into main
+**   memory during a write() operation, in order to add a pad byte. A new flag
+**   compactAfterTransfer now makes sure that the memory is released once the
+**   write operation has finished, so that only a single fragment at a time
+**   needs to fully reside in memory.
+**
 ** Revision 1.52  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
