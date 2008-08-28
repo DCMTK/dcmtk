@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-15 09:49:38 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-08-28 10:20:43 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -440,19 +440,36 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
 
     /* check whether 'fileName' contains absolute path */
     if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
+    {
         result = fileName;
-    else {
-        /* normalize the directory name */
-        normalizeDirName(result, dirName, allowEmptyDirName);
-        /* check file name */
-        if (!fileName.empty() && (fileName != "."))
+        return result;
+    }
+    /* check for absolute path containing windows drive name, e. g. "c:\..." */
+    else if ( (fileName.length() >= 3) )
+    {
+        char c = fileName.at(0);
+        if ( ((c >= 'A') && (c <= 'Z')) ||
+             ((c >= 'a') && (c <= 'z')) )
         {
-            /* add path separator (if required) ... */
-            if (!result.empty() && (result.at(result.length() - 1) != PATH_SEPARATOR))
-                result += PATH_SEPARATOR;
-            /* ...and file name */
-            result += fileName;
+            if (fileName.substr(1,2) == ":\\")
+            {
+                result = fileName;
+                return result;
+            }
         }
+    }
+
+    /* we only get here, if we don't have an absolute directory in "fileName" */
+    /* now normalize the directory name */
+    normalizeDirName(result, dirName, allowEmptyDirName);
+    /* check file name */
+    if (!fileName.empty() && (fileName != "."))
+    {
+        /* add path separator (if required) ... */
+        if (!result.empty() && (result.at(result.length() - 1) != PATH_SEPARATOR))
+            result += PATH_SEPARATOR;
+        /* ...and file name */
+        result += fileName;
     }
     return result;
 }
@@ -590,6 +607,16 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 #endif
     /* return number of added files */
     return fileList.size() - initialSize;
+}
+
+
+OFBool OFStandard::deleteFile(const OFString &filename)
+{
+  int err = unlink(filename.c_str());
+  if (err == 0)
+    return OFTrue;
+  else
+    return OFFalse;
 }
 
 
@@ -1749,6 +1776,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.46  2008-08-28 10:20:43  onken
+ *  Modified combineDirAndFilename() to also recognize Windows absolute paths
+ *  starting with a drive letter.
+ *
  *  Revision 1.45  2008-07-15 09:49:38  joergr
  *  Removed unused function OFStandard::stringMatchesCharacterSet().
  *

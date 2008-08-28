@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.08.28 (onken)
+
+- Modified combineDirAndFilename() to also recognize Windows absolute paths
+  starting with a drive letter.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2008.08.15 (eichelberg)
 
 - Decoder now gracefully handles the case of faulty images where value of 
