@@ -3,14 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2008.08.28 (onken)
 
+- Added #ifdef to combineDirAndFilename() to only check for absolute paths with
+  driver letter when on Windows.
+  Affects: ofstd/libsrc/ofstd.cc
+
 - Modified combineDirAndFilename() to also recognize Windows absolute paths
   starting with a drive letter.
   Affects: ofstd/libsrc/ofstd.cc
 
 **** Changes from 2008.08.15 (eichelberg)
 
-- Decoder now gracefully handles the case of faulty images where value of 
-  NumberOfFrames is larger than the number of compressed fragments, if and only 
+- Decoder now gracefully handles the case of faulty images where value of
+  NumberOfFrames is larger than the number of compressed fragments, if and only
   if there is just a single fragment per frame.
   Affects: dcmdata/libsrc/dcrleccd.cc
            dcmjpeg/libsrc/djcodecd.cc

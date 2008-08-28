@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-08-28 10:20:43 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2008-08-28 10:34:02 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -444,6 +444,7 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
         result = fileName;
         return result;
     }
+#ifdef HAVE_WINDOWS_H
     /* check for absolute path containing windows drive name, e. g. "c:\..." */
     else if ( (fileName.length() >= 3) )
     {
@@ -458,6 +459,7 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
             }
         }
     }
+#endif
 
     /* we only get here, if we don't have an absolute directory in "fileName" */
     /* now normalize the directory name */
@@ -1776,6 +1778,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.47  2008-08-28 10:34:02  onken
+ *  Added #ifdef to combineDirAndFilename() to only check for absolute paths with
+ *  driver letter when on Windows.
+ *
  *  Revision 1.46  2008-08-28 10:20:43  onken
  *  Modified combineDirAndFilename() to also recognize Windows absolute paths
  *  starting with a drive letter.
