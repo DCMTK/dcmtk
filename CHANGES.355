@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2008.08.28 (onken)
 
+- Introduced deleteFile() method.
+  Affects: ofstd/libsrc/ofstd.cc
+           ofstd/include/dcmtk/ofstd/ofstd.h
+
 - Added #ifdef to combineDirAndFilename() to only check for absolute paths with
   driver letter when on Windows.
   Affects: ofstd/libsrc/ofstd.cc

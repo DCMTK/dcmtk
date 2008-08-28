@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-15 09:49:33 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-08-28 10:44:36 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -239,6 +239,12 @@ class OFStandard
                                              const OFString &pattern /*= ""*/,      // default parameter value not
                                              const OFString &dirPrefix /*= ""*/,    // supported by Sun CC 2.0.1 :-/
                                              const OFBool recurse = OFTrue);
+
+    /** delete given file from filesystem
+     *  @param filename (including directory) to delete
+     *  @return OFTrue if deletion was successul, OFFalse otherwise
+     */
+    static OFBool deleteFile(const OFString &filename);
 
     // --- other functions ---
 
@@ -481,6 +487,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.31  2008-08-28 10:44:36  onken
+ * Introduced deleteFile() method.
+ *
  * Revision 1.30  2008-07-15 09:49:33  joergr
  * Removed unused function OFStandard::stringMatchesCharacterSet().
  *

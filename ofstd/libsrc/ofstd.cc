@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-08-28 10:34:02 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2008-08-28 10:44:30 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -615,10 +615,7 @@ size_t OFStandard::searchDirectoryRecursively(const OFString &directory,
 OFBool OFStandard::deleteFile(const OFString &filename)
 {
   int err = unlink(filename.c_str());
-  if (err == 0)
-    return OFTrue;
-  else
-    return OFFalse;
+  return (err == 0);
 }
 
 
@@ -1778,6 +1775,9 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.48  2008-08-28 10:44:30  onken
+ *  Introduced deleteFile() method.
+ *
  *  Revision 1.47  2008-08-28 10:34:02  onken
  *  Added #ifdef to combineDirAndFilename() to only check for absolute paths with
  *  driver letter when on Windows.
