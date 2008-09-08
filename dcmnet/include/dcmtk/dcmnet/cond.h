@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-04-17 15:28:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-08 13:16:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/cond.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ extern const OFCondition DIMSE_BADCOMMANDTYPE;           /* Bad command type */
 extern const OFCondition DIMSE_BADDATA;                  /* Inappropriate data for message (send) */
 extern const OFCondition DIMSE_BADMESSAGE;               /* Badly formed message (send) */
 extern const OFCondition DIMSE_ILLEGALASSOCIATION;       /* Caller passed in an illegal association */
-extern const OFCondition DIMSE_NODATAAVAILABLE;          /* no data (timout in non-blocking mode) */
+extern const OFCondition DIMSE_NODATAAVAILABLE;          /* no data (timeout in non-blocking mode) */
 extern const OFCondition DIMSE_NOVALIDPRESENTATIONCONTEXTID;  /* no valid presentation context ID */
 extern const OFCondition DIMSE_NULLKEY;                  /* Caller passed in a NULL key */
 extern const OFCondition DIMSE_OUTOFRESOURCES;           /* out of resources */
@@ -273,6 +273,9 @@ typedef OFCondition CONDITION;
 /*
  * CVS Log
  * $Log: cond.h,v $
+ * Revision 1.12  2008-09-08 13:16:11  joergr
+ * Fixed typo in OFCondition text string.
+ *
  * Revision 1.11  2008-04-17 15:28:33  onken
  * Reworked and extended User Identity Negotiation code.
  *

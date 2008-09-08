@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-04-17 15:27:35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-08 13:17:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ const OFConditionConst DIMSEE_BADCOMMANDTYPE(               OFM_dcmnet, DIMSEC_B
 const OFConditionConst DIMSEE_BADDATA(                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");
 const OFConditionConst DIMSEE_BADMESSAGE(                   OFM_dcmnet, DIMSEC_BADMESSAGE,                   OF_error, "DIMSE Badly formed message");
 const OFConditionConst DIMSEE_ILLEGALASSOCIATION(           OFM_dcmnet, DIMSEC_ILLEGALASSOCIATION,           OF_error, "DIMSE Caller passed in an illegal association");
-const OFConditionConst DIMSEE_NODATAAVAILABLE(              OFM_dcmnet, DIMSEC_NODATAAVAILABLE,              OF_error, "DIMSE No data available (timout in non-blocking mode)");
+const OFConditionConst DIMSEE_NODATAAVAILABLE(              OFM_dcmnet, DIMSEC_NODATAAVAILABLE,              OF_error, "DIMSE No data available (timeout in non-blocking mode)");
 const OFConditionConst DIMSEE_NOVALIDPRESENTATIONCONTEXTID( OFM_dcmnet, DIMSEC_NOVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE No valid Presentation Context ID");
 const OFConditionConst DIMSEE_NULLKEY(                      OFM_dcmnet, DIMSEC_NULLKEY,                      OF_error, "DIMSE Caller passed in a NULL key");
 const OFConditionConst DIMSEE_OUTOFRESOURCES(               OFM_dcmnet, DIMSEC_OUTOFRESOURCES,               OF_error, "DIMSE Out of resources");
@@ -135,9 +135,9 @@ void DimseCondition::dump(OFCondition cond, OFConsole& console)
 }
 
 OFCondition DimseCondition::push(
-    unsigned short aModule, 
-    unsigned short aCode, 
-    OFStatus aStatus, 
+    unsigned short aModule,
+    unsigned short aCode,
+    OFStatus aStatus,
     const char *aText,
     OFCondition subCondition)
 {
@@ -145,7 +145,7 @@ OFCondition DimseCondition::push(
   /* declare variable outside the block structure of the OFSTRINGSTREAM_xxx macros */
   OFConditionString *condString;
   char buf[16];
-  sprintf(buf,"%04x:%04x ", subCondition.module(), subCondition.code()); 
+  sprintf(buf,"%04x:%04x ", subCondition.module(), subCondition.code());
   os << aText << OFendl << buf << subCondition.text() << OFStringStream_ends;
   OFSTRINGSTREAM_GETSTR(os, c)
   condString = new OFConditionString(aModule, aCode, aStatus, c);
@@ -157,13 +157,16 @@ OFCondition DimseCondition::push(
   OFCondition newCondition,
   OFCondition subCondition)
 {
-  return DimseCondition::push(newCondition.module(), newCondition.code(), 
+  return DimseCondition::push(newCondition.module(), newCondition.code(),
     newCondition.status(), newCondition.text(), subCondition);
 }
 
 /*
  * CVS Log
  * $Log: cond.cc,v $
+ * Revision 1.17  2008-09-08 13:17:13  joergr
+ * Fixed typo in OFCondition text string.
+ *
  * Revision 1.16  2008-04-17 15:27:35  onken
  * Reworked and extended User Identity Negotiation code.
  *
