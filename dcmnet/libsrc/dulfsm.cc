@@ -34,9 +34,9 @@
 ** @$=@$=@$=
 */
 /*
-**        DICOM 93
-**         Electronic Radiology Laboratory
-**       Mallinckrodt Institute of Radiology
+**          DICOM 93
+**        Electronic Radiology Laboratory
+**      Mallinckrodt Institute of Radiology
 **    Washington University School of Medicine
 **
 ** Module Name(s):  DUL_InitializeFSM
@@ -44,12 +44,12 @@
 **      fsmDebug
 **
 ** Author, Date:  Stephen M. Moore, 15-Apr-93
-** Intent:      Define tables and provide functions that implement
-**            the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:   $Author: meichel $, $Date: 2008-04-30 09:12:06 $
+** Intent:        Define tables and provide functions that implement
+**                the DICOM Upper Layer (DUL) finite state machine.
+** Last Update:   $Author: joergr $, $Date: 2008-09-08 13:16:36 $
 ** Source File:   $RCSfile: dulfsm.cc,v $
-** Revision:    $Revision: 1.64 $
-** Status:      $State: Exp $
+** Revision:      $Revision: 1.65 $
+** Status:        $State: Exp $
 */
 
 
@@ -737,9 +737,9 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     /* dump information if required */
     if (debug) {
         DEBUG_DEVICE.width(2);
-            DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event
-                << "DUL  Event:  " << entry->eventName << OFendl
-                << "DUL  Action: " << entry->actionName << OFendl;
+        DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event << OFendl
+            << "DUL  Event:  " << entry->eventName << OFendl
+            << "DUL  Action: " << entry->actionName << OFendl;
     }
 #endif
 
@@ -2385,7 +2385,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 
     if (rc < 0)
     {
-        // an error other than timout in non-blocking mode has occured,
+        // an error other than timeout in non-blocking mode has occured,
         // either in connect() or in select().
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */);
@@ -3966,6 +3966,9 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
+** Revision 1.65  2008-09-08 13:16:36  joergr
+** Added missing newline in debug output.
+**
 ** Revision 1.64  2008-04-30 09:12:06  meichel
 ** Correctly initializing SO_LINGER timeout flag for socket closing, which was
 **   in undefined state in requestAssociationTCP
