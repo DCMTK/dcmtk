@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.09.08 (riesmeier)
+
+- Fixed typo in OFCondition text string.
+  Affects: dcmnet/include/dcmtk/dcmnet/cond.h
+           dcmnet/libsrc/cond.cc
+
+- Added missing newline in debug output.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
 **** Changes from 2008.08.28 (onken)
 
 - Introduced deleteFile() method.
@@ -8,7 +17,7 @@ Changes between releases are documented here.
            ofstd/include/dcmtk/ofstd/ofstd.h
 
 - Added #ifdef to combineDirAndFilename() to only check for absolute paths with
-  driver letter when on Windows.
+  drive letter when on Windows.
   Affects: ofstd/libsrc/ofstd.cc
 
 - Modified combineDirAndFilename() to also recognize Windows absolute paths
