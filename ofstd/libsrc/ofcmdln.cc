@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-16 12:39:40 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2008-09-24 13:04:58 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1441,9 +1441,13 @@ void OFCommandLine::getStatusString(const E_ParseStatus status,
             statusStr = "Too many parameters";
             break;
         case PS_CannotOpenCommandFile:
-            statusStr = "Cannot open command file ";
+            statusStr = "Cannot open command file";
             if (getLastArg(str))
+            {
+                statusStr += " '";
                 statusStr += str;
+                statusStr += "'";
+            }
             break;
         default:
             statusStr.clear();
@@ -1548,6 +1552,9 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.46  2008-09-24 13:04:58  joergr
+ * Fixed typo in output of getStatusString().
+ *
  * Revision 1.45  2008-04-16 12:39:40  joergr
  * Added support for reverse search direction (left to right) to findOption().
  *
