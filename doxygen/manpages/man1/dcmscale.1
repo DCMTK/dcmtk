@@ -1,4 +1,4 @@
-.TH "dcmscale" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmscale" 1 "24 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmscale \- Scale DICOM images
@@ -88,7 +88,7 @@ scaling:
           ignore pixel aspect ratio when scaling
 
   +i    --interpolate  [n]umber of algorithm : integer
-          use interpolation when scaling (1..2, default: 1)
+          use interpolation when scaling (1..4, default: 1)
 
   -i    --no-interpolation
           no interpolation when scaling
@@ -187,6 +187,20 @@ data set trailing padding (not with --write-dataset):
           align file on multiple of f bytes and items on
           multiple of i bytes
 .fi
+.PP
+.SH "NOTES"
+.PP
+The following preferred interpolation algorithms can be selected using the \fI--interpolate\fP option:
+.PP
+.PD 0
+.IP "\(bu" 2
+1 = free scaling algorithm with interpolation from pbmplus toolkit 
+.IP "\(bu" 2
+2 = free scaling algorithm with interpolation from c't magazine 
+.IP "\(bu" 2
+3 = magnification algorithm with bilinear interpolation from Eduard Stanescu 
+.IP "\(bu" 2
+4 = magnification algorithm with bicubic interpolation from Eduard Stanescu
 .PP
 .SH "COMMAND LINE"
 .PP

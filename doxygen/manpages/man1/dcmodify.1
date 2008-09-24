@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "3 Mar 2008" "Version 3.5.4 CVS" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "24 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -12,13 +12,13 @@ dcmodify [options] dcmfile-in...
 .PP
 .SH "DESCRIPTION"
 .PP
-\fBdcmodify\fP is a tool that allows to modify, insert and delete tags in DICOM files. Sequences and tags with a value multiplicity > 1 are also supported. Currently \fBdcmodify\fP is not able to remove or insert single items. Metaheader information and a tags VR can't be modified directly through \fBdcmodify\fP, too. In addition to tag modifications, \fBdcmodify\fP makes available some input options - forcing \fBdcmodify\fP to handle its input files as the user specifies - and output options to control the output format of the resulting files.
+\fBdcmodify\fP is a tool that allows to modify, insert and delete tags in DICOM files. Sequences and tags with a value multiplicity > 1 are also supported. Currently, \fBdcmodify\fP is not able to remove or insert sequence items. Metaheader information and the tag's VR can also not be modified directly by \fBdcmodify\fP at this time. In addition to tag modifications, \fBdcmodify\fP makes available some input options - forcing \fBdcmodify\fP to handle its input files as the user specifies - and output options to control the output format of the resulting files.
 .PP
 In case multiple modifications have to be performed, \fBdcmodify\fP does the modifications in the same order as they appear on the command line. Please note that \fBdcmodify\fP does not check whether a given value matches its value representation (VR). Usually, an error message is printed but generally the user should take care of the right VR usage.
 .PP
-If \fBdcmodify\fP doesn't know the tag it should insert, then the tags VR is set to UN and an empty value. Please insert these tags into the dictionary to avoid this.
+If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is set to UN and an empty value is used. Please insert these tags into the dictionary to avoid this behaviour.
 .PP
-\fBdcmodify\fP is able to work with so-called tag paths to describe tags in sequences. The syntax is
+\fBdcmodify\fP is able to work with so-called tag paths to access tags in sequences. The syntax is
 .PP
 .PP
 .nf
@@ -29,9 +29,9 @@ If \fBdcmodify\fP doesn't know the tag it should insert, then the tags VR is set
 .PP
 .fi
 .PP
-where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag. 'item-no' describes the item number to be accessed (counting from zero). 'element' defines the target tag to work on. You can either specify the tag directly as (0010,0010) or through the dictionary name PatientsName. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section).
+where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag. 'item-no' describes the item number to be accessed (counting from zero). 'element' defines the target tag to work on. You can either specify the tag directly as (0010,0010) or through the corresponding dictionary name 'PatientsName'. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section).
 .PP
-There are some issues concerning modifications of private tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
+Please note that there are some issues concerning the modification of private tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
 .SH "PARAMETERS"
 .PP
 .PP
@@ -232,95 +232,94 @@ data set trailing padding (not with --write-dataset):
 .PP
 .SH "PRIVATE TAGS"
 .PP
-There are some points you've got to consider when working with private tags. The insertion or modification of a reservation tag (gggg,00xx) should always work.
-.SS "insertions"
-If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see \fI<docdir>/datadict.txt\fP for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN and empty value. Please note, that the usage of option '-u' will change the VR from UN to OB when saving.
+There are some issues you have to consider when working with private tags. However, the insertion or modification of a reservation tag (gggg,00xx) should always work.
+.SS "Insertions"
+If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see \fI<docdir>/datadict.txt\fP for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN and an empty value. Please note that the usage of option '-u' will change the VR from UN to OB when saving.
 .PP
-If you've got your private tag in the dictionary, \fBdcmodify\fP acts as follows: When it finds a reservation in the tags enclosing dataset, whose private creator matches, insertion is done with the VR found in dictionary and the value, you entered at commandline. But if the private creator doesn't match the one found in dictionary, \fBdcmodify\fP inserts the tag with VR Unknown (UN) and an empty value.
-.SS "modifications"
-If you modify a private tags value, \fBdcmodify\fP won't check its VR against the dictionary. So please be careful to enter only values, that match the tags VR.
+If you've got your private tag in the dictionary, \fBdcmodify\fP acts as follows: When it finds a reservation in the tag's enclosing dataset, whose private creator matches, insertion is done with the VR found in the dictionary and the value, you entered at command line. But if the private creator doesn't match the one found in the dictionary, \fBdcmodify\fP inserts the tag with VR Unknown (UN) and an empty value.
+.SS "Modifications"
+If you modify a private tags value, \fBdcmodify\fP won't check its VR against the dictionary. So please be careful to enter only values that match the tag's VR.
 .PP
-If you wish to change a private tags value \fIand\fP VR, because you just added this tag to your dictionary e.g., you can delete it with \fBdcmodify\fP and re-insert it. Then \fBdcmodify\fP uses your dicitionary entry to determine the right VR (also see subsection insertions).
-.SS "deletions"
-When you use \fBdcmodify\fP to delete a private reservation tag, please note, that \fBdcmodify\fP won't touch the private tags that are under this reservation. The user is forced to handle the consistence between reservations and their pending private tags.
+If you wish to change a private tags value \fIand\fP VR, because you just added this tag to your dictionary, you can delete it with \fBdcmodify\fP and re-insert it. Then \fBdcmodify\fP uses your dicitionary entry to determine the right VR (also see subsection insertions).
+.SS "Deletions"
+When you use \fBdcmodify\fP to delete a private reservation tag, please note that \fBdcmodify\fP won't touch the private tags that are under this reservation. The user is forced to handle the consistence between reservations and their pending private tags.
 .PP
-For deletion of private non-reservation tags there are no special issues.
+For the deletion of private non-reservation tags there are no special issues.
 .SH "CHANGING UIDs"
 .PP
 \fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options. You can disable this behaviour by using the '-nmu' option.
 .PP
-If you generate new UID's with '-gst', '-gse' or '-gin', this will only affect the UID you choosed to generate. So if you use '-gst' to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value seperately. Normally you would also modify the 'underlying' UIDs. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' dicom files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary.
+If you generate new UID's with '-gst', '-gse' or '-gin', this will only affect the UID you choosed to generate. So if you use '-gst' to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately. Normally, you would also modify the 'underlying' UIDs. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary.
 .PP
-When choosing the '-gin' option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically. This behaviour can not be disabled.
+When choosing the '-gin' option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically. This behaviour cannot be disabled.
 .SH "EXAMPLES"
 .PP
 .PP
 .nf
 
--i  --insert-tag:
+-i   --insert-tag:
+       dcmodify -i "(0010,0010)=A Name" file.dcm
+       Inserts the PatientsName tag into 'file.dcm' at 1st level.
+       If tag already exists, -i will overwrite it!  If you want to
+       insert an element with value multiplicity > 1 (e.g. 4) you
+       can do this with: dcmodify -i "(0018,1310)=1\\2\\3\\4"
 
-      dcmodify -i "(0010,0010)=A Name" file.dcm
-      Inserts the PatientsName tag into 'file.dcm' at 1st level.
-      If tag already exists, -i will overwrite it!  If you want to
-      insert an element with value multiplicity > 1 (e.g. 4) you
-      can do this with: dcmodify -i "(0018,1310)=1\\2\\3\\4"
+       dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
+       Inserts PatientsName tag into the first item of sequence
+       (0008,1111).  Note that the use of wildcards for files is
+       possible.  You can specify longer tag paths, too (e.g.
+       "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
 
-      dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
-      Inserts PatientsName tag into the first item of sequence
-      (0008,1111).  Note that the use of wildcards for files is
-      possible.  You can specify longer tag paths, too (e.g.
-      "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
+-m   --modify-tag:
+       dcmodify -m "(0010,0010)=A Name" file.dcm
+       Changes tag (0010,0010) on 1st level to "A Name".
 
--m  --modify-tag:
-      dcmodify -m "(0010,0010)=A Name" file.dcm
-      Changes tag (0010,0010) on 1st level to "A Name".
+       This option also allows longer tag paths as demonstrated
+       above for -i.
 
-      This option also allows longer tag paths as demonstrated
-      above for -i.
+-ma  --modify-all-tags:
+       dcmodify -ma "(0010,0010)=New Name" file.dcm
+       Does the same as -m but works on all matching tags found in
+       'file.dcm'.  Therefore, it searches the whole dataset including
+       sequences for tag (0010,0010) and changes them to "New Name"
 
--ma --modify-all-tags:
-      dcmodify -ma "(0010,0010)=New Name" file.dcm
-      Does the same as -m but works on all matching tags found in
-      'file.dcm'.  Therefore, it searches the whole dataset including
-      sequences for tag (0010,0010) and changes them to "New Name"
+-e   --erase-tag:
+       dcmodify -e "(0010,0010)" *.dcm
+       Erases tag (0010,0010) in all *.dcm files at 1st level.
+       Note: You can also erase whole sequences by using this
+       option with a sequence tag, but in this version it's not
+       possible to delete a single item in a sequence.
 
--e  --erase-tag:
-      dcmodify -e "(0010,0010)" *.dcm
-      Erases tag (0010,0010) in all *.dcm files at 1st level.
-      Note: You can also erase whole sequences by using this
-      option with a sequence tag, but in this version it's not
-      possible to delete a single item in a sequence.
+       This option also allows longer tag paths as demonstrated
+       above for -i.
 
-      This option also allows longer tag paths as demonstrated
-      above for -i.
-
--ea --erase-all-tags:
-      dcmodify -ea "(0010,0010)" *.dcm
-      Same as -e, but also searches in sequences and items.
+-ea  --erase-all-tags:
+       dcmodify -ea "(0010,0010)" *.dcm
+       Same as -e, but also searches in sequences and items.
 
 -gst --gen-stud-uid:
-     dcmodify -gst file.dcm
-     This generates a new value for the StudyInstanceUID
-     (0020,000d). Other UIDs are not modified!
+       dcmodify -gst file.dcm
+       This generates a new value for the StudyInstanceUID
+       (0020,000d).  Other UIDs are not modified!
 
 -gse --gen-ser-uid:
-     dcmodify -gse file.dcm
-     This generates a new value for the SeriesInstanceUID
-     (0020,000e). Other UIDs are not modified!
+       dcmodify -gse file.dcm
+       This generates a new value for the SeriesInstanceUID
+       (0020,000e).  Other UIDs are not modified!
 
 -gin --gen-inst-uid:
-     dcmodify -gin file.dcm
-     This command generates a new value for the SOPInstanceUID
-     (0008,0018). The corresponding MediaStorageSOPInstanceUID
-     (0002,0003) is adjustet to the new value automatically.
-     Please note, that it's not possible to avoid this
-     metaheader update via the -nmu option.
+       dcmodify -gin file.dcm
+       This command generates a new value for the SOPInstanceUID
+       (0008,0018).  The corresponding MediaStorageSOPInstanceUID
+       (0002,0003) is adjusted to the new value automatically.
+       Please note that it's not possible to avoid this metaheader
+       update via the -nmu option.
 
 -nmu --no-meta-uid:
-     dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
-     This will modify the SOPInstanceUID to the given [UID],
-     but -nmu avoids, that dcmodify adjusts the
-     MediaStorageSOPInstanceUID in the metaheader, too.
+       dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
+       This will modify the SOPInstanceUID to the given [UID],
+       but -nmu avoids, that dcmodify adjusts the
+       MediaStorageSOPInstanceUID in the metaheader, too.
 .fi
 .PP
 .SH "COMMAND LINE"

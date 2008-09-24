@@ -25,6 +25,9 @@ Changes between releases are documented here.
   Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
            dcmdata/libsrc/dcitem.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2008.09.08 (riesmeier)
 
 - Fixed typo in OFCondition text string.
