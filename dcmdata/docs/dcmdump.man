@@ -46,6 +46,9 @@ dcmfile-in  DICOM input file or directory to be dumped
        --version
          print version information and exit
 
+       --arguments
+         print expanded command line arguments
+
   -d   --debug
          debug mode, print debug information
 \endverbatim
@@ -169,10 +172,10 @@ printing:
   -Un  --no-uid-names
          do not map well-known UID numbers to names
 
-  +Qn  --quote-nonascii      
+  +Qn  --quote-nonascii
          quote non-ASCII and control chars as XML markup
 
-  -Qn  --print-nonascii      
+  -Qn  --print-nonascii
          print non-ASCII and control chars (default)
 
  error handling:

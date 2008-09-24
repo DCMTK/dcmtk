@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-24 13:25:09 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,6 +147,30 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
 }
 
 
+void OFConsoleApplication::printArguments(OFCommandLine *cmd)
+{
+    if (cmd == NULL)
+        cmd = CmdLine;
+    STD_NAMESPACE ostream &output = ofConsole.lockCout();
+    if (CmdLine != NULL)
+    {
+        output << "expanded command line to " << CmdLine->getArgCount() << " arguments:" << OFendl;
+        const char *arg;
+        /* iterate over all command line arguments */
+        if (CmdLine->gotoFirstArg())
+        {
+            do {
+                if (CmdLine->getCurrentArg(arg))
+                    output << "'" << arg << "' ";
+            } while (CmdLine->gotoNextArg());
+        }
+    } else
+        output << "warning: cannot print expanded command line arguments" << OFendl;
+    output << OFendl << OFendl;
+    ofConsole.unlockCout();
+}
+
+
 void OFConsoleApplication::printError(const char *str,
                                       const int code)
 {
@@ -261,7 +284,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.23  2006-08-14 16:42:46  meichel
+ * Revision 1.24  2008-09-24 13:25:09  joergr
+ * Added support for printing the expanded command line arguments to standard
+ * output stream.
+ *
+ * Revision 1.23  2006/08/14 16:42:46  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.
  *

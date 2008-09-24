@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1999-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-07-27 13:17:23 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2008-09-24 13:24:00 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,12 @@ class OFConsoleApplication
      ** @param  cmd   reference to command line class (default: object used for parsing)
      */
     void printUsage(const OFCommandLine *cmd = NULL);
+
+    /** print expanded command line arguments to standard output stream
+     *
+     ** @param  cmd   reference to command line class (default: object used for parsing)
+     */
+    void printArguments(OFCommandLine *cmd = NULL);
 
     /** print error message (incl. header) to standard error stream and exit with error code
      *
@@ -205,7 +211,11 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.21  2006-07-27 13:17:23  joergr
+ * Revision 1.22  2008-09-24 13:24:00  joergr
+ * Added support for printing the expanded command line arguments to standard
+ * output stream.
+ *
+ * Revision 1.21  2006/07/27 13:17:23  joergr
  * Prepended prefix "PF_" to parseLine() flags.
  *
  * Revision 1.20  2005/12/08 16:05:49  meichel
