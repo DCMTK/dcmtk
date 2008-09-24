@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-24 13:33:53 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ extern OFGlobal<OFBool> dcmEnableOldSignatureFormat; /* default OFFalse */
 extern OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
- *  everything that is either a dataset or that can be identified with a DICOM 
+ *  everything that is either a dataset or that can be identified with a DICOM
  *  attribute tag is derived from class DcmObject.
  */
 class DcmObject
@@ -148,7 +148,7 @@ class DcmObject
      *  @return reference to this object
      */
     DcmObject &operator=(const DcmObject &obj);
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -181,7 +181,7 @@ class DcmObject
     inline DcmEVR getVR() const { return Tag.getEVR(); }
 
     /** check if this element is a string type, based on the VR.
-     *  Since the check if based on the VR and not on the class,
+     *  Since the check is based on the VR and not on the class,
      *  the result of this method is not a guarantee that the object
      *  can be safely casted to one of the string-VR subclasses.
      *  @return true if this object is a string VR, false otherwise
@@ -259,7 +259,7 @@ class DcmObject
      */
     virtual unsigned long getVM() = 0;
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -299,7 +299,7 @@ class DcmObject
      *  @param glenc handling of group length parameters
      *  @param maxReadLength attribute values larger than this value are skipped
      *    while parsing and read later upon first access if the stream type supports
-     *    this. 
+     *    this.
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmInputStream &inStream,
@@ -374,12 +374,12 @@ class DcmObject
     virtual OFCondition verify(const OFBool autocorrect = OFFalse) = 0;
 
     /** this method is only used in container classes derived from this class,
-     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the 
+     *  that is, DcmItem and DcmSequenceOfItems. It returns a pointer to the
      *  next object in the list AFTER the given object. If the caller passes NULL,
      *  a pointer to the first object in the list is returned. If the given object
-     *  is not found, the given object is the last one in the list or the list is empty, 
+     *  is not found, the given object is the last one in the list or the list is empty,
      *  NULL is returned.
-     *  @param obj pointer to one object in the container; we are looking for the 
+     *  @param obj pointer to one object in the container; we are looking for the
      *    next entry after this one. NULL if looking for the first entry.
      *  @return pointer to next object in container or NULL if not found
      */
@@ -399,7 +399,7 @@ class DcmObject
      *    container object will be traversed (e.g., all elements of an item
      *    or all items of a sequence).
      *  @return EC_Normal if value length is correct, an error code otherwise
-     */     
+     */
     virtual OFCondition nextObject(
       DcmStack &stack,
       const OFBool intoSub);
@@ -411,9 +411,9 @@ class DcmObject
      *  @param resultStack Depending on the search mode (see below), this parameter
      *     either serves as an input and output parameter, or as an output parameter
      *     only (the latter being the default). When used as an input parameter,
-     *     the cursor stack defines the start position for the search within a 
+     *     the cursor stack defines the start position for the search within a
      *     hierarchical DICOM dataset. Upon successful return, the stack contains
-     *     the position of the element found, in the form of a pointer to each dataset, 
+     *     the position of the element found, in the form of a pointer to each dataset,
      *     sequence, item and element from the main dataset down to the found element.
      *  @param mode search mode, controls how the search stack is handled.
      *     In the default mode, ESM_fromHere, the stack is ignored on input, and
@@ -424,7 +424,7 @@ class DcmObject
      *    into the sequences and items of the dataset. If false, only the current container
      *    (sequence or item) will be traversed.
      *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something went wrong.
-     */     
+     */
     virtual OFCondition search(
       const DcmTagKey &xtag,
       DcmStack &resultStack,
@@ -507,7 +507,7 @@ class DcmObject
      *  @param tag tag to write to the stream
      *  @param oxfer transfer syntax defining the byte order
      *  @return EC_Normal if successful, an error code otherwise
-     */     
+     */
     static OFCondition writeTag(
       DcmOutputStream &outStream,
       const DcmTag &tag,
@@ -518,7 +518,7 @@ class DcmObject
      *  @param oxfer transfer syntax for writing
      *  @param writtenBytes number of bytes written to stream returned in this parameter
      *  @return EC_Normal if successful, an error code otherwise
-     */     
+     */
     virtual OFCondition writeTagAndLength(
       DcmOutputStream &outStream,
       const E_TransferSyntax oxfer, // in
@@ -547,7 +547,7 @@ class DcmObject
      *  @return current transfer state of this object
      */
     E_TransferState getTransferState() const { return fTransferState; }
-    
+
     /** set the current transfer state of this object during serialization/deserialization
      *  @param newState new transfer state of this object
      */
@@ -557,7 +557,7 @@ class DcmObject
      *  @return number of transferred bytes
      */
     Uint32 getTransferredBytes() const { return fTransferredBytes; }
-    
+
     /** set the number of transferred bytes for this object during serialization/deserialization
      *  @param val number of transferred bytes
      */
@@ -568,17 +568,17 @@ class DcmObject
      */
     void incTransferredBytes(Uint32 val) { fTransferredBytes += val; }
 
-    /** set the current value of the Length field 
-     *  @param val new value of the Length field 
+    /** set the current value of the Length field
+     *  @param val new value of the Length field
      */
     void setLengthField(Uint32 val) { Length = val; }
 
     /* member variables */
 
 protected:
-	   
+
     /// error flag for this object.
-    OFCondition errorFlag;  
+    OFCondition errorFlag;
 
 private:
 
@@ -603,6 +603,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.52  2008-09-24 13:33:53  joergr
+ * Fixed typo in comment.
+ *
  * Revision 1.51  2008-07-17 11:19:49  onken
  * Updated copyFrom() documentation.
  *

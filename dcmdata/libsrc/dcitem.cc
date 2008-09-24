@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.111 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-24 13:32:10 $
+ *  CVS/RCS Revision: $Revision: 1.112 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,7 +133,7 @@ DcmItem& DcmItem::operator=(const DcmItem& obj)
   {
     // copy parent's member variables
     DcmObject::operator=(obj);
-    
+
     // copy DcmItem's member variables
     lastElementComplete = obj.lastElementComplete;
     fStartPosition = obj.fStartPosition;
@@ -956,7 +956,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* read this element's tag and length information (and */
                     /* possibly also VR information) from the inStream */
                     errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
-                    /* increase counter correpsondingly */
+                    /* increase counter correspondingly */
                     incTransferredBytes(bytes_tagAndLen);
 
                     /* if there was an error while we were reading from the stream, terminate the while-loop */
@@ -1027,7 +1027,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
 OFCondition DcmItem::write(DcmOutputStream &outStream,
                            const E_TransferSyntax oxfer,
                            const E_EncodingType enctype,
-                           DcmWriteCache *wcache)                           
+                           DcmWriteCache *wcache)
 {
   if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
@@ -1104,7 +1104,7 @@ OFCondition DcmItem::writeSignatureFormat(
 	DcmOutputStream &outStream,
    const E_TransferSyntax oxfer,
    const E_EncodingType enctype,
-   DcmWriteCache *wcache)                           
+   DcmWriteCache *wcache)
 {
   if (getTransferState() == ERW_notInitialized)
     errorFlag = EC_IllegalCall;
@@ -1830,13 +1830,13 @@ OFCondition newDicomElement(DcmElement *&newElement,
                 newElement = new DcmUnsignedLong(tag, length);
         }
         break;
-        case EVR_FL:
+        case EVR_FL :
             newElement = new DcmFloatingPointSingle(tag, length);
             break;
         case EVR_FD :
             newElement = new DcmFloatingPointDouble(tag, length);
             break;
-        case EVR_OF:
+        case EVR_OF :
             newElement = new DcmOtherFloat(tag, length);
             break;
 
@@ -3466,6 +3466,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.112  2008-09-24 13:32:10  joergr
+** Fixed typo in comment.
+**
 ** Revision 1.111  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
