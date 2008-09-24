@@ -8,6 +8,23 @@ Changes between releases are documented here.
   Affects: dcmdata/apps/xml2dcm.cc
            dcmdata/docs/xml2dcm.man
 
+- Added support for printing the expanded command line arguments to standard
+  output stream.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+           ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+- Fixed typo in output of getStatusString().
+  Affects: ofstd/libsrc/ofcmdln.cc
+
+- Always output the resource identifier of the command line tool in debug mode.
+  Affects: dcmdata/apps/dcmdump.cc
+
+- Fixed typo in comment.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2008.09.08 (riesmeier)
 
 - Fixed typo in OFCondition text string.

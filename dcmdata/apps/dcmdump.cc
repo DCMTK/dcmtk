@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-28 09:30:10 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-24 13:30:24 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -164,6 +164,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                      "print expanded command line arguments");
 #ifdef USE_EXPERIMENTAL_QUIET_MODE
       cmd.addOption("--quiet",                "-q",     "quiet mode, print no warnings and errors");
 #endif
@@ -241,18 +242,22 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+          app.printArguments();
+
       /* check exclusive options first */
 
       if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << OFendl << "External libraries used:";
+            app.printHeader(OFTrue /*print host identifier*/);
+            COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+            COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << OFendl;
+            COUT << " none" << OFendl;
 #endif
             return 0;
          }
@@ -264,11 +269,16 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--quiet"))
       {
         app.setQuietMode();
-        // redirect error output to a dummy stream
+        /* redirect error output to a dummy stream */
         ofConsole.setCerr(&errorStream);
       }
 #endif
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      if (cmd.findOption("--debug"))
+      {
+          /* print resource identifier */
+          CERR << rcsid << OFendl << OFendl;
+          opt_debugMode = 5;
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) readMode = ERM_autoDetect;
@@ -407,7 +417,7 @@ int main(int argc, char *argv[])
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--quote-nonascii")) printFlags |= DCMTypes::PF_convertToMarkup;
-      if (cmd.findOption("--print-nonascii")) printFlags &= ~DCMTypes::PF_convertToMarkup; 
+      if (cmd.findOption("--print-nonascii")) printFlags &= ~DCMTypes::PF_convertToMarkup;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -649,6 +659,11 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.64  2008-09-24 13:30:24  joergr
+ * Added support for printing the expanded command line arguments to standard
+ * output stream.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.63  2008-04-28 09:30:10  meichel
  * Implemented new command line option --quote-nonascii in dcmdump that
  * quotes non-ASCII and control characters as XML markup.
