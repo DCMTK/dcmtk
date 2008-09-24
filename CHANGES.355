@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.09.24 (riesmeier)
+
+- Added new command line option --update-meta-info that allows for updating
+  particular information in the file meta-header (e.g. SOP instance UID).
+  Affects: dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/xml2dcm.man
+
 **** Changes from 2008.09.08 (riesmeier)
 
 - Fixed typo in OFCondition text string.

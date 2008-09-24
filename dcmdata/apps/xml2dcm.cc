@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2007, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-07-04 12:51:05 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2008-09-24 13:00:48 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -649,6 +649,7 @@ int main(int argc, char *argv[])
     OFBool opt_verbose = OFFalse;
     OFBool opt_metaInfo = OFTrue;
     OFBool opt_dataset = OFFalse;
+    OFBool opt_updateMeta = OFFalse;
     OFBool opt_namespace = OFFalse;
     OFBool opt_validate = OFFalse;
     E_TransferSyntax opt_xfer = EXS_Unknown;
@@ -689,6 +690,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("output file format:");
         cmd.addOption("--write-file",          "+F",     "write file format (default)");
         cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
+        cmd.addOption("--update-meta-info",    "+Fu",    "update particular file meta information");
       cmd.addSubGroup("output transfer syntax:");
         cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
         cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
@@ -761,6 +763,12 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--write-dataset"))
             opt_dataset = OFTrue;
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--update-meta-info"))
+        {
+            app.checkConflict("--update-meta-info", "--write-dataset", opt_dataset);
+            opt_updateMeta = OFTrue;
+        }
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--write-xfer-same"))
@@ -876,6 +884,18 @@ int main(int argc, char *argv[])
                              opt_validate, opt_verbose, opt_debug != 0);
         if (result.good())
         {
+            /* update particular file meta information */
+            if (opt_updateMeta && !opt_dataset)
+            {
+                DcmMetaInfo *metaInfo = fileformat.getMetaInfo();
+                if (metaInfo != NULL)
+                {
+                    if (opt_verbose)
+                        COUT << "updating file meta information" << OFendl;
+                    delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+                    delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+                }
+            }
             if (opt_verbose)
                 COUT << "writing DICOM output file: " << opt_ofname << OFendl;
             /* determine transfer syntax to write the file */
@@ -926,7 +946,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.20  2007-07-04 12:51:05  joergr
+ * Revision 1.21  2008-09-24 13:00:48  joergr
+ * Added new command line option --update-meta-info that allows for updating
+ * particular information in the file meta-header (e.g. SOP instance UID).
+ *
+ * Revision 1.20  2007/07/04 12:51:05  joergr
  * Added support for binary data (e.g. pixel data) stored in a separate file.
  *
  * Revision 1.19  2006/08/15 15:50:56  meichel

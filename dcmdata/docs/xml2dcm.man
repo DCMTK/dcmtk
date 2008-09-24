@@ -77,6 +77,9 @@ output file format:
   -F   --write-dataset
          write data set without file meta information
 
+  +Fu  --update-meta-info
+         update particular file meta information
+
 output transfer syntax:
 
   +t=  --write-xfer-same
