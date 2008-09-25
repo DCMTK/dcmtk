@@ -69,11 +69,14 @@ dcmfile-in  DICOM input filename(s) to be modified
         --version
           print version information and exit
 
-  -d    --debug
-          debug mode, print debug information
+        --arguments
+          print expanded command line arguments
 
   -v    --verbose
           verbose mode, print verbose output
+
+  -d    --debug
+          debug mode, print debug information
 
   -ie   --ignore-errors
           continue with file, if modify error occurs
