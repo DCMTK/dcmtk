@@ -37,6 +37,7 @@ Changes between releases are documented here.
            dcmdata/docs/img2dcm.man
            dcmdata/docs/pdf2dcm.man
            dcmdata/docs/xml2dcm.man
+           dcmdata/tests/tstpread.cc
            dcmimage/apps/dcm2pnm.cc
            dcmimage/apps/dcmquant.cc
            dcmimage/apps/dcmscale.cc
@@ -51,6 +52,44 @@ Changes between releases are documented here.
            dcmjpeg/docs/dcmdjpeg.man
            dcmjpeg/docs/dcmj2pnm.man
            dcmjpeg/docs/dcmmkdir.man
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/docs/termscu.man
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/docs/dcmmkcrv.man
+           dcmpstat/docs/dcmmklut.man
+           dcmpstat/docs/dcmp2pgm.man
+           dcmpstat/docs/dcmprscp.man
+           dcmpstat/docs/dcmprscu.man
+           dcmpstat/docs/dcmpschk.man
+           dcmpstat/docs/dcmpsmk.man
+           dcmpstat/docs/dcmpsprt.man
+           dcmpstat/docs/dcmpsrcv.man
+           dcmpstat/docs/dcmpssnd.man
+           dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/docs/dcmqridx.man
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
            dcmsign/apps/dcmsign.cc
            dcmsign/docs/dcmsign.man
            dcmsr/apps/dsr2html.cc
@@ -61,6 +100,8 @@ Changes between releases are documented here.
            dcmsr/docs/dsr2xml.man
            dcmsr/docs/dsrdump.man
            dcmsr/docs/xml2dsr.man
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
 
 - Always output the resource identifier of the command line tool in debug mode.
   Affects: dcmdata/apps/dcm2pdf.cc
@@ -75,12 +116,32 @@ Changes between releases are documented here.
            dcmdata/apps/mdfconen.cc
            dcmdata/apps/pdf2dcm.cc
            dcmdata/apps/xml2dcm.cc
+           dcmdata/tests/tstpread.cc
            dcmimage/apps/dcm2pnm.cc
            dcmimage/apps/dcmquant.cc
            dcmimage/apps/dcmscale.cc
            dcmimgle/apps/dcmdspfn.cc
            dcmjpeg/apps/dcmcjpeg.cc
            dcmjpeg/apps/dcmdjpeg.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmprscp.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
            dcmsign/apps/dcmsign.cc
            dcmsr/apps/dsr2html.cc
            dcmsr/apps/dsr2xml.cc
