@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 16:30:24 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -340,7 +339,7 @@ static OFCondition addAllStoragePresentationContexts(T_ASC_Parameters *params, i
 // ********************************************
 
 #define SHORTCOL 2
-#define LONGCOL 10
+#define LONGCOL 11
 
 int main(int argc, char *argv[])
 {
@@ -379,32 +378,37 @@ int main(int argc, char *argv[])
     cmd.addParam("instance",    "SOP instance UID (default: send complete series)", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
-     cmd.addOption("--debug",   "-d", "debug mode, print debug information");
+     cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--arguments",       "print expanded command line arguments");
+     cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
+     cmd.addOption("--debug",     "-d", "debug mode, print debug information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+        app.printArguments();
+
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << OFendl << "External libraries used:";
+            app.printHeader(OFTrue /*print host identifier*/);
+            COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << OFendl;
+            COUT << " none" << OFendl;
 #else
-            CERR << OFendl;
+            COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+            COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
+            COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
          }
@@ -421,9 +425,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug")) opt_debugMode = 3;
     }
 
-    if (opt_verbose)
+    if (opt_verbose || opt_debugMode)
     {
-      CERR << rcsid << OFendl << OFendl;
+      app.printIdentifier();
     }
 
     if (opt_cfgName)
@@ -656,7 +660,7 @@ int main(int argc, char *argv[])
     }
 
     OFCondition result;
-    DcmQueryRetrieveIndexDatabaseHandle dbhandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, result);    
+    DcmQueryRetrieveIndexDatabaseHandle dbhandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, result);
     if (result.bad())
     {
       CERR << "Unable to access database '" << dbfolder << "'" << OFendl;
@@ -1019,7 +1023,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.40  2006-08-15 16:57:01  meichel
+ * Revision 1.41  2008-09-25 16:30:24  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.40  2006/08/15 16:57:01  meichel
  * Updated the code in module dcmpstat to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 16:30:24 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -990,7 +990,7 @@ void closeLog()
 }
 
 #define SHORTCOL 2
-#define LONGCOL 14
+#define LONGCOL 11
 
 int main(int argc, char *argv[])
 {
@@ -1024,29 +1024,34 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-in", "presentation state file(s) to be checked", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",    "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--version",          "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--verbose", "-v",    "verbose mode, print actions");
-     cmd.addOption("--debug",   "-d",    "debug mode, print debug information");
+     cmd.addOption("--help",      "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",            "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--arguments",          "print expanded command line arguments");
+     cmd.addOption("--verbose",   "-v",    "verbose mode, print actions");
+     cmd.addOption("--debug",     "-d",    "debug mode, print debug information");
 
-     cmd.addOption("--logfile", "-l", 1, "[f]ilename: string",
-                                         "write output to logfile f");
+     cmd.addOption("--logfile",   "-l", 1, "[f]ilename: string",
+                                           "write output to logfile f");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+        app.printArguments();
+
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << OFendl << "External libraries used:";
+            app.printHeader(OFTrue /*print host identifier*/);
+            COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+            COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << OFendl;
+            COUT << " none" << OFendl;
 #endif
             return 0;
          }
@@ -1060,6 +1065,9 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(opt_logfilename));
       }
     }
+
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     if (opt_logfilename)
@@ -1095,6 +1103,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
+ * Revision 1.26  2008-09-25 16:30:24  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.25  2008-04-30 12:38:43  meichel
  * Fixed compile errors due to changes in attribute tag names
  *
