@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 09:57:53 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Update Date:      $Date: 2008-09-25 12:47:58 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,6 +226,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--arguments",                      "print expanded command line arguments");
      cmd.addOption("--verbose",             "-v",      "verbose mode, print processing details");
      cmd.addOption("--quiet",               "-q",      "quiet mode, print no warnings and errors");
      cmd.addOption("--debug",               "-d",      "debug mode, print debug information");
@@ -414,35 +415,38 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
-        /* check exclusive options first */
+        /* check whether to print the command line arguments */
+        if (cmd.findOption("--arguments"))
+            app.printArguments();
 
+        /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
             if (cmd.findOption("--version"))
             {
-                app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-                CERR << OFendl << "External libraries used:";
+                app.printHeader(OFTrue /*print host identifier*/);
+                COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(WITH_LIBTIFF) && !defined(WITH_LIBPNG)
-                CERR << " none" << OFendl;
+                COUT << " none" << OFendl;
 #else
-                CERR << OFendl;
+                COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-                CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
+                COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
 #ifdef WITH_LIBTIFF
-                CERR << "- " << DiTIFFPlugin::getLibraryVersionString() << OFendl;
+                COUT << "- " << DiTIFFPlugin::getLibraryVersionString() << OFendl;
 #ifdef HAVE_LIBTIFF_LZW_COMPRESSION
-                CERR << "  with LZW compression support" << OFendl;
+                COUT << "  with LZW compression support" << OFendl;
 #else
-                CERR << "  without LZW compression support" << OFendl;
+                COUT << "  without LZW compression support" << OFendl;
 #endif
 #endif
 #ifdef WITH_LIBPNG
-                CERR << "- " << DiPNGPlugin::getLibraryVersionString() << OFendl;
+                COUT << "- " << DiPNGPlugin::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
@@ -466,7 +470,10 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--debug"))
+        {
+            app.printIdentifier();
             opt_debugMode = 1;
+        }
         if (cmd.findOption("--image-info"))
             opt_imageInfo = 1;
 
@@ -1521,6 +1528,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.90  2008-09-25 12:47:58  joergr
+ * Added support for printing the expanded command line arguments.
+ * iAlways output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.89  2008-05-20 09:57:53  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  * Allow width and height of the clipping area to be 0 (compute automatically).

@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 09:58:22 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2008-09-25 12:47:58 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",       "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--arguments",                       "print expanded command line arguments");
      cmd.addOption("--verbose",             "-v",       "verbose mode, print processing details");
      cmd.addOption("--debug",               "-d",       "debug mode, print debug information");
 
@@ -206,24 +207,27 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
-      /* check exclusive options first */
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+          app.printArguments();
 
+      /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << OFendl << "External libraries used:";
+              app.printHeader(OFTrue /*print host identifier*/);
+              COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_DCMSCALE_AS_DCMJSCAL)
-              CERR << " none" << OFendl;
+              COUT << " none" << OFendl;
 #else
-              CERR << OFendl;
+              COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+              COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
-              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
+              COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
               return 0;
           }
@@ -237,7 +241,10 @@ int main(int argc, char *argv[])
       /* general options */
 
       if (cmd.findOption("--debug"))
+      {
+          app.printIdentifier();
           opt_debug = OFTrue;
+      }
       if (cmd.findOption("--verbose"))
           opt_verbose = OFTrue;
 
@@ -657,6 +664,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.18  2008-09-25 12:47:58  joergr
+ * Added support for printing the expanded command line arguments.
+ * iAlways output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.17  2008-05-20 09:58:22  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  * Allow width and height of the clipping area to be 0 (compute automatically).
