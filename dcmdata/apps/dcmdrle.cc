@@ -22,8 +22,8 @@
  *  Purpose: Decompress RLE-compressed DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2008-09-25 14:38:48 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,11 +178,7 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-          app.printIdentifier();
-          opt_debugMode = 5;
-      }
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--uid-default")) opt_uidcreation = OFFalse;
@@ -265,6 +261,8 @@ int main(int argc, char *argv[])
 
     }
 
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     // register global decompression codecs
@@ -350,6 +348,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
+ * Revision 1.16  2008-09-25 14:38:48  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.15  2008-09-25 11:19:48  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2008-09-25 14:38:48 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -741,10 +741,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--verbose"))
             opt_verbose = OFTrue;
         if (cmd.findOption("--debug"))
-        {
-            app.printIdentifier();
             opt_debug = 5;
-        }
 
         /* input options */
 
@@ -835,6 +832,8 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
     }
 
+    if (opt_debug)
+        app.printIdentifier();
     SetDebugLevel((opt_debug));
 
     /* make sure data dictionary is loaded */
@@ -953,6 +952,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.23  2008-09-25 14:38:48  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.22  2008-09-25 11:19:48  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

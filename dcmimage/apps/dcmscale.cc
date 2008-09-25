@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 12:47:58 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2008-09-25 14:43:22 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,10 +241,7 @@ int main(int argc, char *argv[])
       /* general options */
 
       if (cmd.findOption("--debug"))
-      {
-          app.printIdentifier();
           opt_debug = OFTrue;
-      }
       if (cmd.findOption("--verbose"))
           opt_verbose = OFTrue;
 
@@ -392,6 +389,14 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
     }
 
+    if (opt_debug)
+    {
+        app.printIdentifier();
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
+    }
+    if (opt_verbose)
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
@@ -406,11 +411,6 @@ int main(int argc, char *argv[])
     // register global decompression codecs
     DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debug);
 #endif
-
-    if (opt_debug)
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
-    if (opt_verbose)
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
 
     // ======================================================================
     // read input file
@@ -664,6 +664,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.19  2008-09-25 14:43:22  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.18  2008-09-25 12:47:58  joergr
  * Added support for printing the expanded command line arguments.
  * iAlways output the resource identifier of the command line tool in debug mode.

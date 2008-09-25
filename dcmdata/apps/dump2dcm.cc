@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2008-09-25 14:38:48 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -892,11 +892,7 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) opt_verboseMode = OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-          app.printIdentifier();
-          opt_debugMode = 5;
-      }
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       if (cmd.findOption("--line"))
           app.checkValue(cmd.getValueAndCheckMin(opt_linelength, 80));
@@ -965,6 +961,8 @@ int main(int argc, char *argv[])
     DcmMetaInfo *metaheader = fileformat.getMetaInfo();
     DcmDataset *dataset = fileformat.getDataset();
 
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
@@ -1047,6 +1045,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.60  2008-09-25 14:38:48  joergr
+** Moved output of resource identifier in order to avoid printing the same
+** information twice.
+**
 ** Revision 1.59  2008-09-25 11:19:48  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.

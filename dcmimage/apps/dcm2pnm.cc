@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 12:47:58 $
- *  CVS/RCS Revision: $Revision: 1.90 $
+ *  Update Date:      $Date: 2008-09-25 14:43:22 $
+ *  CVS/RCS Revision: $Revision: 1.91 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -470,10 +470,7 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--debug"))
-        {
-            app.printIdentifier();
             opt_debugMode = 1;
-        }
         if (cmd.findOption("--image-info"))
             opt_imageInfo = 1;
 
@@ -874,6 +871,15 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
     }
 
+    if (opt_verboseMode < 1)
+        DicomImageClass::setDebugLevel(0);
+    else if (opt_debugMode > 0)
+    {
+        app.printIdentifier();
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
+    }
+//    SetDebugLevel(( (int)opt_debugMode ));
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
@@ -885,11 +891,6 @@ int main(int argc, char *argv[])
         OFSTRINGSTREAM_FREESTR(tmpString)
     }
 
-//    SetDebugLevel(( (int)opt_debugMode ));
-    if (opt_verboseMode < 1)
-        DicomImageClass::setDebugLevel(0);
-    else if (opt_debugMode > 0)
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
     if (opt_verboseMode > 1)
     {
         DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
@@ -1528,6 +1529,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.91  2008-09-25 14:43:22  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.90  2008-09-25 12:47:58  joergr
  * Added support for printing the expanded command line arguments.
  * iAlways output the resource identifier of the command line tool in debug mode.

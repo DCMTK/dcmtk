@@ -22,8 +22,8 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 12:44:39 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2008-09-25 14:47:30 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,6 +127,10 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
+        /* print help text and exit */
+        if (cmd.getArgCount() == 0)
+            app.printUsage();
+
         /* check whether to print the command line arguments */
         if (cmd.findOption("--arguments"))
             app.printArguments();
@@ -153,10 +157,7 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--debug"))
-        {
-            app.printIdentifier();
             opt_debugMode = 1;
-        }
 
         if (cmd.findOption("--ambient-light"))
             app.checkValue(cmd.getValueAndCheckMin(opt_ambLight, 0));
@@ -242,13 +243,12 @@ int main(int argc, char *argv[])
             DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
                                            DicomImageClass::DL_Informationals);
         if (opt_debugMode > 0)
+        {
             DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
                                            DicomImageClass::DL_DebugMessages);
+            app.printIdentifier();                                            
+        }
     }
-
-    /* print syntax usage */
-    if (cmd.getArgCount() == 0)
-        app.printUsage();
 
     if (opt_outputMode > 0)
     {
@@ -361,6 +361,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
+ * Revision 1.23  2008-09-25 14:47:30  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.22  2008-09-25 12:44:39  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

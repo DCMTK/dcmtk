@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2008-09-25 14:38:48 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -271,10 +271,7 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--debug"))
-        {
-            app.printIdentifier();
             opt_debug = 5;
-        }
 
         /* input options */
         if (cmd.findOption("--output-file"))
@@ -477,7 +474,11 @@ int main(int argc, char *argv[])
     /* set debug mode and stream for log messages */
     SetDebugLevel((opt_debug));
     if (!app.quietMode())
+    {
         ddir.setLogStream(&ofConsole);
+        if (opt_debug)
+            app.printIdentifier();
+    }
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -610,6 +611,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.87  2008-09-25 14:38:48  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.86  2008-09-25 11:19:48  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

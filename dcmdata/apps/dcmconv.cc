@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2008-09-25 14:38:48 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,11 +199,7 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-          app.printIdentifier();
-          opt_debugMode = 5;
-      }
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -358,6 +354,8 @@ int main(int argc, char *argv[])
 
     }
 
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
@@ -445,6 +443,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.52  2008-09-25 14:38:48  joergr
+** Moved output of resource identifier in order to avoid printing the same
+** information twice.
+**
 ** Revision 1.51  2008-09-25 11:19:48  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.
