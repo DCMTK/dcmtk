@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007, OFFIS
+ *  Copyright (C) 2007-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Exctract PDF file from DICOM encapsulated PDF storage object
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-07-11 10:41:21 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,6 +123,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--arguments",                      "print expanded command line arguments");
    cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
    cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
@@ -162,20 +163,24 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+          app.printArguments();
+
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              ofConsole.lockCerr() << OFendl << "External libraries used:";
-              ofConsole.unlockCerr();
+              app.printHeader(OFTrue /*print host identifier*/);
+              ofConsole.lockCout() << OFendl << "External libraries used:";
+              ofConsole.unlockCout();
 #ifdef WITH_ZLIB
-              ofConsole.lockCerr() << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
-              ofConsole.unlockCerr();
+              ofConsole.lockCout() << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+              ofConsole.unlockCout();
 #else
-              ofConsole.lockCerr() << " none" << OFendl;
-              ofConsole.unlockCerr();
+              ofConsole.lockCout() << " none" << OFendl;
+              ofConsole.unlockCout();
 #endif
               return 0;
           }
@@ -186,7 +191,11 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      if (cmd.findOption("--debug"))
+      {
+          app.printIdentifier();
+          opt_debugMode = 5;
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -385,7 +394,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pdf.cc,v $
- * Revision 1.2  2007-07-11 10:41:21  joergr
+ * Revision 1.3  2008-09-25 11:19:48  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.2  2007/07/11 10:41:21  joergr
  * Fixed layout and other minor issues of the usage output (--help).
  *
  * Revision 1.1  2007/07/11 09:10:29  meichel

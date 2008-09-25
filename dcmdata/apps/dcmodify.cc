@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2006, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.8  2006-08-15 15:50:56  meichel
+** Revision 1.9  2008-09-25 11:19:48  joergr
+** Added support for printing the expanded command line arguments.
+** Always output the resource identifier of the command line tool in debug mode.
+**
+** Revision 1.8  2006/08/15 15:50:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **

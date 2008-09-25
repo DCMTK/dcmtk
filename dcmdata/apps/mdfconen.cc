@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-03-26 17:01:40 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,8 +84,8 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 //                application_name - [in] name of calling application
 // Return Value : none
 {
-    //print application header
     char rcsid[200];
+    //print application header
     sprintf( rcsid, "$dcmtk: %s v%s %s $", application_name,
              OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
 
@@ -101,8 +101,9 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
         cmd->addOption("--help",                  "-h",       "print this help text and exit", OFCommandLine::AF_Exclusive);
         cmd->addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
-        cmd->addOption("--debug",                 "-d",       "debug mode, print debug information");
+        cmd->addOption("--arguments",                         "print expanded command line arguments");
         cmd->addOption("--verbose",               "-v",       "verbose mode, print verbose output");
+        cmd->addOption("--debug",                 "-d",       "debug mode, print debug information");
         cmd->addOption("--ignore-errors",         "-ie",      "continue with file, if modify error occurs");
         cmd->addOption("--no-backup",             "-nb",      "don't backup files (DANGEROUS)");
     cmd->addGroup("input options:", LONGCOL, SHORTCOL);
@@ -176,17 +177,23 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         if (cmd->getArgCount() == 0)
             app->printUsage();
 
-        // check exclusive options first
+        /* check whether to print the command line arguments */
+        if (cmd->findOption("--arguments"))
+            app->printArguments();
+
+        /* check exclusive options first */
         if (cmd->hasExclusiveOption())
         {
             if (cmd->findOption("--version"))
             {
                 app->printHeader(OFTrue /*print host identifier*/);
 #ifdef WITH_ZLIB
-                debugMsg(OFTrue, "\nExternal libraries used: ", "", "");
-                debugMsg(OFTrue, "- ZLIB, Version ", zlibVersion(), "");
+                ofConsole.lockCout() << OFendl << "External libraries used:";
+                ofConsole.lockCout() << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+                ofConsole.unlockCout();
 #else
-                debugMsg(OFTrue, "\nExternal libraries used: none", "", "");
+                ofConsole.lockCout() << " none" << OFendl;
+                ofConsole.unlockCout();
 #endif
                 delete app;
                 delete cmd;
@@ -231,7 +238,10 @@ void MdfConsoleEngine::parseNonJobOptions()
     if (cmd->findOption("--verbose"))
         verbose_option=OFTrue;
     if (cmd->findOption("--debug"))
+    {
+        app->printIdentifier();
         debug_option=OFTrue;
+    }
     if (cmd->findOption("--ignore-errors"))
         ignore_errors_option=OFTrue;
     if (cmd->findOption("--no-meta-uid"))
@@ -705,6 +715,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.24  2008-09-25 11:19:48  joergr
+** Added support for printing the expanded command line arguments.
+** Always output the resource identifier of the command line tool in debug mode.
+**
 ** Revision 1.23  2008-03-26 17:01:40  joergr
 ** Fixed various layout and formatting issues.
 **

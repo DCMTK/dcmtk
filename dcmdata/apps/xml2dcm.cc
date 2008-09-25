@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:00:48 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -673,6 +673,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                       "print expanded command line arguments");
       cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
       cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
@@ -716,20 +717,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check exclusive options first */
+        /* check whether to print the command line arguments */
+        if (cmd.findOption("--arguments"))
+            app.printArguments();
 
+        /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
-          if (cmd.findOption("--version"))
-          {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << OFendl << "External libraries used:" << OFendl;
+            if (cmd.findOption("--version"))
+            {
+                app.printHeader(OFTrue /*print host identifier*/);
+                COUT << OFendl << "External libraries used:" << OFendl;
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-              CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
-              return 0;
-           }
+                COUT << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
+                return 0;
+            }
         }
 
         /* general options */
@@ -737,7 +741,10 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--verbose"))
             opt_verbose = OFTrue;
         if (cmd.findOption("--debug"))
+        {
+            app.printIdentifier();
             opt_debug = 5;
+        }
 
         /* input options */
 
@@ -946,6 +953,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.22  2008-09-25 11:19:48  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.21  2008-09-24 13:00:48  joergr
  * Added new command line option --update-meta-info that allows for updating
  * particular information in the file meta-header (e.g. SOP instance UID).

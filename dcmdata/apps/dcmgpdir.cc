@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-01-10 13:05:18 $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,6 +138,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--verbose",                  "-v",     "verbose mode, print processing details");
+     cmd.addOption("--arguments",                          "print expanded command line arguments");
      cmd.addOption("--quiet",                    "-q",     "quiet mode, print no warnings and errors");
      cmd.addOption("--debug",                    "-d",     "debug mode, print debug information");
 
@@ -232,23 +233,27 @@ int main(int argc, char *argv[])
         if (cmd.getArgCount() == 0)
             app.printUsage();
 
+        /* check whether to print the command line arguments */
+        if (cmd.findOption("--arguments"))
+            app.printArguments();
+
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
             if (cmd.findOption("--version"))
             {
-                app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-                CERR << OFendl << "External libraries used:";
+                app.printHeader(OFTrue /*print host identifier*/);
+                COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(BUILD_DCMGPDIR_AS_DCMMKDIR)
-                CERR << " none" << OFendl;
+                COUT << " none" << OFendl;
 #else
-                CERR << OFendl;
+                COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-                CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
-                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
+                COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
 #endif
                 return 0;
             }
@@ -266,7 +271,10 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--debug"))
+        {
+            app.printIdentifier();
             opt_debug = 5;
+        }
 
         /* input options */
         if (cmd.findOption("--output-file"))
@@ -602,7 +610,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.85  2007-01-10 13:05:18  joergr
+ * Revision 1.86  2008-09-25 11:19:48  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.85  2007/01/10 13:05:18  joergr
  * Added new option that enables support for retired SOP classes.
  * Re-ordered and re-structured command line options.
  *

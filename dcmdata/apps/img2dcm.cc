@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 16:32:14 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,6 +186,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                        "print expanded command line arguments");
     cmd.addOption("--verbose",               "-v",      "verbose mode, print processing details");
     cmd.addOption("--debug",                 "-d",      "debug mode, print debug information");
 
@@ -250,15 +251,18 @@ static OFCondition startConversion(OFCommandLine& cmd,
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert standard image formats into DICOM format", rcsid);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
-    /* check exclusive options first */
+    /* check whether to print the command line arguments */
+    if (cmd.findOption("--arguments"))
+      app.printArguments();
 
+    /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
       if (cmd.findOption("--version"))
       {
-          app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-          exit(0);
-       }
+        app.printHeader(OFTrue /*print host identifier*/);
+        exit(0);
+      }
     }
   }
 
@@ -291,6 +295,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
     vMode = OFTrue;
   if (cmd.findOption("--debug"))
   {
+    app.printIdentifier();
     dMode = OFTrue;
     vMode = OFTrue;
     i2d.setDebugMode(OFTrue);
@@ -530,6 +535,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.7  2008-09-25 11:19:48  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.6  2008-01-16 16:32:14  onken
  * Fixed some empty or doubled log messages in libi2d files.
  *

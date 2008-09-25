@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-01-23 15:09:26 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -235,6 +235,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                      "print expanded command line arguments");
       cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
@@ -276,26 +277,32 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check exclusive options first */
+        /* check whether to print the command line arguments */
+        if (cmd.findOption("--arguments"))
+            app.printArguments();
 
+        /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
-          if (cmd.findOption("--version"))
-          {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << OFendl << "External libraries used:";
+            if (cmd.findOption("--version"))
+            {
+                app.printHeader(OFTrue /*print host identifier*/);
+                COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-              CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+                COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-              CERR << " none" << OFendl;
+                COUT << " none" << OFendl;
 #endif
-              return 0;
-           }
+                return 0;
+            }
         }
 
         /* general options */
         if (cmd.findOption("--debug"))
+        {
+            app.printIdentifier();
             opt_debugMode = 5;
+        }
 
         /* input options */
         cmd.beginOptionBlock();
@@ -453,6 +460,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.30  2008-09-25 11:19:48  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.29  2008-01-23 15:09:26  joergr
  * Restructured code in order to avoid empty output file in case the input file
  * could not be read.

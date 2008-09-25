@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 11:19:48 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--arguments",                        "print expanded command line arguments");
    cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
    cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
 
@@ -172,21 +173,24 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check exclusive options first */
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+          app.printArguments();
 
+      /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
-        if (cmd.findOption("--version"))
-        {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << OFendl << "External libraries used:";
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader(OFTrue /*print host identifier*/);
+              COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+              COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << OFendl;
+              COUT << " none" << OFendl;
 #endif
-            return 0;
-         }
+              return 0;
+          }
       }
 
       /* command line parameters */
@@ -195,7 +199,11 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      if (cmd.findOption("--debug"))
+      {
+          app.printIdentifier();
+          opt_debugMode = 5;
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -437,7 +445,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.50  2006-08-15 15:50:56  meichel
+** Revision 1.51  2008-09-25 11:19:48  joergr
+** Added support for printing the expanded command line arguments.
+** Always output the resource identifier of the command line tool in debug mode.
+**
+** Revision 1.50  2006/08/15 15:50:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
