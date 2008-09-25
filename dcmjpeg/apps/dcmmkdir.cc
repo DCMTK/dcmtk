@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,15 @@
  *  Profiles. Currently supports the following profiles:
  *  - General Purpose CD-R Interchange (STD-GEN-CD)
  *  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
- *  - No profile (NONE), like STD-GEN-xxxx without restricting the transfer syntax
+ *  - General Purpose DVD with Compression Interchange (STD-GEN-DVD-JPEG/J2K)
+ *  - General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+ *  - General Purpose MIME Interchange (STD-GEN-MIME)
+ *  - DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
  *  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
  *  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
- *  - CT/MR Studies on xxxx Media (STD-CTMR-xxxx)
+ *  - 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
+ *  - Dental Radiograph Interchange (STD-DEN-CD)
+ *  - CT/MR Studies on various Media (STD-CTMR-xxxx)
  *  - Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
  *  - Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
  *  - Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
@@ -36,9 +41,9 @@
  *  - 12-lead ECG Interchange on Diskette (STD-WVFM-ECG-FD)
  *  - Hemodynamic Waveform Interchange on Diskette (STD-WVFM-HD-FD)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:23 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 13:53:24 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +61,10 @@
 /*
  * CVS/RCS Log:
  * $Log: dcmmkdir.cc,v $
- * Revision 1.3  2005-12-08 15:43:23  meichel
+ * Revision 1.4  2008-09-25 13:53:24  joergr
+ * Updated comment header (list of supported profiles).
+ *
+ * Revision 1.3  2005/12/08 15:43:23  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2004/01/16 14:28:01  joergr
