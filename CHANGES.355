@@ -7,6 +7,51 @@ Changes between releases are documented here.
   Affects: ofstd/include/dcmtk/ofstd/ofconapp.h
            ofstd/libsrc/ofconapp.cc
 
+- Added method for printing the resource identifier of an application.
+  Affects: dcmdata/apps/dcmdump.cc
+           ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+- Added support for printing the expanded command line arguments.
+  Affects: dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dcmodify.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/dcm2pdf.man
+           dcmdata/docs/dcm2pdf.man
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/img2dcm.man
+           dcmdata/docs/pdf2dcm.man
+           dcmdata/docs/xml2dcm.man
+
+- Always output the resource identifier of the command line tool in debug mode.
+  Affects: dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dcmodify.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+
 **** Changes from 2008.09.24 (riesmeier)
 
 - Added new command line option --update-meta-info that allows for updating
