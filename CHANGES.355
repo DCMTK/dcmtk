@@ -45,6 +45,12 @@ Changes between releases are documented here.
            dcmimage/docs/dcmscale.man
            dcmimgle/apps/dcmdspfn.cc
            dcmimgle/docs/dcmdspfn.man
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpeg/docs/dcmmkdir.man
 
 - Always output the resource identifier of the command line tool in debug mode.
   Affects: dcmdata/apps/dcm2pdf.cc
@@ -63,6 +69,11 @@ Changes between releases are documented here.
            dcmimage/apps/dcmquant.cc
            dcmimage/apps/dcmscale.cc
            dcmimgle/apps/dcmdspfn.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+
+- Updated comment header (list of supported profiles).
+  Affects: dcmjpeg/apps/dcmmkdir.cc
 
 **** Changes from 2008.09.24 (riesmeier)
 
