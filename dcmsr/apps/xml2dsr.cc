@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2006, OFFIS
+ *  Copyright (C) 2003-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Convert the contents of an XML document to a DICOM structured
  *            reporting file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 14:14:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                      "print expanded command line arguments");
       cmd.addOption("--verbose",               "-v",    "verbose mode, print processing details");
       cmd.addOption("--debug",                 "-d",    "debug mode, print debug information");
 
@@ -134,22 +135,26 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+        /* check whether to print the command line arguments */
+        if (cmd.findOption("--arguments"))
+            app.printArguments();
+
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
-          if (cmd.findOption("--version"))
-          {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << OFendl << "External libraries used:" << OFendl;
+            if (cmd.findOption("--version"))
+            {
+                app.printHeader(OFTrue /*print host identifier*/);
+                COUT << OFendl << "External libraries used:" << OFendl;
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-              CERR << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
+                COUT << "- LIBXML, Version " << LIBXML_DOTTED_VERSION << OFendl;
 #ifndef LIBXML_SCHEMAS_ENABLED
-              CERR << "  without XML Schema support" << OFendl;
+                COUT << "  without XML Schema support" << OFendl;
 #endif
-              return 0;
-           }
+                return 0;
+            }
         }
 
         /* general options */
@@ -241,7 +246,9 @@ int main(int argc, char *argv[])
             app.checkConflict("--validate-schema", "--template-envelope", (opt_readFlags & DSRTypes::XF_templateElementEnclosesItems) > 0);
     }
 
-    SetDebugLevel((opt_debug));
+    if (opt_debug)
+        app.printIdentifier();        
+    SetDebugLevel((opt_debug));    
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -336,6 +343,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.8  2008-09-25 14:14:21  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
  * Revision 1.7  2006-08-15 16:40:02  meichel
  * Updated the code in module dcmsr to correctly compile when
  *   all standard C++ classes remain in namespace std.
