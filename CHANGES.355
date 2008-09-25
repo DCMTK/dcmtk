@@ -51,6 +51,8 @@ Changes between releases are documented here.
            dcmjpeg/docs/dcmdjpeg.man
            dcmjpeg/docs/dcmj2pnm.man
            dcmjpeg/docs/dcmmkdir.man
+           dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
            dcmsr/apps/dsr2html.cc
            dcmsr/apps/dsr2xml.cc
            dcmsr/apps/dsrdump.cc
@@ -79,6 +81,7 @@ Changes between releases are documented here.
            dcmimgle/apps/dcmdspfn.cc
            dcmjpeg/apps/dcmcjpeg.cc
            dcmjpeg/apps/dcmdjpeg.cc
+           dcmsign/apps/dcmsign.cc
            dcmsr/apps/dsr2html.cc
            dcmsr/apps/dsr2xml.cc
            dcmsr/apps/dsrdump.cc
@@ -86,6 +89,28 @@ Changes between releases are documented here.
 
 - Updated comment header (list of supported profiles).
   Affects: dcmjpeg/apps/dcmmkdir.cc
+
+- Moved output of resource identifier in order to avoid printing the same
+  information twice.
+  Affects: dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dcmodify.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmscale.cc
+           dcmimgle/apps/dcmdspfn.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+
+- Moved checking on presence of the data dictionary.
+  Affects: dcmdata/apps/img2dcm.cc
 
 **** Changes from 2008.09.24 (riesmeier)
 
