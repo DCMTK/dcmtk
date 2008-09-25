@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 10:10:21 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2008-09-25 11:14:58 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,6 +171,16 @@ void OFConsoleApplication::printArguments(OFCommandLine *cmd)
 }
 
 
+void OFConsoleApplication::printIdentifier()
+{
+    if (!Identification.empty())
+    {
+        ofConsole.lockCerr() << Identification << OFendl << OFendl;
+        ofConsole.unlockCerr();
+    }
+}
+
+
 void OFConsoleApplication::printError(const char *str,
                                       const int code)
 {
@@ -284,6 +294,9 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.26  2008-09-25 11:14:58  joergr
+ * Added method for printing the resource identifier of an application.
+ *
  * Revision 1.25  2008-09-25 10:10:21  joergr
  * Print expanded command line arguments to stderr and not to stdout.
  *

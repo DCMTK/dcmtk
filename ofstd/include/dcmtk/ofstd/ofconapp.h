@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 10:10:16 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2008-09-25 11:14:54 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,6 +107,10 @@ class OFConsoleApplication
      ** @param  cmd   reference to command line class (default: object used for parsing)
      */
     void printArguments(OFCommandLine *cmd = NULL);
+
+    /** print resource identifier to standard error stream
+     */
+    void printIdentifier();
 
     /** print error message (incl. header) to standard error stream and exit with error code
      *
@@ -211,6 +215,9 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
+ * Revision 1.24  2008-09-25 11:14:54  joergr
+ * Added method for printing the resource identifier of an application.
+ *
  * Revision 1.23  2008-09-25 10:10:16  joergr
  * Print expanded command line arguments to stderr and not to stdout.
  *

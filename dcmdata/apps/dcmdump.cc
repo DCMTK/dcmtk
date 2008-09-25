@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:30:24 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2008-09-25 11:16:32 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,23 +244,22 @@ int main(int argc, char *argv[])
     {
       /* check whether to print the command line arguments */
       if (cmd.findOption("--arguments"))
-          app.printArguments();
+        app.printArguments();
 
       /* check exclusive options first */
-
       if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);
-            COUT << OFendl << "External libraries used:";
+          app.printHeader(OFTrue /*print host identifier*/);
+          COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+          COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            COUT << " none" << OFendl;
+          COUT << " none" << OFendl;
 #endif
-            return 0;
-         }
+          return 0;
+        }
       }
 
       /* options */
@@ -275,9 +274,8 @@ int main(int argc, char *argv[])
 #endif
       if (cmd.findOption("--debug"))
       {
-          /* print resource identifier */
-          CERR << rcsid << OFendl << OFendl;
-          opt_debugMode = 5;
+        app.printIdentifier();
+        opt_debugMode = 5;
       }
 
       cmd.beginOptionBlock();
@@ -659,6 +657,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.65  2008-09-25 11:16:32  joergr
+ * Added method for printing the resource identifier of an application.
+ *
  * Revision 1.64  2008-09-24 13:30:24  joergr
  * Added support for printing the expanded command line arguments to standard
  * output stream.
