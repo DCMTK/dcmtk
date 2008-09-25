@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 13:58:28 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2008-09-25 14:49:45 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,11 +190,7 @@ int main(int argc, char *argv[])
       /* options */
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug"))
-      {
-        app.printIdentifier();
-        opt_debugMode = 5;
-      }
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--planar-auto")) opt_planarconfig = EPC_default;
@@ -293,6 +289,8 @@ int main(int argc, char *argv[])
 
     }
 
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     // register global decompression codecs
@@ -386,6 +384,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.18  2008-09-25 14:49:45  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.17  2008-09-25 13:58:28  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:16:32 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2008-09-25 14:53:12 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -272,11 +272,7 @@ int main(int argc, char *argv[])
         ofConsole.setCerr(&errorStream);
       }
 #endif
-      if (cmd.findOption("--debug"))
-      {
-        app.printIdentifier();
-        opt_debugMode = 5;
-      }
+      if (cmd.findOption("--debug")) opt_debugMode = 5;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) readMode = ERM_autoDetect;
@@ -469,6 +465,8 @@ int main(int argc, char *argv[])
       }
     }
 
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
@@ -657,6 +655,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.66  2008-09-25 14:53:12  joergr
+ * Moved output of resource identifier in order to avoid printing the same
+ * information twice.
+ *
  * Revision 1.65  2008-09-25 11:16:32  joergr
  * Added method for printing the resource identifier of an application.
  *
