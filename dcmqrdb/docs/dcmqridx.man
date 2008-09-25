@@ -33,6 +33,9 @@ dcmfile-in  DICOM image file to be registered in the index file
       --version
         print version information and exit
 
+      --arguments
+        print expanded command line arguments
+
   -v  --verbose
         verbose mode, print processing details
 

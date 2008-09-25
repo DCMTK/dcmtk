@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-08-10 14:25:20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 15:16:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,6 +112,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
     cmd->addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd->addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd->addOption("--arguments",                        "print expanded command line arguments");
     cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
     cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
     cmd->addOption("--no-sq-expansion",       "-nse",    "disable expansion of empty sequences\nin C-FIND request messages");
@@ -185,25 +186,29 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   prepareCmdLineArgs( argc, argv, applicationName );
   if( app->parseCommandLine( *cmd, argc, argv, OFCommandLine::PF_ExpandWildcards ) )
   {
+    /* check whether to print the command line arguments */
+    if (cmd->findOption("--arguments"))
+      app->printArguments();
+
     /* check exclusive options first */
     if (cmd->getParamCount() == 0)
     {
       if (cmd->findOption("--version"))
       {
-        app->printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-        ofConsole.lockCerr() << OFendl << "External libraries used:";
+        app->printHeader(OFTrue /*print host identifier*/);
+        ofConsole.lockCout() << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-        ofConsole.getCerr() << " none" << OFendl;
+        ofConsole.getCout() << " none" << OFendl;
 #else
-        ofConsole.getCerr() << OFendl;
+        ofConsole.getCout() << OFendl;
 #endif
 #ifdef WITH_ZLIB
-        ofConsole.getCerr() << "- ZLIB, Version " << zlibVersion() << OFendl;
+        ofConsole.getCout() << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-        ofConsole.getCerr() << "- LIBWRAP" << OFendl;
+        ofConsole.getCout() << "- LIBWRAP" << OFendl;
 #endif
-        ofConsole.unlockCerr();
+        ofConsole.unlockCout();
         exit(0);
       }
     }
@@ -417,7 +422,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.18  2007-08-10 14:25:20  meichel
+** Revision 1.19  2008-09-25 15:16:17  joergr
+** Added support for printing the expanded command line arguments.
+**
+** Revision 1.18  2007/08/10 14:25:20  meichel
 ** Added new command line option --keep-char-set that returns
 **   any specific character set as encoded in the worklist file.
 **
