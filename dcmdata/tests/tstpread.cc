@@ -22,8 +22,8 @@
  *  Purpose: Test application for partial element access API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-07-11 10:42:28 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-09-25 15:43:22 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -331,27 +331,31 @@ int main(int argc, char *argv[])
   OFCommandLine cmd;
 
   cmd.addGroup("general options:");
-   cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
-   cmd.addOption("--debug",   "-d", "debug mode, print debug information");
+   cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+   cmd.addOption("--arguments",       "print expanded command line arguments");
+   cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
+   cmd.addOption("--debug",     "-d", "debug mode, print debug information");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check exclusive options first */
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+        app.printArguments();
 
+      /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-            CERR << OFendl << "External libraries used:";
+            app.printHeader(OFTrue /*print host identifier*/);
+            COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+            COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-            CERR << " none" << OFendl;
+            COUT << " none" << OFendl;
 #endif
             return 0;
          }
@@ -363,6 +367,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug")) opt_debugMode = 5;
     }
 
+    if (opt_debugMode)
+        app.printIdentifier();
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
@@ -470,13 +476,17 @@ int main(int argc, char *argv[])
 
 
 /*
-** CVS/RCS Log:
-** $Log: tstpread.cc,v $
-** Revision 1.2  2007-07-11 10:42:28  joergr
-** Fixed layout and other minor issues of the usage output (--help).
-**
-** Revision 1.1  2007/07/11 08:52:22  meichel
-** Added regression test for new method DcmElement::getPartialValue.
-**
-**
-*/
+ * CVS/RCS Log:
+ * $Log: tstpread.cc,v $
+ * Revision 1.3  2008-09-25 15:43:22  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.2  2007/07/11 10:42:28  joergr
+ * Fixed layout and other minor issues of the usage output (--help).
+ *
+ * Revision 1.1  2007/07/11 08:52:22  meichel
+ * Added regression test for new method DcmElement::getPartialValue.
+ *
+ *
+ */
