@@ -37,6 +37,9 @@ dcmfile-in  DICOM image file(s) to be printed
        --version
          print version information and exit
 
+       --arguments
+         print expanded command line arguments
+
   -v   --verbose
          verbose mode, print actions
 

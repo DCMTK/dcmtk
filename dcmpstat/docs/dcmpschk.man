@@ -53,6 +53,9 @@ dcmfile-in  presentation state file(s) to be checked
       --version
         print version information and exit
 
+      --arguments
+        print expanded command line arguments
+
   -v  --verbose
         verbose mode, print actions
 

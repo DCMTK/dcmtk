@@ -44,6 +44,9 @@ bitmap-out   output DICOM image or PGM bitmap
       --version
         print version information and exit
 
+      --arguments
+        print expanded command line arguments
+
   -v  --verbose
         verbose mode, dump presentation state contents
 

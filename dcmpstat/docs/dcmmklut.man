@@ -52,6 +52,9 @@ dcmimg-out  DICOM output filename
        --version
          print version information and exit
 
+       --arguments
+         print expanded command line arguments
+
   -v   --verbose
          verbose mode, print processing details
 

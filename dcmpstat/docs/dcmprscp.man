@@ -36,6 +36,9 @@ the printer to be emulated from the configuration file.
       --version
         print version information and exit
 
+      --arguments
+        print expanded command line arguments
+
   -v  --verbose
         verbose mode, print actions
 

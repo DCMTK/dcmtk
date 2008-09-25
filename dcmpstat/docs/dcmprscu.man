@@ -54,6 +54,9 @@ dcmfile-in  stored print file(s) to be spooled
       --version
         print version information and exit
 
+      --arguments
+        print expanded command line arguments
+
   -v  --verbose
         verbose mode, print actions
 
