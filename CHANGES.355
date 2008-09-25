@@ -37,6 +37,14 @@ Changes between releases are documented here.
            dcmdata/docs/img2dcm.man
            dcmdata/docs/pdf2dcm.man
            dcmdata/docs/xml2dcm.man
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmquant.man
+           dcmimage/docs/dcmscale.man
+           dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/docs/dcmdspfn.man
 
 - Always output the resource identifier of the command line tool in debug mode.
   Affects: dcmdata/apps/dcm2pdf.cc
@@ -51,6 +59,10 @@ Changes between releases are documented here.
            dcmdata/apps/mdfconen.cc
            dcmdata/apps/pdf2dcm.cc
            dcmdata/apps/xml2dcm.cc
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmimgle/apps/dcmdspfn.cc
 
 **** Changes from 2008.09.24 (riesmeier)
 
