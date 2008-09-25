@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2008-09-25 14:35:34 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -478,6 +478,14 @@ static OFCondition startConversion(OFCommandLine& cmd,
   inputPlug->setDebugMode(dMode);
   inputPlug->setLogStream(&ofConsole);
 
+  /* make sure data dictionary is loaded */
+  if (!dcmDataDict.isDictionaryLoaded())
+  {
+      CERR << "Warning: no data dictionary loaded, "
+           << "check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+  }
+
   DcmDataset *resultObject = NULL;
   if (vMode)
     COUT << "img2dcm: Starting image conversion" << OFendl;
@@ -490,14 +498,6 @@ static OFCondition startConversion(OFCommandLine& cmd,
       COUT << "img2dcm: Saving output DICOM to file " << outputFile << OFendl;
     DcmFileFormat dcmff(resultObject);
     cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeOnlyDataset);
-  }
-
-  /* make sure data dictionary is loaded */
-  if (!dcmDataDict.isDictionaryLoaded())
-  {
-      CERR << "Warning: no data dictionary loaded, "
-           << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
   }
 
   // Cleanup and return
@@ -535,6 +535,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.8  2008-09-25 14:35:34  joergr
+ * Moved checking on presence of the data dictionary.
+ *
  * Revision 1.7  2008-09-25 11:19:48  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.
