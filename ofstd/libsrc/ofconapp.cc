@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:25:09 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2008-09-25 10:10:21 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ void OFConsoleApplication::printArguments(OFCommandLine *cmd)
 {
     if (cmd == NULL)
         cmd = CmdLine;
-    STD_NAMESPACE ostream &output = ofConsole.lockCout();
+    STD_NAMESPACE ostream &output = ofConsole.lockCerr();
     if (CmdLine != NULL)
     {
         output << "expanded command line to " << CmdLine->getArgCount() << " arguments:" << OFendl;
@@ -164,10 +164,10 @@ void OFConsoleApplication::printArguments(OFCommandLine *cmd)
                     output << "'" << arg << "' ";
             } while (CmdLine->gotoNextArg());
         }
+        output << OFendl << OFendl;
     } else
-        output << "warning: cannot print expanded command line arguments" << OFendl;
-    output << OFendl << OFendl;
-    ofConsole.unlockCout();
+        output << "warning: cannot print expanded command line arguments" << OFendl << OFendl;
+    ofConsole.unlockCerr();
 }
 
 
@@ -284,6 +284,9 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
+ * Revision 1.25  2008-09-25 10:10:21  joergr
+ * Print expanded command line arguments to stderr and not to stdout.
+ *
  * Revision 1.24  2008-09-24 13:25:09  joergr
  * Added support for printing the expanded command line arguments to standard
  * output stream.

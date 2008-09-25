@@ -22,8 +22,8 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:24:00 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2008-09-25 10:10:16 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ class OFConsoleApplication
      */
     void printUsage(const OFCommandLine *cmd = NULL);
 
-    /** print expanded command line arguments to standard output stream
+    /** print expanded command line arguments to standard error stream
      *
      ** @param  cmd   reference to command line class (default: object used for parsing)
      */
@@ -211,6 +211,9 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
+ * Revision 1.23  2008-09-25 10:10:16  joergr
+ * Print expanded command line arguments to stderr and not to stdout.
+ *
  * Revision 1.22  2008-09-24 13:24:00  joergr
  * Added support for printing the expanded command line arguments to standard
  * output stream.

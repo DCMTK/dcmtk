@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.09.25 (riesmeier)
+
+- Print expanded command line arguments to stderr and not to stdout.
+  Affects: ofstd/include/dcmtk/ofstd/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
 **** Changes from 2008.09.24 (riesmeier)
 
 - Added new command line option --update-meta-info that allows for updating
