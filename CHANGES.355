@@ -51,6 +51,14 @@ Changes between releases are documented here.
            dcmjpeg/docs/dcmdjpeg.man
            dcmjpeg/docs/dcmj2pnm.man
            dcmjpeg/docs/dcmmkdir.man
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmsr/docs/dsrdump.man
+           dcmsr/docs/xml2dsr.man
 
 - Always output the resource identifier of the command line tool in debug mode.
   Affects: dcmdata/apps/dcm2pdf.cc
@@ -71,6 +79,10 @@ Changes between releases are documented here.
            dcmimgle/apps/dcmdspfn.cc
            dcmjpeg/apps/dcmcjpeg.cc
            dcmjpeg/apps/dcmdjpeg.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/apps/xml2dsr.cc
 
 - Updated comment header (list of supported profiles).
   Affects: dcmjpeg/apps/dcmmkdir.cc
