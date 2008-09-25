@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 09:16:59 $
+ *  Update Date:      $Date: 2008-09-25 15:34:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 
 #define SHORTCOL 2
-#define LONGCOL  9
+#define LONGCOL  11
 
 
 int main (int argc, char *argv[])
@@ -97,16 +97,17 @@ int main (int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
-    cmd.addParam("index-out", "storage area for the index file (directory)");
+    cmd.addParam("index-out",  "storage area for the index file (directory)");
     cmd.addParam("dcmfile-in", "DICOM image file to be registered in the index file", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("options:", LONGCOL, SHORTCOL);
-     cmd.addOption("--help",    "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--version",       "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--verbose", "-v", "verbose mode, print processing details");
-     cmd.addOption("--debug",   "-d", "debug mode, print debug information");
-     cmd.addOption("--print",   "-p", "list contents of database index file");
-     cmd.addOption("--not-new", "-n", "set instance reviewed status to 'not new'");
+     cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
+     cmd.addOption("--arguments",       "print expanded command line arguments");
+     cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
+     cmd.addOption("--debug",     "-d", "debug mode, print debug information");
+     cmd.addOption("--print",     "-p", "list contents of database index file");
+     cmd.addOption("--not-new",   "-n", "set instance reviewed status to 'not new'");
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -118,26 +119,30 @@ int main (int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+        /* check whether to print the command line arguments */
+        if (cmd.findOption("--arguments"))
+            app.printArguments();
+
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
-          if (cmd.findOption("--version"))
-          {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << OFendl << "External libraries used:";
+            if (cmd.findOption("--version"))
+            {
+                app.printHeader(OFTrue /*print host identifier*/);
+                CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-              CERR << " none" << OFendl;
+                COUT << " none" << OFendl;
 #else
-              CERR << OFendl;
+                COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+                COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-              CERR << "- LIBWRAP" << OFendl;
+                COUT << "- LIBWRAP" << OFendl;
 #endif
-              return 0;
-           }
+                return 0;
+            }
         }
 
         /* command line parameters and options */
@@ -147,8 +152,9 @@ int main (int argc, char *argv[])
             opt_verbose = OFTrue;
         if (cmd.findOption("--debug"))
         {
-            SetDebugLevel(3);
             opt_debug = OFTrue;
+            SetDebugLevel(3);
+            app.printIdentifier();
         }
         if (cmd.findOption("--print"))
             opt_print = OFTrue;
@@ -160,7 +166,6 @@ int main (int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
         fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE);
-
 
     OFCondition cond;
     DcmQueryRetrieveIndexDatabaseHandle hdl(opt_storageArea, DB_UpperMaxStudies, DB_UpperMaxBytesPerStudy, cond);
@@ -209,7 +214,11 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
- * Revision 1.8  2006-10-27 09:16:59  joergr
+ * Revision 1.9  2008-09-25 15:34:37  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.8  2006/10/27 09:16:59  joergr
  * Fixed wrong name of the command line tool "dcmqridx".
  *
  * Revision 1.7  2006/08/15 16:09:33  meichel

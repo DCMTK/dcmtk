@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-10-27 09:01:30 $
+ *  Update Date:      $Date: 2008-09-25 15:34:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,7 @@ main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
     cmd.addOption("--help",                     "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                               "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                             "print expanded command line arguments");
     cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
     cmd.addOption("--very-verbose",             "-vv",       "print more processing details");
     cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
@@ -294,23 +295,27 @@ main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+        app.printArguments();
+
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
         if (cmd.findOption("--version"))
         {
-          app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+          app.printHeader(OFTrue /*print host identifier*/);
           CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-              CERR << " none" << OFendl;
+              COUT << " none" << OFendl;
 #else
-              CERR << OFendl;
+              COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+              COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-              CERR << "- LIBWRAP" << OFendl;
+              COUT << "- LIBWRAP" << OFendl;
 #endif
           return 0;
         }
@@ -551,7 +556,10 @@ main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
-   }
+    }
+
+    if (options.debug_)
+      app.printIdentifier();
 
     /* read config file */
     if (access(opt_configFileName, R_OK) < 0) {
@@ -681,7 +689,11 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
- * Revision 1.12  2006-10-27 09:01:30  joergr
+ * Revision 1.13  2008-09-25 15:34:37  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.12  2006/10/27 09:01:30  joergr
  * Fixed wrong name of configuration file.
  *
  * Revision 1.11  2006/08/15 16:09:33  meichel
