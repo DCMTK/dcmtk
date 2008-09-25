@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:42:34 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 14:55:22 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -736,6 +736,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                      "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                                "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                              "print expanded command line arguments");
       cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
       cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
       cmd.addOption("--dump",                      "+d",     1, "[f]ilename: string",
@@ -802,24 +803,27 @@ int main(int argc, char *argv[])
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
-    /* check exclusive options first */
+    /* check whether to print the command line arguments */
+    if (cmd.findOption("--arguments"))
+        app.printArguments();
 
+    /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
         if (cmd.findOption("--version"))
         {
-            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            app.printHeader(OFTrue /*print host identifier*/);
             CERR << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
-            CERR << " none" << OFendl;
+            COUT << " none" << OFendl;
 #else
-            CERR << OFendl;
+            COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+            COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_OPENSSL
-            CERR << "- " << OPENSSL_VERSION_TEXT << OFendl;
+            COUT << "- " << OPENSSL_VERSION_TEXT << OFendl;
 #endif
             return 0;
         }
@@ -1021,6 +1025,8 @@ int main(int argc, char *argv[])
 
   }
 
+  if (opt_debugMode)
+      app.printIdentifier();
   SetDebugLevel((opt_debugMode));
 
   /* make sure data dictionary is loaded */
@@ -1165,7 +1171,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.25  2006-08-15 16:42:34  meichel
+ *  Revision 1.26  2008-09-25 14:55:22  joergr
+ *  Added support for printing the expanded command line arguments.
+ *  Always output the resource identifier of the command line tool in debug mode.
+ *
+ *  Revision 1.25  2006/08/15 16:42:34  meichel
  *  Updated the code in module dcmsign to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
