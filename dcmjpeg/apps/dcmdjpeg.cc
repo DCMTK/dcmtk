@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2006, OFFIS
+ *  Copyright (C) 2001-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-16 16:30:20 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-09-25 13:58:28 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                       "print expanded command line arguments");
     cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
     cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
@@ -162,18 +163,21 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check exclusive options first */
+      /* check whether to print the command line arguments */
+      if (cmd.findOption("--arguments"))
+        app.printArguments();
 
+      /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
           if (cmd.findOption("--version"))
           {
-              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
-              CERR << OFendl << "External libraries used:" << OFendl;
+              app.printHeader(OFTrue /*print host identifier*/);
+              COUT << OFendl << "External libraries used:" << OFendl;
 #ifdef WITH_ZLIB
-              CERR << "- ZLIB, Version " << zlibVersion() << OFendl;
+              COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
+              COUT << "- " << DiJPEGPlugin::getLibraryVersionString() << OFendl;
               return 0;
           }
       }
@@ -186,7 +190,11 @@ int main(int argc, char *argv[])
       /* options */
 
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      if (cmd.findOption("--debug"))
+      {
+        app.printIdentifier();
+        opt_debugMode = 5;
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--planar-auto")) opt_planarconfig = EPC_default;
@@ -378,7 +386,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
- * Revision 1.16  2006-08-16 16:30:20  meichel
+ * Revision 1.17  2008-09-25 13:58:28  joergr
+ * Added support for printing the expanded command line arguments.
+ * Always output the resource identifier of the command line tool in debug mode.
+ *
+ * Revision 1.16  2006/08/16 16:30:20  meichel
  * Updated all code in module dcmjpeg to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
