@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2007, OFFIS
+ *  Copyright (C) 2005-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           SOP class in order to shutdown server applications)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-10-01 16:21:26 $
+ *  Update Date:      $Date: 2008-09-25 16:00:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@
 #define APPLICATIONTITLE "TERMSCU"
 #define PEERAPPLICATIONTITLE "ANY-SCP"
 #define SHORTCOL 4
-#define LONGCOL  9
+#define LONGCOL  11
 
 // ----------------------------------------------------------------------------
 
@@ -124,6 +124,7 @@ int main( int argc, char *argv[] )
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
   cmd.addOption("--help",      "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
   cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
+  cmd.addOption("--arguments",            "print expanded command line arguments");
   cmd.addOption("--verbose",   "-v",      "verbose mode, print processing details");
   cmd.addOption("--debug",     "-d",      "debug mode, print debug information");
 
@@ -155,17 +156,21 @@ int main( int argc, char *argv[] )
   prepareCmdLineArgs( argc, argv, OFFIS_CONSOLE_APPLICATION );
   if( app.parseCommandLine( cmd, argc, argv ) )
   {
+    /* check whether to print the command line arguments */
+    if (cmd.findOption("--arguments"))
+      app.printArguments();
+
     // check exclusive options first
-    if( cmd.getParamCount() == 0 )
+    if (cmd.hasExclusiveOption())
     {
       if( cmd.findOption("--version") )
       {
-        app.printHeader( OFTrue );
-        CERR << OFendl << "External libraries used:";
+        app.printHeader( OFTrue /*print host identifier*/ );
+        COUT << OFendl << "External libraries used:";
 #ifdef WITH_ZLIB
-        CERR << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
+        COUT << OFendl << "- ZLIB, Version " << zlibVersion() << OFendl;
 #else
-        CERR << " none" << OFendl;
+        COUT << " none" << OFendl;
 #endif
         return( 0 );
       }
@@ -177,7 +182,7 @@ int main( int argc, char *argv[] )
 
     // command line options
     if( cmd.findOption("--verbose") )
-      opt_verbose=OFTrue;
+      opt_verbose = OFTrue;
     if( cmd.findOption("--debug") )
     {
       opt_debug = OFTrue;
@@ -192,6 +197,9 @@ int main( int argc, char *argv[] )
     if( cmd.findOption("--max-pdu") )
       app.checkValue( cmd.getValueAndCheckMinMax( opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE ) );
   }
+
+  if (opt_debug)
+    app.printIdentifier();
 
   // make sure data dictionary is loaded
   if( !dcmDataDict.isDictionaryLoaded() )
@@ -342,7 +350,11 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
-** Revision 1.7  2007-10-01 16:21:26  joergr
+** Revision 1.8  2008-09-25 16:00:58  joergr
+** Added support for printing the expanded command line arguments.
+** Always output the resource identifier of the command line tool in debug mode.
+**
+** Revision 1.7  2007/10/01 16:21:26  joergr
 ** Fixed layout issue with --version output.
 **
 ** Revision 1.6  2006/08/15 16:04:28  meichel
