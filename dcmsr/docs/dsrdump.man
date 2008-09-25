@@ -43,6 +43,9 @@ dsrfile-in  DICOM SR input filename to be dumped
        --version
          print version information and exit
 
+       --arguments
+         print expanded command line arguments
+
   -d   --debug
          debug mode, print debug information
 

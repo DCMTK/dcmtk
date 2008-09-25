@@ -45,6 +45,9 @@ htmlfile-out  HTML/XHTML output filename (default: stdout)
        --version
          print version information and exit
 
+       --arguments
+         print expanded command line arguments
+
   -d   --debug
          debug mode, print debug information
 
