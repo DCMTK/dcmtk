@@ -38,6 +38,9 @@ dcmfile-in  DICOM input filename to be dumped
        --version
          print version information and exit
 
+       --arguments
+         print expanded command line arguments
+
   -q   --quiet
          quiet mode, print no warnings and errors
 
