@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 15:16:17 $
+ *  Update Date:      $Date: 2008-09-26 12:05:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,7 +191,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       app->printArguments();
 
     /* check exclusive options first */
-    if (cmd->getParamCount() == 0)
+    if (cmd->hasExclusiveOption())
     {
       if (cmd->findOption("--version"))
       {
@@ -422,6 +422,9 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.20  2008-09-26 12:05:17  joergr
+** Changed the way exclusive command line options are checked.
+**
 ** Revision 1.19  2008-09-25 15:16:17  joergr
 ** Added support for printing the expanded command line arguments.
 **
