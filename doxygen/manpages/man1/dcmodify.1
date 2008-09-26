@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "24 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "26 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -52,11 +52,14 @@ dcmfile-in  DICOM input filename(s) to be modified
         --version
           print version information and exit
 
-  -d    --debug
-          debug mode, print debug information
+        --arguments
+          print expanded command line arguments
 
   -v    --verbose
           verbose mode, print verbose output
+
+  -d    --debug
+          debug mode, print debug information
 
   -ie   --ignore-errors
           continue with file, if modify error occurs

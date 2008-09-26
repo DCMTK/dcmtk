@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Changed the way exclusive command line options are checked.
   Affects: dcmwlm/apps/wlcefs.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2008.09.25 (riesmeier)
 
 - Print expanded command line arguments to stderr and not to stdout.
