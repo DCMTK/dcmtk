@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.09.30 (onken)
+
+- Added dcmppscu to list of private modules.
+  Affects: CMakeLists.txt
+
 **** Changes from 2008.09.26 (riesmeier)
 
 - Changed the way exclusive command line options are checked.
