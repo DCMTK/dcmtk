@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-04-17 15:27:35 $
+** Update Date:         $Date: 2008-10-07 09:07:28 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.50 $
+** CVS/RCS Revision:    $Revision: 1.51 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1389,6 +1389,7 @@ OFCondition ASC_setIdentRQSaml(
   return EC_Normal;
 }
 
+
 void ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
                                 char*& buffer,
                                 unsigned short& bufferLen)
@@ -1409,6 +1410,26 @@ void ASC_getCopyOfIdentResponse(T_ASC_Parameters * params,
   rsp->getServerResponse(buffer, bufferLen);
   return;
 }
+
+
+OFCondition ASC_setIdentAC(
+    T_ASC_Parameters * params,
+    const char* response,
+    const Uint16& length )
+{
+  if (params == NULL)
+    return ASC_NULLKEY;
+  UserIdentityNegotiationSubItemAC* ac = params->DULparams.ackUserIdentNeg;
+  if (ac == NULL)
+    ac = new UserIdentityNegotiationSubItemAC();
+  else
+    ac->clear();
+  if( response != NULL )
+   ac->setServerResponse(response, length);
+  params->DULparams.ackUserIdentNeg = ac;
+  return EC_Normal;
+}
+
 
 void
 ASC_dumpParameters(T_ASC_Parameters * params, STD_NAMESPACE ostream& outstream)
@@ -2127,6 +2148,10 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.51  2008-10-07 09:07:28  onken
+** Fixed possible memory leak in user identity classes and added code for
+** accessing user identity from the server's side.
+**
 ** Revision 1.50  2008-04-17 15:27:35  onken
 ** Reworked and extended User Identity Negotiation code.
 **
