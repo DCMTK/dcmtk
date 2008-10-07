@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:   $Author: onken $
-** Update Date:   $Date: 2008-04-17 15:28:33 $
+** Update Date:   $Date: 2008-10-07 09:07:47 $
 ** Source File:   $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/assoc.h,v $
-** CVS/RCS Revision:  $Revision: 1.27 $
+** CVS/RCS Revision:  $Revision: 1.28 $
 ** Status:    $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -475,6 +475,18 @@ ASC_setIdentRQSaml(
     const Uint16& length,
     const OFBool& requestRsp = OFTrue);
 
+
+/** Acknowledges a User Identity Negotiation request.
+ *  @param params - [in/out] The association parameters to be filled
+ *  @param response  - [in]  The response to return (Kerberos or SAML) (will be copied)
+ *  @param length - [in] Length of response
+ *  @return EC_Normal if response could be set, error otherwise
+ */
+OFCondition ASC_setIdentAC(
+    T_ASC_Parameters * params,
+    const char* response,
+    const Uint16& length );
+
 /** Returns a copy of the User Identity Negotiation response value.
  *  CAUTION: The returned buffer (copy of orginal data) must be freed by the
  *  caller!
@@ -590,6 +602,9 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
+** Revision 1.28  2008-10-07 09:07:47  onken
+** Added code for accessing user identity from the server's side.
+**
 ** Revision 1.27  2008-04-17 15:28:33  onken
 ** Reworked and extended User Identity Negotiation code.
 **
