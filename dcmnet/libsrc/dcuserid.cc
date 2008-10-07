@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-04-17 16:09:13 $
+** Update Date:         $Date: 2008-10-07 09:08:15 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcuserid.cc,v $
-** CVS/RCS Revision:    $Revision: 1.2 $
+** CVS/RCS Revision:    $Revision: 1.3 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -371,6 +371,7 @@ void UserIdentityNegotiationSubItemRQ::dump(STD_NAMESPACE ostream& outstream) co
 // Assignment operator
 UserIdentityNegotiationSubItemRQ& UserIdentityNegotiationSubItemRQ::operator= (const UserIdentityNegotiationSubItemRQ& rhs)
 {
+  this->clear();
   m_userIdentityType = rhs.m_userIdentityType;
   m_posRspRequested = rhs.m_posRspRequested;
   if (rhs.m_primFieldLength > 0)
@@ -397,6 +398,7 @@ UserIdentityNegotiationSubItemRQ::UserIdentityNegotiationSubItemRQ(const UserIde
   *this = rhs;
 }
 
+
 // Destructor, frees memory of primary field
 UserIdentityNegotiationSubItemRQ::~UserIdentityNegotiationSubItemRQ()
 {
@@ -405,6 +407,11 @@ UserIdentityNegotiationSubItemRQ::~UserIdentityNegotiationSubItemRQ()
     delete[] m_primField; m_primField = NULL;
   }
   m_primFieldLength = 0;
+  if ((m_secField != NULL) && (m_secFieldLength > 0))
+  {
+    delete[] m_secField; m_secField = NULL;
+  }
+  m_secFieldLength = 0;
 }
 
 
@@ -451,6 +458,24 @@ UserIdentityNegotiationSubItemAC::getServerResponse(char*& targetBuffer,
   memcpy(targetBuffer, m_serverRsp, m_rspLength);
   resultLen = m_rspLength;
   return resultLen;
+}
+
+// Sets server response. Buffer from "rsp" is copied.
+void
+UserIdentityNegotiationSubItemAC::setServerResponse(const char* rsp,
+                                                    const Uint16& rspLen)
+{
+  if (m_serverRsp != NULL)
+  {
+    delete[] m_serverRsp;
+    m_serverRsp = NULL;
+  }
+  m_rspLength = rspLen;
+  if ((rspLen == 0) || (rsp == NULL))
+    return;
+
+  m_serverRsp = new char[rspLen];
+  memcpy(m_serverRsp, rsp, rspLen);
 }
 
 
@@ -529,6 +554,7 @@ void UserIdentityNegotiationSubItemAC::dump(STD_NAMESPACE ostream& outstream) co
 // Assignment operator
 UserIdentityNegotiationSubItemAC& UserIdentityNegotiationSubItemAC::operator= (const UserIdentityNegotiationSubItemAC& rhs)
 {
+  this->clear();
   if (rhs.m_rspLength > 0)
   {
     if (rhs.getServerResponse(m_serverRsp, m_rspLength) != rhs.m_rspLength)
@@ -559,6 +585,10 @@ UserIdentityNegotiationSubItemAC::~UserIdentityNegotiationSubItemAC()
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.cc,v $
+** Revision 1.3  2008-10-07 09:08:15  onken
+** Fixed possible memory leak in user identity classes and added code for
+** accessing user identity from the server's side. Thanks to "Pim"
+**
 ** Revision 1.2  2008-04-17 16:09:13  onken
 ** Added some const definitions to functions.
 **

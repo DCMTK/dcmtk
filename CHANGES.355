@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.07 (onken)
+
+- Fixed possible memory leak in user identity classes and added code for
+  accessing user identity from the server's side. Thanks to "Pim"
+  <pphilipse@delftdi.com> for the contribution.
+  Affects: dcmnet/include/dcmtk/dcmnet/assoc.h
+           dcmnet/include/dcmtk/dcmnet/dcuserid.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dcuserid.cc
+
 **** Changes from 2008.09.30 (onken)
 
 - Added dcmppscu to list of private modules.

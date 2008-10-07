@@ -8,9 +8,9 @@
 **   User Identity Negotiation for A-ASSOCIATE (Supp. 99)
 **
 ** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-04-17 16:09:32 $
+** Update Date:         $Date: 2008-10-07 09:08:13 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dcuserid.h,v $
-** CVS/RCS Revision:    $Revision: 1.2 $
+** CVS/RCS Revision:    $Revision: 1.3 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,12 +29,12 @@
 
 /// Mode of User Identity Negotiation
 enum T_ASC_UserIdentityNegotiationMode
-{ 
-    ASC_USER_IDENTITY_NONE      			= 0, 
-    ASC_USER_IDENTITY_USER      			= 1, 
-    ASC_USER_IDENTITY_USER_PASSWORD  	= 2,
-    ASC_USER_IDENTITY_KERBEROS  	    = 3,
-    ASC_USER_IDENTITY_SAML      	    = 4,
+{
+    ASC_USER_IDENTITY_NONE            = 0,
+    ASC_USER_IDENTITY_USER            = 1,
+    ASC_USER_IDENTITY_USER_PASSWORD   = 2,
+    ASC_USER_IDENTITY_KERBEROS        = 3,
+    ASC_USER_IDENTITY_SAML            = 4,
     ASC_USER_IDENTITY_UNKNOWN
 };
 
@@ -42,9 +42,9 @@ enum T_ASC_UserIdentityNegotiationMode
 /** Abstract base class for User Identity Negotiation user items
  */
 class UserIdentityNegotiationSubItem {
-  
+
 public:
-  
+
   /** Constructor
    */
   UserIdentityNegotiationSubItem();
@@ -68,26 +68,26 @@ public:
 
   /** Computes total length of item if streamed to a buffer
     * @param length - [out] The total ength of the item in bytes
-    * @return EC_Normal if successful, error code otherwise 
+    * @return EC_Normal if successful, error code otherwise
     */
   virtual OFCondition streamedLength(unsigned long& length) const = 0;
 
-  /** Parse item from buffer. The buffer has to start with the correct user 
+  /** Parse item from buffer. The buffer has to start with the correct user
    *  item type.
    *  @param readBuffer - [in/out] The buffer to read from. The pointer to the buffer
    *                      gets incremented by "bytesRead" bytes.
    *  @param bytesRead  - [out] Number of bytes read by this function
    *  @return EC_Normal if successful, error code otherwise
    */
-  virtual OFCondition parseFromBuffer(unsigned char *readBuffer, 
+  virtual OFCondition parseFromBuffer(unsigned char *readBuffer,
                                       unsigned long& bytesRead) =0;
 
-  /** Stream the package into a byte stream for network transmission 
+  /** Stream the package into a byte stream for network transmission
    *  @param targetBuffer - [out] The buffer to stream to.
    *  @param lengthWritten - [out] Number of bytes written to buffer
    *  @return EC_Normal, if successful, error code otherwise
    */
-  virtual OFCondition stream(unsigned char *targetBuffer, 
+  virtual OFCondition stream(unsigned char *targetBuffer,
                              unsigned long& lengthWritten) const =0;
 
   /** Clears member variables and frees memory
@@ -95,7 +95,7 @@ public:
    */
   virtual void clear() =0;
 
-  /** Dump content of this user identity sub item to output stream 
+  /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
     * @return none
     */
@@ -113,7 +113,7 @@ public:
    */
   UserIdentityNegotiationSubItem(const UserIdentityNegotiationSubItem& rhs);
 
-  /** Destructor, nothing to clean up 
+  /** Destructor, nothing to clean up
    */
   virtual ~UserIdentityNegotiationSubItem() {}
 
@@ -132,9 +132,9 @@ private:
 /** Class for User Identity Negotiation request user item
  */
 class UserIdentityNegotiationSubItemRQ : public UserIdentityNegotiationSubItem {
-  
+
 public:
-  
+
   /** Constructor
    */
   UserIdentityNegotiationSubItemRQ();
@@ -163,7 +163,7 @@ public:
    T_ASC_UserIdentityNegotiationMode getIdentityType();
 
   /** Sets content of primary field.
-   *  @param buffer - [in] Content of primary field. 
+   *  @param buffer - [in] Content of primary field.
    *  @param length - [in] Length of buffer
    *  @return none
    */
@@ -171,7 +171,7 @@ public:
                     const Uint16& length);
 
   /** Sets content of secondary field.
-   *  @param buffer - [in] Content of secondary field. 
+   *  @param buffer - [in] Content of secondary field.
    *  @param length - [in ] Length of buffer
    *  @return none
    */
@@ -204,32 +204,41 @@ public:
    */
   void setReqPosResponse(const OFBool& reqPosRsp);
 
-  /** Stream the package into a byte stream for network transmission 
-   *  @param targetBuffer  - [out] The buffer to stream to. Must be 
+
+  /** Informs (the server) whether a positive response was requested.
+   *  @return OFTrue if  a response was requested
+   */
+  OFBool isPosResponseRequested()
+  {
+     return (m_posRspRequested != 0) ? OFTrue: OFFalse;
+  }
+
+  /** Stream the package into a byte stream for network transmission
+   *  @param targetBuffer  - [out] The buffer to stream to. Must be
    *                         big enough (not allocated in function).
    *  @param lengthWritten - [out] Number of bytes written to buffer
    *  @return EC_Normal, if successful, error code otherwise
    */
-  OFCondition stream(unsigned char *targetBuffer, 
+  OFCondition stream(unsigned char *targetBuffer,
                      unsigned long& lengthWritten) const;
 
   /** Computes total length of item if streamed into buffer
     * @param length - [out] The total length of the item in bytes
-    * @return EC_Normal if successful, error code otherwise 
+    * @return EC_Normal if successful, error code otherwise
     */
   OFCondition streamedLength(unsigned long& length) const;
 
-  /** Parse sub item from buffer. The buffer has to start with the correct user 
+  /** Parse sub item from buffer. The buffer has to start with the correct user
    *  item type.
    *  @param readBuffer - [in] The buffer to read from. The pointer to the buffer
    *                      gets incremented by "bytesRead" bytes.
    *  @param bytesRead  - [out] Number of bytes read by this function
    *  @return EC_Normal if successful, error code otherwise
    */
-  OFCondition parseFromBuffer(unsigned char *readBuffer, 
+  OFCondition parseFromBuffer(unsigned char *readBuffer,
                               unsigned long &bytesRead);
 
-  /** Dump content of this user identity sub item to output stream 
+  /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
     * @return none
     */
@@ -240,42 +249,42 @@ public:
    * @return none
    */
   UserIdentityNegotiationSubItemRQ& operator= (const UserIdentityNegotiationSubItemRQ& rhs);
-  
+
   /** Copy constructor, does a deep copy of a class instance
    * @param rhs - [in] The class instance to copy from
    * @return none
    */
   UserIdentityNegotiationSubItemRQ(const UserIdentityNegotiationSubItemRQ& rhs);
 
-  /** Destructor, nothing to clean up 
+  /** Destructor, nothing to clean up
    */
   ~UserIdentityNegotiationSubItemRQ();
 
 private:
 
   /// User Identity Type: 1 (username), 2 (username/password), 3 (kerberos), 4 (SAML)
-  T_ASC_UserIdentityNegotiationMode m_userIdentityType;            
+  T_ASC_UserIdentityNegotiationMode m_userIdentityType;
   /// If 1, positive response is requested from server. Set to 0 otherwise
   unsigned char m_posRspRequested;
   /// Buffer for primary value field
-  char* m_primField; 
+  char* m_primField;
   /// Length of primary value field in bytes
   Uint16 m_primFieldLength;
   /// Buffer for secondary value field
-  char* m_secField; 
-  /// Length of primary value field in bytes  
+  char* m_secField;
+  /// Length of primary value field in bytes
   Uint16 m_secFieldLength;
 };
 
 
 class UserIdentityNegotiationSubItemAC : public UserIdentityNegotiationSubItem {
-  
+
 public:
-  
+
   /** Constructor, creates an empty user identity response structure
    */
   UserIdentityNegotiationSubItemAC();
-  
+
   /** Denotes that instance is part of a request (DUL_TYPEASSOCIATEAC)
    *  @return DUL_TYPEASSOCIATEAC
    */
@@ -294,7 +303,7 @@ public:
   void setServerResponse(const char* rsp,
                          const Uint16& rspLen);
 
-  /** Returns content of server response field Memory is allocated by this 
+  /** Returns content of server response field Memory is allocated by this
    *  function and must be freed by the caller.
    *  @param buffer - [out] Content of server response field. NULL if not set.
    *                        Memory of buffer must be freed by the caller.
@@ -306,29 +315,29 @@ public:
 
   /** Computes total length of item if streamed into buffer
     * @param length - [out] The length of the item if streamed
-    * @return EC_Normal if successful, error code otherwise 
+    * @return EC_Normal if successful, error code otherwise
     */
   OFCondition streamedLength(unsigned long& length) const;
 
-  /** Stream the package into a byte stream for network transmission 
+  /** Stream the package into a byte stream for network transmission
    *  @param targetBuffer  - [out] The buffer to stream to.
    *  @param lengthWritten - [out] Number of bytes written to buffer
    *  @return EC_Normal, if successful, error code otherwise
    */
-  OFCondition stream(unsigned char *targetBuffer, 
+  OFCondition stream(unsigned char *targetBuffer,
                      unsigned long& lengthWritten) const;
 
-  /** Parse sub item from buffer. The buffer has to start with the correct user 
+  /** Parse sub item from buffer. The buffer has to start with the correct user
    *  item type.
    *  @param readBuffer - [in] The buffer to read from. The pointer to the buffer
    *                      gets incremented by "bytesRead" bytes.
    *  @param bytesRead  - [out] Number of bytes read by this function
    *  @return EC_Normal if successful, error code otherwise
    */
-  OFCondition parseFromBuffer(unsigned char *readBuffer, 
+  OFCondition parseFromBuffer(unsigned char *readBuffer,
                               unsigned long &bytesRead);
 
-  /** Dump content of this user identity sub item to output stream 
+  /** Dump content of this user identity sub item to output stream
     * @param outstream - [out] The stream to dump to
     * @return none
     */
@@ -354,7 +363,7 @@ private:
 
   /// Buffer for server response
   char* m_serverRsp;
-  /// Length of server response in bytes 
+  /// Length of server response in bytes
   Uint16 m_rspLength;
 
 };
@@ -364,6 +373,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcuserid.h,v $
+** Revision 1.3  2008-10-07 09:08:13  onken
+** Fixed possible memory leak in user identity classes and added code for
+** accessing user identity from the server's side. Thanks to "Pim"
+**
 ** Revision 1.2  2008-04-17 16:09:32  onken
 ** Added some const definitions to functions.
 **
