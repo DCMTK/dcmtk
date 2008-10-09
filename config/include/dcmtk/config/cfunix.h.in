@@ -529,6 +529,9 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the `sleep' function. */
 #undef HAVE_SLEEP
 
+/* Define to 1 if you have the <sndfile.h> header file. */
+#undef HAVE_SNDFILE_H
+
 /* Define to 1 if you have the `socket' function. */
 #undef HAVE_SOCKET
 
@@ -802,6 +805,9 @@ typedef unsigned short ushort;
 
 /* Define if we are compiling for built-in private tag dictionary */
 #undef WITH_PRIVATE_TAGS
+
+/* Define if we are compiling with sndfile support */
+#undef WITH_SNDFILE
 
 /* Define if we are compiling with libwrap (TCP wrapper) support */
 #undef WITH_TCPWRAPPER

@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.09 (onken)
+
+- Added check for libsndfile needed by dcmwave for building with configure
+  and CMake.
+  Affects: CMakeLists.txt
+           config/configure
+           config/configure.in
+           config/Makefile.def.in
+           config/include/dcmtk/config/cfunix.h.in
+
 **** Changes from 2008.10.07 (onken)
 
 - Fixed possible memory leak in user identity classes and added code for

@@ -1163,6 +1163,62 @@ AC_ARG_WITH(libwrap,
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
 
+
+dnl -------------------------------------------------------
+dnl Check for libsndfile support
+dnl -------------------------------------------------------
+
+if test "${with_libsndfileinc+set}" = set; then
+
+    case "$with_libsndfileinc" in
+    yes|no)
+      echo "configure: warning: --with-libsndfileinc called without argument - will use default" 1>&2
+    ;;
+    * )
+      if test ! -d ${with_libsndfileinc}; then
+        echo "configure: warning: called with --with-libsndfileinc, but libsndfile base directory ${withval} does not exist or is not a directory." 1>&2
+        exit 1
+      fi
+      CPPFLAGS="-I${with_libsndfileinc}/include $CPPFLAGS"
+      LDFLAGS="-L${with_libsndfileinc}/lib $LDFLAGS"
+    ;;
+    esac
+fi
+
+dnl perform check for <sndfile.h> only after we have evaluated --with-libsndfileinc
+AC_CHECK_HEADERS(sndfile.h)
+
+SNDFILELIBS=""
+AC_MSG_CHECKING(whether to include sndfile support)
+
+AC_ARG_WITH(sndfile,
+
+  [  --with-sndfile          include libsndfile support (default: auto)
+  --without-sndfile       don't include libsndfile support
+  --with-sndfileinc=DIR   location of libsndfile includes and libraries],
+
+  [ case "$withval" in
+    yes)
+      AC_MSG_RESULT(yes)
+      AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support])
+      SNDFILELIBS="-lsndfile"
+      ;;
+    *)
+      AC_MSG_RESULT(no)
+      ;;
+    esac ],
+    
+  [ SAVELIBS="$LIBS"
+    LIBS="$LIBS -lsndfile"
+    AC_TRY_LINK([#include <sndfile.h>], [char buffer [128];
+    sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));],
+      [ AC_MSG_RESULT(yes)
+        AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support])
+        SNDFILELIBS="-lsndfile" ],
+      [AC_MSG_RESULT(no)])
+    LIBS="$SAVELIBS"]
+)
+
 dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
@@ -1180,6 +1236,7 @@ AC_SUBST(MATHLIBS)
 AC_SUBST(ZLIBLIBS)
 AC_SUBST(XMLLIBS)
 AC_SUBST(TCPWRAPPERLIBS)
+AC_SUBST(SNDFILELIBS)
 AC_SUBST(DEBUG)
 AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 
