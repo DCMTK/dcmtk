@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.09 (riesmeier)
+
+- Made Makefile more consistent with other DCMTK modules.
+  Affects: dcmdata/libsrc/Makefile.in
+           dcmimgle/libsrc/Makefile.in
+
 **** Changes from 2008.10.09 (onken)
 
 - Added check for libsndfile needed by dcmwave for building with configure

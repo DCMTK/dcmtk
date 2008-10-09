@@ -15,8 +15,6 @@ include $(configdir)/@common_makefile@
 ofstddir = $(top_srcdir)/../ofstd
 
 LOCALINCLUDES = -I$(ofstddir)/include
-LIBDIRS = -L$(ofstddir)/libsrc
-LOCALLIBS = -lofstd
 LOCALDEFS =
 
 # Special defines for the Library, define them in LOCALDEFS
