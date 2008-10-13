@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.13 (onken)
+
+- Added check for libsndfile to windows build configuration header.
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
 **** Changes from 2008.10.09 (riesmeier)
 
 - Made Makefile more consistent with other DCMTK modules.
