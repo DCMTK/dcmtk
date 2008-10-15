@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2008.10.15 (onken)
 
+- Added test program for testing DcmItem's and DcmSequenceOfItem's path access
+  features.
+  Affects: dcmtk/dcmdata/tests/Makefile.dep
+           dcmtk/dcmdata/tests/Makefile.in
+           dcmtk/dcmdata/tests/tstpath.cc
+
+- Fixed incorrect behaviour in findOrCreatePath() if sequence is the last
+  attribute to be inserted.
+  Affects: dcmtk/dcmdata/libsrc/dcitem.cc
+
 - Added findOrCreatePath() functions which allow for finding or creating a
   hierarchy of sequences, items and attributes according to a given "path"
   string.
@@ -10,10 +20,6 @@ Changes between releases are documented here.
            dcmtk/dcmdata/include/dcmtk/dcmdata/dcsequen.h
            dcmtk/dcmdata/libsrc/dcitem.cc
            dcmtk/dcmdata/libsrc/dcsequen.cc
-
-  Fixed incorrect behaviour in findOrCreatePath() if sequence is the last
-  attribute to be inserted.
-  Affects: dcmtk/dcmdata/libsrc/dcitem.cc
 
 **** Changes from 2008.10.13 (onken)
 
