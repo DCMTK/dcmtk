@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.15 (onken)
+
+- Added findOrCreatePath() functions which allow for finding or creating a
+  hierarchy of sequences, items and attributes according to a given "path"
+  string.
+  Affects: dcmtk/dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmtk/dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmtk/dcmdata/libsrc/dcitem.cc
+           dcmtk/dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2008.10.13 (onken)
 
 - Added check for libsndfile to windows build configuration header.
