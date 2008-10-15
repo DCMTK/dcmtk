@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:32:10 $
- *  CVS/RCS Revision: $Revision: 1.112 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-10-15 12:31:24 $
+ *  CVS/RCS Revision: $Revision: 1.113 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1101,7 +1101,7 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
 // ********************************
 
 OFCondition DcmItem::writeSignatureFormat(
-	DcmOutputStream &outStream,
+  DcmOutputStream &outStream,
    const E_TransferSyntax oxfer,
    const E_EncodingType enctype,
    DcmWriteCache *wcache)
@@ -2659,6 +2659,76 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
 }
 
 
+OFCondition DcmItem::findOrCreatePath(const OFString& path,
+                                      OFList<DcmObject*>& objPath,
+                                      const OFBool createIfNecessary)
+{
+  if (path.length() == 0)
+      return EC_IllegalParameter;
+  OFString restPath(path);
+  OFCondition status = EC_Normal;
+  DcmTag tag;
+  OFBool newlyCreated = OFFalse;
+  DcmElement *elem = NULL;
+
+  // parse tag
+  status = parseTagFromPath(restPath, tag);
+  if (status.bad())
+      return status;
+
+  // insert element or sequence
+  if ( !(this->tagExists(tag)) ) // do not to overwrite existing tags
+  {
+      if (createIfNecessary)
+      {
+          status = this->insertEmptyElement(tag, OFFalse);
+          if (status.bad())
+              return status;
+          newlyCreated = OFTrue;
+      }
+      else
+          return EC_TagNotFound;
+  }
+
+  // get element
+  status = this->findAndGetElement(tag, elem);
+  if (status.bad())
+      return EC_CorruptedData; // should not happen
+
+  // start recursion if element was a sequence
+  if (tag.getEVR() == EVR_SQ)
+  {
+      DcmSequenceOfItems* seq = NULL;
+      seq = OFstatic_cast(DcmSequenceOfItems*, elem);
+      if (!seq)
+          status = EC_IllegalCall; // should not happen
+      else
+      {
+          objPath.push_back(elem);
+          status = seq->findOrCreatePath(restPath, objPath, createIfNecessary);
+      }
+  }
+  else if (restPath.length() == 0) // we inserted a leaf element: path must be completed
+  {
+      objPath.push_back(elem);
+      return EC_Normal;
+  }
+  else // we inserted a leaf element but there is path left -> error
+      status = makeOFCondition(OFM_dcmdata, 18, OF_error, "Invalid Path: Non-sequence tag found with rest path following");
+  // delete path element if it was newly created and an error occured
+  if ( status.bad() && (elem != NULL) && (elem == objPath.back()) )
+  {
+      objPath.pop_back();
+      if (newlyCreated) // only delete if newly created
+      {
+          if (findAndDeleteElement(tag).bad())
+              delete elem; // delete manually if not found in dataset
+      }
+      elem = NULL;
+  }
+  return status;
+}
+
 // ********************************
 
 /* --- findAndXXX functions: find an element and do something with it --- */
@@ -3463,9 +3533,57 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
+                                      DcmTag& tag)              // out
+{
+    OFCondition result;
+    OFString errMsg = "";
+    size_t pos = OFString_npos;
+
+    // In case we have a tag "(gggg,xxxx)"
+    if ( path[0] == '(')
+    {
+        pos = path.find_first_of(')', 0);
+        if (pos != OFString_npos)
+            result = DcmTag::findTagFromName(path.substr(1, pos - 1).c_str() /* "gggg,eeee" */, tag);
+        else
+        {
+            OFString errMsg("Unable to parse tag at beginning of path: "); errMsg += path;
+            return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+        }
+        pos++; // also cut off closing bracket
+    }
+    // otherwise we could have a dictionary name
+    else
+    {
+        // maybe an item follows
+        pos = path.find_first_of('[', 0);
+        if (pos == OFString_npos)
+            result = DcmTag::findTagFromName(path.c_str(), tag); // check full path
+        else
+            result = DcmTag::findTagFromName(path.substr(0, pos).c_str(), tag); // parse path up to "[" char
+    }
+    // construct error message if necessary and return
+    if (result.bad())
+    {
+        OFString errMsg("Unable to parse tag/dictionary name at beginning of path: "); errMsg += path;
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+    }
+    // else remove parsed tag from path and return success
+    else
+        path.erase(0, pos);
+    return EC_Normal;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.113  2008-10-15 12:31:24  onken
+** Added findOrCreatePath() functions which allow for finding or creating a
+** hierarchy of sequences, items and attributes according to a given "path"
+** string.
+**
 ** Revision 1.112  2008-09-24 13:32:10  joergr
 ** Fixed typo in comment.
 **

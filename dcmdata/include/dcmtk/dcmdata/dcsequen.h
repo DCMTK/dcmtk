@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2008-10-15 12:31:20 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ public:
     {
       return new DcmSequenceOfItems(*this);
     }
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -98,7 +98,7 @@ public:
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);    
+    virtual OFCondition copyFrom(const DcmObject& rhs);
 
     /** return identifier for this class. Every class derived from this class
      *  returns a unique value of type enum DcmEVR for this call. This is used
@@ -418,6 +418,46 @@ public:
                                E_SearchMode mode = ESM_fromHere,  // in
                                OFBool searchIntoSub = OFTrue);    // in
 
+    /** Function that allows for finding and/or inserting a hierarchy of items
+     *  and attributes as defined by a path string; also returns a list of
+     *  pointers, pointing to all the objects from the current position (excluding
+     *  "this" pointer) to the last object in the path.
+     *
+     *  In principle, the path string must have the following format
+     *  (in arbitrary depth):
+     *  [ITEMNO].SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
+     *  . ITEMNO must be a positive integer starting with 0. SEQUENCE and
+     *  ATTRIBUTE must be a tag, written e. g. "(0010,0010)" or a dictionary
+     *  name, e. g. "PatientsName". If the path cannot be fully created (see
+     *  option createIfNecessary), any possibly inserted objects during
+     *  path evaluation are rolled back. So a path is either fully created or
+     *  not any component is created at all.
+     *
+     *  Example: The path
+     *  "[3].ContentSequence[4].(0040,a043)[0].CodeValue" selects the 4th
+     *  item in "this" sequence, therein the ContentSequence, therein the 5th
+     *  item, therein the "Concept Name Code Sequence" denoted by (0040,a043),
+     *  therein the first item and finally therein the tag "Code Value".
+     *  The resulting object list should (if success is returned) contain
+     *  pointers to 6 objects in the order in their logical order as they also
+     *  occur in the path string (in total 3 items, 2 sequences, and one leaf
+     *  attribute).
+     *
+     *  @param path - [in/out] The path starting with the item number
+     *                in square brackets, e. g. "[3]". The parsed item number
+     *                and a potentially following "." are removed from the path
+     *  @param objPath - [out] Pointers to all objects as they in the order as
+     *                   they also occur in the path string.
+     *  @param createIfNecessary - [in] If set, all missing elements found
+     *                             in the path string are created. If not set,
+     *                             only existing paths can be accessed and
+     *                             no new attribute or item is created.
+     *  @return EC_Normal if successful, error code otherwise.
+     */
+    virtual OFCondition findOrCreatePath(const OFString& path,
+                                         OFList<DcmObject*>& objPath,
+                                         const OFBool createIfNecessary = OFTrue);
+
     /** this method loads all attribute values maintained by this object and
      *  all sub-objects (in case of a container such as DcmDataset) into memory.
      *  After a call to this method, the file from which a dataset was read may safely
@@ -515,6 +555,17 @@ protected:
     virtual OFCondition searchSubFromHere(const DcmTagKey &tag,               // in
                                           DcmStack &resultStack,              // inout
                                           const OFBool searchIntoSub);        // in
+    /** helper function for findOrCreatePath(). parses an item number from
+     *  the beginning of the path string. The item number must be positive,
+     *  starting with 0.
+     *  The path must start like "[itemnumber]...".
+     *  @param path - [in/out] The path starting with the item number
+     *                in square brackets, e. g. "[3]". The parsed item number
+     *                and a potentially following "." are removed from the path
+     *  @param itemNo - [out] The parsed item number
+     */
+    virtual OFCondition parseItemNoFromPath(OFString& path,                   // inout
+                                            Uint32& itemNo);                  // out
 
     /// the list of items maintained by this sequence object
     DcmList *itemList;
@@ -562,6 +613,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.44  2008-10-15 12:31:20  onken
+** Added findOrCreatePath() functions which allow for finding or creating a
+** hierarchy of sequences, items and attributes according to a given "path"
+** string.
+**
 ** Revision 1.43  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **
