@@ -22,10 +22,10 @@
  *  Purpose: Test program for testing path features of DcmItem
  *           and DcmSequenceOfItem
  *
- *  Last Update:      $$
- *  Update Date:      $$
- *  CVS/RCS Revision: $$
- *  Status:           $$
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-10-15 16:07:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
@@ -231,6 +231,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.2  2008-10-15 16:07:08  onken
+ * Fixed CVS information in source's header comment.
+ *
  * Revision 1.1  2008-10-15 15:59:02  onken
  * Added test program for testing DcmItem's and DcmSequenceOfItem's path access
  * features.
