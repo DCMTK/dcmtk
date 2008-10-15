@@ -11,6 +11,10 @@ Changes between releases are documented here.
            dcmtk/dcmdata/libsrc/dcitem.cc
            dcmtk/dcmdata/libsrc/dcsequen.cc
 
+  Fixed incorrect behaviour in findOrCreatePath() if sequence is the last
+  attribute to be inserted.
+  Affects: dcmtk/dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2008.10.13 (onken)
 
 - Added check for libsndfile to windows build configuration header.
