@@ -381,9 +381,9 @@ configuration.  In particular, the patented LZW algorithm may not be
 available.
 
 The \e --write-png option is only available when DCMTK has been configured
-and compiled with support for the external \b libpng PNG library.  Interlace
-enables progressive image view while loading the PNG file.  Only a few
-applications take care of the metainfo (TEXT) in a png file.
+and compiled with support for the external \b libpng PNG library.  Option
+\e --interlace enables progressive image view while loading the PNG file.
+Only a few applications take care of the meta info (TEXT) in a PNG file.
 
 Sample monitor and printer characteristics files are available in the \e data
 folder.
