@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:43:22 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Update Date:      $Date: 2008-10-24 08:51:56 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
       cmd.addOption("--check-lut-depth",    "+Mc",     "check 3rd value of the LUT descriptor, compare\nwith expected bit depth based on LUT data");
-      cmd.addOption("--ignore-mlut-depth",  "+Mm",     "ignore 3rd value of the modality LUT descriptor\ndetermine bits per table entry automatically");
+      cmd.addOption("--ignore-mlut-depth",  "+Mm",     "ignore 3rd value of the modality LUT descriptor,\ndetermine bits per table entry automatically");
       cmd.addOption("--ignore-vlut-depth",  "+Mv",     "ignore 3rd value of the VOI LUT descriptor,\ndetermine bits per table entry automatically");
 
 #ifdef WITH_LIBTIFF
@@ -1529,6 +1529,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.92  2008-10-24 08:51:56  joergr
+ * Made man pages more consistent with the command line tool.
+ *
  * Revision 1.91  2008-09-25 14:43:22  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
