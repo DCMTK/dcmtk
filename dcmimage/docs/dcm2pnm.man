@@ -1,23 +1,23 @@
 /*!
 
 \if MANPAGES
-\page dcm2pnm Convert DICOM images to PPM/PGM, PNG, TIFF or BMP
+\page dcm2pnm Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 \else
-\page dcm2pnm dcm2pnm: Convert DICOM images to PPM/PGM, PNG, TIFF or BMP
+\page dcm2pnm dcm2pnm: Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 \endif
 
 \section synopsis SYNOPSIS
 
 \verbatim
-dcm2pnm [options] bitmap-in [pnmfile-out]
+dcm2pnm [options] dcmfile-in [bitmap-out]
 \endverbatim
 
 \section description DESCRIPTION
 
 The \b dcm2pnm utility reads a DICOM image, converts the pixel data according
 to the selected image processing options and writes back an image in the
-well-known PPM/PGM file format (portable pix map / portable gray map), PNG,
-TIFF or BMP format.  This utility only supports uncompressed and RLE
+well-known PGM/PPM (portable gray map / portable pix map), PNG, TIFF or
+Windows BMP format.  This utility only supports uncompressed and RLE
 compressed DICOM images.  The command line tool \b dcmj2pnm also supports a
 number of JPEG compression schemes.
 
@@ -86,7 +86,7 @@ input transfer syntax:
           read with implicit VR little endian TS
 \endverbatim
 
-\subsection processing_options image processing options
+\subsection image_processing_options image processing options
 \verbatim
 frame selection:
 
@@ -385,9 +385,6 @@ and compiled with support for the external \b libpng PNG library.  Option
 \e --interlace enables progressive image view while loading the PNG file.
 Only a few applications take care of the meta info (TEXT) in a PNG file.
 
-Sample monitor and printer characteristics files are available in the \e data
-folder.
-
 \section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
@@ -435,7 +432,7 @@ It is an error if no data dictionary can be loaded.
 
 \section see_also SEE ALSO
 
-<b>dcmj2pnm</b>(1)
+<b>dcmj2pnm</b>(1), <b>img2dcm</b>(1)
 
 \section copyright COPYRIGHT
 
