@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-10-28 11:40:26 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -465,7 +465,7 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             isStreamNew = OFTrue;
 
             /* reset number of transferred bytes to zero */
-            setTransferredBytes(0);            
+            setTransferredBytes(0);
         }
         /* if we have a stream from which we can read */
         if (readStream)
@@ -505,7 +505,13 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                     }
                     /* else set the return value correspondingly */
                     else if (readStream->eos())
+                    {
                         errorFlag = EC_InvalidStream; // premature end of stream
+                        ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
+                                             << " larger (" << getLengthField() << ") than remaining bytes ("
+                                             << getTransferredBytes() << ") in file, premature end of stream" << OFendl;
+                        ofConsole.unlockCerr();
+                    }
                     else
                         errorFlag = EC_StreamNotifyClient;
                 }
@@ -902,8 +908,8 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                             errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
-                            ofConsole.lockCerr() << "DcmElement: " << getTagName() << getTag().getXTag() << " larger ("
-                                                 << getLengthField() << ") than remaining bytes in file" << OFendl;
+                            ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
+                                                 << " larger (" << getLengthField() << ") than remaining bytes in file" << OFendl;
                             ofConsole.unlockCerr();
                         }
                     }
@@ -981,7 +987,7 @@ OFCondition DcmElement::write(
             DcmXfer outXfer(oxfer);
 
             /* pointer to element value if value resides in memory or old-style
-             * write behaviour is active (i.e. everything loaded into memory upon write 
+             * write behaviour is active (i.e. everything loaded into memory upon write)
              */
             Uint8 *value = NULL;
             OFBool accessPossible = OFFalse;
@@ -1007,7 +1013,7 @@ OFCondition DcmElement::write(
                  * be read again, and the file from being re-opened next time.
                  * Therefore, this case should be avoided.
                  */
-                if (! wcache) wcache = &wcache2; 
+                if (! wcache) wcache = &wcache2;
 
                 /* initialize cache object. This is safe even if the object was already initialized */
                 wcache->init(this, getLengthField(), getTransferredBytes(), outXfer.getByteOrder());
@@ -1066,7 +1072,7 @@ OFCondition DcmElement::write(
 
                     /* increase the amount of bytes which have been transfered correspondingly */
                     incTransferredBytes(len);
-                    
+
                     /* see if there is something fishy with the stream */
                     errorFlag = outStream.status();
                 }
@@ -1079,7 +1085,7 @@ OFCondition DcmElement::write(
                       // re-fill buffer from file if empty
                       errorFlag = wcache->fillBuffer(*this);
                       buflen = wcache->contentLength();
-                    
+
                       if (errorFlag.good())
                       {
                         // write as many bytes from cache buffer to stream as possible
@@ -1091,7 +1097,7 @@ OFCondition DcmElement::write(
                         /* see if there is something fishy with the stream */
                         errorFlag = outStream.status();
                       }
-                    
+
                       // stop writing if something went wrong, we were unable to send all of the buffer content
                       // (which indicates that the output stream needs to be flushed, or everything was sent out.
                       done = errorFlag.bad() || (len < buflen) || (getTransferredBytes() == getLengthField());
@@ -1118,7 +1124,7 @@ OFCondition DcmElement::writeSignatureFormat(
    DcmOutputStream &outStream,
    const E_TransferSyntax oxfer,
    const E_EncodingType enctype,
-   DcmWriteCache *wcache)                           
+   DcmWriteCache *wcache)
 {
     // for normal DICOM elements (everything except sequences), the data
     // stream used for digital signature creation or verification is
@@ -1198,18 +1204,18 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
 
 
 OFCondition DcmElement::getPartialValue(
-  void *targetBuffer, 
-  offile_off_t offset, 
-  offile_off_t numBytes, 
+  void *targetBuffer,
+  offile_off_t offset,
+  offile_off_t numBytes,
   DcmFileCache *cache,
   E_ByteOrder byteOrder)
-{  
+{
   // check integrity of parameters passed to this method
   if (targetBuffer == NULL) return EC_IllegalCall;
 
   // if the user has only requested zero bytes, we immediately return
   if (numBytes == 0) return EC_Normal;
-  	
+
   // offset must always be less then attribute length (unless offset,
   // attribute length and numBytes are all zero, a case that was
   // handled above).
@@ -1218,10 +1224,10 @@ OFCondition DcmElement::getPartialValue(
   // check if the caller is trying to read past the end of the value field
   if (numBytes > (getLengthField() - offset)) return EC_TooManyBytesRequested;
 
-  // check if the value is already in memory 
+  // check if the value is already in memory
   if (valueLoaded())
   {
-    // the attribute value is already in memory. 
+    // the attribute value is already in memory.
     // change internal byte order of the attribute value to the desired byte order.
     // This should only happen once for multiple calls to this method since the
     // caller will hopefully always request the same byte order.
@@ -1232,7 +1238,7 @@ OFCondition DcmElement::getPartialValue(
     }
     else
     {
-      // this should never happen because valueLoaded() returned true, but 
+      // this should never happen because valueLoaded() returned true, but
       // we don't want to dereference a NULL pointer anyway
       return EC_IllegalCall;
     }
@@ -1263,16 +1269,16 @@ OFCondition DcmElement::getPartialValue(
     // the swap buffer should be large enough to keep one value of the current VR
     unsigned char swapBuffer[SWAPBUFFER_SIZE];
     if (valueWidth > SWAPBUFFER_SIZE) return EC_IllegalCall;
-    	
+
     // seekoffset is the number of bytes we need to skip from the beginning of the
     // value field to the point where we will start reading. This is always at the
     // start of a new value of a multi-valued attribute.
-    size_t partialoffset = offset % valueWidth; 
-    size_t partialvalue = 0; 
+    size_t partialoffset = offset % valueWidth;
+    size_t partialvalue = 0;
     offile_off_t seekoffset = offset - partialoffset;
-    
+
     // check if cache already contains the stream we're looking for
-    if (cache->isUser(this)) 
+    if (cache->isUser(this))
     {
       readStream = cache->getStream();
 
@@ -1281,29 +1287,29 @@ OFCondition DcmElement::getPartialValue(
       if (readStream->tell() - cache->getOffset() > seekoffset)
       {
         readStream = NULL;
-      } 
+      }
     }
 
     // initialize the cache with new stream
-    if (!readStream) 
+    if (!readStream)
     {
       readStream = fLoadValue->create();
 
       // check that read stream is non-NULL
       if (readStream == NULL) return EC_InvalidStream;
 
-      // check that stream status is OK      	
+      // check that stream status is OK
       if (readStream->status().bad()) return readStream->status();
 
       cache->init(readStream, this);
     }
 
-    // now skip bytes from our current position in file to where we 
+    // now skip bytes from our current position in file to where we
     // want to start reading.
     offile_off_t remainingBytesToSkip = seekoffset - (readStream->tell() - cache->getOffset());
     offile_off_t skipResult;
 
-    while (remainingBytesToSkip) 
+    while (remainingBytesToSkip)
     {
       skipResult = readStream->skip(remainingBytesToSkip);
       if (skipResult == 0) return EC_InvalidStream; // error while skipping
@@ -1318,9 +1324,9 @@ OFCondition DcmElement::getPartialValue(
       // we possibly want to reset the stream to this point later
       readStream->mark();
 
-      // compute the number of bytes we need to copy from the first attributes 
+      // compute the number of bytes we need to copy from the first attributes
       partialvalue = valueWidth - partialoffset;
-      
+
       // we need to read a single data element into the swap buffer
       if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
       	return EC_InvalidStream;
@@ -1388,7 +1394,7 @@ OFCondition DcmElement::getPartialValue(
 
   // done.
   return EC_Normal;
-}  
+}
 
 
 void DcmElement::compact()
@@ -1397,12 +1403,12 @@ void DcmElement::compact()
   {
     delete[] fValue;
     fValue = NULL;
-    setTransferredBytes(0);       
+    setTransferredBytes(0);
   }
 }
 
 OFCondition DcmElement::createValueFromTempFile(
-  DcmInputStreamFactory *factory, 
+  DcmInputStreamFactory *factory,
   const Uint32 length,
   const E_ByteOrder byteOrder)
 {
@@ -1415,7 +1421,7 @@ OFCondition DcmElement::createValueFromTempFile(
         fByteOrder = byteOrder;
         setLengthField(length);
         return EC_Normal;
-    } 
+    }
     else return EC_IllegalCall;
 }
 
@@ -1424,7 +1430,7 @@ OFCondition DcmElement::getUncompressedFrameSize(
        Uint32 & frameSize) const
 {
   if (dataset == NULL) return EC_IllegalCall;
-  Uint16 rows = 0; 
+  Uint16 rows = 0;
   Uint16 cols = 0;
   Uint16 samplesPerPixel = 0;
   Uint16 bitsAllocated = 0;
@@ -1458,6 +1464,9 @@ OFCondition DcmElement::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.63  2008-10-28 11:40:26  joergr
+** Output detailed error message in case of "premature end of stream".
+**
 ** Revision 1.62  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

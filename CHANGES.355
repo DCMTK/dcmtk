@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.28 (riesmeier)
+
+- Output detailed error message in case of "premature end of stream".
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2008.10.24 (riesmeier)
 
 - Made man pages more consistent with the command line tool.
