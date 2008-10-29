@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.10.29 (riesmeier)
+
+- Fixed minor inconsistencies.
+  Affects: dcmdata/apps/img2dcm.cc
+           dcmdata/docs/img2dcm.man
+
 **** Changes from 2008.10.28 (riesmeier)
 
 - Output detailed error message in case of "premature end of stream".

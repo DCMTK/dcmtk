@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2008, OFFIS
+ *  Copyright (C) 2007-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:35:34 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2008-10-29 18:03:33 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,8 +78,8 @@ static void addOverrideKey(DcmDataset * & overrideKeys,
     // if value is given, extract it (and extrect dictname)
     if (eqPos != OFString_npos)
     {
-      dicName = toParse.substr(0,eqPos).c_str();
-      valStr = toParse.substr(eqPos+1,toParse.length());
+      dicName = toParse.substr(0, eqPos).c_str();
+      valStr = toParse.substr(eqPos + 1, toParse.length());
     }
     else // no value given, just dictionary name
       dicName = s; // only dictionary name given (without value)
@@ -104,7 +104,7 @@ static void addOverrideKey(DcmDataset * & overrideKeys,
   else
   {
     if (eqPos != OFString_npos)
-      valStr = toParse.substr(eqPos+1,toParse.length());
+      valStr = toParse.substr(eqPos + 1, toParse.length());
   }
   DcmTag tag(g,e);
   if (tag.error() != EC_Normal) {
@@ -173,7 +173,7 @@ static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
   if (cmd.findOption("--instance-inc"))
     converter.setIncrementInstanceNumber(OFTrue);
 
-    // Return success
+  // Return success
   return EC_Normal;
 }
 
@@ -192,15 +192,15 @@ static void addCmdLineOptions(OFCommandLine& cmd)
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general input options:");
-      cmd.addOption("--input-format",        "-i",  1,  "[i]nput file format: string","supported formats: JPEG (default)");
-      cmd.addOption("--dataset-from",        "-df", 1,  "[f]ilename: string",
+      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default)");
+      cmd.addOption("--dataset-from",        "-df",  1, "[f]ilename: string",
                                                         "use dataset from DICOM file f");
 
       cmd.addOption("--study-from",          "-stf", 1, "[f]ilename: string",
                                                         "read patient/study from DICOM file f");
       cmd.addOption("--series-from",         "-sef", 1, "[f]ilename: string",
                                                         "read patient/study/series from DICOM file f");
-      cmd.addOption("--instance-inc",        "-ii",     "incr. instance number read from DICOM file");
+      cmd.addOption("--instance-inc",        "-ii",     "increase instance number read from DICOM file");
     cmd.addSubGroup("JPEG input options:");
       cmd.addOption("--disable-progr",       "-dp",     "disable support for progressive JPEG");
       cmd.addOption("--disable-ext",         "-de",     "disable support for extended sequential JPEG");
@@ -215,7 +215,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
      cmd.addOption("--invent-type1",         "+i1",     "invent missing type 1 attributes (default)\n(only with --do-checks)");
      cmd.addOption("--no-type1-invent",      "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
      cmd.addOption("--latin1",               "+l1",     "set latin-1 as standard character set (default)");
-     cmd.addOption("--no-latin1",            "-l1",     "keep 7bit ASCII as standard character set");
+     cmd.addOption("--no-latin1",            "-l1",     "keep 7-bit ASCII as standard character set");
      cmd.addOption("--key",                  "-k",   1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
                                                         "add further attribute");
 
@@ -248,7 +248,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
 {
   // Parse command line and exclusive options
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert standard image formats into DICOM format", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert standard image formats into DICOM format", rcsid);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
     /* check whether to print the command line arguments */
@@ -290,7 +290,8 @@ static OFCondition startConversion(OFCommandLine& cmd,
   E_TransferSyntax writeXfer;
 
   // Parse rest of command line options
-  OFBool dMode = OFFalse; OFBool vMode = OFFalse;
+  OFBool dMode = OFFalse;
+  OFBool vMode = OFFalse;
   if (cmd.findOption("--verbose"))
     vMode = OFTrue;
   if (cmd.findOption("--debug"))
@@ -323,7 +324,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
     outputFile = tempStr;
 
   if (vMode)
-    COUT << "img2dcm: Instantiating input plugin: ";
+    COUT << OFFIS_CONSOLE_APPLICATION ": Instantiating input plugin: ";
   if (cmd.findOption("--input-format"))
   {
     app.checkValue(cmd.getValue(tempStr));
@@ -349,7 +350,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
 
  // Find out which plugin to use
   if (vMode)
-    COUT << "img2dcm: Instantiating output plugin: ";
+    COUT << OFFIS_CONSOLE_APPLICATION ": Instantiating output plugin: ";
   cmd.beginOptionBlock();
   if (cmd.findOption("--sec-capture"))
     outPlug = new I2DOutputPlugSC();
@@ -398,7 +399,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   }
   cmd.endOptionBlock();
 
-  // create override attribute dataset (copied from findscu.cc code)
+  // create override attribute dataset (copied from findscu code)
   if (cmd.findOption("--key", 0, OFCommandLine::FOM_First))
   {
     const char *ovKey = NULL;
@@ -420,9 +421,10 @@ static OFCondition startConversion(OFCommandLine& cmd,
   cmd.endOptionBlock();
   i2d.setISOLatin1(insertLatin1);
 
-
   // evaluate validity checking options
-  OFBool insertType2 = OFTrue; OFBool inventType1 = OFTrue; OFBool doChecks = OFTrue;
+  OFBool insertType2 = OFTrue;
+  OFBool inventType1 = OFTrue;
+  OFBool doChecks = OFTrue;
   cmd.beginOptionBlock();
   if (cmd.findOption("--no-checks"))
     doChecks = OFFalse;
@@ -488,14 +490,14 @@ static OFCondition startConversion(OFCommandLine& cmd,
 
   DcmDataset *resultObject = NULL;
   if (vMode)
-    COUT << "img2dcm: Starting image conversion" << OFendl;
+    COUT << OFFIS_CONSOLE_APPLICATION ": Starting image conversion" << OFendl;
   cond = i2d.convert(inputPlug, outPlug, resultObject, writeXfer);
 
   // Save
   if (cond.good())
   {
     if (vMode)
-      COUT << "img2dcm: Saving output DICOM to file " << outputFile << OFendl;
+      COUT << OFFIS_CONSOLE_APPLICATION ": Saving output DICOM to file " << outputFile << OFendl;
     DcmFileFormat dcmff(resultObject);
     cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeOnlyDataset);
   }
@@ -535,6 +537,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.9  2008-10-29 18:03:33  joergr
+ * Fixed minor inconsistencies.
+ *
  * Revision 1.8  2008-09-25 14:35:34  joergr
  * Moved checking on presence of the data dictionary.
  *
