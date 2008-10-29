@@ -65,7 +65,7 @@ general input options:
           read patient/study/series from DICOM file f
 
   -ii   --instance-inc
-          incr. instance number read from DICOM file
+          increase instance number read from DICOM file
 
 JPEG input options:
 
@@ -110,7 +110,7 @@ JPEG input options:
           set latin-1 as standard character set (default)
 
   -l1   --no-latin1
-          keep 7bit ASCII as standard character set
+          keep 7-bit ASCII as standard character set
 
   -k    --key  key: gggg,eeee="str" or dictionary name="str"
           add further attribute
