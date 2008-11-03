@@ -100,7 +100,7 @@ output transfer syntax:
   +td  --write-xfer-deflated
          write with deflated expl. VR little endian TS
 
- post-1993 value representations:
+post-1993 value representations:
 
   +u   --enable-new-vr
          enable support for new VRs (UN/UT) (default)
