@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-10-28 11:40:26 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2008-11-03 14:26:58 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1412,7 +1412,7 @@ OFCondition DcmElement::createValueFromTempFile(
   const Uint32 length,
   const E_ByteOrder byteOrder)
 {
-    if (factory && (0 == length & 1))
+    if (factory && !(length & 1))
     {
         delete[] fValue;
         fValue = 0;
@@ -1464,6 +1464,9 @@ OFCondition DcmElement::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.64  2008-11-03 14:26:58  joergr
+** Fixed wrong check of odd/even length in method createValueFromTempFile().
+**
 ** Revision 1.63  2008-10-28 11:40:26  joergr
 ** Output detailed error message in case of "premature end of stream".
 **
