@@ -21,9 +21,9 @@
  *
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:46:16 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-03 14:34:10 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ OFCondition DcmCodec::insertCodeSequence(
     const char *codeValue,
     const char *codeMeaning)
 {
-  if (dataset == NULL || codingSchemeDesignator == NULL || 
+  if (dataset == NULL || codingSchemeDesignator == NULL ||
      codeValue == NULL || codeMeaning == NULL) return EC_IllegalCall;
 
   OFCondition result = EC_Normal;
@@ -124,20 +124,20 @@ OFCondition DcmCodec::insertCodeSequence(
       if (result.good()) result = ditem->putAndInsertString(DCM_CodeValue, codeValue);
       if (result.good()) result = ditem->putAndInsertString(DCM_CodeMeaning, codeMeaning);
     } else result = EC_MemoryExhausted;
- 
+
     // insert sequence into dataset if everything went well
     if (result.good()) dataset->insert(dseq, OFTrue /*replaceOld*/); else delete dseq;
   } else result = EC_MemoryExhausted;
 
-  return result;                
+  return result;
 }
-      
+
 OFCondition DcmCodec::newInstance(
-  DcmItem *dataset, 
+  DcmItem *dataset,
   const char *purposeOfReferenceCodingScheme,
   const char *purposeOfReferenceCodeValue,
-  const char *purposeOfReferenceCodeMeaning)  
-{     
+  const char *purposeOfReferenceCodeMeaning)
+{
   if (dataset == NULL) return EC_IllegalCall;
   OFCondition result = EC_Normal;
 
@@ -173,12 +173,12 @@ OFCondition DcmCodec::newInstance(
             } else result = EC_MemoryExhausted;
           }
         } else result = EC_MemoryExhausted;
-        
-        if (result.good() && purposeOfReferenceCodingScheme && 
+
+        if (result.good() && purposeOfReferenceCodingScheme &&
            purposeOfReferenceCodeValue && purposeOfReferenceCodeMeaning)
         {
           // add purpose of reference code sequence
-          result = DcmCodec::insertCodeSequence(ditem, DCM_PurposeOfReferenceCodeSequence, 
+          result = DcmCodec::insertCodeSequence(ditem, DCM_PurposeOfReferenceCodeSequence,
             purposeOfReferenceCodingScheme, purposeOfReferenceCodeValue, purposeOfReferenceCodeMeaning);
         }
       } else result = EC_MemoryExhausted;
@@ -232,7 +232,7 @@ OFCondition DcmCodec::updateImageType(DcmItem *dataset)
 
 
 OFCondition DcmCodec::determineStartFragment(
-    Uint32 frameNo, 
+    Uint32 frameNo,
     Sint32 numberOfFrames,
     DcmPixelSequence * fromPixSeq,
     Uint32& currentItem)
@@ -244,7 +244,7 @@ OFCondition DcmCodec::determineStartFragment(
     {
       // simple case: first frame is always at second fragment
       currentItem = 1;
-      return EC_Normal;      
+      return EC_Normal;
     }
 
     if (numberOfFragments == OFstatic_cast(Uint32, numberOfFrames) + 1)
@@ -254,13 +254,13 @@ OFCondition DcmCodec::determineStartFragment(
       return EC_Normal;
     }
 
-    // non-standard case: mulitple fragments per frame.
+    // non-standard case: multiple fragments per frame.
     // We now try to consult the offset table.
     DcmPixelItem *pixItem = NULL;
     Uint8 * rawOffsetTable = NULL;
 
     // get first pixel item, i.e. the fragment containing the offset table
-    OFCondition result = fromPixSeq->getItem(pixItem, 0); 
+    OFCondition result = fromPixSeq->getItem(pixItem, 0);
     if (result.good())
     {
       Uint32 tableLength = pixItem->getLength();
@@ -269,13 +269,13 @@ OFCondition DcmCodec::determineStartFragment(
       {
         // check if the offset table has the right size: 4 bytes for each frame (not fragment!)
         if (tableLength != 4* OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
-        
+
         // byte swap offset table into local byte order. In file, the offset table is always in little endian
-        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));                    
+        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, rawOffsetTable, tableLength, sizeof(Uint32));
 
         // cast offset table to Uint32.
         Uint32 *offsetTable = OFreinterpret_cast(Uint32 *, rawOffsetTable);
-        
+
         // now access offset of the frame we're looking for
         Uint32 offset = offsetTable[frameNo];
 
@@ -293,14 +293,14 @@ OFCondition DcmCodec::determineStartFragment(
             return EC_Normal;
           }
 
-          // access pixel item in order to determine its length          
+          // access pixel item in order to determine its length
           result = fromPixSeq->getItem(pixItem, idx);
           if (result.bad()) return result;
 
           // add pixel item length plus 8 bytes overhead for the item tag and length field
           counter += pixItem->getLength() + 8;
         }
-        
+
         // bad luck. We have not found a fragment corresponding to the offset in the offset table.
         // Either we cannot correctly add numbers, or they cannot :-)
         return EC_TagNotFound;
@@ -490,7 +490,7 @@ OFCondition DcmCodecList::decodeFrame(
     {
       if ((*first)->codec->canChangeCoding(fromXfer, EXS_LittleEndianExplicit))
       {
-        result = (*first)->codec->decodeFrame(fromParam, fromPixSeq, (*first)->codecParameter, 
+        result = (*first)->codec->decodeFrame(fromParam, fromPixSeq, (*first)->codecParameter,
                  dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
         first = last;
       } else ++first;
@@ -618,6 +618,9 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
+** Revision 1.16  2008-11-03 14:34:10  joergr
+** Fixed typo.
+**
 ** Revision 1.15  2008-05-29 10:46:16  meichel
 ** Implemented new method DcmPixelData::getUncompressedFrame
 **   that permits frame-wise access to compressed and uncompressed
