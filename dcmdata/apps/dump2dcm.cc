@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2008-11-03 16:42:59 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,6 +87,9 @@
 
 #include "dcmtk/config/osconfig.h"
 
+// if defined, use createValueFromTempFile() for large binary data files
+//#define EXPERIMENTAL_READ_FROM_FILE
+
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
@@ -112,10 +115,15 @@
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
+
+#ifdef EXPERIMENTAL_READ_FROM_FILE
+#include "dcmtk/dcmdata/dcistrmf.h"  /* for class DcmInputFileStream */
+#endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>                   /* for zlibVersion() */
+#include <zlib.h>                    /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dump2dcm"
@@ -443,19 +451,35 @@ fileSize(const char *fname)
 static OFCondition
 putFileContentsIntoElement(DcmElement *elem, const char *filename)
 {
-    FILE *f = NULL;
     OFCondition ec = EC_Normal;
-
+#ifdef EXPERIMENTAL_READ_FROM_FILE
+    /* create stream object for binary file */
+    DcmInputFileStream fileStream(filename);
+    ec = fileStream.status();
+    if (ec.good())
+    {
+        /* NB: if size is odd file will be rejected */
+        const unsigned long fileLen = fileSize(filename);
+        /* read element value from binary file (requires even length) */
+        ec = elem->createValueFromTempFile(fileStream.newFactory(), fileLen, EBO_LittleEndian);
+        if (ec.bad())
+            CERR << "ERROR: cannot process binary data file: " << filename << OFendl;
+    } else {
+        CERR << "ERROR: cannot open binary data file: " << filename << OFendl;
+        ec = EC_InvalidTag;
+    }
+#else
+    FILE *f = NULL;
     if ((f = fopen(filename, "rb")) == NULL)
     {
         CERR << "ERROR: cannot open binary data file: " << filename << OFendl;
         return EC_InvalidTag;
     }
 
-    unsigned long len = fileSize(filename);
+    const unsigned long len = fileSize(filename);
     unsigned long buflen = len;
     if (buflen & 1)
-        buflen++; /* if odd then make even (DICOM required even length values) */
+        buflen++; /* if odd then make even (DICOM requires even length values) */
 
     Uint8 *buf = NULL;
     const DcmEVR evr = elem->getVR();
@@ -490,6 +514,7 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         CERR << "ERROR: illegal call processing binary data file: " << filename << OFendl;
 
     fclose(f);
+#endif
     return ec;
 }
 
@@ -523,9 +548,9 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
            (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)) &&
            (tagvr != EVR_na || vr != EVR_pixelItem))
         {
-            CERR << "Warning: Tag " << tag << " with wrong VR "
-                 << dcmvr.getVRName() << " found, correct is "
-                 << tag.getVR().getVRName() << OFendl;
+            CERR << "Warning: Tag " << tag << " with wrong VR '"
+                 << dcmvr.getVRName() << "' found, correct is '"
+                 << tag.getVR().getVRName() << "'" << OFendl;
         }
 
         if (vr != EVR_UNKNOWN)
@@ -689,7 +714,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
 
     datasetStack.push(dataset);
 
-    while(getLine(lineBuf, OFstatic_cast(int, maxLineLength), infile, lineNumber + 1))
+    while (getLine(lineBuf, OFstatic_cast(int, maxLineLength), infile, lineNumber + 1))
     {
         lineNumber++;
 
@@ -728,7 +753,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
         if (!errorOnThisLine)
         {
             OFCondition l_error = EC_Normal;
-            if (tagkey.getGroup() == 2)
+            if (tagkey.getGroup() == 0x0002)
             {
                 if (metaheader)
                 {
@@ -829,6 +854,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian");
         cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
         cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
+#ifdef WITH_ZLIB
+        cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated expl. VR little endian TS");
+#endif
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",       "-E",     "do not write if dump is damaged (default)");
         cmd.addOption("--ignore-errors",       "+E",     "attempt to write even if dump is damaged");
@@ -847,6 +875,11 @@ int main(int argc, char *argv[])
         cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
         cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
                                                          "align file on multiple of f bytes\nand items on multiple of i bytes");
+#ifdef WITH_ZLIB
+      cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
+        cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
+                                                         "0=uncompressed, 1=fastest, 9=best compression");
+#endif
 
     int opt_debugMode = 0;
     const char *opt_ifname = NULL;
@@ -907,6 +940,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-little")) opt_xfer = EXS_LittleEndianExplicit;
       if (cmd.findOption("--write-xfer-big")) opt_xfer = EXS_BigEndianExplicit;
       if (cmd.findOption("--write-xfer-implicit")) opt_xfer = EXS_LittleEndianImplicit;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--write-xfer-deflated")) opt_xfer = EXS_DeflatedLittleEndianExplicit;
+#endif
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -955,6 +991,16 @@ int main(int argc, char *argv[])
           opt_padenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--compression-level"))
+      {
+          OFCmdUnsignedInt comprLevel = 0;
+          app.checkDependence("--compression-level", "--write-xfer-deflated", opt_xfer == EXS_DeflatedLittleEndianExplicit);
+          app.checkValue(cmd.getValueAndCheckMinMax(comprLevel, 0, 9));
+          dcmZlibCompressionLevel.set(OFstatic_cast(int, comprLevel));
+      }
+#endif
     }
 
     DcmFileFormat fileformat;
@@ -1045,6 +1091,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.61  2008-11-03 16:42:59  joergr
+** Added experimental support for importing very large binary files (e.g. pixel
+** data) using new createValueFromTempFile() method.
+** Added ZLIB related output options --write-xfer-deflated, --compression-level.
+**
 ** Revision 1.60  2008-09-25 14:38:48  joergr
 ** Moved output of resource identifier in order to avoid printing the same
 ** information twice.
