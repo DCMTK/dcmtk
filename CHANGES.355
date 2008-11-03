@@ -35,7 +35,7 @@ Changes between releases are documented here.
            dcmsr/apps/xml2dsr.cc
 
 - Added experimental support for importing very large binary files (e.g. pixel
-  data) using new createValueFromTempFile() method.
+  data) using new createValueFromTempFile() method. Disabled by default.
   Affects: dcmdata/apps/dump2dcm.cc
 
 **** Changes from 2008.11.03 (onken)
