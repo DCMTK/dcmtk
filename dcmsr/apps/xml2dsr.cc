@@ -23,9 +23,9 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:14:21 $
+ *  Update Date:      $Date: 2008-11-03 15:36:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>       /* for zlibVersion() */
@@ -90,46 +91,54 @@ int main(int argc, char *argv[])
     cmd.addParam("dsrfile-out",  "DICOM SR output filename", OFCmdParam::PM_Mandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",    "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                      "print expanded command line arguments");
-      cmd.addOption("--verbose",               "-v",    "verbose mode, print processing details");
-      cmd.addOption("--debug",                 "-d",    "debug mode, print debug information");
+      cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                       "print expanded command line arguments");
+      cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
+      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("encoding:");
-        cmd.addOption("--template-envelope",   "+Ee",   "template element encloses content items");
+        cmd.addOption("--template-envelope",   "+Ee",    "template element encloses content items");
 
     cmd.addGroup("processing options:");
       cmd.addSubGroup("validation:");
 #ifdef LIBXML_SCHEMAS_ENABLED
-        cmd.addOption("--validate-schema",     "+Vs",   "validate XML document against Schema\n(not with --template-envelope)");
+        cmd.addOption("--validate-schema",     "+Vs",    "validate XML document against Schema\n(not with --template-envelope)");
 #endif
-        cmd.addOption("--check-namespace",     "+Vn",   "check XML namespace in document root");
+        cmd.addOption("--check-namespace",     "+Vn",    "check XML namespace in document root");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output file format:");
-        cmd.addOption("--write-file",          "+F",    "write file format (default)");
-        cmd.addOption("--write-dataset",       "-F",    "write data set without file meta information");
+        cmd.addOption("--write-file",          "+F",     "write file format (default)");
+        cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
       cmd.addSubGroup("output transfer syntax:");
-        cmd.addOption("--write-xfer-little",   "+te",   "write with explicit VR little endian TS (def.)");
-        cmd.addOption("--write-xfer-big",      "+tb",   "write with explicit VR big endian TS");
-        cmd.addOption("--write-xfer-implicit", "+ti",   "write with implicit VR little endian TS");
+        cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS (def.)");
+        cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
+        cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
+#ifdef WITH_ZLIB
+        cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated expl. VR little endian TS");
+#endif
       cmd.addSubGroup("post-1993 value representations:");
-        cmd.addOption("--enable-new-vr",       "+u",    "enable support for new VRs (UN/UT) (default)");
-        cmd.addOption("--disable-new-vr",      "-u",    "disable support for new VRs, convert to OB");
+        cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
+        cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
       cmd.addSubGroup("group length encoding:");
-        cmd.addOption("--group-length-recalc", "+g=",   "recalculate group lengths if present (default)");
-        cmd.addOption("--group-length-create", "+g",    "always write with group length elements");
-        cmd.addOption("--group-length-remove", "-g",    "always write without group length elements");
+        cmd.addOption("--group-length-recalc", "+g=",    "recalculate group lengths if present (default)");
+        cmd.addOption("--group-length-create", "+g",     "always write with group length elements");
+        cmd.addOption("--group-length-remove", "-g",     "always write without group length elements");
       cmd.addSubGroup("length encoding in sequences and items:");
-        cmd.addOption("--length-explicit",     "+e",    "write with explicit lengths (default)");
-        cmd.addOption("--length-undefined",    "-e",    "write with undefined lengths");
+        cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
+        cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
       cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
-        cmd.addOption("--padding-retain",      "-p=",   "do not change padding\n(default if not --write-dataset)");
-        cmd.addOption("--padding-off",         "-p",    "no padding (implicit if --write-dataset)");
-        cmd.addOption("--padding-create",      "+p", 2, "[f]ile-pad [i]tem-pad: integer",
-                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
+        cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
+        cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
+        cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+                                                         "align file on multiple of f bytes\nand items on multiple of i bytes");
+#ifdef WITH_ZLIB
+      cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
+        cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
+                                                         "0=uncompressed, 1=fastest, 9=best compression");
+#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -193,6 +202,10 @@ int main(int argc, char *argv[])
             opt_xfer = EXS_BigEndianExplicit;
         if (cmd.findOption("--write-xfer-implicit"))
             opt_xfer = EXS_LittleEndianImplicit;
+#ifdef WITH_ZLIB
+        if (cmd.findOption("--write-xfer-deflated"))
+            opt_xfer = EXS_DeflatedLittleEndianExplicit;
+#endif
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
@@ -241,14 +254,26 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+#ifdef WITH_ZLIB
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--compression-level"))
+        {
+            OFCmdUnsignedInt comprLevel = 0;
+            app.checkDependence("--compression-level", "--write-xfer-deflated", opt_xfer == EXS_DeflatedLittleEndianExplicit);
+            app.checkValue(cmd.getValueAndCheckMinMax(comprLevel, 0, 9));
+            dcmZlibCompressionLevel.set(OFstatic_cast(int, comprLevel));
+        }
+        cmd.endOptionBlock();
+#endif
+
         /* check conflicts and dependencies */
         if (opt_readFlags & DSRTypes::XF_validateSchema)
             app.checkConflict("--validate-schema", "--template-envelope", (opt_readFlags & DSRTypes::XF_templateElementEnclosesItems) > 0);
     }
 
     if (opt_debug)
-        app.printIdentifier();        
-    SetDebugLevel((opt_debug));    
+        app.printIdentifier();
+    SetDebugLevel((opt_debug));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -343,6 +368,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.9  2008-11-03 15:36:51  joergr
+ * Added ZLIB related output options --write-xfer-deflated, --compression-level.
+ *
  * Revision 1.8  2008-09-25 14:14:21  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.
