@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 15:33:06 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2008-11-03 16:42:23 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -342,14 +342,12 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
 #ifdef WITH_ZLIB
-      cmd.beginOptionBlock();
       if (cmd.findOption("--compression-level"))
       {
           app.checkDependence("--compression-level", "--write-xfer-deflated", opt_oxfer == EXS_DeflatedLittleEndianExplicit);
           app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
           dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
       }
-      cmd.endOptionBlock();
 #endif
 
     }
@@ -441,6 +439,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.54  2008-11-03 16:42:23  joergr
+** Removed "option block" encapsulation from option --compression-level.
+**
 ** Revision 1.53  2008-11-03 15:33:06  joergr
 ** Made documentation of --compression-level more consistent with other options.
 **
