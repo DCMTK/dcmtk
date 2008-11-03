@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2008-11-03 15:50:42 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,11 +34,12 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcpxitem.h"    /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/dcpxitem.h"   /* for class DcmPixelItem */
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 #include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDARG
@@ -697,6 +698,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian TS");
         cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
         cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
+#ifdef WITH_ZLIB
+        cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated expl. VR little endian TS");
+#endif
       cmd.addSubGroup("post-1993 value representations:");
         cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
         cmd.addOption("--disable-new-vr",      "-u",     "disable support for new VRs, convert to OB");
@@ -712,6 +716,11 @@ int main(int argc, char *argv[])
         cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
         cmd.addOption("--padding-create",      "+p",  2, "[f]ile-pad [i]tem-pad: integer",
                                                          "align file on multiple of f bytes\nand items on multiple of i bytes");
+#ifdef WITH_ZLIB
+      cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
+        cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
+                                                         "0=uncompressed, 1=fastest, 9=best compression");
+#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -783,6 +792,10 @@ int main(int argc, char *argv[])
             opt_xfer = EXS_BigEndianExplicit;
         if (cmd.findOption("--write-xfer-implicit"))
             opt_xfer = EXS_LittleEndianImplicit;
+#ifdef WITH_ZLIB
+        if (cmd.findOption("--write-xfer-deflated"))
+            opt_xfer = EXS_DeflatedLittleEndianExplicit;
+#endif
         cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
@@ -830,6 +843,16 @@ int main(int argc, char *argv[])
             opt_padenc = EPD_withPadding;
         }
         cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+        if (cmd.findOption("--compression-level"))
+        {
+            OFCmdUnsignedInt comprLevel = 0;
+            app.checkDependence("--compression-level", "--write-xfer-deflated", opt_xfer == EXS_DeflatedLittleEndianExplicit);
+            app.checkValue(cmd.getValueAndCheckMinMax(comprLevel, 0, 9));
+            dcmZlibCompressionLevel.set(OFstatic_cast(int, comprLevel));
+        }
+#endif
     }
 
     if (opt_debug)
@@ -952,6 +975,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.24  2008-11-03 15:50:42  joergr
+ * Added ZLIB related output options --write-xfer-deflated, --compression-level.
+ *
  * Revision 1.23  2008-09-25 14:38:48  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
