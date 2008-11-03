@@ -77,6 +77,9 @@ output transfer syntax:
   +ti  --write-xfer-implicit
          write with implicit VR little endian TS
 
+  +td  --write-xfer-deflated
+         write with deflated expl. VR little endian TS
+
 error handling:
 
   -E   --stop-on-error
@@ -123,6 +126,11 @@ data set trailing padding (not with --write-dataset):
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
          align file on multiple of f bytes
          and items on multiple of i bytes
+
+deflate compression level (only with --write-xfer-deflated):
+
+  +cl  --compression-level  [l]evel: integer (default: 6)
+         0=uncompressed, 1=fastest, 9=best compression
 \endverbatim
 
 \section notes NOTES
