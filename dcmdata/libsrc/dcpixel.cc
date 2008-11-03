@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-03 14:29:45 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -664,6 +664,17 @@ DcmPixelData::createUint16Array(
     return l_error;
 }
 
+OFCondition
+DcmPixelData::createValueFromTempFile(
+    DcmInputStreamFactory *factory,
+    const Uint32 length,
+    const E_ByteOrder byteOrder)
+{
+    OFCondition l_error = DcmPolymorphOBOW::createValueFromTempFile(factory, length, byteOrder);
+    existUnencapsulated = OFTrue;
+    return l_error;
+}
+
 void
 DcmPixelData::putOriginalRepresentation(
     const E_TransferSyntax repType,
@@ -1063,11 +1074,11 @@ OFCondition DcmPixelData::getUncompressedFrame(
     dataset->findAndGetSint32(DCM_NumberOfFrames, numberOfFrames); // don't fail if absent
     if (numberOfFrames < 1) numberOfFrames = 1;
 
-    Uint32 frameSize; 
+    Uint32 frameSize;
     OFCondition result = getUncompressedFrameSize(dataset, frameSize);
     if (result.bad()) return result;
     if (bufSize < frameSize) return EC_IllegalCall;
-    
+
     // check frame number
     if (frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
 
@@ -1083,7 +1094,7 @@ OFCondition DcmPixelData::getUncompressedFrame(
       // we only have a compressed version of the pixel data.
       // Identify a codec for decompressing the frame.
       result = DcmCodecList::decodeFrame(
-      	(*original)->repType, (*original)->repParam, (*original)->pixSeq, 
+      	(*original)->repType, (*original)->repParam, (*original)->pixSeq,
         dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
     }
     return result;
@@ -1094,6 +1105,9 @@ OFCondition DcmPixelData::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.43  2008-11-03 14:29:45  joergr
+** Added method createValueFromTempFile() - overrides method in DcmElement.
+**
 ** Revision 1.42  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

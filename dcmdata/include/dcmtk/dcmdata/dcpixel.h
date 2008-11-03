@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-03 14:32:50 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -280,7 +280,7 @@ public:
     {
       return new DcmPixelData(*this);
     }
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -293,7 +293,7 @@ public:
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);    
+    virtual OFCondition copyFrom(const DcmObject& rhs);
 
     /** set/change the current value representation of the uncompressed image representation, if any
      *  @param vr new value representation to be set.  All VRs except for OW (Other
@@ -470,6 +470,22 @@ public:
         const Uint32 numWords,
         Uint16 * & words);
 
+    /** replace the attribute value with the content of the given temporary file.
+     *  The temporary file is not opened/loaded until the attribute value is accessed,
+     *  very much like large attributes that remain in file during a read operation.
+     *  @param factory a factory object that is able to create an input stream
+     *    to the temporary file at the right location.
+     *  @param length attribute value length, in bytes. Must be even length.
+     *    The length is not checked against the real length of the temporary file,
+     *    which might be written or completed after the call to this method.
+     *  @param byteOrder byte order in the temporary file
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    virtual OFCondition createValueFromTempFile(
+      DcmInputStreamFactory *factory,
+      const Uint32 length,
+      const E_ByteOrder byteOrder);
+
     /** get a specific exisiting Representation, creates no representation
      *  if repParam is NULL, then the representation conforming to the default
      *  presentationParameters (defined with the codec) is returned.
@@ -587,6 +603,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
+** Revision 1.36  2008-11-03 14:32:50  joergr
+** Added method createValueFromTempFile() - overrides method in DcmElement.
+**
 ** Revision 1.35  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **
