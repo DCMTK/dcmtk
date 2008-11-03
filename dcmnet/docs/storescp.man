@@ -230,9 +230,9 @@ data set trailing padding
           align file on multiple of f bytes and items on
           multiple of i bytes
 
-deflate compression level (not with --write-xfer-little/big/implicit):
+deflate compression level (only with --write-xfer-deflated/same):
 
-  +cl   --compression-level  compression level: 0-9 (default 6)
+  +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
 
 sorting into subdirectories (not with --bit-preserving):

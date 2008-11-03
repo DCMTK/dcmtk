@@ -185,7 +185,7 @@ data set trailing padding (not with --write-dataset):
 
 deflate compression level (only with --write-xfer-deflated):
 
-  +cl  --compression-level  level: 0-9 (default 6)
+  +cl  --compression-level  [l]evel: integer (default: 6)
          0=uncompressed, 1=fastest, 9=best compression
 \endverbatim
 

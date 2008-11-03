@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2008-11-03 15:33:06 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
                                                        "align file on multiple of f bytes\nand items on multiple of i bytes");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated):");
-      cmd.addOption("--compression-level",   "+cl", 1, "compression level: 0-9 (default 6)",
+      cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
                                                        "0=uncompressed, 1=fastest, 9=best compression");
 #endif
 
@@ -383,8 +383,7 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
+        CERR << "Error: " << error.text()
              << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
@@ -427,8 +426,7 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
+        CERR << "Error: " << error.text()
              << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
@@ -443,6 +441,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.53  2008-11-03 15:33:06  joergr
+** Made documentation of --compression-level more consistent with other options.
+**
 ** Revision 1.52  2008-09-25 14:38:48  joergr
 ** Moved output of resource identifier in order to avoid printing the same
 ** information twice.

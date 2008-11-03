@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:00:58 $
+ *  Update Date:      $Date: 2008-11-03 15:29:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.98 $
+ *  CVS/RCS Revision: $Revision: 1.99 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -254,11 +254,11 @@ int main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "DICOM storage (C-STORE) SCP", rcsid);
   OFCommandLine cmd;
 
-  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("port", "tcp/ip port number to listen on", OFCmdParam::PM_Optional);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                             "print version information and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--arguments",                           "print expanded command line arguments");
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
     cmd.addOption("--output-directory",         "-od",  1, opt0.c_str(), "write output-files to (existing) directory p");
 
 #if defined(HAVE_FORK) || defined(_WIN32)
-  cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--fork",                                "fork child process for each association");
 #ifdef _WIN32
     cmd.addOption("--forked-child",                        "process is forked child, internal use only", OFCommandLine::AF_Internal);
@@ -371,8 +371,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--padding-create",         "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                            "align file on multiple of f bytes and items\non multiple of i bytes");
 #ifdef WITH_ZLIB
-    cmd.addSubGroup("deflate compression level (not with --write-xfer-little/big/implicit):");
-      cmd.addOption("--compression-level",      "+cl",  1, "compression level: 0-9 (default 6)",
+    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
+      cmd.addOption("--compression-level",      "+cl",  1, "[l]evel: integer (default: 6)",
                                                            "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--filename-extension",     "-fe",  1, "[e]xtension: string",
                                                            "append e to all filenames");
 
-  cmd.addGroup("event options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("event options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption(  "--exec-on-reception",      "-xcr", 1, "[c]ommand: string",
                                                            "execute command c after having received and\nprocessed one C-STORE-Request message" );
     cmd.addOption(  "--exec-on-eostudy",        "-xcs", 1, "[c]ommand: string (only with -ss or -sp)",
@@ -2613,6 +2613,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.99  2008-11-03 15:29:03  joergr
+** Made documentation of --compression-level more consistent with other options.
+**
 ** Revision 1.98  2008-09-25 16:00:58  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.

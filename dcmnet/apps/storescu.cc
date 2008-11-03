@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:00:58 $
+ *  Update Date:      $Date: 2008-11-03 15:29:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,13 +214,13 @@ int main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM storage (C-STORE) SCU", rcsid);
   OFCommandLine cmd;
 
-  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
   cmd.addParam("dcmfile-in", "DICOM file or directory to be transmitted", OFCmdParam::PM_MultiMandatory);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                    "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--arguments",                          "print expanded command line arguments");
@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--disable-new-vr",       "-u",      "disable support for new VRs, convert to OB");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("deflate compression level (only with --propose-deflated or --config-file):");
-      cmd.addOption("--compression-level",    "+cl",  1, "compression level: 0-9 (default 6)",
+      cmd.addOption("--compression-level",    "+cl",  1, "[l]evel: integer (default: 6)",
                                                          "0=uncompressed, 1=fastest, 9=best compression");
 #endif
     cmd.addSubGroup("user identity negotiation:");
@@ -1747,6 +1747,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.75  2008-11-03 15:29:03  joergr
+** Made documentation of --compression-level more consistent with other options.
+**
 ** Revision 1.74  2008-09-25 16:00:58  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.

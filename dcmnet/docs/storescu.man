@@ -157,7 +157,7 @@ post-1993 value representations:
 
 deflate compression level (only with --propose-deflated or --config-file):
 
-  +cl   --compression-level  compression level: 0-9 (default 6)
+  +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
 
 user identity negotiation:
