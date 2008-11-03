@@ -13,6 +13,31 @@ Changes between releases are documented here.
 - Fixed typo.
   Affects: dcmdata/libsrc/dccodec.cc
 
+- Made documentation of --compression-level more consistent with other options.
+  Affects: dcmdata/docs/dcmconv.man
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+
+- Added ZLIB related output options --write-xfer-deflated, --compression-level.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/docs/xml2dsr.man
+
+- Removed "option block" encapsulation from option --compression-level.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmsr/apps/xml2dsr.cc
+
+- Added experimental support for importing very large binary files (e.g. pixel
+  data) using new createValueFromTempFile() method.
+  Affects: dcmdata/apps/dump2dcm.cc
+
 **** Changes from 2008.11.03 (onken)
 
 - Fixed typo. Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for
