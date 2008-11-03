@@ -91,7 +91,7 @@ compatibility options (ignored by +tl):
   # (only pseudo lossless encoder)
 \endverbatim
 
-\subsection JPEG_encoding_options JPEG enconding options
+\subsection JPEG_encoding_options JPEG encoding options
 \verbatim
 JPEG process options:
 

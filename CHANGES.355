@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+
+**** Changes from 2008.10.29 (onken)
+
+- Fixed typo. Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for
+  the report.
+  Affects: dcmjpeg/docs/dcmcjpeg.man
+
 **** Changes from 2008.10.29 (riesmeier)
 
 - Fixed minor inconsistencies.
