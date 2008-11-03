@@ -1,8 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.11.03 (riesmeier)
 
-**** Changes from 2008.10.29 (onken)
+- Fixed wrong check of odd/even length in method createValueFromTempFile().
+  Affects: dcmdata/libsrc/dcelem.cc
+
+- Added method createValueFromTempFile() - overrides method in DcmElement.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+
+- Fixed typo.
+  Affects: dcmdata/libsrc/dccodec.cc
+
+**** Changes from 2008.11.03 (onken)
 
 - Fixed typo. Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for
   the report.
