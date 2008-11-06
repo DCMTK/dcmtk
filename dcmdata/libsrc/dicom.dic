@@ -21,9 +21,9 @@
 #  Purpose:
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2008-04-30 12:37:47 $
-#  CVS/RCS Revision: $Revision: 1.58 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2008-11-06 17:46:51 $
+#  CVS/RCS Revision: $Revision: 1.59 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains the complete dictionary from the 
@@ -1335,7 +1335,7 @@
 (0040,A504)	SQ	ContentTemplateSequence	1	DICOM_2008
 (0040,A525)	SQ	IdenticalDocumentsSequence	1	DICOM_2008
 (0040,A730)	SQ	ContentSequence	1	DICOM_2008
-(0040,B020)	SQ	AnnotationSequence	1	DICOM_2008
+(0040,B020)	SQ	WaveformAnnotationSequence	1	DICOM_2008
 (0040,DB00)	CS	TemplateIdentifier	1	DICOM_2008
 (0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	DICOM_2008
 (0040,E001)	ST	HL7InstanceIdentifier	1	DICOM_2008

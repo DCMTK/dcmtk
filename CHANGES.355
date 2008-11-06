@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.11.06 (riesmeier)
+
+- Fixed inconsistent name of attribute (0040,B020) WaveformAnnotationSequence.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+
 **** Changes from 2008.11.03 (riesmeier)
 
 - Fixed wrong check of odd/even length in method createValueFromTempFile().
