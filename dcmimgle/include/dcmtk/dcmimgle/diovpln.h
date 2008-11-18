@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-11-09 11:03:51 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2008-11-18 11:01:28 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,13 +69,17 @@ class DiOverlayPlane
 
     /** constructor
      *
-     ** @param  docu   pointer to dataset (encapsulated)
-     *  @param  group  group number of the overlay plane
-     *  @param  alloc  value for bits allocated of the surrounding image
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  group   group number of the overlay plane
+     *  @param  alloc   value for bits allocated of the surrounding image
+     *  @param  stored  value for bits stored of the surrounding image
+     *  @param  high    value for high bit of the surrounding image
      */
     DiOverlayPlane(const DiDocument *docu,
                    const unsigned int group,
-                   Uint16 alloc);
+                   Uint16 alloc,
+                   const Uint16 stored,
+                   const Uint16 high);
 
     /** constructor, additional
      *
@@ -565,7 +569,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.27  2006-11-09 11:03:51  joergr
+ * Revision 1.28  2008-11-18 11:01:28  joergr
+ * Fixed issue with incorrectly encoded overlay planes (wrong values for
+ * OverlayBitsAllocated and OverlayBitPosition).
+ *
+ * Revision 1.27  2006/11/09 11:03:51  joergr
  * Fixed possible program crash when processing multi-frame overlay data stored in
  * data element OverlayData (60xx,3000).
  *

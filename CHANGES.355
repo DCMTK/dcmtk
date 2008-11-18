@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.11.18 (riesmeier)
+
+- Fixed issue with incorrectly encoded overlay planes (wrong values for
+  OverlayBitsAllocated and OverlayBitPosition). Thanks to Mathieu Malaterre
+  <mathieu.malaterre@gmail.com> for the report and faulty sample image.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimoimg.h
+           dcmimgle/include/dcmtk/dcmimgle/diovlay.h
+           dcmimgle/include/dcmtk/dcmimgle/diovpln.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
 **** Changes from 2008.11.06 (riesmeier)
 
 - Fixed inconsistent name of attribute (0040,B020) WaveformAnnotationSequence.

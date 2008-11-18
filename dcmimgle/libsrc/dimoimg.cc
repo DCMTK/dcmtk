@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-08-08 14:17:50 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2008-11-18 10:57:09 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -654,7 +654,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
 {
     if (modality != NULL)
     {
-        Overlays[0] = new DiOverlay(Document, BitsAllocated);
+        Overlays[0] = new DiOverlay(Document, BitsAllocated, BitsStored, HighBit);
         if ((Overlays[0] != NULL) && !(Document->getFlags() & CIF_UsePresentationState))
             Overlays[0]->showAllPlanes();                       // default: show all overlays with stored modes
         if ((Overlays[0] == NULL) || (Overlays[0]->getCount() == 0) || (!Overlays[0]->hasEmbeddedData()))
@@ -2148,6 +2148,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.74  2008-11-18 10:57:09  joergr
+ * Fixed issue with incorrectly encoded overlay planes (wrong values for
+ * OverlayBitsAllocated and OverlayBitPosition).
+ *
  * Revision 1.73  2008-08-08 14:17:50  joergr
  * Fixed issue with NumberOfFrames element in writeImageToDataset().
  *

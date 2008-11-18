@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlay (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:48:01 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-18 11:01:28 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,11 +68,15 @@ class DiOverlay
 
     /** constructor
      *
-     ** @param  docu   pointer to dataset (encapsulated)
-     *  @param  alloc  bits allocated for image pixel data
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  alloc   bits allocated for image pixel data
+     *  @param  stored  bits stored for image pixel data
+     *  @param  high    high bit for image pixel data
      */
     DiOverlay(const DiDocument *docu = NULL,
-              const Uint16 alloc = 0);
+              const Uint16 alloc = 0,
+              const Uint16 stored = 0,
+              const Uint16 high = 0);
 
     /** constructor, clip/scale
      *
@@ -489,7 +493,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.24  2005-12-08 16:48:01  meichel
+ * Revision 1.25  2008-11-18 11:01:28  joergr
+ * Fixed issue with incorrectly encoded overlay planes (wrong values for
+ * OverlayBitsAllocated and OverlayBitPosition).
+ *
+ * Revision 1.24  2005/12/08 16:48:01  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.23  2003/12/08 19:32:14  joergr

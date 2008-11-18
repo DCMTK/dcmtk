@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:03:53 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2008-11-18 11:01:28 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -580,16 +580,16 @@ class DiMonoImage
      ** @return pointer to overlay plane data (internal memory buffer)
      */
     const void *getOverlayData(const unsigned long frame,
-                                const unsigned int plane,
-                                unsigned int &left_pos,
-                                unsigned int &top_pos,
-                                unsigned int &width,
-                                unsigned int &height,
-                                EM_Overlay &mode,
-                                const unsigned int idx,
-                                const int bits = 8,
-                                const Uint16 fore = 0xff,
-                                const Uint16 back = 0x0);
+                               const unsigned int plane,
+                               unsigned int &left_pos,
+                               unsigned int &top_pos,
+                               unsigned int &width,
+                               unsigned int &height,
+                               EM_Overlay &mode,
+                               const unsigned int idx,
+                               const int bits = 8,
+                               const Uint16 fore = 0xff,
+                               const Uint16 back = 0x0);
 
     /** create bitmap for specified overlay plane.
      *  (up to 16 bits per pixel with two values: fore and back)
@@ -1143,6 +1143,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
+ * Revision 1.52  2008-11-18 11:01:28  joergr
+ * Fixed issue with incorrectly encoded overlay planes (wrong values for
+ * OverlayBitsAllocated and OverlayBitPosition).
+ *
  * Revision 1.51  2008-05-20 10:03:53  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  *

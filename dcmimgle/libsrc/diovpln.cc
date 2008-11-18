@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-08-27 09:57:31 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2008-11-18 10:57:10 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,9 @@
 
 DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                                const unsigned int group,
-                               Uint16 alloc)
+                               Uint16 alloc,
+                               const Uint16 stored,
+                               const Uint16 high)
   : NumberOfFrames(0),
     ImageFrameOrigin(0),
     Top(0),
@@ -164,7 +166,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 BitsAllocated = alloc;
             }
             /* check for correct value of BitPosition */
-            if (BitPosition > BitsAllocated)
+            if (BitPosition >= BitsAllocated)
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -174,10 +176,20 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 }
                 BitPosition = BitsAllocated - 1;
             }
+            if (EmbeddedData && (BitPosition <= high) && (BitPosition + stored > high))
+            {
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                {
+                    ofConsole.lockCerr() << "ERROR: invalid value for 'OverlayBitPosition' (" << BitPosition
+                                         << "), refers to bit position within stored pixel value !" << OFendl;
+                    ofConsole.unlockCerr();
+                }
+                Data = NULL;    // invalid plane
+            }
             /* expected length of overlay data */
             const unsigned long expLen = (OFstatic_cast(unsigned long, NumberOfFrames) * OFstatic_cast(unsigned long, Rows) *
                                           OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, BitsAllocated) + 7) / 8;
-            if ((length == 0) || (length < expLen))
+            if ((Data != NULL) && ((length == 0) || (length < expLen)))
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
@@ -603,6 +615,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
+ * Revision 1.32  2008-11-18 10:57:10  joergr
+ * Fixed issue with incorrectly encoded overlay planes (wrong values for
+ * OverlayBitsAllocated and OverlayBitPosition).
+ *
  * Revision 1.31  2007-08-27 09:57:31  joergr
  * Added further check on Overlay Type variable.
  *

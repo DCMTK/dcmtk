@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlay (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-18 10:57:10 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,9 @@ const unsigned int DiOverlay::FirstOverlayGroup = 0x6000;
  *----------------*/
 
 DiOverlay::DiOverlay(const DiDocument *docu,
-                     const Uint16 alloc)
+                     const Uint16 alloc,
+                     const Uint16 stored,
+                     const Uint16 high)
   : Left(0),
     Top(0),
     Width(0),
@@ -71,7 +73,7 @@ DiOverlay::DiOverlay(const DiDocument *docu,
         register unsigned int i;
         for (i = 0; i < MaxOverlayCount; ++i)
         {
-            Data->Planes[Data->Count] = new DiOverlayPlane(docu, convertToGroupNumber(i), alloc);
+            Data->Planes[Data->Count] = new DiOverlayPlane(docu, convertToGroupNumber(i), alloc, stored, high);
             if (Data->Planes[Data->Count] != NULL)
             {
                 if (checkPlane(Data->Count))
@@ -609,7 +611,11 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.26  2006-08-15 16:30:11  meichel
+ * Revision 1.27  2008-11-18 10:57:10  joergr
+ * Fixed issue with incorrectly encoded overlay planes (wrong values for
+ * OverlayBitsAllocated and OverlayBitPosition).
+ *
+ * Revision 1.26  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *
