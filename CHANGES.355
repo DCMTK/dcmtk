@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.11.20 (riesmeier)
+
+- Added new command line option --output-directory to specify the directory
+  where received objects are stored.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/docs/movescu.man
+
+- Moved command line option --output-directory to "output" section and made
+  syntax description more consistent with other DCMTK tools.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 **** Changes from 2008.11.18 (riesmeier)
 
 - Fixed issue with incorrectly encoded overlay planes (wrong values for
