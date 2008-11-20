@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:00:58 $
+ *  Update Date:      $Date: 2008-11-20 12:13:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,6 +118,7 @@ T_DIMSE_BlockingMode opt_blockMode = DIMSE_BLOCKING;
 int               opt_dimse_timeout = 0;
 int               opt_acse_timeout = 30;
 OFBool            opt_ignorePendingDatasets = OFTrue;
+OFString          opt_outputDirectory = ".";
 
 static T_ASC_Network *net = NULL; /* the global DICOM network */
 static DcmDataset *overrideKeys = NULL;
@@ -349,6 +350,8 @@ main(int argc, char *argv[])
                                                         "cancel after n responses (default: never)");
       cmd.addOption("--uid-padding",         "-up",     "silently correct space-padded UIDs");
   cmd.addGroup("output options:");
+    cmd.addSubGroup("general:");
+      cmd.addOption("--output-directory",    "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",              "-B",      "allow implicit format conversions (default)");
       cmd.addOption("--bit-preserving",      "+B",      "write data exactly as read");
@@ -500,6 +503,8 @@ main(int argc, char *argv[])
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
       if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
 
+      if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
       if (cmd.findOption("--bit-preserving")) opt_bitPreserving = OFTrue;
@@ -634,6 +639,15 @@ main(int argc, char *argv[])
     {
         fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
           DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
+
+    /* make sure output directory exists and is writeable */
+    if (opt_retrievePort > 0)
+    {
+        if (!OFStandard::dirExists(opt_outputDirectory))
+            app.printError("specified output directory does not exist");
+        else if (!OFStandard::isWriteable(opt_outputDirectory))
+            app.printError("specified output directory is not writeable");
     }
 
 #ifdef HAVE_GETEUID
@@ -900,21 +914,21 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
       {
         case EXS_LittleEndianImplicit:
           /* we only support Little Endian Implicit */
-          transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+          transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 1;
           break;
         case EXS_LittleEndianExplicit:
           /* we prefer Little Endian Explicit */
           transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
           transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+          transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 3;
           break;
         case EXS_BigEndianExplicit:
           /* we prefer Big Endian Explicit */
           transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-          transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+          transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 3;
           break;
         case EXS_JPEGProcess14SV1TransferSyntax:
@@ -1096,16 +1110,18 @@ storeSCPCallback(
        if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
        {
          StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
-         const char* fileName = cbdata->imageFileName;
+         /* create full path name for the output file */
+         OFString ofname;
+         OFStandard::combineDirAndFilename(ofname, opt_outputDirectory, cbdata->imageFileName, OFTrue /* allowEmptyDirName */);
 
          E_TransferSyntax xfer = opt_writeTransferSyntax;
          if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
-         OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength,
+         OFCondition cond = cbdata->dcmff->saveFile(ofname.c_str(), xfer, opt_sequenceType, opt_groupLength,
            opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
          if (cond.bad())
          {
-           fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
+           fprintf(stderr, "storescp: Cannot write image file: %s\n", ofname.c_str());
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
          }
 
@@ -1430,6 +1446,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.69  2008-11-20 12:13:22  joergr
+** Added new command line option --output-directory to specify the directory
+** where received objects are stored.
+**
 ** Revision 1.68  2008-09-25 16:00:58  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.
