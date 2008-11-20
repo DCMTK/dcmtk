@@ -192,6 +192,11 @@ other network options:
 
 \subsection output_options output options
 \verbatim
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write received objects to existing directory d
+
 bit preserving mode:
 
   -B    --normal
