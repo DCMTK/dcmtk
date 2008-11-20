@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 15:44:26 $
+ *  Update Date:      $Date: 2008-11-20 12:06:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.100 $
+ *  CVS/RCS Revision: $Revision: 1.101 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ OFString           callingaetitle;  // calling AE title will be stored here
 OFString           calledaetitle;   // called AE title will be stored here
 const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
-static OFString    opt_outputDirectory(".");          // default: output directory equals "."
+static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
 static const char *opt_sortConcerningStudies = NULL;  // default: no sorting
 static OFBool      opt_sortOnPatientsName = OFFalse;  // default: no sorting by patient name
 OFString           lastStudyInstanceUID;
@@ -264,10 +264,6 @@ int main(int argc, char *argv[])
     cmd.addOption("--arguments",                           "print expanded command line arguments");
     cmd.addOption("--verbose",                  "-v",      "verbose mode, print processing details");
     cmd.addOption("--debug",                    "-d",      "debug mode, print debug information");
-    OFString opt0 = "[p]ath: string (default: ";
-    opt0 += opt_outputDirectory;
-    opt0 += ")";
-    cmd.addOption("--output-directory",         "-od",  1, opt0.c_str(), "write output-files to (existing) directory p");
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
@@ -342,6 +338,8 @@ int main(int argc, char *argv[])
       cmd.addOption("--uid-padding",            "-up",     "silently correct space-padded UIDs");
 
   cmd.addGroup("output options:");
+    cmd.addSubGroup("general:");
+      cmd.addOption("--output-directory",       "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",      "allow implicit format conversions (default)");
       cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read (not with -ss/-sp)");
@@ -550,7 +548,6 @@ int main(int argc, char *argv[])
       DIMSE_debug(OFTrue);
       SetDebugLevel(3);
     }
-    if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--prefer-uncompr"))      opt_networkTransferSyntax = EXS_Unknown;
@@ -641,6 +638,8 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--access-control")) dcmTCPWrapperDaemonName.set(OFFIS_CONSOLE_APPLICATION);
     cmd.endOptionBlock();
 #endif
+
+    if (cmd.findOption("--output-directory")) app.checkValue(cmd.getValue(opt_outputDirectory));
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
@@ -2611,6 +2610,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.101  2008-11-20 12:06:06  joergr
+** Moved command line option --output-directory to "output" section and made
+** syntax description more consistent with other DCMTK tools.
+**
 ** Revision 1.100  2008-11-03 15:44:26  joergr
 ** Removed "option block" encapsulation from option --compression-level.
 **

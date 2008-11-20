@@ -45,9 +45,6 @@ port  tcp/ip port number to listen on.
 
   -d    --debug
           debug mode, print debug information
-
-  -od   --output-directory  [p]ath: string (default: .)
-          write output-files to (existing) directory p
 \endverbatim
 
 \subsection multi_process_options multi-process options
@@ -159,6 +156,11 @@ other network options:
 \section output_options output options
 
 \verbatim
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write received objects to existing directory d
+
 bit preserving mode:
 
   -B    --normal
