@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-10-15 15:49:09 $
- *  CVS/RCS Revision: $Revision: 1.114 $
+ *  Update Date:      $Date: 2008-11-21 16:18:11 $
+ *  CVS/RCS Revision: $Revision: 1.115 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2681,7 +2681,10 @@ OFCondition DcmItem::findOrCreatePath(const OFString& path,
   {
       if (createIfNecessary)
       {
-          status = this->insertEmptyElement(tag, OFFalse);
+          elem = newDicomElement(tag);
+          if (elem == NULL)
+            return EC_IllegalCall;
+          status = this->insert(elem, OFTrue);
           if (status.bad())
               return status;
           newlyCreated = OFTrue;
@@ -3583,6 +3586,10 @@ OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.115  2008-11-21 16:18:11  onken
+** Changed implementation of findOrCreatePath() to make use of function
+** newDicomElement() which also knows how to handle EVRs like ox correctly.
+**
 ** Revision 1.114  2008-10-15 15:49:09  onken
 ** Fixed incorrect behaviour of findOrCreatePath() if sequence is the last
 ** attribute to be inserted.

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.11.21 (onken)
+
+- Changed implementation of findOrCreatePath() to make use of function
+  newDicomElement() which also knows how to handle EVRs like ox correctly.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/tests/tstpath.cc
+
 **** Changes from 2008.11.20 (riesmeier)
 
 - Added new command line option --output-directory to specify the directory

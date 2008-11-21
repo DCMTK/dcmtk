@@ -23,8 +23,8 @@
  *           and DcmSequenceOfItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-10-15 16:07:08 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2008-11-21 16:18:32 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,7 @@ static void testPathInsertion(const OFString& path,
 {
   OFBool failed = OFFalse;
   OFList<DcmObject*> objList;
-  if (opt_verbose) COUT << path << "";
+  if (opt_verbose) COUT << path; COUT.flush();
   OFCondition result = dset->findOrCreatePath(path, objList, createIfNecessary);
   if (result.bad())
   {
@@ -171,9 +171,9 @@ int main(int argc, char *argv[])
 
   path = "ContentSequences";
   testPathInsertion(path, dset, 1, OFTrue);
-  path = "1234,ContentSequences";
+  path = "(1234,ContentSequences";
   testPathInsertion(path, dset, 1, OFTrue);
-  path = "(004,A730)";
+  path = "(00X4,A730)";
   testPathInsertion(path, dset, 1, OFTrue);
   path = "(0040,A730)[-5]";
   testPathInsertion(path, dset, 2, OFTrue);
@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
   path = "ConceptNameCodeSequence"; // should not exist on main level
   testPathInsertion(path, dset, 1, OFTrue, OFFalse /* do not create */);
 
-  if (opt_verbose) COUT << OFendl << "Checking dataset length:" << OFendl;
+  if (opt_verbose) COUT << OFendl << OFendl << "Checking dataset length:" << OFendl;
   if (opt_verbose) COUT           << "====================================" << OFendl;
   Uint32 length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
   if (opt_verbose) COUT << "Checking whether length of encoded dataset matches pre-calculated length";
@@ -231,6 +231,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.3  2008-11-21 16:18:32  onken
+ * Changed implementation of findOrCreatePath() to make use of function
+ * newDicomElement() which also knows how to handle EVRs like ox correctly.
+ *
  * Revision 1.2  2008-10-15 16:07:08  onken
  * Fixed CVS information in source's header comment.
  *
