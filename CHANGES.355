@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.11.26 (riesmeier)
+
+- Slightly changed behavior of newDicomElement(): return error code if new
+  element could not be created (e.g. because memory is exhausted).
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Updated documentation of newDicomElement() in order to reflect the current
+  implementation.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+
 **** Changes from 2008.11.21 (onken)
 
 - Changed implementation of findOrCreatePath() to make use of function
