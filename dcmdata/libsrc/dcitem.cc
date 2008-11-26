@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-11-21 16:18:11 $
- *  CVS/RCS Revision: $Revision: 1.115 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-26 12:16:52 $
+ *  CVS/RCS Revision: $Revision: 1.116 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 
     /* read 6 bytes from the input stream (try to read tag and VR (data type)) */
     inStream.mark();
-    inStream.read(tagAndVR, 6);               // check Tag & VR
+    inStream.read(tagAndVR, 6);               // check tag & VR
     inStream.putback();
 
     /* create two tag variables (one for little, one for big */
@@ -1688,7 +1688,6 @@ OFCondition DcmItem::loadAllDataIntoMemory()
 
 // ********************************
 
-//
 // Support functions
 
 OFCondition newDicomElement(DcmElement *&newElement,
@@ -1734,7 +1733,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
       if (privateCreatorCache && (newTag.getGroup() & 1) && (newTag.getElement() >= 0x1000))
       {
         const char *pc = privateCreatorCache->findPrivateCreator(newTag);
-        if (pc)
+        if (pc != NULL)
         {
             // we have a private creator for this element
             newTag.setPrivateCreator(pc);
@@ -1747,9 +1746,9 @@ OFCondition newDicomElement(DcmElement *&newElement,
        */
       if (newTag.getEVR() != EVR_UNKNOWN)
       {
-        tag.setVR(newTag.getVR());
-        evr = tag.getEVR();
-        readAsUN = OFTrue;
+          tag.setVR(newTag.getVR());
+          evr = tag.getEVR();
+          readAsUN = OFTrue;
       }
     }
 
@@ -1812,17 +1811,17 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_SS :
             newElement = new DcmSignedShort(tag, length);
             break;
-        case EVR_xs : // according to Dicom-Standard V3.0
+        case EVR_xs : // according to DICOM standard
         case EVR_US :
             newElement = new DcmUnsignedShort(tag, length);
             break;
         case EVR_SL :
             newElement = new DcmSignedLong(tag, length);
             break;
-        case EVR_up : // for (0004,eeee) according to Dicom-Standard V3.0
+        case EVR_up : // for (0004,eeee) according to DICOM standard
         case EVR_UL :
         {
-            // generate Tag with VR from dictionary!
+            // generate tag with VR from dictionary!
             DcmTag ulupTag(tag.getXTag());
             if (ulupTag.getEVR() == EVR_up)
                 newElement = new DcmUnsignedLongOffset(ulupTag, length);
@@ -1862,7 +1861,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_ox :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
-            else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
+            else if (((tag.getGTag() & 0xffe1) == 0x6000) && (tag.getETag() == 0x3000)) // DCM_OverlayData
                 newElement = new DcmOverlayData(tag, length);
             else
                 /* we don't know this element's real transfer syntax, so we just
@@ -1880,10 +1879,11 @@ OFCondition newDicomElement(DcmElement *&newElement,
         case EVR_OW :
             if (tag == DCM_PixelData)
                 newElement = new DcmPixelData(tag, length);
-            else if (((tag.getGTag() & 0xffe1) == 0x6000)&&(tag.getETag() == 0x3000)) // DCM_OverlayData
+            else if (((tag.getGTag() & 0xffe1) == 0x6000) && (tag.getETag() == 0x3000)) // DCM_OverlayData
                 newElement = new DcmOverlayData(tag, length);
             else
-                if (length == DCM_UndefinedLength) {
+                if (length == DCM_UndefinedLength)
+                {
                     // The attribute is OB or OW but is encoded with undefined
                     // length.  Assume it is really a sequence so that we can
                     // catch the sequence delimitation item.
@@ -1911,6 +1911,10 @@ OFCondition newDicomElement(DcmElement *&newElement,
             }
             break;
     }
+
+    /* check for valid element pointer */
+    if (l_error.good() && (newElement == NULL))
+        l_error = EC_MemoryExhausted;
 
     /* return result value */
     return l_error;
@@ -3586,6 +3590,10 @@ OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.116  2008-11-26 12:16:52  joergr
+** Slightly changed behavior of newDicomElement(): return error code if new
+** element could not be created (e.g. because memory is exhausted).
+**
 ** Revision 1.115  2008-11-21 16:18:11  onken
 ** Changed implementation of findOrCreatePath() to make use of function
 ** newDicomElement() which also knows how to handle EVRs like ox correctly.
