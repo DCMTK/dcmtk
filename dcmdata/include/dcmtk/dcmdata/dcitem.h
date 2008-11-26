@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-10-15 12:31:20 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-11-26 12:08:22 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1133,8 +1133,8 @@ class DcmItem
 //
 
 /** helper function for DICOM parser. Creates new DICOM element from given attribute tag
- *  @param newElement pointer to newly created element returned in this parameter upon success.
- *    NULL pointer returned if tag is unknown or has ambiguous VR (e.g. EVR_ox).
+ *  @param newElement pointer to newly created element returned in this parameter upon success,
+ *    NULL pointer otherwise
  *  @param tag attribute tag of the element to be created
  *  @param length attribute value length of the element to be created
  *  @param privateCreatorCache cache object for private creator strings in the current dataset
@@ -1148,10 +1148,9 @@ OFCondition newDicomElement(DcmElement *&newElement,
                             DcmPrivateTagCache *privateCreatorCache,
                             OFBool& readAsUN);
 
-
 /** helper function for DICOM parser. Creates new DICOM element from given attribute tag
- *  @param newElement pointer to newly created element returned in this parameter upon success.
- *    NULL pointer returned if tag is unknown or has ambiguous VR (e.g. EVR_ox).
+ *  @param newElement pointer to newly created element returned in this parameter upon success,
+ *    NULL pointer otherwise
  *  @param tag attribute tag of the element to be created
  *  @param length attribute value length of the element to be created
  *  @return EC_Normal upon success, an error code otherwise
@@ -1163,8 +1162,8 @@ OFCondition newDicomElement(DcmElement *&newElement,
 /** helper function for DICOM parser. Creates new DICOM element from given attribute tag
  *  @param tag attribute tag of the element to be created
  *  @param length attribute value length of the element to be created
- *  @return pointer to newly created element returned in this parameter upon success.
- *    NULL pointer returned if tag is unknown or has ambiguous VR (e.g. EVR_ox).
+ *  @return pointer to newly created element returned in this parameter upon success,
+ *    NULL pointer otherwise
  */
 DcmElement *newDicomElement(const DcmTag &tag,
                             const Uint32 length = 0);
@@ -1183,6 +1182,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.69  2008-11-26 12:08:22  joergr
+** Updated documentation of newDicomElement() in order to reflect the current
+** implementation.
+**
 ** Revision 1.68  2008-10-15 12:31:20  onken
 ** Added findOrCreatePath() functions which allow for finding or creating a
 ** hierarchy of sequences, items and attributes according to a given "path"

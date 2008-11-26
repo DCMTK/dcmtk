@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 16:42:59 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2008-11-26 12:07:42 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -522,7 +522,7 @@ static OFCondition
 insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tagkey,
               const DcmEVR &vr, const char *value)
 {
-    // insert new Element into dataset or metaheader
+    // insert new element into dataset or metaheader
 
     OFCondition l_error = EC_Normal;
     OFCondition newElementError = EC_Normal;
@@ -567,10 +567,12 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
 
         if (newElementError == EC_Normal)
         {
-            // tag describes an Element
+            // tag describes an element
             if (!newElement)
-                // Tag was ambiguous
+            {
+                // Tag was ambiguous - should never happen according to the current implementation of newDicomElement()
                 l_error = EC_InvalidVR;
+            }
             else
             {
                 // check for uncompressed pixel data (i.e. no pixel sequence present)
@@ -1091,6 +1093,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.62  2008-11-26 12:07:42  joergr
+** Updated documentation of newDicomElement() in order to reflect the current
+** implementation.
+**
 ** Revision 1.61  2008-11-03 16:42:59  joergr
 ** Added experimental support for importing very large binary files (e.g. pixel
 ** data) using new createValueFromTempFile() method.
