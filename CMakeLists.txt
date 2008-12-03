@@ -6,11 +6,23 @@ IF(NOT WIN32)
   MESSAGE(FATAL_ERROR "Please use GNU autoconf for Unix systems.")
 ENDIF(NOT WIN32)
 
+# check for Microsoft compiler
+IF(NOT MSVC)
+  MESSAGE("Warning: This package has only been tested with Microsoft compilers.")
+ENDIF(NOT MSVC)
+
 # check required version of CMake
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4)
-IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.8)
-  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.4.8 CACHE STRING "Latest version of CMake when this project was released." FORCE)
-ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.4.8)
+IF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.6.2)
+  SET(CMAKE_BACKWARDS_COMPATIBILITY 2.6.2 CACHE STRING "Latest version of CMake when this project was released." FORCE)
+ENDIF(CMAKE_BACKWARDS_COMPATIBILITY GREATER 2.6.2)
+
+IF(COMMAND CMAKE_POLICY)
+  # Works around warnings about libraries linked against that don't have absolute paths
+  CMAKE_POLICY(SET CMP0003 OLD)
+  # Works around warnings about escaped quotes in ADD_DEFINITIONS statements
+  CMAKE_POLICY(SET CMP0005 OLD)
+ENDIF(COMMAND CMAKE_POLICY)
 
 # package information
 SET(PACKAGE_NAME "dcmtk")
@@ -91,13 +103,13 @@ IF(CMAKE_C_COMPILER MATCHES cl)
       SET(CMAKE_C_FLAGS_MINSIZEREL "/MT /O2")
       SET(CMAKE_C_FLAGS_RELWITHDEBINFO "/MTd /Z7 /Od")
     ENDIF(CMAKE_GENERATOR STREQUAL "Visual Studio 7" OR CMAKE_GENERATOR STREQUAL "Visual Studio 7 .NET 2003")
-    IF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005")
-      SET(CMAKE_C_FLAGS "/nologo /W3 /Gy")
+    IF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005" OR CMAKE_GENERATOR STREQUAL "Visual Studio 9 2008")
+      SET(CMAKE_C_FLAGS "/nologo /W3 /Gy /EHsc")
       SET(CMAKE_C_FLAGS_DEBUG "/MTd /Z7 /Od")
       SET(CMAKE_C_FLAGS_RELEASE "/MT /O2")
       SET(CMAKE_C_FLAGS_MINSIZEREL "/MT /O2")
       SET(CMAKE_C_FLAGS_RELWITHDEBINFO "/MTd /Z7 /Od")
-    ENDIF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005")
+    ENDIF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005" OR CMAKE_GENERATOR STREQUAL "Visual Studio 9 2008")
   ENDIF(NOT WITH_SHARED_LIBS)
 ENDIF(CMAKE_C_COMPILER MATCHES cl)
 
@@ -118,13 +130,13 @@ IF(CMAKE_CXX_COMPILER MATCHES cl)
       SET(CMAKE_CXX_FLAGS_MINSIZEREL "/MT /O2")
       SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MTd /Z7 /Od")
     ENDIF(CMAKE_GENERATOR STREQUAL "Visual Studio 7" OR CMAKE_GENERATOR STREQUAL "Visual Studio 7 .NET 2003")
-    IF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005")
-      SET(CMAKE_CXX_FLAGS "/nologo /W3 /Gy")
+    IF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005" OR CMAKE_GENERATOR STREQUAL "Visual Studio 9 2008")
+      SET(CMAKE_CXX_FLAGS "/nologo /W3 /Gy /EHsc")
       SET(CMAKE_CXX_FLAGS_DEBUG "/MTd /Z7 /Od")
       SET(CMAKE_CXX_FLAGS_RELEASE "/MT /O2")
       SET(CMAKE_CXX_FLAGS_MINSIZEREL "/MT /O2")
       SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/MTd /Z7 /Od")
-    ENDIF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005")
+    ENDIF(CMAKE_GENERATOR STREQUAL "Visual Studio 8 2005" OR CMAKE_GENERATOR STREQUAL "Visual Studio 9 2008")
   ENDIF(NOT WITH_SHARED_LIBS)
 ENDIF(CMAKE_CXX_COMPILER MATCHES cl)
 
@@ -215,4 +227,4 @@ INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
 # recurse into subdirectories
 SUBDIRS(config ofstd dcmdata dcmtls dcmnet dcmqrdb dcmimgle dcmimage dcmjpeg dcmsign dcmsr dcmpstat dcmwlm doxygen)
 # add non-public modules
-#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu)
+#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmwave)

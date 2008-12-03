@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.12.03 (riesmeier)
+
+- Updated CMake project file for use with CMake 2.6 (uses CMAKE_POLICY).
+  Affects: CMakeLists.txt
+
+- Added check for Microsoft compiler; report a warning if other compiler used.
+  Affects: CMakeLists.txt
+
+- Added initial support for "Microsoft Visual Studio 9 2008" compiler.
+  Affects: CMakeLists.txt
+
+- Added compiler flag /EHsc for Microsoft Visual Studio 8 and 9 in order to
+  avoid compiler warning on system header using CMake 2.6.
+  Affects: CMakeLists.txt
+
+- Added new non-public module "dcmwave".
+  Affects: CMakeLists.txt
+
 **** Changes from 2008.11.26 (riesmeier)
 
 - Slightly changed behavior of newDicomElement(): return error code if new
