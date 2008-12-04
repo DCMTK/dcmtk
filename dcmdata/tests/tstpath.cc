@@ -23,8 +23,8 @@
  *           and DcmSequenceOfItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-11-21 16:18:32 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2008-12-04 16:56:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,49 +45,134 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 static int opt_debugMode = 0;
 static OFBool opt_verbose = OFFalse;
 
-static void testPathInsertion(const OFString& path,
-                              DcmDataset *dset,
-                              const Uint16& expectedNumObjects,
-                              const OFBool& expectFailed = OFFalse,
-                              const OFBool& createIfNecessary = OFTrue)
+static void testPathInsertionsWithoutWildcard(const OFString& path,
+                                              DcmDataset *dset,
+                                              const Uint16& expectedNumObjects,
+                                              const OFBool& expectFailed = OFFalse,
+                                              const OFBool& createIfNecessary = OFTrue)
 {
-  OFBool failed = OFFalse;
-  OFList<DcmObject*> objList;
-  if (opt_verbose) COUT << path; COUT.flush();
-  OFCondition result = dset->findOrCreatePath(path, objList, createIfNecessary);
+  OFList< OFList<DcmObject*>* > results;
+  OFList< DcmObject* > prefix;
+  OFList< DcmObject* >* oneResult;
+  if (opt_verbose) COUT << "Path: " << path; COUT.flush();
+  OFCondition result = dset->findOrCreatePath(path, results, prefix, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
-    failed = OFTrue;
+    return;
   }
   else
   {
-    if (objList.size() != expectedNumObjects)
+    if (results.size() != 1)
     {
-      if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << objList.size() << "elements" << OFendl;
-      failed = OFTrue;
+      CERR << " ...FAILED!: No wildcards used but more than onen path returned" << OFendl;
+      while (results.size() > 0)
+      {
+        oneResult = NULL;
+        oneResult = results.front();
+        if (oneResult)
+        {
+          delete oneResult; oneResult = NULL;
+        }
+        results.pop_front();
+      }
+      return;
+    }
+    else
+      oneResult =  *(results.begin());
+    if (oneResult->size() != expectedNumObjects)
+    {
+      if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements" << OFendl;
+      if (!expectFailed) return;
     }
     else
     {
-      OFListIterator(DcmObject*) it = objList.begin();
+      OFListIterator(DcmObject*) it = oneResult->begin();
       for (Uint16 i=0; i < expectedNumObjects; i++)
       {
         if (*it == NULL)
         {
-          if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the created objects is NULL" << OFendl;
-          failed = OFTrue;
+          CERR << " ...FAILED! Path insertion failed: One of the created objects is NULL" << OFendl;
         }
         it++;
       }
-      if (failed == expectFailed)
-      {
-        if (opt_verbose)
-          COUT << "...OK" << OFendl;
-      }
     }
+  }
+  while (results.size() > 0)
+  {
+    oneResult = NULL;
+    oneResult = results.front();
+    if (oneResult)
+    {
+      delete oneResult; oneResult = NULL;
+    }
+    results.pop_front();
   }
 }
 
+
+static void testPathInsertionsWithWildcard(const OFString& path,
+                                           DcmDataset *dset,
+                                           const Uint16& expectedNumResults,
+                                           const OFBool& expectFailed = OFFalse,
+                                           const OFBool& createIfNecessary = OFTrue)
+{
+  OFList< OFList<DcmObject*>* > results;
+  OFList< DcmObject* > prefix;
+  OFList< DcmObject* >* oneResult;
+  if (opt_verbose) COUT << path; COUT.flush();
+  OFCondition result = dset->findOrCreatePath(path, results, prefix, createIfNecessary);
+  if (result.bad())
+  {
+    if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
+    return;
+  }
+  else
+  {
+    if ( (results.size() != expectedNumResults) && !expectFailed )
+    {
+
+      CERR << " ...FAILED!: Expected " << expectedNumResults <<  " but " << results.size() << " results were returned" << OFendl;
+      while (results.size() > 0)
+      {
+        oneResult = NULL;
+        oneResult = results.front();
+        if (oneResult)
+        {
+          delete oneResult; oneResult = NULL;
+        }
+        results.pop_front();
+      }
+      return;
+    }
+    while (results.size() > 0)
+    {
+      oneResult = NULL;
+      oneResult = results.front();
+      if (oneResult)
+      {
+        OFListIterator(DcmObject*) it = oneResult->begin();
+        while (it != oneResult->end())
+        {
+          if (*it == NULL)
+          {
+            if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the result paths contains NULL" << OFendl;
+            return;
+          }
+          it++;
+        }
+      }
+      else
+      {
+        if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the returned path is NULL" << OFendl;
+        return;
+      }
+      results.pop_front();
+    }
+  }
+  if (opt_verbose)
+    COUT << " ...OK" << OFendl;
+}
 
 int main(int argc, char *argv[])
 {
@@ -149,62 +234,68 @@ int main(int argc, char *argv[])
   DcmDataset *dset = dcmff.getDataset();
   OFString path;
   const OFString precalculatedDump = "# Dicom-Data-Set\n# Used TransferSyntax: Unknown Transfer Syntax\n(0040,a730) SQ (Sequence with explicit length #=6)      #   0, 1 ContentSequence\n  (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=4)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n      (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n      (fffe,e000) na (Item with explicit length #=0)          #   0, 1 Item\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0040,a043) SQ (Sequence with explicit length #=1)      #   0, 1 ConceptNameCodeSequence\n          (fffe,e000) na (Item with explicit length #=2)          #   0, 1 Item\n            (0008,0100) SH (no value available)                     #   0, 0 CodeValue\n            (0008,0104) LO (no value available)                     #   0, 0 CodeMeaning\n          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
+  const OFString precalculatedDump2 = "# Dicom-Data-Set\n# Used TransferSyntax: Unknown Transfer Syntax\n(0010,0020) LO (no value available)                     #   0, 0 PatientID\n(0040,a730) SQ (Sequence with explicit length #=6)      #   0, 1 ContentSequence\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=1)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0020) LO (no value available)                     #   0, 0 PatientID\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=1)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0020) LO (no value available)                     #   0, 0 PatientID\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=1)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0020) LO (no value available)                     #   0, 0 PatientID\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=1)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0020) LO (no value available)                     #   0, 0 PatientID\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=1)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0020) LO (no value available)                     #   0, 0 PatientID\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n  (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n    (0040,a730) SQ (Sequence with explicit length #=4)      #   0, 1 ContentSequence\n      (fffe,e000) na (Item with explicit length #=2)          #   0, 1 Item\n        (0010,0010) PN (no value available)                     #   0, 0 PatientsName\n        (0010,0020) LO (no value available)                     #   0, 0 PatientID\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0010) PN (no value available)                     #   0, 0 PatientsName\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n      (fffe,e000) na (Item with explicit length #=1)          #   0, 1 Item\n        (0010,0010) PN (no value available)                     #   0, 0 PatientsName\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n      (fffe,e000) na (Item with explicit length #=2)          #   0, 1 Item\n        (0010,0010) PN (no value available)                     #   0, 0 PatientsName\n        (0040,a043) SQ (Sequence with explicit length #=1)      #   0, 1 ConceptNameCodeSequence\n          (fffe,e000) na (Item with explicit length #=2)          #   0, 1 Item\n            (0008,0100) SH (no value available)                     #   0, 0 CodeValue\n            (0008,0104) LO (no value available)                     #   0, 0 CodeMeaning\n          (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n        (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n      (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n    (fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n  (fffe,e00d) na (ItemDelimitationItem for re-encoding)   #   0, 0 ItemDelimitationItem\n(fffe,e0dd) na (SequenceDelimitationItem for re-encod.) #   0, 0 SequenceDelimitationItem\n";
   const Uint32 precalculatedLength = 148;
+  const Uint32 precalculatedLength2 = 328;
+
+  /* ********************************************************************* */
+  /* Test insertions using no wildcards                                    */
+  /* ********************************************************************* */
 
   if (opt_verbose) COUT << "These insertions should work:" << OFendl;
   if (opt_verbose) COUT << "=============================" << OFendl;
   path = "PatientID";
-  testPathInsertion(path, dset, 1);
+  testPathInsertionsWithoutWildcard(path, dset, 1);
   path = "ContentSequence";
-  testPathInsertion(path, dset, 1);
+  testPathInsertionsWithoutWildcard(path, dset, 1);
   path = "(0040,A730)";
-  testPathInsertion(path, dset, 1);
+  testPathInsertionsWithoutWildcard(path, dset, 1);
   path = "(0040,A730)[5]";
-  testPathInsertion(path, dset, 2);
+  testPathInsertionsWithoutWildcard(path, dset, 2);
   path = "(0040,A730)[5].ContentSequence[3].ConceptNameCodeSequence[0].CodeValue";
-  testPathInsertion(path, dset, 7);
+  testPathInsertionsWithoutWildcard(path, dset, 7);
   path = "ContentSequence[5].ContentSequence[3].ConceptNameCodeSequence[0].(0008,0104)";
-  testPathInsertion(path, dset, 7);
+  testPathInsertionsWithoutWildcard(path, dset, 7);
 
   if (opt_verbose) COUT << OFendl << "These insertions should NOT work (wrong syntax):" << OFendl;
   if (opt_verbose) COUT           << "================================================" << OFendl;
 
   path = "ContentSequences";
-  testPathInsertion(path, dset, 1, OFTrue);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue);
   path = "(1234,ContentSequences";
-  testPathInsertion(path, dset, 1, OFTrue);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue);
   path = "(00X4,A730)";
-  testPathInsertion(path, dset, 1, OFTrue);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue);
   path = "(0040,A730)[-5]";
-  testPathInsertion(path, dset, 2, OFTrue);
+  testPathInsertionsWithoutWildcard(path, dset, 2, OFTrue);
   path = "(0040,A730)[a].ContentSequence[3].ConceptNameCodeSequence[0].CodeValue";
-  testPathInsertion(path, dset, 7, OFTrue);
+  testPathInsertionsWithoutWildcard(path, dset, 7, OFTrue);
 
   if (opt_verbose) COUT << OFendl << "These find routines should work:" << OFendl;
   if (opt_verbose) COUT           << "================================" << OFendl;
 
   path = "PatientID";
-  testPathInsertion(path, dset, 1, OFFalse, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFFalse, OFFalse /* do not create */);
   path = "ContentSequence";
-  testPathInsertion(path, dset, 1, OFFalse, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFFalse, OFFalse /* do not create */);
   path = "(0040,A730)";
-  testPathInsertion(path, dset, 1, OFFalse, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFFalse, OFFalse /* do not create */);
   path = "(0040,A730)[5]";
-  testPathInsertion(path, dset, 2, OFFalse, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 2, OFFalse, OFFalse /* do not create */);
   path = "(0040,A730)[5].ContentSequence[3].ConceptNameCodeSequence[0].CodeValue";
-  testPathInsertion(path, dset, 7, OFFalse, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 7, OFFalse, OFFalse /* do not create */);
   path = "ContentSequence[5].ContentSequence[3].ConceptNameCodeSequence[0].(0008,0104)";
-  testPathInsertion(path, dset, 7, OFFalse, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 7, OFFalse, OFFalse /* do not create */);
 
   if (opt_verbose) COUT << OFendl << "These find routines should NOT work:" << OFendl;
   if (opt_verbose) COUT           << "====================================" << OFendl;
 
   path = "PatientsName"; // was never inserted
-  testPathInsertion(path, dset, 1, OFTrue, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */);
   path = "(0040,A730)[6]"; // we only have 6 items in there (not 7)
-  testPathInsertion(path, dset, 2, OFTrue, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 2, OFTrue, OFFalse /* do not create */);
   path = "ConceptNameCodeSequence"; // should not exist on main level
-  testPathInsertion(path, dset, 1, OFTrue, OFFalse /* do not create */);
+  testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */);
 
   if (opt_verbose) COUT << OFendl << OFendl << "Checking dataset length:" << OFendl;
   if (opt_verbose) COUT           << "====================================" << OFendl;
@@ -224,13 +315,57 @@ int main(int argc, char *argv[])
     CERR << OFendl;
     CERR << "Dump of pre-defined template:" << OFendl;
     CERR << precalculatedDump << OFendl;
+    exit(1);
   }
-  return 0;
+
+  /* ********************************************************************* */
+  /* Test insertions using wildcards                                       */
+  /* ********************************************************************* */
+
+  if (opt_verbose) COUT << OFendl << OFendl << "These wildcard insertions should work:" << OFendl;
+  if (opt_verbose) COUT           << "====================================" << OFendl;
+  path = "ContentSequence[*].ContentSequence[*].PatientsName";
+  testPathInsertionsWithWildcard(path, dset, 4, OFFalse /* should work*/, OFTrue /*do create*/);
+  path = "ContentSequence[*].ContentSequence[0].PatientID";
+  testPathInsertionsWithWildcard(path, dset, 6, OFFalse /* should work*/, OFTrue /*do create*/);
+
+  if (opt_verbose) COUT << OFendl << OFendl << "Testing wildcard insertions should NOT work:" << OFendl;
+  if (opt_verbose) COUT           << "====================================" << OFendl;
+  path = "SourceImageSequence[*]";
+  testPathInsertionsWithWildcard(path, dset, 0, OFTrue /* should fail*/, OFTrue /*do create*/);
+  path = "ContentSequence[*].SourceImageSequence[*]";
+  testPathInsertionsWithWildcard(path, dset, 0, OFTrue /* should fail*/, OFTrue /*do create*/);
+
+  if (opt_verbose) COUT << OFendl << OFendl << "Checking dataset length:" << OFendl;
+  if (opt_verbose) COUT           << "====================================" << OFendl;
+  length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
+  if (opt_verbose) COUT << "Checking whether length of encoded dataset matches pre-calculated length";
+  if (length == precalculatedLength2)
+  {
+    if (opt_verbose)
+      COUT << " ...OK" << OFendl;
+  }
+  else
+  {
+    CERR << " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << OFendl;
+    CERR << "Please check dump and adapt test in case of false alarm:" << OFendl;
+    CERR << "Dump of assembled test object:" << OFendl;
+    dset->print(CERR);
+    CERR << OFendl;
+    CERR << "Dump of pre-defined template:" << OFendl;
+    CERR << precalculatedDump2 << OFendl;
+    exit(1);
+  }
+
+  exit(0);
 }
 
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.4  2008-12-04 16:56:38  onken
+ * Extended application to also test new findOrCreatePath() wildcard features.
+ *
  * Revision 1.3  2008-11-21 16:18:32  onken
  * Changed implementation of findOrCreatePath() to make use of function
  * newDicomElement() which also knows how to handle EVRs like ox correctly.
