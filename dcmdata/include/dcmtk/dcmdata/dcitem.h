@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-26 12:08:22 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-12-04 16:55:14 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -777,18 +777,19 @@ class DcmItem
 
     /** Function that allows for finding and/or inserting a hierarchy of items
      *  and attributes as defined by a path string; also returns a list of
-     *  pointers, pointing to all the objects from the current position
-     *  (excluding "this" pointer) to the last object in the path.
+     *  pointers for each sucessfully found or inserted paths. Every list
+     *  contains pointers pointing to all the objects along the path
+     *  starting from this items (excluding "this" pointer).
      *
      *  In principle, the path string must have the following format (in
      *  arbitrary depth):
      *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
-     *  . ITEMNO must be a positive integer starting with 0. SEQUENCE and
-     *  ATTRIBUTE must be a tag, written e. g. "(0010,0010)" or a dictionary
-     *  name, e. g. "PatientsName". If the path cannot be fully created (see
-     *  option createIfNecessary), any possibly inserted objects during
-     *  path evaluation are rolled back. So a path is either fully created or
-     *  not any component is created at all.
+     *  . ITEMNO must be a positive integer starting with 0 or the wildcard
+     *  character "*". SEQUENCE and ATTRIBUTE must be a tag, written e. g.
+     *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName". If the
+     *  path cannot be fully created (see option createIfNecessary), any
+     *  possibly object changes are reverted. So a path is either fully created
+     *  or no path component is created at all.
      *
      *  Example: The path
      *  "ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
@@ -796,25 +797,45 @@ class DcmItem
      *  Name Code Sequence" denoted by (0040,a043), therein the first item
      *  and finally therein the tag "Code Value".
      *  The resulting object list should (if success is returned) contain
-     *  pointers to 5 objects in the order in their logical order as they occur
-     *  in the path string (in total 2 sequences, 2 items, and one leaf
-     *  attribute).
+     *  1 result, consisting of a list with 5 pointers to 5 objects in the order
+     *  in their logical order as they occur in the path string
+     *  (in total 2 sequences, 2 items, and one leaf attribute).
      *
+     *  Wildcard Example: The path
+     *  "ContentSequence[4].(0040,a043)[*].CodeValue" selects the Content
+     *  Sequence in "this" item, therein the 5th item, therein the "Concept
+     *  Name Code Sequence" denoted by (0040,a043), therein ALL items
+     *  and finally therein the tag "Code Value".
+     *  The resulting object list should (if success is returned) contains
+     *  at least 1 result, consisting of a list with 5 pointers to 5 objects in
+     *  the order in their logical order as they occur in the path string.
+     *  If more than one item exists in the "Concept Name Code Sequence",
+     *  then the result list will contain more than one result; again, each
+     *  result will contain 5 pointes to the 5 objects along the path.
+     *  The path string can contain more than one wildcard per call.
      *  @param path - [in/out] The path starting with an attribute (either a
      *                sequence or a a leaf attribute) as a dicitionary name or
      *                tag. The parsed attribute is removed from the path string.
-     *  @param objPath - [out] Pointers to all objects in the order as they
-     *                         also occur in the path string.
+     *  @param resultPaths - [out] The list of result paths. For every path, the
+     *                       list will contain a list with pointers to all
+     *                       objects in the order as they also occur in the
+     *                       path string. When calling, an empty resultPaths
+     *                       variable must be used!
+     *  @param prefixPath - [in] A prefix that should be appended to
+     *                      every result path. If no prefix should be used,
+     *                      this parameter must be set with an empty list.
+     *                      The list may be modified during execution.
      *  @param createIfNecessary - [in] If set, all missing objects found
      *                             in the path string are created. If not set,
      *                             only existing paths can be accessed and
-     *                             no new attribute or item is created.
+     *                             no new attribute or item is created. Note
+     *                             that wildcard items can not be created.
      *  @return EC_Normal if successful, error code otherwise.
      */
     virtual OFCondition findOrCreatePath(const OFString& path,
-                                        OFList<DcmObject*>& objPath,
-                                        const OFBool createIfNecessary = OFTrue);
-
+                                         OFList< OFList<DcmObject*>* >& resultPaths,
+                                         OFList<DcmObject*> prefixPath,
+                                         const OFBool createIfNecessary = OFFalse);
 
     /* --- findAndXXX functions: find an element and do something with it --- */
 
@@ -1077,7 +1098,6 @@ class DcmItem
                                const E_GrpLenEncoding glenc,     // in
                                const Uint32 maxReadLength = DCM_MaxReadLength);
 
-
     /** Function that parses a tag from the beginning of a path string.
      *  The tag has to be either in numeric format, e. g. "(0010,0010)" or
      *  a dictionary name, e. g. "PatientsName". If successful, the
@@ -1182,6 +1202,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.70  2008-12-04 16:55:14  onken
+** Changed findOrCreatePath() to also support wildcard as item numbers.
+**
 ** Revision 1.69  2008-11-26 12:08:22  joergr
 ** Updated documentation of newDicomElement() in order to reflect the current
 ** implementation.

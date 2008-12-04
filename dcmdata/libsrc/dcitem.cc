@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-26 12:16:52 $
- *  CVS/RCS Revision: $Revision: 1.116 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-12-04 16:54:54 $
+ *  CVS/RCS Revision: $Revision: 1.117 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2663,8 +2663,12 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
 }
 
 
+// ********************************
+
+
 OFCondition DcmItem::findOrCreatePath(const OFString& path,
-                                      OFList<DcmObject*>& objPath,
+                                      OFList< OFList<DcmObject*>* >& resultPaths,
+                                      OFList<DcmObject*> prefixPath,
                                       const OFBool createIfNecessary)
 {
   if (path.length() == 0)
@@ -2674,6 +2678,7 @@ OFCondition DcmItem::findOrCreatePath(const OFString& path,
   DcmTag tag;
   OFBool newlyCreated = OFFalse;
   DcmElement *elem = NULL;
+  OFList<DcmObject*>* currentResult = NULL;
 
   // parse tag
   status = parseTagFromPath(restPath, tag);
@@ -2711,26 +2716,41 @@ OFCondition DcmItem::findOrCreatePath(const OFString& path,
           status = EC_IllegalCall; // should not happen
       else
       {
-          objPath.push_back(elem);
-          // return success if sequence could be inserted and there is nothing more to do
+           prefixPath.push_back(elem);
+          // if sequence could be inserted and there is nothing more to do: add current path to results and return success
           if (restPath.length() == 0)
+          {
+              currentResult = new OFList<DcmObject*>(prefixPath);  /* need to copy */
+              resultPaths.push_back(currentResult);
               return EC_Normal;
+          }
           // start recursion if there is path left
-          status = seq->findOrCreatePath(restPath, objPath, createIfNecessary);
+          status = seq->findOrCreatePath(restPath, resultPaths,  prefixPath, createIfNecessary);
       }
   }
   else if (restPath.length() == 0) // we inserted a leaf element: path must be completed
   {
-      objPath.push_back(elem);
-      return EC_Normal;
+       // add element and add current path to overall results; then return success
+      {
+          currentResult = new OFList<DcmObject*>(prefixPath);  /* need to copy */
+          currentResult->push_back(elem);
+          resultPaths.push_back(currentResult);
+          return EC_Normal;
+      }
   }
   else // we inserted a leaf element but there is path left -> error
       status = makeOFCondition(OFM_dcmdata, 18, OF_error, "Invalid Path: Non-sequence tag found with rest path following");
-  // delete path element if it was newly created and an error occured
-  if ( status.bad() && (elem != NULL) && (elem == objPath.back()) )
+
+  // in case of errors: delete result path copy and delete DICOM element if it was newly created
+  if ( status.bad() && (elem != NULL) )
   {
-      objPath.pop_back();
-      if (newlyCreated) // only delete if newly created
+      resultPaths.remove(currentResult); // remove from search result
+      if (currentResult)
+      {
+        delete currentResult;
+        currentResult = NULL;
+      }
+      if (newlyCreated) // only delete from this dataset and memory if newly created ("undo")
       {
           if (findAndDeleteElement(tag).bad())
               delete elem; // delete manually if not found in dataset
@@ -2739,6 +2759,7 @@ OFCondition DcmItem::findOrCreatePath(const OFString& path,
   }
   return status;
 }
+
 
 // ********************************
 
@@ -3590,6 +3611,9 @@ OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.117  2008-12-04 16:54:54  onken
+** Changed findOrCreatePath() to also support wildcard as item numbers.
+**
 ** Revision 1.116  2008-11-26 12:16:52  joergr
 ** Slightly changed behavior of newDicomElement(): return error code if new
 ** element could not be created (e.g. because memory is exhausted).
