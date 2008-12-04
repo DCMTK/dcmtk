@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.12.04 (riesmeier)
+
+- Changed findOrCreatePath() to also support wildcard as item numbers.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+
+- Extended application to also test new findOrCreatePath() wildcard features.
+  Affects: dcmdata/tests/tstpath.cc
+
 **** Changes from 2008.12.03 (riesmeier)
 
 - Updated CMake project file for use with CMake 2.6 (uses CMAKE_POLICY).
