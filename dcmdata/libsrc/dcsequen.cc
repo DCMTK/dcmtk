@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-04 16:54:54 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2008-12-05 13:28:01 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1193,9 +1193,55 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
 
 
 OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
-                                                 OFList< OFList<DcmObject*>* >& resultPaths,
-                                                 OFList<DcmObject*> prefixPath,
+                                                 OFList<DcmObject*>& resultPath,
                                                  const OFBool createIfNecessary)
+{
+    // Check whether path is not empty and does not contain wildcards
+    if ( path.empty() || (path.find("[*]") != OFString_npos) )
+        return EC_IllegalParameter;
+    OFList< OFList<DcmObject*>* > resultPaths;
+    OFList<DcmObject*> prefix;
+
+    // Find or create path
+    OFCondition status = findOrCreateWildcardPath(path, resultPaths, prefix, createIfNecessary);
+    if (status.good())
+    {
+        if (resultPaths.size() > 1)
+            status = EC_IllegalCall;
+        else
+        {
+            // Copy result
+            OFList<DcmObject*> result = *(resultPaths.front());
+            OFListIterator(DcmObject*) it = result.begin();
+            while (it != result.end())
+            {
+                resultPath.push_back(*it);
+                it++;
+            }
+        }
+    }
+    // Clean up dynamically allocated results from function call
+    while (resultPaths.size() != 0)
+    {
+        OFList<DcmObject*>* oneResult = resultPaths.front();
+        if (oneResult != NULL)
+        {
+            delete oneResult;
+            oneResult = NULL;
+        }
+        resultPaths.pop_front();
+    }
+  return status;
+}
+
+
+// ********************************
+
+
+OFCondition DcmSequenceOfItems::findOrCreateWildcardPath(const OFString& path,
+                                                         OFList< OFList<DcmObject*>* >& resultPaths,
+                                                         OFList<DcmObject*> prefixPath,
+                                                         const OFBool createIfNecessary)
 {
     if (path.length() == 0)
         return EC_IllegalParameter;
@@ -1242,7 +1288,7 @@ OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
             // else there is path left: continue searching in the new item
             else
             {
-                status = oneItem->findOrCreatePath(restPath, resultPaths, workpath, createIfNecessary);
+                status = oneItem->findOrCreateWildcardPath(restPath, resultPaths, workpath, createIfNecessary);
                 if (status.bad()) // we did not find the path in that item
                 {
                     if (status != EC_TagNotFound)
@@ -1291,16 +1337,15 @@ OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
     else
         return EC_TagNotFound;
 
+    // at this point, the item has been obtained and everyhthing is fine so far
     // push new item to result path and continue
-    if (status.good())
-    {
-        prefixPath.push_back(resultItem);
-    }
+    prefixPath.push_back(resultItem);
 
     // at this point finding/creating the path was successful. now check whether there is more to do
     if (restPath.length() != 0)
     {
-        status = resultItem->findOrCreatePath(restPath, resultPaths, prefixPath, createIfNecessary);
+        status = resultItem->findOrCreateWildcardPath(restPath, resultPaths, prefixPath, createIfNecessary);
+        prefixPath.pop_back(); // avoid side effects to input parameter
         // in case of no success, delete any items that were newly created and return error
         if (status.bad())
         {
@@ -1322,6 +1367,7 @@ OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
         resultPaths.push_back(newResultList);
         status = EC_Normal;
     }
+    prefixPath.pop_back(); // avoid side effects to input parameter
     return status;
 }
 
@@ -1333,6 +1379,7 @@ OFCondition DcmSequenceOfItems::parseItemNoFromPath(OFString& path,        // in
                                                     OFBool& wasWildcard)   // out
 {
     wasWildcard = OFFalse;
+    itemNo = 0;
     // check whether there is an item to parse
     size_t closePos = path.find_first_of(']', 0);
     if ( (closePos != OFString_npos) && (path[0] == '[') )
@@ -1457,6 +1504,10 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.75  2008-12-05 13:28:01  onken
+** Splitted findOrCreatePath() function API for also offering a simple API
+** for non-wildcard searches.
+**
 ** Revision 1.74  2008-12-04 16:54:54  onken
 ** Changed findOrCreatePath() to also support wildcard as item numbers.
 **
