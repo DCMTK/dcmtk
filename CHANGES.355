@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2008.12.05 (onken)
 
+- Added and inserted new error code numbers for findOrCreatePath() functions.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcerror.cc
+           
 - Splitted findOrCreatePath() function API for also offering a simple API
   for non-wildcard searches.
   Affects: dcmdata/libsrc/dcitem.cc

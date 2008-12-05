@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:28:01 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2008-12-05 13:51:13 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1213,7 +1213,8 @@ OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
             // Copy result
             OFList<DcmObject*> result = *(resultPaths.front());
             OFListIterator(DcmObject*) it = result.begin();
-            while (it != result.end())
+            OFListConstIterator(DcmObject*) endOfList = result.end();
+            while (it != endOfList)
             {
                 resultPath.push_back(*it);
                 it++;
@@ -1221,9 +1222,10 @@ OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
         }
     }
     // Clean up dynamically allocated results from function call
+    OFList<DcmObject*>* oneResult = NULL;
     while (resultPaths.size() != 0)
     {
-        OFList<DcmObject*>* oneResult = resultPaths.front();
+        oneResult = resultPaths.front();
         if (oneResult != NULL)
         {
             delete oneResult;
@@ -1392,7 +1394,7 @@ OFCondition DcmSequenceOfItems::parseItemNoFromPath(OFString& path,        // in
             if (parsedNo < 0)
             {
                 OFString errMsg = "Negative item number (not permitted) at beginning of path: "; errMsg += path;
-                return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+                return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
             }
             itemNo = OFstatic_cast(Uint32, parsedNo);
             if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
@@ -1412,7 +1414,7 @@ OFCondition DcmSequenceOfItems::parseItemNoFromPath(OFString& path,        // in
         }
     }
     OFString errMsg = "Unable to parse item number at beginning of path: "; errMsg += path;
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+    return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
 }
 
 
@@ -1504,6 +1506,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.76  2008-12-05 13:51:13  onken
+** Introduced new error code number for specific findOrCreatePath() errors.
+**
 ** Revision 1.75  2008-12-05 13:28:01  onken
 ** Splitted findOrCreatePath() function API for also offering a simple API
 ** for non-wildcard searches.

@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-06-13 14:45:47 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2008-12-05 13:51:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,7 @@ const OFConditionConst ECC_ApplicationProfileViolated( OFM_dcmdata, 21, OF_error
 // error code 22 is reserved for dcmodify error messages
 const OFConditionConst ECC_InvalidOffset(              OFM_dcmdata, 23, OF_error, "Invalid offset" );
 const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error, "Too many bytes requested" );
+// error code 25 is reserved for tag path parsing error messages
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -89,6 +90,9 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.18  2008-12-05 13:51:13  onken
+** Introduced new error code number for specific findOrCreatePath() errors.
+**
 ** Revision 1.17  2007-06-13 14:45:47  meichel
 ** Added module code OFM_dcmjpls and some new error codes.
 **

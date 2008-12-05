@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:28:01 $
- *  CVS/RCS Revision: $Revision: 1.118 $
+ *  Update Date:      $Date: 2008-12-05 13:51:13 $
+ *  CVS/RCS Revision: $Revision: 1.119 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2687,7 +2687,8 @@ OFCondition DcmItem::findOrCreatePath(const OFString& path,
             // Copy result
             OFList<DcmObject*> result = *(resultPaths.front());
             OFListIterator(DcmObject*) it = result.begin();
-            while (it != result.end())
+            OFListConstIterator(DcmObject*) endOfList = result.end();
+            while (it != endOfList)
             {
                 resultPath.push_back(*it);
                 it++;
@@ -2787,7 +2788,7 @@ OFCondition DcmItem::findOrCreateWildcardPath(const OFString& path,
       }
   }
   else // we inserted a leaf element but there is path left -> error
-      status = makeOFCondition(OFM_dcmdata, 18, OF_error, "Invalid Path: Non-sequence tag found with rest path following");
+      status = makeOFCondition(OFM_dcmdata, 25, OF_error, "Invalid Path: Non-sequence tag found with rest path following");
 
   // in case of errors: delete result path copy and delete DICOM element if it was newly created
   if ( status.bad() && (elem != NULL) )
@@ -3630,7 +3631,7 @@ OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
         else
         {
             OFString errMsg("Unable to parse tag at beginning of path: "); errMsg += path;
-            return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+            return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
         }
         pos++; // also cut off closing bracket
     }
@@ -3648,7 +3649,7 @@ OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
     if (result.bad())
     {
         OFString errMsg("Unable to parse tag/dictionary name at beginning of path: "); errMsg += path;
-        return makeOFCondition(OFM_dcmdata, 18, OF_error, errMsg.c_str());
+        return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
     }
     // else remove parsed tag from path and return success
     else
@@ -3660,6 +3661,9 @@ OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.119  2008-12-05 13:51:13  onken
+** Introduced new error code number for specific findOrCreatePath() errors.
+**
 ** Revision 1.118  2008-12-05 13:28:01  onken
 ** Splitted findOrCreatePath() function API for also offering a simple API
 ** for non-wildcard searches.
