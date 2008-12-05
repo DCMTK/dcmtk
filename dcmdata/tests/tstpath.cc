@@ -23,8 +23,8 @@
  *           and DcmSequenceOfItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-04 16:56:38 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2008-12-05 13:28:55 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,11 +51,9 @@ static void testPathInsertionsWithoutWildcard(const OFString& path,
                                               const OFBool& expectFailed = OFFalse,
                                               const OFBool& createIfNecessary = OFTrue)
 {
-  OFList< OFList<DcmObject*>* > results;
-  OFList< DcmObject* > prefix;
-  OFList< DcmObject* >* oneResult;
+  OFList< DcmObject* > oneResult;
   if (opt_verbose) COUT << "Path: " << path; COUT.flush();
-  OFCondition result = dset->findOrCreatePath(path, results, prefix, createIfNecessary);
+  OFCondition result = dset->findOrCreatePath(path, oneResult, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
@@ -63,51 +61,27 @@ static void testPathInsertionsWithoutWildcard(const OFString& path,
   }
   else
   {
-    if (results.size() != 1)
+    if (oneResult.size() != expectedNumObjects)
     {
-      CERR << " ...FAILED!: No wildcards used but more than onen path returned" << OFendl;
-      while (results.size() > 0)
-      {
-        oneResult = NULL;
-        oneResult = results.front();
-        if (oneResult)
-        {
-          delete oneResult; oneResult = NULL;
-        }
-        results.pop_front();
-      }
-      return;
-    }
-    else
-      oneResult =  *(results.begin());
-    if (oneResult->size() != expectedNumObjects)
-    {
-      if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements" << OFendl;
+      if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult.size() << "elements" << OFendl;
       if (!expectFailed) return;
     }
     else
     {
-      OFListIterator(DcmObject*) it = oneResult->begin();
+      OFListIterator(DcmObject*) it = oneResult.begin();
       for (Uint16 i=0; i < expectedNumObjects; i++)
       {
         if (*it == NULL)
         {
           CERR << " ...FAILED! Path insertion failed: One of the created objects is NULL" << OFendl;
+          return;
         }
         it++;
       }
     }
   }
-  while (results.size() > 0)
-  {
-    oneResult = NULL;
-    oneResult = results.front();
-    if (oneResult)
-    {
-      delete oneResult; oneResult = NULL;
-    }
-    results.pop_front();
-  }
+  if (opt_verbose)
+    COUT << " ...OK" << OFendl;
 }
 
 
@@ -121,7 +95,7 @@ static void testPathInsertionsWithWildcard(const OFString& path,
   OFList< DcmObject* > prefix;
   OFList< DcmObject* >* oneResult;
   if (opt_verbose) COUT << path; COUT.flush();
-  OFCondition result = dset->findOrCreatePath(path, results, prefix, createIfNecessary);
+  OFCondition result = dset->findOrCreateWildcardPath(path, results, prefix, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
@@ -161,6 +135,7 @@ static void testPathInsertionsWithWildcard(const OFString& path,
           }
           it++;
         }
+        delete oneResult; oneResult = NULL;
       }
       else
       {
@@ -363,6 +338,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.5  2008-12-05 13:28:55  onken
+ * Changed test application to test splitted findOrCreate() path API.
+ *
  * Revision 1.4  2008-12-04 16:56:38  onken
  * Extended application to also test new findOrCreatePath() wildcard features.
  *
