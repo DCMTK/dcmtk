@@ -1,7 +1,19 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2008.12.04 (riesmeier)
+**** Changes from 2008.12.05 (onken)
+
+- Splitted findOrCreatePath() function API for also offering a simple API
+  for non-wildcard searches.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+
+- Changed test application to test splitted findOrCreatePath() API.
+  Affects: dcmdata/tests/tstpath.cc
+
+**** Changes from 2008.12.04 (onken)
 
 - Changed findOrCreatePath() to also support wildcard as item numbers.
   Affects: dcmdata/libsrc/dcitem.cc
