@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:28:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-12-08 14:34:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,15 +35,15 @@
 #define DCERROR_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofcond.h"      /* for OFCondition */
+#include "dcmtk/ofstd/ofcond.h"       /* for OFCondition */
 
 /*
- *  dcmtk module numbers for modules which create their own error codes.
+ *  DCMTK module numbers for modules which create their own error codes.
  *  Module numbers > 1023 are reserved for user code.
  */
 
 const unsigned short OFM_dcmdata  =  1;
-const unsigned short OFM_ctndisp  =  2;
+const unsigned short OFM_ctndisp  =  2;   /* retired */
 const unsigned short OFM_dcmimgle =  3;
 const unsigned short OFM_dcmimage =  4;
 const unsigned short OFM_dcmjpeg  =  5;
@@ -54,7 +54,7 @@ const unsigned short OFM_dcmsign  =  9;
 const unsigned short OFM_dcmsr    = 10;
 const unsigned short OFM_dcmtls   = 11;
 const unsigned short OFM_imagectn = 12;
-const unsigned short OFM_wlistctn = 13;
+const unsigned short OFM_wlistctn = 13;   /* retired */
 const unsigned short OFM_dcmwlm   = 14;
 const unsigned short OFM_dcmpps   = 15;
 const unsigned short OFM_dcmdbsup = 16;
@@ -62,10 +62,12 @@ const unsigned short OFM_dcmppswm = 17;
 const unsigned short OFM_dcmjp2k  = 18;
 const unsigned short OFM_dcmjpls  = 19;
 const unsigned short OFM_dcmwave  = 20;
+const unsigned short OFM_dcmrt    = 21;
+
 
 // condition constants
 
-/// invalid tag 
+/// invalid tag
 extern const OFCondition EC_InvalidTag;
 /// tag not found
 extern const OFCondition EC_TagNotFound;
@@ -125,6 +127,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.24  2008-12-08 14:34:54  joergr
+** Added number for new module "dcmrt", used for module-specific error codes.
+**
 ** Revision 1.23  2008-07-17 10:28:36  onken
 ** Added error constant for upcoming dcmwave module.
 **
