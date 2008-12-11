@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 11:57:11 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2008-12-11 15:50:25 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -821,28 +821,30 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         message += ")";
         result = OFFalse;
     }
-    else if ((type == "1") && (lenNum == 0))
+    else if ((lenNum == 0) || (vmNum == 0))
     {
-        message += " empty in ";
-        message += module;
-        message += " (type 1)";
-        result = OFFalse;
+        /* however, type 1C should never be present with empty value */
+        if (((type == "1") || (type == "1C")) && searchCond.good())
+        {
+            message += " empty in ";
+            message += module;
+            message += " (type ";
+            message += type;
+            message += ")";
+            result = OFFalse;
+        } else {
+            /* empty value is ok for type 2 and 3 */
+            print = OFFalse;
+        }
     }
-    else if ((vm == "1") && (vmNum > 1))
+    else if ((vm == "1") && (vmNum != 1))
     {
         message += vmText;
         message += " != 1 in ";
         message += module;
         result = OFFalse;
     }
-    else if ((type == "1") && (vm == "1-n") && (vmNum < 1))
-    {
-        message += vmText;
-        message += " != 1-n in ";
-        message += module;
-        result = OFFalse;
-    }
-    else if ((vm == "2") && (vmNum != 2) && searchCond.good())
+    else if ((vm == "2") && (vmNum != 2))
     {
         message += vmText;
         message += " != 2 in ";
@@ -854,7 +856,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         message += vmText;
         message += " != 2-2n in ";
         message += module;
-        result = (vmNum >= 2);
+        result = OFFalse;
     } else
         print = OFFalse;
     if (print && (stream != NULL) && !message.empty())
@@ -1492,6 +1494,9 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.56  2008-12-11 15:50:25  joergr
+ *  Enhanced method checkElementValue(), e.g. added support for type 1C elements.
+ *
  *  Revision 1.55  2008-07-17 11:57:11  joergr
  *  Replaced wrong use of assignment operator by new copyFrom() method.
  *  Removed getSequenceFromDataset() function.

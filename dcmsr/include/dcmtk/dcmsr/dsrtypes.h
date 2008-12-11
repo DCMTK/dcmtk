@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:36 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2008-12-11 15:48:55 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1040,7 +1040,7 @@ class DSRTypes
      ** @param  delem       DICOM element to be checked
      *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
      *                      interpreted as cardinality (number of items) for sequences
-     *  @param  type        value type (valid value: "1", "2", something else)
+     *  @param  type        value type (valid value: "1", "1C", "2", something else)
      *  @param  stream      optional output stream used for warning messages
      *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
@@ -1061,7 +1061,7 @@ class DSRTypes
      *  @param  delem       DICOM element used to store the value
      *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
      *                      interpreted as cardinality (number of items) for sequences
-     *  @param  type        value type (valid value: "1", "2", something else which is not checked)
+     *  @param  type        value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  stream      optional output stream used for warning messages
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
@@ -1083,7 +1083,7 @@ class DSRTypes
      *                       (This parameter is automatically cleared if the tag could not be found.)
      *  @param  vm           value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
      *                       interpreted as cardinality (number of items) for sequences
-     *  @param  type         value type (valid value: "1", "2", something else which is not checked)
+     *  @param  type         value type (valid value: "1", "1C", "2", something else which is not checked)
      *  @param  stream       optional output stream used for warning messages
      *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
@@ -1237,6 +1237,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.54  2008-12-11 15:48:55  joergr
+ *  Enhanced method checkElementValue(), e.g. added support for type 1C elements.
+ *
  *  Revision 1.53  2008-07-17 12:00:36  joergr
  *  Removed getSequenceFromDataset() function.
  *

@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.12.11 (riesmeier)
+
+- Enhanced method checkElementValue(), e.g. added support for type 1C elements.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2008.12.08 (riesmeier)
 
 - Added number for new module "dcmrt", used for module-specific error codes.
