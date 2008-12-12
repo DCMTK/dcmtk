@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:28:14 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2008-12-12 11:44:40 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -418,108 +418,6 @@ public:
                                E_SearchMode mode = ESM_fromHere,  // in
                                OFBool searchIntoSub = OFTrue);    // in
 
-    /** Function that allows for finding and/or inserting a hierarchy of items
-     *  and attributes as defined by a path string; also returns a list of
-     *  pointers for each sucessfully found or inserted paths. Every list
-     *  contains pointers pointing to all the objects along the path
-     *  starting from this items (excluding "this" pointer).
-     *
-     *  In principle, the path string must have the following format (in
-     *  arbitrary depth):
-     *  [ITEMNO].SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
-     *  . ITEMNO must be a positive integer starting with 0.
-     *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-     *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName". If the
-     *  path cannot be fully created (see option createIfNecessary), any
-     *  possibly object changes are reverted. So a path is either fully created
-     *  or no path component is created at all.
-     *
-     *  Example: The path
-     *  "[3].ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
-     *  Sequence in "this" item, therein the 5th item, therein the "Concept
-     *  Name Code Sequence" denoted by (0040,a043), therein the first item
-     *  and finally therein the tag "Code Value".
-     *  The resulting object list should (if success is returned) contain
-     *  1 result, consisting of a list with 6 pointers to 6 objects in the order
-     *  in their logical order as they occur in the path string
-     *  (in total 2 sequences,  items, and one leaf attribute).
-     *  @param path [in/out] The path starting with an item.
-     *              The parsed attribute is removed from the path string.
-     *  @param resultPath [out] the list will contain a list with pointers to
-     *                    all objects in the order as they also occur in the
-     *                    path string. When calling, an empty resultPaths
-     *                    variable must be used!
-     *  @param createIfNecessary [in] If set, all missing objects found
-     *                           in the path string are created. If not set,
-     *                           only existing paths can be accessed and
-     *                           no new attribute or item is created.
-     *  @return EC_Normal if successful, error code otherwise.
-     */
-    virtual OFCondition findOrCreatePath(const OFString& path,
-                                         OFList<DcmObject*>& resultPath,
-                                         const OFBool createIfNecessary = OFFalse);
-
-    /** Function that allows for finding and/or inserting a hierarchy of items
-     *  and attributes as defined by a path string; also returns a list of
-     *  pointers for each sucessfully found or inserted paths. Every list
-     *  contains pointers pointing to all the objects along the path
-     *  starting from this items (excluding "this" pointer).
-     *
-     *  In principle, the path string must have the following format (in
-     *  arbitrary depth):
-     *  [ITEMNO].SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
-     *  . ITEMNO must be a positive integer starting with 0 or the wildcard
-     *  character "*". SEQUENCE and ATTRIBUTE must be a tag, written e. g.
-     *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName". If the
-     *  path cannot be fully created (see option createIfNecessary), any
-     *  possibly object changes are reverted. So a path is either fully created
-     *  or no path component is created at all.
-     *
-     *  Example: The path
-     *  "[3].ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
-     *  Sequence in "this" item, therein the 5th item, therein the "Concept
-     *  Name Code Sequence" denoted by (0040,a043), therein the first item
-     *  and finally therein the tag "Code Value".
-     *  The resulting object list should (if success is returned) contain
-     *  1 result, consisting of a list with 6 pointers to 6 objects in the order
-     *  in their logical order as they occur in the path string
-     *  (in total 2 sequences,  items, and one leaf attribute).
-     *
-     *  Wildcard Example: The path
-     *  "ContentSequence[4].(0040,a043)[*].CodeValue" selects the 4th item
-     *  with this sequence, therein the  Content Sequence,
-     *  therein the 5th item, therein the "Concept Name Code Sequence"
-     *  denoted by (0040,a043), therein ALL items and finally therein the tag
-     *  "Code Value".
-     *  The resulting object list should (if success is returned) contains
-     *  at least 1 result, consisting of a list with 6 pointers to 6 objects in
-     *  the order in their logical order as they occur in the path string.
-     *  If more than one item exists in the "Concept Name Code Sequence",
-     *  then the result list will contain more than one result; again, each
-     *  result will contain 6 pointers to the 6 objects along the path. The
-     *  path string can contain more than one wildcard per call.
-     *  @param path [in/out] The path starting with an item.
-     *                The parsed attribute is removed from the path string.
-     *  @param resultPaths [out] The list of result paths. For every path, the
-     *                     list will contain a list with pointers to all
-     *                     objects in the order as they also occur in the
-     *                     path string. When calling, an empty resultPaths
-     *                     variable must be used!
-     *  @param prefixPath  [in] A prefix that should be prepended to
-     *                     every result path. If no prefix should be used,
-     *                     this parameter must be set with an empty list.
-     *  @param createIfNecessary [in] If set, all missing objects found
-     *                           in the path string are created. If not set,
-     *                           only existing paths can be accessed and
-     *                           no new attribute or item is created. Note
-     *                           that "wildcard items" cannot be created.
-     *  @return EC_Normal if successful, error code otherwise.
-     */
-    virtual OFCondition findOrCreateWildcardPath(const OFString& path,
-                                                 OFList< OFList<DcmObject*>* >& resultPaths,
-                                                 OFList<DcmObject*> prefixPath,
-                                                 const OFBool createIfNecessary = OFFalse);
-
     /** this method loads all attribute values maintained by this object and
      *  all sub-objects (in case of a container such as DcmDataset) into memory.
      *  After a call to this method, the file from which a dataset was read may safely
@@ -618,23 +516,6 @@ protected:
                                           DcmStack &resultStack,              // inout
                                           const OFBool searchIntoSub);        // in
 
-    /** helper function for findOrCreatePath(). parses an item number from
-     *  the beginning of the path string. The item number must be positive,
-     *  starting with 0.
-     *  The path must start like "[itemnumber]...".
-     *  @param path - [in/out] The path starting with the item number
-     *                in square brackets, e. g. "[3]". The parsed item number
-     *                and a potentially following "." are removed from the path
-     *  @param itemNo - [out] The parsed item number. If a wildcard was parsed,
-     *                  this output parameter is not set at all.
-     *  @param wasWildcard - [out] Is set to OFTrue, if wildcard was parsed
-     *                       (instead of concrete item number).
-     *  @return EC_Normal, if concrete item number or wildcard was parsed
-     */
-    static OFCondition parseItemNoFromPath(OFString& path,                   // inout
-                                           Uint32& itemNo,                   // out
-                                           OFBool& wasWildcard);             // out
-
     /// the list of items maintained by this sequence object
     DcmList *itemList;
 
@@ -681,6 +562,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.47  2008-12-12 11:44:40  onken
+** Moved path access functions to separate classes
+**
 ** Revision 1.46  2008-12-05 13:28:14  onken
 ** Splitted findOrCreatePath() function API for also offering a simple API
 ** for non-wildcard searches.

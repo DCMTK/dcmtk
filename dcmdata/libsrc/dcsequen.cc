@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:51:13 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2008-12-12 11:44:41 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1192,235 +1192,6 @@ OFCondition DcmSequenceOfItems::search(const DcmTagKey &tag,
 // ********************************
 
 
-OFCondition DcmSequenceOfItems::findOrCreatePath(const OFString& path,
-                                                 OFList<DcmObject*>& resultPath,
-                                                 const OFBool createIfNecessary)
-{
-    // Check whether path is not empty and does not contain wildcards
-    if ( path.empty() || (path.find("[*]") != OFString_npos) )
-        return EC_IllegalParameter;
-    OFList< OFList<DcmObject*>* > resultPaths;
-    OFList<DcmObject*> prefix;
-
-    // Find or create path
-    OFCondition status = findOrCreateWildcardPath(path, resultPaths, prefix, createIfNecessary);
-    if (status.good())
-    {
-        if (resultPaths.size() > 1)
-            status = EC_IllegalCall;
-        else
-        {
-            // Copy result
-            OFList<DcmObject*> result = *(resultPaths.front());
-            OFListIterator(DcmObject*) it = result.begin();
-            OFListConstIterator(DcmObject*) endOfList = result.end();
-            while (it != endOfList)
-            {
-                resultPath.push_back(*it);
-                it++;
-            }
-        }
-    }
-    // Clean up dynamically allocated results from function call
-    OFList<DcmObject*>* oneResult = NULL;
-    while (resultPaths.size() != 0)
-    {
-        oneResult = resultPaths.front();
-        if (oneResult != NULL)
-        {
-            delete oneResult;
-            oneResult = NULL;
-        }
-        resultPaths.pop_front();
-    }
-  return status;
-}
-
-
-// ********************************
-
-
-OFCondition DcmSequenceOfItems::findOrCreateWildcardPath(const OFString& path,
-                                                         OFList< OFList<DcmObject*>* >& resultPaths,
-                                                         OFList<DcmObject*> prefixPath,
-                                                         const OFBool createIfNecessary)
-{
-    if (path.length() == 0)
-        return EC_IllegalParameter;
-    // prepare variables
-    OFString restPath(path);
-    OFCondition status = EC_Normal;
-    DcmItem *resultItem = NULL;
-    Uint32 itemNo = 0;
-    Uint32 newlyCreated = 0;    // number of items created (appended) (only non-wildcard mode)
-    Uint32 newPathsCreated = 0; // wildcard mode: number of found paths
-    OFList<DcmObject*>* newResultList = NULL;
-
-    // parse item number
-    OFBool isWildcard = OFFalse;
-    status = parseItemNoFromPath(restPath, itemNo, isWildcard);
-    if (status.bad())
-        return status;
-
-    // wildcard code: add result path for every matching item
-    if (isWildcard)
-    {
-      // if there are no items -> no results are found
-      if ( (itemList == NULL) || (itemList->card() == 0))
-          return EC_TagNotFound;
-      // copy every item to result
-      itemList->seek(ELP_first);
-      do
-      {
-        DcmItem* oneItem = OFstatic_cast(DcmItem*, itemList->get());
-        /* if we found an item that matches, copy current result path, then
-           add the item found and finally start recursive search for
-           that item.
-         */
-        if (oneItem != NULL)
-        {
-            OFList<DcmObject*> workpath(prefixPath);
-            workpath.push_back(oneItem);
-            // if the item was the last thing to parse, add list to results and return
-            if (restPath.length() == 0)
-            {
-                resultPaths.push_back(new OFList<DcmObject*>(workpath));
-                newPathsCreated++;
-            }
-            // else there is path left: continue searching in the new item
-            else
-            {
-                status = oneItem->findOrCreateWildcardPath(restPath, resultPaths, workpath, createIfNecessary);
-                if (status.bad()) // we did not find the path in that item
-                {
-                    if (status != EC_TagNotFound)
-                        return status;
-                }
-                else
-                {
-                    newPathsCreated++;
-                }
-            }
-        }
-        else // should be possible to get every item, however...
-            return EC_IllegalCall;
-      } while (itemList->seek(ELP_next));
-      // if there was at least one result, success can be returned
-      if (newPathsCreated != 0)
-      {
-          return EC_Normal;
-      }
-      else
-          return EC_TagNotFound;
-    }
-
-
-    /* no wildcard, just select single item or create it if necessary */
-
-    // if item already exists, just grab a reference
-    if (itemNo < this->card())
-        resultItem = getItem(itemNo);
-    // if item does not exist, create new if desired
-    else if (createIfNecessary)
-    {
-        // create and insert items until desired item count is reached
-        while ( (this->card() <= itemNo) || (status.bad()) )
-        {
-            resultItem = new DcmItem();
-            if (!resultItem) return EC_MemoryExhausted;
-            status = insert(resultItem);
-            if (status.bad())
-                delete resultItem;
-            else
-                newlyCreated++;
-        }
-    }
-    // item does not exist and should not be created newly, return "path not found"
-    else
-        return EC_TagNotFound;
-
-    // at this point, the item has been obtained and everyhthing is fine so far
-    // push new item to result path and continue
-    prefixPath.push_back(resultItem);
-
-    // at this point finding/creating the path was successful. now check whether there is more to do
-    if (restPath.length() != 0)
-    {
-        status = resultItem->findOrCreateWildcardPath(restPath, resultPaths, prefixPath, createIfNecessary);
-        prefixPath.pop_back(); // avoid side effects to input parameter
-        // in case of no success, delete any items that were newly created and return error
-        if (status.bad())
-        {
-            for (Uint32 i=newlyCreated; i > 0; i--)
-            {
-                DcmItem *todelete = this->remove(i-1);
-                if (todelete != NULL)
-                {
-                    delete todelete;
-                    todelete = NULL;
-                }
-            }
-            return status;
-        }
-    }
-    else // finally everything was successful
-    {
-        newResultList = new OFList<DcmObject*>(prefixPath);
-        resultPaths.push_back(newResultList);
-        status = EC_Normal;
-    }
-    prefixPath.pop_back(); // avoid side effects to input parameter
-    return status;
-}
-
-
-// ********************************
-
-OFCondition DcmSequenceOfItems::parseItemNoFromPath(OFString& path,        // inout
-                                                    Uint32& itemNo,
-                                                    OFBool& wasWildcard)   // out
-{
-    wasWildcard = OFFalse;
-    itemNo = 0;
-    // check whether there is an item to parse
-    size_t closePos = path.find_first_of(']', 0);
-    if ( (closePos != OFString_npos) && (path[0] == '[') )
-    {
-        long int parsedNo;
-        // try parsing item number; parsing for %lu would cause overflows in case of negative numbers
-        int parsed = sscanf(path.c_str(), "[%ld]", &parsedNo);
-        if (parsed == 1)
-        {
-            if (parsedNo < 0)
-            {
-                OFString errMsg = "Negative item number (not permitted) at beginning of path: "; errMsg += path;
-                return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
-            }
-            itemNo = OFstatic_cast(Uint32, parsedNo);
-            if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
-                closePos ++;
-            path.erase(0, closePos + 1); // remove item from path
-            return EC_Normal;
-        }
-        char aChar;
-        parsed = sscanf(path.c_str(), "[%c]", &aChar);
-        if ( (parsed == 1) && (aChar =='*') )
-        {
-          wasWildcard = OFTrue;
-          if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
-              closePos ++;
-          path.erase(0, closePos + 1); // remove item from path
-          return EC_Normal;
-        }
-    }
-    OFString errMsg = "Unable to parse item number at beginning of path: "; errMsg += path;
-    return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
-}
-
-
-// ********************************
-
-
 OFCondition DcmSequenceOfItems::loadAllDataIntoMemory()
 {
     OFCondition l_error = EC_Normal;
@@ -1506,6 +1277,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.77  2008-12-12 11:44:41  onken
+** Moved path access functions to separate classes
+**
 ** Revision 1.76  2008-12-05 13:51:13  onken
 ** Introduced new error code number for specific findOrCreatePath() errors.
 **

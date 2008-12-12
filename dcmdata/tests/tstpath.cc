@@ -23,8 +23,8 @@
  *           and DcmSequenceOfItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:28:55 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2008-12-12 11:44:41 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcdebug.h" /* For SetDebugLevel() */
+#include "dcmtk/dcmdata/dcpath.h"
 
 #define OFFIS_CONSOLE_APPLICATION "tstpath"
 
@@ -51,35 +52,45 @@ static void testPathInsertionsWithoutWildcard(const OFString& path,
                                               const OFBool& expectFailed = OFFalse,
                                               const OFBool& createIfNecessary = OFTrue)
 {
-  OFList< DcmObject* > oneResult;
   if (opt_verbose) COUT << "Path: " << path; COUT.flush();
-  OFCondition result = dset->findOrCreatePath(path, oneResult, createIfNecessary);
+  DcmPathProcessor proc;
+  OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
     return;
   }
+
+  // get results
+  OFList< DcmPath* > results;
+  Uint32 numResults = proc.getResults(results);
+  if (numResults != 1)
+  {
+    // non-wildcard insertion should ALWAYS only return one result
+    CERR << "...FAILED! Returned path list does contain more than one result but no wildcard was specified" << OFendl;
+    return;
+  }
+  DcmPath* oneResult = * (results.begin());
+
+  if (oneResult->size() != expectedNumObjects)
+  {
+    if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements" << OFendl;
+    if (!expectFailed) return;
+  }
   else
   {
-    if (oneResult.size() != expectedNumObjects)
+    OFListIterator(DcmPathNode*) it = oneResult->begin();
+    for (Uint16 i=0; i < expectedNumObjects; i++)
     {
-      if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult.size() << "elements" << OFendl;
-      if (!expectFailed) return;
-    }
-    else
-    {
-      OFListIterator(DcmObject*) it = oneResult.begin();
-      for (Uint16 i=0; i < expectedNumObjects; i++)
+      if (*it == NULL)
       {
-        if (*it == NULL)
-        {
-          CERR << " ...FAILED! Path insertion failed: One of the created objects is NULL" << OFendl;
-          return;
-        }
-        it++;
+        CERR << " ...FAILED! Path insertion failed: One of the created objects is NULL" << OFendl;
+        return;
       }
+      it++;
     }
   }
+
   if (opt_verbose)
     COUT << " ...OK" << OFendl;
 }
@@ -91,59 +102,47 @@ static void testPathInsertionsWithWildcard(const OFString& path,
                                            const OFBool& expectFailed = OFFalse,
                                            const OFBool& createIfNecessary = OFTrue)
 {
-  OFList< OFList<DcmObject*>* > results;
-  OFList< DcmObject* > prefix;
-  OFList< DcmObject* >* oneResult;
-  if (opt_verbose) COUT << path; COUT.flush();
-  OFCondition result = dset->findOrCreateWildcardPath(path, results, prefix, createIfNecessary);
+  if (opt_verbose) COUT << "Path: " << path; COUT.flush();
+  DcmPathProcessor proc;
+  OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
   {
     if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
     return;
   }
-  else
-  {
-    if ( (results.size() != expectedNumResults) && !expectFailed )
-    {
 
-      CERR << " ...FAILED!: Expected " << expectedNumResults <<  " but " << results.size() << " results were returned" << OFendl;
-      while (results.size() > 0)
+  // get results
+  OFList< DcmPath* > results;
+  Uint32 numResults = proc.getResults(results);
+  if ( (numResults != expectedNumResults) && !expectFailed )
+  {
+
+    CERR << " ...FAILED!: Expected " << expectedNumResults <<  " but " << numResults << " results were returned" << OFendl;
+    return;
+  }
+  // check results
+  OFListIterator(DcmPath*) oneResult = results.begin();
+  while (oneResult != results.end())
+  {
+    if (*oneResult)
+    {
+      OFListIterator(DcmPathNode*) it = (*oneResult)->begin();
+      while (it != (*oneResult)->end())
       {
-        oneResult = NULL;
-        oneResult = results.front();
-        if (oneResult)
+        if (*it == NULL)
         {
-          delete oneResult; oneResult = NULL;
+          if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the result paths contains NULL" << OFendl;
+          return;
         }
-        results.pop_front();
+        it++;
       }
+    }
+    else
+    {
+      if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the returned path is NULL" << OFendl;
       return;
     }
-    while (results.size() > 0)
-    {
-      oneResult = NULL;
-      oneResult = results.front();
-      if (oneResult)
-      {
-        OFListIterator(DcmObject*) it = oneResult->begin();
-        while (it != oneResult->end())
-        {
-          if (*it == NULL)
-          {
-            if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the result paths contains NULL" << OFendl;
-            return;
-          }
-          it++;
-        }
-        delete oneResult; oneResult = NULL;
-      }
-      else
-      {
-        if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the returned path is NULL" << OFendl;
-        return;
-      }
-      results.pop_front();
-    }
+    oneResult++;
   }
   if (opt_verbose)
     COUT << " ...OK" << OFendl;
@@ -338,6 +337,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.6  2008-12-12 11:44:41  onken
+ * Moved path access functions to separate classes
+ *
  * Revision 1.5  2008-12-05 13:28:55  onken
  * Changed test application to test splitted findOrCreate() path API.
  *

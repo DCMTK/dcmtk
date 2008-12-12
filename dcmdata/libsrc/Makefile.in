@@ -40,7 +40,7 @@ objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcrleccd.o dcrlecce.o dcrlecp.o dcrlerp.o dcrledrg.o dcrleerg.o \
 	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o dcddirif.o \
 	dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
-	dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o dcwcache.o
+	dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o dcwcache.o dcpath.o
 support_objs = mkdeftag.o mkdictbi.o dcdictzz.o
 support_progs = mkdeftag mkdictbi
 library = libdcmdata.$(LIBEXT)

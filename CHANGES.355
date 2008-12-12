@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2008.12.12 (onken)
+
+- Moved path access functions to separate classes.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/tests/tstpath.cc
+
+  Added:   dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libsrc/dcpath.cc
+
 **** Changes from 2008.12.11 (riesmeier)
 
 - Enhanced method checkElementValue(), e.g. added support for type 1C elements.

@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:51:13 $
- *  CVS/RCS Revision: $Revision: 1.119 $
+ *  Update Date:      $Date: 2008-12-12 11:44:41 $
+ *  CVS/RCS Revision: $Revision: 1.120 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2666,153 +2666,6 @@ OFCondition DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
 // ********************************
 
 
-OFCondition DcmItem::findOrCreatePath(const OFString& path,
-                                      OFList<DcmObject*>& resultPath,
-                                      const OFBool createIfNecessary)
-{
-    // Check whether path is not empty and does not contain wildcards
-    if ( path.empty() || (path.find("[*]") != OFString_npos) )
-        return EC_IllegalParameter;
-    OFList< OFList<DcmObject*>* > resultPaths;
-    OFList<DcmObject*> prefix;
-
-    // Find or create path
-    OFCondition status = findOrCreateWildcardPath(path, resultPaths, prefix, createIfNecessary);
-    if (status.good())
-    {
-        if (resultPaths.size() > 1)
-            status = EC_IllegalCall;
-        else
-        {
-            // Copy result
-            OFList<DcmObject*> result = *(resultPaths.front());
-            OFListIterator(DcmObject*) it = result.begin();
-            OFListConstIterator(DcmObject*) endOfList = result.end();
-            while (it != endOfList)
-            {
-                resultPath.push_back(*it);
-                it++;
-            }
-        }
-    }
-    // Clean up dynamically allocated results from function call
-    while (resultPaths.size() != 0)
-    {
-        OFList<DcmObject*>* oneResult = resultPaths.front();
-        if (oneResult != NULL)
-        {
-            delete oneResult;
-            oneResult = NULL;
-        }
-        resultPaths.pop_front();
-    }
-    return status;
-}
-
-
-// ********************************
-
-
-OFCondition DcmItem::findOrCreateWildcardPath(const OFString& path,
-                                              OFList< OFList<DcmObject*>* >& resultPaths,
-                                              OFList<DcmObject*> prefixPath,
-                                              const OFBool createIfNecessary)
-{
-  if (path.length() == 0)
-      return EC_IllegalParameter;
-  OFString restPath(path);
-  OFCondition status = EC_Normal;
-  DcmTag tag;
-  OFBool newlyCreated = OFFalse;
-  DcmElement *elem = NULL;
-  OFList<DcmObject*>* currentResult = NULL;
-
-  // parse tag
-  status = parseTagFromPath(restPath, tag);
-  if (status.bad())
-      return status;
-
-  // insert element or sequence
-  if ( !(this->tagExists(tag)) ) // do not to overwrite existing tags
-  {
-      if (createIfNecessary)
-      {
-          elem = newDicomElement(tag);
-          if (elem == NULL)
-            return EC_IllegalCall;
-          status = this->insert(elem, OFTrue);
-          if (status.bad())
-              return status;
-          newlyCreated = OFTrue;
-      }
-      else
-          return EC_TagNotFound;
-  }
-
-  // get element
-  status = this->findAndGetElement(tag, elem);
-  if (status.bad())
-      return EC_CorruptedData; // should not happen
-
-  // start recursion if element was a sequence
-  if (tag.getEVR() == EVR_SQ)
-  {
-      DcmSequenceOfItems* seq = NULL;
-      seq = OFstatic_cast(DcmSequenceOfItems*, elem);
-      if (!seq)
-          status = EC_IllegalCall; // should not happen
-      else
-      {
-          // if sequence could be inserted and there is nothing more to do: add current path to results and return success
-          if (restPath.length() == 0)
-          {
-              currentResult = new OFList<DcmObject*>(prefixPath);  /* need to copy */
-              currentResult->push_back(elem);
-              resultPaths.push_back(currentResult);
-              return EC_Normal;
-          }
-          // start recursion if there is path left
-          prefixPath.push_back(elem);
-          status = seq->findOrCreateWildcardPath(restPath, resultPaths,  prefixPath, createIfNecessary);
-          prefixPath.pop_back();
-      }
-  }
-  else if (restPath.length() == 0) // we inserted a leaf element: path must be completed
-  {
-       // add element and add current path to overall results; then return success
-      {
-          currentResult = new OFList<DcmObject*>(prefixPath);  /* need to copy */
-          currentResult->push_back(elem);
-          resultPaths.push_back(currentResult);
-          return EC_Normal;
-      }
-  }
-  else // we inserted a leaf element but there is path left -> error
-      status = makeOFCondition(OFM_dcmdata, 25, OF_error, "Invalid Path: Non-sequence tag found with rest path following");
-
-  // in case of errors: delete result path copy and delete DICOM element if it was newly created
-  if ( status.bad() && (elem != NULL) )
-  {
-      resultPaths.remove(currentResult); // remove from search result
-      if (currentResult)
-      {
-        delete currentResult;
-        currentResult = NULL;
-      }
-      if (newlyCreated) // only delete from this dataset and memory if newly created ("undo")
-      {
-          if (findAndDeleteElement(tag).bad())
-              delete elem; // delete manually if not found in dataset
-      }
-      elem = NULL;
-  }
-  return status;
-}
-
-
-// ********************************
-
-
 /* --- findAndXXX functions: find an element and do something with it --- */
 
 OFCondition DcmItem::findAndDeleteElement(const DcmTagKey &tagKey,
@@ -3615,52 +3468,12 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFCondition DcmItem::parseTagFromPath(OFString& path ,          // inout
-                                      DcmTag& tag)              // out
-{
-    OFCondition result;
-    OFString errMsg = "";
-    size_t pos = OFString_npos;
-
-    // In case we have a tag "(gggg,xxxx)"
-    if ( path[0] == '(')
-    {
-        pos = path.find_first_of(')', 0);
-        if (pos != OFString_npos)
-            result = DcmTag::findTagFromName(path.substr(1, pos - 1).c_str() /* "gggg,eeee" */, tag);
-        else
-        {
-            OFString errMsg("Unable to parse tag at beginning of path: "); errMsg += path;
-            return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
-        }
-        pos++; // also cut off closing bracket
-    }
-    // otherwise we could have a dictionary name
-    else
-    {
-        // maybe an item follows
-        pos = path.find_first_of('[', 0);
-        if (pos == OFString_npos)
-            result = DcmTag::findTagFromName(path.c_str(), tag); // check full path
-        else
-            result = DcmTag::findTagFromName(path.substr(0, pos).c_str(), tag); // parse path up to "[" char
-    }
-    // construct error message if necessary and return
-    if (result.bad())
-    {
-        OFString errMsg("Unable to parse tag/dictionary name at beginning of path: "); errMsg += path;
-        return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
-    }
-    // else remove parsed tag from path and return success
-    else
-        path.erase(0, pos);
-    return EC_Normal;
-}
-
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.120  2008-12-12 11:44:41  onken
+** Moved path access functions to separate classes
+**
 ** Revision 1.119  2008-12-05 13:51:13  onken
 ** Introduced new error code number for specific findOrCreatePath() errors.
 **
