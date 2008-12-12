@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2008.12.12 (onken)
 
+- Fixed doxgen documentation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpath.h
+
 - Fixed memory leak in path searching function.
   Affects: dcmdata/libsrc/dcpath.cc
 

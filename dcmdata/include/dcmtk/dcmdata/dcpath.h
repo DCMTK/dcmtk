@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:40 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2008-12-12 13:16:03 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -259,10 +259,6 @@ protected:
    *  @param path [in] The path starting with an attribute (either a
    *              sequence or a a leaf attribute) as a dicitionary name or
    *              tag. The parsed attribute is removed from the path string.
-   *  @param createIfNecessary [in] If set, all missing objects found
-   *                           in the path string are created. If not set,
-   *                           only existing paths can be accessed and
-   *                           no new attribute or item is created.
    *  @return EC_Normal if successful, error code otherwise.
    */
   OFCondition findOrCreateItemPath(DcmItem* item,
@@ -295,14 +291,10 @@ protected:
    *  1 result, consisting of a list with 4 pointers to 4 objects in the order
    *  in their logical order as they occur in the path string
    *  (in total 1 sequence, 2 items, and one leaf element).
-   *  @param item [in] The object to search (or create) a path in
+   *  @param seq  [in] The object to search (or create) a path in
    *  @param path [in] The path starting with an attribute (either a
    *              sequence or a a leaf attribute) as a dicitionary name or
    *              tag. The parsed attribute is removed from the path string.
-   *  @param createIfNecessary [in] If set, all missing objects found
-   *                           in the path string are created. If not set,
-   *                           only existing paths can be accessed and
-   *                           no new attribute or item is created.
    *  @return EC_Normal if successful, error code otherwise.
    */
   OFCondition findOrCreateSequencePath(DcmSequenceOfItems* seq,
@@ -370,6 +362,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.2  2008-12-12 13:16:03  onken
+** Fixed doxygen documentation.
+**
 ** Revision 1.1  2008-12-12 11:44:40  onken
 ** Moved path access functions to separate classes
 **
