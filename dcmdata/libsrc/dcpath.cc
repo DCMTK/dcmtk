@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:41 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2008-12-12 12:07:11 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -391,10 +391,10 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
     m_currentPath.push_back(itemNode);
     status = findOrCreateItemPath(resultItem, restPath);
     m_currentPath.pop_back(); // avoid side effects to input parameter
+    delete itemNode; itemNode = NULL;
     // in case of no success, delete any items that were newly created and return error
     if (status.bad())
     {
-      delete itemNode; itemNode = NULL;
       for (Uint32 i=newlyCreated; i > 0; i--)
       {
           DcmItem *todelete = seq->remove(i-1);
@@ -413,6 +413,7 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
     m_currentPath.push_back(itemNode);
     m_results.push_back(new DcmPath(m_currentPath));
     m_currentPath.pop_back(); // avoid side effects
+    delete itemNode; itemNode = NULL;
     status = EC_Normal;
   }
   return status;
@@ -522,17 +523,6 @@ Uint32 DcmPathProcessor::getResults(OFList<DcmPath*>& searchResults)
 
 void DcmPathProcessor::clear()
 {
-  while (m_currentPath.size() != 0)
-  {
-    DcmPathNode* node = m_currentPath.front();
-    if (node != NULL)
-    {
-      delete node;
-      node = NULL;
-    }
-    m_currentPath.pop_front();
-  }
-
   while (m_results.size() != 0)
   {
     DcmPath* result = m_results.front();
@@ -544,6 +534,17 @@ void DcmPathProcessor::clear()
     m_results.pop_front();
   }
 
+  while (m_currentPath.size() != 0)
+  {
+    DcmPathNode* node = m_currentPath.front();
+    if (node != NULL)
+    {
+      delete node;
+      node = NULL;
+    }
+    m_currentPath.pop_front();
+  }
+  
   m_createIfNecessary = OFFalse;
 
 }
@@ -557,6 +558,9 @@ DcmPathProcessor::~DcmPathProcessor()
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.2  2008-12-12 12:07:11  onken
+** Fixed memory leak in path searching function.
+**
 ** Revision 1.1  2008-12-12 11:44:41  onken
 ** Moved path access functions to separate classes
 **

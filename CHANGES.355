@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2008.12.12 (onken)
 
+- Fixed memory leak in path searching function.
+  Affects: dcmdata/libsrc/dcpath.cc
+
 - Moved path access functions to separate classes.
   Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/include/dcmtk/dcmdata/dcsequen.h
