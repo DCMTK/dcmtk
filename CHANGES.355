@@ -12,6 +12,9 @@ Changes between releases are documented here.
   for the bug report and suggested fix.
   Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2008.12.12 (onken)
 
 - Fixed doxgen documentation.

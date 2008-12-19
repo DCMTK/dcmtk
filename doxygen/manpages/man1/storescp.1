@@ -1,4 +1,4 @@
-.TH "storescp" 1 "26 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -42,9 +42,6 @@ port  tcp/ip port number to listen on.
 
   -d    --debug
           debug mode, print debug information
-
-  -od   --output-directory  [p]ath: string (default: .)
-          write output-files to (existing) directory p
 .fi
 .PP
 .SS "multi-process options"
@@ -162,6 +159,11 @@ other network options:
 .PP
 .nf
 
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write received objects to existing directory d
+
 bit preserving mode:
 
   -B    --normal
@@ -233,9 +235,9 @@ data set trailing padding
           align file on multiple of f bytes and items on
           multiple of i bytes
 
-deflate compression level (not with --write-xfer-little/big/implicit):
+deflate compression level (only with --write-xfer-deflated/same):
 
-  +cl   --compression-level  compression level: 0-9 (default 6)
+  +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression
 
 sorting into subdirectories (not with --bit-preserving):

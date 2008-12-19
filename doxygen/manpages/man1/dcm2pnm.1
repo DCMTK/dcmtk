@@ -1,18 +1,18 @@
-.TH "dcm2pnm" 1 "26 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pnm" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcm2pnm \- Convert DICOM images to PPM/PGM, PNG, TIFF or BMP
+dcm2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF or BMP
 .SH "SYNOPSIS"
 .PP
 .PP
 .nf
 
-dcm2pnm [options] bitmap-in [pnmfile-out]
+dcm2pnm [options] dcmfile-in [bitmap-out]
 .fi
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcm2pnm\fP utility reads a DICOM image, converts the pixel data according to the selected image processing options and writes back an image in the well-known PPM/PGM file format (portable pix map / portable gray map), PNG, TIFF or BMP format. This utility only supports uncompressed and RLE compressed DICOM images. The command line tool \fBdcmj2pnm\fP also supports a number of JPEG compression schemes.
+The \fBdcm2pnm\fP utility reads a DICOM image, converts the pixel data according to the selected image processing options and writes back an image in the well-known PGM/PPM (portable gray map / portable pix map), PNG, TIFF or Windows BMP format. This utility only supports uncompressed and RLE compressed DICOM images. The command line tool \fBdcmj2pnm\fP also supports a number of JPEG compression schemes.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -84,7 +84,7 @@ input transfer syntax:
           read with implicit VR little endian TS
 .fi
 .PP
-.SS "processing options"
+.SS "image processing options"
 .PP
 .nf
 
@@ -382,9 +382,7 @@ The following preferred interpolation algorithms can be selected using the \fI--
 .PP
 The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration. In particular, the patented LZW algorithm may not be available.
 .PP
-The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library. Interlace enables progressive image view while loading the PNG file. Only a few applications take care of the metainfo (TEXT) in a png file.
-.PP
-Sample monitor and printer characteristics files are available in the \fIdata\fP folder.
+The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library. Option \fI--interlace\fP enables progressive image view while loading the PNG file. Only a few applications take care of the meta info (TEXT) in a PNG file.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -408,7 +406,7 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fI<datadir>/scanner.lut\fP - sample characteristics file of a scanner
 .SH "SEE ALSO"
 .PP
-\fBdcmj2pnm\fP(1)
+\fBdcmj2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
 Copyright (C) 1998-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

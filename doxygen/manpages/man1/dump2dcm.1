@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "26 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -79,6 +79,9 @@ output transfer syntax:
   +ti  --write-xfer-implicit
          write with implicit VR little endian TS
 
+  +td  --write-xfer-deflated
+         write with deflated expl. VR little endian TS
+
 error handling:
 
   -E   --stop-on-error
@@ -125,6 +128,11 @@ data set trailing padding (not with --write-dataset):
   +p   --padding-create  [f]ile-pad [i]tem-pad: integer
          align file on multiple of f bytes
          and items on multiple of i bytes
+
+deflate compression level (only with --write-xfer-deflated):
+
+  +cl  --compression-level  [l]evel: integer (default: 6)
+         0=uncompressed, 1=fastest, 9=best compression
 .fi
 .PP
 .SH "NOTES"

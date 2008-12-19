@@ -1,7 +1,7 @@
-.TH "dcmj2pnm" 1 "26 Sep 2008" "Version 3.5.4+" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmj2pnm" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
-dcmj2pnm \- Convert DICOM images to PGM, PPM, BMP, TIFF or JPEG
+dcmj2pnm \- Convert DICOM images to PGM/PPM, PNG, TIFF, JPEG or BMP
 .SH "SYNOPSIS"
 .PP
 .PP
@@ -12,7 +12,7 @@ dcmj2pnm [options] dcmfile-in [bitmap-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmj2pnm\fP utility reads a DICOM image, converts the pixel data according to the selected image processing options and writes back an image in the well-known PPM/PGM file format (portable pix map / portable gray map), PNG, Windows BMP, TIFF or JPEG (Joint Photographic Experts Group) format. This utility supports uncompressed as well as JPEG and RLE compressed DICOM images.
+The \fBdcmj2pnm\fP utility reads a DICOM image, converts the pixel data according to the selected image processing options and writes back an image in the well-known PGM/PPM (portable gray map / portable pix map), PNG, TIFF, JPEG (Joint Photographic Experts Group) or Windows BMP format. This utility supports uncompressed as well as JPEG and RLE compressed DICOM images.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -232,12 +232,12 @@ overlay:
 display LUT transformation:
 
   +Dm   --monitor-file  [f]ilename : string
-          calibrate output according to monitor
-          characteristics defined in f
+          calibrate output according to monitor characteristics
+          defined in f
 
   +Dp   --printer-file  [f]ilename : string
-          calibrate output according to printer
-          characteristics defined in f
+          calibrate output according to printer characteristics
+          defined in f
 
   +Da   --ambient-light  [a]mbient light : float
           ambient light value (cd/m^2, default: file f)
@@ -267,8 +267,12 @@ compatibility options:
           accept incorrect palette attribute tags
           (0028,111x) and (0028,121x)
 
+  +Mc   --check-lut-depth
+          check 3rd value of the LUT descriptor, compare
+          with expected bit depth based on LUT data
+
   +Mm   --ignore-mlut-depth
-          ignore 3rd value of the modality LUT descriptor
+          ignore 3rd value of the modality LUT descriptor,
           determine bits per table entry automatically
 
   +Mv   --ignore-vlut-depth
@@ -397,9 +401,7 @@ The following preferred interpolation algorithms can be selected using the \fI--
 .PP
 The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration. In particular, the patented LZW algorithm may not be available.
 .PP
-The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library. Interlace enables progressive image view while loading the PNG file. Only a few applications take care of the metainfo (TEXT) in a PNG file.
-.PP
-Sample monitor and printer characteristics files are available in the \fIdata\fP folder.
+The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library. Option \fI--interlace\fP enables progressive image view while loading the PNG file. Only a few applications take care of the meta info (TEXT) in a PNG file.
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -423,7 +425,7 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fI<datadir>/scanner.lut\fP - sample characteristics file of a scanner
 .SH "SEE ALSO"
 .PP
-\fBdcm2pnm\fP(1)
+\fBdcm2pnm\fP(1), \fBimg2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
 Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
