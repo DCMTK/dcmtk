@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2008, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2008-12-19 14:57:59 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,7 +162,7 @@ public:
 
     /// comparison non-equality
     OFBool operator!=(const DcmHashDictIterator& x) const 
-        { return (hindex != hindex) || (iter != x.iter); }
+        { return (hindex != x.hindex) || (iter != x.iter); }
 
     /// dereferencing of iterator
     const DcmDictEntry* operator*() const
@@ -317,10 +316,14 @@ private:
 
 #endif /* DCHASHDI_H */
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.18  2006-08-15 15:49:56  meichel
+** Revision 1.19  2008-12-19 14:57:59  joergr
+** Fixed bug in DcmHashDictIterator::operator!=() - wrong comparison operand.
+**
+** Revision 1.18  2006/08/15 15:49:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
 **
@@ -383,4 +386,3 @@ private:
 ** Initial Version - Interface for hash table data structure for data dictionary.
 **
 */
-
