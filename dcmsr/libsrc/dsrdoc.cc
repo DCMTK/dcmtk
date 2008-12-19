@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2008-12-19 11:10:52 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -581,7 +581,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     /* check for known character set */
                     setSpecificCharacterSet(doc.getStringFromNodeContent(cursor, tmpString));
                     const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
-                    if ((encString == "?") || doc.setEncodingHandler(encString).bad())
+                    if ((strcmp(encString, "?") == 0) || doc.setEncodingHandler(encString).bad())
                     {
                         OFString message = "Character set '";
                         message += tmpString;
@@ -2377,6 +2377,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.63  2008-12-19 11:10:52  joergr
+ *  Fixed wrong string comparison which caused a compiler error on openSUSE 11.1.
+ *
  *  Revision 1.62  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *
