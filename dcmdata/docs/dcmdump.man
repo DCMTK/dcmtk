@@ -107,6 +107,14 @@ parsing of odd-length attributes:
   +ae  --assume-even-length
          assume real length is one byte larger
 
+handling of non-standard VR:
+
+  +vr  --treat-as-unknown
+         treat non-standard VR as unknown (default)
+
+  -vr  --assume-implicit
+         try to read with implicit VR little endian TS
+
 handling of undefined length UN elements:
 
   +ui  --enable-cp246
@@ -257,6 +265,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

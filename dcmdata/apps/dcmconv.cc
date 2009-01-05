@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 16:42:23 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2009-01-05 15:30:15 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,39 +101,42 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                        "print expanded command line arguments");
-   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+    cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                       "print expanded command line arguments");
+    cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
+    cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
-     cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
-     cmd.addOption("--read-file-only",       "+fo",    "read file format only");
-     cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
+      cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+      cmd.addOption("--read-file-only",      "+fo",    "read file format only");
+      cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
     cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",       "-t=",    "use TS recognition (default)");
-     cmd.addOption("--read-xfer-detect",     "-td",    "ignore TS specified in the file meta header");
-     cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
+      cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
+      cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
     cmd.addSubGroup("parsing of odd-length attributes:");
-     cmd.addOption("--accept-odd-length",    "+ao",    "accept odd length attributes (default)");
-     cmd.addOption("--assume-even-length",   "+ae",    "assume real length is one byte larger");
+      cmd.addOption("--accept-odd-length",   "+ao",    "accept odd length attributes (default)");
+      cmd.addOption("--assume-even-length",  "+ae",    "assume real length is one byte larger");
+    cmd.addSubGroup("handling of non-standard VR:");
+      cmd.addOption("--treat-as-unknown",    "+vr",    "treat non-standard VR as unknown (default)");
+      cmd.addOption("--assume-implicit",     "-vr",    "try to read with implicit VR little endian TS");
     cmd.addSubGroup("handling of undefined length UN elements:");
-     cmd.addOption("--enable-cp246",         "+ui",    "read undefined len UN as implicit VR (default)");
-     cmd.addOption("--disable-cp246",        "-ui",    "read undefined len UN as explicit VR");
+      cmd.addOption("--enable-cp246",        "+ui",    "read undefined len UN as implicit VR (default)");
+      cmd.addOption("--disable-cp246",       "-ui",    "read undefined len UN as explicit VR");
     cmd.addSubGroup("handling of defined length UN elements:");
-     cmd.addOption("--retain-un",            "-uc",    "retain elements as UN (default)");
-     cmd.addOption("--convert-un",           "+uc",    "convert to real VR if known");
+      cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
+      cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
     cmd.addSubGroup("automatic data correction:");
-     cmd.addOption("--enable-correction",    "+dc",    "enable automatic data correction (default)");
-     cmd.addOption("--disable-correction",   "-dc",    "disable automatic data correction");
+      cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
+      cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
     cmd.addSubGroup("bitstream format of deflated input:");
-     cmd.addOption("--bitstream-deflated",   "+bd",    "expect deflated bitstream (default)");
-     cmd.addOption("--bitstream-zlib",       "+bz",    "expect deflated zlib bitstream");
+      cmd.addOption("--bitstream-deflated",  "+bd",    "expect deflated bitstream (default)");
+      cmd.addOption("--bitstream-zlib",      "+bz",    "expect deflated zlib bitstream");
 #endif
 
   cmd.addGroup("output options:");
@@ -239,6 +242,16 @@ int main(int argc, char *argv[])
         dcmAcceptOddAttributeLength.set(OFFalse);
       }
       cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--treat-as-unknown"))
+      {
+        dcmAcceptUnexpectedImplicitEncoding.set(OFFalse);
+      }
+      if (cmd.findOption("--assume-implicit"))
+      {
+        dcmAcceptUnexpectedImplicitEncoding.set(OFTrue);
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-cp246"))
@@ -439,6 +452,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.55  2009-01-05 15:30:15  joergr
+** Added command line options that allow for reading incorrectly encoded DICOM
+** datasets where particular data elements are encoded with a differing transfer
+** syntax (Implicit VR Little endian instead of Explicit VR encoding).
+**
 ** Revision 1.54  2008-11-03 16:42:23  joergr
 ** Removed "option block" encapsulation from option --compression-level.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:53:12 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2009-01-05 15:30:15 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -192,19 +192,22 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("parsing of odd-length attributes:");
         cmd.addOption("--accept-odd-length",  "+ao",    "accept odd length attributes (default)");
         cmd.addOption("--assume-even-length", "+ae",    "assume real length is one byte larger");
+      cmd.addSubGroup("handling of non-standard VR:");
+        cmd.addOption("--treat-as-unknown",   "+vr",    "treat non-standard VR as unknown (default)");
+        cmd.addOption("--assume-implicit",    "-vr",    "try to read with implicit VR little endian TS");
       cmd.addSubGroup("handling of undefined length UN elements:");
-       cmd.addOption("--enable-cp246",        "+ui",    "read undefined len UN as implicit VR (default)");
-       cmd.addOption("--disable-cp246",       "-ui",    "read undefined len UN as explicit VR");
+        cmd.addOption("--enable-cp246",       "+ui",    "read undefined len UN as implicit VR (default)");
+        cmd.addOption("--disable-cp246",      "-ui",    "read undefined len UN as explicit VR");
       cmd.addSubGroup("handling of defined length UN elements:");
-       cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
-       cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
+        cmd.addOption("--retain-un",          "-uc",    "retain elements as UN (default)");
+        cmd.addOption("--convert-un",         "+uc",    "convert to real VR if known");
       cmd.addSubGroup("automatic data correction:");
         cmd.addOption("--enable-correction",  "+dc",    "enable automatic data correction (default)");
         cmd.addOption("--disable-correction", "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
-    cmd.addSubGroup("bitstream format of deflated input:");
-     cmd.addOption("--bitstream-deflated",    "+bd",    "expect deflated bitstream (default)");
-     cmd.addOption("--bitstream-zlib",        "+bz",    "expect deflated zlib bitstream");
+      cmd.addSubGroup("bitstream format of deflated input:");
+        cmd.addOption("--bitstream-deflated", "+bd",    "expect deflated bitstream (default)");
+        cmd.addOption("--bitstream-zlib",     "+bz",    "expect deflated zlib bitstream");
 #endif
 
     cmd.addGroup("output options:");
@@ -329,6 +332,16 @@ int main(int argc, char *argv[])
         dcmAcceptOddAttributeLength.set(OFFalse);
       }
       cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--treat-as-unknown"))
+      {
+        dcmAcceptUnexpectedImplicitEncoding.set(OFFalse);
+      }
+      if (cmd.findOption("--assume-implicit"))
+      {
+        dcmAcceptUnexpectedImplicitEncoding.set(OFTrue);
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-cp246"))
@@ -655,6 +668,11 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.67  2009-01-05 15:30:15  joergr
+ * Added command line options that allow for reading incorrectly encoded DICOM
+ * datasets where particular data elements are encoded with a differing transfer
+ * syntax (Implicit VR Little endian instead of Explicit VR encoding).
+ *
  * Revision 1.66  2008-09-25 14:53:12  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
