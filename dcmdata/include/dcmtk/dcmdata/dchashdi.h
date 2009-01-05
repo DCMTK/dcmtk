@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-12-19 14:57:59 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2009-01-05 14:14:14 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@ typedef OFListConstIterator(DcmDictEntry *) OFListConstIteratorPDcmDictEntry;
 class DcmDictEntryListIterator: public OFListIteratorPDcmDictEntry
 {
 public:
+
     /// default constructor
     DcmDictEntryListIterator() {}
 
@@ -76,6 +77,7 @@ public:
 class DcmDictEntryListConstIterator: public OFListConstIteratorPDcmDictEntry
 {
 public:
+
     /// default constructor
     DcmDictEntryListConstIterator() {}
 
@@ -99,6 +101,7 @@ public:
 class DcmDictEntryList : public OFList<DcmDictEntry *>
 {
 public:
+
     /// constructor
     DcmDictEntryList() {}
 
@@ -118,12 +121,12 @@ public:
     DcmDictEntry *find(const DcmTagKey& k, const char *privCreator);
 
 private:
-  /// private undefined copy constructor
-  DcmDictEntryList(const DcmDictEntryList&);
-  
-  /// private undefined copy assignment operator
-  DcmDictEntryList& operator=(const DcmDictEntryList&);
 
+    /// private undefined copy constructor
+    DcmDictEntryList(const DcmDictEntryList&);
+  
+    /// private undefined copy assignment operator
+    DcmDictEntryList& operator=(const DcmDictEntryList&);
 };
 
 
@@ -132,10 +135,11 @@ private:
 class DcmHashDictIterator
 {
 public:
+
     /// default constructor
     DcmHashDictIterator()
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
-          { init(NULL); }
+        { init(NULL); }
 
     /** constructor, creates iterator to existing hash dictionary
      *  @param d pointer to dictionary 
@@ -144,17 +148,17 @@ public:
      */
     DcmHashDictIterator(const DcmHashDict* d, OFBool atEnd = OFFalse)
       : dict(NULL), hindex(0), iterating(OFFalse), iter()
-          { init(d, atEnd); }
+        { init(d, atEnd); }
 
     /// copy constructor
     DcmHashDictIterator(const DcmHashDictIterator& i) 
       : dict(i.dict), hindex(i.hindex), iterating(i.iterating), iter(i.iter)
-          { }
+        { }
 
     /// copy assignment operator
     DcmHashDictIterator& operator=(const DcmHashDictIterator& i) 
         { dict = i.dict; hindex = i.hindex; 
-        iterating = i.iterating; iter = i.iter; return *this; }
+          iterating = i.iterating; iter = i.iter; return *this; }
 
     /// comparison equality
     OFBool operator==(const DcmHashDictIterator& x) const 
@@ -162,7 +166,7 @@ public:
 
     /// comparison non-equality
     OFBool operator!=(const DcmHashDictIterator& x) const 
-        { return (hindex != x.hindex) || (iter != x.iter); }
+        { return /* to be fixed: (hindex != x.hindex) || */ (iter != x.iter); }
 
     /// dereferencing of iterator
     const DcmDictEntry* operator*() const
@@ -177,6 +181,7 @@ public:
         { DcmHashDictIterator tmp(*this); stepUp(); return tmp; }
 
 private:
+
     /** initializes the iterator
      *  @param d pointer to hash dictionary, may be NULL
      *  @param atEnd if true, iterator points after last element
@@ -320,6 +325,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
+** Revision 1.20  2009-01-05 14:14:14  joergr
+** Fixed bug in DcmHashDictIterator::operator!=() introduced with last commit.
+** Reverted to old implementation.
+**
 ** Revision 1.19  2008-12-19 14:57:59  joergr
 ** Fixed bug in DcmHashDictIterator::operator!=() - wrong comparison operand.
 **

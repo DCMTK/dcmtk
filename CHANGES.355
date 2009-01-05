@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.05 (riesmeier)
+
+- Fixed bug in DcmHashDictIterator::operator!=() introduced with last commit.
+  Reverted to old implementation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
+
 **** Changes from 2008.12.19 (riesmeier)
 
 - Fixed wrong string comparison which caused a compiler error on openSUSE 11.1.
