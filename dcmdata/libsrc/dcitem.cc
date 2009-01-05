@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:41 $
- *  CVS/RCS Revision: $Revision: 1.120 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-05 15:31:42 $
+ *  CVS/RCS Revision: $Revision: 1.121 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -709,7 +709,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     Uint16 groupTag = 0xffff;
     Uint16 elementTag = 0xffff;
 
-    /* Create a DcmXfer object based on the transfer syntax which was passed */
+    /* create a DcmXfer object based on the transfer syntax which was passed */
     DcmXfer xferSyn(xfer);
 
     /* dump some information if required */
@@ -758,14 +758,34 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         /* if the VR which was read is not a standard VR, print a warning */
         if (!vr.isStandard())
         {
-            STD_NAMESPACE ostream&localCerr = ofConsole.lockCerr();
-            localCerr << "DcmItem: Non-standard VR '" << vrstr
-                      << "' encountered while parsing attribute " << newTag.getXTag() << ", assuming ";
-            if (vr.usesExtendedLengthEncoding())
-                localCerr << "4 byte length field" << OFendl;
-            else
-                localCerr << "2 byte length field" << OFendl;
-            ofConsole.unlockCerr();
+            STD_NAMESPACE ostream &localCerr = ofConsole.lockCerr();
+            localCerr << "DcmItem: Non-standard VR '"
+                      << ((OFstatic_cast(unsigned char, vrstr[0]) < 32) ? ' ' : vrstr[0])
+                      << ((OFstatic_cast(unsigned char, vrstr[1]) < 32) ? ' ' : vrstr[1])
+                      << "' ("
+                      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                      << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0]) << "\\"
+                      << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1])
+                      << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
+                      << ") encountered while parsing attribute " << newTag.getXTag();
+            /* encoding of this data element might be wrong, try to correct it */
+            if (dcmAcceptUnexpectedImplicitEncoding.get())
+            {
+                localCerr << ", trying again with Implicit VR Little Endian" << OFendl;
+                ofConsole.unlockCerr();
+                /* put back read bytes to input stream ... */
+                inStream.putback();
+                bytesRead = 0;
+                /* ... and retry with Implicit VR Little Endian transfer syntax */
+                return readTagAndLength(inStream, EXS_LittleEndianImplicit, tag, length, bytesRead);
+            } else {
+                localCerr << ", assuming ";
+                if (vr.usesExtendedLengthEncoding())
+                    localCerr << "4 byte length field" << OFendl;
+                else
+                    localCerr << "2 byte length field" << OFendl;
+                ofConsole.unlockCerr();
+            }
         }
 
         /* set the VR which was read in the above created tag object. */
@@ -796,8 +816,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     nxtobj = newTag.getEVR();
 
     /* the next thing we want to do is read the value in the length field from inStream. */
-    /* determine if there is a corresponging amount of bytes (for the length field) still */
-    /* available in inStream. if not, return an error. */
+    /* determine if there is a corresponding amount of bytes (for the length field) still */
+    /* available in inStream. If not, return an error. */
     if (inStream.avail() < xferSyn.sizeofTagHeader(nxtobj) - bytesRead)
     {
         inStream.putback();    // the UnsetPutbackMark is in readSubElement
@@ -807,8 +827,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     }
 
     /* read the value in the length field. In some cases, it is 4 bytes wide, in other */
-    /* cases only 2 bytes (see DICOM standard (year 2000) part 5, section 7.1.1) (or the */
-    /* corresponding section in a later version of the standard) */
+    /* cases only 2 bytes (see DICOM standard part 5, section 7.1.1) */
     if (xferSyn.isImplicitVR() || nxtobj == EVR_na)   //note that delimitation items don't have a VR
     {
         inStream.read(&valueLength, 4);            //length field is 4 bytes wide
@@ -832,7 +851,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         }
     }
     /* if the value in length is odd, print an error message */
-    if ((valueLength & 1)&&(valueLength != OFstatic_cast(Uint32, -1)))
+    if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
     {
         ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << OFendl;
         ofConsole.unlockCerr();
@@ -3471,6 +3490,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.121  2009-01-05 15:31:42  joergr
+** Added global flag that allows for reading incorrectly encoded DICOM datasets
+** where particular data elements are encoded with a differing transfer syntax
+** (Implicit VR Little endian instead of Explicit VR encoding as declared).
+**
 ** Revision 1.120  2008-12-12 11:44:41  onken
 ** Moved path access functions to separate classes
 **

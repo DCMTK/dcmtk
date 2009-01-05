@@ -7,6 +7,22 @@ Changes between releases are documented here.
   Reverted to old implementation.
   Affects: dcmdata/include/dcmtk/dcmdata/dchashdi.h
 
+- Added global flag that allows for reading incorrectly encoded DICOM datasets
+  where particular data elements are encoded with a differing transfer syntax
+  (Implicit VR Little endian instead of Explicit VR encoding as declared).
+  Thanks to Jose Salavert Torres <josator@fiv.upv.es> for the sample file.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+
+- Added command line options that allow for reading incorrectly encoded DICOM
+  datasets where particular data elements are encoded with a differing transfer
+  syntax (Implicit VR Little endian instead of Explicit VR encoding).
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
+
 **** Changes from 2008.12.19 (riesmeier)
 
 - Fixed wrong string comparison which caused a compiler error on openSUSE 11.1.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:33:53 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2009-01-05 15:32:23 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,14 @@ extern OFGlobal<OFBool> dcmEnableOldSignatureFormat; /* default OFFalse */
  *  different transfer syntax than specified in the meta header.
  */
 extern OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
+
+/** This flag defines how non-standard VRs are treated by the parser when
+ *  reading. The default is to treat data element with non-standard VR as
+ *  unknown. If this flag is enabled, the parser will try to read the data
+ *  element with Implicit VR Little Endian transfer syntax.
+ */
+extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse */
+
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM
@@ -603,6 +611,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.53  2009-01-05 15:32:23  joergr
+ * Added global flag that allows for reading incorrectly encoded DICOM datasets
+ * where particular data elements are encoded with a differing transfer syntax
+ * (Implicit VR Little endian instead of Explicit VR encoding as declared).
+ *
  * Revision 1.52  2008-09-24 13:33:53  joergr
  * Fixed typo in comment.
  *

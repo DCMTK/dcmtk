@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-23 15:42:36 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-05 15:31:42 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcobject.h"
@@ -56,6 +56,8 @@ OFGlobal<OFBool> dcmAcceptOddAttributeLength(OFTrue);
 OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
 OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
 OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
+OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
+
 
 // ****** public methods **********************************
 
@@ -479,7 +481,12 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.52  2007-11-23 15:42:36  meichel
+ * Revision 1.53  2009-01-05 15:31:42  joergr
+ * Added global flag that allows for reading incorrectly encoded DICOM datasets
+ * where particular data elements are encoded with a differing transfer syntax
+ * (Implicit VR Little endian instead of Explicit VR encoding as declared).
+ *
+ * Revision 1.52  2007/11/23 15:42:36  meichel
  * Copy assignment operators in dcmdata now safe for self assignment
  *
  * Revision 1.51  2007/06/29 14:17:49  meichel
