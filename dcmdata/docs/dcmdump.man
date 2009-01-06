@@ -49,6 +49,9 @@ dcmfile-in  DICOM input file or directory to be dumped
        --arguments
          print expanded command line arguments
 
+  -q   --quiet
+         quiet mode, print no warnings and errors
+
   -d   --debug
          debug mode, print debug information
 \endverbatim
@@ -166,6 +169,12 @@ printing:
 
   -L   --print-short
          print long tag values shortened (default)
+
+  +T   --print-tree
+         print hierarchical structure as a simple tree
+
+  -T   --print-indented
+         print hierarchical structure indented (default)
 
   +F   --print-filename
          print header with filename for each input file
