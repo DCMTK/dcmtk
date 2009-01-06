@@ -22,13 +22,14 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-05 15:30:15 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2009-01-06 16:30:29 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstream.h"
@@ -75,6 +76,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
 // ********************************************
 
+static OFBool quietMode = OFFalse;
 static OFBool printFilename = OFFalse;
 static OFBool printFileSearch = OFFalse;
 static OFBool printAllInstances = OFTrue;
@@ -89,7 +91,8 @@ static size_t fileCounter = 0;
 static OFBool addPrintTagName(const char *tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-        CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
+        if (!quietMode)
+            CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
         return OFFalse;
     }
 
@@ -101,7 +104,8 @@ static OFBool addPrintTagName(const char *tagName)
         const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
         const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
         if (dicent == NULL) {
-            CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
+            if (!quietMode)
+                CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
             dcmDataDict.unlock();
             return OFFalse;
         } else {
@@ -125,9 +129,9 @@ static OFBool addPrintTagName(const char *tagName)
 
 int main(int argc, char *argv[])
 {
-    int opt_debugMode = 0;
+    int debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
-    size_t printFlags = DCMTypes::PF_shortenLongTagValues /*| DCMTypes::PF_showTreeStructure*/;
+    size_t printFlags = DCMTypes::PF_shortenLongTagValues;
     OFBool writePixelData = OFFalse;
     E_FileReadMode readMode = ERM_autoDetect;
     E_TransferSyntax xfer = EXS_Unknown;
@@ -136,9 +140,7 @@ int main(int argc, char *argv[])
     OFBool recurse = OFFalse;
     const char *scanPattern = NULL;
     const char *pixelDirectory = NULL;
-#ifdef USE_EXPERIMENTAL_QUIET_MODE
     OFOStringStream errorStream;
-#endif
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -165,9 +167,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--arguments",                      "print expanded command line arguments");
-#ifdef USE_EXPERIMENTAL_QUIET_MODE
       cmd.addOption("--quiet",                "-q",     "quiet mode, print no warnings and errors");
-#endif
       cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
@@ -218,6 +218,8 @@ int main(int argc, char *argv[])
                                                         "set threshold for long values to k kbytes");
         cmd.addOption("--print-all",          "+L",     "print long tag values completely");
         cmd.addOption("--print-short",        "-L",     "print long tag values shortened (default)");
+        cmd.addOption("--print-tree",         "+T",     "print hierarchical structure as a simple tree");
+        cmd.addOption("--print-indented",     "-T",     "print hierarchical structure indented (default)");
         cmd.addOption("--print-filename",     "+F",     "print header with filename for each input file");
         cmd.addOption("--print-file-search",  "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
         cmd.addOption("--map-uid-names",      "+Un",    "map well-known UID numbers to names (default)");
@@ -267,15 +269,14 @@ int main(int argc, char *argv[])
 
       /* options */
 
-#ifdef USE_EXPERIMENTAL_QUIET_MODE
       if (cmd.findOption("--quiet"))
       {
+        quietMode = OFTrue;
         app.setQuietMode();
         /* redirect error output to a dummy stream */
         ofConsole.setCerr(&errorStream);
       }
-#endif
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      if (cmd.findOption("--debug")) debugMode = 5;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) readMode = ERM_autoDetect;
@@ -405,6 +406,11 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
+      if (cmd.findOption("--print-tree")) printFlags |= DCMTypes::PF_showTreeStructure;
+      if (cmd.findOption("--print-indented")) printFlags &= ~DCMTypes::PF_showTreeStructure;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
       if (cmd.findOption("--print-filename"))
       {
         printFilename = OFTrue;
@@ -478,12 +484,12 @@ int main(int argc, char *argv[])
       }
     }
 
-    if (opt_debugMode)
+    if (debugMode)
         app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    SetDebugLevel((debugMode));
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded())
+    if (!dcmDataDict.isDictionaryLoaded() && !quietMode)
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
@@ -505,7 +511,7 @@ int main(int argc, char *argv[])
       {
         if (scanDir)
           OFStandard::searchDirectoryRecursively(paramString, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
-        else if (opt_debugMode)
+        else if (debugMode && !quietMode)
           CERR << "warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
       } else
         inputFiles.push_back(paramString);
@@ -579,7 +585,8 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
+        if (!quietMode)
+            CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
         return 1;
     }
 
@@ -589,9 +596,11 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
     if (cond.bad())
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << cond.text()
-             << ": reading file: "<< ifname << OFendl;
-
+        if (!quietMode)
+        {
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << cond.text()
+                 << ": reading file: "<< ifname << OFendl;
+        }
         result = 1;
         if (stopOnErrors) return result;
     }
@@ -629,9 +638,12 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             else if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
                 searchKey.set(group, elem);
             else {
-                CERR << "Internal ERROR in File " << __FILE__ << ", Line "
-                     << __LINE__ << OFendl
-                    << "-- Named tag inconsistency" << OFendl;
+                if (!quietMode)
+                {
+                    CERR << "Internal ERROR in File " << __FILE__ << ", Line "
+                         << __LINE__ << OFendl
+                         << "-- Named tag inconsistency" << OFendl;
+                }
                 abort();
             }
 
@@ -668,6 +680,12 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.68  2009-01-06 16:30:29  joergr
+ * Made command line option --quiet visible by default (not only in experimental
+ * mode).
+ * Added new command line options for changing the output format (tree structure
+ * vs. indented output).
+ *
  * Revision 1.67  2009-01-05 15:30:15  joergr
  * Added command line options that allow for reading incorrectly encoded DICOM
  * datasets where particular data elements are encoded with a differing transfer
