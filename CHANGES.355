@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.06 (riesmeier)
+
+- Made command line option --quiet visible by default (not only in experimental
+  mode).
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
+- Added new command line options for changing the output format (tree structure
+  vs. indented output).
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
+- Reworked print() output format for option PF_showTreeStructure.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dctypes.cc
+
+- Added note on default (indented) output format of dcmdump.
+  Affects: dcmdata/docs/dump2dcm.man
+
 **** Changes from 2009.01.05 (riesmeier)
 
 - Fixed bug in DcmHashDictIterator::operator!=() introduced with last commit.
