@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-28 09:22:41 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-06 16:27:07 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,7 @@
 const size_t DCMTypes::PF_shortenLongTagValues = 1 << 0;
 const size_t DCMTypes::PF_showTreeStructure    = 1 << 1;
 const size_t DCMTypes::PF_doNotMapUIDsToNames  = 1 << 2;
-const size_t DCMTypes::PF_lastEntry            = 1 << 3;
-const size_t DCMTypes::PF_convertToMarkup      = 1 << 4;
+const size_t DCMTypes::PF_convertToMarkup      = 1 << 3;
 
 /* writeXML flags */
 const size_t DCMTypes::XF_addDocumentType      = 1 << 0;
@@ -55,6 +54,9 @@ const size_t DCMTypes::XF_omitDataElementName  = 1 << 5;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.10  2009-01-06 16:27:07  joergr
+ * Reworked print() output format for option PF_showTreeStructure.
+ *
  * Revision 1.9  2008-04-28 09:22:41  meichel
  * New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
  *   quote non-ASCII string content as XML markup

@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-05 15:31:42 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2009-01-06 16:27:03 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,20 +167,9 @@ void DcmObject::printNestingLevel(STD_NAMESPACE ostream&out,
 {
     if (flags & DCMTypes::PF_showTreeStructure)
     {
-        /* special treatment for the last entry on the level */
-        if (flags & DCMTypes::PF_lastEntry)
-        {
-            /* show vertical bar for the tree structure */
-            for (int i = 2; i < level; i++)
-                out << "| ";
-            /* show juncture sign for the last entry */
-            if (level > 0)
-                out << "+ ";
-        } else {
-            /* show vertical bar for the tree structure */
-            for (int i = 1; i < level; i++)
-                out << "| ";
-        }
+        /* show vertical bar for the tree structure */
+        for (int i = 1; i < level; i++)
+            out << "| ";
     } else {
         /* show nesting level */
         for (int i = 1; i < level; i++)
@@ -189,7 +178,7 @@ void DcmObject::printNestingLevel(STD_NAMESPACE ostream&out,
 }
 
 
-void DcmObject::printInfoLineStart(STD_NAMESPACE ostream&out,
+void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
                                    const size_t flags,
                                    const int level,
                                    DcmTag *tag)
@@ -205,7 +194,7 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream&out,
         /* print tag name */
         out << tag->getTagName() << ' ';
         /* add padding spaces if required */
-        const signed long padLength = 35 - strlen(tag->getTagName()) - 2 * level;
+        const signed long padLength = DCM_OptPrintAttributeNameLength - strlen(tag->getTagName()) - 2 * level;
         if (padLength > 0)
             out << OFString(OFstatic_cast(size_t, padLength), ' ');
     } else {
@@ -219,7 +208,7 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream&out,
 }
 
 
-void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream&out,
+void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream &out,
                                  const size_t flags,
                                  const unsigned long printedLength,
                                  DcmTag *tag)
@@ -254,7 +243,7 @@ void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream&out,
 }
 
 
-void DcmObject::printInfoLine(STD_NAMESPACE ostream&out,
+void DcmObject::printInfoLine(STD_NAMESPACE ostream &out,
                               const size_t flags,
                               const int level,
                               const char *info,
@@ -481,6 +470,9 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.54  2009-01-06 16:27:03  joergr
+ * Reworked print() output format for option PF_showTreeStructure.
+ *
  * Revision 1.53  2009-01-05 15:31:42  joergr
  * Added global flag that allows for reading incorrectly encoded DICOM datasets
  * where particular data elements are encoded with a differing transfer syntax

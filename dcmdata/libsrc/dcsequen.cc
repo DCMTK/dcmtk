@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:41 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-06 16:27:03 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -203,14 +203,12 @@ void DcmSequenceOfItems::print(STD_NAMESPACE ostream&out,
         /* print sequence content */
         if (!itemList->empty())
         {
-            /* reset internal flags */
-            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
             /* print all items contained in the sequence */
             DcmObject *dO;
             itemList->seek(ELP_first);
             do {
                 dO = itemList->get();
-                dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
             } while (itemList->seek(ELP_next));
         }
     } else {
@@ -1277,6 +1275,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.78  2009-01-06 16:27:03  joergr
+** Reworked print() output format for option PF_showTreeStructure.
+**
 ** Revision 1.77  2008-12-12 11:44:41  onken
 ** Moved path access functions to separate classes
 **

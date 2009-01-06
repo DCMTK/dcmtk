@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-05 15:32:23 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2009-01-06 16:28:11 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,8 @@ const Uint32 DCM_OptPrintLineLength = 70;
 // Optimum value length if not all data printed
 const Uint32 DCM_OptPrintValueLength = 40;
 
+// Optimum attribute name length (for tree output)
+const Uint32 DCM_OptPrintAttributeNameLength = 35;
 
 /** This flags defines whether automatic correction should be applied to input
  *  data (e.g. stripping of padding blanks, removal of blanks in UIDs, etc).
@@ -169,7 +171,7 @@ class DcmObject
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs) = 0;
+    virtual OFCondition copyFrom(const DcmObject &rhs) = 0;
 
     /** return identifier for this class. Every class derived from this class
      *  returns a unique value of type enum DcmEVR for this call. This is used
@@ -211,7 +213,7 @@ class DcmObject
      *  @param pixelFileName not used (used in certain sub-classes of this class)
      *  @param pixelCounter not used (used in certain sub-classes of this class)
      */
-    virtual void print(STD_NAMESPACE ostream& out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -463,7 +465,7 @@ class DcmObject
      *  @param flags used to customize the output (see DCMTypes::PF_xxx)
      *  @param level current level of nested items. Used for indentation.
      */
-    void printNestingLevel(STD_NAMESPACE ostream&out,
+    void printNestingLevel(STD_NAMESPACE ostream &out,
                            const size_t flags,
                            const int level);
 
@@ -475,7 +477,7 @@ class DcmObject
      *  @param level current level of nested items. Used for indentation.
      *  @param tag optional tag used to print the data element information
      */
-    void printInfoLineStart(STD_NAMESPACE ostream&out,
+    void printInfoLineStart(STD_NAMESPACE ostream &out,
                             const size_t flags,
                             const int level,
                             DcmTag *tag = NULL);
@@ -489,7 +491,7 @@ class DcmObject
      *    Used for padding purposes.
      *  @param tag optional tag used to print the data element information
      */
-    void printInfoLineEnd(STD_NAMESPACE ostream&out,
+    void printInfoLineEnd(STD_NAMESPACE ostream &out,
                           const size_t flags,
                           const unsigned long printedLength = 0xffffffff /*no padding*/,
                           DcmTag *tag = NULL);
@@ -503,7 +505,7 @@ class DcmObject
      *  @param info text to be printed
      *  @param tag optional tag used to print the data element information
      */
-    virtual void printInfoLine(STD_NAMESPACE ostream&out,
+    virtual void printInfoLine(STD_NAMESPACE ostream &out,
                                const size_t flags,
                                const int level = 0,
                                const char *info = NULL,
@@ -611,6 +613,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.54  2009-01-06 16:28:11  joergr
+ * Reworked print() output format for option PF_showTreeStructure.
+ *
  * Revision 1.53  2009-01-05 15:32:23  joergr
  * Added global flag that allows for reading incorrectly encoded DICOM datasets
  * where particular data elements are encoded with a differing transfer syntax

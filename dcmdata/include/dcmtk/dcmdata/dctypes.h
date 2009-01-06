@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-28 09:22:42 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-06 16:28:11 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,9 +137,6 @@ struct DCMTypes
     /// do not map well-known UID numbers to UID names (e.g. Transfer Syntax and SOP Class)
     static const size_t PF_doNotMapUIDsToNames;
 
-    /// internal: current entry is the last one on the level
-    static const size_t PF_lastEntry;
-
     /// quote non-ASCII string content as XML markup
     static const size_t PF_convertToMarkup;
     //@}
@@ -180,6 +177,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.27  2009-01-06 16:28:11  joergr
+ * Reworked print() output format for option PF_showTreeStructure.
+ *
  * Revision 1.26  2008-04-28 09:22:42  meichel
  * New flag DCMTypes::PF_convertToMarkup causes DcmObject::print to
  *   quote non-ASCII string content as XML markup

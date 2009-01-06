@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-06 16:27:03 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,14 +111,12 @@ void DcmPixelSequence::print(STD_NAMESPACE ostream&out,
         /* print pixel sequence content */
         if (!itemList->empty())
         {
-            /* reset internal flags */
-            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
             /* print pixel items */
             DcmObject *dO;
             itemList->seek(ELP_first);
             do {
                 dO = itemList->get();
-                dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
             } while (itemList->seek(ELP_next));
         }
     } else {
@@ -334,7 +332,7 @@ OFCondition DcmPixelSequence::writeSignatureFormat(
    DcmOutputStream &outStream,
    const E_TransferSyntax oxfer,
    const E_EncodingType enctype,
-   DcmWriteCache *wcache)                           
+   DcmWriteCache *wcache)
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
@@ -392,6 +390,9 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.42  2009-01-06 16:27:03  joergr
+** Reworked print() output format for option PF_showTreeStructure.
+**
 ** Revision 1.41  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-05 15:31:42 $
- *  CVS/RCS Revision: $Revision: 1.121 $
+ *  Update Date:      $Date: 2009-01-06 16:27:03 $
+ *  CVS/RCS Revision: $Revision: 1.122 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -335,20 +335,13 @@ void DcmItem::print(STD_NAMESPACE ostream&out,
         /* print item content */
         if (!elementList->empty())
         {
-            /* reset internal flags */
-            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
             /* print attributes on this level */
             DcmObject *dO;
             elementList->seek(ELP_first);
-            OFBool ok;
             do {
                 dO = elementList->get();
-                ok = (elementList->seek(ELP_next) != NULL);
-                if (!ok)
-                    dO->print(out, newFlags | DCMTypes::PF_lastEntry, level + 1, pixelFileName, pixelCounter);
-                else
-                    dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
-            } while (ok);
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+            } while (elementList->seek(ELP_next));
         }
     } else {
         OFOStringStream oss;
@@ -3490,6 +3483,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.122  2009-01-06 16:27:03  joergr
+** Reworked print() output format for option PF_showTreeStructure.
+**
 ** Revision 1.121  2009-01-05 15:31:42  joergr
 ** Added global flag that allows for reading incorrectly encoded DICOM datasets
 ** where particular data elements are encoded with a differing transfer syntax
