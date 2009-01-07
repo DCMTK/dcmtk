@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.07 (riesmeier)
+
+- Avoid double output of resource identifier for forked children (Win32).
+  Affects: dcmnet/apps/storescp.cc
+           dcmwlm/apps/wlcefs.cc
+
+- Avoid double output of "auto correction" notice for forked children (Win32).
+  Affects: dcmwlm/libsrc/wlmactmg.cc
+
 **** Changes from 2009.01.06 (riesmeier)
 
 - Made command line option --quiet visible by default (not only in experimental
