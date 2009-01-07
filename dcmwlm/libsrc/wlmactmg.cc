@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:49:28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-07 17:21:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,7 @@ WlmActivityManager::WlmActivityManager(
     opt_sleepAfterFind( opt_sleepAfterFindv ), opt_sleepDuringFind( opt_sleepDuringFindv ),
     opt_maxPDU( opt_maxPDUv ), opt_networkTransferSyntax( opt_networkTransferSyntaxv ),
     opt_verbose( opt_verbosev ), opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
-    opt_singleProcess( opt_singleProcessv ),  opt_forkedChild( opt_forkedChildv ), cmd_argc( argcv ), 
+    opt_singleProcess( opt_singleProcessv ),  opt_forkedChild( opt_forkedChildv ), cmd_argc( argcv ),
     cmd_argv( argvv ), opt_maxAssociations( opt_maxAssociationsv ),
     opt_blockMode(opt_blockModev), opt_dimse_timeout(opt_dimse_timeoutv), opt_acse_timeout(opt_acse_timeoutv),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
@@ -157,7 +157,8 @@ WlmActivityManager::WlmActivityManager(
   // make sure not to let dcmdata remove tailing blank padding or perform other
   // manipulations. We want to see the real data.
   dcmEnableAutomaticInputDataCorrection.set( OFFalse );
-  DumpMessage( "\n(notice: dcmdata auto correction disabled.)\n" );
+  if (!opt_forkedChild)
+    DumpMessage( "\n(notice: dcmdata auto correction disabled.)\n" );
 
 #ifdef HAVE_GUSI_H
   // needed for Macintosh.
@@ -923,15 +924,15 @@ void WlmActivityManager::RemoveProcessFromTable( int pid )
   {
     ps = *it;
     // if process can be found, delete it from list and free memory
-    if ( ps->processId == pid ) 
-    { 
+    if ( ps->processId == pid )
+    {
       processTable.remove(*it);
       delete ps;
       return;
     }
     it++;
   }
-  
+
   // dump a warning if process could not be found in process table
   char msg[200];
   sprintf( msg, "WlmActivityManager::RemoveProcessFromTable : Could not find process %d.", pid );
@@ -1054,7 +1055,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
   // If no element was passed, return to the caller.
   if( elem == NULL )
     return;
-  
+
   DcmAttributeTag *at;
   DcmLongString *lo;
   char msg[200];
@@ -1280,6 +1281,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
+** Revision 1.25  2009-01-07 17:21:34  joergr
+** Avoid double output of "auto correction" notice for forked children (Win32).
+**
 ** Revision 1.24  2006-12-15 14:49:28  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.
