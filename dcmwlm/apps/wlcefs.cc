@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-26 12:05:17 $
+ *  Update Date:      $Date: 2009-01-07 17:20:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,8 +302,11 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   }
 
   // dump application information
-  DumpMessage( rcsid );
-  DumpMessage( "" );
+  if (!opt_forkedChild)
+  {
+    DumpMessage( rcsid );
+    DumpMessage( "" );
+  }
 
   // set general parameters in data source object
   dataSource->SetLogStream( &ofConsole );
@@ -422,6 +425,9 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.21  2009-01-07 17:20:21  joergr
+** Avoid double output of resource identifier for forked children (Win32).
+**
 ** Revision 1.20  2008-09-26 12:05:17  joergr
 ** Changed the way exclusive command line options are checked.
 **

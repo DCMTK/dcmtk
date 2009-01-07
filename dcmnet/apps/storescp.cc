@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-20 12:06:06 $
+ *  Update Date:      $Date: 2009-01-07 17:19:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.101 $
+ *  CVS/RCS Revision: $Revision: 1.102 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,8 +190,9 @@ int                opt_acse_timeout = 30;
 OFBool             opt_forkMode = OFFalse;
 #endif
 
-#ifdef _WIN32
 OFBool             opt_forkedChild = OFFalse;
+
+#ifdef _WIN32
 OFBool             opt_execSync = OFFalse;            // default: execute in background
 #endif
 
@@ -762,10 +763,10 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
     if (cmd.findOption("--compression-level"))
     {
-        if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown)
-          app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
-        app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
-        dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
+      if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown)
+        app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
+      app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+      dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
     }
 #endif
 
@@ -789,9 +790,9 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--timenames")) opt_timeNames = OFTrue;
     if (cmd.findOption("--filename-extension"))
-        app.checkValue(cmd.getValue(opt_fileNameExtension));
+      app.checkValue(cmd.getValue(opt_fileNameExtension));
     if (cmd.findOption("--timenames"))
-        app.checkConflict("--timenames", "--unique-filenames", opt_uniqueFilenames);
+      app.checkConflict("--timenames", "--unique-filenames", opt_uniqueFilenames);
 
     if (cmd.findOption("--exec-on-reception")) app.checkValue(cmd.getValue(opt_execOnReception));
 
@@ -918,7 +919,7 @@ int main(int argc, char *argv[])
 
 #endif
 
-  if (opt_debug)
+  if (opt_debug && !opt_forkedChild)
     app.printIdentifier();
 
 #ifdef HAVE_GETEUID
@@ -2610,6 +2611,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.102  2009-01-07 17:19:53  joergr
+** Avoid double output of resource identifier for forked children (Win32).
+**
 ** Revision 1.101  2008-11-20 12:06:06  joergr
 ** Moved command line option --output-directory to "output" section and made
 ** syntax description more consistent with other DCMTK tools.
