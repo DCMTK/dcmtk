@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.08 (riesmeier)
+
+- Changed value of DCMTK_PREFIX to $INSTALL_PREFIX as specified in CMake GUI.
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
+- Changed value of DCM_DICT_DEFAULT_PATH to $INSTALL_DATDIR\dicom.dic in order
+  to avoid loading of unwanted/unexpected dictionary files. This also conforms
+  more to the existing documentation.
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
+- Added (currently uncommented) values for DEFAULT_CONFIGURATION_DIR and
+  DEFAULT_SUPPORT_DATA_DIR.
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
+- Added support for generating native Windows installation paths.
+  Affects: CMakeLists.txt
+
 **** Changes from 2009.01.07 (riesmeier)
 
 - Avoid double output of resource identifier for forked children (Win32).
