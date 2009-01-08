@@ -49,16 +49,16 @@
 /* #undef  C_RIGHTSHIFT_UNSIGNED */
 
 /* Define the DCMTK default path */
-#define DCMTK_PREFIX "C:\\usr\\local"
+#define DCMTK_PREFIX "@NATIVE_INSTALL_PREFIX@"
 
 /* Define the default data dictionary path for the dcmdata library package */
-#define DCM_DICT_DEFAULT_PATH "dicom.dic;\\dicom.dic;" DCMTK_PREFIX "\\share\\dcmtk\\dicom.dic"
+#define DCM_DICT_DEFAULT_PATH "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_DATDIR@\\dicom.dic"
 
 /* Define the default directory where configuration files reside */
-#define DEFAULT_CONFIGURATION_DIR ""
+#define DEFAULT_CONFIGURATION_DIR ""  // "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_ETCDIR@\\"
 
 /* Define the default directory where support data files reside */
-#define DEFAULT_SUPPORT_DATA_DIR ""
+#define DEFAULT_SUPPORT_DATA_DIR ""  // "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_DATDIR@\\"
 
 /* Define the environment variable path separator */
 #define ENVIRONMENT_PATH_SEPARATOR ';'
