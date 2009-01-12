@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.12 (onken)
+
+- Fixed iterators to also compile with STL classes being enabled.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libsrc/dcpath.cc
+
 **** Changes from 2009.01.08 (riesmeier)
 
 - Changed value of DCMTK_PREFIX to $INSTALL_PREFIX as specified in CMake GUI.

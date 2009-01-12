@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 13:16:03 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-01-12 12:37:45 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,11 +55,17 @@ public:
   DcmPathNode() : m_obj(NULL), m_itemNo(0) {}
 
   /** Constructor. Creates search node from object pointer and item number.
-   *  @param obj [in] The object the search node points to
+   *  @param obj [in] The object the search node points to. The memory of the
+   *             given DICOM object is not handled by the node itself but 
+   *             must be handled (ie. freed) from outside.
    *  @param itemNo [in] The item number that should be set. Only relevant
    *                if obj parameter contains an item
    */
   DcmPathNode(DcmObject* obj, Uint32 itemNo)    : m_obj(obj), m_itemNo(itemNo) {}
+
+  /** Destructor. Nothing to do, the DICOM object is not freed automatically!
+   */
+  ~DcmPathNode() { }
 
   /// Pointer to object this search node points to
   DcmObject* m_obj;
@@ -110,6 +116,13 @@ public:
    */
   void append(DcmPathNode* node);
 
+  /** Removes last path node from path. Also frees memory of path node
+   *  but does _not_ free memory of the underlying DICOM item or element.
+   *  @param none
+   *  @return none
+   */
+  void deleteBackNode();
+
   /** Returns iterator pointing to first path component.
    *  @return Iterator to first path node.
    */
@@ -141,15 +154,63 @@ public:
    */
   OFString toString() const;
 
+  /** Returns whether the path contains tags of a given group.
+   *  Might be useful for looking after (unwanted) meta header tags etc.
+   *  @param groupNo [in] The group number to look for
+   *  @return OFTrue if group number is found in path, OFFalse otherwise
+   */  
+  OFBool containsGroup(const Uint16& groupNo) const;
+  
+  /** Returns a string representation of each path node separately.
+   *  Tags are represented as numbers surrounded by braces "(gggg,eeee)",
+   *  not dictionary names. Items are represented by a number or wildcard
+   *  in square brackets, eg. "[12]" or "[*]".
+   *  @param path The path to parse into different nodes
+   *  @param result [out] List containing the resulting strings
+   *  @return none
+   */
+  static OFCondition separatePathNodes(const OFString& path, OFList<OFString>& result);
+
+  /** Helper function for findOrCreatePath(). Parses an item number from
+   *  the beginning of the path string. The item number must be positive,
+   *  starting with 0.
+   *  The path must start like "[itemnumber]...".
+   *  @param path - [in/out] The path starting with the item number
+   *                in square brackets, e. g. "[3]". The parsed item number
+   *                and a potentially following "." are removed from the path
+   *  @param itemNo - [out] The parsed item number. If a wildcard was parsed,
+   *                  this output parameter is not set at all.
+   *  @param wasWildcard - [out] Is set to OFTrue, if wildcard was parsed
+   *                       (instead of concrete item number).
+   *  @return EC_Normal, if concrete item number or wildcard was parsed
+   */
+  static OFCondition parseItemNoFromPath(OFString& path,                   // inout
+                                         Uint32& itemNo,                   // out
+                                         OFBool& wasWildcard);             // out
+
+  /** Function that parses a tag from the beginning of a path string.
+   *  The tag has to be either in numeric format, e. g. "(0010,0010)" or
+   *  a dictionary name, e. g. "PatientsName". If successful, the
+   *  parsed tag is removed from the path string.
+   *  @param path - [in/out] The path string, starting with the attribute
+   *                to parse
+   *  @param tag - [out] The tag parsed
+   *  @return EC_Normal if successful, error code otherwise
+   */
+  static OFCondition parseTagFromPath(OFString& path,         // inout
+                                      DcmTag& tag);           // out
+
   /** Desctructor, cleans up memory of path nodes. Does not delete
-   *  the DcmObjects the nodes point to!
+   *  the DcmObjects the nodes point to (this is also not done
+   *  by the desctructor of the path nodes, so the caller is responsible
+   *  for freeing any related DICOM objects.
    */
   ~DcmPath();
 
 private:
 
-  /// Internal list representing the nodes in the paths.
-  OFList<DcmPathNode*> m_result;
+  /// Internal list representing the nodes in the path.
+  OFList<DcmPathNode*> m_path;
 
   /** Private undefined copy constructor
    */
@@ -179,7 +240,7 @@ public:
    *
    *  In principle, the path string must have the following format (in
    *  arbitrary depth). Note that for searching a sequence, the example
-   *  below would start with [itemNo] instead:
+   *  below would start with [ITEMNO] instead:
    *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
    *  . ITEMNO must be a positive integer starting with 0.
    *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
@@ -191,7 +252,7 @@ public:
    *
    *  Example: The path
    *  "ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
-   *  Sequence in "this" item, therein the 5th item, therein the "Concept
+   *  Sequence in the given object, therein the 5th item, therein the "Concept
    *  Name Code Sequence" denoted by (0040,a043), therein the first item
    *  and finally therein the tag "Code Value".
    *  The resulting object list should (if success is returned) contain
@@ -199,9 +260,9 @@ public:
    *  in their logical order as they occur in the path string
    *  (in total 2 sequences, 2 items, and one leaf attribute).
    *  @param obj [in] The object to search (or create) a path in
-   *  @param path [in] The path starting with an attribute (either a
-   *              sequence or a a leaf attribute) as a dicitionary name or
-   *              tag. The parsed attribute is removed from the path string.
+   *  @param path [in] The path either starting with an attribute (either a
+   *              sequence or a a leaf attribute as a dicitionary name or
+   *              tag) or starting with an item
    *  @param createIfNecessary [in] If set, all missing objects found
    *                           in the path string are created. If not set,
    *                           only existing paths can be accessed and
@@ -211,6 +272,34 @@ public:
   OFCondition findOrCreatePath(DcmObject* obj,
                                const OFString& path,
                                OFBool createIfNecessary = OFFalse);
+
+  /** Function that allows for deleting elements and items from 
+   *  a DICOM object tree.
+   *  In principle, the path string must have the following format (in
+   *  arbitrary depth). Note that for searching in a sequence, the example
+   *  below would start with [ITEMNO] instead:
+   *  SEQUENCE[ITEMNO].SEQUENCE[ITEMNO].ATTRIBUTE
+   *  . ITEMNO must be a positive integer starting with 0.
+   *  SEQUENCE and ATTRIBUTE must be a tag, written e. g.
+   *  "(0010,0010)" or as a dictionary name, e. g. "PatientsName".
+   *
+   *  Example: The path
+   *  "ContentSequence[4].(0040,a043)[0].CodeValue" selects the Content
+   *  Sequence in the given object, therein the 5th item, therein the "Concept
+   *  Name Code Sequence" denoted by (0040,a043), therein the first item
+   *  and finally therein the tag "Code Value". Only "Code Value" will be
+   *  deleted by the function.
+   *  @param obj [in] The object to delete attribute or item from
+   *  @param path [in] The path either starting with an attribute (either a
+   *              sequence or a a leaf attribute as a dicitionary name or
+   *              tag) or starting with an item
+   *  @param numDeleted [out] Number of deleted attributes/items
+   *  @return EC_Normal if successful, error code otherwise. If the desired
+   *  attribute/item was not found, EC_TagNotFound is returned.
+   */
+  OFCondition findOrDeletePath(DcmObject* obj,
+                               const OFString& path,
+                               Uint32& numDeleted);
 
   /** Returns the results from the search / creation call.
    *  @param searchResults [out] The resulting paths that were created/searched
@@ -292,45 +381,48 @@ protected:
    *  in their logical order as they occur in the path string
    *  (in total 1 sequence, 2 items, and one leaf element).
    *  @param seq  [in] The object to search (or create) a path in
-   *  @param path [in] The path starting with an attribute (either a
-   *              sequence or a a leaf attribute) as a dicitionary name or
-   *              tag. The parsed attribute is removed from the path string.
+   *  @param path [in] The path starting with an item. The parsed item number
+   *  (e. g. "[0]") is removed from the path string.
    *  @return EC_Normal if successful, error code otherwise.
    */
   OFCondition findOrCreateSequencePath(DcmSequenceOfItems* seq,
                                        OFString& path);
 
-  /** helper function for findOrCreatePath(). parses an item number from
-   *  the beginning of the path string. The item number must be positive,
-   *  starting with 0.
-   *  The path must start like "[itemnumber]...".
-   *  @param path - [in/out] The path starting with the item number
-   *                in square brackets, e. g. "[3]". The parsed item number
-   *                and a potentially following "." are removed from the path
-   *  @param itemNo - [out] The parsed item number. If a wildcard was parsed,
-   *                  this output parameter is not set at all.
-   *  @param wasWildcard - [out] Is set to OFTrue, if wildcard was parsed
-   *                       (instead of concrete item number).
-   *  @return EC_Normal, if concrete item number or wildcard was parsed
+  /** Helper function that looks at the last node in a given path and deletes
+   *  the corresponding DICOM object. Does not delete the path node itself:
+   *  That is done by the calling function, findOrCreateItemPath().
+   *  @param objSearchedIn [in/out] The object the given path starts in.
+   *  @param path [in/out] The complete path to the DICOM object to delete
+   *  @parm toDelete [in/out] The path node to delete. This node must be 
+   *                 identical to the last node in the path parameter. Also
+   *                 the node must represent a DICOM sequence or leaf element,
+   *                 not an item. However, because it is isolated already by 
+   *                 the calling function, it is provided here for convenience.
    */
-  static OFCondition parseItemNoFromPath(OFString& path,                   // inout
-                                         Uint32& itemNo,                   // out
-                                         OFBool& wasWildcard);             // out
+  static OFCondition deleteLastElemFromPath(DcmObject* objSearchedIn,
+                                            DcmPath *path,
+                                            DcmPathNode* toDelete);
 
-  /** Function that parses a tag from the beginning of a path string.
-   *  The tag has to be either in numeric format, e. g. "(0010,0010)" or
-   *  a dictionary name, e. g. "PatientsName". If successful, the
-   *  parsed tag is removed from the path string.
-   *  @param path - [in/out] The path string, starting with the attribute
-   *                to parse
-   *  @param tag - [out] The tag parsed
-   *  @return EC_Normal if successful, error code otherwise
+  /** Helper function that looks at the last node in a given path and deletes
+   *  the corresponding DICOM object. Does not delete the path node itself:
+   *  That is done by the calling function, findOrCreateItemPath().
+   *  @param objSearchedIn [in/out] The object the given path starts in.
+   *  @param path [in/out] The complete path to the DICOM object to delete
+   *  @parm toDelete [in/out] The path node to delete. This node must be 
+   *                 identical to the last node in the path parameter. Also
+   *                 the node must represent a DICOM item, not a sequence
+   *                 However, because it is isolated already by the calling
+   *                 function, it is provided here for convenience.
    */
-  static OFCondition parseTagFromPath(OFString& path,         // inout
-                                       DcmTag& tag);           // out
+  static OFCondition deleteLastItemFromPath(DcmObject* objSearchedIn,
+                                            DcmPath *path,
+                                            DcmPathNode* toDelete);
 
   /** Cleans up memory that was allocated for any search results.
    *  Called when a new search is started or during object destruction.
+   *  The DICOM data all freed paths and path nodes point to, is not
+   *  touched, ie. all memory to the DICOM objects pointed to must be
+   *  freed from outside.
    */
   void clear();
 
@@ -343,7 +435,7 @@ private:
   OFList<DcmPath*> m_results;
 
   /// Denotes whether missing items/sequences/attributes should be
-  /// automatically inserted when calling search routine
+  /// automatically inserted when using findAndCreate routines
   OFBool m_createIfNecessary;
 
   /** Private undefined copy constructor
@@ -362,6 +454,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.3  2009-01-12 12:37:45  onken
+** Fixed iterators to also compile with STL classes being enabled.
+**
 ** Revision 1.2  2008-12-12 13:16:03  onken
 ** Fixed doxygen documentation.
 **
