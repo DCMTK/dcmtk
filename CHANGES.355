@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.13 (riesmeier)
+
+- Changed minimum required CMake version from 2.4 to 2.4.8.
+  Affects: CMakeLists.txt
+
+- Slightly updated installation file for the changes of the current snapshot.
+  Affects: INSTALL
+
 **** Changes from 2009.01.12 (onken)
 
 - Fixed iterators to also compile with STL classes being enabled.
