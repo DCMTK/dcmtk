@@ -3,13 +3,16 @@
 DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
+Please note that most sections of this document refer to the official release
+DCMTK 3.5.4, i.e. they are not updated for the changes of the latest snapshot.
+
 
 PRE-REQUISITES
 ==============
 
 The DICOM toolkit (DCMTK) needs to be compiled with a C++ compiler.  We
 recommend using the GNU C++ compiler in versions higher than 2.95 (most of the
-development was done using GNU C++ 3.2 on Linux 2.4).  The software is also
+development was done using GNU C++ 4.1.2 on Linux 2.6).  The software is also
 known to compile using the SUNPro C++ compiler and the Microsoft Visual C++
 compiler.
 
@@ -130,8 +133,8 @@ Platform Notes
 
 Please note: Due to resource limitations it is not practical for us to ensure
 that the newest release of DCMTK is problem free under all the above
-combinations.  Currently, our main development environment is Linux 2.4 using
-GNU C++ 3.2 and DCMTK should always compile on this platform.
+combinations.  Currently, our main development environment is Linux 2.6 using
+GNU C++ 4.1.2 and DCMTK should always compile on this platform.
 
 
 OPENSSL SUPPORT
@@ -404,7 +407,7 @@ the following steps to install CMake on your machine:
 
 1. Go to http://www.cmake.org/HTML/Download.html to download the latest release
    version of CMake for Windows.  With regard to a certain CMake version, note
-   that CMake 2.4.7 or later can be used in conjunction with DCMTK.
+   that CMake 2.4.8 or later can be used in conjunction with DCMTK.
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
@@ -583,4 +586,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2007-12-11 (Riesmeier).
+Last revised: 2009-01-13 (Riesmeier).
