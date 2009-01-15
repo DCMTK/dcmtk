@@ -30,7 +30,8 @@ Changes between releases are documented here.
            dcmdata/data/private.dic
   Removed: dcmdata/libsrc/dicom.dic
            dcmdata/libsrc/private.dic
-  Affects: dcmdata/data/CMakeLists.txt
+  Affects: dcmdata/Makefile.in
+           dcmdata/data/CMakeLists.txt
            dcmdata/data/Makefile.in
            dcmdata/docs/datadict.txt
            dcmdata/libsrc/CMakeLists.txt
