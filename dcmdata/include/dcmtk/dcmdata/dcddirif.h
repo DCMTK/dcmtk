@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:05:37 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2009-01-15 10:16:40 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1454,10 +1454,12 @@ class DicomDirInterface
     /// filename of the default icon (if any)
     OFString DefaultIcon;
 
-    /// flag indicating whether JPEG compression is supported
-    OFBool JPEGSupport;
-    /// flag indicating whether RLE compression is supported
+    /// flag indicating whether RLE decompression is supported
     OFBool RLESupport;
+    /// flag indicating whether JPEG decompression is supported
+    OFBool JPEGSupport;
+    /// flag indicating whether JPEG 2000 decompression is supported
+    OFBool JP2KSupport;
 
     /// current patient number used to invent missing attribute values
     unsigned long AutoPatientNumber;
@@ -1489,6 +1491,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.14  2009-01-15 10:16:40  joergr
+ * Added check whether (possibly required) JPEG 2000 decoder is registered.
+ *
  * Revision 1.13  2008-06-23 12:05:37  joergr
  * Added check on value representation of data elements copied from the
  * referenced DICOM file to the DICOMDIR (compare VR with data dictionary).
