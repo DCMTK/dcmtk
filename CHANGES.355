@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.15 (riesmeier)
+
+- Added support for optional JPEG 2000 decompression (currently uncommented).
+  Affects: dcmdata/apps/dcmgpdir.cc
+  
+- Added check whether (possibly required) JPEG 2000 decoder is registered.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/libsrc/dcddirif.cc
+           
+- Do not reject compressed images if corresponding decoder is not registered
+  but no icon images are to be created anyway.
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 **** Changes from 2009.01.13 (riesmeier)
 
 - Changed minimum required CMake version from 2.4 to 2.4.8.
