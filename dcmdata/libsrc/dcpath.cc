@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008, OFFIS
+ *  Copyright (C) 2008-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-12 12:37:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-01-15 16:04:02 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,32 +174,32 @@ OFCondition DcmPath::parseItemNoFromPath(OFString& path,        // inout
   size_t closePos = path.find_first_of(']', 0);
   if ( (closePos != OFString_npos) && (path[0] == '[') )
   {
-      long int parsedNo;
-      // try parsing item number; parsing for %lu would cause overflows in case of negative numbers
-      int parsed = sscanf(path.c_str(), "[%ld]", &parsedNo);
-      if (parsed == 1)
+    long int parsedNo;
+    // try parsing item number; parsing for %lu would cause overflows in case of negative numbers
+    int parsed = sscanf(path.c_str(), "[%ld]", &parsedNo);
+    if (parsed == 1)
+    {
+      if (parsedNo < 0)
       {
-          if (parsedNo < 0)
-          {
-              OFString errMsg = "Negative item number (not permitted) at beginning of path: "; errMsg += path;
-              return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
-          }
-          itemNo = OFstatic_cast(Uint32, parsedNo);
-          if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
-              closePos ++;
-          path.erase(0, closePos + 1); // remove item from path
-          return EC_Normal;
+        OFString errMsg = "Negative item number (not permitted) at beginning of path: "; errMsg += path;
+        return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
       }
-      char aChar;
-      parsed = sscanf(path.c_str(), "[%c]", &aChar);
-      if ( (parsed == 1) && (aChar =='*') )
-      {
-        wasWildcard = OFTrue;
-        if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
-            closePos ++;
-        path.erase(0, closePos + 1); // remove item from path
-        return EC_Normal;
-      }
+      itemNo = OFstatic_cast(Uint32, parsedNo);
+      if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
+        closePos ++;
+      path.erase(0, closePos + 1); // remove item from path
+      return EC_Normal;
+    }
+    char aChar;
+    parsed = sscanf(path.c_str(), "[%c]", &aChar);
+    if ( (parsed == 1) && (aChar =='*') )
+    {
+      wasWildcard = OFTrue;
+      if (closePos + 1 < path.length()) // if end of path not reached, cut off "."
+        closePos ++;
+      path.erase(0, closePos + 1); // remove item from path
+      return EC_Normal;
+    }
   }
   OFString errMsg = "Unable to parse item number at beginning of path: "; errMsg += path;
   return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
@@ -219,11 +219,11 @@ OFCondition DcmPath::parseTagFromPath(OFString& path,           // inout
   {
     pos = path.find_first_of(')', 0);
     if (pos != OFString_npos)
-        result = DcmTag::findTagFromName(path.substr(1, pos - 1).c_str() /* "gggg,eeee" */, tag);
+      result = DcmTag::findTagFromName(path.substr(1, pos - 1).c_str() /* "gggg,eeee" */, tag);
     else
     {
-        OFString errMsg("Unable to parse tag at beginning of path: "); errMsg += path;
-        return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
+      OFString errMsg("Unable to parse tag at beginning of path: "); errMsg += path;
+      return makeOFCondition(OFM_dcmdata, 25, OF_error, errMsg.c_str());
     }
     pos++; // also cut off closing bracket
   }
@@ -233,9 +233,9 @@ OFCondition DcmPath::parseTagFromPath(OFString& path,           // inout
     // maybe an item follows
     pos = path.find_first_of('[', 0);
     if (pos == OFString_npos)
-        result = DcmTag::findTagFromName(path.c_str(), tag); // check full path
+      result = DcmTag::findTagFromName(path.c_str(), tag); // check full path
     else
-        result = DcmTag::findTagFromName(path.substr(0, pos).c_str(), tag); // parse path up to "[" char
+      result = DcmTag::findTagFromName(path.substr(0, pos).c_str(), tag); // parse path up to "[" char
   }
   // construct error message if necessary and return
   if (result.bad())
@@ -264,7 +264,7 @@ DcmPath::~DcmPath()
 
 
 // Seperate a string path into the different nodes
-OFCondition DcmPath::separatePathNodes(const OFString& path, 
+OFCondition DcmPath::separatePathNodes(const OFString& path,
                                        OFList<OFString>& result)
 {
   OFString pathStr(path);
@@ -272,7 +272,7 @@ OFCondition DcmPath::separatePathNodes(const OFString& path,
   OFBool nextIsItem = OFTrue;
   Uint32 itemNo = 0;
   OFBool isWildcard = OFFalse;
-  
+
   // initialize parsing loop
   if (!pathStr.empty())
   {
@@ -323,8 +323,15 @@ OFCondition DcmPath::separatePathNodes(const OFString& path,
 DcmPathProcessor::DcmPathProcessor() :
   m_currentPath(),
   m_results(),
-  m_createIfNecessary(OFFalse)
+  m_createIfNecessary(OFFalse),
+  m_checkPrivateReservations(OFTrue)
 {
+}
+
+
+void DcmPathProcessor::setPrivateReservationChecking(const OFBool& checkForReservation)
+{
+  m_checkPrivateReservations = checkForReservation;
 }
 
 
@@ -372,7 +379,7 @@ OFCondition DcmPathProcessor::findOrDeletePath(DcmObject* obj,
   else
     return EC_IllegalParameter;
   if (result.bad()) return result;
-  
+
   // check results
   OFList<DcmPath*> resultPaths;
   Uint32 numPaths = getResults(resultPaths);
@@ -384,15 +391,15 @@ OFCondition DcmPathProcessor::findOrDeletePath(DcmObject* obj,
     // get last item/element from path which should be deleted
     DcmPathNode* nodeToDelete = (*pathIt)->back();
     if ( (nodeToDelete == NULL) || (nodeToDelete->m_obj == NULL) ) return EC_IllegalCall;
-    
-    // if it's not an item, delete element from item
-    // deletes DICOM content of node but not node itself
+
+    // if it's not an item, delete element from item.
+    // deletes DICOM content of node but not node itself (done later)
     if (nodeToDelete->m_obj->ident() != EVR_item)
     {
       result = deleteLastElemFromPath(obj, *pathIt, nodeToDelete);
     }
     // otherwise we need to delete an item from a sequence
-    else 
+    else
     {
       result = deleteLastItemFromPath(obj, *pathIt, nodeToDelete);
     }
@@ -447,7 +454,7 @@ void DcmPathProcessor::clear()
     }
     m_currentPath.pop_front();
   }
-  
+
   m_createIfNecessary = OFFalse;
 
 }
@@ -472,7 +479,7 @@ OFCondition DcmPathProcessor::deleteLastElemFromPath(DcmObject* objSearchedIn,
   if ( path->size() == 1)
   {
     // if we have only a single elem in path, given object must be cont. item
-    if (objSearchedIn->ident() != EVR_item)
+    if ( (objSearchedIn->ident() != EVR_item) && (objSearchedIn->ident() != EVR_dataset) )
       return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot search leaf element in object being not an item");
     containingItem = OFstatic_cast(DcmItem*, objSearchedIn);
   }
@@ -483,7 +490,7 @@ OFCondition DcmPathProcessor::deleteLastElemFromPath(DcmObject* objSearchedIn,
     temp--; temp--;
     if (*temp == NULL) return EC_IllegalCall; // never happens here...
     if ( (*temp)->m_obj == NULL ) return EC_IllegalCall;
-    if ( (*temp)->m_obj->ident() != EVR_item)
+    if ( (*temp)->m_obj->ident() != EVR_item) // (no test for dataset needed)
       return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot search leaf element in object being not an item");
     containingItem = OFstatic_cast(DcmItem*, (*temp)->m_obj);
   }
@@ -539,6 +546,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
   OFString restPath(path);
   OFCondition status = EC_Normal;
   DcmTag tag;
+  OFString privCreator;
   OFBool newlyCreated = OFFalse; // denotes whether an element was created
   DcmElement *elem = NULL;
   DcmPath* currentResult = NULL;
@@ -553,12 +561,21 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
   {
     if (m_createIfNecessary)
     {
+      // private tags needs special handling, e. g. checking reservation
+      if (tag.isPrivate())
+      {
+        status = checkPrivateTagReservation(item, tag);
+        if (status.bad()) return status;
+      }
       elem = newDicomElement(tag);
       if (elem == NULL)
         return EC_IllegalCall;
       status = item->insert(elem, OFTrue);
       if (status.bad())
-          return status;
+      {
+        delete elem; elem = NULL;
+        return status;
+      }
       newlyCreated = OFTrue;
     }
     else
@@ -655,7 +672,12 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
     // if there are no items -> no results are found
     Uint32 numItems = seq->card();
     if (numItems == 0)
-      return EC_TagNotFound;
+    {
+      if (!m_createIfNecessary)
+        return EC_TagNotFound;
+      else
+        return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot insert unspecified number (wildcard) of items into sequence");
+    }
 
     // copy every item to result
     for (itemNo = 0; itemNo < numItems; itemNo++)
@@ -771,9 +793,88 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
 }
 
 
+OFBool DcmPathProcessor::hasPrivateReservationContext(const DcmTagKey &privateTag,
+                                                      DcmItem *item,
+                                                      OFString &privateCreator)
+{
+  // Calculate reservation tag
+  DcmTagKey reservatorKey(calcPrivateReservationTag(privateTag));
+  DcmElement *reservationElem;
+  // Find corresponding element and return false if none is found
+  OFCondition result = item->findAndGetElement(reservatorKey, reservationElem, OFFalse);
+  if (result.bad())
+    return OFFalse;
+
+  // Get private creator name and return succcess
+  reservationElem->getOFString(privateCreator, 0);
+  return OFTrue;
+}
+
+
+DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKey)
+{
+  DcmTagKey reservationTag(0xFFFF, 0xFFFF);
+  // if not a private key is given return "error"
+  if (!privateKey.isPrivate())
+    return reservationTag;
+  // if the private key given is already a reservation key, return it
+  if (privateKey.isPrivateReservation())
+    return privateKey;
+
+  // Calculate corresponding private creator element
+  Uint16 elemNo = privateKey.getElement();
+  // Get xx from given element number yzxx, groups stays the same
+  elemNo >>= 8;
+  reservationTag.setGroup(privateKey.getGroup());
+  reservationTag.setElement(elemNo);
+  return reservationTag;
+}
+
+
+OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
+                                                         DcmTag& tag /* in/out */)
+{
+  OFCondition result;
+  // if this is already a private reservation, there is nothing to do
+  if (m_checkPrivateReservations && !tag.isPrivateReservation())
+  {
+    DcmTagKey reservationKey = calcPrivateReservationTag(tag);
+    if (reservationKey == DCM_UndefinedTagKey)
+    {
+      OFString msg("Path evaluation error: Unable to compute private reservation for tag: "); msg += tag.toString();
+      return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
+    }
+    if (!item->tagExists(reservationKey))
+    {
+      OFString msg("Invalid path: No private reservation found for tag: "); msg += tag.toString();
+      return makeOFCondition(OFM_dcmdata, 25, OF_error, msg.c_str());
+    }
+    else
+    {
+      // set private creator for new element
+      OFString privCreator;
+      result = item->findAndGetOFString(reservationKey, privCreator);
+      if (result.bad() || (privCreator.empty()))
+      {
+        privCreator = "Invalid or empty private creator tag: "; privCreator += reservationKey.toString();
+        return makeOFCondition(OFM_dcmdata, 25, OF_error, privCreator.c_str());
+      }
+      // tell tag that its private creator and VR
+      tag.setPrivateCreator(privCreator.c_str());
+      tag.lookupVRinDictionary(); // not done automatically when saving
+    }
+  }
+  return EC_Normal;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.4  2009-01-15 16:04:02  onken
+** Added options for handling of private tags and fixed bug for deleting
+** tags on main level.
+**
 ** Revision 1.3  2009-01-12 12:37:41  onken
 ** Fixed iterators to also compile with STL classes being enabled.
 **

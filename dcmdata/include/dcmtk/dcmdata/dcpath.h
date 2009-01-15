@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008, OFFIS
+ *  Copyright (C) 2008-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-12 12:37:45 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-01-15 16:04:06 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ public:
 
   /** Constructor. Creates search node from object pointer and item number.
    *  @param obj [in] The object the search node points to. The memory of the
-   *             given DICOM object is not handled by the node itself but 
+   *             given DICOM object is not handled by the node itself but
    *             must be handled (ie. freed) from outside.
    *  @param itemNo [in] The item number that should be set. Only relevant
    *                if obj parameter contains an item
@@ -118,7 +118,6 @@ public:
 
   /** Removes last path node from path. Also frees memory of path node
    *  but does _not_ free memory of the underlying DICOM item or element.
-   *  @param none
    *  @return none
    */
   void deleteBackNode();
@@ -158,9 +157,9 @@ public:
    *  Might be useful for looking after (unwanted) meta header tags etc.
    *  @param groupNo [in] The group number to look for
    *  @return OFTrue if group number is found in path, OFFalse otherwise
-   */  
+   */
   OFBool containsGroup(const Uint16& groupNo) const;
-  
+
   /** Returns a string representation of each path node separately.
    *  Tags are represented as numbers surrounded by braces "(gggg,eeee)",
    *  not dictionary names. Items are represented by a number or wildcard
@@ -231,6 +230,16 @@ public:
    */
   DcmPathProcessor();
 
+  /** Enable or disable checking for private tag reservations when
+   *  inserting new private tags. If enabled (default), any private
+   *  tags to be inserted not having an appropriate reservation inside the
+   *  containing item will lead to an error. If disabled, the tag is
+   *  inserted anyway.
+   *  @param checkForReservation [in] If true, private tags are only inserted
+   *                                  if there is a corresponding reservation
+   */
+  void setPrivateReservationChecking(const OFBool& checkForReservation);
+
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
    *  pointers for each sucessfully found or inserted paths. Every list
@@ -273,7 +282,7 @@ public:
                                const OFString& path,
                                OFBool createIfNecessary = OFFalse);
 
-  /** Function that allows for deleting elements and items from 
+  /** Function that allows for deleting elements and items from
    *  a DICOM object tree.
    *  In principle, the path string must have the following format (in
    *  arbitrary depth). Note that for searching in a sequence, the example
@@ -309,6 +318,26 @@ public:
    *  @return Number of results returned
    */
   Uint32 getResults(OFList<DcmPath*>& searchResults);
+
+  /** Checks whether a given private tag has a reservation in an item
+   *  and returns the private creator if found.
+   *  @param privateTag [in] The private tag key to look for
+   *  @param item [in] The item to search the reservation tag in
+   *  @param privateCreator The private creator, if found
+   *  @return OFTrue, if a reservation element could be found, OFFals otherwise
+   */
+  static OFBool hasPrivateReservationContext(const DcmTagKey &privateTag,
+                                             DcmItem *item,
+                                             OFString &privateCreator);
+
+  /** Returns the private reservation tag key for a given private tag
+   *  @param privateKey [in] The private key to calculate reservation tag for
+   *  @return The reservation key. If given key is not private or an error,
+   *          return DCM_UndefinedTagKey. If the given key is a reservation
+   *          itself, it is directly returned.
+   */
+  static DcmTagKey calcPrivateReservationTag(const DcmTagKey &privateKey);
+
 
   /** Deconstructor, cleans up memory that was allocated for any
    *  search results.
@@ -393,11 +422,11 @@ protected:
    *  That is done by the calling function, findOrCreateItemPath().
    *  @param objSearchedIn [in/out] The object the given path starts in.
    *  @param path [in/out] The complete path to the DICOM object to delete
-   *  @parm toDelete [in/out] The path node to delete. This node must be 
-   *                 identical to the last node in the path parameter. Also
-   *                 the node must represent a DICOM sequence or leaf element,
-   *                 not an item. However, because it is isolated already by 
-   *                 the calling function, it is provided here for convenience.
+   *  @param toDelete [in/out] The path node to delete. This node must be
+   *                  identical to the last node in the path parameter. Also
+   *                  the node must represent a DICOM sequence or leaf element,
+   *                  not an item. However, because it is isolated already by
+   *                  the calling function, it is provided here for convenience.
    */
   static OFCondition deleteLastElemFromPath(DcmObject* objSearchedIn,
                                             DcmPath *path,
@@ -408,15 +437,27 @@ protected:
    *  That is done by the calling function, findOrCreateItemPath().
    *  @param objSearchedIn [in/out] The object the given path starts in.
    *  @param path [in/out] The complete path to the DICOM object to delete
-   *  @parm toDelete [in/out] The path node to delete. This node must be 
-   *                 identical to the last node in the path parameter. Also
-   *                 the node must represent a DICOM item, not a sequence
-   *                 However, because it is isolated already by the calling
-   *                 function, it is provided here for convenience.
+   *  @param toDelete [in/out] The path node to delete. This node must be
+   *                  identical to the last node in the path parameter. Also
+   *                  the node must represent a DICOM item, not a sequence
+   *                  However, because it is isolated already by the calling
+   *                  function, it is provided here for convenience.
    */
   static OFCondition deleteLastItemFromPath(DcmObject* objSearchedIn,
                                             DcmPath *path,
                                             DcmPathNode* toDelete);
+
+  /** Checks in item, whether a private reservation for a given
+   *  tag key exists (if not disabled). If so, a dictionary lookup is performed
+   *  and the VR and private creator of the tag is updated correspondingly.
+   *  @param item [in] The item to search in
+   *  @param tag [in/out] The tag to be checked. Will be updated with VR and
+   *                      private creator.
+   *  @return Return EC_Normal if reservation checking and updating the
+   *          tag was successful. Otherwise an error code is returned.
+   */
+  OFCondition checkPrivateTagReservation(DcmItem *item,
+                                         DcmTag& tag);
 
   /** Cleans up memory that was allocated for any search results.
    *  Called when a new search is started or during object destruction.
@@ -438,6 +479,10 @@ private:
   /// automatically inserted when using findAndCreate routines
   OFBool m_createIfNecessary;
 
+  /// If enabled (default), any insertions of private tags will fail, if no
+  /// corresponding reservation exists in the underlying item
+  OFBool m_checkPrivateReservations;
+
   /** Private undefined copy constructor
    */
   DcmPathProcessor(const DcmPathProcessor& rhs);
@@ -454,6 +499,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.4  2009-01-15 16:04:06  onken
+** Added options for handling of private tags and fixed bug for deleting
+** tags on main level.
+**
 ** Revision 1.3  2009-01-12 12:37:45  onken
 ** Fixed iterators to also compile with STL classes being enabled.
 **
