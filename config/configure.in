@@ -801,17 +801,15 @@ dnl -------------------------------------------------------
 dnl Check for Private Tag support
 dnl -------------------------------------------------------
 
-INSTALL_PRIVATE_DICTIONARY="NO"
-AC_MSG_CHECKING(whether to install private tag dictionary)
+AC_MSG_CHECKING(whether to enable private tag dictionary)
 AC_ARG_WITH(private-tags,
-[  --with-private-tags     install private tag dictionary
-  --without-private-tags  don't install private tag dictionary (default)],
+[  --with-private-tags     enable private tag dictionary
+  --without-private-tags  don't enable private tag dictionary (default)],
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
     AC_DEFINE(WITH_PRIVATE_TAGS, , [Define if we are compiling for built-in private tag dictionary])
-
-    INSTALL_PRIVATE_DICTIONARY="YES"
+    AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic", [Define the default data dictionary path for the dcmdata library package])
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -1238,7 +1236,6 @@ AC_SUBST(XMLLIBS)
 AC_SUBST(TCPWRAPPERLIBS)
 AC_SUBST(SNDFILELIBS)
 AC_SUBST(DEBUG)
-AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 
 AC_OUTPUT(Makefile.def Makefile)
 

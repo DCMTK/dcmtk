@@ -699,7 +699,6 @@ XMLLIBS
 TCPWRAPPERLIBS
 SNDFILELIBS
 DEBUG
-INSTALL_PRIVATE_DICTIONARY
 LTLIBOBJS'
 ac_subst_files=''
       ac_precious_vars='build_alias
@@ -1301,8 +1300,8 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-private-tags     install private tag dictionary
-  --without-private-tags  don't install private tag dictionary (default)
+  --with-private-tags     enable private tag dictionary
+  --without-private-tags  don't enable private tag dictionary (default)
   --with-openssl          include OpenSSL support (default: auto)
   --without-openssl       don't include OpenSSL support
   --with-opensslinc=DIR   location of OpenSSL includes and libraries
@@ -27346,7 +27345,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27349 "configure"
+#line 27348 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -27903,7 +27902,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27906 "configure"
+#line 27905 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -27976,7 +27975,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 27979 "configure"
+#line 27978 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -28049,7 +28048,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 28052 "configure"
+#line 28051 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -28467,9 +28466,8 @@ _ACEOF
 
 
 
-INSTALL_PRIVATE_DICTIONARY="NO"
-{ echo "$as_me:$LINENO: checking whether to install private tag dictionary" >&5
-echo $ECHO_N "checking whether to install private tag dictionary... $ECHO_C" >&6; }
+{ echo "$as_me:$LINENO: checking whether to enable private tag dictionary" >&5
+echo $ECHO_N "checking whether to enable private tag dictionary... $ECHO_C" >&6; }
 
 # Check whether --with-private-tags was given.
 if test "${with_private_tags+set}" = set; then
@@ -28483,7 +28481,10 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 
-    INSTALL_PRIVATE_DICTIONARY="YES"
+cat >>confdefs.h <<_ACEOF
+#define DCM_DICT_DEFAULT_PATH "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic"
+_ACEOF
+
     ;;
   *)
     { echo "$as_me:$LINENO: result: no" >&5
@@ -29883,7 +29884,6 @@ CXXFLAGS="$DEBUGCXXFLAGS $CXXFLAGS"
 
 
 
-
 ac_config_files="$ac_config_files Makefile.def Makefile"
 
 cat >confcache <<\_ACEOF
@@ -30586,11 +30586,10 @@ XMLLIBS!$XMLLIBS$ac_delim
 TCPWRAPPERLIBS!$TCPWRAPPERLIBS$ac_delim
 SNDFILELIBS!$SNDFILELIBS$ac_delim
 DEBUG!$DEBUG$ac_delim
-INSTALL_PRIVATE_DICTIONARY!$INSTALL_PRIVATE_DICTIONARY$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 85; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 84; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5
