@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:09:51 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-01-15 10:19:03 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -926,8 +926,9 @@ DicomDirInterface::DicomDirInterface()
     IconSize(64),
     IconPrefix(),
     DefaultIcon(),
-    JPEGSupport(OFFalse),
     RLESupport(OFFalse),
+    JPEGSupport(OFFalse),
+    JP2KSupport(OFFalse),
     AutoPatientNumber(0),
     AutoStudyNumber(0),
     AutoSeriesNumber(0),
@@ -936,10 +937,12 @@ DicomDirInterface::DicomDirInterface()
     AutoLutNumber(1),
     AutoCurveNumber(1)
 {
-    /* check whether (possibly required) JPEG/RLE codecs are registered */
+    /* check whether (possibly required) RLE/JPEG/JP2K decoders are registered */
+    RLESupport  = DcmCodecList::canChangeCoding(EXS_RLELossless, EXS_LittleEndianExplicit);
     JPEGSupport = DcmCodecList::canChangeCoding(EXS_JPEGProcess1TransferSyntax, EXS_LittleEndianExplicit) &&
                   DcmCodecList::canChangeCoding(EXS_JPEGProcess14SV1TransferSyntax, EXS_LittleEndianExplicit);
-    RLESupport = DcmCodecList::canChangeCoding(EXS_RLELossless, EXS_LittleEndianExplicit);
+    JP2KSupport = DcmCodecList::canChangeCoding(EXS_JPEG2000LosslessOnly, EXS_LittleEndianExplicit) &&
+                  DcmCodecList::canChangeCoding(EXS_JPEG2000, EXS_LittleEndianExplicit);
 }
 
 
@@ -1518,22 +1521,32 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 /* is transfer syntax supported */
                 if (result.good())
                 {
+                    /* RLE comporession */
+                    if (compare(transferSyntax, UID_RLELosslessTransferSyntax))
+                    {
+                        if (!RLESupport && IconImageMode)
+                        {
+                            printErrorMessage("RLE compression not supported: ", filename);
+                            result = EC_CannotChangeRepresentation;
+                        }
+                    }
                     /* JPEG compression */
                     if (compare(transferSyntax, UID_JPEGProcess14SV1TransferSyntax) ||
                         compare(transferSyntax, UID_JPEGProcess1TransferSyntax))
                     {
-                        if (!JPEGSupport)
+                        if (!JPEGSupport && IconImageMode)
                         {
                             printErrorMessage("JPEG compression not supported: ", filename);
                             result = EC_CannotChangeRepresentation;
                         }
                     }
-                    /* RLE comporession */
-                    if (compare(transferSyntax, UID_RLELosslessTransferSyntax))
+                    /* JPEG 2000 compression */
+                    if (compare(transferSyntax, UID_JPEG2000LosslessOnlyTransferSyntax) ||
+                        compare(transferSyntax, UID_JPEG2000TransferSyntax))
                     {
-                        if (!RLESupport)
+                        if (!JP2KSupport && IconImageMode)
                         {
-                            printErrorMessage("RLE compression not supported: ", filename);
+                            printErrorMessage("JPEG 2000 compression not supported: ", filename);
                             result = EC_CannotChangeRepresentation;
                         }
                     }
@@ -5076,6 +5089,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.28  2009-01-15 10:19:03  joergr
+ *  Do not reject compressed images if corresponding decoder is not registered
+ *  but no icon images are to be created anyway.
+ *  Added check whether (possibly required) JPEG 2000 decoder is registered.
+ *
  *  Revision 1.27  2008-06-23 12:09:51  joergr
  *  Added check on value representation of data elements copied from the
  *  referenced DICOM file to the DICOMDIR (compare VR with data dictionary).
