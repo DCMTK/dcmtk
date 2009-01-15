@@ -14,14 +14,13 @@ dcmodify [options] dcmfile-in...
 
 \section description DESCRIPTION
 
-\b dcmodify is a tool that allows to modify, insert and delete tags in DICOM
-files.  Sequences and tags with a value multiplicity > 1 are also supported.
-Currently, \b dcmodify is not able to remove or insert sequence items.
-Metaheader information and the tag's VR can also not be modified directly
-by \b dcmodify at this time.
-In addition to tag modifications, \b dcmodify makes available some input
-options - forcing \b dcmodify to handle its input files as the user specifies -
-and output options to control the output format of the resulting files.
+\b dcmodify is a tool that allows to modify, insert and delete tags and
+items in DICOM files.  Sequences and tags with a value multiplicity > 1
+are also supported. Metaheader information and the tag's VR can not be modified
+directly by \b dcmodify at this time.  In addition to tag modifications,
+\b dcmodify makes available some input options - forcing \b dcmodify
+to handle its input files as the user specifies - and output options
+to control the output format of the resulting files.
 
 In case multiple modifications have to be performed, \b dcmodify does the
 modifications in the same order as they appear on the command line.  Please
@@ -34,7 +33,7 @@ to UN and an empty value is used.  Please insert these tags into the dictionary
 to avoid this behaviour.
 
 \b dcmodify is able to work with so-called tag paths to access tags in
-sequences.  The syntax is
+sequences.  The (pseudo-formalized) syntax is
 
 \verbatim
   {sequence[item-no].}*element
@@ -45,10 +44,27 @@ sequences.  The syntax is
 
 where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a
 tag.  'item-no' describes the item number to be accessed (counting from zero).
-'element' defines the target tag to work on.  You can either specify the tag
+'element' defines the target tag to work on.  A tag can eithe be specified
 directly as (0010,0010) or through the corresponding dictionary name
 "PatientsName".  The '*' denotes that you can repeat sequence statements to
-access deeper levels in DICOM files (see EXAMPLES section).
+access deeper levels in DICOM files (see EXAMPLES section). For 'item-no',
+also a wildcard character '*' can be used selecting all items in surrounding
+sequence (see section WILDCARDS below).
+
+When inserting tag paths consisting of multiple nodes (ie. not a single
+element) using the '-i' option, any missing path elements (items, sequences,
+leaf elements) are inserted automatically when missing. That does not work
+for item wildcards: When no single item exists in the surrounding sequence
+\b dcmodify of course can't decide, how many items should be generated.
+However, if specifying an item number like '5', all 6 items (counted from zero)
+can be (and are) automatically generated in insert mode. If alredy 2 items
+would exist, the rest (4) would be inserted.
+
+When changing or inserting attributes with VR=UN, the given value to be
+inserted is interpreted series of hexadecimal numbers as it would be the case
+for specifying OB values. To avoid this behaviour, the option
+"--ignore-un-values" can be used which results in leaving UN values untouched,
+also printing a warning in debug mode.
 
 Please note that there are some issues concerning the modification of private
 tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
@@ -145,23 +161,23 @@ bitstream format of deflated input:
 \verbatim
 insert mode options:
 
-  -i    --insert-tag  "tag-path=value"
-          insert (or overwrite) tag at position t with value v
+  -i    --insert  "[t]ag-path=[v]alue"
+          insert (or overwrite) path at position t with value v
 
 modify mode options:
 
-  -m    --modify-tag  "[t]ag-path=[v]alue"
+  -m    --modify  "[t]ag-path=[v]alue"
           modify tag at position t to value v
 
-  -ma   --modify-all-tags  "[t]ag=[v]value"
+  -ma   --modify-all  "[t]ag=[v]alue"
           modify ALL matching tags t in file to value v
 
 erase mode options:
 
-  -e    --erase-tag  "[t]ag-path"
-          erase tag at position t
+  -e    --erase  "[t]ag-path"
+          erase tag/item at position t
 
-  -ea   --erase-all-tags  "[t]ag"
+  -ea   --erase-all  "[t]ag"
           erase ALL matching tags t in file
 
 uid options:
@@ -179,6 +195,16 @@ uid options:
           don't update metaheader UIDs;
           UIDs in the metaheader won't be changed, if related UIDs in
           the dataset are modified via options -m, -i or -ma
+
+other processing options:
+
+  -imt  --ignore-missing-tags
+          treat 'tag not found' as success
+          when modifying or erasing in files
+
+  -iun  --ignore-un-values
+          do not try writing any values
+          elements having VR of UN
 \endverbatim
 
 \subsection output_options output options
@@ -249,41 +275,56 @@ data set trailing padding (not with --write-dataset):
 
 There are some issues you have to consider when working with private tags.
 However, the insertion or modification of a reservation tag (gggg,00xx) should
-always work.
+always work the same way as for standard attributes.
 
 \subsection private_insertions Insertions
 
 If you wish to insert a private tag (not a reservation with gggg,00xx), be
 sure, that you've listed it in your dictionary (see
 <em><docdir>/datadict.txt</em> for details).  If it's not listed, \b dcmodify
-will insert it with VR=UN and an empty value.  Please note that the usage of
-option '-u' will change the VR from UN to OB when saving.
+will insert it with VR=UN and tries writing the given value interpreted
+as series of hexadecimal numbers (as for VR=OB).
 
-If you've got your private tag in the dictionary, \b dcmodify acts as follows:
+If you've got your private tag in the dictionary,  \b dcmodify acts as follows:
 When it finds a reservation in the tag's enclosing dataset, whose private
 creator matches, insertion is done with the VR found in the dictionary and the
-value, you entered at command line.  But if the private creator doesn't match
-the one found in the dictionary, \b dcmodify inserts the tag with VR Unknown
-(UN) and an empty value.
+value, you entered at command line.  However, using option '-nrc' will
+force \b dcmodify to ignore a missing private creator element and to try
+inserting the tag anyway.  The result is the same as if the tag is not
+found in dictionary, ie. the given value is interpreted as a series of
+hexadecimal numbers (as for VR=OB) and the element is written with VR=UN.
+
+There is no way of specifying the VR of an element on commandline.  Thus,
+all private elements that should be written with the correct VR \e must
+be in dictionary.  Please also note that the usage of option '-u' will change
+the VR of all UN elements (ie. also any unknown private attributes), to OB
+when saving.
 
 \subsection private_modifications Modifications
 
-If you modify a private tags value, \b dcmodify won't check its VR against the
+If you modify a private tag's value, \b dcmodify won't check its VR against the
 dictionary.  So please be careful to enter only values that match the tag's VR.
 
-If you wish to change a private tags value \e and VR, because you just added
+Any attributes with VR=UN to be modified (ie. also private attributes whose
+VR is not known) will interpret the given value as a number of hexadecimal
+bytes.
+
+If you wish to change a private tag's value \e and VR, because you just added
 this tag to your dictionary, you can delete it with \b dcmodify and re-insert
 it.  Then \b dcmodify uses your dicitionary entry to determine the right VR
 (also see subsection insertions).
 
 \subsection private_deletions Deletions
 
-When you use \b dcmodify to delete a private reservation tag, please note that
-\b dcmodify won't touch the private tags that are under this reservation.  The
-user is forced to handle the consistence between reservations and their
-pending private tags.
+When you use \b dcmodify to delete a private reservation tag using the "e" and
+"ea" options, please note that \b dcmodify won't touch the private tags that
+are under this reservation.  The user is forced to handle the consistence
+between reservations and their pending private tags.
 
 For the deletion of private non-reservation tags there are no special issues.
+
+Also the option "-ep" can be used to delete all private data (including
+any reservations) from a file.
 
 \section changing_uids CHANGING UIDs
 
@@ -305,6 +346,19 @@ by the user as necessary.
 When choosing the '-gin' option, the related metaheader tag ('Media Storage SOP
 Instance UID') is updated automatically.  This behaviour cannot be disabled.
 
+\section wildcards WILDCARDS
+
+\b dcmodify also permits the usage of a wildcard character "*" for item
+numbers in path expressions, e. g. the ContentSequence[*].CodeValue selects
+all "Code Value" attributes in all items of the ContentSequence. Using a
+wildcard is possible for all basic operations, ie. modifying '-m', inserting
+'-i' and '-e' options which makes it, together with the automatic creation
+of intermediate path nodes a powerful tool for construction and
+processing complex datasets. The options '-ma' and 'ea' for modifying
+or deleting all occurences of a DICOM element based on its tag does
+not except any wildcards but only works on single elements (ie. a single
+dictionary name or tag key).
+
 \section examples EXAMPLES
 
 \verbatim
@@ -320,13 +374,32 @@ Instance UID') is updated automatically.  This behaviour cannot be disabled.
        (0008,1111).  Note that the use of wildcards for files is
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
+       If any part of the path, e. g. the sequence or the item "0"
+       does not exist, it is automatically inserted by dcmodify.
+
+       dcmodify -i "(0008,1111)[*].PatientsName=Another Name" *.dcm
+       Inserts PatientsName tag into the _every_ item of sequence
+       (0008,1111).  Note that the use of wildcards for files is
+       possible.  You can specify longer tag paths, too (e.g.
+       "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").
 
 -m   --modify-tag:
        dcmodify -m "(0010,0010)=A Name" file.dcm
        Changes tag (0010,0010) on 1st level to "A Name".
 
-       This option also allows longer tag paths as demonstrated
-       above for -i.
+       This option also permits longer tag paths as demonstrated
+       above for -i. If the leaf element or any intermediate
+       part of the path does not exist, it is not inserted as it
+       would be if using the '-i' option.
+
+       dcmodify -m "(0010,0010)=A Name" -tnf file.dcm
+       Changes tag (0010,0010) on 1st level to "A Name". Due to the
+       given option '-tnf', success is returned instead of "tag not found",
+       if the element/item (or any intermediate node in a longer path) does
+       not exist.
+
+       Note that for the '-m' option the last node in the path must be
+       a leaf element, ie. not a sequence or an item.
 
 -ma  --modify-all-tags:
        dcmodify -ma "(0010,0010)=New Name" file.dcm
@@ -337,16 +410,24 @@ Instance UID') is updated automatically.  This behaviour cannot be disabled.
 -e   --erase-tag:
        dcmodify -e "(0010,0010)" *.dcm
        Erases tag (0010,0010) in all *.dcm files at 1st level.
-       Note: You can also erase whole sequences by using this
-       option with a sequence tag, but in this version it's not
-       possible to delete a single item in a sequence.
 
        This option also allows longer tag paths as demonstrated
        above for -i.
 
+       dcmodify -e "(0010,0010)" -tnf *.dcm
+       Erases tag (0010,0010) in all *.dcm files at 1st level. Due to the
+       given option '-tnf', success is returned instead of "tag not found",
+       if the element/item (or any intermediate node in a longer path) does
+       not exist.
+
 -ea  --erase-all-tags:
        dcmodify -ea "(0010,0010)" *.dcm
        Same as -e, but also searches in sequences and items.
+
+-ep  --erase-private:
+       dcmodify -ep *.dcm
+       Removes all private elements (attributes having an odd group number)
+       from all *.dcm files in the current directory.
 
 -gst --gen-stud-uid:
        dcmodify -gst file.dcm
@@ -371,7 +452,23 @@ Instance UID') is updated automatically.  This behaviour cannot be disabled.
        This will modify the SOPInstanceUID to the given [UID],
        but -nmu avoids, that dcmodify adjusts the
        MediaStorageSOPInstanceUID in the metaheader, too.
+
 \endverbatim
+
+\section error_handling ERROR HANDLING
+
+\b dcmodify tries executing each modify operation given on command line: If
+one returns an error, the others are being performed anyway.  However in case
+of any error, the modified file is not saved, unless the '--ignore-errors'
+option is specified.  If that option is selected, \b dcmodify also
+continues modifying further files specified on commandline; otherwise
+\b dcmodify exits after the first file that had modification errors.
+
+If the '--tagnotfound-ok' option is enabled, any modify or erase operations
+(ie. not '--insert') that fails because of a non-existing tag is treated as
+being successful.  That does make sense if someone wants to be sure that
+specific tags are not present in the file or that - if they exist - that they
+are set to a specific value.
 
 \section command_line COMMAND LINE
 

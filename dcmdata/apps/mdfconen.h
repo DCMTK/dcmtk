@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 13:39:16 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-15 16:11:55 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofcond.h"
 #include "dcmtk/dcmdata/dctagkey.h"
+
 
 /** class reflecting a modify operation (called Job in this context)
  */
@@ -102,6 +103,13 @@ protected:
      */
     void parseCommandLine();
 
+    /** Checks whether given job expects more values on commandline, e. g. a
+     *  a tag path or any kind of value.
+     *  @param job [in] The job option to check (e. g. "i", "m", "ma"...)
+     *  @return OFTrue, if a value is expected.
+     */
+    static OFBool jobOptionExpectsParameters(const OFString& job);
+
     /** This function splits a modify option (inclusive value) as
      *  found on commandline into to parts (path and value)
      *  e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
@@ -109,15 +117,17 @@ protected:
      *  @param path returns part containing the path
      *  @param value returns part containing the value(if theres one)
      */
-    void splitPathAndValue(const OFString &whole,
-                                 OFString &path,
-                                 OFString &value);
+    static void splitPathAndValue(const OFString &whole,
+                                  OFString &path,
+                                  OFString &value);
 
     /** Executes given modify job
      *  @param job job to be executed
+     *  @param filename name of the file to be processed (optional)
      *  @return returns 0 if no error occured, else the number of errors
      */
-    int executeJob(const MdfJob &job);
+    int executeJob(const MdfJob &job,
+                   const char* filename = NULL);
 
     /** Backup and load file into internal MdfDatasetManager
      *  @param filename name of file to load
@@ -152,59 +162,71 @@ protected:
 
 private:
 
-    ///helper class for console applications
+    /// helper class for console applications
     OFConsoleApplication *app;
 
-    ///helper class for commandline parsing
+    /// helper class for commandline parsing
     OFCommandLine *cmd;
 
-    ///ds_man holds dataset manager, that is used for modify operations
+    /// dataset manager that is used for modify operations
     MdfDatasetManager *ds_man;
 
-    ///verbose mode
+    /// verbose mode
     OFBool verbose_option;
 
-    ///debug mode
+    /// debug mode
     OFBool debug_option;
 
-    ///ignore errors option
+    /// ignore errors option
     OFBool ignore_errors_option;
 
-    ///if false, metaheader UIDs are not updated when related dataset UIDs change
+    /// if false, metaheader UIDs are not updated when related dataset UIDs change
     OFBool update_metaheader_uids_option;
 
-    ///if true, no backup is made before modifying a file
+    /// if true, no backup is made before modifying a file
     OFBool no_backup_option;
 
-    ///read file with or without metaheader
+    /// read file with or without metaheader
     E_FileReadMode read_mode_option;
 
-    ///denotes the expected transfersyntax
+    /// denotes the expected transfersyntax
     E_TransferSyntax input_xfer_option;
 
-    ///decides whether to with/without metaheader
+    /// decides whether to with/without metaheader
     OFBool output_dataset_option;
 
-    ///denotes the transfer syntax that should be written
+    /// denotes the transfer syntax that should be written
     E_TransferSyntax output_xfer_option;
 
-    ///option for group length recalcing
+    /// option for group length recalcing
     E_GrpLenEncoding glenc_option;
 
-    ///write explicit or implicit length encoding
+    /// write explicit or implicit length encoding
     E_EncodingType enctype_option;
 
-    ///padding output
+    /// padding output
     E_PaddingEncoding padenc_option;
 
-    ///internal padding variables
+    /// internal padding variables
     OFCmdUnsignedInt filepad_option;
     OFCmdUnsignedInt itempad_option;
 
-    ///list of jobs to be executed
+    /// if true, 'tag not found' errors are treated as being successful for
+    /// modify and erase operations
+    OFBool ignore_missing_tags_option;
+
+    /// If true, it is not checked whether there is a corresponding private
+    /// reservation during insertion of private tags
+    OFBool no_reservation_checks;
+
+    /// If enabled, any value modifications of UN leaf elements are not
+    /// executed
+    OFBool ignore_un_modifies;
+
+    /// list of jobs to be executed
     OFList<MdfJob> *jobs;
 
-    ///list of files to be modified
+    /// list of files to be modified
     OFList<OFString> *files;
 
     /** private undefined assignment operator
@@ -214,14 +236,21 @@ private:
     /** private undefined copy constructor
      */
     MdfConsoleEngine(const MdfConsoleEngine &);
-
 };
 
-#endif //MDFCONEN_H
+#endif // MDFCONEN_H
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
+** Revision 1.16  2009-01-15 16:11:55  onken
+** Reworked dcmodify to work with the new DcmPath classes for supporting
+** wildcard paths and automatic insertion of missing attributes and items.
+** Added options for private tag handling and modification of UN values and
+** for ignoring errors resulting from missing tags during modify and erase
+** operations. Further cleanups.
+**
 ** Revision 1.15  2008-06-23 13:39:16  joergr
 ** Fixed inconsistencies in Doxygen API documentation.
 **

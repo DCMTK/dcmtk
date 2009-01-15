@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-11 08:37:45 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-15 16:11:55 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dcmtk/ofstd/ofcmdln.h"
 #include "dcmtk/dcmdata/dcvrat.h"
 
+
 /** This class encapsulates data structures and operations for modifying
  *  Dicom files. Therefore it allows the process of load->modify->save to
  *  provide this service.
@@ -49,9 +50,11 @@ class MdfDatasetManager
 {
 public:
     /** Constructor, initializes member-variables
-     *  @param debug enables/disables debug-messages (off per default)
+     *  @param verbose enables/disables verbose messages (off per default)
+     *  @param debug enables/disables debug messages (off per default)
      */
-    MdfDatasetManager(const OFBool debug=OFFalse);
+    MdfDatasetManager(const OFBool verbose=OFFalse,
+                      const OFBool debug=OFFalse);
 
     /** Destructor
      */
@@ -59,7 +62,7 @@ public:
 
     /** Loads a file into dataset manager
      *  @param file_name file to be loaded
-        @param readMode read file with or without metaheader
+        @param readMode read file with or without metaheader. Default=autodetect
         @param xfer try to read with this transfer syntax. Default=autodetect
      *  @return returns EC_normal if everything is ok, else an error
      */
@@ -67,19 +70,28 @@ public:
                          const E_FileReadMode readMode=ERM_autoDetect,
                          const E_TransferSyntax xfer=EXS_Unknown);
 
-    /** Modifies/Inserts a tag with a specific value
-     *  @param tag_path holds complete path to tag
+    /** Modifies/Inserts a path (with a specific value if desired).
+     *  @param tag_path path to item/element
      *  @param value denotes new value of tag
      *  @param only_modify if true, only existing tags are processed. If false,
-     *                     not existing tag is inserted
+     *                     any not existing tag is inserted
+     *
      *  @param update_metaheader updates metaheader UIDs, if related UIDs in
      *                           dataset are changed (default=true)
+     *  @param ignore_missing_tags if true, tags that could not be found
+     *                             while modifying (only_modify must be true)
+     *                             are handled as non-errors
+     *  @param no_reservation_checks if true, any missing private reservation
+     *                               tags are ignored when inserting private
+     *                               tags. Only makes sense w/o only_modify
      *  @return returns EC_normal if everything is ok, else an error
      */
-    OFCondition modifyOrInsertTag(OFString tag_path,
-                                  const OFString &value,
-                                  const OFBool &only_modify,
-                                  const OFBool update_metaheader=OFTrue);
+    OFCondition modifyOrInsertPath(OFString tag_path,
+                                   const OFString &value,
+                                   const OFBool &only_modify,
+                                   const OFBool update_metaheader = OFTrue,
+                                   const OFBool ignore_missing_tags = OFFalse,
+                                   const OFBool no_reservation_checks = OFFalse);
 
     /** Modifies all matching tags in dataset to a new value
      *  @param tag_path denotes, which tag to modify
@@ -87,40 +99,46 @@ public:
      *  @param update_metaheader if true, metaheader uids are updated,
      *         if related dataset uids are changed, (default=true)
      *  @param count returns holds the number of tags, that were affected
+     *  @param ignore_missing_tags if true, tags that could not be found
+     *                             while modifying (only_modify must be true)
+     *                             are handled as non-errors
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition modifyAllTags(OFString tag_path,
                               const OFString &value,
                               const OFBool update_metaheader,
-                              int &count);
+                              int &count,
+                              const OFBool ignore_missing_tags = OFFalse);
 
     /** Deletes tag in dataset
      *  @param tag_path holds complete path to tag
-     *  @param all_tags If true, tag is deleted at all levels of dataset,
-     *                  else only 1. level is accessed
+     *  @param all_tags if true, tag is deleted at all levels of dataset,
+     *                  else only 1st level is accessed
+     *  @param ignore_missing_tags if true, tags that could not be found
+     *                             while modifying (only_modify must be true)
+     *                             are handled as non-errors
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition deleteTag(OFString tag_path,
-                          const OFBool &all_tags);
+                          const OFBool all_tags,
+                          const OFBool ignore_missing_tags);
 
-    /** Generates new 'Study Instance UID' and inserts it into the dataset.
-     *  'Series Instance UID' and 'SOP Instance UID' are not affected.
+    /** Deletes all private data from file, ie. all tags having
+     *  odd group numbers.
+     *  @return EC_Normal, if deletion was successful; error code otherwise
      */
-    OFCondition generateNewStudyUID();
+    OFCondition deletePrivateData();
 
-    /** Generates new 'Series Instance UID' and inserts it into the dataset.
-     *  'SOP Instance UID' is not affected.
+    /** Inserts new Study, Series or SOP Instance UID. If SOP Instance
+     *  UID is generated, the related tag in the metaheader is deleted, too
+     *  so that the new UID is also applied there when saving to disk later.
+     *  @param uidkey [in] The Instance UID to insert (study, series or sop
+     *                instance UID key permitted).
+     *  @return EC_Normal, if insertion was successful, error otherwise
      */
-    OFCondition generateNewSeriesUID();
+    OFCondition generateAndInsertUID(const DcmTagKey& uidKey);
 
-    /** Generates new 'SOP Instance UID' and inserts it into the dataset.
-     *  The related metaheader tag ('Media Storage SOP Instance UID') is
-     *  deleted from metaheader, so that it gets created correctly, if the file
-     *  is saved to disk.
-     */
-    OFCondition generateNewInstanceUID();
-
-    /** Saves current dataset back to a file. Caution: After saving
+     /** Saves current dataset back to a file. Caution: After saving
      *  MdfDatasetManager keeps working on old filename.
      *  @param file_name filename to save to
      *  @param opt_xfer transfer syntax to save to (EXS_Unknown: dont change)
@@ -169,6 +187,12 @@ public:
      */
     OFString getFilename() const;
 
+    /** Sets whether attributes with VR of UN should be modified or
+     *  left alone.
+     *  @param modifyUNValues [in] If set, UN values will be modified (default)
+     */
+    void setModifyUNValues(OFBool modifyUNValues);
+
 
 protected:
 
@@ -177,15 +201,7 @@ protected:
      *  @param value the value, the element should be changed to
      *  @return OFCondition, which returns an error code if an error occurs
      */
-    OFCondition startModify(DcmElement *elem, const OFString &value);
-
-    /** inserts tag into item with a specific value, overwrites existing tag
-     *  @param item item, where tag is inserted
-     *  @param search_key specifies tag to be inserted
-     *  @param value value that should be inserted in item
-     *  @return returns an error code as OFCondition, if an error occurs
-     */
-    OFCondition startInsert(DcmItem *item, DcmTagKey &search_key,
+    OFCondition startModify(DcmElement *elem,
                             const OFString &value);
 
     /** If key is the tag for SOPInstanceUID or SOPClassUID, then this function
@@ -195,45 +211,6 @@ protected:
      *  @param key tag to examine
      */
     void deleteRelatedMetaheaderTag(const DcmTagKey &key);
-
-    /** Checks whether group number is 0,1,2,3,5 or 7. Then an error is
-     *  returned, because these groups are illegal or shouldn't be modified
-     *  @param key tag, whose group should be examined
-     *  @return OFCondition with OF_ok if group is ok, else OF_error and
-     *          an error message are returned
-     */
-    OFCondition hasValidGroupNumber(const DcmTagKey &key);
-
-    /** Returns true, if given tag is a private tag (odd group number)
-     *  @param tag_key tag key, that should be tested
-     *  @return OFTrue if tag is private, else OFFalse
-     */
-    OFBool isPrivateTag(const DcmTagKey &tag_key);
-
-    /** Returns true, if given tag is a private reservation tag.
-     *  Thats is the case, if tag has the form gggg,00ee (10<ee<FF)
-     *  @param tag_key tag key, that should be tested
-     *  @return OFTrue if tag is a private reservation tag, else OFFalse
-     */
-    OFBool isPrivateReservationTag(const DcmTagKey &tag_key);
-
-    /** Returns true, if given tag is reserved in given item.
-     *  The private creator string is returned, too.
-     *  @param tag_key tag key, that should be checked
-     *  @param item this item is searched for the reservation
-     *  @param priv_creator OUT:private creator string of reservation, if found
-     *  @return OFTrue if tag has a matching reservation, else OFFalse
-     */
-    OFBool hasPrivateReservationContext(const DcmTagKey &tag_key,
-                                        DcmItem *item,
-                                        OFString &priv_creator);
-
-    /** Calculates from given private tag the reservation tag, that
-     *  would make a reservation for this private tag
-     *  @param tag_key tag key, whose reservation should be calculated
-     *  @return the tag key, that would reserve given private tag
-     */
-    DcmTagKey calcPrivateReservationTag(const DcmTagKey &tag_key);
 
     /** Returns true, if given tag key can be found in dictionary
      *  @param search_key tag to lookup
@@ -254,17 +231,24 @@ protected:
                   const OFString &s3);
 private:
 
-    ///name of file, that is loaded currently
-    OFString act_file;
+    /// name of file, that is loaded currently
+    OFString current_file;
 
-    ///will hold file to modify
+    /// will hold file to modify
     DcmFileFormat *dfile;
 
-    ///will hold the dataset, that should be modified
+    /// will hold the dataset, that should be modified
     DcmDataset *dset;
 
-    ///enable debug messages
+    /// verbose mode
+    OFBool verbose_option;
+
+    /// enable debug messages
     OFBool debug_option;
+
+    /// if enabled, no value modifications on attributes having VR of UN
+    /// are not executed
+    OFBool ignore_un_modifies;
 
     /** private undefined assignment operator
      */
@@ -273,14 +257,21 @@ private:
     /** private undefined copy constructor
      */
     MdfDatasetManager(const MdfDatasetManager &);
-
 };
 
-#endif //MDFDSMAN_H
+#endif // MDFDSMAN_H
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
+** Revision 1.19  2009-01-15 16:11:55  onken
+** Reworked dcmodify to work with the new DcmPath classes for supporting
+** wildcard paths and automatic insertion of missing attributes and items.
+** Added options for private tag handling and modification of UN values and
+** for ignoring errors resulting from missing tags during modify and erase
+** operations. Further cleanups.
+**
 ** Revision 1.18  2008-07-11 08:37:45  joergr
 ** Fixed typo in API documentation.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-15 16:11:55 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,22 +32,34 @@
 
 #include "dcmtk/config/osconfig.h"   // make sure OS specific configuration is included first
 #include "mdfconen.h"
+#include "dcmtk/dcmdata/dcpath.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmodify"
 
+
 int main(int argc, char *argv[])
 {
-    int error_count=0;
-    MdfConsoleEngine engine(argc,argv,OFFIS_CONSOLE_APPLICATION);
-    error_count=engine.startProvidingService();
-    if (error_count > 0)
-	    CERR << "There were " << error_count << " error(s)" << OFendl;
-    return(error_count);
+  int error_count = 0;
+  MdfConsoleEngine engine(argc, argv, OFFIS_CONSOLE_APPLICATION);
+  error_count = engine.startProvidingService();
+  if (error_count == 1)
+    CERR << "There was 1 error" << OFendl;
+  else if (error_count > 1)
+    CERR << "There were " << error_count << " errors" << OFendl;
+  return(error_count);
 }
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
+** Revision 1.10  2009-01-15 16:11:55  onken
+** Reworked dcmodify to work with the new DcmPath classes for supporting
+** wildcard paths and automatic insertion of missing attributes and items.
+** Added options for private tag handling and modification of UN values and
+** for ignoring errors resulting from missing tags during modify and erase
+** operations. Further cleanups.
+**
 ** Revision 1.9  2008-09-25 11:19:48  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.

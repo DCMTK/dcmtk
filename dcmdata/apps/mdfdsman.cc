@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2005, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-15 16:11:55 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,58 +38,48 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcuid.h"
+#include "dcmtk/dcmdata/dcpath.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
-MdfDatasetManager::MdfDatasetManager(const OFBool debug)
-:act_file(""),dfile(NULL), dset(NULL)
-// Date         : May, 13th, 2003
-// Author       : Michael Onken
-// Task         : Constructor, initializes member variables
-// Parameters   : debug - [in] enables/disables debug messages (off per default)
-// Return Value : none
+MdfDatasetManager::MdfDatasetManager(const OFBool verbose,
+                                     const OFBool debug)
+: current_file(""),
+  dfile(NULL),
+  dset(NULL),
+  verbose_option(verbose),
+  debug_option(debug),
+  ignore_un_modifies(OFFalse)
 {
-    debug_option=debug;
 }
 
 
 OFCondition MdfDatasetManager::loadFile(const char *file_name,
                                         const E_FileReadMode readMode,
                                         const E_TransferSyntax xfer)
-// Date         : May, 13th, 2003
-// Author       : Michael Onken
-// Task         : loads a file into dataset manager
-// Parameters   : file_name - [in] file to be loaded
-//                only_dataset - [in] read file without metaheader, if true.
-//                               default=false
-//                xfer         - [in] try to read with this transfer syntax
-//                               default=autodetect
-//
-// Return Value : An OFCondition, wheter loading was succesfull or not
 {
     OFCondition cond;
-    //delete old dfile and free memory and reset act_file
+    //delete old dfile and free memory and reset current_file
     delete dfile;
-    act_file="";
+    current_file="";
     dfile = new DcmFileFormat();
     dset = dfile->getDataset();
 
     //load file into attribute dfile
-    debugMsg(debug_option,"Loading into dataset manager: ", file_name,"");
+    debugMsg(verbose_option,"Loading file into dataset manager: ", file_name, "");
     cond=dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
     //if there are errors:
     if (cond.bad())
     {
-        debugMsg(debug_option,"Failed loading file: ", file_name,"");
         dset=NULL;
     }
-    //file susccessfully loaded into dfile:
+    //file susccessfully loaded into dfile
     else
     {
         //get dataset from file
-        debugMsg(debug_option,"Getting dataset from loaded file ", file_name,"");
+        debugMsg(verbose_option,"Getting dataset from loaded file: ", file_name, "");
         dset=dfile->getDataset();
         /*load also pixeldata into memory:
          *Without this command pixeldata wouldn't be included into the file,
@@ -98,17 +88,13 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name,
          */
         dset->loadAllDataIntoMemory();
         //save filename to member variable
-        act_file=file_name;
+        current_file=file_name;
     }
     return cond;
 }
 
+
 static DcmTagKey getTagKeyFromDictionary(OFString tag)
-// Date         : December, 4th, 2003
-// Author       : Michael Onken
-// Task         : lookup tag string in dictionary and return corresponding key
-// Parameters   : tag - [in] tag string for lookup
-// Return Value : Returns key from successful lookup, else (0xffff,0xffff)
 {
     DcmTagKey key(0xffff,0xffff);
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
@@ -124,19 +110,6 @@ static DcmTagKey getTagKeyFromDictionary(OFString tag)
 
 
 static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
-// Date         : November, 26th, 2003
-// Author       : Eichelberg / Onken
-// Task         : scans a token from the given string and returns it. Ignores
-//                leading whitespace.
-// Parameters   : c - [in] string to parse
-//                pos - [in/out] position within string, modified after
-//                      successful scan
-//                key - [out] tag key returned in this parameter if return
-//                      value is "tag key".
-//                idx - [out] index returned in this parameter if return
-//                      value is "index".
-// Return Value : -1 for "EOF", 0 for "parse error", 1 for "tag key",
-//                2 for "index", 3 for "period"
 {
   OFString aString;
   int lpos = pos;
@@ -193,16 +166,6 @@ static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
 static DcmItem* getItemFromPath(DcmItem &dataset,
                                 const char *location,
                                 OFString &message)
-// Date         : November, 26th, 2003
-// Author       : Michael Onken
-// Task         : locates a specific item within the given dataset
-// Parameters   : dataset - [in] dataset to be searched
-//                location - [in] location string. Format is
-//                           "sequence[item]{.sequence[item]}*" Where sequence
-//                           can be (gggg,eeee) or a dictionary name and items
-//                           within sequences are counted from zero.
-//                message - [out] error message if item couldn't be found
-// Return Value : pointer to the item searched if found, NULL otherwise
 {
   DcmTagKey key;
   Uint32 idx = 0;
@@ -226,7 +189,7 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
     {
       if (!finished)
       {
-        message=message+"error: path '" + location + "' incomplete.";
+        message=message + "Error: path '" + location + "' incomplete.";
         return NULL;
       }
       return result;
@@ -237,7 +200,7 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
       stack.clear();
       if (EC_Normal != result->search(key, stack, ESM_fromHere, OFFalse))
       {
-        message=message + "error: attribute not found in dataset (path is '"
+        message=message + "Error: attribute not found in dataset (path is '"
             + location + "')";
         return NULL;
       }
@@ -245,8 +208,7 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
       {
         sq = OFstatic_cast(DcmSequenceOfItems *, stack.top());
       } else {
-        message=message + "error: attribute is not a sequence (path is '"
-            + location + "')";
+        message=message + "Error: attribute is not a sequence (path is '" + location + "')";
         return NULL;
       }
       expected = 2;
@@ -257,19 +219,18 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
       // we have read an index
       if (sq == NULL)
       {
-        message=message + "error: sequence not found in path '" + location +"'";
+        message=message + "Error: sequence not found in path '" + location +"'";
         return NULL;
       }
       if (idx >= sq->card())
       {
-        message=message + "error: cannot allocate item in sequence (path is '"
-            + location + "')";
+        message=message + "Error: cannot allocate item in sequence (path is '" + location + "')";
         return NULL;
       }
       result = sq->getItem(idx);
       if (result == NULL)
       {
-        message=message + "error: item not found in path '" + location + "'";
+        message=message + "Error: item not found in path '" + location + "'";
         return NULL;
       }
       expected = 3;
@@ -286,15 +247,8 @@ static DcmItem* getItemFromPath(DcmItem &dataset,
 }
 
 
-static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
-// Date         : November, 26th, 2003
-// Author       : Michael Onken
-// Task         : splits tag path into two parts: the path itself and the
-//                key of the target tag. Path like (0008,1111)[0].(0010,0010) is
-//                seperated into path (0008,1111)[0] and key (0010,0010)
-// Parameters   : tag_path - [in/out] path
-//                key - [out] parsed key of target tag
-// Return Value : returns EC_normal if everything is ok, else a parse error
+static OFCondition splitTagPath(OFString &tag_path,
+                                DcmTagKey &key)
 {
     OFString target_tag;
     unsigned int group,elem;
@@ -317,8 +271,7 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
             tag_path.erase(tag_path.length()-1,1);
         //parse target_tag into DcmTagKey
         if (2 != sscanf(target_tag.c_str(),"(%x,%x)", &group, &elem))
-            return makeOFCondition(OFM_dcmdata,22,OF_error,
-                         "Invalid target tag!");
+            return makeOFCondition(OFM_dcmdata,22,OF_error,"Invalid target tag!");
         key = DcmTagKey(group,elem);
     }
     else
@@ -343,246 +296,241 @@ static OFCondition splitTagPath(OFString &tag_path, DcmTagKey &key)
 }
 
 
-OFCondition MdfDatasetManager::modifyOrInsertTag(OFString tag_path,
-                                                 const OFString &value,
-                                                 const OFBool &only_modify,
-                                                 const OFBool update_metaheader)
-// Date         : November, 26th, 2003
-// Author       : Michael Onken
-// Task         : Modifies/Inserts a tag with a specific value
-// Parameters   : tag_path - [in] holds complete path to tag
-//                value - [in] value for tag
-//                only_modify - [in] if true, only existing tags are processed.
-//                              If false, a not existing tag is inserted.
-// Return Value : returns EC_normal if everything is ok, else an error
+OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
+                                                  const OFString &value,
+                                                  const OFBool &only_modify,
+                                                  const OFBool update_metaheader,
+                                                  const OFBool ignore_missing_tags,
+                                                  const OFBool no_reservation_checks)
 {
-    //if no file loaded : return an error
-    if (dfile==NULL)
-        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
+  //if no file loaded : return an error
+  if (dfile == NULL)
+      return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
-    OFCondition result;
-    DcmElement *elem;
-    DcmTagKey key;
-    DcmItem *item = dset;
-    //seperate tag path and target tag
-    result=splitTagPath(tag_path, key);
-    //if target tag could not be parsed, return error
-    if (!result.good())
-        return result;
-    //check whether tag has a valid group number, that dcmodify can work with
-    if ( (result=hasValidGroupNumber(key)).bad() )
-        return result;
-    //delete metaheader tags, that are related to this key (if its an UID)
-    if (update_metaheader)
-        deleteRelatedMetaheaderTag(key);
-    //if an item tag was specified, then tag_path still contains a path
-    if (tag_path.length()!=0)
-    {
-        OFString error;
-        item=getItemFromPath(*dset, tag_path.c_str(), error);
-        //specified item not found -> return error
-        if (item==NULL) return makeOFCondition(OFM_dcmdata,22,OF_error,
-                                         error.c_str());
-    }
+  // find or create specified path
+  DcmPathProcessor proc;
+  proc.setPrivateReservationChecking(!no_reservation_checks);
+  OFCondition result = proc.findOrCreatePath(dset, tag_path, !only_modify /*create if desired*/);
+  // if desired, handle tag not found as being not an error
+  if ( (result == EC_TagNotFound) && only_modify && ignore_missing_tags )
+      return EC_Normal;
+  if (result.bad()) return result;
+  OFList<DcmPath*> resultPaths;
+  Uint32 numResultPaths = proc.getResults(resultPaths);
+  if (numResultPaths == 0) return EC_IllegalCall;
 
-    //if tag is already present, start modify operation
-    if ((result=item->findAndGetElement(key, elem, OFFalse)).good())
-    {
-        return startModify(elem, value);
-    }
-    //if tag is NOT present, tag is only inserted if user choosed "insert"
-    else if (!only_modify)
-    {
-        return startInsert(item,key,value);
-    }
-    return result;
+  // general validity checking; only must be done for one result
+  OFListIterator(DcmPath*) resultPath = resultPaths.begin();
+  // verify that groups 0 (invalid) and 2 (meta header) were not used
+  if ( (*resultPath)->containsGroup(0) || (*resultPath)->containsGroup(2) )
+      return makeOFCondition(OFM_dcmdata,22,OF_error, "Cannot insert/modify tags with group 0000 or 0002!");
+  // also - according to the standard -  groups 1,3,5,7,FF are illegal
+  if ( (*resultPath)->containsGroup(1) || (*resultPath)->containsGroup(3) ||
+       (*resultPath)->containsGroup(5) || (*resultPath)->containsGroup(7) ||
+       (*resultPath)->containsGroup(0xffff) )
+      return makeOFCondition(OFM_dcmdata, 22, OF_error, "Groups 0001,0003,0005,0007,FFFF are illegal!");
+
+  DcmPathNode *lastElement = (*resultPath)->back();
+  if (lastElement == NULL) return EC_IllegalCall;
+  DcmObject *obj = lastElement->m_obj;
+  if (obj == NULL) return EC_IllegalCall;
+  // if object at the end is not a leaf, the insertion is completed (or must fail)
+  if (!obj->isLeaf())
+  {
+      // if user specified a value to be inserted into non-leaf element, return error
+      if (value.length() != 0)
+          return makeOFCondition(OFM_dcmdata,22,OF_error,"Cannot put value into non-leaf elements!");
+      // Non-leaf elements (items/sequences) cannot just be modified
+      if (only_modify)
+         return makeOFCondition(OFM_dcmdata,22,OF_error,"Cannot modify non-leaf elements!");
+      // we have inserted an item/sequence at the end -> job completed
+      return EC_Normal;
+  }
+
+  // start modifying element value as desired
+  resultPath = resultPaths.begin();
+  while (resultPath != resultPaths.end())
+  {
+      DcmPathNode *lastElement = (*resultPath)->back();
+      if (lastElement == NULL) return EC_IllegalCall;
+      // if tag is already present, start modify operation
+      DcmElement *elem = OFstatic_cast(DcmElement*, lastElement->m_obj);
+      if (elem == NULL) return EC_IllegalCall;
+      result = startModify(elem, value);
+      if (result.bad()) return result;
+      if (update_metaheader)
+          deleteRelatedMetaheaderTag(elem->getTag());
+      resultPath++;
+  }
+  return EC_Normal;
 }
 
 
 OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
                                              const OFString &value,
                                              const OFBool update_metaheader,
-                                             int &count)
-// Date         : November, 26th, 2003
-// Author       : Michael Onken
-// Task         : Modifies all matching tags in dataset to a new value
-// Parameters   : tag_path - [in] denotes, which tag to modify
-//                value - [in] denotes new value of tag
-//                update_metaheader - [in] if true, metaheader uids are updated,
-//                                         if related dataset uids are changed
-//                count - [out] returns number of modified tags
-// Return Value : returns EC_normal if everything is ok, else an error
+                                             int &count,
+                                             const OFBool ignore_missing_tags)
 {
-    //if no file loaded : return an error
-    if (dfile==NULL)
+    // if no file loaded : return an error
+    if (dfile == NULL)
         return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
     DcmTagKey key;
     OFCondition result;
-    //split tag_path into the path itself and the target tag
-    result=splitTagPath(tag_path,key);
+
+    // split tag_path into the path itself and the target tag
+    result=splitTagPath(tag_path, key);
     if ( result.bad() )
         return result;
-    //check whether tag with this group can be modified
-    result=hasValidGroupNumber(key);
-    if ( result.bad() )
-        return result;
-    //modify metaheader if necessary
-    if (update_metaheader)
+
+    // check whether tag with this group can be modified
+    if (!key.hasValidGroup())
+        return makeOFCondition(OFM_dcmdata,22,OF_error,"Invalid group number!");
+
+    // modify metaheader if necessary; not necessary if not a main level tag
+    if ( update_metaheader && tag_path.empty() )
         deleteRelatedMetaheaderTag(key);
-    //this stack will hold result of element search
+    // this stack will hold result of element search
     DcmStack result_stack;
     DcmObject *elem;
-    //get references to all matching tags in dataset and store them in stack
+    // get references to all matching tags in dataset and store them in stack
     debugMsg(debug_option,"Looking for occurences of: ", key.toString(),"");
-    result=dset->findAndGetElements(key,result_stack);
-    //if there are elements found, modify metaheader if necessary
+    result=dset->findAndGetElements(key, result_stack);
+    // if there are elements found, modify metaheader if necessary
     if (debug_option)
     {
-        ofConsole.lockCerr() << "Found " << result_stack.card()
-                             << " occurences" << OFendl;
+        ofConsole.lockCerr() << "Found " << result_stack.card() << " occurences" << OFendl;
         ofConsole.unlockCerr();
     }
-    //as long there are matching elements left on the stack
-    while(result_stack.card()>0 && result.good())
+    // as long there are matching elements left on the stack
+    while( result_stack.card() > 0 && result.good() )
     {
-        //get the top element
+        // get the top element
         elem=result_stack.pop();
-        //if user gives e.g. a sequence delimiter,don't try to change it!
+        // if user gives e.g. a sequence delimiter,don't try to change it!
         if (elem->isLeaf())
         {
-            //and put new value to element
+            // and put new value to element
             debugMsg(debug_option, "Accessing existing tag for modify operation","","");
             result=startModify(OFstatic_cast(DcmElement*,elem),value);
             if (result.good()) count++;
         }
-        //if user gave "unchangeable" tag:
-        else result=makeOFCondition(OFM_dcmdata,22,OF_error,"Unable to modify tag!");
+        // if user gave "unchangeable" tag:
+        else result = makeOFCondition(OFM_dcmdata,22,OF_error,"Unable to modify tag!");
     }
+    // if desired, handle "tag not found" as being OK
+    if (ignore_missing_tags && (result == EC_TagNotFound))
+        return EC_Normal;
     return result;
 }
 
 
 OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
-                                         const OFBool &all_tags)
-// Date         : May, 28th, 2003
-// Author       : Michael Onken
-// Task         : deletes tag in dataset
-// Parameters   : tag_path - [in] holds complete path to tag
-//                allTags - [in] If true, tag is deleted at all levels of
-//                          dataset, else only 1. level is accessed
-// Return Value : An OFCondition, whether deleting was succesfull or not
+                                         const OFBool all_tags,
+                                         const OFBool ignore_missing_tags)
+{
+
+  // if no file loaded : return an error
+  if (dfile == NULL)
+      return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
+
+  OFCondition result;
+  if (all_tags)
+  {
+      // split tag path into item path and target tag
+      DcmTagKey key;
+      result = splitTagPath(tag_path, key);
+      if (result.bad())
+          return result;  // error parsing tag path
+
+      // if group is 0 or 2: abort; deletion of tags with 1,3,5,7 should be allowed
+      if ( (key.getGroup() == 0) || (key.getGroup() == 2) )
+          return makeOFCondition(OFM_dcmdata,22,OF_error, "Cannot delete tags with group 0000 or 0002!");
+
+      // if tag path still contains characters, user wants to modify item tag
+      if (tag_path.length() > 0)
+      {
+          OFString error;
+          DcmItem *item=NULL;
+          item = getItemFromPath(*dset, tag_path.c_str(), error);
+          if (item != NULL)
+              result = item->findAndDeleteElement(key, all_tags, all_tags);
+          else
+              return makeOFCondition(OFM_dcmdata,22,OF_error,error.c_str());
+      }
+      // other user specified single tag without path
+      else
+      {
+          result = dset->findAndDeleteElement(key, all_tags, all_tags);
+      }
+      if (ignore_missing_tags && (result == EC_TagNotFound))
+          return EC_Normal;
+      return result;
+  }
+
+  // do not delete all tags -> use path functions
+  DcmPathProcessor pathProc;
+
+  Uint32 numDeletions = 0;
+  result = pathProc.findOrDeletePath(dset, tag_path, numDeletions);
+  if (ignore_missing_tags && (result == EC_TagNotFound))
+      return EC_Normal;
+  return result;
+}
+
+
+OFCondition MdfDatasetManager::deletePrivateData()
+{
+  // if no file loaded : return an error
+  if (dfile == NULL)
+      return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
+
+  DcmStack stack;
+  DcmObject *dobj = NULL;
+  DcmTagKey tag;
+  OFCondition status = dset->nextObject(stack, OFTrue);
+  while (status.good())
+  {
+      dobj = stack.top();
+      tag = dobj->getTag();
+      if (tag.getGroup() & 1) // private tag ?
+      {
+          stack.pop();
+          delete ((DcmItem *)(stack.top()))->remove(dobj);
+      }
+      status = dset->nextObject(stack, OFTrue);
+  }
+  return EC_Normal;
+}
+
+
+OFCondition MdfDatasetManager::generateAndInsertUID(const DcmTagKey& uidKey)
 {
     //if no file loaded : return an error
     if (dfile==NULL)
         return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
 
-    //split tag path into item path and target tag
-    DcmTagKey key;
     OFCondition result;
-    result=splitTagPath(tag_path,key);
-    if (result.bad())
-        return result;  //error parsing tag path
-    //if group is 0,2:abort;deletion of tags with 1,3,5,7 should be allowed
-    if ( (key.getGroup()==0) || (key.getGroup()==2) )
-        return makeOFCondition(OFM_dcmdata,22,OF_error,
-        "Tags with groups 0000 and 0002 can not be deleted directly!");
-
-    //if tag path still contains characters, user wants to modify item tag
-    if (tag_path.length()>0)
+    char uid[100];
+    if (uidKey == DCM_StudyInstanceUID)
+        dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT);
+    else if (uidKey == DCM_SeriesInstanceUID)
+        dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT);
+    else if (uidKey == DCM_SOPInstanceUID)
     {
-        OFString error;
-        DcmItem *item=NULL;
-        item=getItemFromPath(*dset,tag_path.c_str(),error);
-        if (item!=NULL)
-            result=item->findAndDeleteElement(key, all_tags, all_tags);
-        else
-            return makeOFCondition(OFM_dcmdata,22,OF_error,error.c_str());
-    }
-    //other user specified single tag without path
-    else
-        result=dset->findAndDeleteElement(key, all_tags, all_tags);
-
-    return result;
-}
-
-
-OFCondition MdfDatasetManager::generateNewStudyUID()
-// Date         : October, 22th, 2004
-// Author       : Michael Onken
-// Task         : Generates new 'Study Instance UID' and inserts it into the
-//                dataset. 'Series Instance UID' and 'SOP Instance UID' are
-//                not affected.
-// Parameters   : none
-// Return Value : none
-{
-    //if no file loaded : return an error
-    if (dfile==NULL)
-        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
-
-    OFCondition result;
-    char uid[100];
-    dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT);
-    DcmTagKey key(DCM_StudyInstanceUID);
-    //deleteTag(OFstatic_cast(DcmItem*,dset),key);
-    result=startInsert( OFstatic_cast(DcmItem*,dset), key , uid);
-
-    return result;
-}
-
-
-OFCondition MdfDatasetManager::generateNewSeriesUID()
-// Date         : October, 22th, 2004
-// Author       : Michael Onken
-// Task         : Generates new 'Series Instance UID' and inserts it into the
-//                dataset. 'SOP Instance UID' is not affected.
-// Parameters   : none
-// Return Value : none
-
-{
-    //if no file loaded : return an error
-    if (dfile==NULL)
-        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
-
-    OFCondition result;
-    //crate new series uid
-    char uid[100];
-    dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT);
-    DcmTagKey key(DCM_SeriesInstanceUID);
-    //deleteTag(OFstatic_cast(DcmItem*,dset),key);
-    result=startInsert( OFstatic_cast(DcmItem*,dset), key , uid);
-
-    return result;
-}
-
-
-OFCondition MdfDatasetManager::generateNewInstanceUID()
-// Date         : October, 22th, 2004
-// Author       : Michael Onken
-// Task         : Generates new 'SOP Instance UID' and inserts it into the
-//                dataset. The related metaheader tag ('Media Storage SOP
-//                Instance UID') is deleted from metaheader, so that it gets
-//                created correctly, if the file  is saved to disk.
-// Parameters   : none
-// Return Value : none
-{
-    //if no file loaded : return an error
-    if (dfile==NULL)
-        return makeOFCondition(OFM_dcmdata,22,OF_error,"No file loaded yet!");
-
-    OFCondition result;
-    char uid[100];
-    // force meta-header to refresh SOP Class/Instance UIDs.
-    DcmItem *meta_info = dfile->getMetaInfo();
-    if (meta_info)
-    {
-        delete meta_info->remove(DCM_MediaStorageSOPInstanceUID);
         dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT);
-        DcmTagKey key(DCM_SOPInstanceUID);
-        result=startInsert( OFstatic_cast(DcmItem*,dset), key , uid);
+        // force meta-header to refresh SOP Class/Instance UIDs.
+        DcmItem *meta_info = dfile->getMetaInfo();
+        if (meta_info)
+        {
+            delete meta_info->remove(DCM_MediaStorageSOPInstanceUID);
+        }
     }
-
+    else return EC_IllegalCall;
+    result = dset->putAndInsertString(uidKey, uid);
     return result;
 }
+
 
 OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                         E_TransferSyntax opt_xfer,
@@ -592,23 +540,6 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                         OFCmdUnsignedInt opt_filepad,
                                         OFCmdUnsignedInt opt_itempad,
                                         OFBool opt_dataset)
-// Date         : Nov, 5th, 2004
-// Author       : Michael Onken
-// Task         : Saves current dataset to a file. Caution: After saving
-//                MdfDatasetManager keeps working on old filename.
-// Parameters : file_name -   [in] filename to save to
-//              opt_xfer -    [in] transfer syntax to save to
-//                                 (EXS_Unknown: keep old)
-//              opt_enctype - [in] write with explicit or implicit
-//                                 length encoding
-//              opt_glenc -   [in] option to set group lenghth calculation mode
-//              opt_padenc -  [in] sets padding option
-//              opt_filepad - [in] pad file to a multiple of this options value
-//              opt_itempad - [in] pad item to a multiple of this options value
-//              opt_dataset - [in] if true:ony write only dataset, else write
-//                                 fileformat
-// Return Value : returns EC_normal if everything is ok, else an error
-
 {
     //if no file loaded: return an error
     if (dfile==NULL)
@@ -637,139 +568,37 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
         result = EC_CannotChangeRepresentation;
     }
     //save file
-    debugMsg(debug_option,"Saving current dataset to file: ", file_name,"");
+    debugMsg(verbose_option,"Saving current dataset to file: ", file_name,"");
     return result;
 }
 
 
 OFCondition MdfDatasetManager::saveFile()
-// Date         : December, 17th, 2003
-// Author       : Michael Onken
-// Task         : Saves current dataset back to a file using original filename
-//                and original parameters like transfer syntax, padding etc.
-// Return Value : returns EC_normal if everything is ok, else an error
 {
     //Save file without changing any parameters
-    return saveFile(act_file.c_str(), EXS_Unknown, EET_UndefinedLength,
+    return saveFile(current_file.c_str(), EXS_Unknown, EET_UndefinedLength,
                     EGL_recalcGL, EPD_noChange, 0, 0, OFFalse);
-}
-
-
-OFCondition MdfDatasetManager::startInsert(DcmItem *item,
-                                           DcmTagKey &search_key,
-                                           const OFString &value)
-// Date         : August, 22th, 2003
-// Author       : Michael Onken
-// Task         : inserts tag into item with a specific value, overwrites
-//                existing tag
-// Parameters   : item - [in/out] item, where tag is inserted
-//                search_key - [in] specifies tag to be inserted
-//                value - [in] value that should be inserted in item
-// Return Value : returns an error code as OFCondition, if an error occurs
-{
-    OFString error_msg, warn_msg, priv_creator;
-    OFCondition result;
-    //create tag with correct group and element number
-    DcmTag *tag=new DcmTag(search_key);
-    //make a modifiable copy of the insertion value
-    OFString insert_value=value;
-    //official tags and private reservation tags are found in dictionary
-    if (!isTagInDictionary(search_key))
-    {
-        //if tag is not in dictionary, check whether its a private reserved tag
-        if (isPrivateTag(search_key))
-        {
-            debugMsg(debug_option, "This is a private tag (non-reservation)","","");
-            //check if tag has a reservation in its corresponding item
-            if (hasPrivateReservationContext(search_key, item, priv_creator))
-            {
-                debugMsg(debug_option,"Private tag has related reservation","","");
-                //set private creator in tag and try to lookup in dictionary
-                tag->setPrivateCreator(priv_creator.c_str());
-                tag->lookupVRinDictionary();
-                //if tag with _this_ private creator is not found in dictionary
-                if (tag->error().bad())
-                {
-                    warn_msg+="Warning: Private tag with related private creator not found in dictionary!\n";
-                    warn_msg+="Warning: Setting tag to VR=UN with empty value";
-                    debugMsg(OFTrue, warn_msg,"","");
-                    insert_value.clear();
-                }
-
-            }
-            //found a private tag but not a corresponding reservation in item
-            else
-            {
-                warn_msg+="Warning: Private tag has no reservation context in its item!\n";
-                warn_msg+="Warning: Setting tag to VR=UN with empty value";
-                debugMsg(OFTrue, warn_msg,"","");
-                insert_value.clear();
-            }
-
-        }
-        //standard tag thats not in dictionary, set VR to UN and value to ""
-        else
-        {
-            warn_msg+="Warning: Tag not in dictionary! Setting to VR=UN with empty value";
-            debugMsg(OFTrue,warn_msg,"","");
-            insert_value.clear();
-        }
-    }
-    else
-    {
-        if (isPrivateReservationTag(search_key))
-        {
-            debugMsg(debug_option,"This is a private reservation tag","","");
-        }
-        else
-        {
-            debugMsg(debug_option,"Standard tag was found in dictionary","","");
-        }
-        tag->lookupVRinDictionary();
-    }
-
-    //if there was an uncorrectable error, return with error
-    if (error_msg!="")
-        return makeOFCondition(OFM_dcmdata,22,OF_error,error_msg.c_str());
-    //holds element to insert in item
-    DcmElement *elem = NULL;
-    result = newDicomElement(elem, *tag);
-    //if dicom element could be created, insert in to item and modify to value
-    if (result.good())
-    {
-        result = item->insert(elem,OFTrue);
-        if (result.good())
-            result = startModify(elem,insert_value);
-    }
-    return result;
 }
 
 
 OFCondition MdfDatasetManager::startModify(DcmElement *elem,
                                            const OFString &value)
-// Date         : August, 22th, 2003
-// Author       : Michael Onken
-// Task         : modifies element a specific value
-// Parameters   : elem - [in/out] pointer to element, that should be changed
-//                value - [in] the value, the element should be changed to
-// Return Value : OFCondition, which returns an error code if an error occurs
 {
     OFCondition result;
-    //start putString function
+    DcmTag tag(elem->getTag());
+    DcmEVR vr = tag.getEVR();
+    if ( ignore_un_modifies && ((elem->getTag().getEVR() == EVR_UN) || (elem->getTag().getEVR() == EVR_UNKNOWN) || (elem->getTag().getEVR() == EVR_UNKNOWN2B)))
+    {
+      debugMsg(debug_option, "Warning: Will not write value to attribute having VR=UN: ", elem->getTag().toString(), "");
+      return EC_Normal;
+    }
+    // start putString function being defined on all VRs
     result = elem->putString(value.c_str());
     return result;
 }
 
 
 void MdfDatasetManager::deleteRelatedMetaheaderTag(const DcmTagKey &key)
-// Date         : October, 22th, 2004
-// Author       : Michael Onken
-// Task         : If key is the tag for SOPInstanceUID or SOPClassUID, then
-//                this function removes the related MediaStorage UIDs from the
-//                metaheader. The metaheader is then updated automagically
-//                when the file is saved back to disk
-// Parameters   : key - [in] tag to examine
-// Return Value : none
 {
     DcmItem *meta_info=dfile->getMetaInfo();
     if (meta_info)
@@ -781,48 +610,26 @@ void MdfDatasetManager::deleteRelatedMetaheaderTag(const DcmTagKey &key)
     }
 }
 
+
 DcmDataset* MdfDatasetManager::getDataset()
-// Date         : October, 1st, 2003
-// Author       : Michael Onken
-// Task         : Returns the dataset, that this MdfDatasetManager handles.
-//                You should use the returned dataset readonly to avoid
-//                sideeffects with other class methods, that modify
-//                this dataset.
-// Return Value : returns the dataset, this MdfDatasetManager manages and NULL,
-//                if no dataset is loaded
 {
     return dset;
 }
 
+
 DcmFileFormat* MdfDatasetManager::getFileFormat()
-// Date         : October, 1st, 2003
-// Author       : Michael Onken
-// Task         : Returns the dataset, that this MdfDatasetManager handles.
-//                You should use the returned dataset readonly to avoid
-//                sideeffects with other class methods, that modify
-//                this dataset.
-// Return Value : returns the dataset, this MdfDatasetManager manages and NULL,
-//                if no dataset is loaded
 {
     return dfile;
 }
 
+
 OFString MdfDatasetManager::getFilename() const
-// Date         : December, 17st, 2003
-// Author       : Michael Onken
-// Task         : Returns filename of the file, that's loaded currently.
-// Return Value : returns filename and "" if no file is loaded.
 {
-    return act_file;
+    return current_file;
 }
 
 
 OFBool MdfDatasetManager::isTagInDictionary(const DcmTagKey &search_key)
-//Date          : October, 15th, 2004
-//Author        : Michael Onken
-//Task          : Returns true, if given tag key can be found in dictionary
-//Parameters    : search_key - [in] tag to lookup
-//Return Value  : OFTrue if tag could be found, else OFFalse
 {
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dicent = globalDataDict.findEntry(search_key,NULL);
@@ -834,121 +641,10 @@ OFBool MdfDatasetManager::isTagInDictionary(const DcmTagKey &search_key)
 }
 
 
-OFCondition MdfDatasetManager::hasValidGroupNumber(const DcmTagKey &key)
-//Date          : October, 22th, 2004
-//Author        : Michael Onken
-//Task          : Checks whether group number is 0,1,2,3,5,7 or FFFF. Then
-//                an error is returned, because these groups are illegal
-//                or shouldn't be modified
-//Parameters    : key - [in] tag, whose group should be examined
-//Return Value  : OFCondition with OF_ok if group is ok, else OF_error and
-//                an error message is returned
-{
-    OFString msg;
-    unsigned int group=key.getGroup();
-    //if group is 0 or 2 return error, these tags shouldn't be modified directly
-    if ( (group==0) || (group==2) )
-    {
-        return makeOFCondition(OFM_dcmdata,22,OF_error,
-        "Dcmodify won't insert/modify tags with group 0000 or 0002!");
-    }
-    //if group is 1,3,5,7 return error. 1,3,5,7,FF are illegal
-    if (isPrivateTag(key) && ( (key.getGroup()<=7) || key.getGroup()==0xffff ))
-    {
-        return makeOFCondition(OFM_dcmdata,22,OF_error,
-        "Groups 0001,0003,0005,0007,FFFF are illegal!");
-    }
-    return makeOFCondition(OFM_dcmdata,22,OF_ok,"");
-}
-
-
-OFBool MdfDatasetManager::isPrivateTag(const DcmTagKey &tag_key)
-//Date          : October, 15th, 2004
-//Author        : Michael Onken
-//Task          : Returns true, if given tag is a private tag (odd group number)
-//Parameters    : tag_key - [in] tag key, that should be tested
-//Return Value  : OFTrue if tag is private, else OFFalse
-{
-    if ( (tag_key.getGroup() & 1)==0 )
-        return OFFalse;
-    return OFTrue;
-}
-
-
-OFBool MdfDatasetManager::isPrivateReservationTag(const DcmTagKey &tag_key)
-//Date          : October, 15th, 2004
-//Author        : Michael Onken
-//Task          : Returns true, if given tag is a private reservation tag.
-//                Thats is the case, if tag has the form gggg,00ee (10<ee<FF)
-//Parameters    : tag_key - [in] tag key, that should be tested
-//Return Value  : OFTrue if tag is a private reservation tag, else OFFalse
-{
-    int elem=tag_key.getElement();
-    if ( (elem >=16) && (elem <=255) )
-        return OFTrue;
-    else
-        return OFFalse;
-}
-
-
-OFBool MdfDatasetManager::hasPrivateReservationContext(const DcmTagKey &tag_key,
-                                                       DcmItem *item,
-                                                       OFString &priv_creator)
-//Date          : October, 15th, 2004
-//Author        : Michael Onken
-//Task          : Returns true, if given tag is reserved in given item.
-//                The private creator string is returned, too.
-//Parameters    : tag_key - [in] tag key, that should be checked
-//                item    - [in] this item is searched for the reservation
-//                priv_creator - [out] private creator string of reservation,
-//                               if found
-//Return Value  : OFTrue if tag has a matching reservation, else OFFalse
-{
-    DcmElement *reservation_elem;
-    DcmTagKey reservator(calcPrivateReservationTag(tag_key));
-    OFCondition cond =
-        item->findAndGetElement(reservator, reservation_elem, OFFalse);
-    //return if there is no reservation for this private tag
-    if (cond.bad())
-        return OFFalse;
-
-    //we have a reservation for this private tag, get private creator name
-    reservation_elem->getOFString(priv_creator,0);
-    return OFTrue;
-}
-
-
-DcmTagKey MdfDatasetManager::calcPrivateReservationTag(const DcmTagKey &tag_key)
-//Date          : October, 15th, 2004
-//Author        : Michael Onken
-//Task          : Calculates from given private tag the reservation tag, that
-//                would make a reservation for this private tag
-//Parameters    : tag_key - [in] tag key, whose reservation should be calculated
-//Return Value  : The tag key, that would reserve given private tag
-{
-    int elem=tag_key.getElement();
-    Uint16 reserved_number=elem;
-    //isolates the xx from given tag: gggg,yzxx
-    reserved_number >>= 8;
-    //group stays the same, element was calculated above
-    DcmTagKey reservation_tag(tag_key.getGroup(),reserved_number);
-    return reservation_tag;
-
-}
-
 void MdfDatasetManager::debugMsg(const OFBool &condition,
                                  const OFString &s1,
                                  const OFString &s2,
                                  const OFString &s3)
-// Date         : October, 15th, 2004
-// Author       : Michael Onken
-// Task         : The function handles three strings, that are directly printed
-//                after another. The whole message is then terminated by \n
-// Parameters   : condition - [in] message is printed, if condition is true
-//                s1 - [in] first message string
-//                s2 - [in] second message string
-//                s3 - [in] third message string
-// Return Value : none
 {
     if (condition)
     {
@@ -958,12 +654,13 @@ void MdfDatasetManager::debugMsg(const OFBool &condition,
 }
 
 
+void MdfDatasetManager::setModifyUNValues(OFBool modifyUNValues)
+{
+  ignore_un_modifies = !modifyUNValues;
+}
+
+
 MdfDatasetManager::~MdfDatasetManager()
-// Date         : May, 13th, 2003
-// Author       : Michael Onken
-// Task         : Destructor, cleans up members
-// Parameters   : None
-// Return Value : none
 {
     //cleanup
     delete dfile;
@@ -973,6 +670,13 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.22  2009-01-15 16:11:55  onken
+** Reworked dcmodify to work with the new DcmPath classes for supporting
+** wildcard paths and automatic insertion of missing attributes and items.
+** Added options for private tag handling and modification of UN values and
+** for ignoring errors resulting from missing tags during modify and erase
+** operations. Further cleanups.
+**
 ** Revision 1.21  2006-08-15 15:50:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.
