@@ -48,6 +48,10 @@ Changes between releases are documented here.
 - Added type cast to integer variable in order to avoid compiler warning.
   Affects: dcmdata/libsrc/mkdeftag.cc
 
+- Append "private.dic" to DCM_DICT_DEFAULT_PATH if private dictionary enabled.
+  Affects: CMakeLists.txt
+           dcmtk/config/include/dcmtk/config/cfwin32.h.in
+
 **** Changes from 2009.01.13 (riesmeier)
 
 - Changed minimum required CMake version from 2.4 to 2.4.8.

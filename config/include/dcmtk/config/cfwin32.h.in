@@ -52,7 +52,7 @@
 #define DCMTK_PREFIX "@NATIVE_INSTALL_PREFIX@"
 
 /* Define the default data dictionary path for the dcmdata library package */
-#define DCM_DICT_DEFAULT_PATH "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_DATDIR@\\dicom.dic"
+#define DCM_DICT_DEFAULT_PATH "@DEFAULT_DATADICT_PATH@"
 
 /* Define the default directory where configuration files reside */
 #define DEFAULT_CONFIGURATION_DIR ""  // "@NATIVE_INSTALL_PREFIX@@NATIVE_INSTALL_ETCDIR@\\"
