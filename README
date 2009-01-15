@@ -7,7 +7,7 @@ applications implementing part of the DICOM/MEDICOM Standard.
 
 DCMTK contains the following sub-packages, each in its own sub-directory:
 
-    config   - configuration utilities for dcmtk
+    config   - configuration utilities for DCMTK
     dcmdata  - a data encoding/decoding library and utility apps
     dcmimage - adds support for color images to dcmimgle
     dcmimgle - an image processing library and utility apps
@@ -23,8 +23,8 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library
-include files (include), configuration data (etc), documentation (docs)
-and test programs (tests).
+include files (include), configuration data (etc), documentation (docs),
+sample and support data (data) as well as test programs (tests).
 
 To build and install the DCMTK package see the INSTALL file.  For copyright
 information see the COPYRIGHT file.  For information about the history of
@@ -33,7 +33,7 @@ questions (FAQ) see:
 
         http://forum.dcmtk.org/faq
 
-If you find bugs or other problems with this software we would appreciate
+If you find bugs or other problems with this software, we would appreciate
 hearing about them.  Please send electronic mail to:
 
         dicom-bugs@offis.de
@@ -42,4 +42,4 @@ Please try to describe the problem in detail and if possible give a
 suggested fix.  For general questions on how to compile, install or use
 the toolkit we recommend the public discussion forum at:
 
-        http://forum.dcmtk.org
+        http://forum.dcmtk.org/
