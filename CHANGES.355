@@ -13,6 +13,7 @@ Changes between releases are documented here.
            dcmdata/apps/mdfdsman.cc
            dcmdata/apps/mdfconen.h
            dcmdata/apps/mdfdsman.h
+           dcmdata/docs/dcmodify.man
 
 - Added options for handling of private tags and fixed bug for deleting
   tags on main level.
