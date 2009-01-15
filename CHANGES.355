@@ -17,6 +17,14 @@ Changes between releases are documented here.
 - Added reference to "data" subdirectories to README file.
   Affects: README
 
+- Changed the way the private dictionary "private.dic" is enabled on Unix
+  systems using "configure --with-private-tags". Now, DCM_DICT_DEFAULT_PATH
+  is set accordingly instead of appending the file to the default "dicom.dic".
+  Affects: config/configure
+           config/configure.in
+           config/Makefile.def.in
+           dcmdata/libsrc/Makefile.in
+
 **** Changes from 2009.01.13 (riesmeier)
 
 - Changed minimum required CMake version from 2.4 to 2.4.8.

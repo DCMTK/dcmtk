@@ -57,13 +57,8 @@ install-lib: $(library)
 
 install-support: $(DICTFILE) $(PRIVDICTFILE)
 	$(configdir)/mkinstalldirs $(DESTDIR)$(datadir)
-	if [ "x$(INSTALL_PRIVATE_DICTIONARY)" = "xYES" ] ; then \
-		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ;\
-		$(INSTALL_DATA) dicom.tmp $(DESTDIR)$(datadir)/$(DICTFILE) ;\
-	else \
-		$(INSTALL_DATA) $(DICTFILE) $(DESTDIR)$(datadir)/$(DICTFILE) ;\
-		$(INSTALL_DATA) $(PRIVDICTFILE) $(DESTDIR)$(datadir)/$(PRIVDICTFILE) ;\
-	fi
+	$(INSTALL_DATA) $(DICTFILE) $(DESTDIR)$(datadir)/$(DICTFILE)
+	$(INSTALL_DATA) $(PRIVDICTFILE) $(DESTDIR)$(datadir)/$(PRIVDICTFILE)
 
 
 $(library): $(objs)
