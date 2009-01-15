@@ -1,6 +1,28 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.15 (onken)
+
+- Reworked dcmodify to work with the new DcmPath classes for supporting
+  wildcard paths and automatic insertion of missing attributes and items.
+  Added options for private tag handling, modification of UN values and
+  for ignoring errors resulting from missing tags during modify and erase
+  operations. Further cleanups.
+  Affects: dcmdata/apps/dcmodify.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.h
+
+- Added options for handling of private tags and fixed bug for deleting
+  tags on main level.
+  Affects: dcmdata/libsrc/dcpath.cc
+           dcmdata/include/dcmtk/dcmdata/dcpath.h
+
+- Added convenience methods for private tag handling. Added doxygen
+  documentation for not or badly documented member functions.
+  Affects:  dcmdata/include/dcmtk/dcmdata/dctagkey.h
+
 **** Changes from 2009.01.15 (riesmeier)
 
 - Added support for optional JPEG 2000 decompression (currently uncommented).
