@@ -25,6 +25,28 @@ Changes between releases are documented here.
            config/Makefile.def.in
            dcmdata/libsrc/Makefile.in
 
+- Moved dictionary files from "libsrc" to "data" subdirectory.
+  Added:   dcmdata/data/dicom.dic
+           dcmdata/data/private.dic
+  Removed: dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/private.dic
+  Affects: dcmdata/data/CMakeLists.txt
+           dcmdata/data/Makefile.in
+           dcmdata/docs/datadict.txt
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.in
+
+- Make sure the environment variable DCMDICTPATH is not evaluated when creating
+  source code and header files from data dictionaries.
+  Affects: dcmdata/libsrc/Makefile.in
+
+- Changed formatting of comment header.
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+
+- Added type cast to integer variable in order to avoid compiler warning.
+  Affects: dcmdata/libsrc/mkdeftag.cc
+
 **** Changes from 2009.01.13 (riesmeier)
 
 - Changed minimum required CMake version from 2.4 to 2.4.8.
