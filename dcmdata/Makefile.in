@@ -29,7 +29,7 @@ install-include: include-install
 
 install-lib: libsrc-install install-include
 
-install-support: libsrc-install-support install-data install-etc
+install-support: install-data install-etc
 
 
 include-all:
@@ -52,9 +52,6 @@ include-install:
 libsrc-install: libsrc-all
 	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install-lib)
 	(cd libi2d && $(MAKE) ARCH="$(ARCH)" install-lib)	
-
-libsrc-install-support:
-	(cd libsrc && $(MAKE) ARCH="$(ARCH)" install-support)
 
 apps-install: apps-all
 	(cd apps && $(MAKE) ARCH="$(ARCH)" install)
