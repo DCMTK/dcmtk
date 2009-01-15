@@ -36,7 +36,7 @@ before using the functionality of the dcmdata library.  The absence of
 a data dictionary is likely to cause unexpected behaviour (e.g. unknown
 attributes will be encoded using VR=OB).
 
-An example DICOM data dictionary can be found in dcmdata/libsrc/dicom.dic
+An example DICOM data dictionary can be found in dcmdata/data/dicom.dic
 It should be copied to the default data dictionary location (as defined in
 config/include/dcmtk/config/cfunix.h).  The format of the data dictionary
 file is described in the example.

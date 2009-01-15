@@ -22,8 +22,8 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2008-11-06 17:46:51 $
-#  CVS/RCS Revision: $Revision: 1.59 $
+#  Update Date:      $Date: 2009-01-15 14:25:23 $
+#  CVS/RCS Revision: $Revision: 1.1 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains the complete dictionary from the 

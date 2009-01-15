@@ -11,7 +11,7 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-files = dcm2xml.dtd dumppat.txt SC.dump VLP.dump
+files = dicom.dic private.dic dcm2xml.dtd dumppat.txt SC.dump VLP.dump
 
 
 all:
