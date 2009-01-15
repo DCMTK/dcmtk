@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Update Date:      $Date: 2009-01-15 10:15:23 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,6 +119,11 @@ int main(int argc, char *argv[])
     // register global decompression codecs (no verbose/debug mode set)
     DcmRLEDecoderRegistration::registerCodecs();
     DJDecoderRegistration::registerCodecs();
+    // enable the following lines for JPEG 2000 decompression support
+/*
+    D2JPEG2000Library::initialize();
+    D2DecoderRegistration::registerCodecs();
+*/
 #endif
 
     /* DICOMDIR interface (checks for JPEG/RLE availability) */
@@ -598,6 +603,11 @@ int main(int argc, char *argv[])
     // deregister global decompression codecs
     DcmRLEDecoderRegistration::cleanup();
     DJDecoderRegistration::cleanup();
+    // enable the following lines for JPEG 2000 decompression support
+/*
+    D2DecoderRegistration::cleanup();
+    D2JPEG2000Library::cleanup();
+*/
 #endif
 
 #ifdef DEBUG
@@ -611,6 +621,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.88  2009-01-15 10:15:23  joergr
+ * Added support for optional JPEG 2000 decompression (currently uncommented).
+ *
  * Revision 1.87  2008-09-25 14:38:48  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
