@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.01.16 (onken)
 
+- Code simplification for VR checking.
+  Affects: dcmdata/apps/mdfdsman.cc
+         
+- Fixed dcmodify help output.
+  Affects: dcmdata/apps/mdfconen.cc
+
 - Completed doxygen documentation for libi2d.
   Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
            dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
