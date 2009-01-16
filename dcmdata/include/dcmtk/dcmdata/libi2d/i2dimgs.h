@@ -23,8 +23,8 @@
  *           image files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 15:08:38 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-01-16 09:51:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,8 @@ class I2DImgSource
 
 public:
 
+  /** Constructor
+   */
   I2DImgSource() : m_logStream(NULL), m_debug(OFFalse), m_imageFile() {}
 
   /** Returns identifier for the image input format the plugin imports.
@@ -55,13 +57,13 @@ public:
    *  The pixel data returned is a JPEG stream in JPEG interchange format.
    *  This function allocates memory for the pixel data returned to the user. The caller of this
    *  function is responsible for deleting the memory buffer
-   *  @param filename - [in] The JPEG file to read
    *  @param rows - [out] Rows of image
    *  @param cols - [out] Columns of image
    *  @param samplesPerPixel - [out] Number of components per pixel
    *  @param photoMetrInt - [out] The DICOM color model used for the compressed data
    *  @param bitsAlloc - [out] Bits Allocated for one sample
-   *  @param bitsStored - [out] High Bit, Highest stored in bit within Bits Allocated
+   *  @param bitsStored - [out] Bits Stored, number of bits stored within Bits Allocated
+   *  @param highBit - [out] High Bit, hightest bit position set within Bits Allocated
    *  @param pixelRepr - [out] Pixel Representation (0=unsigned, 1=signed)
    *  @param planConf - [out] Planar Configuration
    *  @param pixAspectH - [out] Horizontal value of pixel aspect ratio
@@ -156,6 +158,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
+ * Revision 1.2  2009-01-16 09:51:55  onken
+ * Completed doxygen documentation for libi2d.
+ *
  * Revision 1.1  2008-01-16 15:08:38  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
  *

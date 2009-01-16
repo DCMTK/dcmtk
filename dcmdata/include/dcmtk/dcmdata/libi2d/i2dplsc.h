@@ -22,8 +22,8 @@
  *  Purpose: Class for conversion of image file into DICOM SC Image Storage
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 15:12:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-01-16 09:51:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,26 +43,25 @@ class I2DOutputPlugSC : public I2DOutputPlug
 public:
 
   /** Constructor, initializes member variables with standard values
-   *  @param argc none
    *  @return none
    */
   I2DOutputPlugSC();
 
   /** Virtual function that returns a short name of the plugin.
-   *  @param none
    *  @return The name of the plugin
    */
   virtual OFString ident();
 
   /** Overwrites function from base class. Returns the Storage SOP class
    *  written by this plugin
-   *  @param none
-   *  @return A string holding the Storage SOP class written by this plugin
+   *  @param suppSOPs - [out] List of UIDS representing SOP classes supported
+   *                    by this plugin
+   *  @return none
    */
   virtual void supportedSOPClassUIDs(OFList<OFString> suppSOPs);
 
   /** Outputs SOP class specific information into dataset
-   * @param dset - [in/out] Dataset to write to
+   * @param dataset - [in/out] Dataset to write to
    * @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition convert(DcmDataset &dataset) const;
@@ -75,7 +74,6 @@ public:
   virtual OFString isValid(DcmDataset& dataset) const;
 
   /** Virtual Destructor, clean up memory
-   *  @param none
    *  @return none
    */
   virtual ~I2DOutputPlugSC();
@@ -87,6 +85,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.h,v $
+ * Revision 1.2  2009-01-16 09:51:55  onken
+ * Completed doxygen documentation for libi2d.
+ *
  * Revision 1.1  2008-01-16 15:12:20  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
  *

@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.16 (onken)
+
+- Completed doxygen documentation for libi2d.
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplnsc.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplsc.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplvlp.h
+
 **** Changes from 2009.01.15 (onken)
 
 - Reworked dcmodify to work with the new DcmPath classes for supporting

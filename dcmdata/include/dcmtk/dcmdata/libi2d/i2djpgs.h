@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 15:09:17 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-01-16 09:51:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,9 @@ enum E_JPGMARKER { E_JPGMARKER_SOF0 = 0xC0, E_JPGMARKER_SOF1 = 0xC1, E_JPGMARKER
  * of the byte position of the marker and the marker code itself
  */
 struct JPEGFileMapEntry {
+  /// The byte position of the marker
   offile_off_t bytePos;
+  /// The marker byte itself
   E_JPGMARKER marker;
 };
 
@@ -84,11 +86,13 @@ class I2DJpegSource : public I2DImgSource
 public:
 
   /** Constructor, initializes member variables
-   *  @param none
    *  @return none
    */
   I2DJpegSource();
 
+  /** Returns format of input image. For this class "JPEG" is returned.
+   *  @return Returns format of input image, i. e. "JPEG".
+   */
   OFString inputFormat() const;
 
   /** Extracts the raw JPEG pixel data stream from a JPEG file and returns some
@@ -102,7 +106,8 @@ public:
    *  @param samplesPerPixel - [out] Number of components per pixel
    *  @param photoMetrInt - [out] The DICOM color model used for the compressed data
    *  @param bitsAlloc - [out] Bits Allocated for one sample
-   *  @param bitsStored - [out] High Bit, Highest stored in bit within Bits Allocated
+   *  @param bitsStored - [out] Bits Stored, Number of bits actually stored within Bits Allocated
+   *  @param highBit - [out] High Bit, Highest stored in bit within Bits Allocated
    *  @param pixelRepr - [out] Pixel Representation (0=unsigned, 1=signed)
    *  @param planConf - [out] Planar Configuration
    *  @param pixAspectH - [out] Horizontal value of pixel aspect ratio
@@ -165,7 +170,6 @@ public:
   static OFString jpegMarkerToString(const E_JPGMARKER& marker);
 
   /** Destructor, frees some memory.
-   *  @param none
    *  @return none
    */
   ~I2DJpegSource();
@@ -179,14 +183,12 @@ protected:
   OFCondition openFile(const OFString& filename);
 
   /** Closes JPEG file.
-   *  @param marker - [in] The marker to be converted
    *  @return A string representation of the marker
    */
   void closeFile();
 
   /** Function that scans a JPEG file and creates a "file map" which
    *  includes all JPEG markes and their byte positions in the file.
-   *  @param none
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition createJPEGFileMap();
@@ -242,13 +244,13 @@ protected:
   E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding) const;
 
   /** Returns true if marker is one of the RST0 to RST7 markers
-   *  @param marker - [in] Image marker that should be tested
+   *  @param jpegEncoding - [in] Image marker that should be tested
    *  @return OFTrue, if marker is RST0 to RST7, OFFalse otherwise
    */
   OFBool isRSTMarker(const E_JPGMARKER& jpegEncoding) const;
 
   /** Returns true if marker is one of the SOF0 to SOF15 markers
-   *  @param marker - [in] Image marker that should be tested
+   *  @param jpegEncoding - [in] Image marker that should be tested
    *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
    */
   OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding) const;
@@ -271,7 +273,6 @@ protected:
                              Uint32& pixLength);
 
   /** Skips one marker while scanning through the JPEG file stream.
-   *  @param none
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition skipVariable();
@@ -305,7 +306,6 @@ protected:
   inline int read1Byte(Uint8& result);
 
   /** Deletes internal JPEG file map and frees memory.
-   *  @param none
    *  @return none
    */
   void clearMap();
@@ -340,6 +340,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
+ * Revision 1.2  2009-01-16 09:51:55  onken
+ * Completed doxygen documentation for libi2d.
+ *
  * Revision 1.1  2008-01-16 15:09:17  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
  *

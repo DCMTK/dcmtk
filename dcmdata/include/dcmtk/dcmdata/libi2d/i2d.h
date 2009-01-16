@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 16:32:23 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-01-16 09:51:55 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,6 @@ class Image2Dcm
 public:
 
   /** Constructor, initializes command line options
-   *  @param none
    *  @return none
    */
   Image2Dcm();
@@ -55,7 +54,7 @@ public:
    *  and a fully configured output plugin to operate. Returns
    *  a dataset with the resulting DICOM object.
    *  @param inputPlug - [in] The input plugin to read pixel data
-   *  @param outputPlug - [in] The output plugin for specific SOP class output
+   *  @param outPlug - [in] The output plugin for specific SOP class output
    *  @param resultDset - [out] The DICOM object resulting from the conversion
    *  @param proposedTS - [out] The proposed transfer syntax (needed e. g.
    *                            by JPEG input plugin)
@@ -115,10 +114,10 @@ public:
   void setOverrideKeys(const DcmDataset* dset);
 
   /** Enable/Disable basic validity checks for output dataset
-   *  @param doCheck - [in] OFTrue enables checking, OFFalse turns it off.
+   *  @param doChecks - [in] OFTrue enables checking, OFFalse turns it off.
    *  @param insertMissingType2 - [in] If true (default), missing type 2
    *         attributes are inserted automatically
-   *  @param insertMissingType1 - [in] If true , missing type 1
+   *  @param inventMissingType1 - [in] If true , missing type 1
    *         attributes are inserted automatically with a predefined
    *         value (if possible). An existing empty type 1 attribute is
    *         assigned a value, too.
@@ -163,7 +162,6 @@ public:
 
 
   /** Destructor, frees plugin memory
-   *  @param none
    *  @return none
    */
   ~Image2Dcm();
@@ -172,7 +170,7 @@ protected:
 
   /** Cleans up template for future insertion of pixel data information, ie
     * generally removes attributes from image pixel module
-    * @param targetDataset - [out] The dataset that should be cleand up
+    * @param targetDset - [out] The dataset that should be cleand up
     * @return none
     */
   void cleanupTemplate(DcmDataset *targetDset);
@@ -211,8 +209,6 @@ protected:
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
    *  @param dataset - [in] The dataset to check
-   *  @param inventMissingType2Attribs - [in] If set, missing type attributes
-   *         are added automatically.
    *  @return Error string if error occurs, empty string otherwise
    */
   OFString isValid(DcmDataset& dataset) const;
@@ -288,9 +284,9 @@ private:
   /// predefined value, if possible. Disabled per default.
   OFBool m_inventMissingType1Attribs;
 
-  // If enabled, ISO_IR100 (ISO Latin 1) is inserted as a standard value
-  // for attribute "Specific Character Set". Insertion takes place after
-  // loading (optional) template file.
+  /// If enabled, ISO_IR100 (ISO Latin 1) is inserted as a standard value
+  /// for attribute "Specific Character Set". Insertion takes place after
+  /// loading (optional) template file.
   OFBool m_insertLatin1;
 
   /// If true, debug output is enabled
@@ -307,6 +303,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.4  2009-01-16 09:51:55  onken
+ * Completed doxygen documentation for libi2d.
+ *
  * Revision 1.3  2008-01-16 16:32:23  onken
  * Fixed some empty or doubled log messages in libi2d files.
  *

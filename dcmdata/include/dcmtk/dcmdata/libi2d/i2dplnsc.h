@@ -22,8 +22,8 @@
  *  Purpose: Class for conversion of image file into new DICOM SC Image IODs
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 15:11:44 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-01-16 09:51:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,26 +43,25 @@ class I2DOutputPlugNewSC : public I2DOutputPlug
 public:
 
   /** Constructor, initializes member variables with standard values
-   *  @param argc none
    *  @return none
    */
   I2DOutputPlugNewSC();
 
   /** Virtual function that returns a short name of the plugin.
-   *  @param none
    *  @return The name of the plugin
    */
   virtual OFString ident();
 
   /** Overwrites function from base class. Returns the Storage SOP class
    *  written by this plugin
-   *  @param none
-   *  @return A string holding the Storage SOP class written by this plugin
+   *  @param suppSOPs - [out] List of UIDs representing the supported SOP 
+   *                    classes supported by this plugin.
+   *  @return none
    */
   virtual void supportedSOPClassUIDs(OFList<OFString> suppSOPs);
 
   /** Outputs SOP class specific information into dataset
-   * @param dset - [in/out] Dataset to write to
+   * @param dataset - [in/out] Dataset to write to
    * @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition convert(DcmDataset &dataset) const;
@@ -75,7 +74,6 @@ public:
   virtual OFString isValid(DcmDataset& dataset) const;
 
   /** Virtual Destructor, clean up memory
-   *  @param none
    *  @return none
    */
   virtual ~I2DOutputPlugNewSC();
@@ -83,14 +81,14 @@ public:
 protected:
 
   /** Inserts attributes for Multi-frame Module
-   *  @param dataset - [in/out] The dataset to write to
+   *  @param targetDataset - [in/out] The dataset to write to
    *  @return EC_Normal if insertion was successfull, error code otherwise
    */
   virtual OFCondition insertMultiFrameAttribs(DcmDataset* targetDataset) const;
 
   /** Inserts attributes Rescale Slope/Intercept/Type, which have to be
    *  written (1C) if color model is MONOCHROME2 and BitsStored > 1.
-   *  @param dataset - [out] The dataset to write to
+   *  @param targetDataset - [out] The dataset to write to
    *  @return EC_Normal if insertion was successfull, error code otherwise
    */
   virtual OFCondition insertSCMultiFrameAttribs(DcmDataset *targetDataset) const;
@@ -124,6 +122,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dplnsc.h,v $
+ * Revision 1.2  2009-01-16 09:51:55  onken
+ * Completed doxygen documentation for libi2d.
+ *
  * Revision 1.1  2008-01-16 15:11:44  onken
  * Moved library "i2dlib" from /dcmdata/libsrc/i2dlib to /dcmdata/libi2d
  *

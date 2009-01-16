@@ -22,8 +22,8 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 16:32:23 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-01-16 09:51:55 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@ class I2DOutputPlug
 public:
 
   /** Constructor, initializes member variables
-   *  @param none
    *  @return none
    */
   I2DOutputPlug() : m_doAttribChecking(OFTrue), m_inventMissingType2Attribs(OFTrue),
@@ -51,7 +50,6 @@ public:
   {};
 
   /** Virtual function that returns a short name of the plugin.
-   *  @param none
    *  @return The name of the plugin
    */
   virtual OFString ident() =0;
@@ -63,7 +61,7 @@ public:
   virtual void supportedSOPClassUIDs(OFList<OFString> suppSOPs) =0;
 
   /** Outputs SOP class specific information into dataset
-   * @param dset - [in/out] Dataset to write to
+   * @param dataset - [in/out] Dataset to write to
    * @return EC_Normal if successful, error otherwise
    */
   virtual OFCondition convert(DcmDataset &dataset) const = 0;
@@ -76,7 +74,6 @@ public:
   virtual OFString isValid(DcmDataset& dataset) const = 0;
 
   /** Destructor
-   *  @param none
    *  @return none
    */
   virtual ~I2DOutputPlug() {};
@@ -115,10 +112,10 @@ public:
   }
 
   /** Enable/Disable basic validity checks for output dataset
-   *  @param doCheck - [in] OFTrue enables checking, OFFalse turns it off.
+   *  @param doChecks - [in] OFTrue enables checking, OFFalse turns it off.
    *  @param insertMissingType2 - [in] If true (default), missing type 2
    *         attributes are inserted automatically
-   *  @param insertMissingType1 - [in] If true (default), missing type 1
+   *  @param inventMissingType1 - [in] If true (default), missing type 1
    *         attributes are inserted automatically with a predefined
    *         value (if possible). An existing empty type 1 attribute is
    *         assigned a value, too.
@@ -135,6 +132,14 @@ public:
 
 protected:
 
+  /** Checks whether a given tag exists in a dataset and provides a non-empty
+   *  value. If not, the tag is inserted (if enabled) and a default value is
+   *  inserted.
+   *  @param key - [in] The tag to be checked/inserted
+   *  @param targetDset - [in/out] The dataset to search (and insert) in
+   *  @param defaultValue - [in] The default value to set
+   *  @return Error string, which is empty if no error occurs.
+   */
   virtual OFString checkAndInventType1Attrib(const DcmTagKey& key,
                                              DcmDataset* targetDset,
                                              const OFString& defaultValue ="") const
@@ -184,6 +189,12 @@ protected:
   };
 
 
+  /** Checks whether a given tag exists in a dataset (can be empty)
+   *  If not, the tag is inserted (if enabled) with empty value.
+   *  @param key - [in] The tag to be checked/inserted
+   *  @param targetDset - [in/out] The dataset to search (and insert) in
+   *  @return Error string, which is empty if no error occurs.
+   */
   virtual OFString checkAndInventType2Attrib(const DcmTagKey& key,
                                              DcmDataset* targetDset) const
   {
@@ -233,6 +244,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.4  2009-01-16 09:51:55  onken
+ * Completed doxygen documentation for libi2d.
+ *
  * Revision 1.3  2008-01-16 16:32:23  onken
  * Fixed some empty or doubled log messages in libi2d files.
  *
