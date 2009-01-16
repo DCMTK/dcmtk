@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:11:55 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2009-01-16 10:03:13 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -585,9 +585,8 @@ OFCondition MdfDatasetManager::startModify(DcmElement *elem,
                                            const OFString &value)
 {
     OFCondition result;
-    DcmTag tag(elem->getTag());
-    DcmEVR vr = tag.getEVR();
-    if ( ignore_un_modifies && ((elem->getTag().getEVR() == EVR_UN) || (elem->getTag().getEVR() == EVR_UNKNOWN) || (elem->getTag().getEVR() == EVR_UNKNOWN2B)))
+    DcmEVR vr = elem->getTag().getEVR();
+    if ( ignore_un_modifies && ((vr == EVR_UN) || (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B)))
     {
       debugMsg(debug_option, "Warning: Will not write value to attribute having VR=UN: ", elem->getTag().toString(), "");
       return EC_Normal;
@@ -670,6 +669,9 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.23  2009-01-16 10:03:13  onken
+** Code simplification for VR checking.
+**
 ** Revision 1.22  2009-01-15 16:11:55  onken
 ** Reworked dcmodify to work with the new DcmPath classes for supporting
 ** wildcard paths and automatic insertion of missing attributes and items.
