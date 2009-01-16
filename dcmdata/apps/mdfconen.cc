@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:11:55 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2009-01-16 10:03:22 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             cmd->addOption("--no-meta-uid",         "-nmu",    "don't update metaheader UIDs\nUIDs in the metaheader won't be changed,\nif related UIDs in dataset are modified\nvia options -m, -i or -ma");
         cmd->addSubGroup("other processing options:");
             cmd->addOption("--ignore-missing-tags", "-imt",    "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
-            cmd->addOption("--ignore-un-values",    "-iun",    "do not try writing any values\nelements having VR of UN");
+            cmd->addOption("--ignore-un-values",    "-iun",    "do not try writing any values\nto elements having VR of UN");
     cmd->addGroup("output options:");
         cmd->addSubGroup("output file format:");
             cmd->addOption("--write-file",          "+F",      "write file format (default)");
@@ -684,6 +684,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.26  2009-01-16 10:03:22  onken
+** Fixed dcmodify help output
+**
 ** Revision 1.25  2009-01-15 16:11:55  onken
 ** Reworked dcmodify to work with the new DcmPath classes for supporting
 ** wildcard paths and automatic insertion of missing attributes and items.
