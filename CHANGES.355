@@ -1,11 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.27 (onken)
+
+- Fixed some minor inconsistencies in dcmodify manpage.
+  Affects: dcmdata/docs/dcmodify.man
+
 **** Changes from 2009.01.16 (onken)
 
 - Code simplification for VR checking.
   Affects: dcmdata/apps/mdfdsman.cc
-         
+
 - Fixed dcmodify help output.
   Affects: dcmdata/apps/mdfconen.cc
 

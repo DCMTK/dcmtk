@@ -33,7 +33,7 @@ to UN and the value provided on commandline is interpreted as being a
 series of hexadecimal numbers (like they are provided for VR=OB). Please
 insert these tags into the dictionary to avoid this behaviour.  Also,
 specifying the \e -iun option, it is possible to force \b dcmodify to
-leave UN values untouched.  Using option \e -u lets dcmodify saving all
+leave UN values untouched.  Using option \e -u lets \b dcmodify saving all
 VR=UN attributes as OB.
 
 \b dcmodify is able to work with so-called tag paths to access tags in
@@ -207,7 +207,7 @@ other processing options:
           when modifying or erasing in files
 
   -iun  --ignore-un-values
-          do not try writing any values
+          do not try writing any values to
           elements having VR of UN
 \endverbatim
 
