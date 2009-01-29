@@ -1,4 +1,4 @@
-Recommended project directory structure for the dcmtk project
+Recommended project directory structure for the DCMTK project
 =============================================================
 
 dcmtk
@@ -8,6 +8,7 @@ dcmtk
         templates
     module1
         apps            # application programs
+        data            # support files
         docs            # documentation
         etc             # configuration files
         include         # include directory

@@ -4,7 +4,7 @@ Changes between releases are documented here.
 **** Changes from 2009.01.29 (onken)
 
 - Fixed compilation under windows (missing memzero) by including dcdefine.h.
-  Affects: dcmdata/libsrc/dcuid.cc  
+  Affects: dcmdata/libsrc/dcuid.cc
 
 - Fixed length overflow in case of private attributes having maximum length
   values. Minor code simplifications.
@@ -39,6 +39,9 @@ Changes between releases are documented here.
 
 - Replaced remaining tab characters by spaces. Fixed source code formatting.
   Affects: dcmnet/libsrc/dul.cc
+
+- Added "data" subdirectory to description of directory structure.
+  Affects: config/docs/dirstruc.txt
 
 **** Changes from 2009.01.27 (onken)
 
