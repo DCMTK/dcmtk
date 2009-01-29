@@ -108,6 +108,14 @@ handling of defined length UN elements:
   +uc  --convert-un
          convert to real VR if known
 
+handling of private max-length elements (implicit VR):
+
+  -sq  --maxlength-dict
+         read as defined in dictionary (default)
+
+  +sq  --maxlength-seq
+         read as sequence with undefined length         
+         
 automatic data correction:
 
   +dc  --enable-correction
