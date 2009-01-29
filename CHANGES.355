@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.29 (riesmeier)
+
+- Fixed issue with array initialization on x64 platform with Windows Vista and
+  VisualStudio 2008.
+  Thanks to Svilen Nedev <svilenn@gmail.com> for the report and suggested fix.
+  Affects: dcmdata/libsrc/dcuid.cc
+
 **** Changes from 2009.01.27 (onken)
 
 - Fixed some minor inconsistencies in dcmodify manpage.

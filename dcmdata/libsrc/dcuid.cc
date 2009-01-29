@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-07-11 08:49:54 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-29 11:14:07 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1035,9 +1035,9 @@ static unsigned char *getMACAddress(unsigned char buffer[6])
 {
     OFBool success = OFFalse;
     /* init return variable */
-    memset(buffer, 0, sizeof(buffer));
+    memzero(buffer, 6 * sizeof(unsigned char));
     NCB ncb;
-    memset(&ncb, 0, sizeof(ncb));
+    memzero(&ncb, sizeof(ncb));
     /* reset the LAN adapter */
     ncb.ncb_command = NCBRESET;
     /* it is considered bad practice to hardcode the LANA number (should enumerate
@@ -1047,7 +1047,7 @@ static unsigned char *getMACAddress(unsigned char buffer[6])
     {
         ASTAT Adapter;
         /* prepare to get the adapter status block */
-        memset(&ncb, 0, sizeof(ncb));
+        memzero(&ncb, sizeof(ncb));
         ncb.ncb_command = NCBASTAT;
         /* it is considered bad practice to hardcode the LANA number (should enumerate
            adapters first), but at least this approach also works on Windows 9x */
@@ -1403,7 +1403,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.66  2007-07-11 08:49:54  meichel
+** Revision 1.67  2009-01-29 11:14:07  joergr
+** Fixed issue with array initialization on x64 platform with Windows Vista and
+** VisualStudio 2008.
+**
+** Revision 1.66  2007/07/11 08:49:54  meichel
 ** Changed the modality codes used for filename generation for the current and
 **   retired ultrasound multiframe SOP classes to USm and USf, respectively.
 **
