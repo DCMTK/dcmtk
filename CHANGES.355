@@ -16,6 +16,9 @@ Changes between releases are documented here.
   Affects: dcmnet/include/dcmtk/dcmnet/dcmtrans.h
            dcmnet/libsrc/dcmtrans.cc
 
+- Replaced remaining tab characters by spaces. Fixed source code formatting.
+  Affects: dcmnet/libsrc/dul.cc
+
 **** Changes from 2009.01.27 (onken)
 
 - Fixed some minor inconsistencies in dcmodify manpage.

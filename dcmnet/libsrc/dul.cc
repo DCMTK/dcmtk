@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: onken $, $Date: 2008-04-17 15:27:35 $
+** Last Update:         $Author: joergr $, $Date: 2009-01-29 12:08:04 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.77 $
+** Revision:            $Revision: 1.78 $
 ** Status:              $State: Exp $
 */
 
@@ -1668,7 +1668,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             cmdLine += "\"";
         }
 
-                // create anonymous pipe
+        // create anonymous pipe
         if (!CreatePipe(&hChildStdInRead, &hChildStdInWrite, &sa,0))
         {
             char buf4[256];
@@ -1676,37 +1676,37 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
         }
 
-                // create duplicate of write end handle of pipe
-        if (!DuplicateHandle(GetCurrentProcess(),hChildStdInWrite,
-                           GetCurrentProcess(),&hChildStdInWriteDup,0,
-                           FALSE,DUPLICATE_SAME_ACCESS))
+        // create duplicate of write end handle of pipe
+        if (!DuplicateHandle(GetCurrentProcess(), hChildStdInWrite,
+                             GetCurrentProcess(), &hChildStdInWriteDup, 0,
+                             FALSE, DUPLICATE_SAME_ACCESS))
         {
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, "Error while duplicating handle");
         }
 
-                // destroy original write end handle of pipe
+        // destroy original write end handle of pipe
         CloseHandle(hChildStdInWrite);
 
-                // we need a STARTUPINFO and a PROCESS_INFORMATION structure for CreateProcess.
+        // we need a STARTUPINFO and a PROCESS_INFORMATION structure for CreateProcess.
         STARTUPINFO si;
         PROCESS_INFORMATION pi;
         memset(&pi,0,sizeof(pi));
         memset(&si,0,sizeof(si));
 
-                // prepare startup info for child process:
-                // the child uses the same stdout and stderr as the parent, but
-                // stdin is the read end of our anonymous pipe.
+        // prepare startup info for child process:
+        // the child uses the same stdout and stderr as the parent, but
+        // stdin is the read end of our anonymous pipe.
         si.cb = sizeof(si);
         si.dwFlags |= STARTF_USESTDHANDLES;
         si.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
         si.hStdError = GetStdHandle(STD_ERROR_HANDLE);
         si.hStdInput = hChildStdInRead;
 
-                // create child process.
-        if (!CreateProcess(NULL,OFconst_cast(char *,cmdLine.c_str()),NULL,NULL,TRUE,0,NULL,NULL,&si,&pi))
+        // create child process.
+        if (!CreateProcess(NULL,OFconst_cast(char *, cmdLine.c_str()), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
         {
             char buf4[256];
-            sprintf(buf4, "CreateProcess failed: (%i)",(int)GetLastError());
+            sprintf(buf4, "CreateProcess failed: (%i)", (int)GetLastError());
             return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
         }
         else
@@ -1742,7 +1742,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 DWORD bytesWritten;
                 char buf5[20];
                 sprintf(buf5,"%i",(int)childSocketHandle);
-                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5)+1, &bytesWritten, NULL))
+                if (!WriteFile(hChildStdInWriteDup, buf5, strlen(buf5) + 1, &bytesWritten, NULL))
                                 {
                     CloseHandle(hChildStdInWriteDup);
                     return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error while writing to anonymous pipe");
@@ -2629,6 +2629,9 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.78  2009-01-29 12:08:04  joergr
+** Replaced remaining tab characters by spaces. Fixed source code formatting.
+**
 ** Revision 1.77  2008-04-17 15:27:35  onken
 ** Reworked and extended User Identity Negotiation code.
 **
