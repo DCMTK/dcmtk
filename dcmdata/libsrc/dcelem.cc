@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 14:26:58 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-29 15:34:45 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -480,14 +480,11 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
             {
                 /* if the object which holds this element's value does not yet exist, create it */
                 if (!fValue)
-                    fValue = newValueField();
+                    fValue = newValueField(); /* also set errorFlag in case of error */
 
-                /* if there is still no such object, the memory must be exhausted */
-                if (!fValue)
-                    errorFlag = EC_MemoryExhausted;
-                /* else (i.e. we have an object which can be used to capture this element's */
+                /* if object could be created  (i.e. we have an object which can be used to capture this element's */
                 /* value) we need to read a certain amount of bytes from the stream */
-                else
+                if (fValue)
                 {
                     /* determine how many bytes shall be read from the stream */
                     Uint32 readLength = getLengthField() - getTransferredBytes();
@@ -534,25 +531,39 @@ Uint8 *DcmElement::newValueField()
 {
     Uint8 * value;
     /* if this element's lenght is odd */
-    if (getLengthField() & 1)
+    Uint32 lengthField = getLengthField();
+    if ( lengthField & 1)
     {
+        if (lengthField == DCM_UndefinedLength)
+        {
+              /* Print an error message when private attribute states to have an odd length
+               * equal to the maximum length, because we are not able then to make this value even (+1)
+               * which would an overflow on some systems as well as being illegal in DICOM 
+               */
+                ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
+                    << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded" << OFendl;
+                ofConsole.unlockCerr();
+                errorFlag = EC_CorruptedData;
+                return NULL;
+        }
         /* create an array of Length+1 bytes */
 #ifdef HAVE_STD__NOTHROW
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[getLengthField() + 1];    // protocol error: odd value length
+        value = new (std::nothrow) Uint8[lengthField + 1];    // protocol error: odd value length
 #else
-        value = new Uint8[getLengthField() + 1];    // protocol error: odd value length
+        value = new Uint8[lengthField + 1];    // protocol error: odd value length
 #endif
         /* if creation was successful, set last byte to 0 (in order to initialize this byte) */
         /* (no value will be assigned to this byte later, since Length was odd) */
         if (value)
-            value[getLengthField()] = 0;
+            value[lengthField] = 0;
         /* enforce old (pre DCMTK 3.5.2) behaviour ? */
         if (! dcmAcceptOddAttributeLength.get())
         {
-            setLengthField(getLengthField() + 1);           // make Length even
+            lengthField++;
+            setLengthField(lengthField);           // make Length even
         }
     }
     /* if this element's length is even, create a corresponding array of Lenght bytes */
@@ -561,9 +572,9 @@ Uint8 *DcmElement::newValueField()
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[getLengthField()];
+        value = new (std::nothrow) Uint8[lengthField];
 #else
-        value = new Uint8[getLengthField()];
+        value = new Uint8[lengthField];
 #endif
     /* if creation was not successful set member error flag correspondingly */
     if (!value)
@@ -1329,7 +1340,7 @@ OFCondition DcmElement::getPartialValue(
 
       // we need to read a single data element into the swap buffer
       if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
-      	return EC_InvalidStream;
+          return EC_InvalidStream;
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
       swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
@@ -1379,7 +1390,7 @@ OFCondition DcmElement::getPartialValue(
 
       // we need to read a single data element into the swap buffer
       if (valueWidth != OFstatic_cast(size_t, readStream->read(swapBuffer, valueWidth)))
-      	return EC_InvalidStream;
+          return EC_InvalidStream;
 
       // swap to desired byte order. fByteOrder contains the byte order in file.
       swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
@@ -1464,6 +1475,10 @@ OFCondition DcmElement::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.65  2009-01-29 15:34:45  onken
+** Fixed length overflow in case of private attributes having maximum length
+** values. Minor code simplifications.
+**
 ** Revision 1.64  2008-11-03 14:26:58  joergr
 ** Fixed wrong check of odd/even length in method createValueFromTempFile().
 **

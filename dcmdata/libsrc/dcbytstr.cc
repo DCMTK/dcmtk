@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2009-01-29 15:34:45 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -394,27 +394,41 @@ OFCondition DcmByteString::makeMachineByteString()
 Uint8 *DcmByteString::newValueField()
 {
     Uint8 *value = NULL;
+    Uint32 lengthField = getLengthField();
     /* check for odd length (in case of a protocol error) */
-    if (getLengthField() & 1)
+    if (lengthField & 1)
     {
+        if (lengthField == DCM_UndefinedLength)
+        {
+              /* Print an error message when private attribute states to have an odd length
+               * equal to the maximum length, because we are not able then to make this value even (+1)
+               * which would an overflow on some systems as well as being illegal in DICOM
+               */
+                ofConsole.lockCerr() << "DcmByteString: " << getTagName() << " " << getTag().getXTag()
+                    << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded" << OFendl;
+                ofConsole.unlockCerr();
+                errorFlag = EC_CorruptedData;
+                return NULL;
+        }
         /* allocate space for extra padding character (required for the DICOM representation of the string) */
 #ifdef HAVE_STD__NOTHROW
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[getLengthField() + 2];
+        value = new (std::nothrow) Uint8[lengthField + 2];
 #else
-        value = new Uint8[getLengthField() + 2];
+        value = new Uint8[lengthField + 2];
 #endif
 
         /* terminate string after real length */
         if (value != NULL)
-            value[getLengthField()] = 0;
+            value[lengthField] = 0;
         /* enforce old (pre DCMTK 3.5.2) behaviour? */
         if (!dcmAcceptOddAttributeLength.get())
         {
             /* make length even */
-            setLengthField(getLengthField() + 1);
+            lengthField++;
+            setLengthField(lengthField);
         }
     } else {
         /* length is even */
@@ -422,14 +436,16 @@ Uint8 *DcmByteString::newValueField()
         // we want to use a non-throwing new here if available.
         // If the allocation fails, we report an EC_MemoryExhausted error
         // back to the caller.
-        value = new (std::nothrow) Uint8[getLengthField() + 1];
+        value = new (std::nothrow) Uint8[lengthField + 1];
 #else
-        value = new Uint8[getLengthField() + 1];
+        value = new Uint8[lengthField + 1];
 #endif
     }
     /* make sure that the string is properly terminates by a 0 byte */
     if (value != NULL)
-        value[getLengthField()] = 0;
+        value[lengthField] = 0;
+    else
+        errorFlag = EC_MemoryExhausted;
     return value;
 }
 
@@ -636,6 +652,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.51  2009-01-29 15:34:45  onken
+** Fixed length overflow in case of private attributes having maximum length
+** values. Minor code simplifications.
+**
 ** Revision 1.50  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
