@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:27:03 $
- *  CVS/RCS Revision: $Revision: 1.122 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-29 15:35:32 $
+ *  CVS/RCS Revision: $Revision: 1.123 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -733,6 +733,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     // tag has been read
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag);
+    // check whether tag is private
+    OFBool isPrivate = groupTag & 1;
 
     /* if the transfer syntax which was passed is an explicit VR syntax and if the current */
     /* item is not a delimitation item (note that delimitation items do not have a VR), go */
@@ -789,7 +791,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     }
 
     /* special handling for private elements */
-    if ((newTag.getGroup() & 1) && (newTag.getElement() >= 0x1000))
+    if (isPrivate && (newTag.getElement() >= 0x1000))
     {
         const char *pc = privateCreatorCache.findPrivateCreator(newTag);
         if (pc)
@@ -844,11 +846,20 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         }
     }
     /* if the value in length is odd, print an error message */
-    if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
+    if ( (valueLength & 1) && (valueLength != DCM_UndefinedLength) )
     {
         ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << OFendl;
         ofConsole.unlockCerr();
     }
+    
+    /* if desired, handle private attributes with maximum length as VR SQ */
+    if (isPrivate && dcmReadImplPrivAttribMaxLengthAsSQ.get() && (valueLength == DCM_UndefinedLength))
+    {
+        /* re-set tag to be a sequence and also delete private creator cache */
+        newTag.setVR(EVR_SQ);
+        newTag.setPrivateCreator("");
+    }
+
     /* assign values to out parameter */
     length = valueLength;
     tag = newTag;
@@ -968,6 +979,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* read this element's tag and length information (and */
                     /* possibly also VR information) from the inStream */
                     errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
+
                     /* increase counter correspondingly */
                     incTransferredBytes(bytes_tagAndLen);
 
@@ -3483,6 +3495,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.123  2009-01-29 15:35:32  onken
+** Added global parsing option that allows for reading private attributes in
+** implicit encoding having a maximum length to be read as sequences instead
+** of relying on the dictionary.
+**
 ** Revision 1.122  2009-01-06 16:27:03  joergr
 ** Reworked print() output format for option PF_showTreeStructure.
 **

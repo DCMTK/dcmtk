@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:28:11 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-29 15:36:16 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,6 +123,17 @@ extern OFGlobal<OFBool> dcmAutoDetectDatasetXfer; /* default OFFalse */
  *  element with Implicit VR Little Endian transfer syntax.
  */
 extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse */
+
+/** This flag indicates, whether private attributes with implicit transfer
+ *  syntax having a maximum length should be handled as sequences (ignoring
+ *  any dictionary entries for that tag). This can happen, if for example
+ *  a private creator element is illegally inserted with VR SQ
+ *  (undefined length and implicit coding). The parser usually would then
+ *  try to parse the element with VR=LO (private creator) with maximum
+ *  length, which would lead to an error. The default behaviour is to 
+ *  rely on the dictionary.
+ */
+extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse */
 
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
@@ -613,6 +624,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.55  2009-01-29 15:36:16  onken
+ * Added global parsing option that allows for reading private attributes in
+ * implicit encoding having a maximum length to be read as sequences instead
+ * of relying on the dictionary.
+ *
  * Revision 1.54  2009-01-06 16:28:11  joergr
  * Reworked print() output format for option PF_showTreeStructure.
  *

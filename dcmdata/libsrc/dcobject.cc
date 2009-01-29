@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:27:03 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-29 15:35:32 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ OFGlobal<OFBool> dcmEnableCP246Support(OFTrue);
 OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
 OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
 OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
-
+OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
 
 // ****** public methods **********************************
 
@@ -470,6 +470,11 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.55  2009-01-29 15:35:32  onken
+ * Added global parsing option that allows for reading private attributes in
+ * implicit encoding having a maximum length to be read as sequences instead
+ * of relying on the dictionary.
+ *
  * Revision 1.54  2009-01-06 16:27:03  joergr
  * Reworked print() output format for option PF_showTreeStructure.
  *
