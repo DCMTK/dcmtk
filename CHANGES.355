@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.29 (onken)
+
+- Fixed length overflow in case of private attributes having maximum length
+  values. Minor code simplifications.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcbytstr.cc
+
+ - Added global parsing option that allows for reading private attributes in
+   implicit encoding having a maximum length to be read as sequences instead
+   of relying on the dictionary.
+   Affects: dcmdata/apps/dcmdump.cc
+            dcmdata/apps/dcmconv.cc
+            dcmdata/include/dcmtk/dcmdata/dcobject.h
+            dcmdata/libsrc/dcobject.cc
+            dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2009.01.29 (riesmeier)
 
 - Fixed issue with array initialization on x64 platform with Windows Vista and
