@@ -16,6 +16,8 @@ Changes between releases are documented here.
   of relying on the dictionary.
   Affects: dcmdata/apps/dcmdump.cc
            dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmconv.man
            dcmdata/include/dcmtk/dcmdata/dcobject.h
            dcmdata/libsrc/dcobject.cc
            dcmdata/libsrc/dcitem.cc
