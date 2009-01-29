@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-05 15:30:15 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-01-29 15:36:52 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,6 +130,9 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of defined length UN elements:");
       cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
       cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
+      cmd.addSubGroup("handling of private max-length elements (implicit VR):");
+        cmd.addOption("--maxlength-dict",     "-sq",    "read as defined in dictionary (default)");
+        cmd.addOption("--maxlength-seq",      "+sq",    "read as sequence with undefined length");
     cmd.addSubGroup("automatic data correction:");
       cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
       cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
@@ -272,6 +275,17 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--convert-un"))
       {
         dcmEnableUnknownVRConversion.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--maxlength-dict"))
+      {
+        dcmReadImplPrivAttribMaxLengthAsSQ.set(OFFalse);
+      }
+      if (cmd.findOption("--maxlength-seq"))
+      {
+        dcmReadImplPrivAttribMaxLengthAsSQ.set(OFTrue);
       }
       cmd.endOptionBlock();
 
@@ -452,6 +466,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.56  2009-01-29 15:36:52  onken
+** *** empty log message ***
+**
 ** Revision 1.55  2009-01-05 15:30:15  joergr
 ** Added command line options that allow for reading incorrectly encoded DICOM
 ** datasets where particular data elements are encoded with a differing transfer
