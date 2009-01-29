@@ -8,6 +8,14 @@ Changes between releases are documented here.
   Thanks to Svilen Nedev <svilenn@gmail.com> for the report and suggested fix.
   Affects: dcmdata/libsrc/dcuid.cc
 
+- Fixed issue with missing invalidation of socket variable during close method.
+  Please note that this is only required if the connection objects exists after
+  the TCP/IP connection has been closed (which is currently not the case).
+  Thanks to Evgeny Sabelskiy <evgeny.sabelskiy@gmail.com> for the report and
+  suggested fix.
+  Affects: dcmnet/include/dcmtk/dcmnet/dcmtrans.h
+           dcmnet/libsrc/dcmtrans.cc
+
 **** Changes from 2009.01.27 (onken)
 
 - Fixed some minor inconsistencies in dcmodify manpage.

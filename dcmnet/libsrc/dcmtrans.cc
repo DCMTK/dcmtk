@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:29 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-29 11:39:20 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ OFBool DcmTransportConnection::fastSelectReadableAssociation(DcmTransportConnect
     {
       socketfd = connections[i]->getSocket();
 #ifdef __MINGW32__
-      // on MinGW, FD_SET expects an unsigned first argument
+      /* on MinGW, FD_SET expects an unsigned first argument */
       FD_SET((unsigned int)socketfd, &fdset);
 #else
       FD_SET(socketfd, &fdset);
@@ -222,11 +222,13 @@ ssize_t DcmTCPConnection::write(void *buf, size_t nbyte)
 void DcmTCPConnection::close()
 {
 #ifdef HAVE_WINSOCK_H
-  (void) shutdown(getSocket(),  1 /* SD_SEND */);
+  (void) shutdown(getSocket(), 1 /* SD_SEND */);
   (void) closesocket(getSocket());
 #else
   (void) ::close(getSocket());
 #endif
+  /* forget about this socket (now closed) */
+  setSocket(-1);
 }
 
 unsigned long DcmTCPConnection::getPeerCertificateLength()
@@ -248,7 +250,7 @@ OFBool DcmTCPConnection::networkDataAvailable(int timeout)
   FD_ZERO(&fdset);
 
 #ifdef __MINGW32__
-  // on MinGW, FD_SET expects an unsigned first argument
+  /* on MinGW, FD_SET expects an unsigned first argument */
   FD_SET((unsigned int) getSocket(), &fdset);
 #else
   FD_SET(getSocket(), &fdset);
@@ -305,7 +307,12 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
 
 /*
  *  $Log: dcmtrans.cc,v $
- *  Revision 1.10  2006-08-15 16:04:29  meichel
+ *  Revision 1.11  2009-01-29 11:39:20  joergr
+ *  Fixed issue with missing invalidation of socket variable during close method.
+ *  Please note that this is only required if the connection objects exists after
+ *  the TCP/IP connection has been closed (which is currently not the case).
+ *
+ *  Revision 1.10  2006/08/15 16:04:29  meichel
  *  Updated the code in module dcmnet to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
@@ -340,4 +347,3 @@ const char *DcmTCPConnection::errorString(DcmTransportLayerStatus code)
  *
  *
  */
-

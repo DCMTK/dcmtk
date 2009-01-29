@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTransportConnection, DcmTCPConnection
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:04:29 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-29 11:39:44 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,6 +167,11 @@ protected:
    *  @return socket file descriptor
    */
   int getSocket() { return theSocket; }
+
+  /** set the socket file descriptor managed by this object.
+   *  @param socket file descriptor
+   */
+  void setSocket(int socket) { theSocket = socket; }
 
 private:
 
@@ -331,7 +336,12 @@ private:
 
 /*
  *  $Log: dcmtrans.h,v $
- *  Revision 1.8  2006-08-15 16:04:29  meichel
+ *  Revision 1.9  2009-01-29 11:39:44  joergr
+ *  Fixed issue with missing invalidation of socket variable during close method.
+ *  Please note that this is only required if the connection objects exists after
+ *  the TCP/IP connection has been closed (which is currently not the case).
+ *
+ *  Revision 1.8  2006/08/15 16:04:29  meichel
  *  Updated the code in module dcmnet to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
@@ -360,4 +370,3 @@ private:
  *
  *
  */
-
