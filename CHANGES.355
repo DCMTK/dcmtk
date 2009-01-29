@@ -8,14 +8,14 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dcbytstr.cc
 
- - Added global parsing option that allows for reading private attributes in
-   implicit encoding having a maximum length to be read as sequences instead
-   of relying on the dictionary.
-   Affects: dcmdata/apps/dcmdump.cc
-            dcmdata/apps/dcmconv.cc
-            dcmdata/include/dcmtk/dcmdata/dcobject.h
-            dcmdata/libsrc/dcobject.cc
-            dcmdata/libsrc/dcitem.cc
+- Added global parsing option that allows for reading private attributes in
+  implicit encoding having a maximum length to be read as sequences instead
+  of relying on the dictionary.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcitem.cc
 
 **** Changes from 2009.01.29 (riesmeier)
 
