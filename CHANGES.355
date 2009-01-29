@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2009.01.29 (onken)
 
+- Fixed compilation under windows (missing memzero) by including dcdefine.h.
+  Affects: dcmdata/libsrc/dcuid.cc  
+
 - Fixed length overflow in case of private attributes having maximum length
   values. Minor code simplifications.
   Affects: dcmdata/libsrc/dcelem.cc
