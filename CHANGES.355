@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.01.30 (riesmeier)
+
+- Updated makefile templates in order to be consistent with the current
+  Makefiles.
+  Affects: config/templates/Makefile.lib
+           config/templates/Makefile.mod
+           config/templates/Makefile.src
+
+- Updated description in order to be consistent with the current structure.
+  Affects: config/docs/modules.txt
+
 **** Changes from 2009.01.29 (onken)
 
 - Fixed compilation under windows (missing memzero) by including dcdefine.h.
