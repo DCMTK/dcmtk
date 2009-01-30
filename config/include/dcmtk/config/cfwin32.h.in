@@ -17,7 +17,6 @@
 #endif /* __BORLANDC__ */
 
 /* Compiling for windows */
-#define windows 1
 #define WIN32 1
 
 /* Define if you have the <windows.h> header file.  */
@@ -274,7 +273,7 @@
 #define HAVE_ITOA 1
 
 /* Define if LFS (long file support) is available */
-#define HAVE_LFS_SUPPORT 
+#define HAVE_LFS_SUPPORT
 
 /* Define to 1 if you have the <libc.h> header file. */
 /* #undef  HAVE_LIBC_H */
