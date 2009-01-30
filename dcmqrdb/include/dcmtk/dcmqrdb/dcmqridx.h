@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2008, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: enums and structures used for the database index file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-15 15:43:37 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-30 14:45:02 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,9 +49,9 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-/** types of query keys 
+/** types of query keys
  */
-enum DB_KEY_TYPE 
+enum DB_KEY_TYPE
 {
     /// unique key
     UNIQUE_KEY,
@@ -145,20 +144,20 @@ public:
     DB_SmallDcmElmt();
 
     /// pointer to the value field
-    char* PValueField ;     
+    char* PValueField ;
 
     /// value length in bytes
-    Uint32 ValueLength ;        
+    Uint32 ValueLength ;
 
     /// attribute tag
     DcmTagKey XTag ;
-    
+
 private:
     /// private undefined copy constructor
     DB_SmallDcmElmt(const DB_SmallDcmElmt& copy);
     /// private undefined copy assignment operator
     DB_SmallDcmElmt& operator=(const DB_SmallDcmElmt& copy);
-}; 
+};
 
 /** this class provides a primitive interface for handling a list of flat DICOM elements,
  *  similar to DcmItem, but only for use within the database module
@@ -169,7 +168,7 @@ struct DB_ElementList
     DB_ElementList(): elem(), next(NULL) {}
 
     /// current list element
-    DB_SmallDcmElmt elem ;      
+    DB_SmallDcmElmt elem ;
 
     /// pointer to next in list
     struct DB_ElementList *next ;
@@ -181,7 +180,7 @@ private:
     DB_ElementList& operator=(const DB_ElementList& copy);
 };
 
-struct DB_UidList 
+struct DB_UidList
 {
     char *patient ;
     char *study ;
@@ -204,7 +203,7 @@ struct DB_FindAttr
     DB_KEY_CLASS keyClass ;
 
     /* to passify some C++ compilers */
-    DB_FindAttr(const DcmTagKey& t, DB_LEVEL l, DB_KEY_TYPE kt, DB_KEY_CLASS kc) 
+    DB_FindAttr(const DcmTagKey& t, DB_LEVEL l, DB_KEY_TYPE kt, DB_KEY_CLASS kc)
         : tag(t), level(l), keyAttr(kt), keyClass(kc) { }
 };
 
@@ -223,14 +222,14 @@ struct DB_Private_Handle
     int NumberRemainOperations ;
     DB_QUERY_CLASS rootLevel ;
     DB_UidList *uidList ;
-    
+
     DB_Private_Handle()
     : pidx(0)
     , findRequestList(NULL)
     , findResponseList(NULL)
     , queryLevel(STUDY_LEVEL)
-    , indexFilename()
-    , storageArea()
+//  , indexFilename()
+//  , storageArea()
     , maxBytesPerStudy(0)
     , maxStudiesAllowed(0)
     , idxCounter(0)
@@ -239,14 +238,14 @@ struct DB_Private_Handle
     , rootLevel(STUDY_ROOT)
     , uidList(NULL)
     {
-    }    
+    }
 };
 
-/** this struct defines the structure of each "Study Record" in the index.dat 
+/** this struct defines the structure of each "Study Record" in the index.dat
  *  file maintained by this module. A Study Record is a direct binary copy
  *  of an instance of this struct.
- */ 
-struct StudyDescRecord 
+ */
+struct StudyDescRecord
 {
     /// Study Instance UID of the study described by this record
     char StudyInstanceUID [UI_MAX_LENGTH] ;
@@ -261,10 +260,10 @@ struct StudyDescRecord
     int NumberofRegistratedImages ;
 };
 
-struct ImagesofStudyArray 
+struct ImagesofStudyArray
 {
     int idxCounter ;
-    double RecordedDate ; 
+    double RecordedDate ;
     long ImageSize ;
 };
 
@@ -335,7 +334,7 @@ struct IdxRecord
 
     char    filename                        [DBC_MAXSTRING+1] ;
     char    SOPClassUID                     [UI_MAX_LENGTH+1] ;
-    double  RecordedDate ; 
+    double  RecordedDate ;
     int     ImageSize ;
 
     DB_SmallDcmElmt param                   [NBPARAMETERS] ;
@@ -343,19 +342,19 @@ struct IdxRecord
     char    PatientsBirthDate               [DA_MAX_LENGTH+1] ;
     char    PatientsSex                     [CS_MAX_LENGTH+1] ;
     char    PatientsName                    [PN_MAX_LENGTH+1] ;
-    char    PatientID                       [LO_MAX_LENGTH+1] ; 
-    char    PatientsBirthTime               [TM_MAX_LENGTH+1] ; 
-    char    OtherPatientIDs                 [LO_MAX_LENGTH+1] ; 
-    char    OtherPatientNames               [PN_MAX_LENGTH+1] ; 
-    char    EthnicGroup                     [SH_MAX_LENGTH+1] ; 
-    char    NumberofPatientRelatedStudies   [IS_MAX_LENGTH+1] ; 
-    char    NumberofPatientRelatedSeries    [IS_MAX_LENGTH+1] ; 
+    char    PatientID                       [LO_MAX_LENGTH+1] ;
+    char    PatientsBirthTime               [TM_MAX_LENGTH+1] ;
+    char    OtherPatientIDs                 [LO_MAX_LENGTH+1] ;
+    char    OtherPatientNames               [PN_MAX_LENGTH+1] ;
+    char    EthnicGroup                     [SH_MAX_LENGTH+1] ;
+    char    NumberofPatientRelatedStudies   [IS_MAX_LENGTH+1] ;
+    char    NumberofPatientRelatedSeries    [IS_MAX_LENGTH+1] ;
     char    NumberofPatientRelatedInstances [IS_MAX_LENGTH+1] ;
-    
-    char    StudyDate                       [DA_MAX_LENGTH+1] ; 
-    char    StudyTime                       [TM_MAX_LENGTH+1] ; 
+
+    char    StudyDate                       [DA_MAX_LENGTH+1] ;
+    char    StudyTime                       [TM_MAX_LENGTH+1] ;
     char    StudyID                         [CS_MAX_LENGTH+1] ;
-    char    StudyDescription                [LO_MAX_LENGTH+1] ; 
+    char    StudyDescription                [LO_MAX_LENGTH+1] ;
     char    NameOfPhysiciansReadingStudy    [PN_MAX_LENGTH+1] ;
 
     char    AccessionNumber                 [CS_MAX_LENGTH+1] ;
@@ -371,27 +370,27 @@ struct IdxRecord
     char    Occupation                      [SH_MAX_LENGTH+1] ;
     char    NumberofStudyRelatedSeries      [IS_MAX_LENGTH+1] ;
     char    NumberofStudyRelatedInstances   [IS_MAX_LENGTH+1] ;
-    
+
     char    SeriesNumber                    [IS_MAX_LENGTH+1] ;
     char    SeriesInstanceUID               [UI_MAX_LENGTH+1] ;
     char    Modality                        [CS_MAX_LENGTH+1] ;
-    
+
     char    ImageNumber                     [IS_MAX_LENGTH+1] ;
     char    SOPInstanceUID                  [UI_MAX_LENGTH+1] ;
 
-    char    SeriesDate                      [DA_MAX_LENGTH+1] ; 
-    char    SeriesTime                      [TM_MAX_LENGTH+1] ; 
-    char    SeriesDescription               [LO_MAX_LENGTH+1] ; 
+    char    SeriesDate                      [DA_MAX_LENGTH+1] ;
+    char    SeriesTime                      [TM_MAX_LENGTH+1] ;
+    char    SeriesDescription               [LO_MAX_LENGTH+1] ;
     char    ProtocolName                    [LO_MAX_LENGTH+1] ;
     char    OperatorsName                   [PN_MAX_LENGTH+1] ;
     char    PerformingPhysiciansName        [PN_MAX_LENGTH+1] ;
     char    PresentationLabel               [CS_LABEL_MAX_LENGTH+1] ;
 
-    DVIFhierarchyStatus hstat;  
+    DVIFhierarchyStatus hstat;
 
     // Not related to any particular DICOM attribute !
     char    InstanceDescription             [DESCRIPTION_MAX_LENGTH+1] ;
-   
+
 private:
     /* undefined */ IdxRecord(const IdxRecord& copy);
     /* undefined */ IdxRecord& operator=(const IdxRecord& copy);
@@ -403,6 +402,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqridx.h,v $
+ * Revision 1.4  2009-01-30 14:45:02  joergr
+ * Uncommented initialization of array variables in order to avoid compiler
+ * warnings reported by VisualStudio 2005.
+ *
  * Revision 1.3  2008-04-15 15:43:37  meichel
  * Fixed endless recursion bug in the index file handling code when
  *   the index file does not exist
