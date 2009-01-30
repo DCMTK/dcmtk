@@ -12,6 +12,15 @@ Changes between releases are documented here.
 - Updated description in order to be consistent with the current structure.
   Affects: config/docs/modules.txt
 
+- Added missing macros, updated existing entries.
+  Affects: config/docs/macros.txt
+
+- Removed local define "NODISPLAY" which is not used anymore.
+  Affects: dcmwlm/wwwapps/Makefile.in
+
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2009.01.29 (onken)
 
 - Fixed compilation under windows (missing memzero) by including dcdefine.h.
