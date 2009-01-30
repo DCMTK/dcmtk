@@ -2,48 +2,45 @@
 #	Makefile for libraries
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir=@srcdir@
-top_srcdir=@top_srcdir@
-configdir=@top_srcdir@/@configdir@
-
-# Special defines for the Library, define them in LOCALDEFS
-
-LOCALDEFS=
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-objs= 	#all objects in library
+LOCALINCLUDES =
+LOCALDEFS =
 
-all: library.$(LIBEXT)
-
-
-
-install: all
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) library.$(LIBEXT) $(libdir)/library.$(LIBEXT)
+objs = # all objects in library
+library = libname.$(LIBEXT)
 
 
-clean:
-	(cd $(dicomdir); $(MAKE) clean)
-	rm -f $(objs) library.$(LIBEXT) $(TRASH)
-
-distclean:
-	(cd $(dicomdir); $(MAKE) distclean)
-	rm -f $(objs) library.$(LIBEXT) $(DISTTRASH)
+all: $(library)
 
 
-libdcmdata.$(LIBEXT): $(objs)
+install: $(library)
+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
+	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
+
+
+$(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
 
+clean:
+	rm -f $(objs) $(library) $(TRASH)
+
+distclean:
+	rm -f $(objs) $(library) $(DISTTRASH)
+
+
 dependencies:
-	$(CXX) -MM $(includes) *.cc  > $(DEP)
-	(cd $(dicomdir); touch $(DEP); $(MAKE) dependencies)
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
 include $(DEP)
