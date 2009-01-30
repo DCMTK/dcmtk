@@ -12,11 +12,6 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-#
-# -DNODISPLAY prevents any display code from being called
-#
-LOCALDEFS = -DNODISPLAY
-
 ofstddir = $(top_srcdir)/../ofstd
 ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
@@ -30,6 +25,7 @@ dcmdatalib = -ldcmdata
 LOCALINCLUDES = $(dcmdatainc) $(ofstdinc)
 LIBDIRS = $(dcmdatalibdir) $(ofstdlibdir)
 LOCALLIBS = $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS)
+LOCALDEFS =
 
 objs = preplock.o readoviw.o readwlst.o writwlst.o
 progs = preplock readoviw readwlst writwlst
