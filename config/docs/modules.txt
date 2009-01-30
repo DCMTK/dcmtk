@@ -57,10 +57,10 @@ Every Makefile in the modules directory must have the following lines:
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH = @srcdir@:@top_srcdir@/include:@configdir@/include
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
 srcdir = @srcdir@
 top_srcdir = @top_srcdir@
-configdir = @configdir@
+configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
