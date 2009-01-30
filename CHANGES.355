@@ -21,6 +21,11 @@ Changes between releases are documented here.
 - Updated man pages.
   Affects: doxygen/manpages/man1/*
 
+- Fixed bug in hasRepresentation() which returned the wrong status in case of
+  compressed pixel data.
+  Thanks to Roelant Visser <r.visser@lrcb.nl> for the report.
+  Affects: dcmdata/libsrc/dcpixel.cc
+
 **** Changes from 2009.01.29 (onken)
 
 - Fixed compilation under windows (missing memzero) by including dcdefine.h.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 14:29:45 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2009-01-30 13:28:14 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -241,8 +241,8 @@ DcmPixelData::canChooseRepresentation(
     }
     else
     {
-    	// representation not found, check if we have a codec that can create the
-    	// desired representation.
+        // representation not found, check if we have a codec that can create the
+        // desired representation.
         if (original == repListEnd)
         {
           result = DcmCodecList::canChangeCoding(EXS_LittleEndianExplicit, toType.getXfer());
@@ -455,9 +455,9 @@ DcmPixelData::findConformingEncapsulatedRepresentation(
     // parameter (i.e. quality factor for lossy JPEG).
     if (repTypeSyn.isEncapsulated())
     {
-    	// first we check the current (active) representation if any.
-    	if ((current != repListEnd) && ((*current)->repType == repType) &&
-    	    ((repParam==NULL) || (((*current)->repParam != NULL)&&(*(*current)->repParam == *repParam))))
+        // first we check the current (active) representation if any.
+        if ((current != repListEnd) && ((*current)->repType == repType) &&
+            ((repParam==NULL) || (((*current)->repParam != NULL)&&(*(*current)->repParam == *repParam))))
         {
             result = current;
             l_error = EC_Normal;
@@ -514,9 +514,7 @@ DcmPixelData::hasRepresentation(
     if (!repTypeSyn.isEncapsulated() && existUnencapsulated)
         return OFTrue;
     else if (repTypeSyn.isEncapsulated())
-        return findConformingEncapsulatedRepresentation(
-            repTypeSyn, repParam, found) != EC_Normal;
-
+        return findConformingEncapsulatedRepresentation(repTypeSyn, repParam, found).good();
     return OFFalse;
 }
 
@@ -1094,17 +1092,20 @@ OFCondition DcmPixelData::getUncompressedFrame(
       // we only have a compressed version of the pixel data.
       // Identify a codec for decompressing the frame.
       result = DcmCodecList::decodeFrame(
-      	(*original)->repType, (*original)->repParam, (*original)->pixSeq,
+        (*original)->repType, (*original)->repParam, (*original)->pixSeq,
         dataset, frameNo, startFragment, buffer, bufSize, decompressedColorModel);
     }
     return result;
 }
 
 
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.44  2009-01-30 13:28:14  joergr
+** Fixed bug in hasRepresentation() which returned the wrong status in case of
+** compressed pixel data.
+**
 ** Revision 1.43  2008-11-03 14:29:45  joergr
 ** Added method createValueFromTempFile() - overrides method in DcmElement.
 **
