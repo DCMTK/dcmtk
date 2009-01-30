@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmTLSTransportLayer
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:02:56 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-30 13:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -370,7 +370,7 @@ DcmTransportConnection *DcmTLSTransportLayer::createConnection(int openSocket, O
 
 void DcmTLSTransportLayer::seedPRNG(const char *randFile)
 {
-#ifdef WINDOWS
+#ifdef _WIN32
   RAND_screen();
 #endif
   if (randFile)
@@ -487,7 +487,10 @@ void tlslayer_dummy_function()
 
 /*
  *  $Log: tlslayer.cc,v $
- *  Revision 1.12  2006-08-15 16:02:56  meichel
+ *  Revision 1.13  2009-01-30 13:53:53  joergr
+ *  Replaced checking of macro WINDOWS by _WIN32.
+ *
+ *  Revision 1.12  2006/08/15 16:02:56  meichel
  *  Updated the code in module dcmtls to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
@@ -531,4 +534,3 @@ void tlslayer_dummy_function()
  *
  *
  */
-
