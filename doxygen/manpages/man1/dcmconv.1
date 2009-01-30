@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "30 Jan 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -85,6 +85,14 @@ parsing of odd-length attributes:
   +ae  --assume-even-length
          assume real length is one byte larger
 
+handling of non-standard VR:
+
+  +vr  --treat-as-unknown
+         treat non-standard VR as unknown (default)
+
+  -vr  --assume-implicit
+         try to read with implicit VR little endian TS
+
 handling of undefined length UN elements:
 
   +ui  --enable-cp246
@@ -101,6 +109,14 @@ handling of defined length UN elements:
   +uc  --convert-un
          convert to real VR if known
 
+handling of private max-length elements (implicit VR):
+
+  -sq  --maxlength-dict
+         read as defined in dictionary (default)
+
+  +sq  --maxlength-seq
+         read as sequence with undefined length         
+         
 automatic data correction:
 
   +dc  --enable-correction
@@ -209,4 +225,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

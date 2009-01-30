@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "30 Jan 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -12,7 +12,7 @@ dump2dcm [options] dumpfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdump2dcm\fP utility converts an ASCII dumpfile to a dicom file. The dumpfile has the same format as the output of \fBdcmdump\fP. Thus it is possible to capture the output of \fBdcmdump\fP into a file, modify some attributes and create a new DICOM file.
+The \fBdump2dcm\fP utility converts an ASCII dump file to a DICOM file. The dump file has the same format as the output of \fBdcmdump\fP. Thus it is possible to capture the output of \fBdcmdump\fP into a file, modify some attributes and create a new DICOM file.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -138,7 +138,7 @@ deflate compression level (only with --write-xfer-deflated):
 .SH "NOTES"
 .PP
 .SS "Dump File Description"
-The input file can be an output of dcmdump. One element (tag, VR, value) must be written into one line separated by arbitrary spaces or tab characters. A '#' begins a comment that ends at the line end. Empty lines are allowed.
+The input file can be an output of \fBdcmdump\fP (default indented format only). One element (tag, VR, value) must be written into one line separated by arbitrary spaces or tab characters. A '#' begins a comment that ends at the line end. Empty lines are allowed.
 .PP
 The individual parts of a line have the following syntax:
 .PP
@@ -218,4 +218,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdump\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "19 Dec 2008" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "30 Jan 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -37,6 +37,9 @@ dcmfile-in  DICOM input file or directory to be dumped
 
        --arguments
          print expanded command line arguments
+
+  -q   --quiet
+         quiet mode, print no warnings and errors
 
   -d   --debug
          debug mode, print debug information
@@ -98,6 +101,14 @@ parsing of odd-length attributes:
   +ae  --assume-even-length
          assume real length is one byte larger
 
+handling of non-standard VR:
+
+  +vr  --treat-as-unknown
+         treat non-standard VR as unknown (default)
+
+  -vr  --assume-implicit
+         try to read with implicit VR little endian TS
+
 handling of undefined length UN elements:
 
   +ui  --enable-cp246
@@ -113,6 +124,14 @@ handling of defined length UN elements:
 
   +uc  --convert-un
          convert to real VR if known
+
+handling of private max-length elements (implicit VR):
+
+  -sq  --maxlength-dict
+         read as defined in dictionary (default)
+
+  +sq  --maxlength-seq
+         read as sequence with undefined length
 
 automatic data correction:
 
@@ -151,6 +170,12 @@ printing:
 
   -L   --print-short
          print long tag values shortened (default)
+
+  +T   --print-tree
+         print hierarchical structure as a simple tree
+
+  -T   --print-indented
+         print hierarchical structure indented (default)
 
   +F   --print-filename
          print header with filename for each input file
@@ -223,4 +248,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdump2dcm\fP(1), \fBdcmconv\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
