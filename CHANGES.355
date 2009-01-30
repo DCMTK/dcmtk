@@ -26,6 +26,12 @@ Changes between releases are documented here.
   Thanks to Roelant Visser <r.visser@lrcb.nl> for the report.
   Affects: dcmdata/libsrc/dcpixel.cc
 
+- Removed definition of unused macro "windows".
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
+- Replaced checking of macro WIN32 by _WIN32.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2009.01.29 (onken)
 
 - Fixed compilation under windows (missing memzero) by including dcdefine.h.
