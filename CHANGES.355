@@ -36,6 +36,10 @@ Changes between releases are documented here.
 - Replaced checking of macro WINDOWS by _WIN32.
   Affects: dcmtls/libsrc/tlslayer.cc
 
+- Uncommented initialization of array variables in order to avoid compiler
+  warnings reported by VisualStudio 2005.
+  Affects: dcmqrdb/include/dcmtk/dcmqrdb/dcmqridx.h
+
 **** Changes from 2009.01.29 (onken)
 
 - Fixed compilation under windows (missing memzero) by including dcdefine.h.
