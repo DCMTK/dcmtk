@@ -2,31 +2,38 @@
 DCMTK COMPILE TIME FLAGS AND MACROS
 ===================================
 
-The behaviour of several DCMTK tools and libraries can be modified by a
-number of compile time flags (macros), which are explained below.
+The behaviour of several DCMTK tools and libraries can be modified by
+a number of compile time flags (macros), which are explained below.
 Most of these macros enable experimental or rarely needed features
-in DCMTK, others disable certain functions. Use with care.
-    
+in DCMTK, others disable certain functions.  So please, use with care!
+
 ALLOW_ILLUMINATION_OVERRIDE
-  Affected: dcmpstat/apps/dcmprscu.cc
+  Affected: dcmprscu
   Type of modification: Activates experimental or rarely used feature
   Explanation: Allows the settings for Illumination and Reflected
     Ambient Light, which are stored in a Stored Print object, to be
-    overridden from the print job command file
+    overridden from the print job command file.
 
 BUGGY_IMPLEMENTATION_CLASS_UID_PREFIX
-  Affected: dcmnet/apps/storescp.cc
+  Affected: storescp
   Type of modification: Activates workaround for known bug in other product
   Explanation: The dcmnet module contains a workaround that allows to
-    communicate with some buggy Store SCUs.  If the global flag
-    dcmPeerRequiresExactUIDCopy is enabled, an illegal space-padding in
+    communicate with some buggy Storage SCUs.  If the global flag
+    dcmPeerRequiresExactUIDCopy is enabled, an illegal space padding in
     the Affected SOP Instance UID field of the C-STORE-RQ message is
     retained in the corresponding C-STORE-RSP message.  When this
     preprocessor macro is defined, it should contain the prefix of an
     implementation class UID of an implementation known to exhibit the
     buggy behaviour.  The workaround is then activated in storescp
-    whenever a Store SCU with the given implementation class UID root
+    whenever a Storage SCU with the given implementation class UID root
     connects.
+
+DCMTK_BUILD_DATE
+  Affected: dcmdata
+  Type of modification: Toolkit customization
+  Explanation: When this macro is defined (typically in config/Makefile.def),
+    the given date is used instead of the official DCMTK release data.  This
+    allows for example to specify the date of a current development snapshot.
 
 DCMTK_GUI
   Affected: all modules
@@ -35,7 +42,7 @@ DCMTK_GUI
     output and error streams maintained by ofConsole to string streams.
     This will allow a GUI based application to extract the messages and
     either present them to the user or store them in a log file.  See
-    comments in ofstd/include/dcmtk/ofstd/ofconsol.h
+    comments in ofstd/include/dcmtk/ofstd/ofconsol.h.
 
 DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS
   Affected: dcmjpeg
@@ -52,11 +59,17 @@ DICOMDIR_WITHOUT_BACKUP
     (using the name DICOMDIR.$$$) when a DcmDicomDir object is written
     to file.  The creation of the backup can be disabled with this macro.
 
+DISABLE_COMPRESSION_EXTENSION
+  Affected: dcmqrdb
+  Type of modification: Disables feature
+  Explanation: Disables the support of compression (various transfer
+    syntaxes) in dcmqrdb, a feature which is still experimental.
+
 DISABLE_OFSTD_ATOF
   Affected: all modules
   Type of modification: Disables feature
-  Explanation: by default, DCMTK uses it's own implementation of atof to
-    convert strings to double numbers in a locale-independent manner.
+  Explanation: By default, DCMTK uses its own implementation of atof()
+    to convert strings to double numbers in a locale-independent manner.
     This flag forces DCMTK to use the standard sscanf() function
     instead, which is normally much faster and gives a higher precision
     than DCMTK's built in code, but is locale dependent, i.e. cannot be
@@ -66,8 +79,8 @@ DISABLE_OFSTD_ATOF
 DISABLE_OFSTD_FTOA
   Affected: all modules
   Type of modification: Disables feature
-  Explanation: by default, DCMTK uses it's own implementation to
-    convert double numbers to strings to in a locale-independent manner.
+  Explanation: By default, DCMTK uses its own implementation to convert
+    double numbers to strings to in a locale-independent manner.
     This flag forces DCMTK to use the standard sprintf() function
     instead, which is locale dependent, i.e. cannot be used with locales
     such as German since DICOM decimal strings always use the Posix
@@ -77,11 +90,57 @@ DONT_DISABLE_NAGLE_ALGORITHM
   Affected: dcmnet
   Type of modification: Disables feature
   Explanation: By default, DCMTK disables the so-called Nagle algorithm
-    for each DICOM transport connection. This provides a 2-4 times
+    for each DICOM transport connection.  This provides a 2-4 times
     performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).  Effects on
-    other environments are unknown. When compiled with this macro, the
+    other environments are unknown.  When compiled with this macro, the
     code affecting the Nagle algorithm is disabled.  See documentation
-    for environment variable TCP_NODELAY in config/docs/envvars.txt
+    for environment variable TCP_NODELAY in config/docs/envvars.txt.
+
+EXPERIMENTAL_READ_FROM_FILE
+  Affected: dump2dcm
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When this macro is defined, the relatively new function
+    createValueFromTempFile() is used for reading large binary data files.
+
+HAVE_STD_STRING
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the ANSI C++ standard string
+    class is used instead of DCMTK's own implementation.
+
+HAVE_STL
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) list and stack classes as well as the STL algorithms are
+    used instead of DCMTK's own implementations.
+
+HAVE_STL_ALGORITHMS
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) algorithms are used instead of DCMTK's own implementation.
+    Also see HAVE_STL.
+
+HAVE_STL_LIST
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) list class is used instead of DCMTK's own implementation.
+    Also see HAVE_STL.
+
+HAVE_STL_STACK
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) stack class is used instead of DCMTK's own implementation.
+    Also see HAVE_STL.
+
+LOCK_IMAGE_FILES
+  Affected: dcmpstat, dcmqrdb
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When this macro is defined, the DICOM image file to be
+    send or received/created is locked exclusively.
 
 NO_GET_SUPPORT
   Affected: dcmqrdb
@@ -99,20 +158,20 @@ NO_IOS_BASE_ASSIGN
 NO_PATIENTSTUDYONLY_SUPPORT
   Affected: dcmqrdb
   Type of modification: Disables feature
-  Explanation: Disables support for the Patient/Study Only
-    Query/Retrieve Model in dcmqrdb.
+  Explanation: Disables support for the Patient/Study Only Query/Retrieve
+    Model in dcmqrdb.
 
 NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
   Affected: dcmnet
   Type of modification: Disables feature
-  Explanation: Under Win95 gethostbyname will not accept an IP address
-    e. g. "134.106.1.1".  This appears to work without problems under
-    Windows NT and several Unix variants.  As a workaround, DCMTK
-    explicitly handles the IP address case.  The workaround can be
-    disabled with this macro
+  Explanation: Under Windows 95 gethostbyname will not accept an IP
+    address e.g. "134.106.1.1".  This appears to work without problems
+    with other Windows versions and several Unix variants.  As a
+    workaround, DCMTK explicitly handles the IP address case.  The
+    workaround can be disabled with this macro.
 
 OFCONDITION_IMPLICIT_BOOL_CONVERSION
-  Affected: class OFCondition (ofstd/include/dcmtk/ofstd/ofcond.h)
+  Affected: ofstd
   Type of modification: Activates experimental or rarely used feature
   Explanation: Activates an implicit conversion from OFCondition to
     OFBool, i.e. operator OFBool().  Implicit conversion might not always
@@ -120,13 +179,19 @@ OFCONDITION_IMPLICIT_BOOL_CONVERSION
     this operator is disabled by default.
 
 OFCONDITION_STRICT_MODE
-  Affected: class OFCondition (ofstd/include/dcmtk/ofstd/ofcond.h) and
-    related
+  Affected: ofstd
   Type of modification: Disables feature
   Explanation: Disables the compatibility options related to the
     transition to OFCondition: No OFCondition default constructor, no
     typedefs for E_Condition, CONDITION, no macros for SUCCESS and
     condition aliases.
+
+ON_THE_FLY_COMPRESSION
+  Affected: storescu
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When this macro is defined, the storescu tries to compress
+    or decompress the DICOM image to be sent (if required) depending on
+    the negotiated transfer syntax.
 
 OLD_USER_INFO_SUB_ITEM_ORDER
   Affected: dcmnet
@@ -150,7 +215,7 @@ PDV_TEST
   Affected: dcmnet
   Type of modification: Activates experimental or rarely used feature
   Explanation: Causes the network module to insert a false, zero-length
-    PDV (2 byte hdr) into each P-DATA-PDU.
+    PDV (2 byte header) into each P-DATA-PDU.
 
 PIXELSTACK_MEMORY_LEAK_WORKAROUND
   Affected: dcmdata
@@ -194,11 +259,12 @@ SITE_UID_ROOT
   Affected: dcmdata
   Type of modification: Site customization
   Explanation: dcmdata contains a routine that generates DICOM unique
-  identifiers (UIDs).  By default, these are constructed from the OFFIS
-  UID namespace, i.e. using the OFFIS UID Root "1.2.276.0.7230010.3".
-  Users who prefer to let the toolkit generate UIDs from their own UID
-  namespace should compile DCMTK with SITE_UID_ROOT defined to their own
-  UID root.
+    identifiers (UIDs).  By default, these are constructed from the OFFIS
+    UID namespace, i.e. using the OFFIS UID Root "1.2.276.0.7230010.3".
+    Users who prefer to let the toolkit generate UIDs from their own UID
+    namespace should compile DCMTK with SITE_UID_ROOT defined to their own
+    UID root.  Please make sure that the resulting UIDs do not exceed the
+    64 characters limit!
 
 STARVIEW
   Affected: dcmimgle, dcmimage
@@ -214,13 +280,13 @@ STRICT_COMPARE
     by defining this macro.
 
 SUPRESS_CREATE_STAMP
-  Affected: dcmdata/libsrc/mkdeftag.cc, dcmdata/libsrc/mkdictbi.cc
+  Affected: dcmdata
   Type of modification: Activates experimental or rarely used feature
   Explanation: When defined, suppresses the creation of a time stamp
-    comment when re-generating dcdeftag.h and dcdictzz.cc
+    comment when re-generating dcdeftag.h and dcdictzz.cc.
 
 USE__LOCKING
-  Affected: dcmnet and related (dcmqrdb, dcmpstat)
+  Affected: dcmnet
   Type of modification: Activates alternative implementation
   Explanation: Activates an alternative emulation of flock() on Win32
     platforms using _locking().  This version should only be used on
@@ -230,22 +296,29 @@ USE__LOCKING
 USING_STD_NAMESPACE
   Affected: all modules
   Type of modification: Re-activated behaviour of earlier DCMTK releases.
-  Explanation: DCMTK by default does not anymore pollute the default namespace 
-    by importing namespace std. Earlier releases did this to simplify 
-    compatibility with older compilers where STL classes were not consistently 
-    defined in namespace std. We now have configure macros which should care for 
-    this. If user code still relies on namespace std to be included, compile 
-    with this macro defined.
+  Explanation: DCMTK by default does not anymore pollute the default namespace
+    by importing namespace std.  Earlier releases did this to simplify
+    compatibility with older compilers where STL classes were not consistently
+    defined in namespace std.  We now have configure macros which should care
+    for this.  If user code still relies on namespace std to be included,
+    compile with this macro defined.
 
 WRITE_VERY_LARGE_CHUNKS
-  Affects: dcmdata (writing of DICOM datasets)
+  Affects: dcmdata
   Type of modification: Re-activated behaviour of earlier DCMTK releases.
-  Explanation: On Windows (at least for some versions of MSVC), calls to 
-    fwrite() for more than 67,076,095 bytes (a bit less than 64 MByte) fail if 
-    we're writing to a network share. See MSDN KB899149. As a workaround, we 
-    always write in chunks of 32M which should hardly negatively affect 
-    performance. This macro enables the behaviour of earlier DCMTK releases,
+  Explanation: On Windows (at least for some versions of MSVC), calls to
+    fwrite() for more than 67,076,095 bytes (a bit less than 64 MByte) fail if
+    we're writing to a network share.  See MSDN KB899149.  As a workaround, we
+    always write in chunks of 32M which should hardly negatively affect
+    performance.  This macro enables the behaviour of earlier DCMTK releases,
     i.e. to always call fwrite with as much data as possible, which is known
-    not to work correctly on Win32 but might offer very minor performance 
+    not to work correctly on Win32 but might offer very minor performance
     benefits on other platforms.
 
+ZLIB_ENCODE_RFC1950_HEADER
+  Affects: dcmdata
+  Type of modification: Activates experimental or rarely used feature
+  Explanation: When this macro is defined, the deflated ZLIB format is created
+    instead of the deflated bitstream format (i.e. RFC 1950 instead of RFC
+    1951). Please note that the resulting bitstream is not DICOM compliant.
+    So, use only for testing, and use with care!
