@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2006-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:37:11 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-01-30 13:49:01 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 #ifndef OFFILE_H
 #define OFFILE_H
 
@@ -52,15 +52,15 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 /* When using the ISO C++ include files such as <cstdio>, <cstdarg> etc.,
- * all ANSI C functions like fopen() are declared in namespace std, 
- * (e.g. we have to use std::fopen()), but non-ANSI Posix functions remain 
- * in global namespace, e.g. we have to use ::fopen64(). 
+ * all ANSI C functions like fopen() are declared in namespace std,
+ * (e.g. we have to use std::fopen()), but non-ANSI Posix functions remain
+ * in global namespace, e.g. we have to use ::fopen64().
  * To make things even more difficult, not all compilers really declare
  * ANSI C functions in namespace std in accordance with the C++ standard.
  * Yes, this is ugly.
  */
 
-/* Find out whether current operating system needs explicit function calls 
+/* Find out whether current operating system needs explicit function calls
  * to handle large file support
  */
 #ifdef _LARGEFILE64_SOURCE
@@ -71,8 +71,8 @@ END_EXTERN_C
 #endif
 
 #ifdef _WIN32
-  // On Win32 systems, we use WIN32 specific definitions 
-  typedef __int64 offile_off_t;  
+  // On Win32 systems, we use WIN32 specific definitions
+  typedef __int64 offile_off_t;
   typedef fpos_t offile_fpos_t;
 #else
   #ifdef EXPLICIT_LFS_64
@@ -99,7 +99,7 @@ typedef int offile_errno_t;
  *  of type off_t, fseek() and ftell() use offile_off_t which is a 64 bit type
  *  if available on the underlying platform. Similarly, getpos() and setpos() use
  *  type offile_fpos_t, which is defined appropriately.
- *  This class provides both fclose() and pclose(), but these are equivalent - 
+ *  This class provides both fclose() and pclose(), but these are equivalent -
  *  the code always closes pipes with pclose() and files with fclose().
  *  Finally, an abstraction for errno is provided. Error codes should always
  *  be retrieves using methods getLastError() and getLastErrorString() which
@@ -116,18 +116,18 @@ public:
    *  @param f stdio FILE
    */
   OFFile(FILE *f): file_(f), popened_(OFFalse), lasterror_(0) {}
-   
+
   /// destructor. Closes file if still open.
   ~OFFile()
   {
     if (file_) fclose();
   }
 
-  /** opens the file whose name is the string pointed to by path and associates 
+  /** opens the file whose name is the string pointed to by path and associates
    *  a stream with it.
    *  @param filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b".
-   *  @return true if stream was successfully created, false otherwise, in which case 
+   *  @return true if stream was successfully created, false otherwise, in which case
    *   the error code is set.
    */
   OFBool fopen(const char *filename, const char *modes)
@@ -139,14 +139,14 @@ public:
     file_ = STDIO_NAMESPACE fopen(filename, modes);
 #endif
     if (file_) popened_ = OFFalse; else storeLastError();
-    return (file_ != NULL);    
+    return (file_ != NULL);
   }
 
 #ifdef _WIN32
-  /** opens the file whose name is the wide character string pointed to by path and associates 
+  /** opens the file whose name is the wide character string pointed to by path and associates
    *  a stream with it. This function is WIN32 specific and only exists on WinNT and newer.
    *  @param Unicode filename path to file
-   *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a 
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a
    *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
    */
   OFBool wfopen(const wchar_t *filename, const wchar_t *modes)
@@ -154,17 +154,17 @@ public:
     if (file_) fclose();
     file_ = _wfopen(filename, modes);
     if (file_) popened_ = OFFalse; else storeLastError();
-    return (file_ != NULL);    
+    return (file_ != NULL);
   }
 #endif
 
-  /** associates a stream with the existing file descriptor, fildes. The mode 
-   *  of the stream (one of the values "r", "r+", "w", "w+", "a", "a+") must be 
-   *  compatible with the mode of the file descriptor. The file position 
-   *  indicator of the new stream is set to that belong­ ing to fildes, and the 
-   *  error and end-of-file indicators are cleared. Modes "w" or "w+" do not 
-   *  cause truncation of the file. The file descriptor is not dup'ed, and 
-   *  will be closed when the stream created by fdopen is closed. The result of 
+  /** associates a stream with the existing file descriptor, fildes. The mode
+   *  of the stream (one of the values "r", "r+", "w", "w+", "a", "a+") must be
+   *  compatible with the mode of the file descriptor. The file position
+   *  indicator of the new stream is set to that belong­ ing to fildes, and the
+   *  error and end-of-file indicators are cleared. Modes "w" or "w+" do not
+   *  cause truncation of the file. The file descriptor is not dup'ed, and
+   *  will be closed when the stream created by fdopen is closed. The result of
    *  applying fdopen to a shared memory object is undefined.
    *  @param fd file descriptor
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b".
@@ -175,12 +175,12 @@ public:
     if (file_) fclose();
     file_ = :: fdopen(fd, modes);
     if (file_) popened_ = OFFalse; else storeLastError();
-    return (file_ != NULL);    
+    return (file_ != NULL);
   }
 
-  /** opens a process by creating a pipe, forking, and invoking the shell. 
-   *  Since a pipe is by definition unidirectional, the type argument may 
-   *  specify only reading or writing, not both; the resulting stream is 
+  /** opens a process by creating a pipe, forking, and invoking the shell.
+   *  Since a pipe is by definition unidirectional, the type argument may
+   *  specify only reading or writing, not both; the resulting stream is
    *  correspondingly read-only or write-only. If the object was already
    *  associated with another file or pipe, that one is closed.
    *  @param command shell command line
@@ -196,18 +196,18 @@ public:
     file_ = :: popen(command, modes);
 #endif
     if (file_) popened_ = OFTrue; else storeLastError();
-    return (file_ != NULL);    
+    return (file_ != NULL);
   }
 
-  /** opens the file whose name is the string pointed to by path and associates 
-   *  the stream pointed maintained by this object with it. The original stream (if it 
-   *  exists) is closed. The mode argument is used just as in the fopen 
-   *  function. The primary use of the freopen function is to change the file 
+  /** opens the file whose name is the string pointed to by path and associates
+   *  the stream pointed maintained by this object with it. The original stream (if it
+   *  exists) is closed. The mode argument is used just as in the fopen
+   *  function. The primary use of the freopen function is to change the file
    *  associated with a standard text stream (stderr, stdin, or stdout).
    *  @param filename path to file
    *  @param modes "r", "w" or "a" with possible modifiers "+", "b".
    *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
-   */     
+   */
   OFBool freopen(const char *filename, const char *modes)
   {
 #ifdef EXPLICIT_LFS_64
@@ -216,14 +216,14 @@ public:
     file_ = STDIO_NAMESPACE freopen(filename, modes, file_);
 #endif
     if (file_) popened_ = OFFalse; else storeLastError();
-    return (file_ != NULL);    
+    return (file_ != NULL);
   }
 
-  /** generates a unique temporary filename. The temporary file is then opened 
-   *  in binary read/write (w+b) mode. The file will be automatically deleted 
+  /** generates a unique temporary filename. The temporary file is then opened
+   *  in binary read/write (w+b) mode. The file will be automatically deleted
    *  when it is closed or the program terminates normally.
    *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
-   */     
+   */
   OFBool tmpfile()
   {
     if (file_) fclose();
@@ -233,22 +233,22 @@ public:
     file_ = STDIO_NAMESPACE tmpfile();
 #endif
     if (file_) popened_ = OFFalse; else storeLastError();
-    return (file_ != NULL);    
+    return (file_ != NULL);
   }
 
-  /** dissociates the named stream from its underlying file or set of functions. 
-   *  If the stream was being used for output, any buffered data is written 
+  /** dissociates the named stream from its underlying file or set of functions.
+   *  If the stream was being used for output, any buffered data is written
    *  first, using fflush. Independent of the return value of this method,
-   *  any further access (including another call to fclose()) to the stream 
+   *  any further access (including another call to fclose()) to the stream
    *  maintained by this object results in undefined behaviour.
    *  @return 0 upon success, EOF otherwise, in which case the error code is set.
    */
-  int fclose() 
-  { 
+  int fclose()
+  {
     int result = 0;
     if (file_)
     {
-      if (popened_) 
+      if (popened_)
       {
 #ifdef _WIN32
         result = _pclose(file_);
@@ -258,15 +258,15 @@ public:
       }
       else
       {
-        result = STDIO_NAMESPACE fclose(file_); 
+        result = STDIO_NAMESPACE fclose(file_);
       }
       if (result == 0) file_ = NULL;
     }
     if (result) storeLastError();
-    return result;    
+    return result;
   }
 
-  /** waits for the associated process (created with popen) to terminate and 
+  /** waits for the associated process (created with popen) to terminate and
    *  returns the exit status of the command as returned by wait4.
    *  In this implementation, fclose and pclose can be used synonymously.
    *  @return process ID of the child which exited, or -1 on error, in which case the error code is set
@@ -274,9 +274,9 @@ public:
   int pclose() { return fclose(); }
 
   /** writes n elements of data, each size bytes long, to the stream, obtaining
-   *  them from the location given by ptr. Returns the number of items successfully written 
-   *  (i.e., not the number of characters).  If an error occurs the return value is a short 
-   *  item count (or zero).   
+   *  them from the location given by ptr. Returns the number of items successfully written
+   *  (i.e., not the number of characters).  If an error occurs the return value is a short
+   *  item count (or zero).
    *  @param ptr pointer to buffer
    *  @param size size of item
    *  @param n number of items
@@ -284,15 +284,15 @@ public:
    */
   size_t fwrite(const void *ptr, size_t size, size_t n)
   {
-    return STDIO_NAMESPACE fwrite(ptr, size, n, file_); 
+    return STDIO_NAMESPACE fwrite(ptr, size, n, file_);
   }
 
   /** reads n elements of data, each size bytes long, from the stream, storing
-   *  them at the location given by ptr. Returns the number of items successfully 
-   *  read (i.e., not the number of characters).  If an error occurs, or the 
+   *  them at the location given by ptr. Returns the number of items successfully
+   *  read (i.e., not the number of characters).  If an error occurs, or the
    *  end-of-file is reached, the return value is a short item count (or zero).
-   *  fread does not distinguish between end-of-file and error, and callers must 
-   *  use feof and ferror to determine which occurred.  
+   *  fread does not distinguish between end-of-file and error, and callers must
+   *  use feof and ferror to determine which occurred.
    *  @param ptr pointer to buffer
    *  @param size size of item
    *  @param n number of items
@@ -300,41 +300,41 @@ public:
    */
   size_t fread(void *ptr, size_t size, size_t n)
   {
-    return STDIO_NAMESPACE fread(ptr, size, n, file_); 
+    return STDIO_NAMESPACE fread(ptr, size, n, file_);
   }
 
-  /** forces a write of all user-space buffered data for the given output or 
-   *  update stream via the stream's underlying write function. The open status 
+  /** forces a write of all user-space buffered data for the given output or
+   *  update stream via the stream's underlying write function. The open status
    *  of the stream is unaffected.
    *  @return 0 upon success, EOF otherwise, in which case the error code is set.
    */
   int fflush()
-  { 
-    int result = STDIO_NAMESPACE fflush(file_); 
+  {
+    int result = STDIO_NAMESPACE fflush(file_);
     if (result) storeLastError();
     return result;
   }
 
-  /** reads the next character from stream and returns it as an unsigned char 
+  /** reads the next character from stream and returns it as an unsigned char
    *  cast to an int, or EOF on end of file or error.
    *  @return next character from stream or EOF
    */
   int fgetc() { return STDIO_NAMESPACE fgetc(file_); }
 
-  /** The three types of buffering available are unbuffered, block buffered, and 
-   *  line buffered. When an output stream is unbuffered, information appears on 
-   *  the destination file or terminal as soon as written; when it is block 
-   *  buffered many characters are saved up and written as a block; when it is 
-   *  line buffered characters are saved up until a newline is output or input 
-   *  is read from any stream attached to a terminal device (typically stdin). 
-   *  Normally all files are block buffered. if a stream refers to a  terminal 
-   *  (as stdout normally does) it is line buffered. The standard error  stream 
-   *  stderr is always unbuffered by default. this function allows to set the 
+  /** The three types of buffering available are unbuffered, block buffered, and
+   *  line buffered. When an output stream is unbuffered, information appears on
+   *  the destination file or terminal as soon as written; when it is block
+   *  buffered many characters are saved up and written as a block; when it is
+   *  line buffered characters are saved up until a newline is output or input
+   *  is read from any stream attached to a terminal device (typically stdin).
+   *  Normally all files are block buffered. if a stream refers to a  terminal
+   *  (as stdout normally does) it is line buffered. The standard error  stream
+   *  stderr is always unbuffered by default. this function allows to set the
    *  mode of the stream to line buffered.
    *  @return 0 upon success, nonzero otherwise, in which case the error code may be set
-   * 
+   *
    */
-  void setlinebuf() 
+  void setlinebuf()
   {
 #ifdef _WIN32
     this->setvbuf(NULL, _IOLBF, 0);
@@ -343,29 +343,29 @@ public:
 #endif
   }
 
-  /** sets the file position indicator for the stream pointed to by stream to 
+  /** sets the file position indicator for the stream pointed to by stream to
    *  the beginning of the file. This is equivalent to fseek(0, SEEK_SET)
    *  except that the error indicator for the stream is also cleared.
-   */  
+   */
   void rewind() { STDIO_NAMESPACE rewind(file_); }
 
   /** clears the end-of-file and error indicators for the stream
    */
   void clearerr() { STDIO_NAMESPACE clearerr(file_); }
 
-  /** tests the end-of-file indicator for the stream, returning non-zero if it 
-   *  is set. The end-of-file indicator can only be cleared by the function 
+  /** tests the end-of-file indicator for the stream, returning non-zero if it
+   *  is set. The end-of-file indicator can only be cleared by the function
    *  clearerr. This method is called eof, not feof, because feof() is a macro
    *  on WIN32 and, therefore, cannot be used as a method name.
    *  @return non-zero if EOF, zero otherwise
    */
   int eof() const
-  { 
+  {
 #ifdef _WIN32
     // feof is a macro on Win32. Macros never have namespaces.
-    return feof(file_); 
+    return feof(file_);
 #else
-    return STDIO_NAMESPACE feof(file_); 
+    return STDIO_NAMESPACE feof(file_);
 #endif
   }
 
@@ -376,12 +376,12 @@ public:
    *  @return non-zero if error flag is set, zero otherwise
    */
   int error()
-  { 
+  {
 #ifdef _WIN32
     // ferror is a macro on Win32. Macros never have namespaces.
-    return ferror(file_); 
+    return ferror(file_);
 #else
-    return STDIO_NAMESPACE ferror(file_); 
+    return STDIO_NAMESPACE ferror(file_);
 #endif
   }
 
@@ -390,30 +390,30 @@ public:
    */
   int fileno() { return :: fileno(file_); }
 
-  /** The three types of buffering available are unbuffered, block buffered, and 
-   *  line buffered. When an output stream is unbuffered, information appears on 
-   *  the destination file or terminal as soon as written; when it is block 
-   *  buffered many characters are saved up and written as a block; when it is 
-   *  line buffered characters are saved up until a newline is output or input 
-   *  is read from any stream attached to a terminal device (typically stdin). 
-   *  Normally all files are block buffered. if a stream refers to a  terminal 
-   *  (as stdout normally does) it is line buffered. The standard error  stream 
-   *  stderr is always unbuffered by default. This function allows to set the 
+  /** The three types of buffering available are unbuffered, block buffered, and
+   *  line buffered. When an output stream is unbuffered, information appears on
+   *  the destination file or terminal as soon as written; when it is block
+   *  buffered many characters are saved up and written as a block; when it is
+   *  line buffered characters are saved up until a newline is output or input
+   *  is read from any stream attached to a terminal device (typically stdin).
+   *  Normally all files are block buffered. if a stream refers to a  terminal
+   *  (as stdout normally does) it is line buffered. The standard error  stream
+   *  stderr is always unbuffered by default. This function allows to set the
    *  mode of the stream to unbuffered (if buf is NULL) or block buffered.
    *  @param buf pointer to buffer of size BUFSIZ as declared in cstdio, or NULL
    *  @return 0 upon success, nonzero otherwise, in which case the error code may be set
    */
-  void setbuf(char *buf) { STDIO_NAMESPACE setbuf(file_, buf); }	
+  void setbuf(char *buf) { STDIO_NAMESPACE setbuf(file_, buf); }
 
-  /** The three types of buffering available are unbuffered, block buffered, and 
-   *  line buffered. When an output stream is unbuffered, information appears on 
-   *  the destination file or terminal as soon as written; when it is block 
-   *  buffered many characters are saved up and written as a block; when it is 
-   *  line buffered characters are saved up until a newline is output or input 
-   *  is read from any stream attached to a terminal device (typically stdin). 
-   *  Normally all files are block buffered. if a stream refers to a  terminal 
-   *  (as stdout normally does) it is line buffered. The standard error  stream 
-   *  stderr is always unbuffered by default. This function allows to set the 
+  /** The three types of buffering available are unbuffered, block buffered, and
+   *  line buffered. When an output stream is unbuffered, information appears on
+   *  the destination file or terminal as soon as written; when it is block
+   *  buffered many characters are saved up and written as a block; when it is
+   *  line buffered characters are saved up until a newline is output or input
+   *  is read from any stream attached to a terminal device (typically stdin).
+   *  Normally all files are block buffered. if a stream refers to a  terminal
+   *  (as stdout normally does) it is line buffered. The standard error  stream
+   *  stderr is always unbuffered by default. This function allows to set the
    *  stream mode.
    *  @param buf pointer to buffer, may be NULL
    *  @param modes _IONBF (unbuffered) _IOLBF (line buffered) or _IOFBF (fully buffered)
@@ -421,28 +421,28 @@ public:
    *  @return 0 upon success, nonzero otherwise, in which case the error code may be set
    */
   int setvbuf(char * buf, int modes, size_t n)
-  { 
+  {
     int result = STDIO_NAMESPACE setvbuf(file_, buf, modes, n);
     if (result) storeLastError();
     return result;
   }
 
-  /** The three types of buffering available are unbuffered, block buffered, and 
-   *  line buffered. When an output stream is unbuffered, information appears on 
-   *  the destination file or terminal as soon as written; when it is block 
-   *  buffered many characters are saved up and written as a block; when it is 
-   *  line buffered characters are saved up until a newline is output or input 
-   *  is read from any stream attached to a terminal device (typically stdin). 
-   *  Normally all files are block buffered. if a stream refers to a  terminal 
-   *  (as stdout normally does) it is line buffered. The standard error  stream 
-   *  stderr is always unbuffered by default. This function allows to set the 
+  /** The three types of buffering available are unbuffered, block buffered, and
+   *  line buffered. When an output stream is unbuffered, information appears on
+   *  the destination file or terminal as soon as written; when it is block
+   *  buffered many characters are saved up and written as a block; when it is
+   *  line buffered characters are saved up until a newline is output or input
+   *  is read from any stream attached to a terminal device (typically stdin).
+   *  Normally all files are block buffered. if a stream refers to a  terminal
+   *  (as stdout normally does) it is line buffered. The standard error  stream
+   *  stderr is always unbuffered by default. This function allows to set the
    *  mode of the stream to unbuffered (if buf is NULL) or block buffered.
    *  @param buf pointer to buffer
    *  @param size size of buffer, in bytes
    *  @return 0 upon success, nonzero otherwise, in which case the error code may be set
    */
   void setbuffer(char *buf, size_t size)
-  { 
+  {
 #ifdef _WIN32
     this->setvbuf(NULL, buf ? _IOFBF : _IONBF, size);
 #else
@@ -456,9 +456,9 @@ public:
    */
   int fputc(int c) { return STDIO_NAMESPACE fputc(c, file_); }
 
-  /** reads in at most one less than n characters from stream and stores them 
-   *  into the buffer pointed to by s. Reading stops after an EOF or a newline. 
-   *  If a newline is read, it is stored into the buffer. A '\0' is stored after 
+  /** reads in at most one less than n characters from stream and stores them
+   *  into the buffer pointed to by s. Reading stops after an EOF or a newline.
+   *  If a newline is read, it is stored into the buffer. A '\0' is stored after
    *  the last character in the buffer.
    *  @param s pointer to buffer of size n
    *  @param n buffer size
@@ -472,20 +472,20 @@ public:
    */
   int fputs(const char *s) { return STDIO_NAMESPACE fputs(s, file_); }
 
-  /** pushes c back to stream, cast to unsigned char, where it is available for 
-   *  subsequent read operations. Pushed - back characters will be returned in 
+  /** pushes c back to stream, cast to unsigned char, where it is available for
+   *  subsequent read operations. Pushed - back characters will be returned in
    *  reverse order; only one pushback is guaranteed.
    *  param c character to push back
    *  @return c on success, or EOF on error.
    */
   int ungetc(int c) { return STDIO_NAMESPACE ungetc(c, file_); }
 
-  /** sets the file position indicator for the stream pointed to by stream. The 
-   *  new position, measured in bytes, is obtained by adding offset bytes to the 
-   *  position specified by whence. If whence is set to SEEK_SET, SEEK_CUR, or 
-   *  SEEK_END, the offset is relative to the start of the file, the current 
-   *  position indicator, or end-of-file, respectively. A successful call to the 
-   *  fseek function clears the end-of- file indicator for the stream and undoes 
+  /** sets the file position indicator for the stream pointed to by stream. The
+   *  new position, measured in bytes, is obtained by adding offset bytes to the
+   *  position specified by whence. If whence is set to SEEK_SET, SEEK_CUR, or
+   *  SEEK_END, the offset is relative to the start of the file, the current
+   *  position indicator, or end-of-file, respectively. A successful call to the
+   *  fseek function clears the end-of- file indicator for the stream and undoes
    *  any effects of the ungetc function on the same stream.
    *  @param off offset to seek to
    *  @param whence SEEK_SET, SEEK_CUR, or SEEK_END
@@ -494,23 +494,23 @@ public:
   int fseek(offile_off_t off, int whence)
   {
     int result;
-#ifdef WIN32
+#ifdef _WIN32
     // Windows does not have a 64-bit fseek.
     // We emulate fseek through fsetpos, which does exist on Windows.
     // fpos_t is (hopefully always) defined as __int64 on this platform
     offile_fpos_t off2 = off;
     fpos_t pos;
     struct _stati64 buf;
-    switch (whence) 
+    switch (whence)
     {
       case SEEK_END:
         // flush write buffer, if any, so that the file size is correct
-        STDIO_NAMESPACE fflush(file_); 
+        STDIO_NAMESPACE fflush(file_);
 #if 0
         // Python implementation based on _lseeki64(). May be unsafe because
         // there is no guarantee that fflush also empties read buffers.
         STDIO_NAMESPACE fflush(file_);
-        if (_lseeki64(:: fileno(file_), 0, 2) == -1) 
+        if (_lseeki64(:: fileno(file_), 0, 2) == -1)
         {
           storeLastError();
           return -1;
@@ -523,10 +523,10 @@ public:
           storeLastError();
           return -1;
         }
-        	
+
         // fsetpos position is offset + file size.
         off2 += buf.st_size;
-        break;        
+        break;
 #endif
       case SEEK_CUR:
         if (STDIO_NAMESPACE fgetpos(file_, &pos) != 0)
@@ -537,11 +537,11 @@ public:
 
         off2 += pos;
         break;
-      case SEEK_SET: 
+      case SEEK_SET:
         /* do nothing */
         break;
     }
-    result = this->fsetpos(&off2);    
+    result = this->fsetpos(&off2);
 #elif defined(__BEOS__)
     result =  :: _fseek(fp, offset, whence);
 #else
@@ -565,13 +565,13 @@ public:
   offile_off_t ftell()
   {
     offile_off_t result;
-#ifdef WIN32
+#ifdef _WIN32
     // Windows does not have a 64-bit ftell, and _telli64 cannot be used
     // because it operates on file descriptors and ignores FILE buffers.
     // We emulate ftell through fgetpos, which does exist on Windows.
     // fpos_t is (hopefully always) defined as __int64 on this platform.
     offile_fpos_t pos;
-    if (this->fgetpos(&pos) != 0) 
+    if (this->fgetpos(&pos) != 0)
     {
       storeLastError();
       return -1;
@@ -592,9 +592,9 @@ public:
     return result;
   }
 
-  /** alternate interface equivalent to ftell, storing the current value of the 
-   *  file offset into the object referenced by pos. On some non-UNIX systems an 
-   *  fpos_t object may be a complex object and these routines may be the only 
+  /** alternate interface equivalent to ftell, storing the current value of the
+   *  file offset into the object referenced by pos. On some non-UNIX systems an
+   *  fpos_t object may be a complex object and these routines may be the only
    *  way to portably reposition a text stream.
    *  @param pos pointer to offile_fpos_t structure
    *  @return 0 upon success, -1 otherwise in which case the error code is set.
@@ -611,9 +611,9 @@ public:
     return result;
   }
 
-  /** alternate interface equivalent to fseek (with whence set to SEEK_SET), 
-   *  setting the current value of the file offset from the object referenced by 
-   *  pos. On some non-UNIX systems an fpos_t object may be a complex object and 
+  /** alternate interface equivalent to fseek (with whence set to SEEK_SET),
+   *  setting the current value of the file offset from the object referenced by
+   *  pos. On some non-UNIX systems an fpos_t object may be a complex object and
    *  these routines may be the only way to portably reposition a text stream.
    *  @param pos pointer to offile_fpos_t structure
    *  @return 0 upon success, -1 otherwise in which case the error code is set.
@@ -644,7 +644,7 @@ public:
     va_end(ap);
     return result;
   }
-  
+
   /** print formatted string into stream, see printf(3)
    *  @param format format string
    *  @param arg list of further parameters according to format string
@@ -657,7 +657,7 @@ public:
 
   // we cannot emulate fscanf because we would need vfscanf for this
   // purpose, which does not exist, e.g. on Win32.
-                 
+
   /** return FILE pointer managed by this object. This allows the user
    *  to call some stdio functions that are not encapsulated in this class
    *  (but possibly should be).
@@ -683,7 +683,7 @@ public:
 #ifdef HAVE_PROTOTYPE_STRERROR_R
     char buf[1000];
     buf[0] = 0; // be paranoid and initialize the buffer to empty string.
-    
+
     // two incompatible interfaces for strerror_r with different return types exist.
 #ifdef HAVE_CHARP_STRERROR_R
     // we're using the GNU specific version that returns the result, which may
@@ -702,71 +702,71 @@ public:
 
 // Cygwin does not support the wide character functions
 #ifndef __CYGWIN__
-  
-  /** When mode is zero, the fwide function determines the current orientation 
-   *  of stream. It returns a value > 0 if stream is wide-character oriented, 
-   *  i.e.  if wide character I/O is permitted but char I/O is disallowed. It 
-   *  returns a  value < 0 if stream is byte oriented, i.e. if char I/O is 
-   *  permitted but wide  character I/O is disallowed. It returns zero if stream 
-   *  has no orientation yet;  in this case the next I/O operation might change 
-   *  the orientation (to byte  oriented if it is a char I/O operation, or to 
+
+  /** When mode is zero, the fwide function determines the current orientation
+   *  of stream. It returns a value > 0 if stream is wide-character oriented,
+   *  i.e.  if wide character I/O is permitted but char I/O is disallowed. It
+   *  returns a  value < 0 if stream is byte oriented, i.e. if char I/O is
+   *  permitted but wide  character I/O is disallowed. It returns zero if stream
+   *  has no orientation yet;  in this case the next I/O operation might change
+   *  the orientation (to byte  oriented if it is a char I/O operation, or to
    *  wide-character oriented if it  is a wide character I/O operation).
-   *  Once a stream has an orientation, it cannot be changed and persists until 
+   *  Once a stream has an orientation, it cannot be changed and persists until
    *  the stream is closed.
-   *  When mode is non-zero, the fwide function first attempts to set stream's 
-   *  orientation (to wide-character oriented if mode > 0, or to byte oriented 
-   *  if mode < 0). It then returns a value denoting the current orientation, as 
-   *  above. 
+   *  When mode is non-zero, the fwide function first attempts to set stream's
+   *  orientation (to wide-character oriented if mode > 0, or to byte oriented
+   *  if mode < 0). It then returns a value denoting the current orientation, as
+   *  above.
    *  @param mode mode of operation for fwide
    *  @return orientation of stream
    */
   int fwide(int mode)
-  { 
+  {
     return STDIO_NAMESPACE fwide(file_, mode);
   }
 
-  /** reads a wide character from stream and returns it. If the end of stream is 
-   *  reached, or if ferror(stream) becomes true, it returns WEOF. If a wide 
-   *  character conversion error occurs, it sets the error code to EILSEQ and returns 
+  /** reads a wide character from stream and returns it. If the end of stream is
+   *  reached, or if ferror(stream) becomes true, it returns WEOF. If a wide
+   *  character conversion error occurs, it sets the error code to EILSEQ and returns
    *  WEOF.
    *  @return next character from stream or WEOF
    */
   wint_t fgetwc()
-  { 
+  {
     wint_t result = STDIO_NAMESPACE fgetwc(file_);
     if (result == WEOF) storeLastError();
     return result;
   }
 
-  /** writes the wide character wc to stream. If ferror(stream) becomes true, it returns WEOF. 
-   *  If a wide character conversion error occurs, it sets the error code to EILSEQ and returns WEOF.  
+  /** writes the wide character wc to stream. If ferror(stream) becomes true, it returns WEOF.
+   *  If a wide character conversion error occurs, it sets the error code to EILSEQ and returns WEOF.
    *  Otherwise it returns wc.
    *  @param wc wide character to write to stream
    *  @return character written or WEOF
    */
   wint_t fputwc(wchar_t wc)
-  { 
+  {
     wint_t result = STDIO_NAMESPACE fputwc(wc, file_);
     if (result == WEOF) storeLastError();
     return result;
   }
 
-  /** pushes back a wide character onto stream and returns it. If wc is WEOF, it 
-   *  returns WEOF. If wc is an invalid wide character, it sets errno to EILSEQ 
-   *  and returns WEOF. If wc is a valid wide character, it is pushed back  onto 
-   *  the stream and thus becomes available for future wide character read 
-   *  operations. The file-position indicator is decremented by one or more. 
-   *  The end-of-file indicator is cleared. The backing storage of the file is 
-   *  not affected. Note: wc need not be the last wide character read from the 
-   *  stream; it can be any other valid wide character. If the implementation 
-   *  supports multiple push-back operations in a row, the pushed-back wide 
-   *  characters will be read in reverse order; however, only one level of 
+  /** pushes back a wide character onto stream and returns it. If wc is WEOF, it
+   *  returns WEOF. If wc is an invalid wide character, it sets errno to EILSEQ
+   *  and returns WEOF. If wc is a valid wide character, it is pushed back  onto
+   *  the stream and thus becomes available for future wide character read
+   *  operations. The file-position indicator is decremented by one or more.
+   *  The end-of-file indicator is cleared. The backing storage of the file is
+   *  not affected. Note: wc need not be the last wide character read from the
+   *  stream; it can be any other valid wide character. If the implementation
+   *  supports multiple push-back operations in a row, the pushed-back wide
+   *  characters will be read in reverse order; however, only one level of
    *  push-back is guaranteed.
    *  @param wc wide character to put back to stream
    *  @return character put back or WEOF
    */
   wint_t ungetwc(wint_t wc)
-  { 
+  {
     wint_t result = STDIO_NAMESPACE ungetwc(wc, file_);
     if (result == WEOF) storeLastError();
     return result;
@@ -822,11 +822,14 @@ private:
 };
 
 
-#endif 
+#endif
 
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.6  2009-01-30 13:49:01  joergr
+ * Replaced checking of macro WIN32 by _WIN32.
+ *
  * Revision 1.5  2008-05-29 10:37:11  meichel
  *  Fixed compile error on Cygwin where no wide-char FILE functions are available
  *
