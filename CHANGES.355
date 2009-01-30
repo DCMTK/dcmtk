@@ -27,6 +27,7 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcpixel.cc
 
 - Removed definition of unused macro "windows".
+  Thanks to Nils Gladitz <gladitz@scivis.de> for the report.
   Affects: config/include/dcmtk/config/cfwin32.h.in
 
 - Replaced checking of macro WIN32 by _WIN32.
