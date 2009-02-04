@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:27:03 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-02-04 10:18:57 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ OFCondition DcmPixelSequence::copyFrom(const DcmObject& rhs)
 // ********************************
 
 
-void DcmPixelSequence::print(STD_NAMESPACE ostream&out,
+void DcmPixelSequence::print(STD_NAMESPACE ostream &out,
                              const size_t flags,
                              const int level,
                              const char *pixelFileName,
@@ -365,7 +365,7 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 
     while ((offset < compressedLen) && (result.good()))
     {
-        fragment = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+        fragment = new DcmPixelItem(DcmTag(DCM_Item, EVR_OB));
         if (fragment == NULL)
             result = EC_MemoryExhausted;
         else
@@ -375,13 +375,17 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
             currentSize = fragmentSize;
             if (offset + currentSize > compressedLen)
                 currentSize = compressedLen - offset;
-            result = fragment->putUint8Array(compressedData+offset, currentSize);
+            // if currentSize is odd this will be fixed during DcmOtherByteOtherWord::write()
+            result = fragment->putUint8Array(compressedData + offset, currentSize);
             if (result.good())
                 offset += currentSize;
         }
     }
 
     currentSize = offset + (numFragments << 3); // 8 bytes extra for each item header
+    // odd frame size requires padding, i.e. last fragment uses odd length pixel item
+    if (currentSize & 1)
+        currentSize++;
     offsetList.push_back(currentSize);
     return result;
 }
@@ -390,6 +394,10 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.43  2009-02-04 10:18:57  joergr
+** Fixed issue with compressed frames of odd length (possibly wrong values in
+** basic offset table).
+**
 ** Revision 1.42  2009-01-06 16:27:03  joergr
 ** Reworked print() output format for option PF_showTreeStructure.
 **

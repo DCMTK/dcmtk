@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 10:18:19 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +94,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject& rhs);    
+    virtual OFCondition copyFrom(const DcmObject &rhs);    
 
     /** print all elements of the item to a stream
      *  @param out output stream
@@ -104,7 +103,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *  @param pixelFileName optional filename used to write the raw pixel data file
      *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    virtual void print(STD_NAMESPACE ostream&out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -112,17 +111,18 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 
     /** creates in this object an offset table for a compressed pixel sequence.
      *  @param offsetList list of size entries for each individual encoded frame
-     *    provided by the compression codec
+     *    provided by the compression codec. All entries are expected to have
+     *    an even value (i.e. the pixel items are padded).
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition createOffsetTable(const DcmOffsetList& offsetList);
+    virtual OFCondition createOffsetTable(const DcmOffsetList &offsetList);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
+    virtual OFCondition writeXML(STD_NAMESPACE ostream &out,
                                  const size_t flags = 0);
 
     /** special write method for creation of digital signatures
@@ -132,11 +132,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
   protected:
 
@@ -147,8 +146,8 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *  @return EC_Normal if successful, an error code otherwise
      */     
     virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,
-					  const E_TransferSyntax oxfer,
-					  Uint32 & writtenBytes) const;
+                                          const E_TransferSyntax oxfer,
+                                          Uint32 & writtenBytes) const;
 
 };
 
@@ -158,6 +157,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
+** Revision 1.26  2009-02-04 10:18:19  joergr
+** Fixed issue with compressed frames of odd length (possibly wrong values in
+** basic offset table).
+**
 ** Revision 1.25  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

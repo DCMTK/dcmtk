@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 10:18:19 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ public:
      *  @param pixelFileName optional filename used to write the raw pixel data file
      *  @param pixelCounter optional counter used for automatic pixel data filename creation
      */
-    virtual void print(STD_NAMESPACE ostream&out,
+    virtual void print(STD_NAMESPACE ostream &out,
                        const size_t flags = 0,
                        const int level = 0,
                        const char *pixelFileName = NULL,
@@ -130,7 +130,7 @@ public:
      *  @param where position at which the new item is to be inserted.
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition insert(DcmPixelItem* item,
+    virtual OFCondition insert(DcmPixelItem *item,
                                unsigned long where = DCM_EndOfListIndex);
 
     /** access a pixel item from the pixel sequence. This method returns a pointer to one
@@ -139,7 +139,8 @@ public:
      *  @param num index number of pixel item, must be < card()
      *  @return pointer to item if found, NULL if num >= card()
      */
-    virtual OFCondition getItem(DcmPixelItem * & item, const unsigned long num);
+    virtual OFCondition getItem(DcmPixelItem * &item,
+                                const unsigned long num);
 
     /** remove pixel item from list. If found, the pixel item is not deleted but
      *  returned to the caller who is responsible for further management of the
@@ -148,7 +149,8 @@ public:
      *  @param num index number of item, must be < card()
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition remove(DcmPixelItem * & item, const unsigned long num);
+    virtual OFCondition remove(DcmPixelItem * &item,
+                               const unsigned long num);
 
     /** remove pixel item from list. Tthe pixel item is not deleted;
      *  the caller is responsible for further management of the DcmPixelItem object.
@@ -171,7 +173,7 @@ public:
      *  @return true if object can be encoded in desired transfer syntax, false otherwise.
      */
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
-                              const E_TransferSyntax oldXfer);
+                                const E_TransferSyntax oldXfer);
 
     /** This function reads the information of all attributes which
      *  are captured in the input stream and captures this information
@@ -189,8 +191,7 @@ public:
     virtual OFCondition read(DcmInputStream & inStream,
                              const E_TransferSyntax ixfer,
                              const E_GrpLenEncoding glenc = EGL_noChange,
-                             const Uint32 maxReadLength
-                             = DCM_MaxReadLength);
+                             const Uint32 maxReadLength = DCM_MaxReadLength);
 
     /** write object to a stream
      *  @param outStream DICOM output stream
@@ -211,25 +212,24 @@ public:
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** appends a single compressed frame to this DICOM pixel sequence
      *  @param offsetList list containing offset table entries.
-     *    Upon success, an entry is appended to the list
+     *    Upon success, an entry is appended to the list. The offset values are always even,
+     *    so it is expected that odd length pixel items are padded later during writing.
      *  @param compressedData pointer to compressed image data, must not be NULL
      *  @param compressedLen number of bytes of compressed image data
      *  @param fragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition storeCompressedFrame(
-          DcmOffsetList& offsetList,
-          Uint8 *compressedData,
-          Uint32 compressedLen,
-          Uint32 fragmentSize);
+    virtual OFCondition storeCompressedFrame(DcmOffsetList &offsetList,
+                                             Uint8 *compressedData,
+                                             Uint32 compressedLen,
+                                             Uint32 fragmentSize);
 
 protected:
 
@@ -240,8 +240,8 @@ protected:
      *  @param newLength length of the sub-object to be created
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition makeSubObject(DcmObject * & newObject, // out
-                                      const DcmTag & newTag,
+    virtual OFCondition makeSubObject(DcmObject * &newObject,   // out
+                                      const DcmTag &newTag,
                                       const Uint32 newLength);  // in
 
 private:
@@ -281,9 +281,14 @@ private:
 
 #endif // DCPIXSEQ_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
+** Revision 1.33  2009-02-04 10:18:19  joergr
+** Fixed issue with compressed frames of odd length (possibly wrong values in
+** basic offset table).
+**
 ** Revision 1.32  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

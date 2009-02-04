@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 10:18:57 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ DcmPixelItem::DcmPixelItem(const DcmPixelItem &old)
 }
 
 
-OFCondition DcmPixelItem::copyFrom(const DcmObject& rhs)
+OFCondition DcmPixelItem::copyFrom(const DcmObject &rhs)
 {
   if (this != &rhs)
   {
@@ -113,7 +113,7 @@ OFCondition DcmPixelItem::writeTagAndLength(DcmOutputStream &outStream,
 }
 
 
-void DcmPixelItem::print(STD_NAMESPACE ostream&out,
+void DcmPixelItem::print(STD_NAMESPACE ostream &out,
                          const size_t flags,
                          const int level,
                          const char *pixelFileName,
@@ -138,16 +138,27 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
             OFListConstIterator(Uint32) first = offsetList.begin();
             OFListConstIterator(Uint32) last = offsetList.end();
             unsigned long idx = 0;
-            while (first != last)
+            while ((first != last) && result.good())
             {
-                array[idx++] = current;
-                current += *first;
-                ++first;
+                // check for odd offset values, should never happen at this point
+                if (current & 1)
+                {
+                    ofConsole.lockCerr() << "DcmPixelItem: odd frame size (" << current << ") found for frame #" << (idx + 1)
+                                         << ", cannot create offset table" << OFendl;
+                    ofConsole.unlockCerr();
+                    result = EC_InvalidBasicOffsetTable;
+                } else {
+                    array[idx++] = current;
+                    current += *first;
+                    ++first;
+                }
             }
-            result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder,
-                array, numEntries * sizeof(Uint32), sizeof(Uint32));
             if (result.good())
-                result = putUint8Array(OFreinterpret_cast(Uint8 *, array), numEntries * sizeof(Uint32));
+            {
+                result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, array, numEntries * sizeof(Uint32), sizeof(Uint32));
+                if (result.good())
+                    result = putUint8Array(OFreinterpret_cast(Uint8 *, array), numEntries * sizeof(Uint32));
+            }
             delete[] array;
         } else
             result = EC_MemoryExhausted;
@@ -195,6 +206,7 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
     return EC_Normal;
 }
 
+
 OFCondition DcmPixelItem::writeSignatureFormat(
     DcmOutputStream &outStream,
     const E_TransferSyntax oxfer,
@@ -227,7 +239,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
               DcmXfer outXfer(oxfer);
 
               /* pointer to element value if value resides in memory or old-style
-               * write behaviour is active (i.e. everything loaded into memory upon write 
+               * write behaviour is active (i.e. everything loaded into memory upon write
                */
               Uint8 *value = NULL;
               OFBool accessPossible = OFFalse;
@@ -253,14 +265,14 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                    * be read again, and the file from being re-opened next time.
                    * Therefore, this case should be avoided.
                    */
-                  if (! wcache) wcache = &wcache2; 
-              
+                  if (! wcache) wcache = &wcache2;
+
                   /* initialize cache object. This is safe even if the object was already initialized */
                   wcache->init(this, getLengthField(), getTransferredBytes(), outXfer.getByteOrder());
-              
+
                   /* access first block of element content */
                   errorFlag = wcache->fillBuffer(*this);
-              
+
                   /* check that everything worked and the buffer is non-empty now */
                   accessPossible = errorFlag.good() && (! wcache->bufferIsEmpty());
                 }
@@ -306,10 +318,10 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                       /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
                       /* written to the stream) */
                       len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
-                  
+
                       /* increase the amount of bytes which have been transfered correspondingly */
                       incTransferredBytes(len);
-                      
+
                       /* see if there is something fishy with the stream */
                       errorFlag = outStream.status();
                   }
@@ -322,25 +334,25 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                         // re-fill buffer from file if empty
                         errorFlag = wcache->fillBuffer(*this);
                         buflen = wcache->contentLength();
-                      
+
                         if (errorFlag.good())
                         {
                           // write as many bytes from cache buffer to stream as possible
                           len = wcache->writeBuffer(outStream);
-                  
+
                           /* increase the amount of bytes which have been transfered correspondingly */
                           incTransferredBytes(len);
-                  
+
                           /* see if there is something fishy with the stream */
                           errorFlag = outStream.status();
                         }
-                      
+
                         // stop writing if something went wrong, we were unable to send all of the buffer content
                         // (which indicates that the output stream needs to be flushed, or everything was sent out.
                         done = errorFlag.bad() || (len < buflen) || (getTransferredBytes() == getLengthField());
                       }
                   }
-                  
+
                   /* if the amount of transferred bytes equals the length of the element's value, the */
                   /* entire value has been written to the stream. Thus, this element's transfer state */
                   /* has to be set to ERW_ready. If this is not the case but the error flag still shows */
@@ -357,9 +369,14 @@ OFCondition DcmPixelItem::writeSignatureFormat(
   return errorFlag;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.35  2009-02-04 10:18:57  joergr
+** Fixed issue with compressed frames of odd length (possibly wrong values in
+** basic offset table).
+**
 ** Revision 1.34  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
