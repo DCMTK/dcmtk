@@ -1,6 +1,30 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.04 (onken)
+
+- Removed German comment and removed "magic number".
+  Affects: dcmdata/libsrc/dcsequen.cc
+
+- Introduced global flag that, if enabled, tells the parser to continue
+  parsing if possible.  
+  Affects: dcmdata/libsrc/dcobject.cc
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+
+- Changed parser to make use of the new error ignoring flag when parsing.
+  Added check (makes use of new flag) that notes whether an element's value is
+  specified larger than the surrounding item (applicable for explicit length
+  coding).
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+
+-  Added command line options making use of the parser's error ignoring flag.
+   Affects:  dcmdata/apps/dcmconv.cc
+             dcmdata/apps/dcmdump.cc
+             dcmdata/docs/dcmconv.man
+             dcmdata/docs/dcmdump.man
+
 **** Changes from 2009.02.04 (riesmeier)
 
 - Fixed issue with compressed frames of odd length (possibly wrong values in
