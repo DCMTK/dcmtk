@@ -7,7 +7,7 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcsequen.cc
 
 - Introduced global flag that, if enabled, tells the parser to continue
-  parsing if possible.  
+  parsing if possible.
   Affects: dcmdata/libsrc/dcobject.cc
            dcmdata/include/dcmtk/dcmdata/dcobject.h
 
@@ -20,10 +20,10 @@ Changes between releases are documented here.
            dcmdata/include/dcmtk/dcmdata/dcerror.h
 
 - Added command line options making use of the parser's error ignoring flag.
-   Affects:  dcmdata/apps/dcmconv.cc
-             dcmdata/apps/dcmdump.cc
-             dcmdata/docs/dcmconv.man
-             dcmdata/docs/dcmdump.man
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
 
 **** Changes from 2009.02.04 (riesmeier)
 
@@ -38,6 +38,14 @@ Changes between releases are documented here.
 - Introduced new error code EC_InvalidBasicOffsetTable.
   Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
            dcmdata/libsrc/dcerror.cc
+
+- Fixed small issue with syntax usage layout.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
+
+- Introduced new syntax usage output subsection "loading".
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.man
 
 **** Changes from 2009.01.30 (riesmeier)
 
