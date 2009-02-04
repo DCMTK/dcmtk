@@ -47,6 +47,35 @@ Changes between releases are documented here.
   Affects: dcmdata/apps/dcmdump.cc
            dcmdata/docs/dcmdump.man
 
+- Minor fixes and code restructuring (without changing the semantics).
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Fixed various type mismatches reported by MSVC introduced with OFFile class.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcwcache.cc
+
+- Fixed various layout and formatting issues.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcpixseq.h
+           dcmdata/include/dcmtk/dcmdata/dcpxitem.h
+           dcmdata/include/dcmtk/dcmdata/dcwcache.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcobject.cc
+
+- Uncommented name of unused parameter in order to avoid compiler warnings.
+  Affects: dcmdata/libsrc/dcpixseq.cc
+
 **** Changes from 2009.01.30 (riesmeier)
 
 - Updated makefile templates in order to be consistent with the current
