@@ -150,6 +150,14 @@ automatic data correction:
   -dc  --disable-correction
          disable automatic data correction
 
+general handling of parser errors:
+
+  +Ep  --ignore-parse-errors
+         try to recover from parse errors
+
+  -Ep  --handle-parse-errors
+         handle parse errors and stop parsing (default)
+
 bitstream format of deflated input:
 
   +bd  --bitstream-deflated

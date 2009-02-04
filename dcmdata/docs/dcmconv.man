@@ -114,8 +114,16 @@ handling of private max-length elements (implicit VR):
          read as defined in dictionary (default)
 
   +sq  --maxlength-seq
-         read as sequence with undefined length         
-         
+         read as sequence with undefined length
+
+general handling of parser errors:
+
+  +Ep  --ignore-parse-errors
+         try to recover from parse errors
+
+  -Ep  --handle-parse-errors
+         handle parse errors and stop parsing (default)
+
 automatic data correction:
 
   +dc  --enable-correction

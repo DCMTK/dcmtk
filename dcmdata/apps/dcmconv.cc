@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:36:52 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2009-02-04 14:07:10 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,9 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("handling of private max-length elements (implicit VR):");
         cmd.addOption("--maxlength-dict",     "-sq",    "read as defined in dictionary (default)");
         cmd.addOption("--maxlength-seq",      "+sq",    "read as sequence with undefined length");
+    cmd.addSubGroup("general handling of parser errors: ");
+        cmd.addOption("--ignore-parse-errors","+Ep",   "try to recover from parse errors");
+        cmd.addOption("--handle-parse-errors","-Ep",   "handle parse errors and stop parsing (default)");
     cmd.addSubGroup("automatic data correction:");
       cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
       cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
@@ -286,6 +289,15 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--maxlength-seq"))
       {
         dcmReadImplPrivAttribMaxLengthAsSQ.set(OFTrue);
+      }
+      cmd.endOptionBlock();
+      if (cmd.findOption("--ignore-parse-errors"))
+      {
+        dcmIgnoreParsingErrors.set(OFTrue);
+      }
+      if (cmd.findOption("--handle-parse-errors"))
+      {
+        dcmIgnoreParsingErrors.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -466,6 +478,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.57  2009-02-04 14:07:10  onken
+** Added command line options making use of the parser's error ignoring flag.
+**
 ** Revision 1.56  2009-01-29 15:36:52  onken
 ** *** empty log message ***
 **
