@@ -91,7 +91,7 @@ input files:
   +sd  --scan-directories
          scan directories for input files (dcmfile-in)
 
-  +sp  --scan-pattern  [p]attern : string (only with --scan-directories)
+  +sp  --scan-pattern  [p]attern: string (only with --scan-directories)
          pattern for filename matching (wildcards)
 
          # possibly not available on all systems
@@ -211,7 +211,7 @@ printing:
   -Qn  --print-nonascii
          print non-ASCII and control chars (default)
 
- error handling:
+error handling:
 
   -E   --stop-on-error
          do not print if file is damaged (default)
@@ -241,7 +241,7 @@ searching:
 
 writing:
 
-  +W   --write-pixel  [d]irectory : string
+  +W   --write-pixel  [d]irectory: string
          write pixel data to a .raw file stored in d
          (little endian, filename created automatically)
 \endverbatim
