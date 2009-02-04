@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:59:57 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1184,7 +1184,7 @@ OFCondition DcmDirectoryRecord::read(DcmInputStream &inStream,
             ** fStartPosition is set in DcmItem::read(...)
             ** offsetInFile is used in the print(...) method.
             */
-            offsetInFile = fStartPosition - xferSyn.sizeofTagHeader(getTag().getEVR());
+            offsetInFile = OFstatic_cast(Uint32, fStartPosition) - xferSyn.sizeofTagHeader(getTag().getEVR());
         }
 
         if (getTransferState() == ERW_ready && DirRecordType == ERT_Private)     // minimizes multiple evaluation
@@ -1489,6 +1489,9 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.64  2009-02-04 17:59:57  joergr
+ * Fixed various layout and formatting issues.
+ *
  * Revision 1.63  2008-07-17 10:31:31  onken
  * Implemented copyFrom() method for complete DcmObject class hierarchy, which
  * permits setting an instance's value from an existing object. Implemented
