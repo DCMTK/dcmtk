@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:27:03 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-04 14:04:18 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -437,14 +437,14 @@ OFCondition DcmSequenceOfItems::readTagAndLength(DcmInputStream &inStream,
         inStream.read(&elementTag, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
-        // Tag ist gelesen
+        // tag has ben read
 
         DcmTag newTag(groupTag, elementTag);
 
         Uint32 valueLength = 0;
         inStream.read(&valueLength, 4);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
-        if ((valueLength & 1) && (valueLength != OFstatic_cast(Uint32, -1)))
+        if ((valueLength & 1) && (valueLength != DCM_UndefinedLength))
         {
             ofConsole.lockCerr() << "DcmSequenceOfItems: Length of item in sequence " << getTag() << " is odd" << OFendl;
             ofConsole.unlockCerr();
@@ -1275,6 +1275,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.79  2009-02-04 14:04:18  onken
+** Removed German comment and removed "magic number".
+**
 ** Revision 1.78  2009-01-06 16:27:03  joergr
 ** Reworked print() output format for option PF_showTreeStructure.
 **
