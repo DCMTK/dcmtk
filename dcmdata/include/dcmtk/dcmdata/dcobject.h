@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:36:16 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2009-02-04 14:05:01 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,14 @@ extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse 
  *  rely on the dictionary.
  */
 extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse */
+
+/** This flag indicates, whether parsing errors during reading
+ *  should be ignored, ie whether the parser should try to recover and
+ *  parse the rest of the stream.
+ *  This flag does not work for all parsing errors (at this time) 
+ *  making sense but was introduced afterwards.
+ */
+extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
 
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
@@ -624,6 +632,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.56  2009-02-04 14:05:01  onken
+ * Introduced global flag that, if enabled, tells the parser to continue
+ * parsing if possible.
+ *
  * Revision 1.55  2009-01-29 15:36:16  onken
  * Added global parsing option that allows for reading private attributes in
  * implicit encoding having a maximum length to be read as sequences instead

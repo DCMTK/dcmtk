@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:35:32 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2009-02-04 14:04:57 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,7 @@ OFGlobal<OFBool> dcmEnableOldSignatureFormat(OFFalse);
 OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
 OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
 OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
+OFGlobal<OFBool> dcmIgnoreParsingErrors(OFFalse);
 
 // ****** public methods **********************************
 
@@ -470,6 +471,10 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.56  2009-02-04 14:04:57  onken
+ * Introduced global flag that, if enabled, tells the parser to continue
+ * parsing if possible.
+ *
  * Revision 1.55  2009-01-29 15:35:32  onken
  * Added global parsing option that allows for reading private attributes in
  * implicit encoding having a maximum length to be read as sequences instead
