@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.04 (riesmeier)
+
+- Fixed issue with compressed frames of odd length (possibly wrong values in
+  basic offset table).
+  Thanks to Christian Schwerin <cs@sonowin.de> for the report.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpixseq.h
+           dcmdata/include/dcmtk/dcmdata/dcpxitem.h
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+
+- Introduced new error code EC_InvalidBasicOffsetTable.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcerror.cc
+
 **** Changes from 2009.01.30 (riesmeier)
 
 - Updated makefile templates in order to be consistent with the current
