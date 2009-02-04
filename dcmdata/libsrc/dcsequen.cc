@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:04:18 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:57:19 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -554,7 +554,7 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
                     if (errorFlag.good())
                         lastItemComplete = OFTrue;
                 }
-                setTransferredBytes(inStream.tell() - fStartPosition);
+                setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
 
                 if (errorFlag.bad())
                     break;
@@ -575,12 +575,11 @@ OFCondition DcmSequenceOfItems::read(DcmInputStream &inStream,
 
 // ********************************
 
-OFCondition DcmSequenceOfItems::write(
-    DcmOutputStream &outStream,
-    const E_TransferSyntax oxfer,
-    const E_EncodingType enctype,
-    DcmWriteCache *wcache)
-  {
+OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
+                                      const E_TransferSyntax oxfer,
+                                      const E_EncodingType enctype,
+                                      DcmWriteCache *wcache)
+{
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
@@ -698,11 +697,10 @@ OFCondition DcmSequenceOfItems::writeTagAndVR(DcmOutputStream &outStream,
 }
 
 
-OFCondition DcmSequenceOfItems::writeSignatureFormat(
-   DcmOutputStream &outStream,
-   const E_TransferSyntax oxfer,
-   const E_EncodingType enctype,
-   DcmWriteCache *wcache)
+OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
+                                                     const E_TransferSyntax oxfer,
+                                                     const E_EncodingType enctype,
+                                                     DcmWriteCache *wcache)
 {
     if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
@@ -1260,12 +1258,11 @@ OFBool DcmSequenceOfItems::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFCondition DcmSequenceOfItems::getPartialValue(
-  void * /* targetBuffer */,
-  offile_off_t /* offset */,
-  offile_off_t /* numBytes */,
-  DcmFileCache * /* cache */,
-  E_ByteOrder /* byteOrder */)
+OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
+                                                const Uint32 /* offset */,
+                                                Uint32 /* numBytes */,
+                                                DcmFileCache * /* cache */,
+                                                E_ByteOrder /* byteOrder */)
 {
   // cannot use getPartialValue() with class DcmSequenceOfItems or derived classes
   return EC_IllegalCall;
@@ -1275,6 +1272,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.80  2009-02-04 17:57:19  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.79  2009-02-04 14:04:18  onken
 ** Removed German comment and removed "magic number".
 **

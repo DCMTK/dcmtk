@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:57:19 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ DcmMetaInfo& DcmMetaInfo::operator=(const DcmMetaInfo& obj)
     preambleUsed = obj.preambleUsed;
     fPreambleTransferState = obj.fPreambleTransferState;
     Xfer = obj.Xfer;
-    memcpy(filePreamble, obj.filePreamble, 128);    
+    memcpy(filePreamble, obj.filePreamble, 128);
   }
   return *this;
 }
@@ -205,9 +205,9 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
     if (fPreambleTransferState == ERW_inWork)
     {
         const Uint32 preambleLen = DCM_PreambleLen + DCM_MagicLen;
-        const Uint32 readLen = preambleLen-getTransferredBytes();
+        const Uint32 readLen = preambleLen - getTransferredBytes();
         if (readLen > 0)
-            incTransferredBytes(inStream.read(&filePreamble[getTransferredBytes()], readLen));
+            incTransferredBytes(OFstatic_cast(Uint32, inStream.read(&filePreamble[getTransferredBytes()], readLen)));
         if (inStream.eos() && getTransferredBytes() != preambleLen)
         {   // file too short, no preamble
             inStream.putback();
@@ -390,7 +390,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
 #else
             // new behaviour: accept file without meta header group length, determine end of
             // meta header based on heuristic that checks for group 0002 tags.
-            if (getTransferState() == ERW_inWork && getLengthField() != 0 && ( errorFlag.good() || 
+            if (getTransferState() == ERW_inWork && getLengthField() != 0 && ( errorFlag.good() ||
                 ((errorFlag == EC_CorruptedData) && (getLengthField() == DCM_UndefinedLength))))
 #endif
             {
@@ -417,7 +417,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                         if (errorFlag.good())
                             lastElementComplete = OFTrue;
                     }
-                    setTransferredBytes(inStream.tell() - fStartPosition);
+                    setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
                     if (errorFlag.bad())
                         break;                      // terminate while loop
 
@@ -509,8 +509,8 @@ OFCondition DcmMetaInfo::write(
                 {
                     if (fPreambleTransferState == ERW_init)
                     {
-                        incTransferredBytes(outStream.write(&filePreamble[getTransferredBytes()],
-                            DCM_PreambleLen - getTransferredBytes()));
+                        incTransferredBytes(OFstatic_cast(Uint32, outStream.write(&filePreamble[getTransferredBytes()],
+                            DCM_PreambleLen - getTransferredBytes())));
                         if (getTransferredBytes() != DCM_PreambleLen)
                             errorFlag = EC_StreamNotifyClient;
                         else
@@ -553,6 +553,9 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.43  2009-02-04 17:57:19  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.42  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

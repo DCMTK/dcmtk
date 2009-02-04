@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 10:18:57 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2009-02-04 17:57:19 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ OFCondition DcmPixelItem::writeTagAndLength(DcmOutputStream &outStream,
         swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
         // availability of four bytes space in output buffer
         // has been checked by caller.
-        writtenBytes += outStream.write(&valueLength, 4);
+        writtenBytes += OFstatic_cast(Uint32, outStream.write(&valueLength, 4));
     } else
         writtenBytes = 0;
     return l_error;
@@ -265,7 +265,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                    * be read again, and the file from being re-opened next time.
                    * Therefore, this case should be avoided.
                    */
-                  if (! wcache) wcache = &wcache2;
+                  if (!wcache) wcache = &wcache2;
 
                   /* initialize cache object. This is safe even if the object was already initialized */
                   wcache->init(this, getLengthField(), getTransferredBytes(), outXfer.getByteOrder());
@@ -317,7 +317,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                       /* write as many bytes as possible to the stream starting at value[getTransferredBytes()] */
                       /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
                       /* written to the stream) */
-                      len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
+                      len = OFstatic_cast(Uint32, outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes()));
 
                       /* increase the amount of bytes which have been transfered correspondingly */
                       incTransferredBytes(len);
@@ -373,6 +373,9 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.36  2009-02-04 17:57:19  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.35  2009-02-04 10:18:57  joergr
 ** Fixed issue with compressed frames of odd length (possibly wrong values in
 ** basic offset table).
