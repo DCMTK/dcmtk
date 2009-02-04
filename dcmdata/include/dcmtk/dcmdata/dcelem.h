@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:52:17 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ class DcmElement
      *  @return reference to this object
      */
     DcmElement &operator=(const DcmElement &obj);
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -91,7 +91,7 @@ class DcmElement
      *  @return EC_Normal if copying was successful, error otherwise
      */
     virtual OFCondition copyFrom(const DcmObject& rhs);
-    
+
     /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
@@ -186,11 +186,10 @@ class DcmElement
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** write object in XML format
      *  @param out output stream to which the XML document is written
@@ -207,11 +206,10 @@ class DcmElement
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** clear (remove) attribute value
      *  @return EC_Normal if successful, an error code otherwise
@@ -577,12 +575,11 @@ class DcmElement
      *    Default is the local byte order of the machine.
      *  @return EC_Normal upon success, an error code otherwise
      */
-    virtual OFCondition getPartialValue(
-      void *targetBuffer,
-      offile_off_t offset,
-      offile_off_t numBytes,
-      DcmFileCache *cache = NULL,
-      E_ByteOrder byteOrder = gLocalByteOrder);
+    virtual OFCondition getPartialValue(void *targetBuffer,
+                                        const Uint32 offset,
+                                        Uint32 numBytes,
+                                        DcmFileCache *cache = NULL,
+                                        E_ByteOrder byteOrder = gLocalByteOrder);
 
     /** create an empty Uint8 array of given number of bytes and set it.
      *  All array elements are initialized with a value of 0 (using 'memzero').
@@ -613,10 +610,9 @@ class DcmElement
      *  @param byteOrder byte order in the temporary file
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    virtual OFCondition createValueFromTempFile(
-      DcmInputStreamFactory *factory,
-      const Uint32 length,
-      const E_ByteOrder byteOrder);
+    virtual OFCondition createValueFromTempFile(DcmInputStreamFactory *factory,
+                                                const Uint32 length,
+                                                const E_ByteOrder byteOrder);
 
     /** remove the attribute value from memory if the attribute value can
      *  be loaded from file when needed again. Otherwise do nothing.
@@ -628,9 +624,8 @@ class DcmElement
      *  @param frameSize frame size in bytes returned in this parameter upon success
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getUncompressedFrameSize(
-        DcmItem *dataset,
-        Uint32 & frameSize) const;
+    virtual OFCondition getUncompressedFrameSize(DcmItem *dataset,
+                                                 Uint32 &frameSize) const;
 
     /** access single frame without decompressing or loading a complete
      *  multi-frame object. The frame is copied into the buffer passed by the caller
@@ -659,14 +654,13 @@ class DcmElement
      *    handle open, thus improving performance. Optional, may be NULL
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition getUncompressedFrame(
-        DcmItem *dataset,
-        Uint32 frameNo,
-        Uint32& startFragment,
-        void *buffer,
-        Uint32 bufSize,
-        OFString& decompressedColorModel,
-        DcmFileCache *cache=NULL);
+    virtual OFCondition getUncompressedFrame(DcmItem *dataset,
+                                             Uint32 frameNo,
+                                             Uint32 &startFragment,
+                                             void *buffer,
+                                             Uint32 bufSize,
+                                             OFString &decompressedColorModel,
+                                             DcmFileCache *cache = NULL);
 
   protected:
 
@@ -780,6 +774,9 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.40  2009-02-04 17:52:17  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.39  2008-07-17 11:19:48  onken
 ** Updated copyFrom() documentation.
 **

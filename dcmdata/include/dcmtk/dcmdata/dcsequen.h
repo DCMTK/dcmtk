@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,14 +21,15 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:40 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:52:17 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCSEQUEN_H
 #define DCSEQUEN_H
@@ -60,7 +61,9 @@ public:
      *  @param readAsUN flag indicating whether the sequence should be
      *  read (interpreted) as a UN element with Implicit VR Little Endian encoding
      */
-    DcmSequenceOfItems(const DcmTag &tag, const Uint32 len = 0, OFBool readAsUN = OFFalse);
+    DcmSequenceOfItems(const DcmTag &tag,
+                       const Uint32 len = 0,
+                       OFBool readAsUN = OFFalse);
 
     /** copy constructor
      *  @param oldSeq element to be copied
@@ -257,11 +260,10 @@ public:
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache);
 
     /** returns true if the current object may be included in a digital signature
      *  @return true if signable, false otherwise
@@ -444,12 +446,11 @@ public:
      *    Default is the local byte order of the machine.
      *  @return EC_Normal upon success, an error code otherwise
      */
-    virtual OFCondition getPartialValue(
-      void *targetBuffer,
-      offile_off_t offset,
-      offile_off_t numBytes,
-      DcmFileCache *cache = NULL,
-      E_ByteOrder byteOrder = gLocalByteOrder);
+    virtual OFCondition getPartialValue(void *targetBuffer,
+                                        const Uint32 offset,
+                                        Uint32 numBytes,
+                                        DcmFileCache *cache = NULL,
+                                        E_ByteOrder byteOrder = gLocalByteOrder);
 
 protected:
 
@@ -530,11 +531,10 @@ private:
      * @param oxfer output transfer syntax
      * @return EC_Normal if successful, an error code otherwise
      */
-    static OFCondition writeTagAndVR(
-      DcmOutputStream &outStream,
-      const DcmTag &tag,
-      DcmEVR vr,
-      const E_TransferSyntax oxfer);
+    static OFCondition writeTagAndVR(DcmOutputStream &outStream,
+                                     const DcmTag &tag,
+                                     DcmEVR vr,
+                                     const E_TransferSyntax oxfer);
 
     /** flag used during suspended I/O. Indicates whether the last item
      *  was completely or only partially read/written during the last call
@@ -546,7 +546,7 @@ private:
      *  the sequence started (needed for calculating the remaining number of
      *  bytes available for a fixed-length sequence).
      */
-    Uint32 fStartPosition;
+    offile_off_t fStartPosition;
 
     /** true if this sequence has been instantiated while reading an UN element
      *  with undefined length
@@ -562,6 +562,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.48  2009-02-04 17:52:17  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.47  2008-12-12 11:44:40  onken
 ** Moved path access functions to separate classes
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:40 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:52:17 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -985,7 +985,7 @@ class DcmItem
      *  the item started (needed for calculating the remaining number of
      *  bytes available for a fixed-length item).
      */
-    Uint32 fStartPosition;
+    offile_off_t fStartPosition;
 
   protected:
 
@@ -1128,6 +1128,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.73  2009-02-04 17:52:17  joergr
+** Fixes various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.72  2008-12-12 11:44:40  onken
 ** Moved path access functions to separate classes
 **
