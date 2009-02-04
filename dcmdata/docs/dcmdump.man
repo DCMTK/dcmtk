@@ -169,7 +169,7 @@ bitstream format of deflated input:
 
 \subsection output_options output options
 \verbatim
-printing:
+loading:
 
   +M   --load-all
          load very long tag values (default)
@@ -179,6 +179,8 @@ printing:
 
   +R   --max-read-length  [k]bytes: integer [4..4194302] (default: 4)
          set threshold for long values to k kbytes
+
+printing:
 
   +L   --print-all
          print long tag values completely
