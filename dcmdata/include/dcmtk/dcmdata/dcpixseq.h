@@ -22,13 +22,14 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 10:18:19 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2009-02-04 17:54:30 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCPIXSEQ_H
 #define DCPIXSEQ_H
@@ -38,7 +39,7 @@
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmdata/dcerror.h"
-#include "dcmtk/dcmdata/dcofsetl.h"    /* for class DcmOffsetList */
+#include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
 
 class DcmPixelItem;
 
@@ -285,6 +286,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
+** Revision 1.34  2009-02-04 17:54:30  joergr
+** Fixed various layout and formatting issues.
+**
 ** Revision 1.33  2009-02-04 10:18:19  joergr
 ** Fixed issue with compressed frames of odd length (possibly wrong values in
 ** basic offset table).

@@ -23,14 +23,15 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:05:01 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:54:30 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCOBJECT_H
 #define DCOBJECT_H
@@ -130,7 +131,7 @@ extern OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding; /* default OFFalse 
  *  a private creator element is illegally inserted with VR SQ
  *  (undefined length and implicit coding). The parser usually would then
  *  try to parse the element with VR=LO (private creator) with maximum
- *  length, which would lead to an error. The default behaviour is to 
+ *  length, which would lead to an error. The default behaviour is to
  *  rely on the dictionary.
  */
 extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse */
@@ -138,7 +139,7 @@ extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse *
 /** This flag indicates, whether parsing errors during reading
  *  should be ignored, ie whether the parser should try to recover and
  *  parse the rest of the stream.
- *  This flag does not work for all parsing errors (at this time) 
+ *  This flag does not work for all parsing errors (at this time)
  *  making sense but was introduced afterwards.
  */
 extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
@@ -298,9 +299,8 @@ class DcmObject
      *  @param enctype sequence encoding type for length calculation
      *  @return length of DICOM element
      */
-    virtual Uint32 calcElementLength(
-      const E_TransferSyntax xfer,
-      const E_EncodingType enctype) = 0;
+    virtual Uint32 calcElementLength(const E_TransferSyntax xfer,
+                                     const E_EncodingType enctype) = 0;
 
     /** calculate the value length (without attribute tag, VR and length field)
      *  of this DICOM element when encoded with the given transfer syntax and
@@ -309,18 +309,16 @@ class DcmObject
      *  @param enctype sequence encoding type for length calculation
      *  @return value length of DICOM element
      */
-    virtual Uint32 getLength(
-      const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
-      const E_EncodingType enctype = EET_UndefinedLength) = 0;
+    virtual Uint32 getLength(const E_TransferSyntax xfer = EXS_LittleEndianImplicit,
+                             const E_EncodingType enctype = EET_UndefinedLength) = 0;
 
     /** check if this DICOM object can be encoded in the given transfer syntax.
      *  @param newXfer transfer syntax in which the DICOM object is to be encoded
      *  @param oldXfer transfer syntax in which the DICOM object was read or created.
      *  @return true if object can be encoded in desired transfer syntax, false otherwise.
      */
-    virtual OFBool canWriteXfer(
-      const E_TransferSyntax newXfer,
-      const E_TransferSyntax oldXfer) = 0;
+    virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
+                                const E_TransferSyntax oldXfer) = 0;
 
     /** read object from a stream.
      *  @param inStream DICOM input stream
@@ -343,11 +341,10 @@ class DcmObject
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache) = 0;
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache) = 0;
 
     /** write object in XML format to a stream
      *  @param out output stream to which the XML document is written
@@ -364,11 +361,10 @@ class DcmObject
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSignatureFormat(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache) = 0;
+    virtual OFCondition writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache) = 0;
 
     /** returns true if the current object may be included in a digital signature
      *  @return true if signable, false otherwise
@@ -429,9 +425,8 @@ class DcmObject
      *    or all items of a sequence).
      *  @return EC_Normal if value length is correct, an error code otherwise
      */
-    virtual OFCondition nextObject(
-      DcmStack &stack,
-      const OFBool intoSub);
+    virtual OFCondition nextObject(DcmStack &stack,
+                                   const OFBool intoSub);
 
     /** a complex, stack-based, hierarchical search method. It allows for a search
      *  for a DICOM object with a given attribute within a given container,
@@ -454,11 +449,10 @@ class DcmObject
      *    (sequence or item) will be traversed.
      *  @return EC_Normal if found, EC_TagNotFound if not found, an error code is something went wrong.
      */
-    virtual OFCondition search(
-      const DcmTagKey &xtag,
-      DcmStack &resultStack,
-      E_SearchMode mode = ESM_fromHere,
-      OFBool searchIntoSub = OFTrue);
+    virtual OFCondition search(const DcmTagKey &xtag,
+                               DcmStack &resultStack,
+                               E_SearchMode mode = ESM_fromHere,
+                               OFBool searchIntoSub = OFTrue);
 
     /** this method loads all attribute values maintained by this object and
      *  all sub-objects (in case of a container such as DcmDataset) into memory.
@@ -537,10 +531,9 @@ class DcmObject
      *  @param oxfer transfer syntax defining the byte order
      *  @return EC_Normal if successful, an error code otherwise
      */
-    static OFCondition writeTag(
-      DcmOutputStream &outStream,
-      const DcmTag &tag,
-      const E_TransferSyntax oxfer);
+    static OFCondition writeTag(DcmOutputStream &outStream,
+                                const DcmTag &tag,
+                                const E_TransferSyntax oxfer);
 
     /** write tag, VR and length field to the given output stream
      *  @param outStream output stream
@@ -548,10 +541,9 @@ class DcmObject
      *  @param writtenBytes number of bytes written to stream returned in this parameter
      *  @return EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeTagAndLength(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer, // in
-      Uint32 &writtenBytes) const;  // out
+    virtual OFCondition writeTagAndLength(DcmOutputStream &outStream,
+                                          const E_TransferSyntax oxfer, // in
+                                          Uint32 &writtenBytes) const;  // out
 
     /** return the number of bytes needed to serialize the
      *  tag, VR and length information of the current object using the given
@@ -632,6 +624,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.57  2009-02-04 17:54:30  joergr
+ * Fixed various layout and formatting issues.
+ *
  * Revision 1.56  2009-02-04 14:05:01  onken
  * Introduced global flag that, if enabled, tells the parser to continue
  * parsing if possible.

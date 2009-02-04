@@ -21,14 +21,15 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:06:03 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:54:30 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCERROR_H
 #define DCERROR_H
@@ -129,6 +130,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.27  2009-02-04 17:54:30  joergr
+** Fixed various layout and formatting issues.
+**
 ** Revision 1.26  2009-02-04 14:06:03  onken
 ** Changed parser to make use of the new error ignoring flag when parsing.
 ** Added check (makes use of new flag) that notes whether an element's value is
@@ -223,4 +227,3 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 ** Updated for loadable data dictionary + some cleanup (more to do).
 **
 */
-

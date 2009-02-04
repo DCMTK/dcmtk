@@ -22,13 +22,14 @@
  *  Purpose: Interface of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 10:18:19 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2009-02-04 17:54:31 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCPXITEM_H
 #define DCPXITEM_H
@@ -37,7 +38,8 @@
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmdata/dctypes.h"
 #include "dcmtk/dcmdata/dcvrobow.h"
-#include "dcmtk/dcmdata/dcofsetl.h"    /* for class DcmOffsetList */
+#include "dcmtk/dcmdata/dcofsetl.h"   /* for class DcmOffsetList */
+
 
 /** this class implements a container for a fragment of compressed pixel data.
  *  Instances of this class use the same attribute tags as sequence items,
@@ -81,7 +83,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *  @return type identifier of this class (EVR_item)
      */
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
-    
+
     /** Virtual object copying. This method can be used for DcmObject
      *  and derived classes to get a deep copy of an object. Internally
      *  the assignment operator is called if the given DcmObject parameter
@@ -94,7 +96,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *                class type as "this" object
      *  @return EC_Normal if copying was successful, error otherwise
      */
-    virtual OFCondition copyFrom(const DcmObject &rhs);    
+    virtual OFCondition copyFrom(const DcmObject &rhs);
 
     /** print all elements of the item to a stream
      *  @param out output stream
@@ -144,10 +146,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      *  @param oxfer transfer syntax for writing
      *  @param writtenBytes number of bytes written to stream returned in this parameter
      *  @return EC_Normal if successful, an error code otherwise
-     */     
-    virtual OFCondition writeTagAndLength(DcmOutputStream & outStream,
+     */
+    virtual OFCondition writeTagAndLength(DcmOutputStream &outStream,
                                           const E_TransferSyntax oxfer,
-                                          Uint32 & writtenBytes) const;
+                                          Uint32 &writtenBytes) const;
 
 };
 
@@ -157,6 +159,9 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
+** Revision 1.27  2009-02-04 17:54:31  joergr
+** Fixed various layout and formatting issues.
+**
 ** Revision 1.26  2009-02-04 10:18:19  joergr
 ** Fixed issue with compressed frames of odd length (possibly wrong values in
 ** basic offset table).

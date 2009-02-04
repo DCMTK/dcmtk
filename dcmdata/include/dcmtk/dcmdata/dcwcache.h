@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,21 +21,22 @@
  *
  *  Purpose: file cache facility for DcmElement::getPartialValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:18 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcwcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:54:31 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #ifndef DCWCACHE_H
 #define DCWCACHE_H
 
-#include "dcmtk/config/osconfig.h"
-#include "dcmtk/ofstd/oftypes.h"    /* for Uint8 */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/ofstd/oftypes.h"      /* for Uint8 */
 #include "dcmtk/dcmdata/dcfcache.h"   /* for class DcmFileCache */
 
 class DcmElement;
@@ -44,7 +45,7 @@ class DcmOutputStream;
 #define DcmWriteCacheBufsize 65536  /* buffer size, in bytes */
 
 /** This class implements a simple container that stores an input stream,
- *  the position of that input stream corresponding to the start of a DICOM 
+ *  the position of that input stream corresponding to the start of a DICOM
  *  element value field contained in the stream and the current "owner" object.
  *  It is used to keep a single file handle open during multiple calls to
  *  DcmElement::getPartialValue(), thus speeding up the reading.
@@ -60,7 +61,7 @@ class DcmOutputStream;
 class DcmWriteCache
 {
 public:
-	
+
   /// default constructor. Construction is cheap (no allocation of memory block).
   DcmWriteCache()
   : fcache_()
@@ -68,7 +69,7 @@ public:
   , owner_(NULL)
   , offset_(0)
   , numBytes_(0)
-  , capacity_(0)  
+  , capacity_(0)
   , fieldLength_(0)
   , fieldOffset_(0)
   , byteOrder_(EBO_unknown)
@@ -113,7 +114,7 @@ public:
    *  @return number of bytes written
    */
   Uint32 writeBuffer(DcmOutputStream &outStream);
- 
+
 private:
 
   /// private undefined copy constructor
@@ -124,8 +125,8 @@ private:
 
   /// file cache object
   DcmFileCache fcache_;
-  
-  /// write buffer  
+
+  /// write buffer
   Uint8 *buf_;
 
   /// current "owner" (DcmElement instance using this buffer)
@@ -142,10 +143,10 @@ private:
 
   /// length of the current DICOM element, in bytes
   Uint32 fieldLength_;
-  
+
   /// offset within the current DICOM element, in bytes
   Uint32 fieldOffset_;
-  
+
   /// current output byte order
   E_ByteOrder byteOrder_;
 };
@@ -155,6 +156,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcwcache.h,v $
+ * Revision 1.2  2009-02-04 17:54:31  joergr
+ * Fixed various layout and formatting issues.
+ *
  * Revision 1.1  2007-11-29 14:30:18  meichel
  * Write methods now handle large raw data elements (such as pixel data)
  *   without loading everything into memory. This allows very large images to

@@ -21,16 +21,18 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:06:01 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:59:15 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcerror.h"
 
 const OFConditionConst ECC_InvalidTag(                 OFM_dcmdata,  1, OF_error, "Invalid tag"                                );
@@ -93,6 +95,9 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.21  2009-02-04 17:59:15  joergr
+** Fixed various layout and formatting issues.
+**
 ** Revision 1.20  2009-02-04 14:06:01  onken
 ** Changed parser to make use of the new error ignoring flag when parsing.
 ** Added check (makes use of new flag) that notes whether an element's value is
@@ -166,4 +171,3 @@ const char *dcmErrorConditionToString(OFCondition cond)
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 */
-

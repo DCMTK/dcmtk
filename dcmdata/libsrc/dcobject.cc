@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:04:57 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 17:58:53 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 
 #include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcobject.h"
@@ -471,6 +472,9 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.57  2009-02-04 17:58:53  joergr
+ * Fixed various layout and formatting issues.
+ *
  * Revision 1.56  2009-02-04 14:04:57  onken
  * Introduced global flag that, if enabled, tells the parser to continue
  * parsing if possible.
