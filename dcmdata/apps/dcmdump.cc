@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:07:10 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 14:30:07 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,7 @@ static OFBool addPrintTagName(const char *tagName)
 }
 
 #define SHORTCOL 3
-#define LONGCOL 20
+#define LONGCOL 21
 
 int main(int argc, char *argv[])
 {
@@ -164,90 +164,91 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-in", "DICOM input file or directory to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                      "print expanded command line arguments");
-      cmd.addOption("--quiet",                "-q",     "quiet mode, print no warnings and errors");
-      cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
+      cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+      cmd.addOption("--arguments",                       "print expanded command line arguments");
+      cmd.addOption("--quiet",                 "-q",     "quiet mode, print no warnings and errors");
+      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",          "+f",     "read file format or data set (default)");
-        cmd.addOption("--read-file-only",     "+fo",    "read file format only");
-        cmd.addOption("--read-dataset",       "-f",     "read data set without file meta information");
+        cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+        cmd.addOption("--read-file-only",      "+fo",    "read file format only");
+        cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax:");
-        cmd.addOption("--read-xfer-auto",     "-t=",    "use TS recognition (default)");
-        cmd.addOption("--read-xfer-detect",   "-td",    "ignore TS specified in the file meta header");
-        cmd.addOption("--read-xfer-little",   "-te",    "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",      "-tb",    "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit", "-ti",    "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+        cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
+        cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
       cmd.addSubGroup("input files:");
-        cmd.addOption("--scan-directories",   "+sd",    "scan directories for input files (dcmfile-in)");
+        cmd.addOption("--scan-directories",    "+sd",    "scan directories for input files (dcmfile-in)");
 #ifdef PATTERN_MATCHING_AVAILABLE
-        cmd.addOption("--scan-pattern",       "+sp", 1, "[p]attern : string (only with --scan-directories)",
-                                                        "pattern for filename matching (wildcards)");
+        cmd.addOption("--scan-pattern",        "+sp", 1, "[p]attern: string (only with --scan-directories)",
+                                                         "pattern for filename matching (wildcards)");
 #endif
-        cmd.addOption("--no-recurse",         "-r",     "do not recurse within directories (default)");
-        cmd.addOption("--recurse",            "+r",     "recurse within specified directories");
+        cmd.addOption("--no-recurse",          "-r",     "do not recurse within directories (default)");
+        cmd.addOption("--recurse",             "+r",     "recurse within specified directories");
       cmd.addSubGroup("parsing of odd-length attributes:");
-        cmd.addOption("--accept-odd-length",  "+ao",    "accept odd length attributes (default)");
-        cmd.addOption("--assume-even-length", "+ae",    "assume real length is one byte larger");
+        cmd.addOption("--accept-odd-length",   "+ao",    "accept odd length attributes (default)");
+        cmd.addOption("--assume-even-length",  "+ae",    "assume real length is one byte larger");
       cmd.addSubGroup("handling of non-standard VR:");
-        cmd.addOption("--treat-as-unknown",   "+vr",    "treat non-standard VR as unknown (default)");
-        cmd.addOption("--assume-implicit",    "-vr",    "try to read with implicit VR little endian TS");
+        cmd.addOption("--treat-as-unknown",    "+vr",    "treat non-standard VR as unknown (default)");
+        cmd.addOption("--assume-implicit",     "-vr",    "try to read with implicit VR little endian TS");
       cmd.addSubGroup("handling of undefined length UN elements:");
-        cmd.addOption("--enable-cp246",       "+ui",    "read undefined len UN as implicit VR (default)");
-        cmd.addOption("--disable-cp246",      "-ui",    "read undefined len UN as explicit VR");
+        cmd.addOption("--enable-cp246",        "+ui",    "read undefined len UN as implicit VR (default)");
+        cmd.addOption("--disable-cp246",       "-ui",    "read undefined len UN as explicit VR");
       cmd.addSubGroup("handling of defined length UN elements:");
-        cmd.addOption("--retain-un",          "-uc",    "retain elements as UN (default)");
-        cmd.addOption("--convert-un",         "+uc",    "convert to real VR if known");
+        cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
+        cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
       cmd.addSubGroup("handling of private max-length elements (implicit VR):");
-        cmd.addOption("--maxlength-dict",     "-sq",    "read as defined in dictionary (default)");
-        cmd.addOption("--maxlength-seq",      "+sq",    "read as sequence with undefined length");
+        cmd.addOption("--maxlength-dict",      "-sq",    "read as defined in dictionary (default)");
+        cmd.addOption("--maxlength-seq",       "+sq",    "read as sequence with undefined length");
       cmd.addSubGroup("general handling of parser errors: ");
-        cmd.addOption("--ignore-parse-errors","+Ep",   "try to recover from parse errors");
-        cmd.addOption("--handle-parse-errors","-Ep",   "handle parse errors and stop parsing (default)");
+        cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
+        cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
       cmd.addSubGroup("automatic data correction:");
-        cmd.addOption("--enable-correction",  "+dc",    "enable automatic data correction (default)");
-        cmd.addOption("--disable-correction", "-dc",    "disable automatic data correction");
+        cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
+        cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
 #ifdef WITH_ZLIB
       cmd.addSubGroup("bitstream format of deflated input:");
-        cmd.addOption("--bitstream-deflated", "+bd",    "expect deflated bitstream (default)");
-        cmd.addOption("--bitstream-zlib",     "+bz",    "expect deflated zlib bitstream");
+        cmd.addOption("--bitstream-deflated",  "+bd",    "expect deflated bitstream (default)");
+        cmd.addOption("--bitstream-zlib",      "+bz",    "expect deflated zlib bitstream");
 #endif
 
     cmd.addGroup("output options:");
+      cmd.addSubGroup("loading:");
+        cmd.addOption("--load-all",            "+M",     "load very long tag values (default)");
+        cmd.addOption("--load-short",          "-M",     "do not load very long values (e.g. pixel data)");
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
+                                                         "set threshold for long values to k kbytes");
       cmd.addSubGroup("printing:");
-        cmd.addOption("--load-all",           "+M",     "load very long tag values (default)");
-        cmd.addOption("--load-short",         "-M",     "do not load very long values (e.g. pixel data)");
-        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
-                                                        "set threshold for long values to k kbytes");
-        cmd.addOption("--print-all",          "+L",     "print long tag values completely");
-        cmd.addOption("--print-short",        "-L",     "print long tag values shortened (default)");
-        cmd.addOption("--print-tree",         "+T",     "print hierarchical structure as a simple tree");
-        cmd.addOption("--print-indented",     "-T",     "print hierarchical structure indented (default)");
-        cmd.addOption("--print-filename",     "+F",     "print header with filename for each input file");
-        cmd.addOption("--print-file-search",  "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
-        cmd.addOption("--map-uid-names",      "+Un",    "map well-known UID numbers to names (default)");
-        cmd.addOption("--no-uid-names",       "-Un",    "do not map well-known UID numbers to names");
-        cmd.addOption("--quote-nonascii",     "+Qn",    "quote non-ASCII and control chars as XML markup");
-        cmd.addOption("--print-nonascii",     "-Qn",    "print non-ASCII and control chars (default)");
+        cmd.addOption("--print-all",           "+L",     "print long tag values completely");
+        cmd.addOption("--print-short",         "-L",     "print long tag values shortened (default)");
+        cmd.addOption("--print-tree",          "+T",     "print hierarchical structure as a simple tree");
+        cmd.addOption("--print-indented",      "-T",     "print hierarchical structure indented (default)");
+        cmd.addOption("--print-filename",      "+F",     "print header with filename for each input file");
+        cmd.addOption("--print-file-search",   "+Fs",    "print header with filename only for those input\nfiles that contain one of the searched tags");
+        cmd.addOption("--map-uid-names",       "+Un",    "map well-known UID numbers to names (default)");
+        cmd.addOption("--no-uid-names",        "-Un",    "do not map well-known UID numbers to names");
+        cmd.addOption("--quote-nonascii",      "+Qn",    "quote non-ASCII and control chars as XML markup");
+        cmd.addOption("--print-nonascii",      "-Qn",    "print non-ASCII and control chars (default)");
 
       cmd.addSubGroup("error handling:");
-        cmd.addOption("--stop-on-error",      "-E",     "do not print if file is damaged (default)");
-        cmd.addOption("--ignore-errors",      "+E",     "attempt to print even if file is damaged");
+        cmd.addOption("--stop-on-error",       "-E",     "do not print if file is damaged (default)");
+        cmd.addOption("--ignore-errors",       "+E",     "attempt to print even if file is damaged");
 
       cmd.addSubGroup("searching:");
-        cmd.addOption("--search",             "+P",  1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
-                                                        "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
-        cmd.addOption("--search-all",         "+s",     "print all instances of searched tags (default)");
-        cmd.addOption("--search-first",       "-s",     "only print first instance of searched tags");
-        cmd.addOption("--prepend",            "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
-        cmd.addOption("--no-prepend",         "-p",     "do not prepend hierarchy to tag (default)");
+        cmd.addOption("--search",              "+P",  1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+                                                         "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
+        cmd.addOption("--search-all",          "+s",     "print all instances of searched tags (default)");
+        cmd.addOption("--search-first",        "-s",     "only print first instance of searched tags");
+        cmd.addOption("--prepend",             "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
+        cmd.addOption("--no-prepend",          "-p",     "do not prepend hierarchy to tag (default)");
 
       cmd.addSubGroup("writing:");
-        cmd.addOption("--write-pixel",        "+W",  1, "[d]irectory : string",
-                                                        "write pixel data to a .raw file stored in d\n(little endian, filename created automatically)");
+        cmd.addOption("--write-pixel",         "+W",  1, "[d]irectory: string",
+                                                         "write pixel data to a .raw file stored in d\n(little endian, filename created automatically)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -708,6 +709,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.71  2009-02-04 14:30:07  joergr
+ * Fixed small issue with syntax usage layout.
+ * Introduced new syntax usage output subsection "loading".
+ *
  * Revision 1.70  2009-02-04 14:07:10  onken
  * Added command line options making use of the parser's error ignoring flag.
  *
