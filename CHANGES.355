@@ -19,7 +19,7 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcerror.cc
            dcmdata/include/dcmtk/dcmdata/dcerror.h
 
--  Added command line options making use of the parser's error ignoring flag.
+- Added command line options making use of the parser's error ignoring flag.
    Affects:  dcmdata/apps/dcmconv.cc
              dcmdata/apps/dcmdump.cc
              dcmdata/docs/dcmconv.man
