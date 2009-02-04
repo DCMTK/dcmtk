@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 10:17:23 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-04 14:06:03 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,8 +106,10 @@ extern const OFCondition EC_ApplicationProfileViolated;
 extern const OFCondition EC_InvalidOffset;
 /// Too many bytes requested
 extern const OFCondition EC_TooManyBytesRequested;
-/// Invalid basic offset table
+// Invalid basic offset table
 extern const OFCondition EC_InvalidBasicOffsetTable;
+/// Element length is larger than (explicit) length of surrounding item
+extern const OFCondition EC_ElemLengthLargerThanItem;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -127,6 +129,12 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.26  2009-02-04 14:06:03  onken
+** Changed parser to make use of the new error ignoring flag when parsing.
+** Added check (makes use of new flag) that notes whether an element's value is
+** specified larger than the surrounding item (applicable for explicit length
+** coding).
+**
 ** Revision 1.25  2009-02-04 10:17:23  joergr
 ** Introduced new error code EC_InvalidBasicOffsetTable.
 **

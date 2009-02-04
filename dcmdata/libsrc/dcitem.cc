@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:35:32 $
- *  CVS/RCS Revision: $Revision: 1.123 $
+ *  Update Date:      $Date: 2009-02-04 14:06:01 $
+ *  CVS/RCS Revision: $Revision: 1.124 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -851,13 +851,27 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << OFendl;
         ofConsole.unlockCerr();
     }
-    
+
     /* if desired, handle private attributes with maximum length as VR SQ */
     if (isPrivate && dcmReadImplPrivAttribMaxLengthAsSQ.get() && (valueLength == DCM_UndefinedLength))
     {
         /* re-set tag to be a sequence and also delete private creator cache */
         newTag.setVR(EVR_SQ);
         newTag.setPrivateCreator("");
+    }
+
+    /* if desired, check if length is greater than length of surrounding item */
+    Uint32 valueLengthItem = getLengthField();
+    if ( ( valueLength > valueLengthItem - (inStream.tell() - fStartPosition))
+          && (valueLengthItem != DCM_UndefinedLength /* this does not work in length items */)
+          && (ident() == EVR_item /* e. g. meta info would have length 0 */) )
+    {
+        STD_NAMESPACE ostream &localCerr = ofConsole.lockCerr();
+        localCerr << "DcmItem: Length " << valueLength << " of attribute " << newTag;
+        localCerr << " is greater than length " << (valueLengthItem - (inStream.tell() - fStartPosition));
+        localCerr << " of surrounding item" << OFendl;
+        ofConsole.unlockCerr();
+        l_error = EC_ElemLengthLargerThanItem;
     }
 
     /* assign values to out parameter */
@@ -983,24 +997,40 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* increase counter correspondingly */
                     incTransferredBytes(bytes_tagAndLen);
 
-                    /* if there was an error while we were reading from the stream, terminate the while-loop */
-                    /* (note that if the last element had been read from the instream in the last iteration, */
-                    /* another iteration will be started, and of course then readTagAndLength(...) above will */
-                    /* return that it encountered the end of the stream. It is only then (and here) when the */
-                    /* while loop will be terminated.) */
-                    if (errorFlag.bad())
-                        break;
-                    /* If we get to this point, we just started reading the first part */
-                    /* of an element; hence, lastElementComplete is not longer true */
-                    lastElementComplete = OFFalse;
-                    /* read the actual data value which belongs to this element */
-                    /* (attribute) and insert this information into the elementList */
-                    errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
-                    /* if reading was successful, we read the entire data value information */
-                    /* for this element; hence lastElementComplete is true again */
-                    if (errorFlag.good())
-                        lastElementComplete = OFTrue;
-                } else {
+                    /* if desired, try to ignore parse error -> skip item */
+                    if (errorFlag == EC_ElemLengthLargerThanItem && dcmIgnoreParsingErrors.get())
+                    {
+                        ofConsole.lockCerr() << "DcmItem: Element " << newTag << " too large, trying to skip over rest of item" << OFendl;
+                        ofConsole.unlockCerr();
+                        /* we can call getLengthField because error does only occur for explicit length items */
+                        Uint32 bytesToSkip = getLengthField() - bytes_tagAndLen;
+                        if (bytesToSkip > inStream.avail()) // no chance to recover
+                           break;
+                        inStream.skip(bytesToSkip);
+                        errorFlag = EC_Normal;
+                    }
+                    else /* continue with normal case: parse rest of element */
+                    {
+                        /* if there was an error while we were reading from the stream, terminate the while-loop */
+                        /* (note that if the last element had been read from the instream in the last iteration, */
+                        /* another iteration will be started, and of course then readTagAndLength(...) above will */
+                        /* return that it encountered the end of the stream. It is only then (and here) when the */
+                        /* while loop will be terminated.) */
+                        if (errorFlag.bad())
+                            break;
+                        /* If we get to this point, we just started reading the first part */
+                        /* of an element; hence, lastElementComplete is not longer true */
+                        lastElementComplete = OFFalse;
+                        /* read the actual data value which belongs to this element */
+                        /* (attribute) and insert this information into the elementList */
+                        errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
+                        /* if reading was successful, we read the entire data value information */
+                        /* for this element; hence lastElementComplete is true again */
+                        if (errorFlag.good())
+                            lastElementComplete = OFTrue;
+                    }
+                } else
+                {
                     /* if lastElementComplete is false, we have only read the current element's */
                     /* tag and length (and possibly VR) information as well as maybe some data */
                     /* data value information. We need to continue reading the data value */
@@ -3495,6 +3525,12 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.124  2009-02-04 14:06:01  onken
+** Changed parser to make use of the new error ignoring flag when parsing.
+** Added check (makes use of new flag) that notes whether an element's value is
+** specified larger than the surrounding item (applicable for explicit length
+** coding).
+**
 ** Revision 1.123  2009-01-29 15:35:32  onken
 ** Added global parsing option that allows for reading private attributes in
 ** implicit encoding having a maximum length to be read as sequences instead

@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 10:16:51 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-04 14:06:01 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,10 +55,11 @@ const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error
 const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"               );
 const OFConditionConst ECC_ApplicationProfileViolated( OFM_dcmdata, 21, OF_error, "Storage media application profile violated" );
 // error code 22 is reserved for dcmodify error messages
-const OFConditionConst ECC_InvalidOffset(              OFM_dcmdata, 23, OF_error, "Invalid offset"                             );
-const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error, "Too many bytes requested"                   );
+const OFConditionConst ECC_InvalidOffset(              OFM_dcmdata, 23, OF_error, "Invalid offset" );
+const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error, "Too many bytes requested" );
 // error code 25 is reserved for tag path parsing error messages
 const OFConditionConst ECC_InvalidBasicOffsetTable(    OFM_dcmdata, 26, OF_error, "Invalid basic offset table"                 );
+const OFConditionConst ECC_ElemLengthLargerThanItem(   OFM_dcmdata, 27, OF_error, "Length of element larger than explicit length of surrounding item" );
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -81,6 +82,7 @@ const OFCondition EC_ApplicationProfileViolated( ECC_ApplicationProfileViolated)
 const OFCondition EC_InvalidOffset(              ECC_InvalidOffset);
 const OFCondition EC_TooManyBytesRequested(      ECC_TooManyBytesRequested);
 const OFCondition EC_InvalidBasicOffsetTable(    ECC_InvalidBasicOffsetTable);
+const OFCondition EC_ElemLengthLargerThanItem(   ECC_ElemLengthLargerThanItem);
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -91,6 +93,12 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.20  2009-02-04 14:06:01  onken
+** Changed parser to make use of the new error ignoring flag when parsing.
+** Added check (makes use of new flag) that notes whether an element's value is
+** specified larger than the surrounding item (applicable for explicit length
+** coding).
+**
 ** Revision 1.19  2009-02-04 10:16:51  joergr
 ** Introduced new error code EC_InvalidBasicOffsetTable.
 **
