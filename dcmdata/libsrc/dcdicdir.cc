@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,14 +21,15 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:42 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 18:01:23 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -147,7 +148,7 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
 // ********************************
 
 
-/* This copy constructor implementation is untested 
+/* This copy constructor implementation is untested
  */
 DcmDicomDir::DcmDicomDir( const DcmDicomDir & old )
   : errorFlag(old.errorFlag),
@@ -723,7 +724,7 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     unsigned long numUnresItems = localDirRecSeq.card();
     for (unsigned long i = numUnresItems; i > 0; i-- )
     {
-DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no %ld of %ld to unresRecs-SQ:",
+        DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no %ld of %ld to unresRecs-SQ:",
            i, numUnresItems ));
 
         unresRecs.insert( localDirRecSeq.getItem(i-1), 0 );
@@ -747,7 +748,7 @@ DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unreso
     unsigned long numMRDRItems = getMRDRSequence().card();
     for (unsigned long j = numMRDRItems; j > 0; j-- )
     {
-DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
+        DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
            j, numUnresItems ));
 
         localDirRecSeq.insert( getMRDRSequence().getItem(j-1), 0 );
@@ -1078,7 +1079,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     metainfo.write(*outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype, &wcache);
     metainfo.transferEnd();
 
-    Uint32 beginOfDataset = outStream->tell();
+    Uint32 beginOfDataset = OFstatic_cast(Uint32, outStream->tell());
 
     // convert to writable format
     errorFlag = convertTreeToLinear(beginOfDataset, outxfer, enctype, glenc, localUnresRecs);
@@ -1328,6 +1329,9 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.52  2009-02-04 18:01:23  joergr
+** Fixed various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.51  2008-04-30 12:38:42  meichel
 ** Fixed compile errors due to changes in attribute tag names
 **

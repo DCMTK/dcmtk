@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:34:45 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 18:03:56 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -487,11 +487,11 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                 if (fValue)
                 {
                     /* determine how many bytes shall be read from the stream */
-                    Uint32 readLength = getLengthField() - getTransferredBytes();
+                    const Uint32 readLength = getLengthField() - getTransferredBytes();
 
                     /* read a corresponding amount of bytes from the stream, store the information in fvalue */
                     /* increase the counter that counts how many bytes were actually read */
-                    incTransferredBytes(readStream->read(&fValue[getTransferredBytes()], readLength));
+                    incTransferredBytes(OFstatic_cast(Uint32, readStream->read(&fValue[getTransferredBytes()], readLength)));
 
                     /* if we have read all the bytes which make up this element's value */
                     if (getLengthField() == getTransferredBytes())
@@ -538,7 +538,7 @@ Uint8 *DcmElement::newValueField()
         {
               /* Print an error message when private attribute states to have an odd length
                * equal to the maximum length, because we are not able then to make this value even (+1)
-               * which would an overflow on some systems as well as being illegal in DICOM 
+               * which would an overflow on some systems as well as being illegal in DICOM
                */
                 ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
                     << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded" << OFendl;
@@ -913,7 +913,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
 
                     if (fLoadValue)
                     {
-                        Uint32 skipped = inStream.skip(getLengthField());
+                        offile_off_t skipped = inStream.skip(getLengthField());
                         if (skipped < getLengthField())
                         {
                             errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
@@ -975,11 +975,10 @@ void DcmElement::transferInit()
 
 // ********************************
 
-OFCondition DcmElement::write(
-    DcmOutputStream &outStream,
-    const E_TransferSyntax oxfer,
-    const E_EncodingType /*enctype*/,
-    DcmWriteCache *wcache)
+OFCondition DcmElement::write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType /*enctype*/,
+                              DcmWriteCache *wcache)
 {
     DcmWriteCache wcache2;
 
@@ -1024,7 +1023,7 @@ OFCondition DcmElement::write(
                  * be read again, and the file from being re-opened next time.
                  * Therefore, this case should be avoided.
                  */
-                if (! wcache) wcache = &wcache2;
+                if (!wcache) wcache = &wcache2;
 
                 /* initialize cache object. This is safe even if the object was already initialized */
                 wcache->init(this, getLengthField(), getTransferredBytes(), outXfer.getByteOrder());
@@ -1079,7 +1078,7 @@ OFCondition DcmElement::write(
                     /* write as many bytes as possible to the stream starting at value[getTransferredBytes()] */
                     /* (note that the bytes value[0] to value[getTransferredBytes()-1] have already been */
                     /* written to the stream) */
-                    len = outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes());
+                    len = OFstatic_cast(Uint32, outStream.write(&value[getTransferredBytes()], getLengthField() - getTransferredBytes()));
 
                     /* increase the amount of bytes which have been transfered correspondingly */
                     incTransferredBytes(len);
@@ -1131,11 +1130,10 @@ OFCondition DcmElement::write(
 }
 
 
-OFCondition DcmElement::writeSignatureFormat(
-   DcmOutputStream &outStream,
-   const E_TransferSyntax oxfer,
-   const E_EncodingType enctype,
-   DcmWriteCache *wcache)
+OFCondition DcmElement::writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype,
+                                             DcmWriteCache *wcache)
 {
     // for normal DICOM elements (everything except sequences), the data
     // stream used for digital signature creation or verification is
@@ -1214,12 +1212,11 @@ OFCondition DcmElement::writeXML(STD_NAMESPACE ostream &out,
 }
 
 
-OFCondition DcmElement::getPartialValue(
-  void *targetBuffer,
-  offile_off_t offset,
-  offile_off_t numBytes,
-  DcmFileCache *cache,
-  E_ByteOrder byteOrder)
+OFCondition DcmElement::getPartialValue(void *targetBuffer,
+                                        const Uint32 offset,
+                                        Uint32 numBytes,
+                                        DcmFileCache *cache,
+                                        E_ByteOrder byteOrder)
 {
   // check integrity of parameters passed to this method
   if (targetBuffer == NULL) return EC_IllegalCall;
@@ -1245,7 +1242,7 @@ OFCondition DcmElement::getPartialValue(
     char *value = OFstatic_cast(char *, getValue(byteOrder));
     if (value)
     {
-      memcpy(targetBuffer, value+offset, OFstatic_cast(size_t, numBytes));
+      memcpy(targetBuffer, value + offset, numBytes);
     }
     else
     {
@@ -1284,9 +1281,9 @@ OFCondition DcmElement::getPartialValue(
     // seekoffset is the number of bytes we need to skip from the beginning of the
     // value field to the point where we will start reading. This is always at the
     // start of a new value of a multi-valued attribute.
-    size_t partialoffset = offset % valueWidth;
-    size_t partialvalue = 0;
-    offile_off_t seekoffset = offset - partialoffset;
+    Uint32 partialvalue = 0;
+    const Uint32 partialoffset = offset % valueWidth;
+    const offile_off_t seekoffset = offset - partialoffset;
 
     // check if cache already contains the stream we're looking for
     if (cache->isUser(this))
@@ -1346,7 +1343,7 @@ OFCondition DcmElement::getPartialValue(
       swapIfNecessary(byteOrder, fByteOrder, swapBuffer, valueWidth, valueWidth);
 
       // copy to target buffer and adjust values
-      if (partialvalue > OFstatic_cast(size_t, numBytes))
+      if (partialvalue > numBytes)
       {
         memcpy(targetBufferChar, &swapBuffer[partialoffset], numBytes);
         targetBufferChar += numBytes;
@@ -1365,7 +1362,7 @@ OFCondition DcmElement::getPartialValue(
 
     // now read the main block of data directly into the target buffer
     partialvalue = numBytes % valueWidth;
-    offile_off_t bytesToRead = numBytes - partialvalue;
+    const Uint32 bytesToRead = numBytes - partialvalue;
 
     if (bytesToRead > 0)
     {
@@ -1418,10 +1415,9 @@ void DcmElement::compact()
   }
 }
 
-OFCondition DcmElement::createValueFromTempFile(
-  DcmInputStreamFactory *factory,
-  const Uint32 length,
-  const E_ByteOrder byteOrder)
+OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
+                                                const Uint32 length,
+                                                const E_ByteOrder byteOrder)
 {
     if (factory && !(length & 1))
     {
@@ -1436,9 +1432,8 @@ OFCondition DcmElement::createValueFromTempFile(
     else return EC_IllegalCall;
 }
 
-OFCondition DcmElement::getUncompressedFrameSize(
-       DcmItem *dataset,
-       Uint32 & frameSize) const
+OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
+                                                 Uint32 &frameSize) const
 {
   if (dataset == NULL) return EC_IllegalCall;
   Uint16 rows = 0;
@@ -1460,14 +1455,13 @@ OFCondition DcmElement::getUncompressedFrameSize(
   return result;
 }
 
-OFCondition DcmElement::getUncompressedFrame(
-        DcmItem * /* dataset */ ,
-        Uint32 /* frameNo */ ,
-        Uint32& /* startFragment */ ,
-        void * /* buffer */ ,
-        Uint32 /* bufSize */ ,
-        OFString& /* decompressedColorModel */ ,
-        DcmFileCache * /* cache */ )
+OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
+                                             Uint32 /* frameNo */ ,
+                                             Uint32& /* startFragment */ ,
+                                             void * /* buffer */ ,
+                                             Uint32 /* bufSize */ ,
+                                             OFString& /* decompressedColorModel */ ,
+                                             DcmFileCache * /* cache */ )
 {
   return EC_IllegalCall;
 }
@@ -1475,6 +1469,9 @@ OFCondition DcmElement::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.66  2009-02-04 18:03:56  joergr
+** Fixed various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.65  2009-01-29 15:34:45  onken
 ** Fixed length overflow in case of private attributes having maximum length
 ** values. Minor code simplifications.
