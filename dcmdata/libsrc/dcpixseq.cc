@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 10:18:57 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2009-02-04 17:58:28 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -311,11 +311,10 @@ OFCondition DcmPixelSequence::read(DcmInputStream &inStream,
 // ********************************
 
 
-OFCondition DcmPixelSequence::write(
-    DcmOutputStream &outStream,
-    const E_TransferSyntax oxfer,
-    const E_EncodingType /*enctype*/,
-    DcmWriteCache *wcache)
+OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
+                                    const E_TransferSyntax oxfer,
+                                    const E_EncodingType /*enctype*/,
+                                    DcmWriteCache *wcache)
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
@@ -328,11 +327,10 @@ OFCondition DcmPixelSequence::write(
 // ********************************
 
 
-OFCondition DcmPixelSequence::writeSignatureFormat(
-   DcmOutputStream &outStream,
-   const E_TransferSyntax oxfer,
-   const E_EncodingType enctype,
-   DcmWriteCache *wcache)
+OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream &outStream,
+                                                   const E_TransferSyntax oxfer,
+                                                   const E_EncodingType /*enctype*/,
+                                                   DcmWriteCache *wcache)
 {
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
@@ -394,6 +392,9 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.44  2009-02-04 17:58:28  joergr
+** Uncommented name of unused parameter in order to avoid compiler warnings.
+**
 ** Revision 1.43  2009-02-04 10:18:57  joergr
 ** Fixed issue with compressed frames of odd length (possibly wrong values in
 ** basic offset table).
