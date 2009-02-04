@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-04 14:06:01 $
- *  CVS/RCS Revision: $Revision: 1.124 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 18:07:30 $
+ *  CVS/RCS Revision: $Revision: 1.125 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,6 @@
 
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcitem.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -40,6 +39,7 @@
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcdefine.h"    /* for memzero() */
 #include "dcmtk/dcmdata/dcdeftag.h"    /* for name constants */
@@ -565,7 +565,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
-                            ofConsole.lockCerr() << "DcmItem: Group Length with VR other than UL found, corrected." << OFendl;
+                            ofConsole.lockCerr() << "DcmItem: Group Length with VR other than UL found, corrected" << OFendl;
                             ofConsole.unlockCerr();
                         }
                         /* if the above mentioned condition is not met but the caller specified */
@@ -762,7 +762,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
                       << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0]) << "\\"
                       << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1])
                       << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
-                      << ") encountered while parsing attribute " << newTag.getXTag();
+                      << ") encountered while parsing element " << newTag.getXTag();
             /* encoding of this data element might be wrong, try to correct it */
             if (dcmAcceptUnexpectedImplicitEncoding.get())
             {
@@ -848,7 +848,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* if the value in length is odd, print an error message */
     if ( (valueLength & 1) && (valueLength != DCM_UndefinedLength) )
     {
-        ofConsole.lockCerr() << "DcmItem: Length of attribute " << newTag << " is odd" << OFendl;
+        ofConsole.lockCerr() << "DcmItem: Length of element " << newTag << " is odd" << OFendl;
         ofConsole.unlockCerr();
     }
 
@@ -861,17 +861,19 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     }
 
     /* if desired, check if length is greater than length of surrounding item */
-    Uint32 valueLengthItem = getLengthField();
-    if ( ( valueLength > valueLengthItem - (inStream.tell() - fStartPosition))
-          && (valueLengthItem != DCM_UndefinedLength /* this does not work in length items */)
-          && (ident() == EVR_item /* e. g. meta info would have length 0 */) )
+    const Uint32 valueLengthItem = getLengthField();
+    if ((ident() == EVR_item /* e.g. meta info would have length 0 */) &&
+        (valueLengthItem != DCM_UndefinedLength /* this does not work in undefined length items */))
     {
-        STD_NAMESPACE ostream &localCerr = ofConsole.lockCerr();
-        localCerr << "DcmItem: Length " << valueLength << " of attribute " << newTag;
-        localCerr << " is greater than length " << (valueLengthItem - (inStream.tell() - fStartPosition));
-        localCerr << " of surrounding item" << OFendl;
-        ofConsole.unlockCerr();
-        l_error = EC_ElemLengthLargerThanItem;
+        const offile_off_t remainingItemBytes = valueLengthItem - (inStream.tell() - fStartPosition);
+        if (valueLength > remainingItemBytes)
+        {
+            ofConsole.lockCerr() << "DcmItem: Length of element " << newTag
+                                 << " is larger than remaining bytes of surrounding item ("
+                                 << valueLength << " > " << remainingItemBytes << ")" << OFendl;
+            ofConsole.unlockCerr();
+            l_error = EC_ElemLengthLargerThanItem;
+        }
     }
 
     /* assign values to out parameter */
@@ -923,7 +925,7 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         {
             // produce diagnostics
             ofConsole.lockCerr() << "DcmItem: Element " << newTag
-               << " found twice in one dataset/item, ignoring second entry" << OFendl;
+                                 << " found twice in one dataset/item, ignoring second entry" << OFendl;
             ofConsole.unlockCerr();
             delete subElem;
         }
@@ -935,13 +937,14 @@ OFCondition DcmItem::readSubElement(DcmInputStream &inStream,
         /* readTagAndLength but it is impossible that both can be executed */
         /* without setting the Mark twice. */
         inStream.putback();
-        ofConsole.lockCerr() << "DcmItem: Parse error while parsing attribute " <<  newTag << OFendl;
+        ofConsole.lockCerr() << "DcmItem: Parse error while parsing element " << newTag << OFendl;
         ofConsole.unlockCerr();
     }
     else if (l_error != EC_ItemEnd)
     {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
-        ofConsole.lockCerr() << "DcmItem: Parse error in sequence item, found " << newTag << " instead of an item delimiter" << OFendl;
+        ofConsole.lockCerr() << "DcmItem: Parse error in sequence item, found " << newTag
+                             << " instead of an item delimiter" << OFendl;
         ofConsole.unlockCerr();
     } else {
         // inStream.UnsetPutbackMark(); // not needed anymore with new stream architecture
@@ -990,20 +993,21 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                 /* if the reading of the last element was complete, go ahead and read the next element */
                 if (lastElementComplete)
                 {
-                    /* read this element's tag and length information (and */
-                    /* possibly also VR information) from the inStream */
+                    /* read this element's tag and length information */
+                    /* (and possibly also VR information) from the inStream */
                     errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
 
                     /* increase counter correspondingly */
                     incTransferredBytes(bytes_tagAndLen);
 
                     /* if desired, try to ignore parse error -> skip item */
-                    if (errorFlag == EC_ElemLengthLargerThanItem && dcmIgnoreParsingErrors.get())
+                    if ((errorFlag == EC_ElemLengthLargerThanItem) && dcmIgnoreParsingErrors.get())
                     {
-                        ofConsole.lockCerr() << "DcmItem: Element " << newTag << " too large, trying to skip over rest of item" << OFendl;
+                        ofConsole.lockCerr() << "DcmItem: Element " << newTag
+                                             << " too large, trying to skip over rest of item" << OFendl;
                         ofConsole.unlockCerr();
                         /* we can call getLengthField because error does only occur for explicit length items */
-                        Uint32 bytesToSkip = getLengthField() - bytes_tagAndLen;
+                        const offile_off_t bytesToSkip = getLengthField() - bytes_tagAndLen;
                         if (bytesToSkip > inStream.avail()) // no chance to recover
                            break;
                         inStream.skip(bytesToSkip);
@@ -1042,7 +1046,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                         lastElementComplete = OFTrue;
                 }
                 /* remember how many bytes were read */
-                setTransferredBytes(inStream.tell() - fStartPosition);
+                setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
                 if (errorFlag.good())
                 {
                     // If we completed one element, update the private tag cache.
@@ -1282,9 +1286,8 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
-                    ofConsole.lockCerr()
-                       << "DcmItem: Dataset not in ascending tag order, at element "
-                       << elem->getTag() << OFendl;
+                    ofConsole.lockCerr() << "DcmItem: Dataset not in ascending tag order, at element "
+                                         << elem->getTag() << OFendl;
                     ofConsole.unlockCerr();
                   }
                 }
@@ -1306,9 +1309,8 @@ OFCondition DcmItem::insert(DcmElement *elem,
                   if (elem != OFstatic_cast(DcmElement *, elementList->seek(ELP_last)))
                   {
                     // produce diagnostics
-                    ofConsole.lockCerr()
-                       << "DcmItem: Dataset not in ascending tag order, at element "
-                       << elem->getTag() << OFendl;
+                    ofConsole.lockCerr() << "DcmItem: Dataset not in ascending tag order, at element "
+                                         << elem->getTag() << OFendl;
                     ofConsole.unlockCerr();
                   }
                 }
@@ -1795,7 +1797,7 @@ OFCondition newDicomElement(DcmElement *&newElement,
         }
       }
 
-      /* update VR for tag, set "readAsUN" flag that makes sure the attribute value
+      /* update VR for tag, set "readAsUN" flag that makes sure the element value
        * is read in Little Endian Implicit VR (i.e. the UN encoding)
        */
       if (newTag.getEVR() != EVR_UNKNOWN)
@@ -3525,6 +3527,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.125  2009-02-04 18:07:30  joergr
+** Minor fixes and code restructuring (without changing the semantics).
+** Fixed various type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.124  2009-02-04 14:06:01  onken
 ** Changed parser to make use of the new error ignoring flag when parsing.
 ** Added check (makes use of new flag) that notes whether an element's value is
