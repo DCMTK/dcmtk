@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-05 13:51:13 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-04 10:16:51 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,31 +33,32 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcerror.h"
 
-const OFConditionConst ECC_InvalidTag(                 OFM_dcmdata,  1, OF_error, "Invalid Tag"                            );
-const OFConditionConst ECC_TagNotFound(                OFM_dcmdata,  2, OF_error, "Tag Not Found"                          );
-const OFConditionConst ECC_InvalidVR(                  OFM_dcmdata,  3, OF_error, "Invalid VR"                             );
-const OFConditionConst ECC_InvalidStream(              OFM_dcmdata,  4, OF_error, "Invalid Stream"                         );
-const OFConditionConst ECC_EndOfStream(                OFM_dcmdata,  5, OF_error, "End Of Stream"                          );
-const OFConditionConst ECC_CorruptedData(              OFM_dcmdata,  6, OF_error, "Corrupted Data"                         );
-const OFConditionConst ECC_IllegalCall(                OFM_dcmdata,  7, OF_error, "Illegal Call, perhaps wrong parameters" );
-const OFConditionConst ECC_SequEnd(                    OFM_dcmdata,  8, OF_error, "Sequence End"                           );
-const OFConditionConst ECC_DoubledTag(                 OFM_dcmdata,  9, OF_error, "Doubled Tag"                            );
-const OFConditionConst ECC_StreamNotifyClient(         OFM_dcmdata, 10, OF_error, "I/O suspension or premature end of stream" );
-const OFConditionConst ECC_WrongStreamMode(            OFM_dcmdata, 11, OF_error, "Mode (R/W, random/sequence) is wrong"   );
-const OFConditionConst ECC_ItemEnd(                    OFM_dcmdata, 12, OF_error, "Item End"                               );
-const OFConditionConst ECC_RepresentationNotFound(     OFM_dcmdata, 13, OF_error, "Pixel representation not found"         );
-const OFConditionConst ECC_CannotChangeRepresentation( OFM_dcmdata, 14, OF_error, "Pixel representation cannot be changed" );
-const OFConditionConst ECC_UnsupportedEncoding(        OFM_dcmdata, 15, OF_error, "Unsupported compression or encryption"  );
+const OFConditionConst ECC_InvalidTag(                 OFM_dcmdata,  1, OF_error, "Invalid tag"                                );
+const OFConditionConst ECC_TagNotFound(                OFM_dcmdata,  2, OF_error, "Tag not found"                              );
+const OFConditionConst ECC_InvalidVR(                  OFM_dcmdata,  3, OF_error, "Invalid VR"                                 );
+const OFConditionConst ECC_InvalidStream(              OFM_dcmdata,  4, OF_error, "Invalid stream"                             );
+const OFConditionConst ECC_EndOfStream(                OFM_dcmdata,  5, OF_error, "End of stream"                              );
+const OFConditionConst ECC_CorruptedData(              OFM_dcmdata,  6, OF_error, "Corrupted data"                             );
+const OFConditionConst ECC_IllegalCall(                OFM_dcmdata,  7, OF_error, "Illegal call, perhaps wrong parameters"     );
+const OFConditionConst ECC_SequEnd(                    OFM_dcmdata,  8, OF_error, "Sequence end"                               );
+const OFConditionConst ECC_DoubledTag(                 OFM_dcmdata,  9, OF_error, "Doubled tag"                                );
+const OFConditionConst ECC_StreamNotifyClient(         OFM_dcmdata, 10, OF_error, "I/O suspension or premature end of stream"  );
+const OFConditionConst ECC_WrongStreamMode(            OFM_dcmdata, 11, OF_error, "Mode (R/W, random/sequence) is wrong"       );
+const OFConditionConst ECC_ItemEnd(                    OFM_dcmdata, 12, OF_error, "Item end"                                   );
+const OFConditionConst ECC_RepresentationNotFound(     OFM_dcmdata, 13, OF_error, "Pixel representation not found"             );
+const OFConditionConst ECC_CannotChangeRepresentation( OFM_dcmdata, 14, OF_error, "Pixel representation cannot be changed"     );
+const OFConditionConst ECC_UnsupportedEncoding(        OFM_dcmdata, 15, OF_error, "Unsupported compression or encryption"      );
 // error code 16 is reserved for zlib-related error messages
-const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error, "Parser failure: Putback operation failed" );
+const OFConditionConst ECC_PutbackFailed(              OFM_dcmdata, 17, OF_error, "Parser failure: Putback operation failed"   );
 // error code 18 is reserved for file read error messages
 // error code 19 is reserved for file write error messages
-const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"           );
+const OFConditionConst ECC_DoubleCompressionFilters(   OFM_dcmdata, 20, OF_error, "Too many compression filters"               );
 const OFConditionConst ECC_ApplicationProfileViolated( OFM_dcmdata, 21, OF_error, "Storage media application profile violated" );
 // error code 22 is reserved for dcmodify error messages
-const OFConditionConst ECC_InvalidOffset(              OFM_dcmdata, 23, OF_error, "Invalid offset" );
-const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error, "Too many bytes requested" );
+const OFConditionConst ECC_InvalidOffset(              OFM_dcmdata, 23, OF_error, "Invalid offset"                             );
+const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error, "Too many bytes requested"                   );
 // error code 25 is reserved for tag path parsing error messages
+const OFConditionConst ECC_InvalidBasicOffsetTable(    OFM_dcmdata, 26, OF_error, "Invalid basic offset table"                 );
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -80,6 +80,7 @@ const OFCondition EC_DoubleCompressionFilters(   ECC_DoubleCompressionFilters);
 const OFCondition EC_ApplicationProfileViolated( ECC_ApplicationProfileViolated);
 const OFCondition EC_InvalidOffset(              ECC_InvalidOffset);
 const OFCondition EC_TooManyBytesRequested(      ECC_TooManyBytesRequested);
+const OFCondition EC_InvalidBasicOffsetTable(    ECC_InvalidBasicOffsetTable);
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -90,6 +91,9 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.19  2009-02-04 10:16:51  joergr
+** Introduced new error code EC_InvalidBasicOffsetTable.
+**
 ** Revision 1.18  2008-12-05 13:51:13  onken
 ** Introduced new error code number for specific findOrCreatePath() errors.
 **

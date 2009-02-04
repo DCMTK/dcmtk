@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-12-08 14:34:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2009-02-04 10:17:23 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +106,8 @@ extern const OFCondition EC_ApplicationProfileViolated;
 extern const OFCondition EC_InvalidOffset;
 /// Too many bytes requested
 extern const OFCondition EC_TooManyBytesRequested;
-
+/// Invalid basic offset table
+extern const OFCondition EC_InvalidBasicOffsetTable;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -127,6 +127,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.25  2009-02-04 10:17:23  joergr
+** Introduced new error code EC_InvalidBasicOffsetTable.
+**
 ** Revision 1.24  2008-12-08 14:34:54  joergr
 ** Added number for new module "dcmrt", used for module-specific error codes.
 **
