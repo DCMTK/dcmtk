@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:59:57 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2009-02-04 18:02:11 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1489,8 +1489,11 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.65  2009-02-04 18:02:11  joergr
+ * Fixed wrong CVS log entry.
+ *
  * Revision 1.64  2009-02-04 17:59:57  joergr
- * Fixed various layout and formatting issues.
+ * Fixed various type mismatches reported by MSVC introduced with OFFile class.
  *
  * Revision 1.63  2008-07-17 10:31:31  onken
  * Implemented copyFrom() method for complete DcmObject class hierarchy, which
