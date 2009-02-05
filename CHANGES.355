@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.05 (riesmeier)
+
+- Made new error messages more consistent with existing messages.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2009.02.04 (onken)
 
 - Removed German comment and removed "magic number".

@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 18:07:30 $
- *  CVS/RCS Revision: $Revision: 1.125 $
+ *  Update Date:      $Date: 2009-02-05 10:39:52 $
+ *  CVS/RCS Revision: $Revision: 1.126 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -868,9 +868,9 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         const offile_off_t remainingItemBytes = valueLengthItem - (inStream.tell() - fStartPosition);
         if (valueLength > remainingItemBytes)
         {
-            ofConsole.lockCerr() << "DcmItem: Length of element " << newTag
-                                 << " is larger than remaining bytes of surrounding item ("
-                                 << valueLength << " > " << remainingItemBytes << ")" << OFendl;
+            ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
+                                 << " larger (" << valueLength << ") than remaining bytes ("
+                                 << remainingItemBytes << ") of surrounding item" << OFendl;
             ofConsole.unlockCerr();
             l_error = EC_ElemLengthLargerThanItem;
         }
@@ -1003,7 +1003,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                     /* if desired, try to ignore parse error -> skip item */
                     if ((errorFlag == EC_ElemLengthLargerThanItem) && dcmIgnoreParsingErrors.get())
                     {
-                        ofConsole.lockCerr() << "DcmItem: Element " << newTag
+                        ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
                                              << " too large, trying to skip over rest of item" << OFendl;
                         ofConsole.unlockCerr();
                         /* we can call getLengthField because error does only occur for explicit length items */
@@ -3527,6 +3527,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.126  2009-02-05 10:39:52  joergr
+** Made new error messages more consistent with existing messages.
+**
 ** Revision 1.125  2009-02-04 18:07:30  joergr
 ** Minor fixes and code restructuring (without changing the semantics).
 ** Fixed various type mismatches reported by MSVC introduced with OFFile class.
