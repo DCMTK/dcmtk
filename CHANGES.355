@@ -6,6 +6,16 @@ Changes between releases are documented here.
 - Made new error messages more consistent with existing messages.
   Affects: dcmdata/libsrc/dcitem.cc
 
+- Added reload method to data dictionary class.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdict.h
+           dcmdata/libsrc/dcdict.cc
+
+- Added re-initialization of missing member variables in clear() method.
+  Affects: dcmdata/libsrc/dcdict.cc
+
+- Output name of loaded data dictionary files in debug mode.
+  Affects: dcmdata/libsrc/dcdict.cc
+
 **** Changes from 2009.02.04 (onken)
 
 - Removed German comment and removed "magic number".

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,22 +21,24 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-02-08 16:28:51 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-05 13:15:17 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dcdict.h"
 
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdefine.h"
 #include "dcmtk/dcmdata/dcdicent.h"
+#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -67,12 +69,12 @@ GlobalDcmDataDictionary dcmDataDict(OFTrue /*loadBuiltin*/, OFTrue /*loadExterna
 
 static DcmDictEntry*
 makeSkelEntry(Uint16 group, Uint16 element,
-             Uint16 upperGroup, Uint16 upperElement,
-             DcmEVR evr, const char* tagName, int vmMin, int vmMax,
-             const char* standardVersion,
-             DcmDictRangeRestriction groupRestriction,
-             DcmDictRangeRestriction elementRestriction,
-             const char* privCreator)
+              Uint16 upperGroup, Uint16 upperElement,
+              DcmEVR evr, const char* tagName, int vmMin, int vmMax,
+              const char* standardVersion,
+              DcmDictRangeRestriction groupRestriction,
+              DcmDictRangeRestriction elementRestriction,
+              const char* privCreator)
 {
     DcmDictEntry* e = NULL;
     e = new DcmDictEntry(group, element, upperGroup, upperElement, evr,
@@ -117,22 +119,14 @@ OFBool DcmDataDictionary::loadSkeletonDictionary()
     return OFTrue;
 }
 
+
 DcmDataDictionary::DcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
   : hashDict(),
     repDict(),
     skeletonCount(0),
     dictionaryLoaded(OFFalse)
 {
-    loadSkeletonDictionary();
-    if (loadBuiltin) {
-        loadBuiltinDictionary();
-        dictionaryLoaded = (numberOfEntries() > skeletonCount);
-    }
-    if (loadExternal) {
-        if (loadExternalDictionaries()) {
-            dictionaryLoaded = OFTrue;
-        }
-    }
+    reloadDictionaries(loadBuiltin, loadExternal);
 }
 
 DcmDataDictionary::~DcmDataDictionary()
@@ -145,6 +139,8 @@ void DcmDataDictionary::clear()
 {
    hashDict.clear();
    repDict.clear();
+   skeletonCount = 0;
+   dictionaryLoaded = OFFalse;
 }
 
 
@@ -257,7 +253,7 @@ splitFields(const char* line, char* fields[], int maxFields, char splitChar)
         } else {
             len = p - line;
         }
-        fields[foundFields] = OFstatic_cast(char *, malloc(len+1));
+        fields[foundFields] = OFstatic_cast(char *, malloc(len + 1));
         strncpy(fields[foundFields], line, len);
         fields[foundFields][len] = '\0';
         foundFields++;
@@ -326,7 +322,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
     int slen = strlen(s);
 
     if (s[0] != '(') return OFFalse;
-    if (s[slen-1] != ')') return OFFalse;
+    if (s[slen - 1] != ')') return OFFalse;
     if (strchr(s, ',') == NULL) return OFFalse;
 
     /* separate the group and element parts */
@@ -342,7 +338,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
     if (s[i] == '\0') return OFFalse; /* element part missing */
     i++; /* after the ',' */
 
-    stripLeadingWhitespace(s+i);
+    stripLeadingWhitespace(s + i);
 
     int pi = 0;
     if (s[i] == '\"') /* private creator */
@@ -352,7 +348,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
         pc[pi] = '\0';
         if (s[i] == '\0') return OFFalse; /* closing quotation mark missing */
         i++;
-        stripLeadingWhitespace(s+i);
+        stripLeadingWhitespace(s + i);
         if (s[i] != ',') return OFFalse; /* element part missing */
         i++; /* after the ',' */
     }
@@ -376,7 +372,7 @@ parseWholeTagField(char* s, DcmTagKey& key,
     if (pi > 0)
     {
       // copy private creator name
-      privCreator = new char[strlen(pc)+1]; // deleted by caller
+      privCreator = new char[strlen(pc) + 1]; // deleted by caller
       if (privCreator) strcpy(privCreator,pc);
     }
 
@@ -392,10 +388,10 @@ onlyWhitespace(const char* s)
     int len = strlen(s);
     int charsFound = OFFalse;
 
-    for (int i=0; (!charsFound) && (i<len); i++) {
+    for (int i = 0; (!charsFound) && (i < len); i++) {
         charsFound = !isspace(s[i]);
     }
-    return (!charsFound)?(OFTrue):(OFFalse);
+    return (!charsFound)? (OFTrue) : (OFFalse);
 }
 
 static char*
@@ -417,19 +413,39 @@ isaCommentLine(const char* s)
     OFBool isComment = OFFalse; /* assumption */
     int len = strlen(s);
     int i = 0;
-    for (i=0; i<len && isspace(s[i]); i++) /*loop*/;
+    for (i = 0; i < len && isspace(s[i]); i++) /*loop*/;
     isComment = (s[i] == DCM_DICT_COMMENT_CHAR);
     return isComment;
+}
+
+OFBool
+DcmDataDictionary::reloadDictionaries(OFBool loadBuiltin, OFBool loadExternal)
+{
+    OFBool result = OFTrue;
+    clear();
+    loadSkeletonDictionary();
+    if (loadBuiltin) {
+        loadBuiltinDictionary();
+        dictionaryLoaded = (numberOfEntries() > skeletonCount);
+        if (!dictionaryLoaded) result = OFFalse;
+    }
+    if (loadExternal) {
+        if (loadExternalDictionaries())
+            dictionaryLoaded = OFTrue;
+        else
+            result = OFFalse;
+    }
+    return result;
 }
 
 OFBool
 DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
 {
 
-    char lineBuf[DCM_MAXDICTLINESIZE+1];
+    char lineBuf[DCM_MAXDICTLINESIZE + 1];
     FILE* f = NULL;
     int lineNumber = 0;
-    char* lineFields[DCM_MAXDICTFIELDS+1];
+    char* lineFields[DCM_MAXDICTFIELDS + 1];
     int fieldsPresent;
     DcmDictEntry* e;
     int errorsEncountered = 0;
@@ -454,6 +470,11 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         }
         return OFFalse;
     }
+
+#ifdef DEBUG
+    ofConsole.lockCerr() << "DcmDataDictionary: Loading file: " << fileName << OFendl;
+    ofConsole.unlockCerr();
+#endif
 
     while (getLine(lineBuf, DCM_MAXDICTLINESIZE, f)) {
         lineNumber++;
@@ -484,15 +505,13 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 1:
         case 2:
             ofConsole.lockCerr() << "DcmDataDictionary: "<< fileName << ": "
-                 << "too few fields (line "
-                 << lineNumber << ")" << OFendl;
+                 << "too few fields (line " << lineNumber << ")" << OFendl;
             ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
         default:
             ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                 << "too many fields (line "
-                 << lineNumber << "): " << OFendl;
+                 << "too many fields (line " << lineNumber << "): " << OFendl;
             ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
@@ -504,8 +523,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             /* the VM field is present */
             if (!parseVMField(lineFields[3], vmMin, vmMax)) {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                     << "bad VM field (line "
-                     << lineNumber << "): " << lineFields[3] << OFendl;
+                     << "bad VM field (line " << lineNumber << "): " << lineFields[3] << OFendl;
                 ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             }
@@ -515,8 +533,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
                  groupRestriction, elementRestriction, privCreator))
             {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                     << "bad Tag field (line "
-                     << lineNumber << "): " << lineFields[0] << OFendl;
+                     << "bad Tag field (line " << lineNumber << "): " << lineFields[0] << OFendl;
                 ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             } else {
@@ -526,7 +543,6 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
 
                 tagName = lineFields[2];
                 stripWhitespace(tagName);
-
             }
         }
 
@@ -535,8 +551,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             vr.setVR(vrName);
             if (vr.getEVR() == EVR_UNKNOWN) {
                 ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                     << "bad VR field (line "
-                     << lineNumber << "): " << vrName << OFendl;
+                     << "bad VR field (line " << lineNumber << "): " << vrName << OFendl;
                 ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             }
@@ -554,7 +569,7 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             addEntry(e);
         }
 
-        for (i=0; i<fieldsPresent; i++) {
+        for (i = 0; i < fieldsPresent; i++) {
             free(lineFields[i]);
             lineFields[i] = NULL;
         }
@@ -600,7 +615,7 @@ DcmDataDictionary::loadExternalDictionaries()
 
     if ((env != NULL) && (strlen(env) != 0)) {
         len = strlen(env);
-        for (int i=0; i<len; i++) {
+        for (int i = 0; i < len; i++) {
             if (env[i] == ENVIRONMENT_PATH_SEPARATOR) {
                 sepCnt++;
             }
@@ -615,10 +630,10 @@ DcmDataDictionary::loadExternalDictionaries()
 
             dictArray = OFstatic_cast(char **, malloc((sepCnt + 1) * sizeof(char*)));
 
-            int ndicts = splitFields(env, dictArray, sepCnt+1,
+            int ndicts = splitFields(env, dictArray, sepCnt + 1,
                                      ENVIRONMENT_PATH_SEPARATOR);
 
-            for (int ii=0; ii<ndicts; ii++) {
+            for (int ii = 0; ii < ndicts; ii++) {
                 if ((dictArray[ii] != NULL) && (strlen(dictArray[ii]) > 0)) {
                     if (!loadDictionary(dictArray[ii], msgIfDictAbsent)) {
                         loadFailed = OFTrue;
@@ -748,10 +763,10 @@ DcmDataDictionary::findEntry(const char *name) const
      * then search in the repeating tags list.
      */
     DcmHashDictIterator iter;
-    for (iter=hashDict.begin(); (e==NULL) && (iter!=hashDict.end()); ++iter) {
+    for (iter = hashDict.begin(); (e == NULL) && (iter != hashDict.end()); ++iter) {
         if ((*iter)->contains(name)) {
             e = *iter;
-            if (e->getGroup() % 2) 
+            if (e->getGroup() % 2)
             {
                 /* tag is a private tag - continue search to be sure to find non-private keys first */
                 if (!ePrivate) ePrivate = e;
@@ -784,10 +799,11 @@ DcmDataDictionary::findEntry(const char *name) const
 
 /* ================================================================== */
 
+
 GlobalDcmDataDictionary::GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
-: dataDict(loadBuiltin, loadExternal)
+  : dataDict(loadBuiltin, loadExternal)
 #ifdef _REENTRANT
-, dataDictLock()
+  , dataDictLock()
 #endif
 {
 }
@@ -836,6 +852,11 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.39  2009-02-05 13:15:17  joergr
+** Added reload method to data dictionary class.
+** Added re-initialization of missing member variables in clear() method.
+** Output name of loaded data dictionary files in debug mode.
+**
 ** Revision 1.38  2008-02-08 16:28:51  meichel
 ** Removed "GenericGroupLengthToEnd" from the built-in skeleton dictionary.
 **
