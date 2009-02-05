@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-05 10:39:52 $
- *  CVS/RCS Revision: $Revision: 1.126 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-05 14:59:43 $
+ *  CVS/RCS Revision: $Revision: 1.127 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -965,115 +965,118 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
 {
     /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
     if (getTransferState() == ERW_notInitialized)
-        errorFlag = EC_IllegalCall;
-    else
     {
-        /* figure out if the stream reported an error */
-        errorFlag = inStream.status();
-        /* if the stream reported an error or if it is the end of the */
-        /* stream, set the error flag correspondingly; else go ahead */
-        if (errorFlag.good() && inStream.eos())
-            errorFlag = EC_EndOfStream;
-        else if (errorFlag.good() && getTransferState() != ERW_ready)
+        errorFlag = EC_IllegalCall;
+        return errorFlag;
+    }
+
+    /* figure out if the stream reported an error */
+    errorFlag = inStream.status();
+    /* if the stream reported an error or if it is the end of the */
+    /* stream, set the error flag correspondingly; else go ahead */
+    if (errorFlag.good() && inStream.eos())
+        errorFlag = EC_EndOfStream;
+    else if (errorFlag.good() && getTransferState() != ERW_ready)
+    {
+        /* if the transfer state of this item is ERW_init, get its start */
+        /* position in the stream and set the transfer state to ERW_inWork */
+        if (getTransferState() == ERW_init)
         {
-            /* if the transfer state of this item is ERW_init, get its start */
-            /* position in the stream and set the transfer state to ERW_inWork */
-            if (getTransferState() == ERW_init)
+            fStartPosition = inStream.tell();  // start position of this item
+            setTransferState(ERW_inWork);
+        }
+        DcmTag newTag;
+        /* start a loop in order to read all elements (attributes) which are contained in the inStream */
+        while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete))
+        {
+            /* initialize variables */
+            Uint32 newValueLength = 0;
+            Uint32 bytes_tagAndLen = 0;
+            /* if the reading of the last element was complete, go ahead and read the next element */
+            if (lastElementComplete)
             {
-                fStartPosition = inStream.tell();  // start position of this item
-                setTransferState(ERW_inWork);
-            }
-            DcmTag newTag;
-            /* start a loop in order to read all elements (attributes) which are contained in the inStream */
-            while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete))
-            {
-                /* initialize variables */
-                Uint32 newValueLength = 0;
-                Uint32 bytes_tagAndLen = 0;
-                /* if the reading of the last element was complete, go ahead and read the next element */
-                if (lastElementComplete)
-                {
-                    /* read this element's tag and length information */
-                    /* (and possibly also VR information) from the inStream */
-                    errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
+                /* read this element's tag and length information */
+                /* (and possibly also VR information) from the inStream */
+                errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
 
-                    /* increase counter correspondingly */
-                    incTransferredBytes(bytes_tagAndLen);
+                /* increase counter correspondingly */
+                incTransferredBytes(bytes_tagAndLen);
 
-                    /* if desired, try to ignore parse error -> skip item */
-                    if ((errorFlag == EC_ElemLengthLargerThanItem) && dcmIgnoreParsingErrors.get())
-                    {
-                        ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
-                                             << " too large, trying to skip over rest of item" << OFendl;
-                        ofConsole.unlockCerr();
-                        /* we can call getLengthField because error does only occur for explicit length items */
-                        const offile_off_t bytesToSkip = getLengthField() - bytes_tagAndLen;
-                        if (bytesToSkip > inStream.avail()) // no chance to recover
-                           break;
-                        inStream.skip(bytesToSkip);
-                        errorFlag = EC_Normal;
-                    }
-                    else /* continue with normal case: parse rest of element */
-                    {
-                        /* if there was an error while we were reading from the stream, terminate the while-loop */
-                        /* (note that if the last element had been read from the instream in the last iteration, */
-                        /* another iteration will be started, and of course then readTagAndLength(...) above will */
-                        /* return that it encountered the end of the stream. It is only then (and here) when the */
-                        /* while loop will be terminated.) */
-                        if (errorFlag.bad())
-                            break;
-                        /* If we get to this point, we just started reading the first part */
-                        /* of an element; hence, lastElementComplete is not longer true */
-                        lastElementComplete = OFFalse;
-                        /* read the actual data value which belongs to this element */
-                        /* (attribute) and insert this information into the elementList */
-                        errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
-                        /* if reading was successful, we read the entire data value information */
-                        /* for this element; hence lastElementComplete is true again */
-                        if (errorFlag.good())
-                            lastElementComplete = OFTrue;
-                    }
-                } else
+                /* if desired, try to ignore parse error -> skip item */
+                if ((errorFlag == EC_ElemLengthLargerThanItem) && dcmIgnoreParsingErrors.get())
                 {
-                    /* if lastElementComplete is false, we have only read the current element's */
-                    /* tag and length (and possibly VR) information as well as maybe some data */
-                    /* data value information. We need to continue reading the data value */
-                    /* information for this particular element. */
-                    errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
-                    /* if reading was successful, we read the entire information */
-                    /* for this element; hence lastElementComplete is true */
+                    ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
+                                         << " too large, trying to skip over rest of item" << OFendl;
+                    ofConsole.unlockCerr();
+                    /* we can call getLengthField because error does only occur for explicit length items */
+                    const offile_off_t bytesToSkip = getLengthField() - bytes_tagAndLen;
+                    if (bytesToSkip > inStream.avail()) // no chance to recover
+                       break;
+                    inStream.skip(bytesToSkip);
+                    errorFlag = EC_Normal;
+                }
+                else /* continue with normal case: parse rest of element */
+                {
+                    /* if there was an error while we were reading from the stream, terminate the while-loop */
+                    /* (note that if the last element had been read from the instream in the last iteration, */
+                    /* another iteration will be started, and of course then readTagAndLength(...) above will */
+                    /* return that it encountered the end of the stream. It is only then (and here) when the */
+                    /* while loop will be terminated.) */
+                    if (errorFlag.bad())
+                        break;
+                    /* If we get to this point, we just started reading the first part */
+                    /* of an element; hence, lastElementComplete is not longer true */
+                    lastElementComplete = OFFalse;
+                    /* read the actual data value which belongs to this element */
+                    /* (attribute) and insert this information into the elementList */
+                    errorFlag = readSubElement(inStream, newTag, newValueLength, xfer, glenc, maxReadLength);
+                    /* if reading was successful, we read the entire data value information */
+                    /* for this element; hence lastElementComplete is true again */
                     if (errorFlag.good())
                         lastElementComplete = OFTrue;
                 }
-                /* remember how many bytes were read */
-                setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
+            } else
+            {
+                /* if lastElementComplete is false, we have only read the current element's */
+                /* tag and length (and possibly VR) information as well as maybe some data */
+                /* data value information. We need to continue reading the data value */
+                /* information for this particular element. */
+                errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
+                /* if reading was successful, we read the entire information */
+                /* for this element; hence lastElementComplete is true */
                 if (errorFlag.good())
-                {
-                    // If we completed one element, update the private tag cache.
-                    if (lastElementComplete)
-                        privateCreatorCache.updateCache(elementList->get());
-                } else
-                    break; // if some error was encountered terminate the while-loop
-            } //while
+                    lastElementComplete = OFTrue;
+            }
+            /* remember how many bytes were read */
+            setTransferredBytes(OFstatic_cast(Uint32, inStream.tell() - fStartPosition));
+            if (errorFlag.good())
+            {
+                // If we completed one element, update the private tag cache.
+                if (lastElementComplete)
+                    privateCreatorCache.updateCache(elementList->get());
+            } else
+                break; // if some error was encountered terminate the while-loop
+        } //while
 
-            /* determine an appropriate result value; note that if the above called read function */
-            /* encountered the end of the stream before all information for this element could be */
-            /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
-            if ((getTransferredBytes() < getLengthField() || !lastElementComplete) && errorFlag.good())
-                errorFlag = EC_StreamNotifyClient;
-            if (errorFlag.good() && inStream.eos())
-                errorFlag = EC_EndOfStream;
-        } // else errorFlag
-        /* modify the result value: two kinds of special error codes do not count as an error */
-        if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
-            errorFlag = EC_Normal;
-        /* if at this point the error flag indicates success, the item has */
-        /* been read completely; hence, set the transfer state to ERW_ready. */
-        /* Note that all information for this element could be read from the */
-        /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
-        if (errorFlag.good())
-            setTransferState(ERW_ready);
-    }
+        /* determine an appropriate result value; note that if the above called read function */
+        /* encountered the end of the stream before all information for this element could be */
+        /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
+        if ((getTransferredBytes() < getLengthField() || !lastElementComplete) && errorFlag.good())
+            errorFlag = EC_StreamNotifyClient;
+        if (errorFlag.good() && inStream.eos())
+            errorFlag = EC_EndOfStream;
+    } // else errorFlag
+    /* modify the result value: two kinds of special error codes do not count as an error */
+    if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
+        errorFlag = EC_Normal;
+    
+    /* if at this point the error flag indicates success, the item has */
+    /* been read completely; hence, set the transfer state to ERW_ready. */
+    /* Note that all information for this element could be read from the */
+    /* stream, the errorFlag is still set to EC_StreamNotifyClient. */
+    if (errorFlag.good())
+        setTransferState(ERW_ready);
+
     /* return result value */
     return errorFlag;
 } // DcmItem::read()
@@ -3527,6 +3530,12 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.127  2009-02-05 14:59:43  onken
+** Make usage of global "ignore parsing errors" flag in case of elements
+** being larger than rest of available input. However, if enabled, the
+** parser ignores any elements coming after such an input-exceeding
+** element. Minor code clarifications.
+**
 ** Revision 1.126  2009-02-05 10:39:52  joergr
 ** Made new error messages more consistent with existing messages.
 **

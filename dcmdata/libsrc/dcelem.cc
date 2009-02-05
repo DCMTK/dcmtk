@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 18:03:56 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-05 14:59:43 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -916,7 +916,11 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                         offile_off_t skipped = inStream.skip(getLengthField());
                         if (skipped < getLengthField())
                         {
-                            errorFlag = EC_InvalidStream;  // attribute larger than remaining bytes in file
+                            /* If desired, specific parser errors will be ignored */
+                            if (dcmIgnoreParsingErrors.get())
+                                errorFlag = EC_Normal;
+                            else
+                                errorFlag = EC_StreamNotifyClient;
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
                             ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
@@ -1469,6 +1473,12 @@ OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.67  2009-02-05 14:59:43  onken
+** Make usage of global "ignore parsing errors" flag in case of elements
+** being larger than rest of available input. However, if enabled, the
+** parser ignores any elements coming after such an input-exceeding
+** element. Minor code clarifications.
+**
 ** Revision 1.66  2009-02-04 18:03:56  joergr
 ** Fixed various type mismatches reported by MSVC introduced with OFFile class.
 **
