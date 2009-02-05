@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.05 (onken)
+
+- Make usage of global "ignore parsing errors" flag in case of elements
+  being larger than rest of available input. However, if enabled, the
+  parser ignores any elements coming after such an input-exceeding
+  element. Minor code clarifications.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2009.02.05 (riesmeier)
 
 - Made new error messages more consistent with existing messages.
