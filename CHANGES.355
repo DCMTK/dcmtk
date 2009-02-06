@@ -46,6 +46,9 @@ Changes between releases are documented here.
 - Reworked checking of command line options for user identify negotiation.
   Affects: dcmnet/apps/storescu.cc
 
+- Fixed type mismatches reported by MSVC introduced with OFFile class.
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2009.02.05 (onken)
 
 - Make usage of global "ignore parsing errors" flag in case of elements

@@ -1,38 +1,38 @@
 /*
 **  Copyright (C) 1993/1994, OFFIS, Oldenburg University and CERIUM
-**  
+**
 **  This software and supporting documentation were
-**  developed by 
-**  
+**  developed by
+**
 **    Institut OFFIS
 **    Bereich Kommunikationssysteme
 **    Westerstr. 10-12
 **    26121 Oldenburg, Germany
-**    
+**
 **    Fachbereich Informatik
 **    Abteilung Prozessinformatik
-**    Carl von Ossietzky Universitaet Oldenburg 
+**    Carl von Ossietzky Universitaet Oldenburg
 **    Ammerlaender Heerstr. 114-118
 **    26111 Oldenburg, Germany
-**    
+**
 **    CERIUM
 **    Laboratoire SIM
 **    Faculte de Medecine
 **    2 Avenue du Pr. Leon Bernard
 **    35043 Rennes Cedex, France
-**  
-**  for CEN/TC251/WG4 as a contribution to the Radiological 
-**  Society of North America (RSNA) 1993 Digital Imaging and 
+**
+**  for CEN/TC251/WG4 as a contribution to the Radiological
+**  Society of North America (RSNA) 1993 Digital Imaging and
 **  Communications in Medicine (DICOM) Demonstration.
-**  
+**
 **  THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER OFFIS,
-**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING 
-**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR 
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER 
-**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE 
-**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE   
-**  IS WITH THE USER. 
-**  
+**  OLDENBURG UNIVERSITY NOR CERIUM MAKE ANY WARRANTY REGARDING
+**  THE SOFTWARE, ITS PERFORMANCE, ITS MERCHANTABILITY OR
+**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER
+**  DISEASES OR ITS CONFORMITY TO ANY SPECIFICATION.  THE
+**  ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF THE SOFTWARE
+**  IS WITH THE USER.
+**
 **  Copyright of the software and supporting documentation
 **  is, unless otherwise stated, jointly owned by OFFIS,
 **  Oldenburg University and CERIUM and free access is hereby
@@ -41,31 +41,30 @@
 **  software. However, any distribution of this software
 **  source code or supporting documentation or derivative
 **  works (source code and supporting documentation) must
-**  include the three paragraphs of this copyright notice. 
-** 
+**  include the three paragraphs of this copyright notice.
+**
 */
 /*
 **
 ** Author: Andrew Hewett                Created: 03-06-93
-** 
+**
 ** Module: dimse
 **
-** Purpose: 
+** Purpose:
 **      This file contains the routines which provide dimse layer services
-**      for DICOM V.3 applications.  
+**      for DICOM V.3 applications.
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2008-04-30 12:38:42 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.49 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2009-02-06 17:12:41 $
+** CVS/RCS Revision:    $Revision: 1.50 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
 
-/* 
+/*
 ** Include Files
 */
 
@@ -161,7 +160,10 @@ static unsigned long g_dimse_dataCounter = 0;
 ** Private Functions Bodies
 */
 
-static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isReceive)
+static void saveDimseFragment(
+        DcmDataset *dset,
+        OFBool isCommand,
+        OFBool isReceive)
     /*
      * This function saves the information which is contained in dset to a file
      *
@@ -174,11 +176,11 @@ static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isRecei
      */
 {
   /* depending on if the information in dset refers to a DIMSE command or not, set some global variables */
-  if (isCommand) 
+  if (isCommand)
   {
     g_dimse_commandCounter++;
     g_dimse_dataCounter = 0;
-  } else g_dimse_dataCounter++;  
+  } else g_dimse_dataCounter++;
 
   /* if there is no information exit this function */
   if (dset==NULL) return;
@@ -201,7 +203,7 @@ static void saveDimseFragment(DcmDataset *dset, OFBool isCommand, OFBool isRecei
 
   /* write data to file */
   dset->saveFile(filename, EXS_LittleEndianImplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
-  return;    
+  return;
 }
 
 static OFBool
@@ -216,16 +218,17 @@ isDataDictPresent()
  */
 
 static OFCondition
-DIMSE_readNextPDV(T_ASC_Association * assoc,
-    T_DIMSE_BlockingMode blocking,
-    int timeout,
-    DUL_PDV * pdv)
+DIMSE_readNextPDV(
+        T_ASC_Association *assoc,
+        T_DIMSE_BlockingMode blocking,
+        int timeout,
+        DUL_PDV *pdv)
     /*
      * This function returns the next PDV which was (earlier or just now) received on the incoming
-     * socket stream. If there are no PDVs (which were already received earlier) waiting to be picked 
+     * socket stream. If there are no PDVs (which were already received earlier) waiting to be picked
      * up, this function will go ahead and read a new PDU (containing one or more new PDVs) from the
      * incoming socket stream.
-     * 
+     *
      * Parameters:
      *   assoc    - [in] The association (network connection to another DICOM application).
      *   blocking - [in] The blocking mode for reading data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
@@ -234,13 +237,13 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
      *                   been received after timeout seconds, an error will be reported.
      *   pdv      - [out] Contains in the end the next PDV which was (earlier or just now) received on
      *                    the incoming socket stream.
-     *                    
+     *
      */
 {
     DUL_BLOCKOPTIONS blk;
 
     /*
-     * NOTE: DUL currently ignores blocking and timeout so do it here! 
+     * NOTE: DUL currently ignores blocking and timeout so do it here!
      */
 
     /* determine the DUL blocking option */
@@ -291,7 +294,8 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
 
 
 static OFCondition
-getTransferSyntax(T_ASC_Association * assoc, 
+getTransferSyntax(
+        T_ASC_Association *assoc,
         T_ASC_PresentationContextID pid,
         E_TransferSyntax *xferSyntax)
     /*
@@ -318,7 +322,7 @@ getTransferSyntax(T_ASC_Association * assoc,
 
     /* determine the transfer syntax which is specified in the presentation context */
     ts = pc.acceptedTransferSyntax;
-    
+
     /* create a DcmXfer object on the basis of the transfer syntax which was determined above */
     DcmXfer xfer(ts);
 
@@ -354,7 +358,7 @@ getTransferSyntax(T_ASC_Association * assoc,
         case EXS_JPEG2000:
         case EXS_MPEG2MainProfileAtMainLevel:
         case EXS_JPEG2000MulticomponentLosslessOnly:
-        case EXS_JPEG2000Multicomponent:        	
+        case EXS_JPEG2000Multicomponent:
 #ifdef WITH_ZLIB
         case EXS_DeflatedLittleEndianExplicit:
 #endif
@@ -377,9 +381,11 @@ getTransferSyntax(T_ASC_Association * assoc,
 
 
 static OFCondition
-checkPresentationContextForMessage(T_ASC_Association * assoc,
-        T_DIMSE_Message * msg, T_ASC_PresentationContextID presID,
-        E_TransferSyntax * xferSyntax)
+checkPresentationContextForMessage(
+        T_ASC_Association *assoc,
+        T_DIMSE_Message *msg,
+        T_ASC_PresentationContextID presID,
+        E_TransferSyntax *xferSyntax)
     /*
      * This function checks if the presentation context id refers to a valid presentation context and
      * determines the transfer syntax which is specified for this presentation context. Additionally,
@@ -405,7 +411,7 @@ checkPresentationContextForMessage(T_ASC_Association * assoc,
      * as = pc.abstractSyntax;
      * ts = pc.acceptedTransferSyntax;
      */
-     
+
     /* if the accepted presentation context was found, check if the message type is supported */
     if (cond.good())
     {
@@ -435,7 +441,7 @@ checkPresentationContextForMessage(T_ASC_Association * assoc,
         case DIMSE_N_DELETE_RQ:
         case DIMSE_N_DELETE_RSP:
             break;
-    
+
         default:
             cond = DIMSE_BADCOMMANDTYPE;
             break;
@@ -451,7 +457,9 @@ checkPresentationContextForMessage(T_ASC_Association * assoc,
 }
 
 static OFCondition
-validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
+validateMessage(
+        T_ASC_Association *assoc,
+        T_DIMSE_Message *msg)
     /*
      * This function checks if the information which is contained in msg meets certain conditions.
      * For example, if msg represents a C-ECHO-RQ, then there is not supposed to be a corresponding
@@ -483,7 +491,7 @@ validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
             DIMSE_warning(assoc, "CStoreRQ: DataSetType == NULL");
             cond = DIMSE_BADMESSAGE;
         }
-        if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID), 
+        if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID),
                 1, DIC_UI_LEN)) {
             DIMSE_warning(assoc, "CStoreRQ: AffectedSOPInstanceUID: bad size");
             cond = DIMSE_BADMESSAGE;
@@ -495,7 +503,7 @@ validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
             cond = DIMSE_BADMESSAGE;
         }
         if ((msg->msg.CStoreRSP.opts & O_STORE_AFFECTEDSOPINSTANCEUID) &&
-            (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID), 
+            (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID),
                 1, DIC_UI_LEN))) {
             DIMSE_warning(assoc, "CStoreRSP: AffectedSOPInstanceUID: bad size");
             cond = DIMSE_BADMESSAGE;
@@ -573,7 +581,9 @@ validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
 ** the effort!
 */
 static OFCondition
-sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
+sendStraightFileData(
+        T_ASC_Association *assoc,
+        const char *dataFileName,
         T_ASC_PresentationContextID presID,
         E_TransferSyntax /* xferSyntax */,
         DIMSE_ProgressCallback callback,
@@ -599,12 +609,12 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
 
     f = fopen(dataFileName, "rb");
     if (f == NULL) {
-        DIMSE_warning(assoc, 
-            "sendStraightFileData: cannot open dicom file (%s): %s\n", 
+        DIMSE_warning(assoc,
+            "sendStraightFileData: cannot open dicom file (%s): %s\n",
             dataFileName, strerror(errno));
         cond = DIMSE_SENDFAILED;
     }
-    
+
     while (cond.good() && ((nbytes = fread(buf, 1, bufLen, f)) > 0)) {
         last = ((unsigned long)nbytes != bufLen);
         pdv.fragmentLength = nbytes;
@@ -625,7 +635,7 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
         dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
         if (dulCond.bad())
         {
-	    cond = makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
+            cond = makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
         }
 
         bytesTransmitted += nbytes;
@@ -643,11 +653,14 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
 #endif
 
 static OFCondition
-sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
-                T_ASC_PresentationContextID presID,
-                E_TransferSyntax xferSyntax, DUL_DATAPDV pdvType,
-                DIMSE_ProgressCallback callback,
-                void *callbackContext)
+sendDcmDataset(
+        T_ASC_Association *assoc,
+        DcmDataset *obj,
+        T_ASC_PresentationContextID presID,
+        E_TransferSyntax xferSyntax,
+        DUL_DATAPDV pdvType,
+        DIMSE_ProgressCallback callback,
+        void *callbackContext)
     /*
      * This function sends all information which is included in a DcmDataset object over
      * the network which is provided in assoc.
@@ -696,7 +709,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
 
     /* prepare all elements in the DcmDataset variable for transfer */
     obj->transferInit();
-    
+
     /* initialize two more variables: groupLength_encoding specifies what will be done concerning */
     /* group length tags, sequenceType_encoding specifies how sequences will be handled */
     E_GrpLenEncoding groupLength_encoding = g_dimse_send_groupLength_encoding;
@@ -744,7 +757,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
         void *fullBuf = NULL;
         outBuf.flushBuffer(fullBuf, rtnLength);
 
-        last = written && outBuf.isFlushed();        
+        last = written && outBuf.isFlushed();
 
         /* if the buffer is not empty, do something with its contents */
         if (rtnLength > 0)
@@ -758,7 +771,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
                */
               if (!last)
               {
-                return makeDcmnetCondition(DIMSEC_SENDFAILED, OF_error, 
+                return makeDcmnetCondition(DIMSEC_SENDFAILED, OF_error,
                   "DIMSE Failed to send message: odd block length encountered");
               }
 
@@ -791,10 +804,10 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
             /* send information over the network to the other DICOM application */
             dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
             if (dulCond.bad())
- 	        return makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
+                return makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
 
             /* count the bytes and the amount of PDVs which were transmitted */
-            bytesTransmitted += rtnLength;
+            bytesTransmitted += OFstatic_cast(Uint32, rtnLength);
             pdvCount += pdvList.count;
 
             /* execute callback function to indicate progress */
@@ -806,7 +819,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
 
     /* indicate the end of the transfer */
     obj->transferEnd();
-    
+
     return EC_Normal;
 }
 
@@ -822,15 +835,17 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
  * Message Send
  */
 
-static OFCondition 
-DIMSE_sendMessage(T_ASC_Association *assoc,
-                  T_ASC_PresentationContextID presID,
-                  T_DIMSE_Message *msg, DcmDataset *statusDetail,
-                  DcmDataset *dataObject,
-                  const char *dataFileName,
-                  DIMSE_ProgressCallback callback,
-                  void *callbackContext,
-                  DcmDataset **commandSet)
+static OFCondition
+DIMSE_sendMessage(
+        T_ASC_Association *assoc,
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_Message *msg,
+        DcmDataset *statusDetail,
+        DcmDataset *dataObject,
+        const char *dataFileName,
+        DIMSE_ProgressCallback callback,
+        void *callbackContext,
+        DcmDataset **commandSet)
     /*
      * This function sends a DIMSE command and possibly also instance data from a file or from a given
      * data object via network to another DICOM application.
@@ -858,9 +873,9 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     DcmFileFormat dcmff;
     int fromFile = 0;
     OFCondition cond = EC_Normal;
-    
+
     if (commandSet) *commandSet = NULL;
-    
+
     /* check if the data dictionary is available. If not return an error */
     if (!isDataDictPresent()) return DIMSE_NODATADICT;
 
@@ -888,7 +903,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       DcmElement* e;
       while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, OFTrue);
     }
-    
+
     /* if the command object has been created successfully and the data set is present */
     /* according to the information in the DIMSE command information variable, do something */
     if (cond.good() && DIMSE_isDataSetPresent(msg))
@@ -904,16 +919,16 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       {
         if (! dcmff.loadFile(dataFileName, EXS_Unknown).good())
         {
-               DIMSE_warning(assoc, 
-               "sendMessage: cannot open dicom file (%s): %s\n", 
+               DIMSE_warning(assoc,
+               "sendMessage: cannot open dicom file (%s): %s\n",
                dataFileName, strerror(errno));
                cond = DIMSE_SENDFAILED;
         } else {
           dataObject = dcmff.getDataset();
           fromFile = 1;
-        }      
+        }
       }
-      
+
       /* if we have a data object now, check if we can write the data object's elements in the required  */
       /* transfer syntax. In detail, every single item of the data object will be checked. */
       if (dataObject)
@@ -925,11 +940,11 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
           DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
           if (fromFile && dataFileName)
           {
-                DIMSE_warning(assoc, 
+                DIMSE_warning(assoc,
                  "sendMessage: unable to convert DICOM file '%s'\nfrom '%s' transfer syntax to '%s'.\n",
                  dataFileName, originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
           } else {
-                DIMSE_warning(assoc, 
+                DIMSE_warning(assoc,
                  "sendMessage: unable to convert dataset\nfrom '%s' transfer syntax to '%s'.\n",
                  originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
           }
@@ -938,7 +953,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       } else {
             /* if there is neither a data object nor a file name, create a warning, since */
             /* the information in msg specified that instance data should be present. */
-            DIMSE_warning(assoc, 
+            DIMSE_warning(assoc,
             "sendMessage: no dataset to send\n");
             cond = DIMSE_SENDFAILED;
       }
@@ -954,7 +969,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
 
       /* return a copy of the DIMSE command if required */
       if (commandSet) *commandSet = new DcmDataset(*cmdObj);
- 
+
       /* dump information if required */
       if (debug)
       {
@@ -963,9 +978,9 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
       }
 
       /* Send the DIMSE command. DIMSE commands are always little endian implicit. */
-      cond = sendDcmDataset(assoc, cmdObj, presID, 
+      cond = sendDcmDataset(assoc, cmdObj, presID,
             EXS_LittleEndianImplicit, DUL_COMMANDPDV,
-            NULL, NULL);        
+            NULL, NULL);
     }
 
     /* Then we still have to send the actual instance data if the DIMSE command information variable */
@@ -988,14 +1003,15 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
 }
 
 OFCondition
-DIMSE_sendMessageUsingFileData(T_ASC_Association * assoc,
-                  T_ASC_PresentationContextID presID,
-                  T_DIMSE_Message * msg,
-                  DcmDataset *statusDetail,
-                  const char *dataFileName,
-                  DIMSE_ProgressCallback callback,
-                  void *callbackContext,
-                  DcmDataset **commandSet)
+DIMSE_sendMessageUsingFileData(
+        T_ASC_Association *assoc,
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_Message *msg,
+        DcmDataset *statusDetail,
+        const char *dataFileName,
+        DIMSE_ProgressCallback callback,
+        void *callbackContext,
+        DcmDataset **commandSet)
     /*
      * This function sends a DIMSE command and possibly also instance data from a file via network to another
      * DICOM application.
@@ -1021,14 +1037,15 @@ DIMSE_sendMessageUsingFileData(T_ASC_Association * assoc,
 }
 
 OFCondition
-DIMSE_sendMessageUsingMemoryData(T_ASC_Association * assoc,
-                  T_ASC_PresentationContextID presID,
-                  T_DIMSE_Message * msg,
-                  DcmDataset *statusDetail,
-                  DcmDataset *dataObject,
-                  DIMSE_ProgressCallback callback,
-                  void *callbackContext,
-                  DcmDataset **commandSet)
+DIMSE_sendMessageUsingMemoryData(
+        T_ASC_Association *assoc,
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_Message *msg,
+        DcmDataset *statusDetail,
+        DcmDataset *dataObject,
+        DIMSE_ProgressCallback callback,
+        void *callbackContext,
+        DcmDataset **commandSet)
     /*
      * This function sends a DIMSE command and possibly also instance data from a data object via network
      * to another DICOM application.
@@ -1058,11 +1075,11 @@ DIMSE_sendMessageUsingMemoryData(T_ASC_Association * assoc,
  */
 
 OFCondition DIMSE_ignoreDataSet(
-  T_ASC_Association * assoc,
-  T_DIMSE_BlockingMode blocking, 
-  int timeout,
-  DIC_UL * bytesRead, 
-  DIC_UL * pdvCount)
+        T_ASC_Association *assoc,
+        T_DIMSE_BlockingMode blocking,
+        int timeout,
+        DIC_UL *bytesRead,
+        DIC_UL *pdvCount)
 {
     OFCondition cond = EC_Normal;
     DUL_PDV pdv;
@@ -1086,13 +1103,14 @@ OFCondition DIMSE_ignoreDataSet(
 
 
 OFCondition
-DIMSE_receiveCommand(T_ASC_Association * assoc,
-                     T_DIMSE_BlockingMode blocking,
-                     int timeout,
-                     T_ASC_PresentationContextID *presID,
-                     T_DIMSE_Message * msg, 
-                     DcmDataset ** statusDetail,
-                     DcmDataset ** commandSet)
+DIMSE_receiveCommand(
+        T_ASC_Association *assoc,
+        T_DIMSE_BlockingMode blocking,
+        int timeout,
+        T_ASC_PresentationContextID*presID,
+        T_DIMSE_Message *msg,
+        DcmDataset **statusDetail,
+        DcmDataset **commandSet)
     /*
      * This function revceives a DIMSE command via network from another DICOM application.
      *
@@ -1152,7 +1170,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     /* create a buffer variable which can be used to store the received information */
     DcmInputBufferStream cmdBuf;
-    if (! cmdBuf.good()) 
+    if (! cmdBuf.good())
     {
         delete cmdSet;
         return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE: receiveCommand: Failed to initialize cmdBuf");
@@ -1165,7 +1183,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     {
         /* make the stream remember any unread bytes */
         cmdBuf.releaseBuffer();
-        
+
         /* get next PDV (in detail, in order to get this PDV, a */
         /* PDU has to be read from the incoming socket stream) */
         cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
@@ -1174,7 +1192,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
             delete cmdSet;
             if (cond == DIMSE_READPDVFAILED)
                 return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", cond);
-            else return cond; /* it was an abort or release request */                
+            else return cond; /* it was an abort or release request */
         }
 
         /* if this is the first loop iteration, get the presentation context ID which is captured in the */
@@ -1183,13 +1201,13 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
         if (pdvCount == 0)
         {
             pid = pdv.presentationContextID;
-        } 
+        }
         else if (pdv.presentationContextID != pid)
         {
             delete cmdSet;
             char buf1[256];
             sprintf(buf1, "DIMSE: Different PIDs inside Command Set: %d != %d", pid, pdv.presentationContextID);
-            OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);                
+            OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
         }
 
@@ -1204,7 +1222,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
             break;
         }
-        
+
         /* if information is contained the PDVs fragment, we want to insert this information into the buffer */
         if (pdv.fragmentLength > 0) {
             cmdBuf.setBuffer(pdv.data, pdv.fragmentLength);
@@ -1214,7 +1232,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
         if (pdv.lastPDV) {
             cmdBuf.setEos();
         }
-        
+
         /* insert the information which is contained in the buffer into the DcmDataset */
         /* variable. Mind that DIMSE commands are always specified in the little endian */
         /* implicit transfer syntax. Additionally, we want to remove group length tags. */
@@ -1224,7 +1242,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
           delete cmdSet;
           return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE: receiveCommand: cmdSet->read() Failed", econd);
         }
-        
+
         /* update the counter that counts how many bytes were read from the incoming socket */
         /* stream. This variable will only be used for dumpimg general information. */
         bytesRead += pdv.fragmentLength;
@@ -1241,7 +1259,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     /* indicate the end of the transfer */
     cmdSet->transferEnd();
-    
+
     /* dump information if required */
     if (debug) {
         COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
@@ -1255,7 +1273,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
         delete cmdSet;
         return cond;
     }
-    
+
     /* check if the PDVs which were read actually do belong */
     /* to a DIMSE command. If not, return an error. */
     if (type != DUL_COMMANDPDV)
@@ -1281,13 +1299,13 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     /* parse the information in cmdSet and create a corresponding T_DIMSE_Message */
     /* structure which represents the the DIMSE message which was received */
     cond = DIMSE_parseCmdObject(msg, cmdSet);
-    
+
     /* if the T_DIMSE_Message structure was created successfully, validate the message, i.e. */
     /* check if the information which is contained in msg meets certain conditions */
     if (cond == EC_Normal) {
         cond = validateMessage(assoc, msg);
     }
-    
+
     /* Whatever is left in the cmdSet object should be status detail */
     /* information. Return this information to the caller if required. */
     if (cond == EC_Normal) {
@@ -1316,12 +1334,12 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 }
 
 OFCondition DIMSE_createFilestream(
-  const char *filename,
-  const T_DIMSE_C_StoreRQ *request,
-  const T_ASC_Association *assoc, 
-  T_ASC_PresentationContextID presIdCmd,
-  int writeMetaheader,
-  DcmOutputFileStream **filestream)
+        const char *filename,
+        const T_DIMSE_C_StoreRQ *request,
+        const T_ASC_Association *assoc,
+        T_ASC_PresentationContextID presIdCmd,
+        int writeMetaheader,
+        DcmOutputFileStream **filestream)
 {
   OFCondition cond = EC_Normal;
   DcmElement *elem=NULL;
@@ -1341,7 +1359,7 @@ OFCondition DIMSE_createFilestream(
   {
     return DIMSE_NULLKEY;
   }
-  
+
   cond = ASC_findAcceptedPresentationContext(assoc->params, presIdCmd, &presentationContext);
   if (cond.bad()) return cond;
 
@@ -1399,8 +1417,8 @@ OFCondition DIMSE_createFilestream(
       delete metainfo;
       return cond;
     }
-    
-    cond = metainfo->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange, 
+
+    cond = metainfo->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
       META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength);
     if (cond.bad())
     {
@@ -1408,7 +1426,7 @@ OFCondition DIMSE_createFilestream(
       return cond;
     }
   }
-  
+
   *filestream = new DcmOutputFileStream(filename);
   if ((*filestream == NULL)||(! (*filestream)->good()))
   {
@@ -1422,7 +1440,7 @@ OFCondition DIMSE_createFilestream(
      sprintf(buf, "DIMSE_createFilestream: cannot create file '%s'", filename);
      return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf);
   }
-  
+
   if (metainfo)
   {
     metainfo->transferInit();
@@ -1437,20 +1455,23 @@ OFCondition DIMSE_createFilestream(
   }
 
   return cond;
-  
+
 }
 
 OFCondition
-DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
-        T_DIMSE_BlockingMode blocking, int timeout, 
+DIMSE_receiveDataSetInFile(
+        T_ASC_Association *assoc,
+        T_DIMSE_BlockingMode blocking,
+        int timeout,
         T_ASC_PresentationContextID *presID,
         DcmOutputStream *filestream,
-        DIMSE_ProgressCallback callback, void *callbackData)
+        DIMSE_ProgressCallback callback,
+        void *callbackData)
 {
     OFCondition cond = EC_Normal;
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
-    E_TransferSyntax xferSyntax; 
+    E_TransferSyntax xferSyntax;
     OFBool last = OFFalse;
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;
@@ -1458,7 +1479,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
     if ((assoc == NULL) || (presID==NULL) || (filestream==NULL)) return DIMSE_NULLKEY;
 
     *presID = 0;        /* invalid value */
-    Uint32 written = 0;
+    offile_off_t written = 0;
     while (!last)
     {
         cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
@@ -1484,7 +1505,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
           }
           else if (pdv.presentationContextID != pid)
           {
-            char buf1[256]; 
+            char buf1[256];
             sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
             OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
@@ -1497,7 +1518,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
           if ((pdv.fragmentLength % 2) != 0)
           {
             /* This should NEVER happen.  See Part 7, Annex F. */
-            char buf2[256]; 
+            char buf2[256];
             sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
             cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
             last = OFTrue; // terminate loop
@@ -1542,16 +1563,17 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 
 
 OFCondition
-DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
-                             T_DIMSE_BlockingMode blocking,
-                             int timeout,
-                             T_ASC_PresentationContextID * presID,
-                             DcmDataset ** dataObject,
-                             DIMSE_ProgressCallback callback,
-                             void *callbackData)
+DIMSE_receiveDataSetInMemory(
+        T_ASC_Association *assoc,
+        T_DIMSE_BlockingMode blocking,
+        int timeout,
+        T_ASC_PresentationContextID *presID,
+        DcmDataset **dataObject,
+        DIMSE_ProgressCallback callback,
+        void *callbackData)
     /*
      * This function revceives one data set (of instance data) via network from another DICOM application.
-     * 
+     *
      * Parameters:
      *   assoc           - [in] The association (network connection to another DICOM application).
      *   blocking        - [in] The blocking mode for receiving data (either DIMSE_BLOCKING or DIMSE_NONBLOCKING)
@@ -1605,7 +1627,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
         /* been a network problem. Just pass the result on to the caller. */
         return cond;
     }
-    
+
     /* create a buffer variable which can be used to store the received information */
     DcmInputBufferStream dataBuf;
 
@@ -1616,10 +1638,10 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     /* Since the data set could stretch over more than one PDU, the use of a loop is mandatory. */
     while (!last && cond == EC_Normal)
     {
-    
+
         /* make the stream remember any unread bytes */
         dataBuf.releaseBuffer();
-        
+
         /* get next PDV (in detail, in order to get this PDV, a */
         /* PDU has to be read from the incoming socket stream) */
         cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
@@ -1648,11 +1670,11 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
             if (pdvCount == 0)
             {
                 pid = pdv.presentationContextID;
-            
+
                 cond = getTransferSyntax(assoc, pid, &xferSyntax);
                 if (cond.bad()) last = OFTrue;
-            } 
-            else if (pdv.presentationContextID != pid) 
+            }
+            else if (pdv.presentationContextID != pid)
             {
                 char buf1[256];
                 sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
@@ -1667,7 +1689,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
             /* check if the fragment length of the current PDV is odd. This should */
             /* never happen (see DICOM standard (year 2000) part 7, annex F) (or */
             /* the corresponding section in a later version of the standard.) */
-            if ((pdv.fragmentLength % 2) != 0) 
+            if ((pdv.fragmentLength % 2) != 0)
             {
                 char buf2[256];
                 sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
@@ -1679,17 +1701,17 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
         if (!last)
         {
             /* if information is contained the PDVs fragment, we want to insert this information into the buffer */
-            if (pdv.fragmentLength > 0) 
+            if (pdv.fragmentLength > 0)
             {
                 dataBuf.setBuffer(pdv.data, pdv.fragmentLength);
             }
-            
+
             /* if this fragment contains the last fragment of the data set, set the end of the stream */
-            if (pdv.lastPDV) 
+            if (pdv.lastPDV)
             {
                 dataBuf.setEos();
             }
-            
+
             /* insert the information which is contained in the buffer into the DcmDataset variable. Mind the */
             /* transfer syntax which was specified through the presentation context ID of the first PDV. */
             econd = dset->read(dataBuf, xferSyntax);
@@ -1706,24 +1728,24 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
             /* update the counter that counts how many bytes were read from the incoming socket */
             /* stream. This variable will only be used for dumpimg general information. */
             bytesRead += pdv.fragmentLength;
-            
+
             /* update the counter that counts how many PDVs were received on the incoming */
             /* socket stream. This variable will be used for determining the first */
             /* loop iteration and dumpimg general information. */
             pdvCount++;
-            
+
             /* update the variable which will be evaluated at the beginning of each loop iteration. */
             last = pdv.lastPDV;
-            
+
             /* dump information if required */
-            if (debug) 
+            if (debug)
             {
                 COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
                 << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
             }
-            
+
             /* execute callback function after each received PDV */
-            if (callback) 
+            if (callback)
             {
                 callback(callbackData, bytesRead);
             }
@@ -1732,7 +1754,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 
     /* indicate the end of the transfer */
     dset->transferEnd();
-    
+
     /* in case an error occurred, return this error */
     if (cond.bad())
     {
@@ -1767,8 +1789,10 @@ void DIMSE_debug(int level)
         debug = level;
 }
 
-void DIMSE_warning(T_ASC_Association *assoc,
-        const char *format, ...)
+void DIMSE_warning(
+        T_ASC_Association *assoc,
+        const char *format,
+        ...)
 {
     va_list args;
     char buf[8192]; /* we hope a DIMSE warning never gets larger */
@@ -1785,6 +1809,9 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.50  2009-02-06 17:12:41  joergr
+** Fixed type mismatches reported by MSVC introduced with OFFile class.
+**
 ** Revision 1.49  2008-04-30 12:38:42  meichel
 ** Fixed compile errors due to changes in attribute tag names
 **
