@@ -1,7 +1,7 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2009.02.05 (riesmeier)
+**** Changes from 2009.02.06 (riesmeier)
 
 - Added support for JPEG-LS and MPEG2 transfer syntaxes.
   Affects: dcmnet/apps/movescu.cc
