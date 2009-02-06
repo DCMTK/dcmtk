@@ -22,9 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-07 17:19:53 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.102 $
+ *  Update Date:      $Date: 2009-02-06 16:08:44 $
+ *  CVS/RCS Revision: $Revision: 1.103 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,23 +60,23 @@ END_EXTERN_C
 #include <direct.h>        /* for _mkdir() */
 #endif
 
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconapp.h"
+#include "dcmtk/ofstd/ofdatime.h"
+#include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dcasccfg.h"      /* for class DcmAssociationConfiguration */
+#include "dcmtk/dcmnet/dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/dcmdata/dcuid.h"        /* for dcmtk version name */
-#include "dcmtk/dcmnet/dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcmtk/dcmdata/dcdeftag.h"     /* for DCM_StudyInstanceUID */
 #include "dcmtk/dcmdata/dcostrmz.h"     /* for dcmZlibCompressionLevel */
-#include "dcmtk/dcmnet/dcasccfg.h"      /* for class DcmAssociationConfiguration */
-#include "dcmtk/dcmnet/dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -146,6 +145,7 @@ OFCmdUnsignedInt   opt_sleepAfter = 0;
 OFCmdUnsignedInt   opt_sleepDuring = 0;
 OFCmdUnsignedInt   opt_maxPDU = ASC_DEFAULTMAXPDU;
 OFBool             opt_useMetaheader = OFTrue;
+OFBool             opt_acceptAllXfers = OFFalse;
 E_TransferSyntax   opt_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax   opt_writeTransferSyntax = EXS_Unknown;
 E_GrpLenEncoding   opt_groupLength = EGL_recalcGL;
@@ -287,12 +287,15 @@ int main(int argc, char *argv[])
       cmd.addOption("--prefer-jpeg12",          "+xx",     "prefer default JPEG lossy TS for 12 bit data");
       cmd.addOption("--prefer-j2k-lossless",    "+xv",     "prefer JPEG 2000 lossless TS");
       cmd.addOption("--prefer-j2k-lossy",       "+xw",     "prefer JPEG 2000 lossy TS");
+      cmd.addOption("--prefer-jls-lossless",    "+xt",     "prefer JPEG-LS lossless TS");
+      cmd.addOption("--prefer-jls-lossy",       "+xu",     "prefer JPEG-LS lossy TS");
+      cmd.addOption("--prefer-mpeg2",           "+xm",     "prefer MPEG2 Main Profile @ Main Level TS");
       cmd.addOption("--prefer-rle",             "+xr",     "prefer RLE lossless TS");
 #ifdef WITH_ZLIB
       cmd.addOption("--prefer-deflated",        "+xd",     "prefer deflated expl. VR little endian TS");
 #endif
-
       cmd.addOption("--implicit",               "+xi",     "accept implicit VR little endian TS only");
+      cmd.addOption("--accept-all",             "+xa",     "accept all supported transfer syntaxes");
 
 #ifdef WITH_TCPWRAPPER
     cmd.addSubGroup("network host access control (tcp wrapper) options:");
@@ -347,7 +350,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",             "+F",      "write file format (default)");
       cmd.addOption("--write-dataset",          "-F",      "write data set without file meta information");
-    cmd.addSubGroup("output transfer syntax (not with --bit-preserving or compr. transmission):");
+    cmd.addSubGroup("output transfer syntax (not with --bit-preserving or compressed transmission):");
       cmd.addOption("--write-xfer-same",        "+t=",     "write with same TS as input (default)");
       cmd.addOption("--write-xfer-little",      "+te",     "write with explicit VR little endian TS");
       cmd.addOption("--write-xfer-big",         "+tb",     "write with explicit VR big endian TS");
@@ -387,15 +390,15 @@ int main(int argc, char *argv[])
                                                            "append e to all filenames");
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL + 2);
-    cmd.addOption(  "--exec-on-reception",      "-xcr", 1, "[c]ommand: string",
+    cmd.addOption("--exec-on-reception",        "-xcr", 1, "[c]ommand: string",
                                                            "execute command c after having received and\nprocessed one C-STORE-Request message" );
-    cmd.addOption(  "--exec-on-eostudy",        "-xcs", 1, "[c]ommand: string (only with -ss or -sp)",
+    cmd.addOption("--exec-on-eostudy",          "-xcs", 1, "[c]ommand: string (only with -ss or -sp)",
                                                            "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
-    cmd.addOption(  "--rename-on-eostudy",      "-rns",    "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
-    cmd.addOption(  "--eostudy-timeout",        "-tos", 1, "[t]imeout: integer (only with -ss, -sp, -xcs or -rns)",
+    cmd.addOption("--rename-on-eostudy",        "-rns",    "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
+    cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer (only w/ -ss/-sp/-xcs/-rns)",
                                                            "specifies a timeout of t seconds for\nend-of-study determination" );
 #ifdef _WIN32
-    cmd.addOption(  "--exec-sync",              "-xs",     "execute command synchronously in foreground" );
+    cmd.addOption("--exec-sync",                "-xs",     "execute command synchronously in foreground" );
 #endif
 
 #ifdef WITH_OPENSSL
@@ -406,7 +409,7 @@ int main(int argc, char *argv[])
                                                            "use authenticated secure TLS connection");
     cmd.addSubGroup("private key password options (only with --enable-tls):");
       cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string ",
+      cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string",
                                                            "use specified password");
       cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
     cmd.addSubGroup("key and certificate file format options:");
@@ -551,19 +554,23 @@ int main(int argc, char *argv[])
     }
 
     cmd.beginOptionBlock();
-    if (cmd.findOption("--prefer-uncompr"))      opt_networkTransferSyntax = EXS_Unknown;
-    if (cmd.findOption("--prefer-little"))       opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-    if (cmd.findOption("--prefer-big"))          opt_networkTransferSyntax = EXS_BigEndianExplicit;
-    if (cmd.findOption("--prefer-lossless"))     opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-    if (cmd.findOption("--prefer-jpeg8"))        opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
-    if (cmd.findOption("--prefer-jpeg12"))       opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
-    if (cmd.findOption("--prefer-j2k-lossless")) opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
-    if (cmd.findOption("--prefer-j2k-lossy"))    opt_networkTransferSyntax = EXS_JPEG2000;
-    if (cmd.findOption("--prefer-rle"))          opt_networkTransferSyntax = EXS_RLELossless;
+    if (cmd.findOption("--prefer-uncompr")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_Unknown;
+    if (cmd.findOption("--prefer-little")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+    if (cmd.findOption("--prefer-big")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_BigEndianExplicit;
+    if (cmd.findOption("--prefer-lossless")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+    if (cmd.findOption("--prefer-jpeg8")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+    if (cmd.findOption("--prefer-jpeg12")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+    if (cmd.findOption("--prefer-j2k-lossless")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
+    if (cmd.findOption("--prefer-j2k-lossy")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEG2000;
+    if (cmd.findOption("--prefer-jls-lossless")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGLSLossless;
+    if (cmd.findOption("--prefer-jls-lossy")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGLSLossy;
+    if (cmd.findOption("--prefer-mpeg2")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_MPEG2MainProfileAtMainLevel;
+    if (cmd.findOption("--prefer-rle")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
-    if (cmd.findOption("--prefer-deflated"))     opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+    if (cmd.findOption("--prefer-deflated")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
-    if (cmd.findOption("--implicit"))            opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+    if (cmd.findOption("--implicit")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+    if (cmd.findOption("--accept-all")) opt_acceptAllXfers = OFTrue;  opt_networkTransferSyntax = EXS_Unknown;
     cmd.endOptionBlock();
 
     if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
@@ -581,21 +588,27 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--config-file"))
     {
+      // check conflicts with other command line options
+      app.checkConflict("--config-file", "--prefer-little", opt_networkTransferSyntax == EXS_LittleEndianExplicit);
+      app.checkConflict("--config-file", "--prefer-big", opt_networkTransferSyntax == EXS_BigEndianExplicit);
+      app.checkConflict("--config-file", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+      app.checkConflict("--config-file", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+      app.checkConflict("--config-file", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+      app.checkConflict("--config-file", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+      app.checkConflict("--config-file", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+      app.checkConflict("--config-file", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+      app.checkConflict("--config-file", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+      app.checkConflict("--config-file", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+      app.checkConflict("--config-file", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
+#ifdef WITH_ZLIB
+      app.checkConflict("--config-file", "--prefer-deflated", opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit);
+#endif
+      app.checkConflict("--config-file", "--implicit", opt_networkTransferSyntax == EXS_LittleEndianImplicit);
+      app.checkConflict("--config-file", "--accept-all", opt_acceptAllXfers);
+      app.checkConflict("--config-file", "--promiscuous", opt_promiscuous);
+
       app.checkValue(cmd.getValue(opt_configFile));
       app.checkValue(cmd.getValue(opt_profileName));
-
-      // check conflicts with other command line options
-      app.checkConflict("--config-file", "--prefer-little",   (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
-      app.checkConflict("--config-file", "--prefer-big",      (opt_networkTransferSyntax == EXS_BigEndianExplicit));
-      app.checkConflict("--config-file", "--prefer-lossless", (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
-      app.checkConflict("--config-file", "--prefer-jpeg8",    (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
-      app.checkConflict("--config-file", "--prefer-jpeg12",   (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
-      app.checkConflict("--config-file", "--prefer-rle",      (opt_networkTransferSyntax == EXS_RLELossless));
-#ifdef WITH_ZLIB
-      app.checkConflict("--config-file", "--prefer-deflated", (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
-#endif
-      app.checkConflict("--config-file", "--implicit",        (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
-      app.checkConflict("--config-file", "--promiscuous", opt_promiscuous);
 
       // read configuration file
       OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
@@ -624,10 +637,8 @@ int main(int argc, char *argv[])
 
       if (!asccfg.isValidSCPProfile(sprofile.c_str()))
       {
-        CERR << "profile '"
-             << sprofile
-             << "' is not valid for SCP use, duplicate abstract syntaxes found."
-             << OFendl;
+        CERR << "profile '" << sprofile
+             << "' is not valid for SCP use, duplicate abstract syntaxes found." << OFendl;
         return 1;
       }
 
@@ -656,47 +667,66 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--write-xfer-same")) opt_writeTransferSyntax = EXS_Unknown;
     if (cmd.findOption("--write-xfer-little"))
     {
+      app.checkConflict("--write-xfer-little", "--accept-all", opt_acceptAllXfers);
       app.checkConflict("--write-xfer-little", "--bit-preserving", opt_bitPreserving);
-      app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
-      app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
-      app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+      app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+      app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+      app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+      app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+      app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+      app.checkConflict("--write-xfer-little", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+      app.checkConflict("--write-xfer-little", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+      app.checkConflict("--write-xfer-little", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+      app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
+      // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
       opt_writeTransferSyntax = EXS_LittleEndianExplicit;
     }
     if (cmd.findOption("--write-xfer-big"))
     {
+      app.checkConflict("--write-xfer-big", "--accept-all", opt_acceptAllXfers);
       app.checkConflict("--write-xfer-big", "--bit-preserving", opt_bitPreserving);
-      app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
-      app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
-      app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+      app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+      app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+      app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+      app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+      app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+      app.checkConflict("--write-xfer-big", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+      app.checkConflict("--write-xfer-big", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+      app.checkConflict("--write-xfer-big", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+      app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
+      // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
       opt_writeTransferSyntax = EXS_BigEndianExplicit;
     }
     if (cmd.findOption("--write-xfer-implicit"))
     {
+      app.checkConflict("--write-xfer-implicit", "--accept-all", opt_acceptAllXfers);
       app.checkConflict("--write-xfer-implicit", "--bit-preserving", opt_bitPreserving);
-      app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
-      app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
-      app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+      app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+      app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+      app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+      app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+      app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+      app.checkConflict("--write-xfer-implicit", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+      app.checkConflict("--write-xfer-implicit", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+      app.checkConflict("--write-xfer-implicit", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+      app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
+      // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
       opt_writeTransferSyntax = EXS_LittleEndianImplicit;
     }
 #ifdef WITH_ZLIB
     if (cmd.findOption("--write-xfer-deflated"))
     {
+      app.checkConflict("--write-xfer-deflated", "--accept-all", opt_acceptAllXfers);
       app.checkConflict("--write-xfer-deflated", "--bit-preserving", opt_bitPreserving);
-      app.checkConflict("--write-xfer-deflated", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      app.checkConflict("--write-xfer-deflated", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      app.checkConflict("--write-xfer-deflated", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
-      app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
-      app.checkConflict("--write-xfer-deflated", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+      app.checkConflict("--write-xfer-deflated", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+      app.checkConflict("--write-xfer-deflated", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+      app.checkConflict("--write-xfer-deflated", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+      app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+      app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+      app.checkConflict("--write-xfer-deflated", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+      app.checkConflict("--write-xfer-deflated", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+      app.checkConflict("--write-xfer-deflated", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+      app.checkConflict("--write-xfer-deflated", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
       opt_writeTransferSyntax = EXS_DeflatedLittleEndianExplicit;
     }
 #endif
@@ -752,7 +782,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--padding-off")) opt_paddingType = EPD_withoutPadding;
     if (cmd.findOption("--padding-create"))
     {
-      app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
+      app.checkConflict("--padding-create", "--write-dataset", !opt_useMetaheader);
       app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
       app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
       app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
@@ -763,8 +793,8 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
     if (cmd.findOption("--compression-level"))
     {
-      if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown)
-        app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
+      app.checkDependence("--compression-level", "--write-xfer-deflated or --write-xfer-same",
+        (opt_writeTransferSyntax == EXS_DeflatedLittleEndianExplicit) || (opt_writeTransferSyntax == EXS_Unknown));
       app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
       dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
     }
@@ -810,8 +840,8 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--eostudy-timeout"))
     {
-      if( opt_sortConcerningStudies == NULL && opt_execOnEndOfStudy == NULL && opt_renameOnEndOfStudy == OFFalse && (!opt_sortOnPatientsName) )
-        app.printError("--eostudy-timeout only in combination with --sort-conc-studies, --sort-on-patientsname, --exec-on-eostudy or --rename-on-eostudy");
+      app.checkDependence("--eostudy-timeout", "--sort-conc-studies, --sort-on-patientsname, --exec-on-eostudy or --rename-on-eostudy",
+        (opt_sortConcerningStudies != NULL) || (opt_execOnEndOfStudy != NULL) || opt_renameOnEndOfStudy | opt_sortOnPatientsName);
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
 
@@ -842,17 +872,17 @@ int main(int argc, char *argv[])
   cmd.beginOptionBlock();
   if (cmd.findOption("--std-passwd"))
   {
-    if (! opt_secureConnection) app.printError("--std-passwd only with --enable-tls");
+    app.checkDependence("--std-passwd", "--enable-tls", opt_secureConnection);
     opt_passwd = NULL;
   }
   if (cmd.findOption("--use-passwd"))
   {
-    if (! opt_secureConnection) app.printError("--use-passwd only with --enable-tls");
+    app.checkDependence("--use-passwd", "--enable-tls", opt_secureConnection);
     app.checkValue(cmd.getValue(opt_passwd));
   }
   if (cmd.findOption("--null-passwd"))
   {
-    if (! opt_secureConnection) app.printError("--null-passwd only with --enable-tls");
+    app.checkDependence("--null-passwd", "--enable-tls", opt_secureConnection);
     opt_passwd = "";
   }
   cmd.endOptionBlock();
@@ -875,12 +905,12 @@ int main(int argc, char *argv[])
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-seed"))
   {
-    if (opt_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+    app.checkDependence("--write-seed", " --seed", opt_readSeedFile != NULL);
     opt_writeSeedFile = opt_readSeedFile;
   }
   if (cmd.findOption("--write-seed-file"))
   {
-    if (opt_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+    app.checkDependence("--write-seed-file", " --seed", opt_readSeedFile != NULL);
     app.checkValue(cmd.getValue(opt_writeSeedFile));
   }
   cmd.endOptionBlock();
@@ -1046,7 +1076,7 @@ int main(int argc, char *argv[])
       } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
     }
 
-    if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
+    if (opt_dhparam && !(tLayer->setTempDHParameters(opt_dhparam)))
     {
       CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
     }
@@ -1165,7 +1195,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     UID_VerificationSOPClass
   };
 
-  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+  const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
   int numTransferSyntaxes = 0;
 
   // try to receive an association. Here we either want to use blocking or
@@ -1194,7 +1224,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       // does not equal NULL), we have to consider that all objects for the current study have been received.
       // In such an "end-of-study" case, we might have to execute certain optional functions which were specified
       // by the user through command line options passed to storescp.
-      if( opt_endOfStudyTimeout != -1 && ! lastStudyInstanceUID.empty() )
+      if( opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty() )
       {
         // indicate that the end-of-study-event occured through a timeout event.
         // This knowledge will be necessary in function renameOnEndOFStudy().
@@ -1318,6 +1348,14 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
       numTransferSyntaxes = 4;
       break;
+    case EXS_JPEG2000LosslessOnly:
+      /* we prefer JPEG2000 Lossless */
+      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
     case EXS_JPEG2000:
       /* we prefer JPEG2000 Lossy */
       transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
@@ -1326,9 +1364,25 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
       numTransferSyntaxes = 4;
       break;
-    case EXS_JPEG2000LosslessOnly:
-      /* we prefer JPEG2000 Lossless */
-      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+    case EXS_JPEGLSLossless:
+      /* we prefer JPEG-LS Lossless */
+      transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_JPEGLSLossy:
+      /* we prefer JPEG-LS Lossy */
+      transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
+      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+      numTransferSyntaxes = 4;
+      break;
+    case EXS_MPEG2MainProfileAtMainLevel:
+      /* we prefer MPEG2 MP@ML */
+      transferSyntaxes[0] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
       transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
       transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
       transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
@@ -1353,22 +1407,49 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       break;
 #endif
     default:
-      /* We prefer explicit transfer syntaxes.
-       * If we are running on a Little Endian machine we prefer
-       * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-       */
-      if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+      if (opt_acceptAllXfers)
       {
-        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        /* we accept all supported transfer syntaxes
+         * (similar to "AnyTransferSyntax" in "storescp.cfg")
+         */
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
+        transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[9] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        if (gLocalByteOrder == EBO_LittleEndian)
+        {
+          transferSyntaxes[10] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[11] = UID_BigEndianExplicitTransferSyntax;
+        } else {
+          transferSyntaxes[10] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[11] = UID_LittleEndianExplicitTransferSyntax;
+        }
+        transferSyntaxes[12] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 13;
+      } else {
+        /* We prefer explicit transfer syntaxes.
+         * If we are running on a Little Endian machine we prefer
+         * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+         */
+        if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+        {
+          transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        }
+        else
+        {
+          transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        }
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 3;
       }
-      else
-      {
-        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      }
-      transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 3;
       break;
   }
 
@@ -1378,7 +1459,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     const char *c = opt_profileName;
     while (*c)
     {
-      if (! isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
+      if (!isspace(*c)) sprofile += OFstatic_cast(char, toupper(*c));
       ++c;
     }
 
@@ -1595,7 +1676,7 @@ processCommands(T_ASC_Association * assoc)
       // does not equal NULL), we have to consider that all objects for the current study have been received.
       // In such an "end-of-study" case, we might have to execute certain optional functions which were specified
       // by the user through command line options passed to storescp.
-      if( opt_endOfStudyTimeout != -1 && ! lastStudyInstanceUID.empty() )
+      if( opt_endOfStudyTimeout != -1 && !lastStudyInstanceUID.empty() )
       {
         // indicate that the end-of-study-event occured through a timeout event.
         // This knowledge will be necessary in function renameOnEndOFStudy().
@@ -1844,7 +1925,7 @@ storeSCPCallback(
           // variable will contain the path and name of the last study's subdirectory, so that we can still remember
           // this directory, when we execute executeOnEndOfStudy(). The memory that is allocated for this variable
           // here will be freed after the execution of executeOnEndOfStudy().
-          if( ! lastStudyInstanceUID.empty() )
+          if( !lastStudyInstanceUID.empty() )
           {
             lastStudySubdirectoryPathAndName = subdirectoryPathAndName;
           }
@@ -1940,7 +2021,7 @@ storeSCPCallback(
       if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
       {
         // which SOP class and SOP instance ?
-        if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
+        if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
         {
            fprintf(stderr, "storescp: Bad image file: %s\n", fileName.c_str());
            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -2163,14 +2244,14 @@ static void executeEndOfStudyEvents()
   // does not equal NULL (i.e. we received all objects that belong to one study, or - in
   // other words - it is the end of one study) we want to rename the output files that
   // belong to the last study. (Note that these files are captured in outputFileNameArray)
-  if( opt_renameOnEndOfStudy && ! lastStudySubdirectoryPathAndName.empty() )
+  if( opt_renameOnEndOfStudy && !lastStudySubdirectoryPathAndName.empty() )
     renameOnEndOfStudy();
 
   // if option --exec-on-eostudy is set and variable lastStudySubdirectoryPathAndName does
   // not equal NULL (i.e. we received all objects that belong to one study, or - in other
   // words - it is the end of one study) we want to execute a certain command which was
   // passed to the application
-  if( opt_execOnEndOfStudy != NULL && ! lastStudySubdirectoryPathAndName.empty() )
+  if( opt_execOnEndOfStudy != NULL && !lastStudySubdirectoryPathAndName.empty() )
     executeOnEndOfStudy();
 
   lastStudySubdirectoryPathAndName.clear();
@@ -2245,7 +2326,7 @@ static void renameOnEndOfStudy()
   // following loop - not supposed to be deleted from the array. If endOfStudyThroughTimeoutEvent is true,
   // all filenames that are captured in the array, refer to files that belong to the same study. Hence,
   // all of these files shall be renamed and all of the filenames within the array shall be deleted.
-  if( ! endOfStudyThroughTimeoutEvent ) --last;
+  if( !endOfStudyThroughTimeoutEvent ) --last;
 
   // rename all files that belong to the last study
   while (first != last)
@@ -2611,6 +2692,12 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.103  2009-02-06 16:08:44  joergr
+** Added support for JPEG-LS and MPEG2 transfer syntaxes.
+** Fixed minor inconsistencies with regard to transfer syntaxes.
+** Added new option that allows for accepting all supported transfer syntaxes.
+** Call OFConsoleApplication::checkDependence() where appropriate.
+**
 ** Revision 1.102  2009-01-07 17:19:53  joergr
 ** Avoid double output of resource identifier for forked children (Win32).
 **
