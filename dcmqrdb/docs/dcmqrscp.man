@@ -181,14 +181,23 @@ preferred network transfer syntaxes (incoming associations):
   +xx   --prefer-jpeg12
           prefer default JPEG lossy TS for 12 bit data
 
-  +xr   --prefer-rle
-          prefer RLE lossless TS
-
   +xv   --prefer-j2k-lossless
           prefer JPEG 2000 lossless TS
 
   +xw   --prefer-j2k-lossy
           prefer JPEG 2000 lossy TS
+
+  +xt   --prefer-jls-lossless
+          prefer JPEG-LS lossless TS
+
+  +xu   --prefer-jls-lossy
+          prefer JPEG-LS lossy TS
+
+  +xm   --prefer-mpeg2
+          prefer MPEG2 Main Profile @ Main Level TS
+
+  +xr   --prefer-rle
+          prefer RLE lossless TS
 
   +xd   --prefer-deflated
           prefer deflated explicit VR little endian TS
@@ -203,36 +212,52 @@ proposed transmission transfer syntaxes (outgoing associations):
           with local byte ordering first (default)
 
   -xe   --propose-little
-          propose all uncompressed TS, explicit VR
-          little endian first
+          propose all uncompressed TS, explicit VR little endian first
 
   -xb   --propose-big
-          propose all uncompressed TS, explicit VR
-          big endian first
-
-  -xs   --propose-lossless
-          propose default JPEG lossless TS
-
-  -xy   --propose-jpeg8
-          propose default JPEG lossy TS for 8 bit data
-
-  -xx   --propose-jpeg12
-          propose default JPEG lossy TS for 12 bit data
-
-  -xv   --propose-j2k-lossless
-          propose default JPEG 2000 lossless TS
-
-  -xw   --propose-j2k-lossy
-          propose default JPEG 2000 lossy TS
-
-  -xr   --propose-rle
-          propose RLE lossless TS
-
-  -xd   --propose-deflated
-          propose deflated explicit VR little endian TS
+          propose all uncompressed TS, explicit VR big endian first
 
   -xi   --propose-implicit
           propose implicit VR little endian TS only
+
+  -xs   --propose-lossless
+          propose default JPEG lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xy   --propose-jpeg8
+          propose default JPEG lossy TS for 8 bit data
+          and all uncompressed transfer syntaxes
+
+  -xx   --propose-jpeg12
+          propose default JPEG lossy TS for 12 bit data
+          and all uncompressed transfer syntaxes
+
+  -xv   --propose-j2k-lossless
+          propose JPEG 2000 lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xw   --propose-j2k-lossy
+          propose JPEG 2000 lossy TS
+          and all uncompressed transfer syntaxes
+
+  -xt   --propose-jls-lossless
+          propose JPEG-LS lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xu   --propose-jls-lossy
+          propose JPEG-LS lossy TS
+          and all uncompressed transfer syntaxes
+
+  -xm   --propose-mpeg2
+          propose MPEG2 Main Profile @ Main Level TS only
+
+  -xr   --propose-rle
+          propose RLE lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xd   --propose-deflated
+          propose deflated explicit VR little endian TS
+          and all uncompressed transfer syntaxes
 
 network host access control (tcp wrapper) options:
 
@@ -327,6 +352,9 @@ output transfer syntax:
   +ti   --write-xfer-implicit
           write with implicit VR little endian TS
 
+  +td   --write-xfer-deflated
+          write with deflated explicit VR little endian TS
+
 group length encoding (not with --bit-preserving):
 
   +g=   --group-length-recalc
@@ -354,6 +382,11 @@ data set trailing padding (not with --write-dataset or --bit-preserving):
   +p    --padding-create  [f]ile-pad [i]tem-pad: integer
           align file on multiple of f bytes
           and items on multiple of i bytes
+
+deflate compression level (only with --write-xfer-deflated/same):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
 \endverbatim
 
 \section notes NOTES
@@ -488,6 +521,23 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 \endverbatim
 
 This default behaviour can be changed with the \e --propose options (see above).
+Depending on these options, the following transfer syntaxes are supported:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+\endverbatim
 
 The \b dcmqrscp application does not support extended negotiation.
 
@@ -588,7 +638,24 @@ The \b dcmqrscp application will prefer transfer syntaxes having an explicit
 encoding over the default implicit transfer syntax.  If \b dcmqrscp is running
 on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit
 transfer syntax (and vice versa).  This behaviour can be changed with the
-\e --prefer options (see above).
+\e --prefer options (see above). Depending on these options, the following
+transfer syntaxes are supported:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+\endverbatim
 
 The \b dcmqrscp application does not support extended negotiation.
 
@@ -656,6 +723,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1993-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1993-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
