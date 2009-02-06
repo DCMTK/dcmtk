@@ -17,7 +17,7 @@ storescp [options] [port]
 The \b storescp application implements a Service Class Provider (SCP) for the
 Storage Service Class.  It listens on a specific TCP/IP port for incoming
 association requests from a Storage SCU and can receive images according to
-the Storage Service Class. Received images will normally be stored in files
+the Storage Service Class.  Received images will normally be stored in files
 (within the current working directory).  The \b storescp application also
 supports the Verification Service Class as an SCP.
 
@@ -86,6 +86,15 @@ preferred network transfer syntaxes (not with --config-file):
   +xw   --prefer-j2k-lossy
           prefer JPEG 2000 lossy TS
 
+  +xt   --prefer-jls-lossless
+          prefer JPEG-LS lossless TS
+
+  +xu   --prefer-jls-lossy
+          prefer JPEG-LS lossy TS
+
+  +xm   --prefer-mpeg2
+          prefer MPEG2 Main Profile @ Main Level TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -94,6 +103,9 @@ preferred network transfer syntaxes (not with --config-file):
 
   +xi   --implicit
           accept implicit VR little endian TS only
+
+  +xa   --accept-all
+          accept all supported transfer syntaxes
 
 network host access control (tcp wrapper) options:
 
@@ -551,7 +563,8 @@ BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4
 \endverbatim
 
 The \b storescp application will accept presentation contexts for all of the
-abovementioned supported SOP Classes using any of the transfer syntaxes:
+abovementioned supported SOP Classes using any of the following transfer
+syntaxes:
 
 \verbatim
 LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
@@ -563,7 +576,27 @@ The default behaviour of the \b storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.
 If \b storescp is running on big-endian hardware it will prefer
 BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa).
-This behaviour can be changed with the \e --prefer options (see above).
+This behaviour can be changed with the \e --prefer options (see above).  Using
+option \e --accept-all any of the following transfer syntaxes is supported:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+\endverbatim
+
+Additional Storage SOP Classes and Transfer Syntaxes can be used with the
+so-called "association negotiation profiles" (see below).
 
 The \b storescp application does not support extended negotiation.
 
@@ -657,6 +690,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
