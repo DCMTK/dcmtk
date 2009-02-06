@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 15:44:26 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2009-02-06 16:41:00 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,9 +48,14 @@ END_EXTERN_C
 #include <GUSI.h>
 #endif
 
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmnet/dicom.h"      /* for DICOM_APPLICATION_REQUESTOR */
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
+#include "dcmtk/dcmnet/dcasccfg.h"   /* for class DcmAssociationConfiguration */
+#include "dcmtk/dcmnet/dcasccff.h"   /* for class DcmAssociationConfigurationFile */
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
 #include "dcmtk/dcmdata/dcfilefo.h"
@@ -60,13 +64,8 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
-#include "dcmtk/dcmnet/dicom.h"      /* for DICOM_APPLICATION_REQUESTOR */
 #include "dcmtk/dcmdata/dcostrmz.h"  /* for dcmZlibCompressionLevel */
-#include "dcmtk/dcmnet/dcasccfg.h"   /* for class DcmAssociationConfiguration */
-#include "dcmtk/dcmnet/dcasccff.h"   /* for class DcmAssociationConfigurationFile */
 
 #ifdef ON_THE_FLY_COMPRESSION
 #include "dcmtk/dcmjpeg/djdecode.h"  /* for dcmjpeg decoders */
@@ -188,8 +187,8 @@ int main(int argc, char *argv[])
   const char *opt_ourTitle = APPLICATIONTITLE;
 
   OFList<OFString> fileNameList;       // list of files to transfer to SCP
-  OFList<OFString> sopClassUIDList;    // the list of sop classes
-  OFList<OFString> sopInstanceUIDList; // the list of sop instances
+  OFList<OFString> sopClassUIDList;    // the list of SOP classes
+  OFList<OFString> sopInstanceUIDList; // the list of SOP instances
 
   T_ASC_Network *net;
   T_ASC_Parameters *params;
@@ -262,8 +261,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--propose-lossless",     "-xs",     "propose default JPEG lossless TS\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jpeg8",        "-xy",     "propose default JPEG lossy TS for 8 bit data\nand all uncompressed transfer syntaxes");
       cmd.addOption("--propose-jpeg12",       "-xx",     "propose default JPEG lossy TS for 12 bit data\nand all uncompressed transfer syntaxes");
-      cmd.addOption("--propose-j2k-lossless", "-xv",     "propose default JPEG 2000 lossless TS\nand all uncompressed transfer syntaxes");
-      cmd.addOption("--propose-j2k-lossy",    "-xw",     "propose default JPEG 2000 lossy TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-j2k-lossless", "-xv",     "propose JPEG 2000 lossless TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-j2k-lossy",    "-xw",     "propose JPEG 2000 lossy TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-jls-lossless", "-xt",     "propose JPEG-LS lossless TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-jls-lossy",    "-xu",     "propose JPEG-LS lossy TS\nand all uncompressed transfer syntaxes");
+      cmd.addOption("--propose-mpeg2",        "-xm",     "propose MPEG2 Main Profile @ Main Level TS only");
       cmd.addOption("--propose-rle",          "-xr",     "propose RLE lossless TS\nand all uncompressed transfer syntaxes");
 #ifdef WITH_ZLIB
       cmd.addOption("--propose-deflated",     "-xd",     "propose deflated expl. VR little endian TS\nand all uncompressed transfer syntaxes");
@@ -442,18 +444,21 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--propose-uncompr"))      opt_networkTransferSyntax = EXS_Unknown;
-      if (cmd.findOption("--propose-little"))       opt_networkTransferSyntax = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--propose-big"))          opt_networkTransferSyntax = EXS_BigEndianExplicit;
-      if (cmd.findOption("--propose-implicit"))     opt_networkTransferSyntax = EXS_LittleEndianImplicit;
-      if (cmd.findOption("--propose-lossless"))     opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--propose-jpeg8"))        opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--propose-jpeg12"))       opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--propose-uncompr")) opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--propose-little")) opt_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big")) opt_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-implicit")) opt_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--propose-lossless")) opt_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg8")) opt_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--propose-jpeg12")) opt_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
       if (cmd.findOption("--propose-j2k-lossless")) opt_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
-      if (cmd.findOption("--propose-j2k-lossy"))    opt_networkTransferSyntax = EXS_JPEG2000;
-      if (cmd.findOption("--propose-rle"))          opt_networkTransferSyntax = EXS_RLELossless;
+      if (cmd.findOption("--propose-j2k-lossy")) opt_networkTransferSyntax = EXS_JPEG2000;
+      if (cmd.findOption("--propose-jls-lossless")) opt_networkTransferSyntax = EXS_JPEGLSLossless;
+      if (cmd.findOption("--propose-jls-lossy")) opt_networkTransferSyntax = EXS_JPEGLSLossy;
+      if (cmd.findOption("--propose-mpeg2")) opt_networkTransferSyntax = EXS_MPEG2MainProfileAtMainLevel;
+      if (cmd.findOption("--propose-rle")) opt_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
-      if (cmd.findOption("--propose-deflated"))     opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+      if (cmd.findOption("--propose-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
       cmd.endOptionBlock();
 
@@ -462,24 +467,27 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--config-file"))
       {
-        app.checkValue(cmd.getValue(opt_configFile));
-        app.checkValue(cmd.getValue(opt_profileName));
-
         // check conflicts with other command line options
-        app.checkConflict("--config-file", "--propose-little",       (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
-        app.checkConflict("--config-file", "--propose-big",          (opt_networkTransferSyntax == EXS_BigEndianExplicit));
-        app.checkConflict("--config-file", "--propose-implicit",     (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
-        app.checkConflict("--config-file", "--propose-lossless",     (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
-        app.checkConflict("--config-file", "--propose-jpeg8",        (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
-        app.checkConflict("--config-file", "--propose-jpeg12",       (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
-        app.checkConflict("--config-file", "--propose-j2k-lossless", (opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly));
-        app.checkConflict("--config-file", "--propose-j2k-lossy",    (opt_networkTransferSyntax == EXS_JPEG2000));
-        app.checkConflict("--config-file", "--propose-rle",          (opt_networkTransferSyntax == EXS_RLELossless));
+        app.checkConflict("--config-file", "--propose-little", opt_networkTransferSyntax == EXS_LittleEndianExplicit);
+        app.checkConflict("--config-file", "--propose-big", opt_networkTransferSyntax == EXS_BigEndianExplicit);
+        app.checkConflict("--config-file", "--propose-implicit", opt_networkTransferSyntax == EXS_LittleEndianImplicit);
+        app.checkConflict("--config-file", "--propose-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--config-file", "--propose-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--config-file", "--propose-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--config-file", "--propose-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--config-file", "--propose-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+        app.checkConflict("--config-file", "--propose-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+        app.checkConflict("--config-file", "--propose-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+        app.checkConflict("--config-file", "--propose-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+        app.checkConflict("--config-file", "--propose-rle", opt_networkTransferSyntax == EXS_RLELossless);
 #ifdef WITH_ZLIB
-        app.checkConflict("--config-file", "--propose-deflated", (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
+        app.checkConflict("--config-file", "--propose-deflated", opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit);
 #endif
         app.checkConflict("--config-file", "--required", opt_proposeOnlyRequiredPresentationContexts);
         app.checkConflict("--config-file", "--combine", opt_combineProposedTransferSyntaxes);
+
+        app.checkValue(cmd.getValue(opt_configFile));
+        app.checkValue(cmd.getValue(opt_profileName));
 
         // read configuration file. The profile name is checked later.
         OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
@@ -493,12 +501,10 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
       if (cmd.findOption("--compression-level"))
       {
-        if ((opt_networkTransferSyntax != EXS_DeflatedLittleEndianExplicit) && (opt_configFile == NULL))
-        {
-           app.printError("--compression-level only allowed with --propose-deflated or --config-file");
-        }
+        app.checkDependence("--compression-level", "--propose-deflated or --config-file",
+          (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit) || (opt_configFile != NULL));
         app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
-        dcmZlibCompressionLevel.set((int) opt_compressionLevel);
+        dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
       }
 #endif
 
@@ -594,17 +600,17 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--std-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--std-passwd only with --enable-tls");
+        app.checkDependence("--std-passwd", "--enable-tls", opt_doAuthenticate);
         opt_passwd = NULL;
       }
       if (cmd.findOption("--use-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--use-passwd only with --enable-tls");
+        app.checkDependence("--use-passwd", "--enable-tls", opt_doAuthenticate);
         app.checkValue(cmd.getValue(opt_passwd));
       }
       if (cmd.findOption("--null-passwd"))
       {
-        if (! opt_doAuthenticate) app.printError("--null-passwd only with --enable-tls");
+        app.checkDependence("--null-passwd", "--enable-tls", opt_doAuthenticate);
         opt_passwd = "";
       }
       cmd.endOptionBlock();
@@ -627,12 +633,12 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-seed"))
       {
-        if (opt_readSeedFile == NULL) app.printError("--write-seed only with --seed");
+        app.checkDependence("--write-seed", "--seed", opt_readSeedFile != NULL);
         opt_writeSeedFile = opt_readSeedFile;
       }
       if (cmd.findOption("--write-seed-file"))
       {
-        if (opt_readSeedFile == NULL) app.printError("--write-seed-file only with --seed");
+        app.checkDependence("--write-seed-file", "--seed", opt_readSeedFile != NULL);
         app.checkValue(cmd.getValue(opt_writeSeedFile));
       }
       cmd.endOptionBlock();
@@ -668,38 +674,42 @@ int main(int argc, char *argv[])
 #endif
 
       // User Identity Negotiation
+      cmd.beginOptionBlock();
       if (cmd.findOption("--user"))
       {
         app.checkValue(cmd.getValue(opt_user));
         opt_identMode = ASC_USER_IDENTITY_USER;
-        app.checkConflict("--user", "--kerberos", cmd.findOption("--kerberos"));
-        app.checkConflict("--user", "--kerberos", cmd.findOption("--saml"));
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--password"))
-        {
-          app.checkValue(cmd.getValue(opt_password));
-          opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
-        }
-        if (cmd.findOption("--empty-password"))
-        {
-          opt_password= "";
-          opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
-        }
-        cmd.endOptionBlock();
       }
-      else if (cmd.findOption("--kerberos"))
+      if (cmd.findOption("--kerberos"))
       {
         app.checkValue(cmd.getValue(opt_identFile));
         opt_identMode = ASC_USER_IDENTITY_KERBEROS;
       }
-      else if (cmd.findOption("--saml"))
+      if (cmd.findOption("--saml"))
       {
         app.checkValue(cmd.getValue(opt_identFile));
         opt_identMode = ASC_USER_IDENTITY_SAML;
-        app.checkConflict("--kerberos", "--kerberos", cmd.findOption("--kerberos"));
       }
-      if ( (opt_identMode != ASC_USER_IDENTITY_NONE) && (cmd.findOption("--pos-response")) )
-        opt_identResponse = OFTrue;
+      cmd.endOptionBlock();
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--password"))
+      {
+        app.checkDependence("--password", "--user", opt_identMode == ASC_USER_IDENTITY_USER);
+        app.checkValue(cmd.getValue(opt_password));
+        opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
+      }
+      if (cmd.findOption("--empty-password"))
+      {
+        app.checkDependence("--empty-password", "--user", opt_identMode == ASC_USER_IDENTITY_USER);
+        opt_password= "";
+        opt_identMode = ASC_USER_IDENTITY_USER_PASSWORD;
+      }
+      cmd.endOptionBlock();
+      if (cmd.findOption("--pos-response"))
+      {
+         app.checkDependence("--pos-response", "--user, --kerberos or --saml", opt_identMode != ASC_USER_IDENTITY_NONE);
+         opt_identResponse = OFTrue;
+      }
 
       /* finally, create list of input files */
       const char *paramString = NULL;
@@ -932,7 +942,7 @@ int main(int argc, char *argv[])
       const char *c = opt_profileName;
       while (*c)
       {
-        if (! isspace(*c)) sprofile += (char) (toupper(*c));
+        if (!isspace(*c)) sprofile += (char) (toupper(*c));
         ++c;
       }
 
@@ -1228,20 +1238,22 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
   OFListIterator(OFString) s_cur;
   OFListIterator(OFString) s_end;
 
-
   OFList<OFString> fallbackSyntaxes;
-  fallbackSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-  fallbackSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-  fallbackSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-  // Remove the preferred syntax from the fallback list
-  fallbackSyntaxes.remove(preferredTransferSyntax);
-  // If little endian implicit is preferred then we don't need any fallback syntaxes
-  // because it is the default transfer syntax and all applications must support it.
-  if (opt_networkTransferSyntax == EXS_LittleEndianImplicit) {
-    fallbackSyntaxes.clear();
+  // - If little endian implicit is preferred, we don't need any fallback syntaxes
+  //   because it is the default transfer syntax and all applications must support it.
+  // - If MPEG2 MP@ML is preferred, we don't want to propose any fallback solution
+  //   because this is not required and we cannot decompress the movie anyway.
+  if ((opt_networkTransferSyntax != EXS_LittleEndianImplicit) &&
+      (opt_networkTransferSyntax != EXS_MPEG2MainProfileAtMainLevel))
+  {
+    fallbackSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
+    fallbackSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
+    fallbackSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
+    // Remove the preferred syntax from the fallback list
+    fallbackSyntaxes.remove(preferredTransferSyntax);
   }
 
-  // created a list of transfer syntaxes combined from the preferred and fallback syntaxes
+  // create a list of transfer syntaxes combined from the preferred and fallback syntaxes
   OFList<OFString> combinedSyntaxes;
   s_cur = fallbackSyntaxes.begin();
   s_end = fallbackSyntaxes.end();
@@ -1253,13 +1265,13 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
   }
 
   if (!opt_proposeOnlyRequiredPresentationContexts) {
-    // add the (short list of) known storage sop classes to the list
+    // add the (short list of) known storage SOP classes to the list
     // the array of Storage SOP Class UIDs comes from dcuid.h
     for (int i = 0; i < numberOfDcmShortSCUStorageSOPClassUIDs; i++)
       sopClasses.push_back(dcmShortSCUStorageSOPClassUIDs[i]);
   }
 
-  // thin out the sop classes to remove any duplicates.
+  // thin out the SOP classes to remove any duplicates
   OFList<OFString> sops;
   s_cur = sopClasses.begin();
   s_end = sopClasses.end();
@@ -1270,7 +1282,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
     ++s_cur;
   }
 
-  // add a presentations context for each sop class / transfer syntax pair
+  // add a presentations context for each SOP class / transfer syntax pair
   OFCondition cond = EC_Normal;
   int pid = 1; // presentation context id
   s_cur = sops.begin();
@@ -1287,7 +1299,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
       pid += 2;   /* only odd presentation context id's */
     } else {
 
-      // sop class with preferred transfer syntax
+      // SOP class with preferred transfer syntax
       cond = addPresentationContext(params, pid, *s_cur, preferredTransferSyntax);
       pid += 2;   /* only odd presentation context id's */
 
@@ -1297,7 +1309,7 @@ addStoragePresentationContexts(T_ASC_Parameters *params,
           return ASC_BADPRESENTATIONCONTEXTID;
         }
 
-        // sop class with fallback transfer syntax
+        // SOP class with fallback transfer syntax
         cond = addPresentationContext(params, pid, *s_cur, fallbackSyntaxes);
         pid += 2; /* only odd presentation context id's */
       }
@@ -1620,7 +1632,7 @@ cstore(T_ASC_Association *assoc, const OFString &fname)
   }
 
   // we don't want to return an error code if --no-halt was specified.
-  if (! opt_haltOnUnsuccessfulStore)
+  if (!opt_haltOnUnsuccessfulStore)
   {
     cond = EC_Normal;
   }
@@ -1745,6 +1757,12 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.77  2009-02-06 16:41:00  joergr
+** Added support for JPEG-LS and MPEG2 transfer syntaxes.
+** Fixed minor inconsistencies with regard to transfer syntaxes.
+** Call OFConsoleApplication::checkDependence() where appropriate.
+** Reworked checking of command line options for user identify negotiation.
+**
 ** Revision 1.76  2008-11-03 15:44:26  joergr
 ** Removed "option block" encapsulation from option --compression-level.
 **
