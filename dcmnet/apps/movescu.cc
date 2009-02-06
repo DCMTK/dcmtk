@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-20 12:13:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2009-02-06 15:34:48 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +43,8 @@
 #include <GUSI.h>
 #endif
 
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmnet/dicom.h"
 #include "dcmtk/dcmnet/dimse.h"
 #include "dcmtk/dcmnet/diutil.h"
@@ -54,10 +55,9 @@
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcmetinf.h"
-#include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
-#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcdicent.h"
+#include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_ZLIB
 #include <zlib.h>     /* for zlibVersion() */
@@ -92,6 +92,7 @@ OFCmdUnsignedInt  opt_sleepAfter = 0;
 OFCmdUnsignedInt  opt_sleepDuring = 0;
 OFCmdUnsignedInt  opt_maxPDU = ASC_DEFAULTMAXPDU;
 OFBool            opt_useMetaheader = OFTrue;
+OFBool            opt_acceptAllXfers = OFFalse;
 E_TransferSyntax  opt_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax  opt_writeTransferSyntax = EXS_Unknown;
 E_GrpLenEncoding  opt_groupLength = EGL_recalcGL;
@@ -99,6 +100,7 @@ E_EncodingType    opt_sequenceType = EET_ExplicitLength;
 E_PaddingEncoding opt_paddingType = EPD_withoutPadding;
 OFCmdUnsignedInt  opt_filepad = 0;
 OFCmdUnsignedInt  opt_itempad = 0;
+OFCmdUnsignedInt  opt_compressionLevel = 0;
 OFBool            opt_verbose = OFFalse;
 OFBool            opt_debug = OFFalse;
 OFBool            opt_bitPreserving = OFFalse;
@@ -305,8 +307,15 @@ main(int argc, char *argv[])
       cmd.addOption("--prefer-jpeg12",       "+xx",     "prefer default JPEG lossy TS for 12 bit data");
       cmd.addOption("--prefer-j2k-lossless", "+xv",     "prefer JPEG 2000 lossless TS");
       cmd.addOption("--prefer-j2k-lossy",    "+xw",     "prefer JPEG 2000 lossy TS");
+      cmd.addOption("--prefer-jls-lossless", "+xt",     "prefer JPEG-LS lossless TS");
+      cmd.addOption("--prefer-jls-lossy",    "+xu",     "prefer JPEG-LS lossy TS");
+      cmd.addOption("--prefer-mpeg2",        "+xm",     "prefer MPEG2 Main Profile @ Main Level TS");
       cmd.addOption("--prefer-rle",          "+xr",     "prefer RLE lossless TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--prefer-deflated",     "+xd",     "prefer deflated expl. VR little endian TS");
+#endif
       cmd.addOption("--implicit",            "+xi",     "accept implicit VR little endian TS only");
+      cmd.addOption("--accept-all",          "+xa",     "accept all supported transfer syntaxes");
     cmd.addSubGroup("proposed transmission transfer syntaxes (outgoing associations):");
       cmd.addOption("--propose-uncompr",     "-x=",     "propose all uncompressed TS, explicit VR\nwith local byte ordering first (default)");
       cmd.addOption("--propose-little",      "-xe",     "propose all uncompressed TS, explicit VR\nlittle endian first");
@@ -363,6 +372,9 @@ main(int argc, char *argv[])
       cmd.addOption("--write-xfer-little",   "+te",     "write with explicit VR little endian TS");
       cmd.addOption("--write-xfer-big",      "+tb",     "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit", "+ti",     "write with implicit VR little endian TS");
+#ifdef WITH_ZLIB
+      cmd.addOption("--write-xfer-deflated",    "+td",     "write with deflated expl. VR little endian TS");
+#endif
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
       cmd.addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
@@ -377,6 +389,11 @@ main(int argc, char *argv[])
       cmd.addOption("--padding-off",         "-p",      "no padding (default)");
       cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                         "align file on multiple of f bytes\nand items on multiple of i bytes");
+#ifdef WITH_ZLIB
+    cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
+      cmd.addOption("--compression-level",   "+cl",  1, "[l]evel: integer (default: 6)",
+                                                        "0=uncompressed, 1=fastest, 9=best compression");
+#endif
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -431,31 +448,42 @@ main(int argc, char *argv[])
         } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
       }
       cmd.beginOptionBlock();
-      if (cmd.findOption("--patient"))  opt_queryModel = QMPatientRoot;
-      if (cmd.findOption("--study"))    opt_queryModel = QMStudyRoot;
-      if (cmd.findOption("--psonly"))   opt_queryModel = QMPatientStudyOnly;
+      if (cmd.findOption("--patient")) opt_queryModel = QMPatientRoot;
+      if (cmd.findOption("--study")) opt_queryModel = QMStudyRoot;
+      if (cmd.findOption("--psonly")) opt_queryModel = QMPatientStudyOnly;
       cmd.endOptionBlock();
+
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
       if (cmd.findOption("--move")) app.checkValue(cmd.getValue(opt_moveDestination));
+
       cmd.beginOptionBlock();
-      if (cmd.findOption("--prefer-uncompr"))  opt_in_networkTransferSyntax = EXS_Unknown;
-      if (cmd.findOption("--prefer-little"))   opt_in_networkTransferSyntax = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--prefer-big"))      opt_in_networkTransferSyntax = EXS_BigEndianExplicit;
-      if (cmd.findOption("--prefer-lossless")) opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg8"))    opt_in_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg12"))   opt_in_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
-      if (cmd.findOption("--prefer-j2k-lossless")) opt_in_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
-      if (cmd.findOption("--prefer-j2k-lossy"))    opt_in_networkTransferSyntax = EXS_JPEG2000;
-      if (cmd.findOption("--prefer-rle"))          opt_in_networkTransferSyntax = EXS_RLELossless;
-      if (cmd.findOption("--implicit"))            opt_in_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--prefer-uncompr")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--prefer-little")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--prefer-big")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--prefer-lossless")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg8")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg12")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--prefer-j2k-lossless")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
+      if (cmd.findOption("--prefer-j2k-lossy")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEG2000;
+      if (cmd.findOption("--prefer-jls-lossless")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGLSLossless;
+      if (cmd.findOption("--prefer-jls-lossy")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGLSLossy;
+      if (cmd.findOption("--prefer-mpeg2")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_MPEG2MainProfileAtMainLevel;
+      if (cmd.findOption("--prefer-rle")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_RLELossless;
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--prefer-deflated")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+#endif
+      if (cmd.findOption("--implicit")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--accept-all")) opt_acceptAllXfers = OFTrue;  opt_networkTransferSyntax = EXS_Unknown;
       cmd.endOptionBlock();
+
       cmd.beginOptionBlock();
-      if (cmd.findOption("--propose-uncompr"))  opt_out_networkTransferSyntax = EXS_Unknown;
-      if (cmd.findOption("--propose-little"))   opt_out_networkTransferSyntax = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--propose-big"))      opt_out_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--propose-uncompr")) opt_out_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--propose-little")) opt_out_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--propose-big")) opt_out_networkTransferSyntax = EXS_BigEndianExplicit;
       if (cmd.findOption("--propose-implicit")) opt_out_networkTransferSyntax = EXS_LittleEndianImplicit;
       cmd.endOptionBlock();
+
 #ifdef WITH_TCPWRAPPER
       cmd.beginOptionBlock();
       if (cmd.findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
@@ -519,35 +547,69 @@ main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-same")) opt_writeTransferSyntax = EXS_Unknown;
       if (cmd.findOption("--write-xfer-little"))
       {
+        app.checkConflict("--write-xfer-little", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-little", "--bit-preserving", opt_bitPreserving);
         app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
         app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
         app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-        app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
         app.checkConflict("--write-xfer-little", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-little", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-little", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+        app.checkConflict("--write-xfer-little", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+        app.checkConflict("--write-xfer-little", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
         opt_writeTransferSyntax = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--write-xfer-big"))
       {
+        app.checkConflict("--write-xfer-big", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-big", "--bit-preserving", opt_bitPreserving);
         app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
         app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
         app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
         app.checkConflict("--write-xfer-big", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
         app.checkConflict("--write-xfer-big", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-big", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+        app.checkConflict("--write-xfer-big", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+        app.checkConflict("--write-xfer-big", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
         opt_writeTransferSyntax = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--write-xfer-implicit"))
       {
+        app.checkConflict("--write-xfer-implicit", "--accept-all", opt_acceptAllXfers);
         app.checkConflict("--write-xfer-implicit", "--bit-preserving", opt_bitPreserving);
         app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
         app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
         app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossy", opt_networkTransferSyntax==EXS_JPEG2000);
+        app.checkConflict("--write-xfer-implicit", "--prefer-j2k-lossless", opt_networkTransferSyntax==EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+        app.checkConflict("--write-xfer-implicit", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
         app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        // we don't have to check a conflict for --prefer-deflated because we can always convert that to uncompressed.
         opt_writeTransferSyntax = EXS_LittleEndianImplicit;
       }
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--write-xfer-deflated"))
+      {
+        app.checkConflict("--write-xfer-deflated", "--accept-all", opt_acceptAllXfers);
+        app.checkConflict("--write-xfer-deflated", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--write-xfer-deflated", "--prefer-lossless", opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-deflated", "--prefer-jpeg8", opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-deflated", "--prefer-jpeg12", opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossless", opt_networkTransferSyntax == EXS_JPEG2000LosslessOnly);
+        app.checkConflict("--write-xfer-deflated", "--prefer-j2k-lossy", opt_networkTransferSyntax == EXS_JPEG2000);
+        app.checkConflict("--write-xfer-deflated", "--prefer-jls-lossless", opt_networkTransferSyntax == EXS_JPEGLSLossless);
+        app.checkConflict("--write-xfer-deflated", "--prefer-jls-lossy", opt_networkTransferSyntax == EXS_JPEGLSLossy);
+        app.checkConflict("--write-xfer-deflated", "--prefer-mpeg2", opt_networkTransferSyntax == EXS_MPEG2MainProfileAtMainLevel);
+        app.checkConflict("--write-xfer-deflated", "--prefer-rle", opt_networkTransferSyntax == EXS_RLELossless);
+        opt_writeTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+      }
+#endif
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -600,13 +662,23 @@ main(int argc, char *argv[])
       if (cmd.findOption("--padding-off")) opt_paddingType = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-        app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
+        app.checkConflict("--padding-create", "--write-dataset", !opt_useMetaheader);
         app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
         app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
         app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
         opt_paddingType = EPD_withPadding;
       }
       cmd.endOptionBlock();
+
+#ifdef WITH_ZLIB
+      if (cmd.findOption("--compression-level"))
+      {
+        app.checkDependence("--compression-level", "--write-xfer-deflated or --write-xfer-same",
+          (opt_writeTransferSyntax == EXS_DeflatedLittleEndianExplicit) || (opt_writeTransferSyntax == EXS_Unknown));
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+        dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
+      }
+#endif
 
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
@@ -904,7 +976,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
     const char* knownAbstractSyntaxes[] = {
         UID_VerificationSOPClass
     };
-    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
+    const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
     int numTransferSyntaxes;
 
     OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
@@ -955,6 +1027,14 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
           break;
+        case EXS_JPEG2000LosslessOnly:
+          /* we prefer JPEG2000 Lossless */
+          transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
         case EXS_JPEG2000:
           /* we prefer JPEG2000 Lossy */
           transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
@@ -963,9 +1043,25 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
           break;
-        case EXS_JPEG2000LosslessOnly:
-          /* we prefer JPEG2000 Lossless */
-          transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        case EXS_JPEGLSLossless:
+          /* we prefer JPEG-LS Lossless */
+          transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_JPEGLSLossy:
+          /* we prefer JPEG-LS Lossy */
+          transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+        case EXS_MPEG2MainProfileAtMainLevel:
+          /* we prefer MPEG2 MP@ML */
+          transferSyntaxes[0] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
           transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
           transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
@@ -979,21 +1075,58 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
           numTransferSyntaxes = 4;
           break;
+#ifdef WITH_ZLIB
+        case EXS_DeflatedLittleEndianExplicit:
+          /* we prefer Deflated Explicit VR Little Endian */
+          transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+          transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+          transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+          transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+          numTransferSyntaxes = 4;
+          break;
+#endif
         default:
-          /* We prefer explicit transfer syntaxes.
-           * If we are running on a Little Endian machine we prefer
-           * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
-           */
-          if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+          if (opt_acceptAllXfers)
           {
-            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+            /* we accept all supported transfer syntaxes
+             * (similar to "AnyTransferSyntax" in "storescp.cfg")
+             */
+            transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+            transferSyntaxes[1] = UID_JPEG2000LosslessOnlyTransferSyntax;
+            transferSyntaxes[2] = UID_JPEGProcess2_4TransferSyntax;
+            transferSyntaxes[3] = UID_JPEGProcess1TransferSyntax;
+            transferSyntaxes[4] = UID_JPEGProcess14SV1TransferSyntax;
+            transferSyntaxes[5] = UID_JPEGLSLossyTransferSyntax;
+            transferSyntaxes[6] = UID_JPEGLSLosslessTransferSyntax;
+            transferSyntaxes[7] = UID_RLELosslessTransferSyntax;
+            transferSyntaxes[8] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+            transferSyntaxes[9] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+            if (gLocalByteOrder == EBO_LittleEndian)
+            {
+              transferSyntaxes[10] = UID_LittleEndianExplicitTransferSyntax;
+              transferSyntaxes[11] = UID_BigEndianExplicitTransferSyntax;
+            } else {
+              transferSyntaxes[10] = UID_BigEndianExplicitTransferSyntax;
+              transferSyntaxes[11] = UID_LittleEndianExplicitTransferSyntax;
+            }
+            transferSyntaxes[12] = UID_LittleEndianImplicitTransferSyntax;
+            numTransferSyntaxes = 13;
           } else {
-            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+            /* We prefer explicit transfer syntaxes.
+             * If we are running on a Little Endian machine we prefer
+             * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
+             */
+            if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
+            {
+              transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+              transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+            } else {
+              transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+              transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+            }
+            transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+            numTransferSyntaxes = 3;
           }
-          transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
-          numTransferSyntaxes = 3;
           break;
 
         }
@@ -1132,7 +1265,7 @@ storeSCPCallback(
         if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
         {
           /* which SOP class and SOP instance ? */
-          if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
+          if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
           {
              fprintf(stderr, "storescp: Bad image file: %s\n", imageFileName);
              rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -1446,6 +1579,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.70  2009-02-06 15:34:48  joergr
+** Added support for JPEG-LS and MPEG2 transfer syntaxes.
+** Fixed minor inconsistencies with regard to transfer syntaxes.
+** Added support for writing files with deflated transfer syntax.
+** Added new option that allows for accepting all supported transfer syntaxes.
+**
 ** Revision 1.69  2008-11-20 12:13:22  joergr
 ** Added new command line option --output-directory to specify the directory
 ** where received objects are stored.
