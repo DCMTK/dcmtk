@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-06-23 10:24:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrsrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-06 15:25:43 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -668,6 +667,38 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 4;
         break;
+      case EXS_JPEGLSLossless:
+        /* we prefer JPEG-LS Lossless */
+        transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGLSLossy:
+        /* we prefer JPEG-LS Lossy */
+        transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_MPEG2MainProfileAtMainLevel:
+        /* we prefer MPEG2 MP@ML */
+        transferSyntaxes[0] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_RLELossless:
+        /* we prefer RLE Lossless */
+        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
 #ifdef WITH_ZLIB
       case EXS_DeflatedLittleEndianExplicit:
         /* we prefer deflated transmission */
@@ -678,14 +709,6 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
         numTransferSyntaxes = 4;
         break;
 #endif
-      case EXS_RLELossless:
-        /* we prefer RLE Lossless */
-        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-        numTransferSyntaxes = 4;
-        break;
 #endif
       default:
         /* We prefer explicit transfer syntaxes.
@@ -725,7 +748,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
     const int numberOfNonStorageSyntaxes = DIM_OF(nonStorageSyntaxes);
     const char *selectedNonStorageSyntaxes[DIM_OF(nonStorageSyntaxes)];
     int numberOfSelectedNonStorageSyntaxes = 0;
-    for (i=0; i<numberOfNonStorageSyntaxes; i++)
+    for (i = 0; i < numberOfNonStorageSyntaxes; i++)
     {
         if (0 == strcmp(nonStorageSyntaxes[i], UID_FINDPatientRootQueryRetrieveInformationModel))
         {
@@ -798,7 +821,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
       T_ASC_PresentationContext pc;
       T_ASC_SC_ROLE role;
       int npc = ASC_countPresentationContexts(assoc->params);
-      for (i=0; i<npc; i++)
+      for (i = 0; i < npc; i++)
       {
         ASC_getPresentationContext(assoc->params, i, &pc);
         if (dcmIsaStorageSOPClassUID(pc.abstractSyntax))
@@ -815,9 +838,9 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
           ** syntax.  Accepting a transfer syntax will override previously
           ** accepted transfer syntaxes.
           */
-          for (int k=numTransferSyntaxes-1; k>=0; k--)
+          for (int k = numTransferSyntaxes - 1; k >= 0; k--)
           {
-            for (int j=0; j < (int)pc.transferSyntaxCount; j++)
+            for (int j = 0; j < (int)pc.transferSyntaxCount; j++)
             {
               /* if the transfer syntax was proposed then we can accept it
                * appears in our supported list of transfer syntaxes
@@ -860,7 +883,7 @@ OFCondition DcmQueryRetrieveSCP::negotiateAssociation(T_ASC_Association * assoc)
      * accepting a context for MOVE if a context for FIND is also present.
      */
 
-    for (i=0; i<(int)DIM_OF(queryRetrievePairs); i++) {
+    for (i = 0; i < (int)DIM_OF(queryRetrievePairs); i++) {
         movepid = ASC_findAcceptedPresentationContextID(assoc,
         queryRetrievePairs[i].moveSyntax);
         if (movepid != 0) {
@@ -1125,7 +1148,10 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
- * Revision 1.2  2006-06-23 10:24:43  meichel
+ * Revision 1.3  2009-02-06 15:25:43  joergr
+ * Added support for JPEG-LS and MPEG2 transfer syntaxes.
+ *
+ * Revision 1.2  2006/06/23 10:24:43  meichel
  * All Store SCPs in DCMTK now store the source application entity title in the
  *   metaheader, both in normal and in bit-preserving mode.
  *

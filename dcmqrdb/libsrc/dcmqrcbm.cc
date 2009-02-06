@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-20 11:21:30 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-06 15:25:43 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +48,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 
-static void moveSubOpProgressCallback(void *callbackData, 
+static void moveSubOpProgressCallback(void *callbackData,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ * /*req*/)
 {
@@ -72,23 +71,23 @@ static void moveSubOpProgressCallback(void *callbackData,
   }
 }
 
-OFBool DcmQueryRetrieveMoveContext::isVerbose() const 
-{ 
-  return options_.verbose_ ? OFTrue : OFFalse; 
+OFBool DcmQueryRetrieveMoveContext::isVerbose() const
+{
+  return options_.verbose_ ? OFTrue : OFFalse;
 }
 
 void DcmQueryRetrieveMoveContext::callbackHandler(
-	/* in */ 
-	OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
+	/* in */
+	OFBool cancelled, T_DIMSE_C_MoveRQ *request,
 	DcmDataset *requestIdentifiers, int responseCount,
 	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,	
+	T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
 	DcmDataset **responseIdentifiers)
 {
     OFCondition cond = EC_Normal;
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(priorStatus);
-    
+
     if (responseCount == 1) {
         /* start the database search */
 	if (options_.verbose_) {
@@ -115,7 +114,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 	    }
         }
     }
-    
+
     /* only cancel if we have pending status */
     if (cancelled && dbStatus.status() == STATUS_Pending) {
 	dbHandle.cancelMoveRequest(&dbStatus);
@@ -133,7 +132,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 
 	/*
 	 * Need to adjust the final status if any sub-operations failed or
-	 * had warnings 
+	 * had warnings
 	 */
 	if (nFailed > 0 || nWarning > 0) {
 	    dbStatus.setStatus(STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures);
@@ -147,12 +146,12 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
 	    dbStatus.setStatus(STATUS_MOVE_Refused_OutOfResourcesSubOperations);
 	}
     }
-    
-    if (dbStatus.status() != STATUS_Success && 
+
+    if (dbStatus.status() != STATUS_Success &&
         dbStatus.status() != STATUS_Pending) {
-	/* 
-	 * May only include response identifiers if not Success 
-	 * and not Pending 
+	/*
+	 * May only include response identifiers if not Success
+	 * and not Pending
 	 */
 	buildFailedInstanceList(responseIdentifiers);
     }
@@ -179,7 +178,7 @@ void DcmQueryRetrieveMoveContext::callbackHandler(
             printf("Status detail:\n");
             (*stDetail)->print(COUT);
         }
-    }    
+    }
 }
 
 void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
@@ -194,7 +193,7 @@ void DcmQueryRetrieveMoveContext::addFailedUIDInstance(const char *sopInstance)
 	strcpy(failedUIDs, sopInstance);
     } else {
 	len = strlen(failedUIDs);
-	if ((failedUIDs = (char*)realloc(failedUIDs, 
+	if ((failedUIDs = (char*)realloc(failedUIDs,
 	    (len+strlen(sopInstance)+2))) == NULL) {
 	    DcmQueryRetrieveOptions::errmsg("realloc failure: addFailedUIDInstance");
 	    return;
@@ -224,7 +223,7 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 #endif
     if (lockfd < 0) {
         /* due to quota system the file could have been deleted */
-	DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: [file: %s]: %s", 
+	DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: [file: %s]: %s",
 	    fname, strerror(errno));
 	nFailed++;
 	addFailedUIDInstance(sopInstance);
@@ -234,14 +233,14 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 #endif
 
     msgId = subAssoc->nextMsgID++;
- 
+
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(subAssoc,
         sopClass);
     if (presId == 0) {
 	nFailed++;
 	addFailedUIDInstance(sopInstance);
-	DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: [file: %s] No presentation context for: (%s) %s", 
+	DcmQueryRetrieveOptions::errmsg("Move SCP: storeSCU: [file: %s] No presentation context for: (%s) %s",
 	    fname, dcmSOPClassUIDToModality(sopClass), sopClass);
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
@@ -256,21 +255,21 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
     req.MoveOriginatorID = origMsgId;
 
     if (options_.verbose_) {
-	printf("Store SCU RQ: MsgID %d, (%s)\n", 
+	printf("Store SCU RQ: MsgID %d, (%s)\n",
 	    msgId, dcmSOPClassUIDToModality(sopClass));
     }
 
     cond = DIMSE_storeUser(subAssoc, presId, &req,
-        fname, NULL, moveSubOpProgressCallback, this, 
-	options_.blockMode_, options_.dimse_timeout_, 
+        fname, NULL, moveSubOpProgressCallback, this,
+	options_.blockMode_, options_.dimse_timeout_,
 	&rsp, &stDetail);
-	
+
 #ifdef LOCK_IMAGE_FILES
     /* unlock image file */
     dcmtk_flock(lockfd, LOCK_UN);
     close(lockfd);
 #endif
-	
+
     if (cond.good()) {
         if (options_.verbose_) {
 	    printf("Move SCP: Received Store SCU RSP [Status=%s]\n",
@@ -282,13 +281,13 @@ OFCondition DcmQueryRetrieveMoveContext::performMoveSubOp(DIC_UI sopClass, DIC_U
 	} else if ((rsp.DimseStatus & 0xf000) == 0xb000) {
 	    /* a warning status message */
 	    nWarning++;
-	    DcmQueryRetrieveOptions::errmsg("Move SCP: Store Waring: Response Status: %s", 
+	    DcmQueryRetrieveOptions::errmsg("Move SCP: Store Waring: Response Status: %s",
 		DU_cstoreStatusString(rsp.DimseStatus));
 	} else {
 	    nFailed++;
 	    addFailedUIDInstance(sopInstance);
 	    /* print a status message */
-	    DcmQueryRetrieveOptions::errmsg("Move SCP: Store Failed: Response Status: %s", 
+	    DcmQueryRetrieveOptions::errmsg("Move SCP: Store Failed: Response Status: %s",
 		DU_cstoreStatusString(rsp.DimseStatus));
 	}
     } else {
@@ -321,7 +320,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     /*
      * We must map the destination AE Title into a host name and port
      * address.  Further, we must make sure that the RSNA'93 demonstration
-     * rules are observed regarding move destinations. 
+     * rules are observed regarding move destinations.
      */
 
     DIC_AE aeTitle;
@@ -345,7 +344,7 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
     if (cond.good()) {
 	gethostname(localHostName, sizeof(localHostName) - 1);
 	sprintf(dstHostNamePlusPort, "%s:%d", dstHostName, dstPortNumber);
-	ASC_setPresentationAddresses(params, localHostName, 
+	ASC_setPresentationAddresses(params, localHostName,
 		dstHostNamePlusPort);
 	ASC_setAPTitles(params, ourAETitle.c_str(), dstAETitle,NULL);
 
@@ -375,14 +374,14 @@ OFCondition DcmQueryRetrieveMoveContext::buildSubAssociation(T_DIMSE_C_MoveRQ *r
 	    } else {
 		DcmQueryRetrieveOptions::errmsg("moveSCP: Sub-Association Request Failed:");
 		DimseCondition::dump(cond);
-		
+
 	    }
 	}
     }
 
     if (cond.good()) {
 	assocStarted = OFTrue;
-    }    
+    }
     return cond;
 }
 
@@ -480,7 +479,7 @@ void DcmQueryRetrieveMoveContext::failAllSubOperations(DcmQueryRetrieveDatabaseS
 	    addFailedUIDInstance(subImgSOPInstance);
 	}
     }
-    dbStatus->setStatus(STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures);    
+    dbStatus->setStatus(STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures);
 }
 
 void DcmQueryRetrieveMoveContext::buildFailedInstanceList(DcmDataset ** rspIds)
@@ -506,7 +505,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
     /*
      * This routine enforces RSNA'93 Demo Requirements regarding
      * the destination of move commands.
-     * 
+     *
      */
     OFBool ok = OFFalse;
     const char *dstPeerName; /* the CNF utility returns us a static char* */
@@ -517,12 +516,12 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
         if (!ok) {
 	    if (options_.verbose_) {
 	        printf("mapMoveDestination: strictMove Reqs: '%s' != '%s'\n",
-		    origAE, dstAE); 
+		    origAE, dstAE);
 	    }
 	    return OFFalse;
 	}
     }
-    
+
     ok = config->peerForAETitle((char*)dstAE, &dstPeerName, dstPort) > 0;
     if (!ok) {
         if (options_.verbose_) {
@@ -530,7 +529,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 	}
         return OFFalse;	/* dstAE not known */
     }
-    
+
     strcpy(dstPeer, dstPeerName);
 
     if (options_.restrictMoveToSameHost_) {
@@ -556,7 +555,7 @@ OFBool DcmQueryRetrieveMoveContext::mapMoveDestination(
 	    return OFFalse;
 	}
     }
-    
+
     return ok;
 }
 
@@ -590,83 +589,104 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
     switch (options_.networkTransferSyntaxOut_)
     {
       case EXS_LittleEndianImplicit:
-        /* we only support Little Endian Implicit */
-        transferSyntaxes[0]  = UID_LittleEndianImplicitTransferSyntax;
+        /* we only propose Little Endian Implicit */
+        transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 1;
         break;
       case EXS_LittleEndianExplicit:
         /* we prefer Little Endian Explicit */
         transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
         break;
       case EXS_BigEndianExplicit:
         /* we prefer Big Endian Explicit */
         transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
         transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-        transferSyntaxes[2]  = UID_LittleEndianImplicitTransferSyntax;
+        transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
         numTransferSyntaxes = 3;
         break;
-    case EXS_JPEGProcess14SV1TransferSyntax:
-      /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
-      transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEGProcess1TransferSyntax:
-      /* we prefer JPEGBaseline (default lossy for 8 bit images) */
-      transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEGProcess2_4TransferSyntax:
-      /* we prefer JPEGExtended (default lossy for 12 bit images) */
-      transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEG2000LosslessOnly:
-      /* we prefer JPEG 2000 lossless */
-      transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    case EXS_JPEG2000:
-      /* we prefer JPEG 2000 lossy or lossless */
-      transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
+      case EXS_JPEGProcess14SV1TransferSyntax:
+        /* we prefer JPEGLossless:Hierarchical-1stOrderPrediction (default lossless) */
+        transferSyntaxes[0] = UID_JPEGProcess14SV1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGProcess1TransferSyntax:
+        /* we prefer JPEGBaseline (default lossy for 8 bit images) */
+        transferSyntaxes[0] = UID_JPEGProcess1TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGProcess2_4TransferSyntax:
+        /* we prefer JPEGExtended (default lossy for 12 bit images) */
+        transferSyntaxes[0] = UID_JPEGProcess2_4TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEG2000LosslessOnly:
+        /* we prefer JPEG 2000 lossless */
+        transferSyntaxes[0] = UID_JPEG2000LosslessOnlyTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEG2000:
+        /* we prefer JPEG 2000 lossy or lossless */
+        transferSyntaxes[0] = UID_JPEG2000TransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGLSLossless:
+        /* we prefer JPEG-LS Lossless */
+        transferSyntaxes[0] = UID_JPEGLSLosslessTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_JPEGLSLossy:
+        /* we prefer JPEG-LS Lossy */
+        transferSyntaxes[0] = UID_JPEGLSLossyTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
+      case EXS_MPEG2MainProfileAtMainLevel:
+        /* we only propose MPEG2 MP@ML since we don't want to decompress */
+        transferSyntaxes[0] = UID_MPEG2MainProfileAtMainLevelTransferSyntax;
+        numTransferSyntaxes = 1;
+        break;
+      case EXS_RLELossless:
+        /* we prefer RLE Lossless */
+        transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
 #ifdef WITH_ZLIB
-    case EXS_DeflatedLittleEndianExplicit:
-      /* we prefer deflated transmission */
-      transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
+      case EXS_DeflatedLittleEndianExplicit:
+        /* we prefer deflated transmission */
+        transferSyntaxes[0] = UID_DeflatedExplicitVRLittleEndianTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
+        numTransferSyntaxes = 4;
+        break;
 #endif
-    case EXS_RLELossless:
-      /* we prefer RLE Lossless */
-      transferSyntaxes[0] = UID_RLELosslessTransferSyntax;
-      transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
-      transferSyntaxes[2] = UID_BigEndianExplicitTransferSyntax;
-      transferSyntaxes[3] = UID_LittleEndianImplicitTransferSyntax;
-      numTransferSyntaxes = 4;
-      break;
-    default:
+      default:
         /* We prefer explicit transfer syntaxes.
          * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
@@ -684,8 +704,8 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
         break;
     }
 #endif
-        
-    for (i=0; i<numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
+
+    for (i = 0; i < numberOfDcmLongSCUStorageSOPClassUIDs && cond.good(); i++) {
 	cond = ASC_addPresentationContext(
 	    params, pid, dcmLongSCUStorageSOPClassUIDs[i],
 	    transferSyntaxes, numTransferSyntaxes);
@@ -698,7 +718,10 @@ OFCondition DcmQueryRetrieveMoveContext::addAllStoragePresentationContexts(T_ASC
 /*
  * CVS Log
  * $Log: dcmqrcbm.cc,v $
- * Revision 1.9  2005-12-20 11:21:30  meichel
+ * Revision 1.10  2009-02-06 15:25:43  joergr
+ * Added support for JPEG-LS and MPEG2 transfer syntaxes.
+ *
+ * Revision 1.9  2005/12/20 11:21:30  meichel
  * Removed duplicate parameter
  *
  * Revision 1.8  2005/12/08 15:47:06  meichel
