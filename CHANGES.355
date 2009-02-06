@@ -1,6 +1,51 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.05 (riesmeier)
+
+- Added support for JPEG-LS and MPEG2 transfer syntaxes.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/libsrc/dcmqrcbm.cc
+
+- Fixed minor inconsistencies with regard to transfer syntaxes.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+
+- Added support for writing files with deflated transfer syntax.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/docs/movescu.man
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added documentation of supported transfer syntaxes (esp. compression).
+  Affects: dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmqrdb/docs/dcmqrscp.man
+
+- Added new option that allows for accepting all supported transfer syntaxes.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+
+- Call OFConsoleApplication::checkDependence() where appropriate.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+
+- Reworked checking of command line options for user identify negotiation.
+  Affects: dcmnet/apps/storescu.cc
+
 **** Changes from 2009.02.05 (onken)
 
 - Make usage of global "ignore parsing errors" flag in case of elements
