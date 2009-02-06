@@ -105,12 +105,10 @@ proposed transmission transfer syntaxes (not with --config-file):
           with local byte ordering first (default)
 
   -xe   --propose-little
-          propose all uncompressed TS, explicit VR
-          little endian first
+          propose all uncompressed TS, explicit VR little endian first
 
   -xb   --propose-big
-          propose all uncompressed TS, explicit VR
-          big endian first
+          propose all uncompressed TS, explicit VR big endian first
 
   -xi   --propose-implicit
           propose implicit VR little endian TS only
@@ -128,12 +126,23 @@ proposed transmission transfer syntaxes (not with --config-file):
           and all uncompressed transfer syntaxes
 
   -xv   --propose-j2k-lossless
-          propose default JPEG 2000 lossless TS
+          propose JPEG 2000 lossless TS
           and all uncompressed transfer syntaxes
 
   -xw   --propose-j2k-lossy
-          propose default JPEG 2000 lossy TS
+          propose JPEG 2000 lossy TS
           and all uncompressed transfer syntaxes
+
+  -xt   --propose-jls-lossless
+          propose JPEG-LS lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xu   --propose-jls-lossy
+          propose JPEG-LS lossy TS
+          and all uncompressed transfer syntaxes
+
+  -xm   --propose-mpeg2
+          propose MPEG2 Main Profile @ Main Level TS only
 
   -xr   --propose-rle
           propose RLE lossless TS
@@ -370,16 +379,33 @@ CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3
 BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
 \endverbatim
 
-Additional Storage SOP Classes can be used with the so-called "association
-negotiation profiles" (see below).
-
 The default behaviour of \b storescu is to propose two presentation contexts
 for each supported SOP class (abstract syntax) - one with the preferred
 transfer syntax and one with all other uncompressed transfer syntaxes.  The
 default preferred transfer syntax is explicit VR with byte ordering
 corresponding to the local byte ordering of the machine on which \b storescu
 is running.  This behaviour can be changed with the \e --propose, \e --combine
-and \e --required options, see above.
+and \e --required options, see above.  Depending on these options, the
+following transfer syntaxes are supported:
+
+\verbatim
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+\endverbatim
+
+Additional Storage SOP Classes and Transfer Syntaxes can be used with the
+so-called "association negotiation profiles" (see below).
 
 The \b storescu application does not support extended negotiation.
 
@@ -440,6 +466,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
