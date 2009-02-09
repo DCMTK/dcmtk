@@ -22,8 +22,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-06 15:27:39 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2009-02-09 09:13:20 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -300,7 +300,11 @@ main(int argc, char *argv[])
       cmd.addOption("--padding-off",            "-p",        "no padding (default)");
       cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
 #ifdef WITH_ZLIB
+#ifdef DISABLE_COMPRESSION_EXTENSION
     cmd.addSubGroup("deflate compression level (only with --write-xfer-deflated/same):");
+#else
+    cmd.addSubGroup("deflate compression level (only with -xd or --write-xfer-deflated/same):");
+#endif
       cmd.addOption("--compression-level",      "+cl",   1, "[l]evel: integer (default: 6)",
                                                             "0=uncompressed, 1=fastest, 9=best compression");
 #endif
@@ -607,8 +611,16 @@ main(int argc, char *argv[])
       if (cmd.findOption("--compression-level"))
       {
         OFCmdUnsignedInt compressionLevel = 0;
+#ifdef DISABLE_COMPRESSION_EXTENSION
         app.checkDependence("--compression-level", "--write-xfer-deflated or --write-xfer-same",
-          (options.writeTransferSyntax_ == EXS_DeflatedLittleEndianExplicit) || (options.writeTransferSyntax_ == EXS_Unknown));
+          (options.writeTransferSyntax_ == EXS_DeflatedLittleEndianExplicit) ||
+          (options.writeTransferSyntax_ == EXS_Unknown));
+#else
+        app.checkDependence("--compression-level", "--propose-deflated, --write-xfer-deflated or --write-xfer-same",
+          (options.networkTransferSyntaxOut_ == EXS_DeflatedLittleEndianExplicit) ||
+          (options.writeTransferSyntax_ == EXS_DeflatedLittleEndianExplicit) ||
+          (options.writeTransferSyntax_ == EXS_Unknown));
+#endif
         app.checkValue(cmd.getValueAndCheckMinMax(compressionLevel, 0, 9));
         dcmZlibCompressionLevel.set(OFstatic_cast(int, compressionLevel));
       }
@@ -746,6 +758,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.15  2009-02-09 09:13:20  joergr
+ * Allowed option --compression-level also with --propose-deflated (storescu).
+ *
  * Revision 1.14  2009-02-06 15:27:39  joergr
  * Added support for JPEG-LS and MPEG2 transfer syntaxes.
  * Fixed minor inconsistencies with regard to transfer syntaxes.

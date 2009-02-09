@@ -383,7 +383,8 @@ data set trailing padding (not with --write-dataset or --bit-preserving):
           align file on multiple of f bytes
           and items on multiple of i bytes
 
-deflate compression level (only with --write-xfer-deflated/same):
+deflate compression level (only with --propose-deflated or
+--write-xfer-deflated/same):
 
   +cl   --compression-level  [l]evel: integer (default: 6)
           0=uncompressed, 1=fastest, 9=best compression

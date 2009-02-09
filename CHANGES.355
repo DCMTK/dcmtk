@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.09 (riesmeier)
+
+- Allowed option --compression-level also with --propose-deflated (storescu).
+  Affects: dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/docs/dcmqrscp.man
+
 **** Changes from 2009.02.06 (riesmeier)
 
 - Added support for JPEG-LS and MPEG2 transfer syntaxes.
