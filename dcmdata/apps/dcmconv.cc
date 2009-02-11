@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-11 13:16:17 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-11 16:55:31 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ static DcmTagKey parseTagKey(const char *tagName)
       CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
       dcmDataDict.unlock();
       return DCM_UndefinedTagKey;
-    } else 
+    } else
     {
       return dicent->getKey();
     }
@@ -156,15 +156,15 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("handling of defined length UN elements:");
       cmd.addOption("--retain-un",           "-uc",    "retain elements as UN (default)");
       cmd.addOption("--convert-un",          "+uc",    "convert to real VR if known");
-      cmd.addSubGroup("handling of private max-length elements (implicit VR):");
-        cmd.addOption("--maxlength-dict",     "-sq",    "read as defined in dictionary (default)");
-        cmd.addOption("--maxlength-seq",      "+sq",    "read as sequence with undefined length");
+    cmd.addSubGroup("handling of private max-length elements (implicit VR):");
+      cmd.addOption("--maxlength-dict",      "-sq",    "read as defined in dictionary (default)");
+      cmd.addOption("--maxlength-seq",       "+sq",    "read as sequence with undefined length");
     cmd.addSubGroup("general handling of parser errors: ");
-        cmd.addOption("--ignore-parse-errors","+Ep",   "try to recover from parse errors");
-        cmd.addOption("--handle-parse-errors","-Ep",   "handle parse errors and stop parsing (default)");
-    cmd.addSubGroup("other parsing options: ");
-        cmd.addOption("--stop-at-elem",       "+st",1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
-                                                       "stop parsinng after element specified by t");
+      cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
+      cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
+    cmd.addSubGroup("other parsing options:");
+        cmd.addOption("--stop-after-elem",   "+st", 1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+                                                       "stop parsing after element specified by t");
     cmd.addSubGroup("automatic data correction:");
       cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
       cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
@@ -330,7 +330,7 @@ int main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--stop-at-elem"))
+      if (cmd.findOption("--stop-after-elem"))
       {
         const char *tagName = NULL;
         app.checkValue(cmd.getValue(tagName));
@@ -338,7 +338,7 @@ int main(int argc, char *argv[])
         if (key != DCM_UndefinedTagKey)
           dcmStopParsingAfterElement.set(key);
         else
-          app.printError("No valid key given for option --stop-at-elem");
+          app.printError("No valid key given for option --stop-after-elem");
       }
 
       cmd.beginOptionBlock();
@@ -518,6 +518,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.59  2009-02-11 16:55:31  joergr
+** Renamed option --stop-at-elem to --stop-after-elem and fixed typo.
+**
 ** Revision 1.58  2009-02-11 13:16:17  onken
 ** Added global parser flag permitting to stop parsing after a specific
 ** element was parsed on dataset level (useful for removing garbage at

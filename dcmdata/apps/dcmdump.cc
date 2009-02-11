@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-11 13:16:17 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-11 16:55:31 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,9 +232,9 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("general handling of parser errors: ");
         cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
         cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
-      cmd.addSubGroup("other parsing options: ");
-        cmd.addOption("--stop-at-elem",        "+st",1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
-                                                         "stop parsinng after element specified by t");
+      cmd.addSubGroup("other parsing options:");
+        cmd.addOption("--stop-after-elem",     "+st", 1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+                                                         "stop parsing after element specified by t");
       cmd.addSubGroup("automatic data correction:");
         cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
         cmd.addOption("--disable-correction",  "-dc",    "disable automatic data correction");
@@ -495,7 +495,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--stop-at-elem"))
+      if (cmd.findOption("--stop-after-elem"))
       {
         const char *tagName = NULL;
         app.checkValue(cmd.getValue(tagName));
@@ -503,7 +503,7 @@ int main(int argc, char *argv[])
         if (key != DCM_UndefinedTagKey)
           dcmStopParsingAfterElement.set(key);
         else
-          app.printError("No valid key given for option --stop-at-elem");
+          app.printError("No valid key given for option --stop-after-elem");
       }
 
       if (cmd.findOption("--search", 0, OFCommandLine::FOM_FirstFromLeft))
@@ -748,6 +748,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.73  2009-02-11 16:55:31  joergr
+ * Renamed option --stop-at-elem to --stop-after-elem and fixed typo.
+ *
  * Revision 1.72  2009-02-11 13:16:17  onken
  * Added global parser flag permitting to stop parsing after a specific
  * element was parsed on dataset level (useful for removing garbage at

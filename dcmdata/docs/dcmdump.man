@@ -160,8 +160,8 @@ general handling of parser errors:
 
 other parsing options:
 
-  +st  --stop-at-elem  [t]ag: "xxxx,xxxx" or a data dictionary
-         stop parsinng after element specified by t
+  +st  --stop-after-elem  [t]ag: "xxxx,xxxx" or a data dictionary
+         stop parsing after element specified by t
 
 bitstream format of deflated input:
 
