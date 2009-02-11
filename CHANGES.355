@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.11 (riesmeier)
+
+- Introduced new error code EC_FileMetaInfoHeaderMissing.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcfilefo.cc
+
 **** Changes from 2009.02.11 (onken)
 
 - Added global parser flag permitting to stop parsing after a specific

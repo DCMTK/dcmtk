@@ -22,8 +22,8 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:54:30 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-02-11 16:36:04 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,8 @@ extern const OFCondition EC_TooManyBytesRequested;
 extern const OFCondition EC_InvalidBasicOffsetTable;
 /// Element length is larger than (explicit) length of surrounding item
 extern const OFCondition EC_ElemLengthLargerThanItem;
+// File meta information header missing
+extern const OFCondition EC_FileMetaInfoHeaderMissing;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -130,6 +132,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.28  2009-02-11 16:36:04  joergr
+** Introduced new error code EC_FileMetaInfoHeaderMissing.
+**
 ** Revision 1.27  2009-02-04 17:54:30  joergr
 ** Fixed various layout and formatting issues.
 **

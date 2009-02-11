@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-02-11 16:35:27 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -505,7 +505,7 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
         if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
         {
             char * xferid = NULL;
-            xferUI->getString(xferid);     
+            xferUI->getString(xferid);
             DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
             newxfer = localXfer.getXfer();
             DCM_dcmdataDebug(4, ("DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
@@ -584,7 +584,7 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
             {
                 // reject file if no meta header present
                 if (errorFlag.good() && (newxfer == EXS_Unknown))
-                    errorFlag = EC_InvalidStream;
+                    errorFlag = EC_FileMetaInfoHeaderMissing;
             }
             if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
             {
@@ -898,6 +898,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.49  2009-02-11 16:35:27  joergr
+** Introduced new error code EC_FileMetaInfoHeaderMissing.
+**
 ** Revision 1.48  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
