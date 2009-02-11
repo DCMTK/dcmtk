@@ -124,6 +124,11 @@ general handling of parser errors:
   -Ep  --handle-parse-errors
          handle parse errors and stop parsing (default)
 
+other parsing options:
+
+  +st  --stop-at-elem  [t]ag: "xxxx,xxxx" or a data dictionary
+         stop parsinng after element specified by t
+
 automatic data correction:
 
   +dc  --enable-correction

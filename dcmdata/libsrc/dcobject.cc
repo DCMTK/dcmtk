@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:58:53 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-11 13:16:36 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ OFGlobal<OFBool> dcmAutoDetectDatasetXfer(OFFalse);
 OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
 OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
 OFGlobal<OFBool> dcmIgnoreParsingErrors(OFFalse);
+OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)
 
 // ****** public methods **********************************
 
@@ -472,6 +473,11 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.58  2009-02-11 13:16:36  onken
+ * Added global parser flag permitting to stop parsing after a specific
+ * element was parsed on dataset level (useful for removing garbage at
+ * end of file).
+ *
  * Revision 1.57  2009-02-04 17:58:53  joergr
  * Fixed various layout and formatting issues.
  *

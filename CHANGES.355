@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.11 (onken)
+
+- Added global parser flag permitting to stop parsing after a specific
+  element was parsed on dataset level (useful for removing garbage at
+  end of file).
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+
 **** Changes from 2009.02.09 (riesmeier)
 
 - Allowed option --compression-level also with --propose-deflated (storescu).

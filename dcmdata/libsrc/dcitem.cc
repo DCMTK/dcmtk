@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-05 14:59:43 $
- *  CVS/RCS Revision: $Revision: 1.127 $
+ *  Update Date:      $Date: 2009-02-11 13:16:36 $
+ *  CVS/RCS Revision: $Revision: 1.128 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -985,9 +985,9 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
             fStartPosition = inStream.tell();  // start position of this item
             setTransferState(ERW_inWork);
         }
-        DcmTag newTag;
+        DcmTag newTag; OFBool readStopElem = OFFalse;
         /* start a loop in order to read all elements (attributes) which are contained in the inStream */
-        while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete))
+        while (inStream.good() && (getTransferredBytes() < getLengthField() || !lastElementComplete) && !readStopElem)
         {
             /* initialize variables */
             Uint32 newValueLength = 0;
@@ -998,7 +998,6 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                 /* read this element's tag and length information */
                 /* (and possibly also VR information) from the inStream */
                 errorFlag = readTagAndLength(inStream, xfer, newTag, newValueLength, bytes_tagAndLen);
-
                 /* increase counter correspondingly */
                 incTransferredBytes(bytes_tagAndLen);
 
@@ -1053,7 +1052,19 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
             {
                 // If we completed one element, update the private tag cache.
                 if (lastElementComplete)
+                {
                     privateCreatorCache.updateCache(elementList->get());
+                    // evaluate option for skipping rest of dataset
+                    if ( (dcmStopParsingAfterElement.get() != DCM_UndefinedTagKey) && 
+                         (dcmStopParsingAfterElement.get() == elementList->get()->getTag()) &&
+                          ident() == EVR_dataset)
+                    {
+                        ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
+                        << " encountered, skipping rest of dataset" << OFendl;
+                        ofConsole.unlockCerr();
+                        readStopElem = OFTrue;
+                    }
+                }
             } else
                 break; // if some error was encountered terminate the while-loop
         } //while
@@ -1061,10 +1072,15 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
         /* determine an appropriate result value; note that if the above called read function */
         /* encountered the end of the stream before all information for this element could be */
         /* read from the stream, the errorFlag has already been set to EC_StreamNotifyClient. */
-        if ((getTransferredBytes() < getLengthField() || !lastElementComplete) && errorFlag.good())
-            errorFlag = EC_StreamNotifyClient;
-        if (errorFlag.good() && inStream.eos())
-            errorFlag = EC_EndOfStream;
+        if (errorFlag.good())
+        {
+          // if stop element was read or end of stream occurs, tell parser end of stream is reached
+          if (readStopElem || inStream.eos())
+              errorFlag = EC_EndOfStream;
+          // if all bytes could be read or last element read could not be completed, set to error
+          else if ((getTransferredBytes() < getLengthField() || !lastElementComplete))
+              errorFlag = EC_StreamNotifyClient;
+        }
     } // else errorFlag
     /* modify the result value: two kinds of special error codes do not count as an error */
     if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
@@ -3530,6 +3546,11 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.128  2009-02-11 13:16:36  onken
+** Added global parser flag permitting to stop parsing after a specific
+** element was parsed on dataset level (useful for removing garbage at
+** end of file).
+**
 ** Revision 1.127  2009-02-05 14:59:43  onken
 ** Make usage of global "ignore parsing errors" flag in case of elements
 ** being larger than rest of available input. However, if enabled, the

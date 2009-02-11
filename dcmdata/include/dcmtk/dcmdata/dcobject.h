@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:54:30 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-02-11 13:16:32 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,6 +144,20 @@ extern OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ; /* default OFFalse *
  */
 extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
 
+/** This flag indicates, whether parsing should stop after a certain
+ *  element in the stream was parsed. This is especially useful for
+ *  datasets containing garbage at the end, usually after the Pixel
+ *  Data attribute. To prevent the parser for "stumbling" over that
+ *  garbage, it is possible to tell the parser to stop after a
+ *  specific element. The flag is only sensitive to elements on 
+ *  dataset level, ie. inside sequence any occurence of the specified
+ *  tag is ignored. Caution: Note that if Pixel Data is chosen
+ *  as stop element, any attributes behind will not be parsed, e. g.
+ *  any digital signature attributes coming after.
+ *  Default is (0xffff,0xffff), which means that the feature is
+ *  disabled.
+ */
+extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement;
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM
@@ -624,6 +638,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.58  2009-02-11 13:16:32  onken
+ * Added global parser flag permitting to stop parsing after a specific
+ * element was parsed on dataset level (useful for removing garbage at
+ * end of file).
+ *
  * Revision 1.57  2009-02-04 17:54:30  joergr
  * Fixed various layout and formatting issues.
  *
