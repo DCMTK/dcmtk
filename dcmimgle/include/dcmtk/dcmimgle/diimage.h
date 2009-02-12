@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 10:03:53 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-02-12 12:01:17 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -584,7 +584,7 @@ class DiImage
 
     /** update Image Pixel Module attributes in the given dataset.
      *  Removes smallest/largest pixel value and updates pixel aspect ratio as well
-     *  as imager/pixel spacing.
+     *  as pixel spacing (if required).
      *  Used in writeXXXToDataset() routines.
      *
      ** @param  dataset  reference to DICOM image dataset
@@ -636,6 +636,8 @@ class DiImage
     int hasPixelSpacing;
     /// is 'true' if attribute 'ImagerPixelSpacing' is present
     int hasImagerPixelSpacing;
+    /// is 'true' if attribute 'hasNominalScannedPixelSpacing' is present
+    int hasNominalScannedPixelSpacing;
     /// is 'true' if attribute 'PixelAspectRatio' is present
     int hasPixelAspectRatio;
     /// is 'false' if derived from original image data (e.g. scaled)
@@ -658,6 +660,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
+ * Revision 1.43  2009-02-12 12:01:17  joergr
+ * Added support for NominalScannedPixelSpacing in order to determine the pixel
+ * aspect ratio (used for the new SC image IODs).
+ *
  * Revision 1.42  2008-05-20 10:03:53  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
  *
