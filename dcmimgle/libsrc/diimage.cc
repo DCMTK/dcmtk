@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-10-23 16:53:04 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2009-02-12 12:05:28 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,6 +71,7 @@ DiImage::DiImage(const DiDocument *docu,
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
     hasImagerPixelSpacing(0),
+    hasNominalScannedPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(1),
     InputData(NULL)
@@ -184,24 +185,38 @@ DiImage::DiImage(const DiDocument *docu,
                             }
                         }
                     } else {
-                        Sint32 sl2;
-                        hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
-                        if (hasPixelAspectRatio)
+                        hasNominalScannedPixelSpacing = (Document->getValue(DCM_NominalScannedPixelSpacing, PixelHeight, 0) > 0);
+                        if (hasNominalScannedPixelSpacing)
                         {
-                            PixelHeight = sl2;
-                            if (Document->getValue(DCM_PixelAspectRatio, sl2, 1) < 2)
+                            if (Document->getValue(DCM_NominalScannedPixelSpacing, PixelWidth, 1) < 2)
                             {
                                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
-                                    ofConsole.lockCerr() << "WARNING: missing second value for 'PixelAspectRatio' ... "
+                                    ofConsole.lockCerr() << "WARNING: missing second value for 'NominalScannedPixelSpacing' ... "
                                                          << "assuming 'Width' = " << PixelWidth << " !" << OFendl;
                                     ofConsole.unlockCerr();
                                 }
-                            } else
-                                PixelWidth = sl2;
+                            }
                         } else {
-                            PixelWidth = 1;
-                            PixelHeight = 1;
+                            Sint32 sl2;
+                            hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
+                            if (hasPixelAspectRatio)
+                            {
+                                PixelHeight = sl2;
+                                if (Document->getValue(DCM_PixelAspectRatio, sl2, 1) < 2)
+                                {
+                                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                                    {
+                                        ofConsole.lockCerr() << "WARNING: missing second value for 'PixelAspectRatio' ... "
+                                                             << "assuming 'Width' = " << PixelWidth << " !" << OFendl;
+                                        ofConsole.unlockCerr();
+                                    }
+                                } else
+                                    PixelWidth = sl2;
+                            } else {
+                                PixelWidth = 1;
+                                PixelHeight = 1;
+                            }
                         }
                     }
                 }
@@ -264,6 +279,7 @@ DiImage::DiImage(const DiDocument *docu,
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
     hasImagerPixelSpacing(0),
+    hasNominalScannedPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(1),
     InputData(NULL)
@@ -292,6 +308,7 @@ DiImage::DiImage(const DiImage *image,
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
+    hasNominalScannedPixelSpacing(image->hasNominalScannedPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
     InputData(NULL)
@@ -323,6 +340,7 @@ DiImage::DiImage(const DiImage *image,
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(0),
     hasImagerPixelSpacing(0),
+    hasNominalScannedPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(0),
     InputData(NULL)
@@ -339,7 +357,17 @@ DiImage::DiImage(const DiImage *image,
     }
     else if (image->hasImagerPixelSpacing)
     {
-        hasImagerPixelSpacing = image->hasImagerPixelSpacing;
+        /* never change ImagerPixelSpacing, use PixelSpacing instead */
+        hasImagerPixelSpacing = 0;
+        hasPixelSpacing = 1;
+        PixelWidth = image->PixelWidth / xfactor;
+        PixelHeight = image->PixelHeight / yfactor;
+    }
+    else if (image->hasNominalScannedPixelSpacing)
+    {
+        /* never change NominalScannedPixelSpacing, use PixelSpacing instead */
+        hasNominalScannedPixelSpacing = 0;
+        hasPixelSpacing = 1;
         PixelWidth = image->PixelWidth / xfactor;
         PixelHeight = image->PixelHeight / yfactor;
     }
@@ -375,6 +403,7 @@ DiImage::DiImage(const DiImage *image,
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
+    hasNominalScannedPixelSpacing(image->hasNominalScannedPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
     InputData(NULL)
@@ -404,6 +433,7 @@ DiImage::DiImage(const DiImage *image,
     hasSignedRepresentation(0),
     hasPixelSpacing(image->hasPixelSpacing),
     hasImagerPixelSpacing(image->hasImagerPixelSpacing),
+    hasNominalScannedPixelSpacing(image->hasNominalScannedPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
     InputData(NULL)
@@ -452,7 +482,7 @@ void DiImage::deleteInputData()
 
 void DiImage::checkPixelExtension()
 {
-    if (hasPixelSpacing || hasImagerPixelSpacing || hasPixelAspectRatio)
+    if (hasPixelSpacing || hasImagerPixelSpacing || hasNominalScannedPixelSpacing || hasPixelAspectRatio)
     {
         if (PixelHeight == 0)
         {
@@ -462,6 +492,7 @@ void DiImage::checkPixelExtension()
                                      << "... assuming 1 !" << OFendl;
                 ofConsole.unlockCerr();
             }
+            /* according to the standard, a value of 0 would be valid in case number of rows is 1 */
             PixelHeight = 1;
         }
         else if (PixelHeight < 0)
@@ -482,6 +513,7 @@ void DiImage::checkPixelExtension()
                                      << "... assuming 1 !" << OFendl;
                 ofConsole.unlockCerr();
             }
+            /* according to the standard, a value of 0 would be valid in case number of columns is 1 */
             PixelWidth = 1;
         }
         else if (PixelWidth < 0)
@@ -634,7 +666,7 @@ int DiImage::detachPixelData()
 int DiImage::setColumnRowRatio(const double ratio)
 {
     hasPixelAspectRatio = 1;
-    hasPixelSpacing = hasImagerPixelSpacing = 0;
+    hasPixelSpacing = hasImagerPixelSpacing = hasNominalScannedPixelSpacing = 0;
     PixelWidth = ratio;
     PixelHeight = 1;
     checkPixelExtension();
@@ -645,7 +677,7 @@ int DiImage::setColumnRowRatio(const double ratio)
 int DiImage::setRowColumnRatio(const double ratio)
 {
     hasPixelAspectRatio = 1;
-    hasPixelSpacing = hasImagerPixelSpacing = 0;
+    hasPixelSpacing = hasImagerPixelSpacing = hasNominalScannedPixelSpacing = 0;
     PixelWidth = 1;
     PixelHeight = ratio;
     checkPixelExtension();
@@ -686,12 +718,6 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
         dataset.putAndInsertString(DCM_PixelSpacing, buffer);
     } else
         delete dataset.remove(DCM_PixelSpacing);
-    if (hasImagerPixelSpacing)
-    {
-        dataset.putAndInsertString(DCM_ImagerPixelSpacing, buffer);
-        dataset.putAndInsertString(DCM_ImagerPixelSpacing, buffer);
-    } else
-        delete dataset.remove(DCM_ImagerPixelSpacing);
     if (hasPixelAspectRatio)
     {
         dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
@@ -870,6 +896,12 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.38  2009-02-12 12:05:28  joergr
+ * Never update value of ImagerPixelSpacing when image is scaled, use
+ * PixelSpacing instead.
+ * Added support for NominalScannedPixelSpacing in order to determine the pixel
+ * aspect ratio (used for the new SC image IODs).
+ *
  * Revision 1.37  2007-10-23 16:53:04  joergr
  * Fixed bug in writeFrameToDataset() for images with BitsAllocated = 32.
  *

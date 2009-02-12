@@ -1,12 +1,31 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.12 (riesmeier)
+
+- Never update value of ImagerPixelSpacing when image is scaled, use
+  PixelSpacing instead.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/libsrc/diimage.cc
+
+- Added support for NominalScannedPixelSpacing in order to determine the pixel
+  aspect ratio (used for the new SC image IODs).
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dcmimage.h
+           dcmimgle/include/dcmtk/dcmimgle/diimage.h
+           dcmimgle/libsrc/diimage.cc
+
 **** Changes from 2009.02.11 (riesmeier)
 
 - Introduced new error code EC_FileMetaInfoHeaderMissing.
   Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
            dcmdata/libsrc/dcerror.cc
            dcmdata/libsrc/dcfilefo.cc
+
+- Renamed option --stop-at-elem to --stop-after-elem and fixed typo.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
 
 **** Changes from 2009.02.11 (onken)
 

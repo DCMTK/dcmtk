@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-11 08:35:28 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2009-02-12 12:03:56 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,7 +248,7 @@ class DicomImage
 
     /** get image depth
      *
-     ** @return number of bits per sample
+     ** @return number of bits per sample of the internal representation
      */
     inline int getDepth() const
     {
@@ -277,8 +277,10 @@ class DicomImage
             Image->getMonoImagePtr()->getMinMaxValues(min, max, mode) : 0;
     }
 
-    /** get width height ratio (pixel aspect ratio: x/y)
-     *
+    /** get width height ratio (pixel aspect ratio: x/y).
+     *  If present in the dataset and not overwritten using setWidthHeightRatio(), the following
+     *  attributes are supported in order to determine this value:
+     *  - Pixel Spacing, Imager Pixel Spacing, Nominal Scanned Pixel Spacing, Pixel Aspect Ratio
      ** @return pixel aspect ratio (floating point value)
      */
     inline double getWidthHeightRatio() const
@@ -287,7 +289,10 @@ class DicomImage
             Image->getColumnRowRatio() : 0;
     }
 
-    /** get height width ratio (pixel aspect ratio: y/x)
+    /** get height width ratio (pixel aspect ratio: y/x).
+     *  If present in the dataset and not overwritten using setWidthHeightRatio(), the following
+     *  attributes are supported in order to determine this value:
+     *  - Pixel Spacing, Imager Pixel Spacing, Nominal Scanned Pixel Spacing, Pixel Aspect Ratio
      *
      ** @return pixel aspect ratio (floating point value)
      */
@@ -1565,7 +1570,7 @@ class DicomImage
      *    - Planar Configuration (only if "Samples per Pixel" is greater than 1)
      *    - Pixel Representation, Pixel Data
      *  Updates the following DICOM attributes (if present in the original image dataset):
-     *    - Imager Pixel Spacing and/or Imager Pixel Spacing and/or Pixel Aspect Ratio
+     *    - Pixel Spacing and/or Pixel Aspect Ratio
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
      *  CIF_KeepYCbCrColorModel set).
      *
@@ -1600,7 +1605,7 @@ class DicomImage
      *    - Planar Configuration (only if "Samples per Pixel" is greater than 1)
      *    - Pixel Representation, Pixel Data
      *  Updates the following DICOM attributes (if present in the original image dataset):
-     *    - Imager Pixel Spacing and/or Imager Pixel Spacing and/or Pixel Aspect Ratio
+     *    - Pixel Spacing and/or Pixel Aspect Ratio
      *  Supported output color models: Monochrome 1/2, RGB (and YCbCr_Full if flag
      *  CIF_KeepYCbCrColorModel set).
      *
@@ -1833,6 +1838,12 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
+ * Revision 1.61  2009-02-12 12:03:56  joergr
+ * Never update value of ImagerPixelSpacing when image is scaled, use
+ * PixelSpacing instead.
+ * Added support for NominalScannedPixelSpacing in order to determine the pixel
+ * aspect ratio (used for the new SC image IODs).
+ *
  * Revision 1.60  2008-07-11 08:35:28  joergr
  * Fixed typo in API documentation.
  *
