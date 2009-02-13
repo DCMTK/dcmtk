@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.13 (riesmeier)
+
+- Added private undefined copy constructor and assignment operator in order to
+  avoid compiler warnings (reported by gcc with additional flags).
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
+- Added initialization of member variables to class OFConfigFileCursor in order
+  to avoid compiler warnings (reported by gcc with additional flags).
+  Affects: ofstd/libsrc/ofconfig.cc
+
 **** Changes from 2009.02.12 (riesmeier)
 
 - Never update value of ImagerPixelSpacing when image is scaled, use
