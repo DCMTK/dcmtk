@@ -22,8 +22,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-30 13:49:01 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-02-13 12:56:18 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -804,6 +804,12 @@ public:
 
 private:
 
+  // private undefined copy constructor
+  OFFile(const OFFile &arg);
+
+  // private undefined assignment operator
+  OFFile &operator=(const OFFile &arg);
+
   /// the file maintained by this object
   FILE *file_;
 
@@ -827,6 +833,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.7  2009-02-13 12:56:18  joergr
+ * Added private undefined copy constructor and assignment operator in order to
+ * avoid compiler warnings (reported by gcc with additional flags).
+ *
  * Revision 1.6  2009-01-30 13:49:01  joergr
  * Replaced checking of macro WIN32 by _WIN32.
  *
