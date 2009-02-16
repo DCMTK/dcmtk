@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-11 13:16:36 $
- *  CVS/RCS Revision: $Revision: 1.128 $
+ *  Update Date:      $Date: 2009-02-16 16:09:36 $
+ *  CVS/RCS Revision: $Revision: 1.129 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -863,7 +863,9 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
     /* if desired, check if length is greater than length of surrounding item */
     const Uint32 valueLengthItem = getLengthField();
     if ((ident() == EVR_item /* e.g. meta info would have length 0 */) &&
-        (valueLengthItem != DCM_UndefinedLength /* this does not work in undefined length items */))
+        (valueLengthItem != DCM_UndefinedLength /* this does not work in undefined length items */) &&
+        (valueLength != DCM_UndefinedLength) /* Also, do not check sequences with undefined length 0xFFFFFFFF */
+       )
     {
         const offile_off_t remainingItemBytes = valueLengthItem - (inStream.tell() - fStartPosition);
         if (valueLength > remainingItemBytes)
@@ -3546,6 +3548,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.129  2009-02-16 16:09:36  onken
+** Fixed bug that caused incorrect error message when parsing undefined length
+** sequences inside defined length items.
+**
 ** Revision 1.128  2009-02-11 13:16:36  onken
 ** Added global parser flag permitting to stop parsing after a specific
 ** element was parsed on dataset level (useful for removing garbage at

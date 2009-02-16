@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.16 (onken)
+
+- Fixed bug that caused incorrect error message when parsing undefined length
+  sequences inside defined length items. Thanks to Mathieu Malaterre
+  <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/libsrc/dcitem.cc  
+
 **** Changes from 2009.02.13 (riesmeier)
 
 - Added private undefined copy constructor and assignment operator in order to
