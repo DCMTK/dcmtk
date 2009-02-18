@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.18 (eichelberg)
+
+- Minor changes needed for VC6
+  Affects: dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2009.02.16 (onken)
 
 - Fixed bug that caused incorrect error message when parsing undefined length

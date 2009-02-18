@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-16 16:09:36 $
- *  CVS/RCS Revision: $Revision: 1.129 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-02-18 12:22:11 $
+ *  CVS/RCS Revision: $Revision: 1.130 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -872,7 +872,9 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
         {
             ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
                                  << " larger (" << valueLength << ") than remaining bytes ("
-                                 << remainingItemBytes << ") of surrounding item" << OFendl;
+								 /* need to cast remainingItemBytes to unsigned long because VC6 cannot print offile_off_t (int64_t). */
+                                 << OFstatic_cast(unsigned long, remainingItemBytes) 
+								 << ") of surrounding item" << OFendl;
             ofConsole.unlockCerr();
             l_error = EC_ElemLengthLargerThanItem;
         }
@@ -3548,6 +3550,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.130  2009-02-18 12:22:11  meichel
+** Minor changes needed for VC6
+**
 ** Revision 1.129  2009-02-16 16:09:36  onken
 ** Fixed bug that caused incorrect error message when parsing undefined length
 ** sequences inside defined length items.

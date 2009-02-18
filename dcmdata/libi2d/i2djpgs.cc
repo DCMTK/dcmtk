@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-03-10 13:10:01 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-02-18 12:22:11 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -878,7 +878,12 @@ void I2DJpegSource::debugDumpJPEGFileMap() const
   {
     if (m_logStream)
     {
-      m_logStream->lockCerr() <<  "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) << STD_NAMESPACE setfill('0') << (*it)->bytePos <<" | Marker: " << jpegMarkerToString( (*it)->marker) << OFendl << STD_NAMESPACE dec;
+      m_logStream->lockCerr() 
+		  <<  "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) 
+		  << STD_NAMESPACE setfill('0') 
+		  /* need to cast bytePos to unsigned long to keep VC6 happy */
+		  << OFstatic_cast(unsigned long, (*it)->bytePos)
+		  <<" | Marker: " << jpegMarkerToString( (*it)->marker) << OFendl << STD_NAMESPACE dec;
       m_logStream->unlockCerr();
     }
     it++;
@@ -916,6 +921,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.4  2009-02-18 12:22:11  meichel
+ * Minor changes needed for VC6
+ *
  * Revision 1.3  2008-03-10 13:10:01  onken
  * Changed OFListIterator to OFListConstIterator in order to complile when
  * HAVE_STL is defined.
