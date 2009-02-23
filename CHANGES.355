@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2009.02.23 (riesmeier)
 
+- Fixed issue with checking of DICOM input files (wrong handling of OFCondition
+  return value).
+  Affects: dcmdata/libsrc/dcddirif.cc
+
 - Fixed man page formatting.
   Affects: dcmjpeg/docs/dcmj2pnm.man
 

@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-15 10:19:03 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2009-02-23 13:28:16 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2215,12 +2215,13 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                             /* VerificationDateTime is required if verification flag is VERIFIED,
                                retrieve most recent (= last) entry from VerifyingObserverSequence */
                             DcmItem *ditem = NULL;
-                            result = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
-                            if (result.good())
+                            OFCondition l_status = dataset->findAndGetSequenceItem(DCM_VerifyingObserverSequence, ditem, -1 /*last*/);
+                            if (l_status.good())
                             {
                                 if (!checkExistsWithValue(ditem, DCM_VerificationDateTime, filename))
                                     result = EC_InvalidTag;
-                            }
+                            } else
+                                result = l_status;
                         }
                     }
                     break;
@@ -2356,40 +2357,46 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                     break;
                 case ERT_Image:
                 default:
-                    /* it can only be an image */
-                    if (!InventMode)
                     {
-                        if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
-                            result = EC_InvalidTag;
-                    }
-                    /* check profile specific requirements */
-                    if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
-                        (ApplicationProfile == AP_USBandFlash) ||
-                        (ApplicationProfile == AP_MPEG2MPatMLDVD))
-                    {
-                        /* check presence of type 1 elements */
-                        if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
-                            !checkExistsWithValue(dataset, DCM_Columns, filename))
+                        OFCondition l_status = EC_Normal;
+                        /* it can only be an image */
+                        if (!InventMode)
                         {
-                            result = EC_InvalidTag;
+                            if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                                result = EC_InvalidTag;
                         }
-                    }
-                    else if (ApplicationProfile == AP_BasicCardiac)
-                        result = checkBasicCardiacAttributes(dataset, filename);
-                    else if ((ApplicationProfile == AP_XrayAngiographic) || (ApplicationProfile == AP_XrayAngiographicDVD))
-                        result = checkXrayAngiographicAttributes(dataset, mediaSOPClassUID, filename);
-                    else if (ApplicationProfile == AP_DentalRadiograph)
-                        result = checkDentalRadiographAttributes(dataset, filename);
-                    else if (ApplicationProfile == AP_CTandMR)
-                        result = checkCTandMRAttributes(dataset, mediaSOPClassUID, filename);
-                    else if ((ApplicationProfile == AP_UltrasoundIDSF) ||
-                             (ApplicationProfile == AP_UltrasoundSCSF) ||
-                             (ApplicationProfile == AP_UltrasoundCCSF) ||
-                             (ApplicationProfile == AP_UltrasoundIDMF) ||
-                             (ApplicationProfile == AP_UltrasoundSCMF) ||
-                             (ApplicationProfile == AP_UltrasoundCCMF))
-                    {
-                        result = checkUltrasoundAttributes(dataset, transferSyntax, filename);
+                        /* check profile specific requirements */
+                        if ((ApplicationProfile == AP_GeneralPurposeDVD) ||
+                            (ApplicationProfile == AP_USBandFlash) ||
+                            (ApplicationProfile == AP_MPEG2MPatMLDVD))
+                        {
+                            /* check presence of type 1 elements */
+                            if (!checkExistsWithValue(dataset, DCM_Rows, filename) ||
+                                !checkExistsWithValue(dataset, DCM_Columns, filename))
+                            {
+                                result = EC_InvalidTag;
+                            }
+                        }
+                        else if (ApplicationProfile == AP_BasicCardiac)
+                            l_status = checkBasicCardiacAttributes(dataset, filename);
+                        else if ((ApplicationProfile == AP_XrayAngiographic) || (ApplicationProfile == AP_XrayAngiographicDVD))
+                            l_status = checkXrayAngiographicAttributes(dataset, mediaSOPClassUID, filename);
+                        else if (ApplicationProfile == AP_DentalRadiograph)
+                            l_status = checkDentalRadiographAttributes(dataset, filename);
+                        else if (ApplicationProfile == AP_CTandMR)
+                            l_status = checkCTandMRAttributes(dataset, mediaSOPClassUID, filename);
+                        else if ((ApplicationProfile == AP_UltrasoundIDSF) ||
+                                 (ApplicationProfile == AP_UltrasoundSCSF) ||
+                                 (ApplicationProfile == AP_UltrasoundCCSF) ||
+                                 (ApplicationProfile == AP_UltrasoundIDMF) ||
+                                 (ApplicationProfile == AP_UltrasoundSCMF) ||
+                                 (ApplicationProfile == AP_UltrasoundCCMF))
+                        {
+                            l_status = checkUltrasoundAttributes(dataset, transferSyntax, filename);
+                        }
+                        /* set final result status (if everything else was ok) */
+                        if (result.good())
+                            result = l_status;
                     }
             }
         }
@@ -5089,6 +5096,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.29  2009-02-23 13:28:16  joergr
+ *  Fixed issue with checking of DICOM input files (wrong handling of OFCondition
+ *  return value).
+ *
  *  Revision 1.28  2009-01-15 10:19:03  joergr
  *  Do not reject compressed images if corresponding decoder is not registered
  *  but no icon images are to be created anyway.
