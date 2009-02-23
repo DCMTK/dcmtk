@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.23 (riesmeier)
+
+- Fixed man page formatting.
+  Affects: dcmjpeg/docs/dcmj2pnm.man
+
 **** Changes from 2009.02.18 (eichelberg)
 
 - Minor changes needed for VC6
@@ -12,7 +17,7 @@ Changes between releases are documented here.
 - Fixed bug that caused incorrect error message when parsing undefined length
   sequences inside defined length items. Thanks to Mathieu Malaterre
   <mathieu.malaterre@gmail.com> for the report.
-  Affects: dcmdata/libsrc/dcitem.cc  
+  Affects: dcmdata/libsrc/dcitem.cc
 
 **** Changes from 2009.02.13 (riesmeier)
 
