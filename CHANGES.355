@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.25 (riesmeier)
+
+- Removed wrong comment (apparently copied from other class).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcwcache.h
+
 **** Changes from 2009.02.23 (riesmeier)
 
 - Fixed issue with checking of DICOM input files (wrong handling of OFCondition

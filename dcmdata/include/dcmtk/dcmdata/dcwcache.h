@@ -22,8 +22,8 @@
  *  Purpose: file cache facility for DcmElement::getPartialValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:54:31 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-02-25 12:58:55 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,14 +42,7 @@
 class DcmElement;
 class DcmOutputStream;
 
-#define DcmWriteCacheBufsize 65536  /* buffer size, in bytes */
-
-/** This class implements a simple container that stores an input stream,
- *  the position of that input stream corresponding to the start of a DICOM
- *  element value field contained in the stream and the current "owner" object.
- *  It is used to keep a single file handle open during multiple calls to
- *  DcmElement::getPartialValue(), thus speeding up the reading.
- */
+#define DcmWriteCacheBufsize 65536    /* buffer size, in bytes */
 
 /** This class implements a buffering mechanism that is used when writing large
  *  elements that reside in file into an output stream. DcmElement::getPartialValue
@@ -156,6 +149,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcwcache.h,v $
+ * Revision 1.3  2009-02-25 12:58:55  joergr
+ * Removed wrong comment (apparently copied from other class).
+ *
  * Revision 1.2  2009-02-04 17:54:31  joergr
  * Fixed various layout and formatting issues.
  *
