@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 18:01:23 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2009-02-25 13:10:56 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -995,8 +995,6 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
                                const E_EncodingType enctype,
                                const E_GrpLenEncoding glenc)
 {
-    DcmWriteCache wcache;
-
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
     {
       ofConsole.lockCerr() << "Error: DcmDicomDir::write(): wrong TransferSyntax used - only LittleEndianExplicit allowed!" << OFendl;
@@ -1075,19 +1073,25 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     getDirFileFormat().validateMetaInfo( outxfer );
 
-    metainfo.transferInit();
-    metainfo.write(*outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype, &wcache);
-    metainfo.transferEnd();
+    {
+        // it is important that the cache object is destroyed before the file is renamed!
+        // Therefore, the variable declaration is "encapsulated" in curly brackets.
+        DcmWriteCache wcache;
 
-    Uint32 beginOfDataset = OFstatic_cast(Uint32, outStream->tell());
+        metainfo.transferInit();
+        metainfo.write(*outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype, &wcache);
+        metainfo.transferEnd();
 
-    // convert to writable format
-    errorFlag = convertTreeToLinear(beginOfDataset, outxfer, enctype, glenc, localUnresRecs);
+        Uint32 beginOfDataset = OFstatic_cast(Uint32, outStream->tell());
 
-    dset.transferInit();
-    // do not calculate GroupLength and Padding twice!
-    dset.write(*outStream, outxfer, enctype, &wcache, EGL_noChange);
-    dset.transferEnd();
+        // convert to writable format
+        errorFlag = convertTreeToLinear(beginOfDataset, outxfer, enctype, glenc, localUnresRecs);
+
+        dset.transferInit();
+        // do not calculate GroupLength and Padding twice!
+        dset.write(*outStream, outxfer, enctype, &wcache, EGL_noChange);
+        dset.transferEnd();
+    }
 
     // outStream is closed here
     delete outStream;
@@ -1329,6 +1333,10 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.53  2009-02-25 13:10:56  joergr
+** Fixed file locking issue that prevented DICOMDIR files with large element
+** values (e.g. pixel data inside an IconImageSequence) from being renamed.
+**
 ** Revision 1.52  2009-02-04 18:01:23  joergr
 ** Fixed various type mismatches reported by MSVC introduced with OFFile class.
 **

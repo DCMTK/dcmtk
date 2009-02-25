@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.02.25 (riesmeier)
 
+- Fixed file locking issue that prevented DICOMDIR files with large element
+  values (e.g. pixel data inside an IconImageSequence) from being renamed.
+  Thanks to Takeo Satomi <takeo.satomi@gmail.com> for the bug report and
+  suggested fix.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
 - Removed wrong comment (apparently copied from other class).
   Affects: dcmdata/include/dcmtk/dcmdata/dcwcache.h
 
