@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-07-25 15:10:08 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2009-02-26 10:08:10 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'First input value mapped' (" << FirstEntry
+                ofConsole.lockCerr() << "WARNING: invalid value for 'FirstInputValueMapped' in lookup table (" << FirstEntry
                                      << ") ... assuming " << first << " !" << OFendl;
                 ofConsole.unlockCerr();
             }
@@ -133,7 +133,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         } else {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
-                ofConsole.lockCerr() << "WARNING: incomplete or missing  'LookupTableDescriptor' ... ignoring LUT !" << OFendl;
+                ofConsole.lockCerr() << "WARNING: incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !" << OFendl;
                 ofConsole.unlockCerr();
             }
         }
@@ -617,7 +617,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.34  2007-07-25 15:10:08  joergr
+ * Revision 1.35  2009-02-26 10:08:10  joergr
+ * Enhanced warning message text.
+ *
+ * Revision 1.34  2007/07/25 15:10:08  joergr
  * Fixed typo.
  *
  * Revision 1.33  2007/03/16 11:52:34  joergr

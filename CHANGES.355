@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.26 (riesmeier)
+
+- Enhanced warning message text.
+  Affects: dcmimgle/libsrc/diluptab.cc
+
 **** Changes from 2009.02.25 (riesmeier)
 
 - Fixed file locking issue that prevented DICOMDIR files with large element
