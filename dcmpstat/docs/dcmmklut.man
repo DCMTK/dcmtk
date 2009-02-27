@@ -78,20 +78,22 @@ LUT type:
 LUT placement:
 
   +Pa  --add
-         add to existing transform (defaul for and only with +Tv)
+         add to existing transform
+         (default for and only with --voi)
 
   +Pr  --replace
-         replace existing transform (default for +Tm and +Tp)
+         replace existing transform
+         (default for --modality and --presentation)
 
 LUT content:
 
-  +Cg  --gamma  [g]amma : float
+  +Cg  --gamma  [g]amma: float
          use gamma value (default: 1.0)
 
-  +Cm  --map-file  [f]ilename : string
+  +Cm  --map-file  [f]ilename: string
          read input data from MAP file
 
-  +Ct  --text-file  [f]ilename : string
+  +Ct  --text-file  [f]ilename: string
          read input data from text file
 
 LUT options:
@@ -99,45 +101,52 @@ LUT options:
   +Og  --inverse-gsdf
          apply inverse GSDF (print presentation LUT in OD)
 
-       --min-density  [v]alue : integer (0..65535, default: 20)
+       --min-density  [v]alue: integer (0..65535, default: 20)
          set min density to v (in hundreds of OD)
 
-       --max-density  [v]alue : integer (0..65535, default: 300)
+       --max-density  [v]alue: integer (0..65535, default: 300)
          set max density to v (in hundreds of OD)
 
-  +Oi  --illumination  [v]alue : integer (0..65535, default: 2000)
+  +Oi  --illumination  [v]alue: integer (0..65535, default: 2000)
          set illumination to v (in cd/m^2)
 
-  +Or  --reflection  [v]alue : integer (0..65535, default: 10)
+  +Or  --reflection  [v]alue: integer (0..65535, default: 10)
          set reflected ambient light to v (in cd/m^2)
 
 LUT structure:
 
-  -b   --bits  [n]umber : integer
+  -b   --bits  [n]umber: integer
          create LUT with n bit values (8..16, default: 16)
 
-  -e   --entries  [n]umber : integer
+  -e   --entries  [n]umber: integer
          create LUT with n entries (1..65536, default: 256)
 
-  -f   --first-mapped  [n]umber : integer
+  -f   --first-mapped  [n]umber: integer
          first input value mapped (-31768..65535, default: 0)
 
-  -r   --random  [n]umber : unsigned integer
+  -r   --random  [n]umber: unsigned integer
          perform n randomly selected permutations on the LUT
 
-  -rs  --random-seed  [n]umber : unsigned integer
-         initialise the random-number generator with n
-         (default: 0, for reproduceable results)
+  -rs  --random-seed  [n]umber: unsigned integer
+         initialize the random-number generator with n
+         (default: 0, for reproducible results)
 
-  -o   --order  [n]umber : integer
+  -o   --order  [n]umber: integer
          use polynomial curve fitting algorithm with order n
          (0..99, default: 5)
 
-  -E   --explanation  [n]ame : string
+  -E   --explanation  [n]ame: string
          LUT explanation (default: automatically created)
 
+LUT data alignment:
+
   -a   --byte-align
-         create byte-aligned LUT (implies -b 8)
+         create byte-aligned LUT
+         (default for and only with 8 bit values)
+
+  +a   --word-align
+         create word-aligned LUT
+         (default for 9-16 bit values)
 
 LUT data VR:
 
@@ -154,12 +163,18 @@ LUT data VR:
 \subsection file_options file options
 \verbatim
 
-  +Fi  --dicom-input  [f]ilename : string
+  +Fi  --dicom-input  [f]ilename: string
          read dataset from DICOM file f
 
-  +Fo  --text-output  [f]ilename : string
+  +Fo  --text-output  [f]ilename: string
          write LUT data to tabbed text file f
 \endverbatim
+
+\section notes NOTES
+
+Please check the DICOM standard for further restrictions on the look-up table
+structure.  Especially the number of bits per table entry might be restricted
+in particular IODs.
 
 \section command_line COMMAND LINE
 
@@ -205,6 +220,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

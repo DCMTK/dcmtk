@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.02.27 (riesmeier)
+
+- Added new command line option --word-align which was previously the default
+  for all bit values.
+  Affects: dcmpstat/apps/dcmmklut.cc
+           dcmpstat/docs/dcmmklut.man
+
+- Changed behavior of option --byte-align which previously implied --bits 8.
+  Instead, --bits 8 now implies --byte-align (if not specified manually).
+  Affects: dcmpstat/apps/dcmmklut.cc
+           dcmpstat/docs/dcmmklut.man
+
+- Added note on further restrictions on the LUT structure in particular IODs.
+  Affects: dcmpstat/docs/dcmmklut.man
+
 **** Changes from 2009.02.26 (riesmeier)
 
 - Enhanced warning message text.
