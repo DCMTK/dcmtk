@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -25,8 +25,8 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2009-02-27 11:46:11 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmimgle/dicrvfit.h"
@@ -732,7 +732,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmimg-out",                   "DICOM output filename" /* , OFCmdParam::PM_Optional */);
+    cmd.addParam("dcmimg-out",                   "DICOM output filename");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
@@ -746,49 +746,51 @@ int main(int argc, char *argv[])
        cmd.addOption("--presentation", "+Tp",    "create as Presentation LUT");
        cmd.addOption("--voi",          "+Tv",    "create as VOI LUT (default)");
       cmd.addSubGroup("LUT placement:");
-       cmd.addOption("--add",          "+Pa",    "add to existing transform (def. for and only with +Tv)");
-       cmd.addOption("--replace",      "+Pr",    "replace existing transform (default for +Tm and +Tp)");
+       cmd.addOption("--add",          "+Pa",    "add to existing transform\n(default for and only with --voi)");
+       cmd.addOption("--replace",      "+Pr",    "replace existing transform\n(default for --modality and --presentation)");
       cmd.addSubGroup("LUT content:");
-       cmd.addOption("--gamma",        "+Cg", 1, "[g]amma : float",
+       cmd.addOption("--gamma",        "+Cg", 1, "[g]amma: float",
                                                  "use gamma value (default: 1.0)");
-       cmd.addOption("--map-file",     "+Cm", 1, "[f]ilename : string",
+       cmd.addOption("--map-file",     "+Cm", 1, "[f]ilename: string",
                                                  "read input data from MAP file");
-       cmd.addOption("--text-file",    "+Ct", 1, "[f]ilename : string",
+       cmd.addOption("--text-file",    "+Ct", 1, "[f]ilename: string",
                                                  "read input data from text file");
       cmd.addSubGroup("LUT options:");
        cmd.addOption("--inverse-gsdf", "+Og",    "apply inverse GSDF (print presentation LUT in OD)");
-       cmd.addOption("--min-density",         1, "[v]alue : integer (0..65535, default: 20)",
+       cmd.addOption("--min-density",         1, "[v]alue: integer (0..65535, default: 20)",
                                                  "set min density to v (in hundreds of OD)");
-       cmd.addOption("--max-density",         1, "[v]alue : integer (0..65535, default: 300)",
+       cmd.addOption("--max-density",         1, "[v]alue: integer (0..65535, default: 300)",
                                                  "set max density to v (in hundreds of OD)");
-       cmd.addOption("--illumination", "+Oi", 1, "[v]alue : integer (0..65535, default: 2000)",
+       cmd.addOption("--illumination", "+Oi", 1, "[v]alue: integer (0..65535, default: 2000)",
                                                  "set illumination to v (in cd/m^2)");
-       cmd.addOption("--reflection",   "+Or", 1, "[v]alue : integer (0..65535, default: 10)",
+       cmd.addOption("--reflection",   "+Or", 1, "[v]alue: integer (0..65535, default: 10)",
                                                  "set reflected ambient light to v (in cd/m^2)");
       cmd.addSubGroup("LUT structure:");
-       cmd.addOption("--bits",         "-b",  1, "[n]umber : integer",
+       cmd.addOption("--bits",         "-b",  1, "[n]umber: integer",
                                                  "create LUT with n bit values (8..16, default: 16)");
-       cmd.addOption("--entries",      "-e",  1, "[n]umber : integer",
+       cmd.addOption("--entries",      "-e",  1, "[n]umber: integer",
                                                  "create LUT with n entries (1..65536, default: 256)");
-       cmd.addOption("--first-mapped", "-f",  1, "[n]umber : integer",
+       cmd.addOption("--first-mapped", "-f",  1, "[n]umber: integer",
                                                  "first input value mapped (-31768..65535, default: 0)");
-       cmd.addOption("--random",       "-r",  1, "[n]umber : unsigned integer",
+       cmd.addOption("--random",       "-r",  1, "[n]umber: unsigned integer",
                                                  "perform n randomly selected permutations on the LUT");
-       cmd.addOption("--random-seed",  "-rs", 1, "[n]umber : unsigned integer",
-                                                 "initialise the random-number generator with n\n(default: 0, for reproduceable results)");
-       cmd.addOption("--order",        "-o",  1, "[n]umber : integer",
+       cmd.addOption("--random-seed",  "-rs", 1, "[n]umber: unsigned integer",
+                                                 "initialize the random-number generator with n\n(default: 0, for reproducible results)");
+       cmd.addOption("--order",        "-o",  1, "[n]umber: integer",
                                                  "use polynomial curve fitting algorithm with order n\n(0..99, default: 5)");
-       cmd.addOption("--explanation",  "-E",  1, "[n]ame : string",
+       cmd.addOption("--explanation",  "-E",  1, "[n]ame: string",
                                                  "LUT explanation (default: automatically created)");
-       cmd.addOption("--byte-align",   "-a",     "create byte-aligned LUT (implies -b 8)");
+      cmd.addSubGroup("LUT data alignment:");
+       cmd.addOption("--byte-align",   "-a",     "create byte-aligned LUT\n(default for and only with 8 bit values)");
+       cmd.addOption("--word-align",   "+a",     "create word-aligned LUT\n(default for 9-16 bit values)");
       cmd.addSubGroup("LUT data VR:");
        cmd.addOption("--data-ow",      "+Dw",    "write LUT Data as OW (default)");
        cmd.addOption("--data-us",      "+Du",    "write LUT Data as US");
        cmd.addOption("--data-ss",      "+Ds",    "write LUT Data as SS (minimal support)");
     cmd.addGroup("file options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--dicom-input",    "+Fi", 1, "[f]ilename : string",
+     cmd.addOption("--dicom-input",    "+Fi", 1, "[f]ilename: string",
                                                  "read dataset from DICOM file f");
-     cmd.addOption("--text-output",    "+Fo", 1, "[f]ilename : string",
+     cmd.addOption("--text-output",    "+Fo", 1, "[f]ilename: string",
                                                  "write LUT data to tabbed text file f");
 
     /* evaluate command line */
@@ -868,7 +870,10 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_reflection));
 
         if (cmd.findOption("--bits"))
+        {
             app.checkValue(cmd.getValueAndCheckMinMax(opt_bits, 8, 16));
+            opt_byteAlign = (opt_bits == 8);   /* default */
+        }
         if (cmd.findOption("--entries"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_entries, 1, 65536));
         if (cmd.findOption("--first-mapped"))
@@ -881,11 +886,13 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_randomSeed));
         if (cmd.findOption("--order"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_order, 0, 99));
+
+        cmd.beginOptionBlock();
         if (cmd.findOption("--byte-align"))
-        {
             opt_byteAlign = OFTrue;
-            opt_bits = 8;
-        }
+        if (cmd.findOption("--word-align"))
+            opt_byteAlign = OFFalse;
+        cmd.endOptionBlock();
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--data-ow"))
@@ -1034,7 +1041,7 @@ int main(int argc, char *argv[])
                         if (EC_Normal == dataset->search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
                             dseq=(DcmSequenceOfItems *)stack.top();
                     }
-                    if (dseq==NULL)
+                    if (dseq == NULL)
                     {
                         dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
                         if (dseq)
@@ -1055,7 +1062,7 @@ int main(int argc, char *argv[])
                         if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
                             dseq=(DcmSequenceOfItems *)stack.top();
                     }
-                    if (dseq==NULL)
+                    if (dseq == NULL)
                     {
                         dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
                         if (dseq)
@@ -1099,6 +1106,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
+ * Revision 1.43  2009-02-27 11:46:11  joergr
+ * Added new command line option --word-align which was previously the default
+ * for all bit values.
+ * Changed behavior of option --byte-align which previously implied --bits 8.
+ * Instead, --bits 8 now implies --byte-align (if not specified manually).
+ *
  * Revision 1.42  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.
