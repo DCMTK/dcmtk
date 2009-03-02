@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.02 (riesmeier)
+
+- Fixed issue with incorrectly encoded file meta information header consisting
+  of one data element only (e.g. TransferSyntaxUID).
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmdata/libsrc/dcmetinf.cc
+
 **** Changes from 2009.02.27 (riesmeier)
 
 - Added new command line option --word-align which was previously the default

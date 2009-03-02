@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:57:19 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2009-03-02 11:15:18 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,7 +316,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             if (l_error.good() && newTag.getXTag() == xtag && elementList->get() != NULL && newValueLength > 0)
             {
                 l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
-                DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen+bytesRead));
+                DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen + bytesRead));
             } else {
                 l_error = EC_CorruptedData;
                 ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << OFendl;
@@ -387,13 +387,16 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             // this is the old behaviour up to DCMTK 3.5.3: fail with EC_CorruptedData error code
             // if the file meta header group length (0002,0000) is absent.
             if (getTransferState() == ERW_inWork && getLengthField() != 0 && errorFlag.good())
+            {
 #else
             // new behaviour: accept file without meta header group length, determine end of
             // meta header based on heuristic that checks for group 0002 tags.
-            if (getTransferState() == ERW_inWork && getLengthField() != 0 && ( errorFlag.good() ||
+            if (getTransferState() == ERW_inWork && getLengthField() != 0 && (errorFlag.good() ||
                 ((errorFlag == EC_CorruptedData) && (getLengthField() == DCM_UndefinedLength))))
-#endif
             {
+                /* start with "no error" in order to handle meta-header with only one data element */
+#endif
+                errorFlag = EC_Normal;
                 while (inStream.good() && !inStream.eos() &&
                        ((getLengthField() < DCM_UndefinedLength && getTransferredBytes() < getLengthField()) ||
                         (getLengthField() == DCM_UndefinedLength && nextTagIsMeta(inStream)) ||
@@ -553,6 +556,10 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.44  2009-03-02 11:15:18  joergr
+** Fixed issue with incorrectly encoded file meta information header consisting
+** of one data element only (e.g. TransferSyntaxUID).
+**
 ** Revision 1.43  2009-02-04 17:57:19  joergr
 ** Fixes various type mismatches reported by MSVC introduced with OFFile class.
 **
