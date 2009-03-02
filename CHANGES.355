@@ -10,6 +10,13 @@ Changes between releases are documented here.
 
 - Fixed bug that caused the print flag PF_convertToMarkup always being set.
   Affects: dcmdata/libsrc/dcbytstr.cc
+  
+- Added attribute name to debug output / error messages where appropriate.
+  Affects: dcmwlm/libsrc/wlds.cc
+
+- Restructured command line options (be more consistent with other tools).
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
 
 **** Changes from 2009.02.27 (riesmeier)
 
