@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-02 17:20:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,7 +296,10 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
       if( element->getLength() != 0 )
       {
         if( verbose )
-          DumpMessage( "  - Non-empty return key attribute encountered in the search mask.\n    The specified value will be overridden." );
+        {
+          sprintf( msg, "  - Non-empty return key attribute (%s) encountered in the search mask.\n    The specified value will be overridden.", tag.getTagName() );
+          DumpMessage( msg );
+        }
       }
     }
   }
@@ -323,7 +326,10 @@ void WlmDataSource::CheckNonSequenceElementInSearchMask( DcmDataset *searchMask,
 
     // dump a warning
     if( verbose )
-      DumpMessage( "  - Unsupported (non-sequence) attribute encountered in the search mask. \n    This attribute will not be existent in any result dataset." );
+    {
+      sprintf( msg, "  - Unsupported (non-sequence) attribute (%s) encountered in the search mask.\n    This attribute will not be existent in any result dataset.", tag.getTagName() );
+      DumpMessage( msg );
+    }
 
     // remember this attribute's tag in the list of error elements
     foundUnsupportedOptionalKey = OFTrue;
@@ -353,7 +359,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
   // attributes from that particular sequence are in fact queried and shall be returned by the SCP.
   // This implementation accounts for this specification by expanding the search mask correspondingly.
 
-  char msg[255];
+  char msg[300];
   DcmElement *elem = NULL;
 
   // determine current element's tag
@@ -372,7 +378,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
       // an empty sequence is not allowed in a C-FIND request
       if (element->getLength() == 0)
       {
-        sprintf( msg, "Warning: Empty sequence %s within the query encountered.\n  Treating as if an empty item within the sequence has been sent.", tag.getTagName() );
+        sprintf( msg, "Warning: Empty sequence (%s) encountered within the query.\n  Treating as if an empty item within the sequence has been sent.", tag.getTagName() );
         DumpMessage( msg );
       }
       // if this is the case, we need to check the value of a variable
@@ -395,7 +401,7 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
         // we want to dump an error message and we want to increase the corresponding counter.
         PutOffendingElements(tag);
         errorComment->putString("More than 1 item in sequence.");
-        sprintf( msg, "Error: More than one item in sequence %s within the query encountered.\n  Discarding all items except for the first one.", tag.getTagName() );
+        sprintf( msg, "Error: More than one item in sequence (%s) within the query encountered.\n  Discarding all items except for the first one.", tag.getTagName() );
         DumpMessage( msg );
         invalidMatchingKeyAttributeCount++;
 
@@ -464,7 +470,10 @@ void WlmDataSource::CheckSequenceElementInSearchMask( DcmDataset *searchMask, in
 
     // dump a warning
     if( verbose )
-      DumpMessage( "  - Unsupported (sequence) attribute encountered in the search mask. \n    This attribute will not be existent in any result dataset." );
+    {
+      sprintf( msg, "  - Unsupported (sequence) attribute (%s) encountered in the search mask.\n    This attribute will not be existent in any result dataset.", tag.getTagName() );
+      DumpMessage( msg );
+    }
 
     // remember this attribute's tag in the list of error elements
     foundUnsupportedOptionalKey = OFTrue;
@@ -1507,6 +1516,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
+** Revision 1.24  2009-03-02 17:20:44  joergr
+** Added attribute name to debug output / error messages where appropriate.
+**
 ** Revision 1.23  2008-04-30 12:38:43  meichel
 ** Fixed compile errors due to changes in attribute tag names
 **
