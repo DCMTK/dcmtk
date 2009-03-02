@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:34:45 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-02 14:41:08 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -189,7 +189,7 @@ void DcmByteString::print(STD_NAMESPACE ostream& out,
             out << '[';
 
             OFString outString;
-            if (flags && DCMTypes::PF_convertToMarkup)
+            if (flags & DCMTypes::PF_convertToMarkup)
               OFStandard::convertToMarkupString(stringVal, outString, OFTrue, OFStandard::MM_XML, OFFalse);
               else outString = stringVal;
 
@@ -652,6 +652,9 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.52  2009-03-02 14:41:08  joergr
+** Fixed bug that caused the print flag PF_convertToMarkup always being set.
+**
 ** Revision 1.51  2009-01-29 15:34:45  onken
 ** Fixed length overflow in case of private attributes having maximum length
 ** values. Minor code simplifications.
