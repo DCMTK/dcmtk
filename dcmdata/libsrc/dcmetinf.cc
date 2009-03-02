@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-02 11:15:18 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2009-03-02 11:16:36 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -395,8 +395,8 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                 ((errorFlag == EC_CorruptedData) && (getLengthField() == DCM_UndefinedLength))))
             {
                 /* start with "no error" in order to handle meta-header with only one data element */
-#endif
                 errorFlag = EC_Normal;
+#endif
                 while (inStream.good() && !inStream.eos() &&
                        ((getLengthField() < DCM_UndefinedLength && getTransferredBytes() < getLengthField()) ||
                         (getLengthField() == DCM_UndefinedLength && nextTagIsMeta(inStream)) ||
@@ -556,6 +556,9 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.45  2009-03-02 11:16:36  joergr
+** Moved variable definition.
+**
 ** Revision 1.44  2009-03-02 11:15:18  joergr
 ** Fixed issue with incorrectly encoded file meta information header consisting
 ** of one data element only (e.g. TransferSyntaxUID).
