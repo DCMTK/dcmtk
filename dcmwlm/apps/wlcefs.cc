@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-07 17:20:21 $
+ *  Update Date:      $Date: 2009-03-02 17:14:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,36 +105,42 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 
   cmd = new OFCommandLine();
 
-  cmd->setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd->setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd->addParam("port", "tcp/ip port number to listen on");
 
   cmd->setOptionColumns(LONGCOL, SHORTCOL);
-  cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd->addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd->addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd->addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
     cmd->addOption("--arguments",                        "print expanded command line arguments");
     cmd->addOption("--verbose",               "-v",      "verbose mode, print processing details");
     cmd->addOption("--debug",                 "-d",      "debug mode, print debug information");
-    cmd->addOption("--no-sq-expansion",       "-nse",    "disable expansion of empty sequences\nin C-FIND request messages");
-    OFString opt5 = "[p]ath: string (default: ";
-    opt5 += opt_dfPath;
-    opt5 += ")";
-    cmd->addOption("--data-files-path",       "-dfp", 1, opt5.c_str(), "path to worklist data files" );
-    cmd->addOption("--enable-file-reject",    "-efr",    "enable rejection of incomplete worklist-files\n(default)");
-    cmd->addOption("--disable-file-reject",   "-dfr",    "disable rejection of incomplete worklist-files");
 
 #if defined(HAVE_FORK) || defined(_WIN32)
-    cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL+2);
+  cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
     cmd->addOption("--single-process",        "-s",      "single process mode");
 #ifdef _WIN32
     cmd->addOption("--forked-child",                     "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
 #endif
 
-  cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
-    cmd->addOption("--return-no-char-set",    "-cs0",    "return no specific character set (default)");
-    cmd->addOption("--return-iso-ir-100",     "-cs1",    "return specific character set ISO IR 100");
-    cmd->addOption("--keep-char-set",         "-csk",    "return character set provided in file");
+  cmd->addGroup("input options:");
+    cmd->addSubGroup("general:");
+      OFString opt5 = "[p]ath: string (default: ";
+      opt5 += opt_dfPath;
+      opt5 += ")";
+      cmd->addOption("--data-files-path",     "-dfp", 1, opt5.c_str(), "path to worklist data files" );
+    cmd->addSubGroup("handling of worklist files:");
+      cmd->addOption("--enable-file-reject",  "-efr",    "enable rejection of incomplete worklist files\n(default)");
+      cmd->addOption("--disable-file-reject", "-dfr",    "disable rejection of incomplete worklist files");
+
+  cmd->addGroup("processing options:");
+    cmd->addSubGroup("returned character set:");
+      cmd->addOption("--return-no-char-set",  "-cs0",    "return no specific character set (default)");
+      cmd->addOption("--return-iso-ir-100",   "-cs1",    "return specific character set ISO IR 100");
+      cmd->addOption("--keep-char-set",       "-csk",    "return character set provided in file");
+    cmd->addSubGroup("other processing options:");
+      cmd->addOption("--no-sq-expansion",     "-nse",    "disable expansion of empty sequences in C-FIND\nrequest messages");
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
@@ -144,10 +150,14 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--implicit",            "+xi",     "accept implicit VR little endian TS only");
 
 #ifdef WITH_TCPWRAPPER
-    cmd->addSubGroup("network host access control (tcp wrapper) options:");
+    cmd->addSubGroup("network host access control (tcp wrapper):");
       cmd->addOption("--access-full",         "-ac",     "accept connections from any host (default)");
       cmd->addOption("--access-control",      "+ac",     "enforce host access control rules");
 #endif
+
+    cmd->addSubGroup("post-1993 value representations:");
+      cmd->addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
+      cmd->addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
 
     cmd->addSubGroup("other network options:");
       cmd->addOption("--acse-timeout",        "-ta",  1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
@@ -176,11 +186,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       opt4 += "]";
       cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd->addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
-
-  cmd->addGroup("encoding options:");
-    cmd->addSubGroup("post-1993 value representations:");
-      cmd->addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
-      cmd->addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
 
   // Evaluate command line.
   prepareCmdLineArgs( argc, argv, applicationName );
@@ -235,29 +240,48 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     }
 #endif
 #endif
-    if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
+
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
+
     cmd->beginOptionBlock();
     if( cmd->findOption("--enable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFTrue;
     if( cmd->findOption("--disable-file-reject") ) opt_enableRejectionOfIncompleteWlFiles = OFFalse;
     cmd->endOptionBlock();
+
     cmd->beginOptionBlock();
     if( cmd->findOption("--return-no-char-set") ) opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
     if( cmd->findOption("--return-iso-ir-100") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
-    if( cmd->findOption("--keep-char-set") )  opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
+    if( cmd->findOption("--keep-char-set") ) opt_returnedCharacterSet = RETURN_CHARACTER_SET_FROM_FILE;
     cmd->endOptionBlock();
+
+    if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
+
     cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") ) opt_networkTransferSyntax = EXS_Unknown;
     if( cmd->findOption("--prefer-little") )  opt_networkTransferSyntax = EXS_LittleEndianExplicit;
     if( cmd->findOption("--prefer-big") )     opt_networkTransferSyntax = EXS_BigEndianExplicit;
     if( cmd->findOption("--implicit") )       opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     cmd->endOptionBlock();
+
 #ifdef WITH_TCPWRAPPER
     cmd->beginOptionBlock();
     if (cmd->findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
     if (cmd->findOption("--access-control")) dcmTCPWrapperDaemonName.set(applicationName);
     cmd->endOptionBlock();
 #endif
+
+    cmd->beginOptionBlock();
+    if( cmd->findOption("--enable-new-vr") )
+    {
+      dcmEnableUnknownVRGeneration.set(OFTrue);
+      dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
+    }
+    if( cmd->findOption("--disable-new-vr") )
+    {
+      dcmEnableUnknownVRGeneration.set(OFFalse);
+      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+    }
+    cmd->endOptionBlock();
 
     if (cmd->findOption("--acse-timeout"))
     {
@@ -287,18 +311,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--sleep-during") ) app->checkValue(cmd->getValueAndCheckMin(opt_sleepDuringFind, 0));
     if( cmd->findOption("--max-pdu") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if( cmd->findOption("--disable-host-lookup") ) dcmDisableGethostbyaddr.set(OFTrue);
-    cmd->beginOptionBlock();
-    if( cmd->findOption("--enable-new-vr") )
-    {
-      dcmEnableUnknownVRGeneration.set(OFTrue);
-      dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
-    }
-    if( cmd->findOption("--disable-new-vr") )
-    {
-      dcmEnableUnknownVRGeneration.set(OFFalse);
-      dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
-    }
-    cmd->endOptionBlock();
   }
 
   // dump application information
@@ -425,6 +437,9 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.22  2009-03-02 17:14:38  joergr
+** Restructured command line options (be more consistent with other tools).
+**
 ** Revision 1.21  2009-01-07 17:20:21  joergr
 ** Avoid double output of resource identifier for forked children (Win32).
 **
