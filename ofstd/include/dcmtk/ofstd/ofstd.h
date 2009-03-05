@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-08-28 10:44:36 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2009-03-05 13:33:12 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -448,6 +448,12 @@ class OFStandard
 #endif
     }
 
+    static inline OFBool check32BitAddOverflow(const Uint32 summand1,
+                                               const Uint32 summand2)
+    {
+      return (0xffffffff - summand1 < summand2);
+    }
+
  private:
 
     /** private implementation of strlcpy. Called when strlcpy
@@ -476,7 +482,6 @@ class OFStandard
      *  @return Zero if the requested time has elapsed, or the number of seconds left to sleep.
      */
     static unsigned int my_sleep(unsigned int seconds);
-
 };
 
 
@@ -487,6 +492,10 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.32  2009-03-05 13:33:12  onken
+ * Added helper function that checks whether a given Uint32 addition would
+ * result in an overflow.
+ *
  * Revision 1.31  2008-08-28 10:44:36  onken
  * Introduced deleteFile() method.
  *
