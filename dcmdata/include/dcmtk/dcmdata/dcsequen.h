@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:48 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2009-03-05 14:07:56 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,7 +182,7 @@ public:
      *  if applicable.
      *  If length encodig is set to be explicit and the total sequence size is
      *  larger than the available 32-bit length field, then undefined length
-     *  is returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
+     *  is returned. If "dcmWriteOversizedSeqsAndItemsUndefined" is disabled,
      *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
      *  in case the sequence content (excluding tag header etc.) is already too
      *  large.
@@ -573,6 +573,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.50  2009-03-05 14:07:56  onken
+** Fixed typo.
+**
 ** Revision 1.49  2009-03-05 13:35:48  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds

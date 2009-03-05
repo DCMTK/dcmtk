@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:54:36 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2009-03-05 14:07:48 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -407,8 +407,8 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--impl-oversized"))  dcmWriteOversizedSeqsAndItemsImplicit.set(OFTrue);
-      if (cmd.findOption("--abort-oversized")) dcmWriteOversizedSeqsAndItemsImplicit.set(OFFalse);
+      if (cmd.findOption("--impl-oversized"))  dcmWriteOversizedSeqsAndItemsUndefined.set(OFTrue);
+      if (cmd.findOption("--abort-oversized")) dcmWriteOversizedSeqsAndItemsUndefined.set(OFFalse);
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -525,6 +525,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.62  2009-03-05 14:07:48  onken
+** Fixed typo.
+**
 ** Revision 1.61  2009-03-05 13:54:36  onken
 ** Fixed typo.
 **

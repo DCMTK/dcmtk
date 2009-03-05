@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:47 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2009-03-05 14:07:56 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement; /* default OFTrue */
  *  Default is OFTrue, i.e. encoding is switched to implicit if maximum
  *  size of length field is exceeded.
  */
-extern OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsImplicit; /* default OFTrue */
+extern OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined; /* default OFTrue */
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM
@@ -650,6 +650,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.60  2009-03-05 14:07:56  onken
+ * Fixed typo.
+ *
  * Revision 1.59  2009-03-05 13:35:47  onken
  * Added checks for sequence and item lengths which prevents overflow in length
  * field, if total length of contained items (or sequences) exceeds

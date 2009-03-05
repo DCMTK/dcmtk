@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:07 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Update Date:      $Date: 2009-03-05 14:08:05 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -359,9 +359,9 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
                 ofConsole.lockCerr() << "DcmSequence: Explicit length of sequence "
                                      << getTagName() << " " << getTag()
                                      << " exceeds 32-Bit length field - ";
-                if (dcmWriteOversizedSeqsAndItemsImplicit.get())
+                if (dcmWriteOversizedSeqsAndItemsUndefined.get())
                 {
-                    ofConsole.getCerr() << "Trying to treat it as implicit length instead." << OFendl;
+                    ofConsole.getCerr() << "Trying to treat it as undefined length instead." << OFendl;
                 } 
                 else
                 {
@@ -1306,6 +1306,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.82  2009-03-05 14:08:05  onken
+** Fixed typo.
+**
 ** Revision 1.81  2009-03-05 13:35:07  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds 32-bit

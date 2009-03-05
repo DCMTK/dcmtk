@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:07 $
- *  CVS/RCS Revision: $Revision: 1.131 $
+ *  Update Date:      $Date: 2009-03-05 14:08:05 $
+ *  CVS/RCS Revision: $Revision: 1.132 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -483,9 +483,9 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
             {
                 ofConsole.lockCerr() << "DcmItem: Explicit length of item "
                                      << "exceeds 32-Bit length field: ";
-                if (dcmWriteOversizedSeqsAndItemsImplicit.get())
+                if (dcmWriteOversizedSeqsAndItemsUndefined.get())
                 {
-                    ofConsole.getCerr() << "trying to encode with implicit length" << OFendl;
+                    ofConsole.getCerr() << "trying to encode with undefined length" << OFendl;
                 } 
                 else
                 {
@@ -3643,6 +3643,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.132  2009-03-05 14:08:05  onken
+** Fixed typo.
+**
 ** Revision 1.131  2009-03-05 13:35:07  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds 32-bit

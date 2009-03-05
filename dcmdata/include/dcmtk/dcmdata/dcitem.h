@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:47 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2009-03-05 14:07:56 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ class DcmItem
      *  the given encoding type for sequences. 
      *  If length encodig is set to be explicit and the item content is larger
      *  than the available 32-bit length field, then undefined length is
-     *  returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
+     *  returned. If "dcmWriteOversizedSeqsAndItemsUndefined" is disabled,
      *  also the internal DcmObject errorFlag is set to
      *  EC_SeqOrItemContentOverflow.
      *  @param xfer transfer syntax for length calculation
@@ -1139,6 +1139,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.75  2009-03-05 14:07:56  onken
+** Fixed typo.
+**
 ** Revision 1.74  2009-03-05 13:35:47  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds

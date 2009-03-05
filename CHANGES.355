@@ -3,7 +3,20 @@ Changes between releases are documented here.
 
 **** Changes from 2009.03.04 (onken)
 
-- Added support for new parser global sequence/item length overflow flag.
+- Fixed typo.
+  Affects: dcmdata/apps dcmconv.cc
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h 
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Fixed typo.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+
+- Added support for the new parser's global sequence/item length overflow flag.
   Affects: dcmdata/apps/dcmconv.cc
            dcmdata/docs/dcmconv.man
 
