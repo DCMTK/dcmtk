@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:07:48 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-05 17:45:56 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--write-xfer-big",      "+tb",    "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit", "+ti",    "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
-      cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated expl. VR little endian TS");
+      cmd.addOption("--write-xfer-deflated", "+td",    "write with deflated explicit VR little endian TS");
 #endif
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",       "+u",     "enable support for new VRs (UN/UT) (default)");
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
       cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
       cmd.addOption("--write-oversized",     "+eo",    "write oversized explict length sequences\nand items with undefined length (default)");
-      cmd.addOption("--abort-oversized",     "-eo",    "abort on oversized expl. sequences/items");
+      cmd.addOption("--abort-oversized",     "-eo",    "abort on oversized explicit sequences/items");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
       cmd.addOption("--padding-off",         "-p",     "no padding (implicit if --write-dataset)");
@@ -525,6 +525,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.63  2009-03-05 17:45:56  joergr
+** Fixed description of command line option.
+**
 ** Revision 1.62  2009-03-05 14:07:48  onken
 ** Fixed typo.
 **

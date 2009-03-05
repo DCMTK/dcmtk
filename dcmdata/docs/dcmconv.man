@@ -200,12 +200,12 @@ length encoding in sequences and items:
   -e   --length-undefined
          write with undefined lengths
 
-  +eo   --impl-oversized
-          write oversized explict length sequences
-          and items with undefined length (default)
+  +eo  --impl-oversized
+         write oversized explict length sequences
+         and items with undefined length (default)
 
-  -eo   --abort-oversized
-          abort on oversized expl. sequences/items
+  -eo  --abort-oversized
+         abort on oversized explicit sequences/items
 
 data set trailing padding (not with --write-dataset):
 
