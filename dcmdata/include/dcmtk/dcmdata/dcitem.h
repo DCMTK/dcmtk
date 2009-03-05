@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:52:17 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-05 13:35:47 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,13 @@ class DcmItem
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
      *  the length of the complete item or sequence including delimitation tags
-     *  if applicable. Never returns undefined length.
+     *  if applicable.
+     *  If length encodig is set to be explicit and the total item size is
+     *  larger than the available 32-bit length field, then undefined length
+     *  is returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
+     *  also the internal DcmObject errorFlag is set to EC_SeqOrItemContentOverflow
+     *  in case the item content (excluding tag header etc.) is already too
+     *  large.
      *  @param xfer transfer syntax for length calculation
      *  @param enctype sequence encoding type for length calculation
      *  @return length of DICOM element
@@ -158,7 +164,12 @@ class DcmItem
 
     /** calculate the value length (without attribute tag, VR and length field)
      *  of this DICOM element when encoded with the given transfer syntax and
-     *  the given encoding type for sequences. Never returns undefined length.
+     *  the given encoding type for sequences. 
+     *  If length encodig is set to be explicit and the item content is larger
+     *  than the available 32-bit length field, then undefined length is
+     *  returned. If "dcmWriteOversizedSeqsAndItemsImplicit" is disabled,
+     *  also the internal DcmObject errorFlag is set to
+     *  EC_SeqOrItemContentOverflow.
      *  @param xfer transfer syntax for length calculation
      *  @param enctype sequence encoding type for length calculation
      *  @return value length of DICOM element
@@ -1128,6 +1139,14 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.74  2009-03-05 13:35:47  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds
+** 32-bit length field. Also introduced new flag (default: enabled)
+** for writing in explicit length mode, which allows for automatically
+** switching encoding of only that very sequence/item to undefined
+** length coding (thus permitting to actually write the file).
+**
 ** Revision 1.73  2009-02-04 17:52:17  joergr
 ** Fixes various type mismatches reported by MSVC introduced with OFFile class.
 **

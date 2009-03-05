@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-11 13:16:32 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2009-03-05 13:35:47 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,19 @@ extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
  *  Default is (0xffff,0xffff), which means that the feature is
  *  disabled.
  */
-extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement;
+extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement; /* default OFTrue */
+
+/** This flag influences behaviour when writing a dataset with items
+ *  and sequences set to be encoded with explicit length. It is possible
+ *  that the content of a sequence (or item) has an encoded length greater
+ *  than the maximum 32-bit value that can be written to the sequence (item)
+ *  length field. If this flag is enabled (OFTrue) then the encoding of the
+ *  very sequence (item) is switched to undefined length encoding. Any
+ *  contained items (sequences) will be encoded explicitly if possible.
+ *  Default is OFTrue, i.e. encoding is switched to implicit if maximum
+ *  size of length field is exceeded.
+ */
+extern OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsImplicit; /* default OFTrue */
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM
@@ -638,6 +650,14 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.59  2009-03-05 13:35:47  onken
+ * Added checks for sequence and item lengths which prevents overflow in length
+ * field, if total length of contained items (or sequences) exceeds
+ * 32-bit length field. Also introduced new flag (default: enabled)
+ * for writing in explicit length mode, which allows for automatically
+ * switching encoding of only that very sequence/item to undefined
+ * length coding (thus permitting to actually write the file).
+ *
  * Revision 1.58  2009-02-11 13:16:32  onken
  * Added global parser flag permitting to stop parsing after a specific
  * element was parsed on dataset level (useful for removing garbage at

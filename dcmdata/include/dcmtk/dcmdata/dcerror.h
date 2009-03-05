@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-11 16:36:04 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-05 13:35:47 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,8 @@ extern const OFCondition EC_TooManyBytesRequested;
 extern const OFCondition EC_InvalidBasicOffsetTable;
 /// Element length is larger than (explicit) length of surrounding item
 extern const OFCondition EC_ElemLengthLargerThanItem;
+/// Item or sequence content larger than explicit 32-bit length field permits
+extern const OFCondition EC_SeqOrItemContentOverflow;
 // File meta information header missing
 extern const OFCondition EC_FileMetaInfoHeaderMissing;
 
@@ -132,6 +134,14 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.29  2009-03-05 13:35:47  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds
+** 32-bit length field. Also introduced new flag (default: enabled)
+** for writing in explicit length mode, which allows for automatically
+** switching encoding of only that very sequence/item to undefined
+** length coding (thus permitting to actually write the file).
+**
 ** Revision 1.28  2009-02-11 16:36:04  joergr
 ** Introduced new error code EC_FileMetaInfoHeaderMissing.
 **
