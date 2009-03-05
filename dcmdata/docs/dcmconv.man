@@ -201,7 +201,7 @@ length encoding in sequences and items:
          write with undefined lengths
 
   +eo  --impl-oversized
-         write oversized explict length sequences
+         write oversized explicit length sequences
          and items with undefined length (default)
 
   -eo  --abort-oversized
