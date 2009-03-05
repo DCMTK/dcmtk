@@ -1,13 +1,41 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.05 (riesmeier)
+
+- Added new command line option --sort-on-study-uid.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
+- Renamed command line option --sort-on-patientsname to --sort-on-patientname.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
+- Slightly reworked (simplified) code on the creation of subdirectory names.
+  Affects: dcmnet/apps/storescp.cc
+
+- Made warning and error messages more consistent throughout the tool.
+  Affects: dcmnet/apps/storescp.cc
+
+- Changed output from stderr to CERR and from stdout to COUT.
+  Affects: dcmnet/apps/storescp.cc
+
+- Introduced general OFStandard methods where appropriate.
+  Affects: dcmnet/apps/storescp.cc
+
+- Fixed description of command line option.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+           dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 **** Changes from 2009.03.04 (onken)
 
 - Fixed typo.
   Affects: dcmdata/apps dcmconv.cc
            dcmdata/include/dcmtk/dcmdata/dcitem.h
            dcmdata/include/dcmtk/dcmdata/dcobject.h
-           dcmdata/include/dcmtk/dcmdata/dcsequen.h 
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
            dcmdata/libsrc/dcitem.cc
            dcmdata/libsrc/dcobject.cc
            dcmdata/libsrc/dcsequen.cc
@@ -35,7 +63,7 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcitem.cc
            dcmdata/libsrc/dcobject.cc
            dcmdata/libsrc/dcsequen.cc
-           
+
 - Added helper function that checks whether a given Uint32 addition would
   result in an overflow.
   Affects: ofstd/include/dcmtk/ofstd/ofstd.h

@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-06 16:08:44 $
- *  CVS/RCS Revision: $Revision: 1.103 $
+ *  Update Date:      $Date: 2009-03-05 18:14:05 $
+ *  CVS/RCS Revision: $Revision: 1.104 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,15 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 static int makeTempFile();
 
+/* sort study mode */
+enum E_SortStudyMode
+{
+    ESM_None,
+    ESM_Timestamp,
+    ESM_StudyInstanceUID,
+    ESM_PatientsName
+};
+
 OFBool             opt_uniqueFilenames = OFFalse;
 OFString           opt_fileNameExtension;
 OFBool             opt_timeNames = OFFalse;
@@ -168,8 +177,8 @@ OFString           calledaetitle;   // called AE title will be stored here
 const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
-static const char *opt_sortConcerningStudies = NULL;  // default: no sorting
-static OFBool      opt_sortOnPatientsName = OFFalse;  // default: no sorting by patient name
+E_SortStudyMode    opt_sortStudyMode = ESM_None;      // default: no sorting
+static const char *opt_sortStudyDirPrefix = NULL;     // default: no directory prefix
 OFString           lastStudyInstanceUID;
 OFString           subdirectoryPathAndName;
 OFList<OFString>   outputFileNameArray;
@@ -379,8 +388,10 @@ int main(int argc, char *argv[])
 #endif
     cmd.addSubGroup("sorting into subdirectories (not with --bit-preserving):");
       cmd.addOption("--sort-conc-studies",      "-ss",  1, "[p]refix: string",
-                                                           "sort studies into subdirectories\nthat start with prefix p" );
-      cmd.addOption("--sort-on-patientsname",   "-sp",     "sort studies into subdirs by patient name" );
+                                                           "sort studies using prefix p and a timestamp" );
+      cmd.addOption("--sort-on-study-uid",      "-su",  1, "[p]refix: string",
+                                                           "sort studies using prefix p and the Study\nInstance UID" );
+      cmd.addOption("--sort-on-patientname",    "-sp",     "sort studies using the Patient's Name and\na timestamp" );
 
     cmd.addSubGroup("filename generation:");
       cmd.addOption("--default-filenames",      "-uf",     "generate filename from instance UID (default)");
@@ -391,10 +402,10 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("event options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--exec-on-reception",        "-xcr", 1, "[c]ommand: string",
-                                                           "execute command c after having received and\nprocessed one C-STORE-Request message" );
+                                                           "execute command c after having received and\nprocessed one C-STORE-RQ message" );
     cmd.addOption("--exec-on-eostudy",          "-xcs", 1, "[c]ommand: string (only with -ss or -sp)",
-                                                           "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
-    cmd.addOption("--rename-on-eostudy",        "-rns",    "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
+                                                           "execute command c after having received and\nprocessed all C-STORE-RQ messages that belong\nto one study" );
+    cmd.addOption("--rename-on-eostudy",        "-rns",    "(only w/ -ss) having received and processed\nall C-STORE-RQ messages that belong to one\nstudy, rename output files according to a\ncertain pattern" );
     cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer (only w/ -ss/-sp/-xcs/-rns)",
                                                            "specifies a timeout of t seconds for\nend-of-study determination" );
 #ifdef _WIN32
@@ -614,8 +625,7 @@ int main(int argc, char *argv[])
       OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
       if (cond.bad())
       {
-        CERR << "error reading config file: "
-             << cond.text() << OFendl;
+        CERR << "Error while reading config file: " << cond.text() << OFendl;
         return 1;
       }
 
@@ -630,15 +640,13 @@ int main(int argc, char *argv[])
 
       if (!asccfg.isKnownProfile(sprofile.c_str()))
       {
-        CERR << "unknown configuration profile name: "
-             << sprofile << OFendl;
+        CERR << "Error: unknown configuration profile name: " << sprofile << OFendl;
         return 1;
       }
 
       if (!asccfg.isValidSCPProfile(sprofile.c_str()))
       {
-        CERR << "profile '" << sprofile
-             << "' is not valid for SCP use, duplicate abstract syntaxes found." << OFendl;
+        CERR << "Error: profile '" << sprofile << "' is not valid for SCP use, duplicate abstract syntaxes found" << OFendl;
         return 1;
       }
 
@@ -800,18 +808,26 @@ int main(int argc, char *argv[])
     }
 #endif
 
+    cmd.beginOptionBlock();
     if (cmd.findOption("--sort-conc-studies"))
     {
       app.checkConflict("--sort-conc-studies", "--bit-preserving", opt_bitPreserving);
-      app.checkValue(cmd.getValue(opt_sortConcerningStudies));
+      app.checkValue(cmd.getValue(opt_sortStudyDirPrefix));
+      opt_sortStudyMode = ESM_Timestamp;
     }
-
-    if (cmd.findOption("--sort-on-patientsname"))
+    if (cmd.findOption("--sort-on-study-uid"))
     {
-      app.checkConflict("--sort-on-patientsname", "--bit-preserving", opt_bitPreserving);
-      app.checkConflict("--sort-on-patientsname", "--sort-conc-studies", opt_sortConcerningStudies != NULL);
-      opt_sortOnPatientsName = OFTrue;
+      app.checkConflict("--sort-on-study-uid", "--bit-preserving", opt_bitPreserving);
+      app.checkValue(cmd.getValue(opt_sortStudyDirPrefix));
+      opt_sortStudyMode = ESM_StudyInstanceUID;
     }
+    if (cmd.findOption("--sort-on-patientname"))
+    {
+      app.checkConflict("--sort-on-patientname", "--bit-preserving", opt_bitPreserving);
+      opt_sortStudyDirPrefix = NULL;
+      opt_sortStudyMode = ESM_PatientsName;
+    }
+    cmd.endOptionBlock();
 
     cmd.beginOptionBlock();
     if (cmd.findOption("--default-filenames")) opt_uniqueFilenames = OFFalse;
@@ -828,20 +844,20 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--exec-on-eostudy"))
     {
-      app.checkDependence("--exec-on-eostudy", "--sort-conc-studies or --sort-on-patientsname", opt_sortConcerningStudies || opt_sortOnPatientsName );
+      app.checkDependence("--exec-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
       app.checkValue(cmd.getValue(opt_execOnEndOfStudy));
     }
 
     if (cmd.findOption("--rename-on-eostudy"))
     {
-      app.checkDependence("--rename-on-eostudy", "--sort-conc-studies or --sort-on-patientsname", opt_sortConcerningStudies || opt_sortOnPatientsName );
+      app.checkDependence("--rename-on-eostudy", "--sort-conc-studies, --sort-on-study-uid or --sort-on-patientname", opt_sortStudyMode != ESM_None );
       opt_renameOnEndOfStudy = OFTrue;
     }
 
     if (cmd.findOption("--eostudy-timeout"))
     {
-      app.checkDependence("--eostudy-timeout", "--sort-conc-studies, --sort-on-patientsname, --exec-on-eostudy or --rename-on-eostudy",
-        (opt_sortConcerningStudies != NULL) || (opt_execOnEndOfStudy != NULL) || opt_renameOnEndOfStudy | opt_sortOnPatientsName);
+      app.checkDependence("--eostudy-timeout", "--sort-conc-studies, --sort-on-study-uid, --sort-on-patientsname, --exec-on-eostudy or --rename-on-eostudy",
+        (opt_sortStudyMode != ESM_None) || (opt_execOnEndOfStudy != NULL) || opt_renameOnEndOfStudy);
       app.checkValue(cmd.getValueAndCheckMin(opt_endOfStudyTimeout, 0));
     }
 
@@ -905,12 +921,12 @@ int main(int argc, char *argv[])
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-seed"))
   {
-    app.checkDependence("--write-seed", " --seed", opt_readSeedFile != NULL);
+    app.checkDependence("--write-seed", "--seed", opt_readSeedFile != NULL);
     opt_writeSeedFile = opt_readSeedFile;
   }
   if (cmd.findOption("--write-seed-file"))
   {
-    app.checkDependence("--write-seed-file", " --seed", opt_readSeedFile != NULL);
+    app.checkDependence("--write-seed-file", "--seed", opt_readSeedFile != NULL);
     app.checkValue(cmd.getValue(opt_writeSeedFile));
   }
   cmd.endOptionBlock();
@@ -931,9 +947,9 @@ int main(int argc, char *argv[])
       app.checkValue(cmd.getValue(current));
       if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
       {
-        CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << OFendl;
+        CERR << "ciphersuite '" << current << "' is unknown, known ciphersuites are:" << OFendl;
         unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
-        for (unsigned long cs=0; cs < numSuites; cs++)
+        for (unsigned long cs = 0; cs < numSuites; cs++)
         {
           CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << OFendl;
         }
@@ -958,7 +974,7 @@ int main(int argc, char *argv[])
   {
     if (geteuid() != 0)
     {
-      fprintf(stderr, "storescp: cannot listen on port %lu, insufficient privileges\n", opt_port);
+      CERR << "Error: cannot listen on port " << opt_port << ", insufficient privileges" << OFendl;
       return 1;
     }
   }
@@ -966,25 +982,20 @@ int main(int argc, char *argv[])
 
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
-  {
-    fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE);
-  }
+    CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
 
   /* if the output directory does not equal "." (default directory) */
-  if( opt_outputDirectory.compare(".") != 0 )
+  if (opt_outputDirectory != ".")
   {
     /* if there is a path separator at the end of the path, get rid of it */
-    if( opt_outputDirectory[opt_outputDirectory.length()-1] == PATH_SEPARATOR )
-    {
-      opt_outputDirectory.erase(opt_outputDirectory.length()-1, 1);
-    }
+    OFStandard::normalizeDirName(opt_outputDirectory, opt_outputDirectory);
 
     /* check if the specified directory exists and if it is a directory.
      * If the output directory is invalid, dump an error message and terminate execution.
      */
-    if( !OFStandard::dirExists(opt_outputDirectory) )
+    if (!OFStandard::dirExists(opt_outputDirectory))
     {
-      CERR << "Error: invalid output directory encountered ('" << opt_outputDirectory << "')" << OFendl;
+      CERR << "Error: output directory does not exist: " << opt_outputDirectory << OFendl;
       return 1;
     }
   }
@@ -1003,15 +1014,15 @@ int main(int argc, char *argv[])
     HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
 
     // read socket handle number from stdin, i.e. the anonymous pipe
-	// to which our parent process has written the handle number.
+    // to which our parent process has written the handle number.
     if (ReadFile(hStdIn, buf, sizeof(buf), &bytesRead, NULL))
-	{
-        // make sure buffer is zero terminated
-		buf[bytesRead] = '\0';
-        dcmExternalSocketHandle.set(atoi(buf));
+    {
+      // make sure buffer is zero terminated
+      buf[bytesRead] = '\0';
+      dcmExternalSocketHandle.set(atoi(buf));
     }
     else
-	{
+    {
       CERR << "Error while reading socket handle: " << GetLastError() << OFendl;
       return 1;
     }
@@ -1059,7 +1070,7 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
         {
-          CERR << "warning unable to load certificate file '" << current << "', ignoring" << OFendl;
+          CERR << "Warning: unable to load certificate file '" << current << "', ignoring" << OFendl;
         }
       } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
     }
@@ -1071,37 +1082,37 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(current));
         if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
         {
-          CERR << "warning unable to certificates from directory '" << current << "', ignoring" << OFendl;
+          CERR << "Warning: unable to load certificates from directory '" << current << "', ignoring" << OFendl;
         }
       } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
     }
 
     if (opt_dhparam && !(tLayer->setTempDHParameters(opt_dhparam)))
     {
-      CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
+      CERR << "Warning: unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << OFendl;
     }
 
     if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
 
     if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
     {
-      CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
+      CERR << "Error: unable to load private TLS key from '" << opt_privateKeyFile << "'" << OFendl;
       return 1;
     }
     if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
     {
-      CERR << "unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
+      CERR << "Error: unable to load certificate from '" << opt_certificateFile << "'" << OFendl;
       return 1;
     }
     if (! tLayer->checkPrivateKeyMatchesCertificate())
     {
-      CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
+      CERR << "Error: private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << OFendl;
       return 1;
     }
 
     if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
     {
-      CERR << "unable to set selected cipher suites" << OFendl;
+      CERR << "Error: unable to set selected cipher suites" << OFendl;
       return 1;
     }
 
@@ -1140,13 +1151,11 @@ int main(int argc, char *argv[])
       if (tLayer->canWriteRandomSeed())
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
-        {
-          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << OFendl;
-        }
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring" << OFendl;
       }
       else
       {
-        CERR << "Warning: cannot write random seed, ignoring." << OFendl;
+        CERR << "Warning: cannot write random seed, ignoring" << OFendl;
       }
     }
 #endif
@@ -1263,17 +1272,19 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 #if defined(HAVE_FORK) || defined(_WIN32)
     if (opt_forkMode)
     {
-      printf("Association Received in %s process (pid: %ld)\n", (DUL_processIsForkedChild() ? "child" : "parent") , OFstatic_cast(long, getpid()));
+      COUT << "Association Received in " << (DUL_processIsForkedChild() ? "child" : "parent")
+           << " process (pid: " << OFstatic_cast(long, getpid()) << ")" << OFendl;
     }
-    else printf("Association Received\n");
+    else
+      COUT << "Association Received" << OFendl;
 #else
-    printf("Association Received\n");
+    COUT << "Association Received" << OFendl;
 #endif
   }
 
   if (opt_debug)
   {
-    printf("Parameters:\n");
+    COUT << "Parameters:" << OFendl;
     ASC_dumpParameters(assoc->params, COUT);
 
     DIC_AE callingTitle;
@@ -1293,11 +1304,12 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_NOREASON
     };
 
-    if (opt_verbose) printf("Refusing Association (forced via command line)\n");
+    if (opt_verbose)
+      COUT << "Refusing Association (forced via command line)" << OFendl;
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      printf("Association Reject Failed:\n");
+      COUT << "Association Reject Failed:" << OFendl;
       DimseCondition::dump(cond);
     }
     goto cleanup;
@@ -1517,7 +1529,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED
     };
 
-    if (opt_verbose) printf("Association Rejected: bad application context name: %s\n", buf);
+    if (opt_verbose)
+      COUT << "Association Rejected: bad application context name: " << buf << OFendl;
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
@@ -1536,7 +1549,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       ASC_REASON_SU_NOREASON
     };
 
-    if (opt_verbose) printf("Association Rejected: No Implementation Class UID provided\n");
+    if (opt_verbose)
+      COUT << "Association Rejected: No Implementation Class UID provided" << OFendl;
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
@@ -1557,10 +1571,11 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     }
     if (opt_verbose)
     {
-      printf("Association Acknowledged (Max Send PDV: %lu)\n", assoc->sendPDVLength);
+      COUT << "Association Acknowledged (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
       if (ASC_countAcceptedPresentationContexts(assoc->params) == 0)
-        printf("    (but no valid presentation contexts)\n");
-      if (opt_debug) ASC_dumpParameters(assoc->params, COUT);
+        COUT << "    (but no valid presentation contexts)" << OFendl;
+      if (opt_debug)
+        ASC_dumpParameters(assoc->params, COUT);
     }
   }
 
@@ -1606,16 +1621,18 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond == DUL_PEERREQUESTEDRELEASE)
   {
-    if (opt_verbose) printf("Association Release\n");
+    if (opt_verbose)
+      COUT << "Association Release" << OFendl;
     cond = ASC_acknowledgeRelease(assoc);
   }
   else if (cond == DUL_PEERABORTEDASSOCIATION)
   {
-    if (opt_verbose) printf("Association Aborted\n");
+    if (opt_verbose)
+      COUT << "Association Aborted" << OFendl;
   }
   else
   {
-    fprintf(stderr, "storescp: DIMSE Failure (aborting association)\n");
+    CERR << "storescp: DIMSE failure (aborting association)" << OFendl;
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
@@ -1705,7 +1722,7 @@ processCommands(T_ASC_Association * assoc)
     // detail information, dump this information
     if (statusDetail != NULL)
     {
-      printf("Extra Status Detail: \n");
+      COUT << "Extra Status Detail:" << OFendl;
       statusDetail->print(COUT);
       delete statusDetail;
     }
@@ -1728,7 +1745,9 @@ processCommands(T_ASC_Association * assoc)
         default:
           // we cannot handle this kind of message
           cond = DIMSE_BADCOMMANDTYPE;
-          fprintf(stderr, "storescp: Cannot handle command: 0x%x\n", OFstatic_cast(unsigned, msg.CommandField));
+          CERR << "storescp: cannot handle command: 0x"
+               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField)
+               << STD_NAMESPACE dec << OFendl;
           break;
       }
     }
@@ -1741,7 +1760,7 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
 {
   if (opt_verbose)
   {
-    printf("Received ");
+    COUT << "Received ";
     DIMSE_printCEchoRQ(stdout, &msg->msg.CEchoRQ);
   }
 
@@ -1749,7 +1768,7 @@ static OFCondition echoSCP( T_ASC_Association * assoc, T_DIMSE_Message * msg, T_
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    fprintf(stderr, "storescp: Echo SCP Failed:\n");
+    CERR << "storescp: Echo SCP failed:" << OFendl;
     DimseCondition::dump(cond);
   }
   return cond;
@@ -1824,7 +1843,7 @@ storeSCPCallback(
       (opt_abortAfterStore && progress->state == DIMSE_StoreEnd) )
   {
     if (opt_verbose)
-      printf("ABORT initiated (due to command line options)\n");
+      COUT << "ABORT initiated (due to command line options)" << OFendl;
     ASC_abortAssociation((OFstatic_cast(StoreCallbackData*, callbackData))->assoc);
     rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
     return;
@@ -1843,13 +1862,13 @@ storeSCPCallback(
     switch (progress->state)
     {
       case DIMSE_StoreBegin:
-        printf("RECV:");
+        COUT << "RECV:";
         break;
       case DIMSE_StoreEnd:
-        printf("\n");
+        COUT << OFendl;
         break;
       default:
-        putchar('.');
+        COUT << '.';
         break;
     }
     fflush(stdout);
@@ -1872,52 +1891,47 @@ storeSCPCallback(
 
     // we want to write the received information to a file only if this information
     // is present and the options opt_bitPreserving and opt_ignore are not set.
-    if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
+    if ((imageDataSet != NULL) && (*imageDataSet != NULL) && !opt_bitPreserving && !opt_ignore)
     {
       OFString fileName;
 
-      // in case option --sort-conc-studies or --sort-on-patientsname is set,
-      // we need to perform some particular steps to determine the actual name of the output file
-      if( opt_sortConcerningStudies || opt_sortOnPatientsName )
+      // in case one of the --sort-xxx options is set, we need to perform some particular steps to
+      // determine the actual name of the output file
+      if (opt_sortStudyMode != ESM_None)
       {
         // determine the study instance UID in the (current) DICOM object that has just been received
-        // note that if findAndGetString says the resulting study instance UID equals NULL, the study
-        // instance UID in the (current) DICOM object is an empty string; in general: no matter what
-        // happened, we want to create a new string that will contain a corresponding value for the
-        // current study instance UID
-        const char *tmpstr1 = NULL;
         OFString currentStudyInstanceUID;
-        DcmTagKey studyInstanceUIDTagKey( DCM_StudyInstanceUID );
-        OFCondition ec = (*imageDataSet)->findAndGetString( studyInstanceUIDTagKey, tmpstr1, OFFalse );
-        if( ec != EC_Normal )
+        if ((*imageDataSet)->findAndGetOFString(DCM_StudyInstanceUID, currentStudyInstanceUID).bad() || currentStudyInstanceUID.empty())
         {
-          fprintf(stderr, "storescp: No study instance UID found in data set.\n");
+          CERR << "Error: element StudyInstanceUID " << DCM_StudyInstanceUID << " absent or empty in data set" << OFendl;
           rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
           return;
         }
-        if (tmpstr1) currentStudyInstanceUID = tmpstr1;
 
-        // if --sort-on-patientsname is active, we need to extract the
+        // if --sort-on-patientname is active, we need to extract the
         // patients name (format: last_name^first_name)
-        OFString currentPatientsName; // default if patient's name is empty
-        if (opt_sortOnPatientsName)
+        OFString currentPatientsName;
+        if (opt_sortStudyMode == ESM_PatientsName)
         {
-            const char *tmpstr2 = NULL;
-            OFCondition ec2 = (*imageDataSet)->findAndGetString(DCM_PatientsName, tmpstr2, OFFalse );
-            OFString tmpName;
-            if (tmpstr2) tmpName = tmpstr2;
-            if (tmpName.length() == 0) tmpName = "ANONYMOUS"; //default if patient name is missing or empty
+          OFString tmpName;
+          if ((*imageDataSet)->findAndGetOFString(DCM_PatientsName, tmpName).bad() || tmpName.empty())
+          {
+            // default if patient name is missing or empty
+            tmpName = "ANONYMOUS";
+            CERR << "Warning: element PatientsName " << DCM_PatientsName << " absent or empty in data set, using '"
+                 << tmpName << "' instead" << OFendl;
+          }
 
-            /* substitute non-ASCII characters in patient name to ASCII "equivalent" */
-            const size_t length = tmpName.length();
-            for (size_t i = 0; i < length; i++)
-              mapCharacterAndAppendToString(tmpName[i], currentPatientsName);
+          /* substitute non-ASCII characters in patient name to ASCII "equivalent" */
+          const size_t length = tmpName.length();
+          for (size_t i = 0; i < length; i++)
+            mapCharacterAndAppendToString(tmpName[i], currentPatientsName);
         }
 
         // if this is the first DICOM object that was received or if the study instance UID in the
         // current DICOM object does not equal the last object's study instance UID we need to create
         // a new subdirectory in which the current DICOM object will be stored
-        if( lastStudyInstanceUID.empty() || lastStudyInstanceUID != currentStudyInstanceUID)
+        if (lastStudyInstanceUID.empty() || (lastStudyInstanceUID != currentStudyInstanceUID))
         {
           // if lastStudyInstanceUID is non-empty, we have just completed receiving all objects for one
           // study. In such a case, we need to set a certain indicator variable (lastStudySubdirectoryPathAndName),
@@ -1925,10 +1939,8 @@ storeSCPCallback(
           // variable will contain the path and name of the last study's subdirectory, so that we can still remember
           // this directory, when we execute executeOnEndOfStudy(). The memory that is allocated for this variable
           // here will be freed after the execution of executeOnEndOfStudy().
-          if( !lastStudyInstanceUID.empty() )
-          {
+          if (!lastStudyInstanceUID.empty())
             lastStudySubdirectoryPathAndName = subdirectoryPathAndName;
-          }
 
           // create the new lastStudyInstanceUID value according to the value in the current DICOM object
           lastStudyInstanceUID = currentStudyInstanceUID;
@@ -1937,69 +1949,92 @@ storeSCPCallback(
           OFDateTime dateTime;
           dateTime.setCurrentDateTime();
 
-          // create a name for the new subdirectory. pattern: "[prefix]_[YYYYMMDD]_[HHMMSSMMM]"
-          // where prefix is either opt_sortConcerningStudies or the patient name and date/time is the current time
-          char buf[32];
-          sprintf(buf, "_%04u%02u%02u_%02u%02u%02u%03u",
+          // create a name for the new subdirectory.
+          char timestamp[32];
+          sprintf(timestamp, "%04u%02u%02u_%02u%02u%02u%03u",
             dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
             dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
 
           OFString subdirectoryName;
-          if (opt_sortOnPatientsName)
+          switch (opt_sortStudyMode)
+          {
+            case ESM_Timestamp:
+              // pattern: "[prefix]_[YYYYMMDD]_[HHMMSSMMM]"
+              subdirectoryName = opt_sortStudyDirPrefix;
+              if (!subdirectoryName.empty())
+                subdirectoryName += '_';
+              subdirectoryName += timestamp;
+              break;
+            case ESM_StudyInstanceUID:
+              // pattern: "[prefix]_[Study Instance UID]"
+              subdirectoryName = opt_sortStudyDirPrefix;
+              if (!subdirectoryName.empty())
+                subdirectoryName += '_';
+              subdirectoryName += currentStudyInstanceUID;
+              break;
+            case ESM_PatientsName:
+              // pattern: "[Patient's Name]_[YYYYMMDD]_[HHMMSSMMM]"
               subdirectoryName = currentPatientsName;
-              else subdirectoryName = opt_sortConcerningStudies;
-          subdirectoryName += buf;
+              subdirectoryName += '_';
+              subdirectoryName += timestamp;
+              break;
+            case ESM_None:
+              break;
+          }
 
           // create subdirectoryPathAndName (string with full path to new subdirectory)
           subdirectoryPathAndName = cbdata->imageFileName;
           size_t position = subdirectoryPathAndName.rfind(PATH_SEPARATOR);
-          if (position != OFString_npos) subdirectoryPathAndName.erase(position+1);
+          if (position != OFString_npos)
+            subdirectoryPathAndName.erase(position + 1);
           subdirectoryPathAndName += subdirectoryName;
 
-          // check if the subdirectory is already existent
-          // if it is already existent dump a warning
+          // check if the subdirectory already exists
+          // if it already exists dump a warning
           if( OFStandard::dirExists(subdirectoryPathAndName) )
+            CERR << "Warning: subdirectory for study already exists: " << subdirectoryPathAndName << OFendl;
+          else
           {
-            fprintf(stderr, "storescp: Warning: Subdirectory for studies already existent. (%s)\n", subdirectoryPathAndName.c_str() );
-          }
-
-          // if it is not existent create it
+            // if it does not exist create it
+            if (opt_debug)
+              CERR << "Creating new subdirectory for study: " << subdirectoryPathAndName << OFendl;
 #ifdef HAVE_WINDOWS_H
-          if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
+            if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
 #else
-          if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+            if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
 #endif
-          {
-            fprintf(stderr, "storescp: Could not create subdirectory %s.\n", subdirectoryPathAndName.c_str() );
-            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
-            return;
+            {
+              CERR << "Error: could not create subdirectory for study: " << subdirectoryPathAndName << OFendl;
+              rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
+              return;
+            }
+            // all objects of a study have been received, so a new subdirectory is started.
+            // ->timename counter can be reset, because the next filename can't cause a duplicate.
+            // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
+            if (opt_timeNames)
+              timeNameCounter = -1;
           }
-          // all objects of a study have been received, so a new subdirectory is started.
-          // ->timename counter can be reset, because the next filename can't cause a duplicate.
-          // if no reset would be done, files of a new study (->new directory) would start with a counter in filename
-          if (opt_timeNames)
-            timeNameCounter = -1;
         }
 
         // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
         // path and file name; however, the path refers to the output directory captured in opt_outputDirectory)
-        char *tmpstr5 = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
+        char *tmpstr = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
         fileName = subdirectoryPathAndName;
-        fileName += tmpstr5;
+        fileName += tmpstr;
 
         // update global variable outputFileNameArray
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        outputFileNameArray.push_back(++tmpstr5);
+        outputFileNameArray.push_back(++tmpstr);
       }
-      // if option --sort-conc-studies is not set, the determination of the output file name is simple
+      // if no --sort-xxx option is set, the determination of the output file name is simple
       else
       {
         fileName = cbdata->imageFileName;
 
         // update global variables outputFileNameArray
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        const char *tmpstr6 = strrchr( fileName.c_str(), PATH_SEPARATOR );
-        outputFileNameArray.push_back(++tmpstr6);
+        const char *tmpstr = strrchr( fileName.c_str(), PATH_SEPARATOR );
+        outputFileNameArray.push_back(++tmpstr);
       }
 
       // determine the transfer syntax which shall be used to write the information to the file
@@ -2012,7 +2047,7 @@ storeSCPCallback(
           OFstatic_cast(Uint32, opt_itempad), !opt_useMetaheader);
       if (cond.bad())
       {
-        fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName.c_str());
+        CERR << "Error: cannot write DICOM file: " << fileName << OFendl;
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
       }
 
@@ -2023,7 +2058,7 @@ storeSCPCallback(
         // which SOP class and SOP instance ?
         if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
         {
-           fprintf(stderr, "storescp: Bad image file: %s\n", fileName.c_str());
+           CERR << "Error: bad DICOM file: " << fileName << OFendl;
            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
         }
         else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -2035,7 +2070,6 @@ storeSCPCallback(
           rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
         }
       }
-
     }
 
     // in case opt_bitPreserving is set, do some other things
@@ -2043,13 +2077,10 @@ storeSCPCallback(
     {
       // we need to set outputFileNameArray and outputFileNameArrayCnt to be
       // able to perform the placeholder substitution in executeOnReception()
-      char *tmpstr7 = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
-      outputFileNameArray.push_back(++tmpstr7);
+      char *tmpstr = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
+      outputFileNameArray.push_back(++tmpstr);
     }
   }
-
-  // return
-  return;
 }
 
 
@@ -2089,7 +2120,7 @@ static OFCondition storeSCP(
   }
   else
   {
-    //3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs
+    // 3 possibilities: create unique filenames (fn), create timestamp fn, create fn from SOP Instance UIDs
     if (opt_uniqueFilenames)
     {
       // create unique filename by generating a temporary UID and using ".X." as an infix
@@ -2118,7 +2149,7 @@ static OFCondition storeSCP(
       else
       {
         // counter was active before, so generate filename with "serial number" for comparison
-        sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", //millisecond version
+        sprintf(cmpFileName, "%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
@@ -2128,15 +2159,15 @@ static OFCondition storeSCP(
         // if this is not the first run and the prospective filename is equal to the last written filename
         // generate one with a serial number (incremented by 1)
         timeNameCounter++;
-        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, //millisecond version
+        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u_%04u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           timeNameCounter, dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
       }
       else
       {
-        //first run or filenames are different: create filename without serial number
-        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, //millisecond version
+        // first run or filenames are different: create filename without serial number
+        sprintf(imageFileName, "%s%c%04u%02u%02u%02u%02u%02u%03u.%s%s", opt_outputDirectory.c_str(), PATH_SEPARATOR, // millisecond version
           dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
           dateTime.getTime().getHour(), dateTime.getTime().getMinute(),dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond(),
           dcmSOPClassUIDToModality(req->AffectedSOPClassUID, "UNKNOWN"), opt_fileNameExtension.c_str());
@@ -2155,7 +2186,7 @@ static OFCondition storeSCP(
   // dump some information if required
   if (opt_verbose)
   {
-    printf("Received ");
+    COUT << "Received ";
     DIMSE_printCStoreRQ(stdout, req);
   }
 
@@ -2193,18 +2224,20 @@ static OFCondition storeSCP(
   // if some error occured, dump corresponding information and remove the outfile if necessary
   if (cond.bad())
   {
-    fprintf(stderr, "storescp: Store SCP Failed:\n");
+    CERR << "storescp: Store SCP failed:" << OFendl;
     DimseCondition::dump(cond);
     // remove file
     if (!opt_ignore)
     {
-      if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
+      if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
+        OFStandard::deleteFile(imageFileName);
     }
   }
 #ifdef _WIN32
   else if (opt_ignore)
   {
-    if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName); // delete the temporary file
+    if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0)
+      OFStandard::deleteFile(imageFileName); // delete the temporary file
   }
 #endif
 
@@ -2277,10 +2310,8 @@ static void executeOnReception()
   // in case a file was actually written
   if( !opt_ignore )
   {
-    // perform substitution for placeholder #p; note that
-    //  - in case option --sort-conc-studies is set, #p will be substituted by subdirectoryPathAndName
-    //  - and in case option --sort-conc-studies is not set, #p will be substituted by opt_outputDirectory
-    OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : subdirectoryPathAndName;
+    // perform substitution for placeholder #p (depending on presence of any --sort-xxx option)
+    OFString dir = (opt_sortStudyMode == ESM_None) ? opt_outputDirectory : subdirectoryPathAndName;
     cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
 
     // perform substitution for placeholder #f; note that outputFileNameArray.back()
@@ -2370,7 +2401,7 @@ static void renameOnEndOfStudy()
 
     // rename file
     if( rename( oldPathAndFileName.c_str(), newPathAndFileName.c_str() ) != 0 )
-      fprintf( stderr, "storescp: Cannot rename file '%s' to '%s'.\n", oldPathAndFileName.c_str(), newPathAndFileName.c_str() );
+      CERR << "Warning: cannot rename file '" << oldPathAndFileName << "' to '" << newPathAndFileName << "'" << OFendl;
 
     // remove entry from list
     first = outputFileNameArray.erase(first);
@@ -2452,7 +2483,7 @@ static void executeCommand( const OFString &cmd )
 #ifdef HAVE_FORK
   pid_t pid = fork();
   if( pid < 0 )     // in case fork failed, dump an error message
-    fprintf( stderr, "storescp: Cannot execute command '%s' (fork failed).\n", cmd.c_str() );
+    CERR << "Error: cannot execute command '" << cmd << "' (fork failed)" << OFendl;
   else if (pid > 0)
   {
     /* we are the parent process */
@@ -2467,7 +2498,7 @@ static void executeCommand( const OFString &cmd )
     // which hopefully exists on all Posix systems.
 
     if (execl( "/bin/sh", "/bin/sh", "-c", cmd.c_str(), NULL ) < 0)
-      fprintf( stderr, "storescp: Cannot execute /bin/sh.\n" );
+      CERR << "Error: cannot execute /bin/sh" << OFendl;
 
     // if execl succeeds, this part will not get executed.
     // if execl fails, there is not much we can do except bailing out.
@@ -2482,12 +2513,12 @@ static void executeCommand( const OFString &cmd )
   // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
   // called function because in such a case the execution of batch-files is not going to work.)
   if( !CreateProcess(NULL, OFconst_cast(char *, cmd.c_str()), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
-    fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
+    CERR << "Error: cannot execute command '" << cmd << "'" << OFendl;
 
   if (opt_execSync)
   {
-      // Wait until child process exits (makes execution synchronous).
-      WaitForSingleObject(procinfo.hProcess, INFINITE);
+    // Wait until child process exits (makes execution synchronous)
+    WaitForSingleObject(procinfo.hProcess, INFINITE);
   }
 
   // Close process and thread handles to avoid resource leak
@@ -2527,7 +2558,8 @@ static void cleanChildren(pid_t pid, OFBool synch)
 #endif
     if (child < 0)
     {
-      if (errno != ECHILD) CERR << "wait for child failed: " << strerror(errno) << OFendl;
+      if (errno != ECHILD)
+        CERR << "Warning: wait for child failed: " << strerror(errno) << OFendl;
     }
 
     if (synch) child = -1; // break out of loop
@@ -2619,8 +2651,7 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
       /* do not refuse if already accepted */
       dpc = findPresentationContextID(params->DULparams.acceptedPresentationContext,
                                       pc.presentationContextID);
-      if ((dpc == NULL) ||
-        ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
+      if ((dpc == NULL) || ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
       {
 
         if (abstractOK) {
@@ -2663,7 +2694,7 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
   ** syntax.  Accepting a transfer syntax will override previously
   ** accepted transfer syntaxes.
   */
-  for (int i=transferSyntaxCount-1; i>=0; i--)
+  for (int i = transferSyntaxCount - 1; i >= 0; i--)
   {
     cond = acceptUnknownContextsWithTransferSyntax(params, transferSyntaxes[i], acceptedRole);
     if (cond.bad()) return cond;
@@ -2682,7 +2713,7 @@ static int makeTempFile()
   return mkstemp(tempfile);
 #else /* ! HAVE_MKSTEMP */
   mktemp(tempfile);
-  return open(tempfile, O_WRONLY|O_CREAT|O_APPEND,0644);
+  return open(tempfile, O_WRONLY|O_CREAT|O_APPEND, 0644);
 #endif
 }
 
@@ -2692,6 +2723,14 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.104  2009-03-05 18:14:05  joergr
+** Added new command line option --sort-on-study-uid.
+** Renamed command line option --sort-on-patientsname to --sort-on-patientname.
+** Slightly reworked (simplified) code on the creation of subdirectory names.
+** Made warning and error messages more consistent throughout the tool. Changed
+** output from stderr to CERR and from stdout to COUT. Introduced general
+** OFStandard methods where appropriate. Fixed description of command line option.
+**
 ** Revision 1.103  2009-02-06 16:08:44  joergr
 ** Added support for JPEG-LS and MPEG2 transfer syntaxes.
 ** Fixed minor inconsistencies with regard to transfer syntaxes.
