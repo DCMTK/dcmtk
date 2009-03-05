@@ -202,7 +202,7 @@ length encoding in sequences and items:
 
   +eo   --impl-oversized
           write oversized explict length sequences
-          and items as implicit (default)
+          and items with undefined length (default)
 
   -eo   --abort-oversized
           abort on oversized expl. sequences/items

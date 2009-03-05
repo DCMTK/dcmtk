@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:39:26 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 2009-03-05 13:54:36 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,7 +196,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("length encoding in sequences and items:");
       cmd.addOption("--length-explicit",     "+e",     "write with explicit lengths (default)");
       cmd.addOption("--length-undefined",    "-e",     "write with undefined lengths");
-      cmd.addOption("--write-oversized",     "+eo",    "write oversized explict length sequences\nand items as implicit (default)");
+      cmd.addOption("--write-oversized",     "+eo",    "write oversized explict length sequences\nand items with undefined length (default)");
       cmd.addOption("--abort-oversized",     "-eo",    "abort on oversized expl. sequences/items");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-retain",      "-p=",    "do not change padding\n(default if not --write-dataset)");
@@ -525,6 +525,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.61  2009-03-05 13:54:36  onken
+** Fixed typo.
+**
 ** Revision 1.60  2009-03-05 13:39:26  onken
 ** Added support for the new parser's global sequence/item length overflow flag.
 **
