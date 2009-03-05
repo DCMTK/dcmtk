@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-05 14:59:43 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2009-03-05 13:35:07 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,12 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype)
 {
     DcmXfer xferSyn(xfer);
-    return getLength(xfer, enctype) + xferSyn.sizeofTagHeader(getVR());
+    const Uint32 headerLength = xferSyn.sizeofTagHeader(getVR());
+    const Uint32 elemLength = getLength(xfer, enctype);
+    if (OFStandard::check32BitAddOverflow(headerLength, elemLength))
+      return DCM_UndefinedLength;
+    else
+      return headerLength + elemLength;
 }
 
 
@@ -1473,6 +1478,14 @@ OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.68  2009-03-05 13:35:07  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds 32-bit
+** length field. Also introduced new flag (default: enabled) for writing
+** in explicit length mode, which allows for automatically switching encoding
+** of only that very sequence/item to undefined length coding (thus permitting
+** to actually write the file).
+**
 ** Revision 1.67  2009-02-05 14:59:43  onken
 ** Make usage of global "ignore parsing errors" flag in case of elements
 ** being larger than rest of available input. However, if enabled, the

@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:57:19 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-05 13:35:07 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,9 +319,17 @@ OFBool DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer,
 Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
                                              const E_EncodingType enctype)
 {
+    /* Get length of sequence header + sequence content (will call DcmSequenceOfItems::getLength()) */
     Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
+    if (seqlen == DCM_UndefinedLength)
+      return DCM_UndefinedLength;
     if (enctype == EET_UndefinedLength)
+    {
+      if (OFStandard::check32BitAddOverflow(seqlen, 8))
+        return DCM_UndefinedLength;
+      else
         seqlen += 8;     // for Sequence Delimitation Tag
+    }
     return seqlen;
 }
 
@@ -333,13 +341,37 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
                                      const E_EncodingType enctype)
 {
     Uint32 seqlen = 0;
+    Uint32 sublen = 0;
     if (!itemList->empty())
     {
         DcmItem *dI;
         itemList->seek(ELP_first);
         do {
             dI = OFstatic_cast(DcmItem *, itemList->get());
-            seqlen += dI->calcElementLength(xfer, enctype);
+            sublen = dI->calcElementLength(xfer, enctype);
+            /* explicit length: be sure that total size of contained elements fits into sequence's 
+               32 Bit length field. If not, switch encoding automatically to undefined
+               length for this sequence. Nevertheless, any contained items will be
+               written with explicit length if possible.
+             */
+            if ( (enctype == EET_ExplicitLength) && OFStandard::check32BitAddOverflow(seqlen, sublen) )
+            {
+                ofConsole.lockCerr() << "DcmSequence: Explicit length of sequence "
+                                     << getTagName() << " " << getTag()
+                                     << " exceeds 32-Bit length field - ";
+                if (dcmWriteOversizedSeqsAndItemsImplicit.get())
+                {
+                    ofConsole.getCerr() << "Trying to treat it as implicit length instead." << OFendl;
+                } 
+                else
+                {
+                    ofConsole.getCerr() << "Writing with explicit length will not be possible" << OFendl;
+                    errorFlag = EC_SeqOrItemContentOverflow;
+                }
+                ofConsole.unlockCerr();
+                return DCM_UndefinedLength;
+            }
+            seqlen += sublen;
         } while (itemList->seek(ELP_next));
     }
     return seqlen;
@@ -580,7 +612,7 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
                                       const E_EncodingType enctype,
                                       DcmWriteCache *wcache)
 {
-    if (getTransferState() == ERW_notInitialized)
+  if (getTransferState() == ERW_notInitialized)
         errorFlag = EC_IllegalCall;
     else
     {
@@ -600,6 +632,8 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream &outStream,
                         setLengthField(getLength(oxfer, enctype));
                     else
                         setLengthField(DCM_UndefinedLength);
+                    if (errorFlag == EC_SeqOrItemContentOverflow)
+                      return EC_SeqOrItemContentOverflow;
                     Uint32 written_bytes = 0;
                     errorFlag = writeTagAndLength(outStream, oxfer, written_bytes);
                     if (errorFlag.good())
@@ -1272,6 +1306,14 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.81  2009-03-05 13:35:07  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds 32-bit
+** length field. Also introduced new flag (default: enabled) for writing
+** in explicit length mode, which allows for automatically switching encoding
+** of only that very sequence/item to undefined length coding (thus permitting
+** to actually write the file).
+**
 ** Revision 1.80  2009-02-04 17:57:19  joergr
 ** Fixes various type mismatches reported by MSVC introduced with OFFile class.
 **

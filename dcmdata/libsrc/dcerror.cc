@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-11 16:35:27 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-05 13:35:07 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,7 @@ const OFConditionConst ECC_TooManyBytesRequested(      OFM_dcmdata, 24, OF_error
 const OFConditionConst ECC_InvalidBasicOffsetTable(    OFM_dcmdata, 26, OF_error, "Invalid basic offset table"                 );
 const OFConditionConst ECC_ElemLengthLargerThanItem(   OFM_dcmdata, 27, OF_error, "Length of element larger than explicit length of surrounding item" );
 const OFConditionConst ECC_FileMetaInfoHeaderMissing(  OFM_dcmdata, 28, OF_error, "File meta information header missing" );
+const OFConditionConst ECC_SeqOrItemContentOverflow(   OFM_dcmdata, 29, OF_error, "Item or sequence content exceeds maximum of 32-bit length field");
 
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
@@ -86,6 +87,7 @@ const OFCondition EC_InvalidOffset(              ECC_InvalidOffset);
 const OFCondition EC_TooManyBytesRequested(      ECC_TooManyBytesRequested);
 const OFCondition EC_InvalidBasicOffsetTable(    ECC_InvalidBasicOffsetTable);
 const OFCondition EC_ElemLengthLargerThanItem(   ECC_ElemLengthLargerThanItem);
+const OFCondition EC_SeqOrItemContentOverflow(   ECC_SeqOrItemContentOverflow);
 const OFCondition EC_FileMetaInfoHeaderMissing(  ECC_FileMetaInfoHeaderMissing);
 
 const char *dcmErrorConditionToString(OFCondition cond)
@@ -97,6 +99,14 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.23  2009-03-05 13:35:07  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds 32-bit
+** length field. Also introduced new flag (default: enabled) for writing
+** in explicit length mode, which allows for automatically switching encoding
+** of only that very sequence/item to undefined length coding (thus permitting
+** to actually write the file).
+**
 ** Revision 1.22  2009-02-11 16:35:27  joergr
 ** Introduced new error code EC_FileMetaInfoHeaderMissing.
 **

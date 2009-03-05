@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-02-18 12:22:11 $
- *  CVS/RCS Revision: $Revision: 1.130 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-05 13:35:07 $
+ *  CVS/RCS Revision: $Revision: 1.131 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,6 +80,7 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofstd.h"
 
 
 // ********************************
@@ -436,9 +437,24 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
 {
     Uint32 itemlen = 0;
     DcmXfer xferSyn(xfer);
-    itemlen = getLength(xfer, enctype) + xferSyn.sizeofTagHeader(getVR());
-    if (enctype == EET_UndefinedLength)
+    /* Length of item's start header */
+    Uint32 headersize = xferSyn.sizeofTagHeader(getVR());
+    /* Length of item's content, i.e. contained elements */
+    itemlen = getLength(xfer, enctype);
+    /* Since the item's total length can exceed the maximum length of 32 bit, it is
+     * always necessary to check for overflows. The approach taken is not elegant
+     * but should work...
+     */
+    if ( (itemlen == DCM_UndefinedLength) || OFStandard::check32BitAddOverflow(itemlen, headersize) )
+      return DCM_UndefinedLength;
+    itemlen += xferSyn.sizeofTagHeader(getVR());
+    if (enctype == EET_UndefinedLength) // add bytes for closing item tag marker if necessary
+    {
+      if (OFStandard::check32BitAddOverflow(itemlen, 8))
+        return DCM_UndefinedLength;
+      else
         itemlen += 8;
+    }
     return itemlen;
 }
 
@@ -450,13 +466,37 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
                           const E_EncodingType enctype)
 {
     Uint32 itemlen = 0;
+    Uint32 sublen = 0;
     if (!elementList->empty())
     {
         DcmObject *dO;
         elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-            itemlen += dO->calcElementLength(xfer, enctype);
+            sublen = dO->calcElementLength(xfer, enctype);
+            /* explicit length: be sure that total size of contained elements fits into item's 
+               32 Bit length field. If not, switch encoding automatically to undefined
+               length for this item. Nevertheless, any contained elements will be
+               written with explicit length if possible.
+             */
+            if ( (enctype == EET_ExplicitLength) && OFStandard::check32BitAddOverflow(sublen, itemlen) )
+            {
+                ofConsole.lockCerr() << "DcmItem: Explicit length of item "
+                                     << "exceeds 32-Bit length field: ";
+                if (dcmWriteOversizedSeqsAndItemsImplicit.get())
+                {
+                    ofConsole.getCerr() << "trying to encode with implicit length" << OFendl;
+                } 
+                else
+                {
+                    ofConsole.getCerr() << "aborting write" << OFendl;
+                    errorFlag = EC_SeqOrItemContentOverflow;
+                }
+                ofConsole.unlockCerr();
+                return DCM_UndefinedLength;       
+            }
+            else
+              itemlen += sublen;
         } while (elementList->seek(ELP_next));
     }
     return itemlen;
@@ -487,6 +527,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
     /* if we get to this point, we need to do something. First of all, set the error indicator to normal. */
     OFCondition l_error = EC_Normal;
+    /* collects group length elements that cannot be calculated due to length field overflows */
+    OFList<DcmObject*> exceededGroupLengthElems;
 
     /* if there are elements in this item... */
     if (!elementList->empty())
@@ -500,6 +542,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
         DcmUnsignedLong * paddingGL = NULL;
         Uint32 grplen = 0;
         DcmXfer xferSyn(xfer);
+        Uint32 sublen = 0;
+        OFBool groupLengthExceeded = OFFalse;
 
         /* determine the current seek mode and set the list pointer to the first element */
         E_ListPos seekmode = ELP_next;
@@ -517,7 +561,9 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             /* if the current element is a sequence, compute group length and padding for the sub sequence */
             if (dO->getVR() == EVR_SQ)
             {
+                // add size of sequence header
                 Uint32 templen = instanceLength + xferSyn.sizeofTagHeader(EVR_SQ);
+                // call computeGroupLengthAndPadding for all contained items.
                 l_error =
                     OFstatic_cast(DcmSequenceOfItems *, dO)->computeGroupLengthAndPadding
                     (glenc, padenc, xfer, enctype, subPadlen, subPadlen,
@@ -537,7 +583,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                     (padenc != EPD_noChange && dO->getTag() == DCM_DataSetTrailingPadding))
                 {
                     delete elementList->remove();
-                    seekmode = ELP_atpos;           // remove = 1 forward
+                    seekmode = ELP_atpos; // remove advances 1 element forward -> make next seek() work
                     dO = NULL;
                 }
                 /* if the above mentioned conditions are not met but the caller specified that we want to add group */
@@ -588,11 +634,24 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
                         /* if actGLElem conatins a valid pointer it was set in one of the last iterations */
                         /* to the group lenght element of the last group. We need to write the current computed */
-                        /* group length value to this element. */
+                        /* group length value to this element. Exception: If group length exceeds maximum possible */
+                        /* value, than remove group length element instead of setting it */
                         if (actGLElem != NULL)
                         {
-                            actGLElem->putUint32(grplen);
-                            DCM_dcmdataDebug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
+                            if (!groupLengthExceeded)
+                            {
+                              actGLElem->putUint32(grplen);
+                              DCM_dcmdataDebug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
+                            }
+                            else
+                            {
+                              ofConsole.lockCerr() << "DcmItem: Group length of group "
+                                                   << actGLElem->getGTag() << " exceeds 32-Bit length field. "
+                                                   << "Cannot calculate/write group length for this group." << OFendl;
+                              ofConsole.unlockCerr();                              
+                              exceededGroupLengthElems.push_back(actGLElem);
+                              groupLengthExceeded = OFFalse;
+                            }
                         }
 
                         /* set the group length value to 0 since it is the beginning of the new group */
@@ -608,9 +667,21 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                             actGLElem = NULL;
                     }
                     /* if this is not a new group, calculate the element's length and add it */
-                    /* to the currently computed group length value */
+                    /* to the currently computed group length value. If group length is larger */
+                    /* than group length field permits, set flag to not add group length for this group */
                     else
-                        grplen += dO->calcElementLength(xfer, enctype);
+                    {
+                        sublen = dO->calcElementLength(xfer, enctype);
+                        // test for 32-bit overflow return value
+                        if ((sublen == DCM_UndefinedLength) || OFStandard::check32BitAddOverflow(sublen, grplen))
+                        {
+                            groupLengthExceeded = OFTrue;
+                        }
+                        else
+                        {
+                          grplen += sublen;
+                        }
+                    }
 
                     /* remember the current element's group number so that it is possible to */
                     /* figure out if a new group is treated in the following iteration */
@@ -621,9 +692,20 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
         /* if there was no error and the caller specified that we want to add or recalculate */
         /* group length tags and if actGLElem has a valid value, we need to add the above */
-        /* computed group length value to the last group's group length element */
+        /* computed group length value to the last group's group length element. Exception: */
+        /* If group length exceeds maximum possible value, remove group length element and */
+        /* i.e. do not write it for this group. */
         if (l_error.good() && (glenc == EGL_withGL || glenc == EGL_recalcGL) && actGLElem)
+        {
+          if (groupLengthExceeded)
+          {
+            exceededGroupLengthElems.push_back(actGLElem);
+          }
+          else
+          {
             actGLElem->putUint32(grplen);
+          }
+        }
 
         /* if the caller specified that we want to add padding elements and */
         /* if the length up to which shall be padded does not equal 0 we might */
@@ -683,6 +765,15 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             }
         }
     }
+    /* delete invalid group length elements from item. Cannot be done in */ 
+    /* above while loop because then elementList iterator is invalidated */
+    Uint32 numElems = exceededGroupLengthElems.size();
+    for (Uint32 i=0; i < numElems; i++)
+    {
+      delete remove(exceededGroupLengthElems.front());
+      exceededGroupLengthElems.pop_front();
+    }
+
     return l_error;
 }
 
@@ -1125,6 +1216,8 @@ OFCondition DcmItem::write(DcmOutputStream &outStream,
             setLengthField(getLength(oxfer, enctype));
           else
             setLengthField(DCM_UndefinedLength);
+          if (errorFlag == EC_SeqOrItemContentOverflow)
+            return errorFlag;
           errorFlag = writeTag(outStream, getTag(), oxfer);
           Uint32 valueLength = getLengthField();
           DcmXfer outXfer(oxfer);
@@ -3550,6 +3643,14 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.131  2009-03-05 13:35:07  onken
+** Added checks for sequence and item lengths which prevents overflow in length
+** field, if total length of contained items (or sequences) exceeds 32-bit
+** length field. Also introduced new flag (default: enabled) for writing
+** in explicit length mode, which allows for automatically switching encoding
+** of only that very sequence/item to undefined length coding (thus permitting
+** to actually write the file).
+**
 ** Revision 1.130  2009-02-18 12:22:11  meichel
 ** Minor changes needed for VC6
 **

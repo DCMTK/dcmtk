@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-02-11 13:16:36 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 2009-03-05 13:35:07 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,7 @@ OFGlobal<OFBool> dcmAcceptUnexpectedImplicitEncoding(OFFalse);
 OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
 OFGlobal<OFBool> dcmIgnoreParsingErrors(OFFalse);
 OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)
+OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsImplicit(OFTrue);
 
 // ****** public methods **********************************
 
@@ -473,6 +474,14 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.59  2009-03-05 13:35:07  onken
+ * Added checks for sequence and item lengths which prevents overflow in length
+ * field, if total length of contained items (or sequences) exceeds 32-bit
+ * length field. Also introduced new flag (default: enabled) for writing
+ * in explicit length mode, which allows for automatically switching encoding
+ * of only that very sequence/item to undefined length coding (thus permitting
+ * to actually write the file).
+ *
  * Revision 1.58  2009-02-11 13:16:36  onken
  * Added global parser flag permitting to stop parsing after a specific
  * element was parsed on dataset level (useful for removing garbage at
