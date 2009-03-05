@@ -252,11 +252,13 @@ deflate compression level (only with --write-xfer-deflated/same):
 sorting into subdirectories (not with --bit-preserving):
 
   -ss   --sort-conc-studies  [p]refix: string
-          sort concerning studies into subdirectories that
-          start with prefix p
+          sort studies using prefix p and a timestamp
 
-  -sp   --sort-on-patientsname
-          sort studies into subdirs by patient name
+  -su   --sort-on-study-uid  [p]refix: string
+          sort studies using prefix p and the Study Instance UID
+
+  -sp   --sort-on-patientname
+          sort studies using the Patient's Name and a timestamp
 
 filename generation:
 
@@ -277,15 +279,15 @@ filename generation:
 \verbatim
   -xcr  --exec-on-reception  [c]ommand: string
           execute command c after having received and
-          processed one C-STORE-Request message
+          processed one C-STORE-RQ message
 
   -xcs  --exec-on-eostudy  [c]ommand: string (only with -ss or -sp)
           execute command c after having received and processed
-          all C-STORE-Request messages that belong to one study
+          all C-STORE-RQ messages that belong to one study
 
   -rns  --rename-on-eostudy
           (only with -ss or -sp) having received and processed
-          all C-STORE-Request messages that belong to one study,
+          all C-STORE-RQ messages that belong to one study,
           rename output files according to a certain pattern
 
   -tos  --eostudy-timeout  [t]imeout: integer
@@ -389,7 +391,11 @@ determination of the subdirectory names pertains to the pattern
 
 where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
 HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
-milliseconds (000-999).
+milliseconds (000-999). If the prefix is an empty string, the first '_' is
+omitted.
+
+Option \e --sort-on-study-uid and \e --sort-on-patientname work in a similar
+manner, only the subdirectory names are created differently.
 
 Option \e --timenames creates filenames from timestamps corresponding to the
 time, \b storescp writes a file to disk. The format is
@@ -412,7 +418,7 @@ of 8 characters.
 
 Option \e --exec-on-reception allows to execute a certain command line
 after having received and processed one DICOM object (through a
-C-STORE-Request message). The command line to be executed is passed to
+C-STORE-RQ message). The command line to be executed is passed to
 this option as a parameter. The specified command line may contain a
 number of placeholders which will be replaced at run time:
 
@@ -424,8 +430,8 @@ number of placeholders which will be replaced at run time:
 \li \b \#c: called application entity title used by the peer Storage SCU to
             address \b storescp.
 
-The specified command line is executed as a separate process, so that
-the execution of \b storescp will not be held back.
+The specified command line is executed as a separate process, so that the
+execution of \b storescp will not be held back.
 
 Option \e --exec-on-eostudy allows to execute a certain command line when all
 DICOM objects that belong to one study have been received by \b storescp.
@@ -436,9 +442,9 @@ specified with \e --eostudy-timeout takes place. If option
 \e --rename-on-eostudy is in force, the renaming takes place before the
 external command is executed.
 
-Option \e --rename-on-eostudy refers to the above mentioned option
-\e --sort-conc-studies and can only be used in combination with this
-option. If a user specifies option \e --rename-on-eostudy and \b storescp
+Option \e --rename-on-eostudy refers to the above mentioned \e --sort-xxx
+options and can only be used in combination with one of these options.
+If a user specifies option \e --rename-on-eostudy and \b storescp
 determines that all DICOM objects that belong to a certain study have
 been received, all DICOM files that belong to the last study will be
 renamed in the corresponding output directory. The filenames into which
@@ -459,8 +465,8 @@ such a case, d_n+1 is considered to belong to a new study.
 Using option \e --eostudy-timeout a user can modify the determination process
 to figure out if all DICOM objects that belong to one study have already been
 received by \b storescp. With regard to this fact, it is clear that this option
-can only be used in combination with at least one of the three options
-\e --sort-conc-studies, \e --exec-on-eostudy and \e --rename-on-eostudy.
+can only be used in combination with at least one of the following options:
+\e --sort-xxx, \e --exec-on-eostudy and \e --rename-on-eostudy.
 If option \e --eostudy-timeout is specified, the end of a study is considered
 to have occurred not only if two consecutively received DICOM objects d_n and
 d_n+1 do not show the same values in attribute Study Instance UID, but also if
