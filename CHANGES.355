@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.04 (onken)
+
+- Added support for new parser global sequence/item length overflow flag.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+
+- Added checks for sequence and item lengths which prevents overflow in length
+  field, if total length of contained items (or sequences) exceeds
+  32-bit length field. Also introduced new flag (default: enabled)
+  for writing in explicit length mode, which allows for automatically
+  switching encoding of only that very sequence/item to undefined
+  length coding (thus permitting to actually write the file).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+           
+- Added helper function that checks whether a given Uint32 addition would
+  result in an overflow.
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+
 **** Changes from 2009.03.02 (riesmeier)
 
 - Fixed issue with incorrectly encoded file meta information header consisting
@@ -10,7 +36,7 @@ Changes between releases are documented here.
 
 - Fixed bug that caused the print flag PF_convertToMarkup always being set.
   Affects: dcmdata/libsrc/dcbytstr.cc
-  
+
 - Added attribute name to debug output / error messages where appropriate.
   Affects: dcmwlm/libsrc/wlds.cc
 
