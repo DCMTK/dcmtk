@@ -57,8 +57,8 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2009-02-06 17:12:41 $
-** CVS/RCS Revision:    $Revision: 1.50 $
+** Update Date:         $Date: 2009-03-06 14:43:57 $
+** CVS/RCS Revision:    $Revision: 1.51 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -108,14 +108,6 @@
 #include "dcmtk/dcmdata/dcdicent.h"    /* for DcmDictEntry, needed for MSVC5 */
 #include "dcmtk/dcmdata/dcwcache.h"    /* for class DcmWriteCache */
 
-/*
- * Type definitions
- */
-
-/*
- * Useful Macros
- */
-
 
 /*
  * Global variables, mutex protected
@@ -152,9 +144,6 @@ OFBool g_dimse_save_dimse_data = OFFalse;
 static unsigned long g_dimse_commandCounter = 0;
 static unsigned long g_dimse_dataCounter = 0;
 
-/*
-** Private Functions Prototypes
-*/
 
 /*
 ** Private Functions Bodies
@@ -476,42 +465,42 @@ validateMessage(
     switch (msg->CommandField) {
     case DIMSE_C_ECHO_RQ:
         if (msg->msg.CEchoRQ.DataSetType != DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CEchoRQ: DataSetType != NULL");
+            DIMSE_warning(assoc, "C-Echo RQ: DataSetType != NULL");
             cond = DIMSE_BADMESSAGE;
         }
         break;
     case DIMSE_C_ECHO_RSP:
         if (msg->msg.CEchoRSP.DataSetType != DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CEchoRSP: DataSetType != NULL");
+            DIMSE_warning(assoc, "C-Echo RSP: DataSetType != NULL");
             cond = DIMSE_BADMESSAGE;
         }
         break;
     case DIMSE_C_STORE_RQ:
         if (msg->msg.CStoreRQ.DataSetType == DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CStoreRQ: DataSetType == NULL");
+            DIMSE_warning(assoc, "C-Store RQ: DataSetType == NULL");
             cond = DIMSE_BADMESSAGE;
         }
         if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID),
                 1, DIC_UI_LEN)) {
-            DIMSE_warning(assoc, "CStoreRQ: AffectedSOPInstanceUID: bad size");
+            DIMSE_warning(assoc, "C-Store RQ: AffectedSOPInstanceUID: bad size");
             cond = DIMSE_BADMESSAGE;
         }
         break;
     case DIMSE_C_STORE_RSP:
         if (msg->msg.CStoreRSP.DataSetType != DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CStoreRSP: DataSetType != NULL");
+            DIMSE_warning(assoc, "C-Store RSP: DataSetType != NULL");
             cond = DIMSE_BADMESSAGE;
         }
         if ((msg->msg.CStoreRSP.opts & O_STORE_AFFECTEDSOPINSTANCEUID) &&
             (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID),
                 1, DIC_UI_LEN))) {
-            DIMSE_warning(assoc, "CStoreRSP: AffectedSOPInstanceUID: bad size");
+            DIMSE_warning(assoc, "C-Store RSP: AffectedSOPInstanceUID: bad size");
             cond = DIMSE_BADMESSAGE;
         }
         break;
     case DIMSE_C_GET_RQ:
         if (msg->msg.CGetRQ.DataSetType == DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CGetRQ: DataSetType == NULL");
+            DIMSE_warning(assoc, "C-Get RQ: DataSetType == NULL");
             cond = DIMSE_BADMESSAGE;
         }
         break;
@@ -520,7 +509,7 @@ validateMessage(
         break;
     case DIMSE_C_FIND_RQ:
         if (msg->msg.CFindRQ.DataSetType == DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CFindRQ: DataSetType == NULL");
+            DIMSE_warning(assoc, "C-Find RQ: DataSetType == NULL");
             cond = DIMSE_BADMESSAGE;
         }
         break;
@@ -529,7 +518,7 @@ validateMessage(
         break;
     case DIMSE_C_MOVE_RQ:
         if (msg->msg.CMoveRQ.DataSetType == DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CMoveRQ: DataSetType == NULL");
+            DIMSE_warning(assoc, "C-Move RQ: DataSetType == NULL");
             cond = DIMSE_BADMESSAGE;
         }
         break;
@@ -538,7 +527,7 @@ validateMessage(
         break;
     case DIMSE_C_CANCEL_RQ:
         if (msg->msg.CCancelRQ.DataSetType != DIMSE_DATASET_NULL) {
-            DIMSE_warning(assoc, "CCancelRQ: DataSetType != NULL");
+            DIMSE_warning(assoc, "C-Cancel RQ: DataSetType != NULL");
             cond = DIMSE_BADMESSAGE;
         }
         break;
@@ -610,7 +599,7 @@ sendStraightFileData(
     f = fopen(dataFileName, "rb");
     if (f == NULL) {
         DIMSE_warning(assoc,
-            "sendStraightFileData: cannot open dicom file (%s): %s\n",
+            "sendStraightFileData: cannot open DICOM file (%s): %s\n",
             dataFileName, strerror(errno));
         cond = DIMSE_SENDFAILED;
     }
@@ -626,11 +615,13 @@ sendStraightFileData(
         pdvList.count = 1;
         pdvList.pdv = &pdv;
 
+#ifdef DEBUG
         if (debug) {
             COUT << "DIMSE sendStraightFileData: sending "
-            << pdv.fragmentLength << " bytes (last: "
-            << ((last)?("YES"):("NO")) << ")" << OFendl;
+                 << pdv.fragmentLength << " bytes (last: "
+                 << ((last)?("YES"):("NO")) << ")" << OFendl;
         }
+#endif
 
         dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
         if (dulCond.bad())
@@ -798,7 +789,7 @@ sendDcmDataset(
             /* dump some information if required */
             if (debug) {
                 COUT << "DIMSE sendDcmDataset: sending " << pdv.fragmentLength
-                << " bytes" << OFendl;
+                     << " bytes" << OFendl;
             }
 
             /* send information over the network to the other DICOM application */
@@ -919,8 +910,8 @@ DIMSE_sendMessage(
       {
         if (! dcmff.loadFile(dataFileName, EXS_Unknown).good())
         {
-               DIMSE_warning(assoc,
-               "sendMessage: cannot open dicom file (%s): %s\n",
+             DIMSE_warning(assoc,
+               "sendMessage: cannot open DICOM file (%s): %s\n",
                dataFileName, strerror(errno));
                cond = DIMSE_SENDFAILED;
         } else {
@@ -940,11 +931,11 @@ DIMSE_sendMessage(
           DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
           if (fromFile && dataFileName)
           {
-                DIMSE_warning(assoc,
+              DIMSE_warning(assoc,
                  "sendMessage: unable to convert DICOM file '%s'\nfrom '%s' transfer syntax to '%s'.\n",
                  dataFileName, originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
           } else {
-                DIMSE_warning(assoc,
+              DIMSE_warning(assoc,
                  "sendMessage: unable to convert dataset\nfrom '%s' transfer syntax to '%s'.\n",
                  originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
           }
@@ -953,8 +944,7 @@ DIMSE_sendMessage(
       } else {
             /* if there is neither a data object nor a file name, create a warning, since */
             /* the information in msg specified that instance data should be present. */
-            DIMSE_warning(assoc,
-            "sendMessage: no dataset to send\n");
+            DIMSE_warning(assoc, "sendMessage: no dataset to send\n");
             cond = DIMSE_SENDFAILED;
       }
     }
@@ -973,7 +963,7 @@ DIMSE_sendMessage(
       /* dump information if required */
       if (debug)
       {
-            COUT << "DIMSE Command To Send:" << OFendl;
+            COUT << "DIMSE Command to Send:" << OFendl;
             cmdObj->print(COUT);
       }
 
@@ -985,7 +975,7 @@ DIMSE_sendMessage(
 
     /* Then we still have to send the actual instance data if the DIMSE command information variable */
     /* says that instance data is present and there actually is a corresponding data object */
-    if (cond.good() && DIMSE_isDataSetPresent(msg) &&(dataObject))
+    if (cond.good() && DIMSE_isDataSetPresent(msg) && (dataObject))
     {
       /* again, if the global variable says so, we want to save the instance data to a file */
       if (g_dimse_save_dimse_data) saveDimseFragment(dataObject, OFFalse, OFFalse);
@@ -1206,7 +1196,7 @@ DIMSE_receiveCommand(
         {
             delete cmdSet;
             char buf1[256];
-            sprintf(buf1, "DIMSE: Different PIDs inside Command Set: %d != %d", pid, pdv.presentationContextID);
+            sprintf(buf1, "DIMSE: Different PresIDs inside Command Set: %d != %d", pid, pdv.presentationContextID);
             OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
         }
@@ -1262,8 +1252,8 @@ DIMSE_receiveCommand(
 
     /* dump information if required */
     if (debug) {
-        COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
-        << bytesRead << " bytes), presID=" << (int) pid << OFendl;
+        COUT << "DIMSE receiveCommand: " << pdvCount << " PDVs ("
+             << bytesRead << " bytes), PresID=" << (int) pid << OFendl;
     }
 
     /* check if this is a valid presentation context */
@@ -1437,7 +1427,7 @@ OFCondition DIMSE_createFilestream(
        *filestream = NULL;
      }
      char buf[4096]; // file names could be long!
-     sprintf(buf, "DIMSE_createFilestream: cannot create file '%s'", filename);
+     sprintf(buf, "DIMSE createFilestream: cannot create file '%s'", filename);
      return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf);
   }
 
@@ -1447,7 +1437,7 @@ OFCondition DIMSE_createFilestream(
     if (EC_Normal != metainfo->write(**filestream, META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_ExplicitLength, NULL))
     {
       char buf2[4096]; // file names could be long!
-      sprintf(buf2, "DIMSE_createFilestream: cannot write metaheader to file '%s'", filename);
+      sprintf(buf2, "DIMSE createFilestream: cannot write metaheader to file '%s'", filename);
       cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf2);
     }
     metainfo->transferEnd();
@@ -1506,7 +1496,7 @@ DIMSE_receiveDataSetInFile(
           else if (pdv.presentationContextID != pid)
           {
             char buf1[256];
-            sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
+            sprintf(buf1, "DIMSE: Different PresIDs inside data set: %d != %d", pid, pdv.presentationContextID);
             OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
             cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
             last = OFTrue; // terminate loop
@@ -1533,7 +1523,7 @@ DIMSE_receiveDataSetInFile(
               cond = DIMSE_ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
               if (cond == EC_Normal)
               {
-                cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE_receiveDataSetInFile: Cannot write to file");
+                cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE receiveDataSetInFile: Cannot write to file");
               }
               last = OFTrue; // terminate loop
           }
@@ -1544,11 +1534,15 @@ DIMSE_receiveDataSetInFile(
           bytesRead += pdv.fragmentLength;
           pdvCount++;
           last = pdv.lastPDV;
+
+#ifdef DEBUG
           if (debug)
           {
              COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
-             << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
+                  << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
           }
+#endif
+
           if (callback)
           { /* execute callback function */
             callback(callbackData, bytesRead);
@@ -1620,7 +1614,7 @@ DIMSE_receiveDataSetInMemory(
         /* if receiving was successful, let the caller know though that no DcmDataset variable could be created */
         if (cond == EC_Normal)
         {
-            return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE_receiveDataSetInMemory: Cannot create DcmDataset");
+            return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE receiveDataSetInMemory: Cannot create DcmDataset");
         }
 
         /* if we get to here, receiving was not successful; there must have */
@@ -1677,7 +1671,7 @@ DIMSE_receiveDataSetInMemory(
             else if (pdv.presentationContextID != pid)
             {
                 char buf1[256];
-                sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
+                sprintf(buf1, "DIMSE: Different PresIDs inside data set: %d != %d", pid, pdv.presentationContextID);
                 OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
                 cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
                 last = OFTrue;
@@ -1717,7 +1711,7 @@ DIMSE_receiveDataSetInMemory(
             econd = dset->read(dataBuf, xferSyntax);
             if (econd != EC_Normal && econd != EC_StreamNotifyClient)
             {
-                DIMSE_warning(assoc, "DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
+                DIMSE_warning(assoc, "DIMSE receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
                 cond = DIMSE_RECEIVEFAILED;
                 last = OFTrue;
             }
@@ -1737,12 +1731,14 @@ DIMSE_receiveDataSetInMemory(
             /* update the variable which will be evaluated at the beginning of each loop iteration. */
             last = pdv.lastPDV;
 
+#ifdef DEBUG
             /* dump information if required */
             if (debug)
             {
                 COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
-                << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
+                     << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
             }
+#endif
 
             /* execute callback function after each received PDV */
             if (callback)
@@ -1809,6 +1805,10 @@ void DIMSE_warning(
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.51  2009-03-06 14:43:57  joergr
+** Output details on DIMSE fragments (PDUs) only if DEBUG is defined.
+** Minor cleanup of output messages.
+**
 ** Revision 1.50  2009-02-06 17:12:41  joergr
 ** Fixed type mismatches reported by MSVC introduced with OFFile class.
 **
