@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-06 15:34:48 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2009-03-06 14:52:43 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,18 +133,6 @@ static QuerySyntax querySyntax[3] = {
       UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel }
 };
 
-
-static void
-errmsg(const char *msg,...)
-{
-    va_list args;
-
-    fprintf(stderr, "%s: ", OFFIS_CONSOLE_APPLICATION);
-    va_start(args, msg);
-    vfprintf(stderr, msg, args);
-    va_end(args);
-    fprintf(stderr, "\n");
-}
 
 static void
 addOverrideKey(OFConsoleApplication& app, const char* s)
@@ -373,7 +361,7 @@ main(int argc, char *argv[])
       cmd.addOption("--write-xfer-big",      "+tb",     "write with explicit VR big endian TS");
       cmd.addOption("--write-xfer-implicit", "+ti",     "write with implicit VR little endian TS");
 #ifdef WITH_ZLIB
-      cmd.addOption("--write-xfer-deflated",    "+td",     "write with deflated expl. VR little endian TS");
+      cmd.addOption("--write-xfer-deflated", "+td",     "write with deflated expl. VR little endian TS");
 #endif
     cmd.addSubGroup("post-1993 value representations (not with --bit-preserving):");
       cmd.addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
@@ -709,25 +697,25 @@ main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-          DCM_DICT_ENVIRONMENT_VARIABLE);
+        CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
     }
 
     /* make sure output directory exists and is writeable */
     if (opt_retrievePort > 0)
     {
         if (!OFStandard::dirExists(opt_outputDirectory))
-            app.printError("specified output directory does not exist");
+          app.printError("specified output directory does not exist");
         else if (!OFStandard::isWriteable(opt_outputDirectory))
-            app.printError("specified output directory is not writeable");
+          app.printError("specified output directory is not writeable");
     }
 
 #ifdef HAVE_GETEUID
     /* if retrieve port is privileged we must be as well */
     if ((opt_retrievePort > 0) && (opt_retrievePort < 1024)) {
-        if (geteuid() != 0) {
-            errmsg("cannot listen on port %d, insufficient privileges", opt_retrievePort);
-            return 1;
+        if (geteuid() != 0)
+        {
+          CERR << "Error: cannot listen on port " << opt_retrievePort << ", insufficient privileges" << OFendl;
+          return 1;
         }
     }
 #endif
@@ -737,17 +725,17 @@ main(int argc, char *argv[])
     OFCondition cond = ASC_initializeNetwork(role, OFstatic_cast(int, opt_retrievePort), opt_acse_timeout, &net);
     if (cond.bad())
     {
-        errmsg("cannot create network:");
+        CERR << "Error: cannot create network:" << OFendl;
         DimseCondition::dump(cond);
         return 1;
     }
 
 #ifdef HAVE_GETUID
-  /* return to normal uid so that we can't do too much damage in case
-   * things go very wrong.   Only does someting if the program is setuid
-   * root, and run by another user.  Running as root user may be
-   * potentially disasterous if this program screws up badly.
-   */
+    /* return to normal uid so that we can't do too much damage in case
+     * things go very wrong.   Only does someting if the program is setuid
+     * root, and run by another user.  Running as root user may be
+     * potentially disasterous if this program screws up badly.
+     */
     setuid(getuid());
 #endif
 
@@ -777,50 +765,48 @@ main(int argc, char *argv[])
         exit(1);
     }
     if (opt_debug) {
-        printf("Request Parameters:\n");
+        COUT << "Request Parameters:" << OFendl;
         ASC_dumpParameters(params, COUT);
     }
 
     /* create association */
     if (opt_verbose)
-        printf("Requesting Association\n");
+        COUT << "Requesting Association" << OFendl;
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
         if (cond == DUL_ASSOCIATIONREJECTED) {
             T_ASC_RejectParameters rej;
 
             ASC_getRejectParameters(params, &rej);
-            errmsg("Association Rejected:");
+            CERR << "Association Rejected:" << OFendl;
             ASC_printRejectParameters(stderr, &rej);
             exit(1);
         } else {
-            errmsg("Association Request Failed:");
+            CERR << "Association Request Failed:" << OFendl;
             DimseCondition::dump(cond);
             exit(1);
         }
     }
     /* what has been accepted/refused ? */
     if (opt_debug) {
-        printf("Association Parameters Negotiated:\n");
+        COUT << "Association Parameters Negotiated:" << OFendl;
         ASC_dumpParameters(params, COUT);
     }
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-        errmsg("No Acceptable Presentation Contexts");
+        CERR << "No Acceptable Presentation Contexts" << OFendl;
         exit(1);
     }
 
-    if (opt_verbose) {
-        printf("Association Accepted (Max Send PDV: %lu)\n",
-                assoc->sendPDVLength);
-    }
+    if (opt_verbose)
+      COUT << "Association Accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << OFendl;
 
     /* do the real work */
     cond = EC_Normal;
     if (fileNameList.empty())
     {
-        /* no files provided on command line */
-        cond = cmove(assoc, NULL);
+      /* no files provided on command line */
+      cond = cmove(assoc, NULL);
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
       OFListIterator(OFString) enditer = fileNameList.end();
@@ -836,21 +822,21 @@ main(int argc, char *argv[])
     {
         if (opt_abortAssociation) {
             if (opt_verbose)
-                printf("Aborting Association\n");
+                COUT << "Aborting Association" << OFendl;
             cond = ASC_abortAssociation(assoc);
             if (cond.bad()) {
-                errmsg("Association Abort Failed:");
+                CERR << "Association Abort Failed:" << OFendl;
                 DimseCondition::dump(cond);
                 exit(1);
             }
         } else {
             /* release association */
             if (opt_verbose)
-                printf("Releasing Association\n");
+                COUT << "Releasing Association" << OFendl;
             cond = ASC_releaseAssociation(assoc);
             if (cond.bad())
             {
-                errmsg("Association Release Failed:");
+                CERR << "Association Release Failed:" << OFendl;
                 DimseCondition::dump(cond);
                 exit(1);
             }
@@ -858,29 +844,30 @@ main(int argc, char *argv[])
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-        errmsg("Protocol Error: peer requested release (Aborting)");
+        CERR << "Protocol Error: peer requested release (Aborting)" << OFendl;
         if (opt_verbose)
-            printf("Aborting Association\n");
+            COUT << "Aborting Association" << OFendl;
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            errmsg("Association Abort Failed:");
+            CERR << "Association Abort Failed:" << OFendl;
             DimseCondition::dump(cond);
             exit(1);
         }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-        if (opt_verbose) printf("Peer Aborted Association\n");
+        if (opt_verbose)
+          COUT << "Peer Aborted Association" << OFendl;
     }
     else
     {
-        errmsg("SCU Failed:");
+        CERR << "movescu: Move SCU failed:" << OFendl;
         DimseCondition::dump(cond);
         if (opt_verbose)
-            printf("Aborting Association\n");
+            COUT << "Aborting Association" << OFendl;
         cond = ASC_abortAssociation(assoc);
         if (cond.bad()) {
-            errmsg("Association Abort Failed:");
+            CERR << "Association Abort Failed:" << OFendl;
             DimseCondition::dump(cond);
             exit(1);
         }
@@ -1161,7 +1148,7 @@ static OFCondition echoSCP(
 {
   if (opt_verbose)
   {
-    printf("Received ");
+    COUT << "Received ";
     DIMSE_printCEchoRQ(stdout, &msg->msg.CEchoRQ);
   }
 
@@ -1169,7 +1156,7 @@ static OFCondition echoSCP(
   OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
   if (cond.bad())
   {
-    fprintf(stderr, "storescp: Echo SCP Failed:\n");
+    CERR << "storescp: Echo SCP failed:" << OFendl;
     DimseCondition::dump(cond);
   }
   return cond;
@@ -1198,9 +1185,8 @@ storeSCPCallback(
 
     if ((opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
         (opt_abortAfterStore && progress->state == DIMSE_StoreEnd)) {
-        if (opt_verbose) {
-            printf("ABORT initiated (due to command line options)\n");
-        }
+        if (opt_verbose)
+            COUT << "ABORT initiated (due to command line options)" << OFendl;
         ASC_abortAssociation(((StoreCallbackData*) callbackData)->assoc);
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         return;
@@ -1211,21 +1197,22 @@ storeSCPCallback(
       OFStandard::sleep((unsigned int)opt_sleepDuring);
     }
 
+    // dump some information if required (depending on the progress state)
     if (opt_verbose)
     {
       switch (progress->state)
       {
         case DIMSE_StoreBegin:
-          printf("RECV:");
+          COUT << "RECV:";
           break;
         case DIMSE_StoreEnd:
-          printf("\n");
+          COUT << OFendl;
           break;
         default:
-          putchar('.');
+          COUT << '.';
           break;
       }
-      fflush(stdout);
+      COUT.flush();
     }
 
     if (progress->state == DIMSE_StoreEnd)
@@ -1240,7 +1227,7 @@ storeSCPCallback(
         */
        // rsp->DimseStatus = STATUS_Success;
 
-       if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
+       if ((imageDataSet != NULL) && (*imageDataSet != NULL) && !opt_bitPreserving && !opt_ignore)
        {
          StoreCallbackData *cbdata = (StoreCallbackData*) callbackData;
          /* create full path name for the output file */
@@ -1254,7 +1241,7 @@ storeSCPCallback(
            opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
          if (cond.bad())
          {
-           fprintf(stderr, "storescp: Cannot write image file: %s\n", ofname.c_str());
+           CERR << "Error: cannot write DICOM file: " << ofname << OFendl;
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
          }
 
@@ -1262,12 +1249,12 @@ storeSCPCallback(
          * that its sopClass and sopInstance correspond with those in
          * the request.
          */
-        if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
+        if ((rsp->DimseStatus == STATUS_Success) && !opt_ignore)
         {
           /* which SOP class and SOP instance ? */
           if (!DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
           {
-             fprintf(stderr, "storescp: Bad image file: %s\n", imageFileName);
+             CERR << "Error: bad DICOM file: " << imageFileName << OFendl;
              rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
           }
           else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -1281,7 +1268,6 @@ storeSCPCallback(
         }
       }
     }
-    return;
 }
 
 static OFCondition storeSCP(
@@ -1310,7 +1296,7 @@ static OFCondition storeSCP(
 
     if (opt_verbose)
     {
-      printf("Received ");
+      COUT << "Received ";
       DIMSE_printCStoreRQ(stdout, req);
     }
 
@@ -1340,7 +1326,7 @@ static OFCondition storeSCP(
 
     if (cond.bad())
     {
-      fprintf(stderr, "storescp: Store SCP Failed:\n");
+      CERR << "storescp: Store SCP failed:" << OFendl;
       DimseCondition::dump(cond);
       /* remove file */
       if (!opt_ignore)
@@ -1373,17 +1359,21 @@ subOpSCP(T_ASC_Association **subAssoc)
             &msg, NULL);
 
     if (cond == EC_Normal) {
-        switch (msg.CommandField) {
+      switch (msg.CommandField)
+      {
         case DIMSE_C_STORE_RQ:
-            cond = storeSCP(*subAssoc, &msg, presID);
-            break;
+          cond = storeSCP(*subAssoc, &msg, presID);
+          break;
         case DIMSE_C_ECHO_RQ:
-            cond = echoSCP(*subAssoc, &msg, presID);
-            break;
+          cond = echoSCP(*subAssoc, &msg, presID);
+          break;
         default:
-            cond = DIMSE_BADCOMMANDTYPE;
-            break;
-        }
+          cond = DIMSE_BADCOMMANDTYPE;
+          CERR << "movescu: cannot handle command: 0x"
+               << STD_NAMESPACE hex << OFstatic_cast(unsigned, msg.CommandField)
+               << STD_NAMESPACE dec << OFendl;
+          break;
+      }
     }
     /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE)
@@ -1398,7 +1388,7 @@ subOpSCP(T_ASC_Association **subAssoc)
     }
     else if (cond != EC_Normal)
     {
-        errmsg("DIMSE Failure (aborting sub-association):\n");
+        CERR << "movescu: DIMSE failure (aborting sub-association):" << OFendl;
         DimseCondition::dump(cond);
         /* some kind of error so abort the association */
         cond = ASC_abortAssociation(*subAssoc);
@@ -1438,19 +1428,20 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     myCallbackData = (MyCallbackInfo*)callbackData;
 
     if (opt_verbose) {
-        printf("Move Response %d: ", responseCount);
+        COUT << "Move Response " << responseCount << ": ";
         DIMSE_printCMoveRSP(stdout, response);
     }
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
-        if (opt_verbose) {
-            printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n",
-                request->MessageID, myCallbackData->presId);
+        if (opt_verbose)
+        {
+            COUT << "Sending C-Cancel RQ: MsgID " << request->MessageID
+                 << ", PresID " << myCallbackData->presId << OFendl;
         }
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
             myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
-            errmsg("Cancel RQ Failed:");
+            CERR << "movescu: C-Cancel RQ failed:" << OFendl;
             DimseCondition::dump(cond);
         }
     }
@@ -1469,7 +1460,7 @@ substituteOverrideKeys(DcmDataset *dset)
 
     /* put the override keys into dset replacing existing tags */
     unsigned long elemCount = keys.card();
-    for (unsigned long i=0; i<elemCount; i++) {
+    for (unsigned long i = 0; i < elemCount; i++) {
         DcmElement *elem = keys.remove((unsigned long)0);
 
         dset->insert(elem, OFTrue);
@@ -1489,16 +1480,14 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     DcmDataset          *statusDetail = NULL;
     MyCallbackInfo      callbackData;
 
-    if (opt_verbose) {
-        printf("================================\n");
-        if (fname) printf("Sending query file: %s\n", fname); else printf("Sending query\n");
-    }
+    if (opt_verbose)
+        COUT << "================================" << OFendl;
 
     DcmFileFormat dcmff;
 
     if (fname != NULL) {
         if (dcmff.loadFile(fname).bad()) {
-            errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
+            CERR << "Error: bad DICOM file: " << fname << ": " << dcmff.error().text();
             return DIMSE_BADDATA;
         }
     }
@@ -1513,9 +1502,10 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
     if (opt_verbose) {
-        printf("Move SCU RQ: MsgID %d\n", msgId);
-        printf("Request:\n");
+        COUT << "Sending C-Move RQ: MsgID " << msgId << OFendl;
+        COUT << "Request:" << OFendl;
         dcmff.getDataset()->print(COUT);
+        COUT << OFendl;
     }
 
     callbackData.assoc = assoc;
@@ -1534,25 +1524,27 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     }
 
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
-        moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout,
-        net, subOpCallback, NULL,
-        &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
+        moveCallback, &callbackData, opt_blockMode, opt_dimse_timeout, net, subOpCallback,
+        NULL, &rsp, &statusDetail, &rspIds, opt_ignorePendingDatasets);
 
     if (cond == EC_Normal) {
         if (opt_verbose) {
             DIMSE_printCMoveRSP(stdout, &rsp);
-            if (rspIds != NULL) {
-                printf("Response Identifiers:\n");
+            if (rspIds != NULL)
+            {
+                COUT << "Response Identifiers:" << OFendl;
                 rspIds->print(COUT);
+                COUT << OFendl;
             }
         }
     } else {
-        errmsg("Move Failed:");
+        CERR << "movescu: C-Move RQ failed:" << OFendl;
         DimseCondition::dump(cond);
     }
     if (statusDetail != NULL) {
-        printf("  Status Detail:\n");
+        COUT << "Status Detail:" << OFendl;
         statusDetail->print(COUT);
+        COUT << OFendl;
         delete statusDetail;
     }
 
@@ -1567,18 +1559,20 @@ cmove(T_ASC_Association * assoc, const char *fname)
 {
     OFCondition cond = EC_Normal;
     int n = (int)opt_repeatCount;
-
     while (cond.good() && n--)
-    {
         cond = moveSCU(assoc, fname);
-    }
     return cond;
 }
+
 
 /*
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.71  2009-03-06 14:52:43  joergr
+** Made error/warning messages and verbose output more consistent with storescp.
+** Changed output from stderr to CERR and from stdout to COUT.
+**
 ** Revision 1.70  2009-02-06 15:34:48  joergr
 ** Added support for JPEG-LS and MPEG2 transfer syntaxes.
 ** Fixed minor inconsistencies with regard to transfer syntaxes.
