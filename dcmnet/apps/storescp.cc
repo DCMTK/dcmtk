@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-05 18:14:05 $
- *  CVS/RCS Revision: $Revision: 1.104 $
+ *  Update Date:      $Date: 2009-03-06 14:53:53 $
+ *  CVS/RCS Revision: $Revision: 1.105 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -307,7 +307,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--accept-all",             "+xa",     "accept all supported transfer syntaxes");
 
 #ifdef WITH_TCPWRAPPER
-    cmd.addSubGroup("network host access control (tcp wrapper) options:");
+    cmd.addSubGroup("network host access control (tcp wrapper)");
       cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
       cmd.addOption("--access-control",         "+ac",     "enforce host access control rules");
 #endif
@@ -355,7 +355,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--output-directory",       "-od",  1, "[d]irectory: string (default: \".\")", "write received objects to existing directory d");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",      "allow implicit format conversions (default)");
-      cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read (not with -ss/-sp)");
+      cmd.addOption("--bit-preserving",         "+B",      "write data exactly as read");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",             "+F",      "write file format (default)");
       cmd.addOption("--write-dataset",          "-F",      "write data set without file meta information");
@@ -403,10 +403,10 @@ int main(int argc, char *argv[])
   cmd.addGroup("event options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--exec-on-reception",        "-xcr", 1, "[c]ommand: string",
                                                            "execute command c after having received and\nprocessed one C-STORE-RQ message" );
-    cmd.addOption("--exec-on-eostudy",          "-xcs", 1, "[c]ommand: string (only with -ss or -sp)",
+    cmd.addOption("--exec-on-eostudy",          "-xcs", 1, "[c]ommand: string",
                                                            "execute command c after having received and\nprocessed all C-STORE-RQ messages that belong\nto one study" );
-    cmd.addOption("--rename-on-eostudy",        "-rns",    "(only w/ -ss) having received and processed\nall C-STORE-RQ messages that belong to one\nstudy, rename output files according to a\ncertain pattern" );
-    cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer (only w/ -ss/-sp/-xcs/-rns)",
+    cmd.addOption("--rename-on-eostudy",        "-rns",    "having received and processed all C-STORE-RQ\nmessages that belong to one study, rename\noutput files according to certain pattern" );
+    cmd.addOption("--eostudy-timeout",          "-tos", 1, "[t]imeout: integer",
                                                            "specifies a timeout of t seconds for\nend-of-study determination" );
 #ifdef _WIN32
     cmd.addOption("--exec-sync",                "-xs",     "execute command synchronously in foreground" );
@@ -414,19 +414,19 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
-    cmd.addSubGroup("transport protocol stack options:");
+    cmd.addSubGroup("transport protocol stack:");
       cmd.addOption("--disable-tls",            "-tls",    "use normal TCP/IP connection (default)");
       cmd.addOption("--enable-tls",             "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
                                                            "use authenticated secure TLS connection");
-    cmd.addSubGroup("private key password options (only with --enable-tls):");
+    cmd.addSubGroup("private key password (only with --enable-tls):");
       cmd.addOption("--std-passwd",             "+ps",     "prompt user to type password on stdin (default)");
       cmd.addOption("--use-passwd",             "+pw",  1, "[p]assword: string",
                                                            "use specified password");
       cmd.addOption("--null-passwd",            "-pw",     "use empty string as password");
-    cmd.addSubGroup("key and certificate file format options:");
+    cmd.addSubGroup("key and certificate file format:");
       cmd.addOption("--pem-keys",               "-pem",    "read keys and certificates as PEM file (def.)");
       cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
-    cmd.addSubGroup("certification authority options:");
+    cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
                                                            "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
@@ -436,13 +436,13 @@ int main(int argc, char *argv[])
                                                            "add ciphersuite to list of negotiated suites");
       cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
                                                            "read DH parameters for DH/DSS ciphersuites");
-    cmd.addSubGroup("pseudo random generator options:");
+    cmd.addSubGroup("pseudo random generator:");
       cmd.addOption("--seed",                   "+rs",  1, "[f]ilename: string",
                                                            "seed random generator with contents of f");
       cmd.addOption("--write-seed",             "+ws",     "write back modified seed (only with --seed)");
       cmd.addOption("--write-seed-file",        "+wf",  1, "[f]ilename: string (only with --seed)",
                                                            "write modified seed to file f");
-    cmd.addSubGroup("peer authentication options:");
+    cmd.addSubGroup("peer authentication");
       cmd.addOption("--require-peer-cert",      "-rc",     "verify peer certificate, fail if absent (def.)");
       cmd.addOption("--verify-peer-cert",       "-vc",     "verify peer certificate if present");
       cmd.addOption("--ignore-peer-cert",       "-ic",     "don't verify peer certificate");
@@ -503,7 +503,7 @@ int main(int argc, char *argv[])
       close(2); // close stderr
 
       // open new file descriptor for stdin
-      int fd = open("/dev/null",O_RDONLY);
+      int fd = open("/dev/null", O_RDONLY);
       if (fd != 0) exit(99);
 
       // create new file descriptor for stdout
@@ -555,7 +555,7 @@ int main(int argc, char *argv[])
     if ((!opt_inetd_mode) && (cmd.getParamCount() == 0))
       app.printError("Missing parameter port");
 
-    if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+    if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
     if (cmd.findOption("--debug"))
     {
       opt_debug = OFTrue;
@@ -994,10 +994,9 @@ int main(int argc, char *argv[])
      * If the output directory is invalid, dump an error message and terminate execution.
      */
     if (!OFStandard::dirExists(opt_outputDirectory))
-    {
-      CERR << "Error: output directory does not exist: " << opt_outputDirectory << OFendl;
-      return 1;
-    }
+      app.printError("specified output directory does not exist");
+    else if (!OFStandard::isWriteable(opt_outputDirectory))
+      app.printError("specified output directory is not writeable");
   }
 
 #ifdef HAVE_FORK
@@ -1039,6 +1038,7 @@ int main(int argc, char *argv[])
   OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, OFstatic_cast(int, opt_port), opt_acse_timeout, &net);
   if (cond.bad())
   {
+    CERR << "Error: cannot create network:" << OFendl;
     DimseCondition::dump(cond);
     return 1;
   }
@@ -1053,7 +1053,6 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef WITH_OPENSSL
-
   DcmTLSTransportLayer *tLayer = NULL;
   if (opt_secureConnection)
   {
@@ -1126,7 +1125,6 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
-
 #endif
 
 #ifdef HAVE_WAITPID
@@ -1164,7 +1162,6 @@ int main(int argc, char *argv[])
 
     // if running in multi-process mode, always terminate child after one association
     if (DUL_processIsForkedChild()) break;
-
   }
 
   /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
@@ -1216,7 +1213,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
   if (cond.code() == DULC_FORKEDCHILD)
   {
-    // if (opt_verbose) DimseCondition::dump(cond);
+    // if (opt_debug) DimseCondition::dump(cond);
     goto cleanup;
   }
 
@@ -1260,7 +1257,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     // If something else was wrong we might have to dump an error message.
     else
     {
-      if( opt_verbose ) DimseCondition::dump(cond);
+      if (opt_debug)
+        DimseCondition::dump(cond);
     }
 
     // no matter what kind of error occurred, we need to do a cleanup
@@ -1286,13 +1284,6 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   {
     COUT << "Parameters:" << OFendl;
     ASC_dumpParameters(assoc->params, COUT);
-
-    DIC_AE callingTitle;
-    DIC_AE calledTitle;
-    ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL);
-
-    CERR << "called AE:  " << calledTitle << OFendl
-         << "calling AE: " << callingTitle << OFendl;
   }
 
   if (opt_refuseAssociation)
@@ -1309,7 +1300,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      COUT << "Association Reject Failed:" << OFendl;
+      CERR << "Association Reject Failed:" << OFendl;
       DimseCondition::dump(cond);
     }
     goto cleanup;
@@ -1479,7 +1470,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = asccfg.evaluateAssociationParameters(sprofile.c_str(), *assoc);
     if (cond.bad())
     {
-      if (opt_verbose) DimseCondition::dump(cond);
+      if (opt_debug) DimseCondition::dump(cond);
       goto cleanup;
     }
   }
@@ -1489,7 +1480,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
     {
-      if (opt_verbose) DimseCondition::dump(cond);
+      if (opt_debug) DimseCondition::dump(cond);
       goto cleanup;
     }
 
@@ -1497,7 +1488,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, dcmAllStorageSOPClassUIDs, numberOfAllDcmStorageSOPClassUIDs, transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
     {
-      if (opt_verbose) DimseCondition::dump(cond);
+      if (opt_debug) DimseCondition::dump(cond);
       goto cleanup;
     }
 
@@ -1508,7 +1499,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
         assoc->params, transferSyntaxes, numTransferSyntaxes);
       if (cond.bad())
       {
-        if (opt_verbose) DimseCondition::dump(cond);
+        if (opt_debug) DimseCondition::dump(cond);
         goto cleanup;
       }
     }
@@ -1534,7 +1525,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      if (opt_verbose) DimseCondition::dump(cond);
+      if (opt_debug) DimseCondition::dump(cond);
     }
     goto cleanup;
 
@@ -1554,7 +1545,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
     cond = ASC_rejectAssociation(assoc, &rej);
     if (cond.bad())
     {
-      if (opt_verbose) DimseCondition::dump(cond);
+      if (opt_debug) DimseCondition::dump(cond);
     }
     goto cleanup;
   }
@@ -1632,7 +1623,8 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
   else
   {
-    CERR << "storescp: DIMSE failure (aborting association)" << OFendl;
+    CERR << "storescp: DIMSE failure (aborting association):" << OFendl;
+    DimseCondition::dump(cond);
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
@@ -1722,8 +1714,9 @@ processCommands(T_ASC_Association * assoc)
     // detail information, dump this information
     if (statusDetail != NULL)
     {
-      COUT << "Extra Status Detail:" << OFendl;
+      COUT << "Status Detail:" << OFendl;
       statusDetail->print(COUT);
+      COUT << OFendl;
       delete statusDetail;
     }
 
@@ -1871,7 +1864,7 @@ storeSCPCallback(
         COUT << '.';
         break;
     }
-    fflush(stdout);
+    COUT.flush();
   }
 
   // if this is the final call of this function, save the data which was received to a file
@@ -1996,8 +1989,8 @@ storeSCPCallback(
           else
           {
             // if it does not exist create it
-            if (opt_debug)
-              CERR << "Creating new subdirectory for study: " << subdirectoryPathAndName << OFendl;
+            if (opt_verbose)
+              COUT << "Creating new subdirectory for study: " << subdirectoryPathAndName << OFendl;
 #ifdef HAVE_WINDOWS_H
             if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
 #else
@@ -2723,6 +2716,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.105  2009-03-06 14:53:53  joergr
+** Made error/warning messages and verbose output more consistent with movescu.
+** Added check whether output directory is writable (not only existent).
+** Made use of debug mode (instead of verbose mode) where appropriate.
+**
 ** Revision 1.104  2009-03-05 18:14:05  joergr
 ** Added new command line option --sort-on-study-uid.
 ** Renamed command line option --sort-on-patientsname to --sort-on-patientname.
