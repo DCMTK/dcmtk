@@ -107,7 +107,7 @@ preferred network transfer syntaxes (not with --config-file):
   +xa   --accept-all
           accept all supported transfer syntaxes
 
-network host access control (tcp wrapper) options:
+network host access control (tcp wrapper):
 
   -ac   --access-full
           accept connections from any host (default)
@@ -179,7 +179,7 @@ bit preserving mode:
           allow implicit format conversions (default)
 
   +B    --bit-preserving
-          write data exactly as read (not with -ss/-sp)
+          write data exactly as read
 
 output file format:
 
@@ -278,30 +278,30 @@ filename generation:
 \subsection event_options event options
 \verbatim
   -xcr  --exec-on-reception  [c]ommand: string
-          execute command c after having received and
-          processed one C-STORE-RQ message
+          execute command c after having received and processed
+          one C-STORE-RQ message
 
-  -xcs  --exec-on-eostudy  [c]ommand: string (only with -ss or -sp)
+  -xcs  --exec-on-eostudy  [c]ommand: string
           execute command c after having received and processed
           all C-STORE-RQ messages that belong to one study
 
   -rns  --rename-on-eostudy
-          (only with -ss or -sp) having received and processed
-          all C-STORE-RQ messages that belong to one study,
-          rename output files according to a certain pattern
+          having received and processed all C-STORE-RQ messages
+          that belong to one study, rename output files according
+          to a certain pattern
 
   -tos  --eostudy-timeout  [t]imeout: integer
           specifies a timeout of t seconds for end-of-study
-          determination (only with -ss, -sp, -xcs or -rns)
+          determination
 
   -xs   --exec-sync
-          execute command synchronously in foreground.
-          This option is available on Windows only.
+          execute command synchronously in foreground
+          (this option is available on Windows only)
 \endverbatim
 
 \subsection tls_options transport layer security (TLS) options
 \verbatim
-transport protocol stack options:
+transport protocol stack:
 
   -tls  --disable-tls
           use normal TCP/IP connection (default)
@@ -309,7 +309,7 @@ transport protocol stack options:
   +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
           use authenticated secure TLS connection
 
-private key password options (only with --enable-tls):
+private key password (only with --enable-tls):
 
   +ps   --std-passwd
           prompt user to type password on stdin (default)
@@ -320,7 +320,7 @@ private key password options (only with --enable-tls):
   -pw   --null-passwd
           use empty string as password
 
-key and certificate file format options:
+key and certificate file format:
 
   -pem  --pem-keys
           read keys and certificates as PEM file (default)
@@ -328,7 +328,7 @@ key and certificate file format options:
   -der  --der-keys
           read keys and certificates as DER file
 
-certification authority options:
+certification authority:
 
   +cf   --add-cert-file  [c]ertificate filename: string
           add certificate file to list of certificates
@@ -336,7 +336,7 @@ certification authority options:
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
-ciphersuite options:
+ciphersuite:
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -344,7 +344,7 @@ ciphersuite options:
   +dp   --dhparam  [f]ilename: string
           read DH parameters for DH/DSS ciphersuites
 
-pseudo random generator options:
+pseudo random generator:
 
   +rs   --seed  [f]ilename: string
           seed random generator with contents of f
@@ -355,7 +355,7 @@ pseudo random generator options:
   +wf   --write-seed-file  [f]ilename: string (only with --seed)
           write modified seed to file f
 
-peer authentication options:
+peer authentication:
 
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
@@ -391,11 +391,27 @@ determination of the subdirectory names pertains to the pattern
 
 where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
 HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
-milliseconds (000-999). If the prefix is an empty string, the first '_' is
+milliseconds (000-999). If the prefix is an empty string, the first "_" is
 omitted.
 
-Option \e --sort-on-study-uid and \e --sort-on-patientname work in a similar
-manner, only the subdirectory names are created differently.
+The other \e --sort-xxx options work in a similar manner, only the subdirectory
+names are created differently. For option \e --sort-on-study-uid the pattern is
+
+\verbatim
+  [prefix]_[StudyInstanceUID]
+\endverbatim
+
+and for option \e --sort-on-patientname
+
+\verbatim
+  [PatientsName]_[YYYYMMDD]_[HHMMSSPPP]
+\endverbatim
+
+where 'PatientsName' is replaced by "ANONYMOUS" if the data element is empty
+or absent in the data set. Please note, however, that for option
+\e --sort-on-study-uid the same subdirectory will be used for all DICOM objects
+that belong to the same study, i.e. in contrast to the other \e --sort-xxx
+options there is no guarantee that a study directory is ever completed.
 
 Option \e --timenames creates filenames from timestamps corresponding to the
 time, \b storescp writes a file to disk. The format is
