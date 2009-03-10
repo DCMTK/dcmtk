@@ -407,7 +407,10 @@ RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
 Additional Storage SOP Classes and Transfer Syntaxes can be used with the
 so-called "association negotiation profiles" (see below).
 
-The \b storescu application does not support extended negotiation.
+The \b storescu application does not support extended negotiation by default.
+However, using an appropriate association negotiation profile (see below)
+the optional support for extended negotiation can be added to particular SOP
+classes.
 
 \subsection profiles Association Negotiation Profiles and Configuration Files
 
