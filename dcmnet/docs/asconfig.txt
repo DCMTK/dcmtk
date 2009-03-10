@@ -163,7 +163,7 @@ of ultrasound images.
 Role1   = UltrasoundImageStorage\BOTH
 Role2   = UltrasoundMultiframeImageStorage\BOTH
 
-It should be noted that neither StoreSCU nore StoreSCP currently support
+It should be noted that neither StoreSCU nor StoreSCP currently support
 SCP/SCU role negotiation, so this functionality should not be used with
 these two tools.
 
@@ -236,5 +236,4 @@ procedure can use exactly one of these profiles.
 
 Examples for association negotiation profiles that can be used
 with the StoreSCU and StoreSCP tools are provided with DCMTK, as
-"storescp.cfg" and "storescu.cfg" in the dcmnet/docs directory.
-
+"storescp.cfg" and "storescu.cfg" in the <etcdir> directory.

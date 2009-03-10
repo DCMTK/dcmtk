@@ -7,6 +7,9 @@ Changes between releases are documented here.
   Affects: dcmnet/docs/storescp.man
            dcmnet/docs/storescu.man
 
+- Fixed typo and updated reference to configuration directory.
+  Affects: dcmnet/docs/asconfig.txt
+
 **** Changes from 2009.03.06 (riesmeier)
 
 - Made error/warning messages and verbose output more consistent with movescu.
