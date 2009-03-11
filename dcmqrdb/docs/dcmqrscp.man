@@ -56,7 +56,7 @@ port  tcp/ip port number to listen on (default: in config file)
 
   -c    --config  [f]ilename: string
           use specific configuration file
-          (default: /usr/local/etc/dcmqrscp.cfg)
+          (default: /usr/local/etc/dcmtk/dcmqrscp.cfg)
 
   # This option allows a specific configuration file to be
   # specified.  By default, the configuration file in the

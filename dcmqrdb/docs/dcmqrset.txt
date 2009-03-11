@@ -1,8 +1,8 @@
 
 SETTING UP DCMQRSCP AND DCMQRTI
 
-Before attempting to setup dcmqrscp or dcmqrti you should read the documentation 
-for these programs (dcmqrscp and dcmqrti man pages) as well as the documentation 
+Before attempting to setup dcmqrscp or dcmqrti you should read the documentation
+for these programs (dcmqrscp and dcmqrti man pages) as well as the documentation
 on configuration (dcmqrcnf.txt).
 
 Step 1:
@@ -13,8 +13,8 @@ e.g.
 
 Step 2:
 
-Create subdirectories for each individual image database storage areas to be 
-managed by dcmqrscp.  Each database storage area corresponds to an Application 
+Create subdirectories for each individual image database storage areas to be
+managed by dcmqrscp.  Each database storage area corresponds to an Application
 Entity (AE) title of dcmqrscp.
 e.g.
 	cd /home/dicom/db
@@ -25,46 +25,46 @@ Step 3:
 Copy the example configuration file (dcmqrscp.cfg) to the main image database
 directory.
 e.g.
-	cp /usr/local/etc/dcmqrscp.cfg /home/dicom/db
+	cp /usr/local/etc/dcmtk/dcmqrscp.cfg /home/dicom/db
 
 Step 4:
 
-Edit your copy of the configuration file.  You may have used different image 
-database directory and subdirectory names than in the examples above.  If so, 
-edit the AETable (near the bottom) of your dcmqrscp.cfg file and change the first 
-and second columns to reflect the names you have chosen (AE title and directory 
+Edit your copy of the configuration file.  You may have used different image
+database directory and subdirectory names than in the examples above.  If so,
+edit the AETable (near the bottom) of your dcmqrscp.cfg file and change the first
+and second columns to reflect the names you have chosen (AE title and directory
 paths).
 
 Step 5:
 
-Determine the hostnames, TCP/IP port numbers, and AE titles of the DICOM 
-applications you will be communicating with.  You need to edit your copy of 
+Determine the hostnames, TCP/IP port numbers, and AE titles of the DICOM
+applications you will be communicating with.  You need to edit your copy of
 dcmqrscp.cfg to include these in the HostTable section.
 
 Step 6:
 
-Edit the VendorTable to give a string title to symbolic names declared in the 
+Edit the VendorTable to give a string title to symbolic names declared in the
 HostTable.
 
 Step 7:
 
-If you wish to restrict access to image databases to particular remote 
-applications (peers) you need to edit the last column of the AETable to contain 
-a symbolic name defined in the HostTable.  If no access restrictions are desired 
+If you wish to restrict access to image databases to particular remote
+applications (peers) you need to edit the last column of the AETable to contain
+a symbolic name defined in the HostTable.  If no access restrictions are desired
 you can use the constant name ANY.
 
 Step 8 (optional):
 
-If you wish to initialize a database storage area to reference a set of external 
-images, you can use the dcmqridx utility.  This step would normally only be 
-performed on a read-only database storage area since sending images to such a 
-storage area (AE title) might cause your original images to be deleted if the 
+If you wish to initialize a database storage area to reference a set of external
+images, you can use the dcmqridx utility.  This step would normally only be
+performed on a read-only database storage area since sending images to such a
+storage area (AE title) might cause your original images to be deleted if the
 quota specifications (4th column of the AETable in dcmqrscp.cfg) are exceeded.
 e.g.
 	dcmqridx -v /home/dicom/db/COMMON /home/dicom/images/rsna95/*/*/*
 
-would register the "rsna95" images in the COMMON storage area (which is defined 
-as read-only in dcmqrscp.cfg).  The "rsna95" images are available via ftp from 
+would register the "rsna95" images in the COMMON storage area (which is defined
+as read-only in dcmqrscp.cfg).  The "rsna95" images are available via ftp from
 the Mallinckrodt Institute of Radiology, St. Louis, USA :
 
 	ftp://wuerlim.wustl.edu/pub/dicom/images/version3/RSNA95
@@ -76,7 +76,7 @@ e.g.
 	dcmqrscp -v -c /home/dicom/db/dcmqrscp.cfg 5678
 
 will start dcmqrscp in verbose mode, using the configuration file you created
-and edited in steps 3 to 8, and listening on TCP/IP port 5678.  The dcmqrscp 
+and edited in steps 3 to 8, and listening on TCP/IP port 5678.  The dcmqrscp
 application will wait for DICOM association requests and will never exit.
 
 Step 10:
@@ -86,12 +86,12 @@ which may access dcmqrscp's storage areas.
 e.g.
 	storescu -v --aetitle ACME1 --call ACME_STORE dbhost 5678 ctimage.dcm
 
-will start the storescu application in verbose mode, giving it the DICOM AE 
-title ACME1, and requesting that it transmit the DICOM image ctimage.dcm to 
-the ACME_STORE storage area of dcmqrscp which is running on the host dbhost 
-(attached to port 5678, as in step 9).  The AE title which storescu uses (via 
-the -t option) and the host on which it is running must match the values known 
-to dcmqrscp in its dcmqrscp.cfg file.  See the storescu man page for more 
+will start the storescu application in verbose mode, giving it the DICOM AE
+title ACME1, and requesting that it transmit the DICOM image ctimage.dcm to
+the ACME_STORE storage area of dcmqrscp which is running on the host dbhost
+(attached to port 5678, as in step 9).  The AE title which storescu uses (via
+the -t option) and the host on which it is running must match the values known
+to dcmqrscp in its dcmqrscp.cfg file.  See the storescu man page for more
 information on the storescu application.
 
 Step 11:
@@ -101,8 +101,8 @@ is capable of receiving images.
 e.g.
 	storescp -v 3456
 
-will start storescp in verbose mode listening on port 3456 for incoming 
-associations.  See the storescp man page for more information on the storescp 
+will start storescp in verbose mode listening on port 3456 for incoming
+associations.  See the storescp man page for more information on the storescp
 application.
 
 Step 12:
@@ -113,10 +113,10 @@ dcmqrti should be run on the same host as dcmqrscp.
 e.g.
 	dcmqrti -c /home/dicom/db/dcmqrscp.cfg acmeCTcompany
 
-will start the dcmqrti application using the configuration file you created 
-and edited in steps 3 to 8, with the capability to communicate to the 
-applications defined by the symbolic name acmeCTcompany.  You can use the 
-"database" command to select a database, the "title" command to select a 
-remote application, "echo" to send an echo message, and "send study" to 
-transmit a complete study.  See the dcmqrti man page for more information on 
+will start the dcmqrti application using the configuration file you created
+and edited in steps 3 to 8, with the capability to communicate to the
+applications defined by the symbolic name acmeCTcompany.  You can use the
+"database" command to select a database, the "title" command to select a
+remote application, "echo" to send an echo message, and "send study" to
+transmit a complete study.  See the dcmqrti man page for more information on
 the commands accepted by dcmqrti.
