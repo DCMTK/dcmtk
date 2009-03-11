@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 18:08:18 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-03-11 13:06:12 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,9 +59,11 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              DcmFileFormat *dfile,
                              const E_FileReadMode readMode,
                              const OFBool loadIntoMemory,
+                             const char *dtdFilename,
                              const char *defaultCharset,
                              const size_t writeFlags,
-                             const OFBool checkAllStrings)
+                             const OFBool checkAllStrings,
+                             const OFBool quietMode)
 {
     OFCondition result = EC_IllegalParameter;
     if ((ifname != NULL) && (dfile != NULL))
@@ -96,7 +98,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 encString = "ISO-8859-7";
             else if (csetString == "ISO_IR 138")
                 encString = "ISO-8859-8";
-            else if (!csetString.empty())
+            else if (!csetString.empty() && !quietMode)
                 CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << OFendl;
         } else {
             /* SpecificCharacterSet is not present in the dataset */
@@ -105,8 +107,11 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 if (defaultCharset == NULL)
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                         << "but extended characters used in file: " << ifname << OFendl;
+                    if (!quietMode)
+                    {
+                        CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                             << "but extended characters used in file: " << ifname << OFendl;
+                    }
                     return EC_IllegalCall;
                 } else {
                     OFString charset(defaultCharset);
@@ -180,9 +185,9 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 out << " [" << OFendl;
                 /* copy content from DTD file */
 #ifdef HAVE_IOS_NOCREATE
-                STD_NAMESPACE ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
+                STD_NAMESPACE ifstream dtdFile(dtdFilename, STD_NAMESPACE ios::in | STD_NAMESPACE ios::nocreate);
 #else
-                STD_NAMESPACE ifstream dtdFile(DOCUMENT_TYPE_DEFINITION_FILE, STD_NAMESPACE ios::in);
+                STD_NAMESPACE ifstream dtdFile(dtdFilename, STD_NAMESPACE ios::in);
 #endif
                 if (dtdFile)
                 {
@@ -190,6 +195,10 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     /* copy all characters */
                     while (dtdFile.get(c))
                         out << c;
+                }
+                else if (!quietMode)
+                {
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: cannot open DTD file: " << dtdFilename << OFendl;
                 }
                 out << "]";
             } else { /* reference DTD */
@@ -214,6 +223,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
 int main(int argc, char *argv[])
 {
     int opt_debugMode = 0;
+    OFBool opt_quietMode = OFFalse;
     size_t opt_writeFlags = 0;
     OFBool opt_loadIntoMemory = OFFalse;
     OFBool opt_checkAllStrings = OFFalse;
@@ -221,6 +231,9 @@ int main(int argc, char *argv[])
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFCmdUnsignedInt opt_maxReadLength = 4096; // default is 4 KB
+    const char *opt_dtdFilename = DEFAULT_SUPPORT_DATA_DIR DOCUMENT_TYPE_DEFINITION_FILE;
+    OFOStringStream errorStream;
+    OFString optStr;
 
     SetDebugLevel(( 0 ));
 
@@ -236,6 +249,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--arguments",                      "print expanded command line arguments");
+      cmd.addOption("--quiet",                "-q",     "quiet mode, print no warnings and errors");
       cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
@@ -252,12 +266,12 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("long tag values:");
         cmd.addOption("--load-all",           "+M",     "load very long tag values (e.g. pixel data)");
         cmd.addOption("--load-short",         "-M",     "do not load very long values (default)");
-        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes : integer [4..4194302] (default: 4)",
+        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
                                                         "set threshold for long values to k kbytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",    "+Cr",    "require declaration of extended charset (default)");
-        cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset : string constant",
+        cmd.addOption("--charset-assume",     "+Ca", 1, "[c]harset: string constant",
                                                         "(latin-1 to -5, cyrillic, arabic, greek, hebrew)\n"
                                                         "assume charset c if no extended charset declared");
         cmd.addOption("--charset-check-all",  "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
@@ -265,6 +279,11 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("XML structure:");
         cmd.addOption("--add-dtd-reference",  "+Xd",    "add reference to document type definition (DTD)");
         cmd.addOption("--embed-dtd-content",  "+Xe",    "embed document type definition into XML document");
+        optStr = "use specified DTD file (only with +Xe)\n(default: ";
+        optStr += opt_dtdFilename;
+        optStr += ")";
+        cmd.addOption("--use-dtd-file",       "+Xf", 1, "[f]ilename: string",
+                                                        optStr.c_str());
         cmd.addOption("--use-xml-namespace",  "+Xn",    "add XML namespace declaration to root element");
       cmd.addSubGroup("DICOM data elements:");
         cmd.addOption("--write-element-name", "+Wn",    "write name of the DICOM data elements (default)");
@@ -298,6 +317,13 @@ int main(int argc, char *argv[])
         }
 
         /* general options */
+        if (cmd.findOption("--quiet"))
+        {
+          opt_quietMode = OFTrue;
+          app.setQuietMode();
+          /* redirect error output to a dummy stream */
+          ofConsole.setCerr(&errorStream);
+        }
         if (cmd.findOption("--debug"))
             opt_debugMode = 5;
 
@@ -348,14 +374,14 @@ int main(int argc, char *argv[])
            opt_defaultCharset = NULL;
         if (cmd.findOption("--charset-assume"))
         {
-          app.checkValue(cmd.getValue(opt_defaultCharset));
-          OFString charset(opt_defaultCharset);
-          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
-              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
-              charset != "arabic" && charset != "greek" && charset != "hebrew")
-          {
-            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
-          }
+            app.checkValue(cmd.getValue(opt_defaultCharset));
+            OFString charset(opt_defaultCharset);
+            if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
+                charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
+                charset != "arabic" && charset != "greek" && charset != "hebrew")
+            {
+                app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
+            }
         }
         cmd.endOptionBlock();
         if (cmd.findOption("--charset-check-all"))
@@ -368,6 +394,12 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--embed-dtd-content"))
             opt_writeFlags |= DCMTypes::XF_addDocumentType | DCMTypes::XF_embedDocumentType;
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--use-dtd-file"))
+        {
+            app.checkDependence("--use-dtd-file", "--embed-dtd-content", opt_writeFlags & DCMTypes::XF_embedDocumentType > 0);
+            app.checkValue(cmd.getValue(opt_dtdFilename));
+        }
 
         if (cmd.findOption("--use-xml-namespace"))
             opt_writeFlags |= DCMTypes::XF_useDcmtkNamespace;
@@ -401,7 +433,7 @@ int main(int argc, char *argv[])
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded())
+    if (!dcmDataDict.isDictionaryLoaded() && !opt_quietMode)
     {
         CERR << "Warning: no data dictionary loaded, "
              << "check environment variable: "
@@ -409,11 +441,13 @@ int main(int argc, char *argv[])
     }
 
     /* make sure document type definition file exists */
-    if ((opt_writeFlags & DCMTypes::XF_embedDocumentType) &&
-        !OFStandard::fileExists(DOCUMENT_TYPE_DEFINITION_FILE))
+    if ((opt_writeFlags & DCMTypes::XF_embedDocumentType) && !OFStandard::fileExists(opt_dtdFilename))
     {
-        CERR << "Warning: DTD file \"" << DOCUMENT_TYPE_DEFINITION_FILE
-             << "\" does not exist ... adding reference instead" << OFendl;
+        if (!opt_quietMode)
+        {
+            CERR << OFFIS_CONSOLE_APPLICATION << ": warning: DTD file \"" << opt_dtdFilename
+                 << "\" does not exist ... adding reference instead" << OFendl;
+        }
         opt_writeFlags &= ~DCMTypes::XF_embedDocumentType;
     }
 
@@ -438,18 +472,20 @@ int main(int argc, char *argv[])
                 if (stream.good())
                 {
                     /* write content in XML format to file */
-                    if (writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
+                    if (writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
+                                  opt_defaultCharset, opt_writeFlags, opt_checkAllStrings, opt_quietMode).bad())
                         result = 2;
                 } else
                     result = 1;
             } else {
                 /* write content in XML format to standard output */
-                if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
+                if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
+                              opt_defaultCharset, opt_writeFlags, opt_checkAllStrings, opt_quietMode).bad())
                     result = 3;
             }
-        } else
+        } else if (!opt_quietMode)
             CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname << OFendl;
-    } else
+    } else if (!opt_quietMode)
         CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
 
     return result;
@@ -459,6 +495,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.33  2009-03-11 13:06:12  joergr
+ * Added support for specifying the filename of the DTD on the command line.
+ * Added command line option for quiet mode (print no warnings and errors).
+ *
  * Revision 1.32  2009-02-04 18:08:18  joergr
  * Fixed various layout and formatting issues.
  *
