@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.11 (riesmeier)
+
+- Added support for specifying the filename of the DTD on the command line.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.man
+
+- Added command line option for quiet mode (print no warnings and errors).
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/docs/dcm2xml.man
+
+- Updated configuration directory to "/usr/local/etc/dcmtk/dcmqrscp.cfg".
+  Affects: dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrset.txt
+
 **** Changes from 2009.03.10 (riesmeier)
 
 - Added note on optional support for extended negotiation.
