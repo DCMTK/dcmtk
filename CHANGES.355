@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.12 (riesmeier)
+
+- Added OFFile to the list of main classes.
+  Affects: ofstd/docs/ofstd.dox
+
 **** Changes from 2009.03.11 (riesmeier)
 
 - Added support for specifying the filename of the DTD on the command line.

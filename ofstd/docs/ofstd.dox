@@ -9,6 +9,7 @@ The main classes are (in alphabetical order):
 \li \b OFCommandLine
 \li \b OFCondition
 \li \b OFConsole
+\li \b OFFile
 \li \b OFList
 \li \b OFStack
 \li \b OFStandard
