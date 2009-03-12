@@ -22,8 +22,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-13 12:56:18 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-03-12 11:37:54 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_STAT_H
-#include <sys/stat.h> /* needed for struct _stati64 on WIN32 */
+#include <sys/stat.h>   /* needed for struct _stati64 on Win32 */
 #endif
 END_EXTERN_C
 
@@ -71,7 +71,7 @@ END_EXTERN_C
 #endif
 
 #ifdef _WIN32
-  // On Win32 systems, we use WIN32 specific definitions
+  // On Win32 systems, we use Win32 specific definitions
   typedef __int64 offile_off_t;
   typedef fpos_t offile_fpos_t;
 #else
@@ -126,7 +126,7 @@ public:
   /** opens the file whose name is the string pointed to by path and associates
    *  a stream with it.
    *  @param filename path to file
-   *  @param modes "r", "w" or "a" with possible modifiers "+", "b".
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
    *  @return true if stream was successfully created, false otherwise, in which case
    *   the error code is set.
    */
@@ -144,9 +144,9 @@ public:
 
 #ifdef _WIN32
   /** opens the file whose name is the wide character string pointed to by path and associates
-   *  a stream with it. This function is WIN32 specific and only exists on WinNT and newer.
-   *  @param Unicode filename path to file
-   *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a
+   *  a stream with it. This function is Win32 specific and only exists on WinNT and newer.
+   *  @param filename Unicode filename path to file
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b", as a wide character string
    *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
    */
   OFBool wfopen(const wchar_t *filename, const wchar_t *modes)
@@ -167,7 +167,7 @@ public:
    *  will be closed when the stream created by fdopen is closed. The result of
    *  applying fdopen to a shared memory object is undefined.
    *  @param fd file descriptor
-   *  @param modes "r", "w" or "a" with possible modifiers "+", "b".
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
    *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
    */
   OFBool fdopen(int fd, const char *modes)
@@ -184,7 +184,7 @@ public:
    *  correspondingly read-only or write-only. If the object was already
    *  associated with another file or pipe, that one is closed.
    *  @param command shell command line
-   *  @param modes "r" or "w".
+   *  @param modes "r" or "w"
    *  @return true if pipe was successfully created, false otherwise
    */
   OFBool popen(const char *command, const char *modes)
@@ -200,12 +200,12 @@ public:
   }
 
   /** opens the file whose name is the string pointed to by path and associates
-   *  the stream pointed maintained by this object with it. The original stream (if it
-   *  exists) is closed. The mode argument is used just as in the fopen
+   *  the stream pointed maintained by this object with it. The original stream
+   *  (if it exists) is closed. The mode argument is used just as in the fopen
    *  function. The primary use of the freopen function is to change the file
    *  associated with a standard text stream (stderr, stdin, or stdout).
    *  @param filename path to file
-   *  @param modes "r", "w" or "a" with possible modifiers "+", "b".
+   *  @param modes "r", "w" or "a" with possible modifiers "+", "b"
    *  @return true if stream was successfully created, false otherwise, in which case the error code is set.
    */
   OFBool freopen(const char *filename, const char *modes)
@@ -356,7 +356,7 @@ public:
   /** tests the end-of-file indicator for the stream, returning non-zero if it
    *  is set. The end-of-file indicator can only be cleared by the function
    *  clearerr. This method is called eof, not feof, because feof() is a macro
-   *  on WIN32 and, therefore, cannot be used as a method name.
+   *  on Win32 and, therefore, cannot be used as a method name.
    *  @return non-zero if EOF, zero otherwise
    */
   int eof() const
@@ -371,7 +371,7 @@ public:
 
   /** tests the error indicator for the stream, returning non-zero if it is set.
    *  This method is named error, not ferror, because ferror() is a macro
-   *  on WIN32 and, therefore, cannot be used as a method name.
+   *  on Win32 and, therefore, cannot be used as a method name.
    *  The error indicator can only be reset by the clearerr function.
    *  @return non-zero if error flag is set, zero otherwise
    */
@@ -467,7 +467,7 @@ public:
   char *fgets(char *s, int n) { return STDIO_NAMESPACE fgets(s, n, file_); }
 
   /** writes the string s to stream, without its trailing '\0'.
-   *  @param s string
+   *  @param s string to be written
    *  @return a non-negative number on success, or EOF on error.
    */
   int fputs(const char *s) { return STDIO_NAMESPACE fputs(s, file_); }
@@ -475,7 +475,7 @@ public:
   /** pushes c back to stream, cast to unsigned char, where it is available for
    *  subsequent read operations. Pushed - back characters will be returned in
    *  reverse order; only one pushback is guaranteed.
-   *  param c character to push back
+   *  @param c character to push back
    *  @return c on success, or EOF on error.
    */
   int ungetc(int c) { return STDIO_NAMESPACE ungetc(c, file_); }
@@ -543,16 +543,16 @@ public:
     }
     result = this->fsetpos(&off2);
 #elif defined(__BEOS__)
-    result =  :: _fseek(fp, offset, whence);
+    result = :: _fseek(fp, offset, whence);
 #else
 #ifdef HAVE_FSEEKO
 #ifdef EXPLICIT_LFS_64
-    result =  :: fseeko64(file_, off, whence);
+    result = :: fseeko64(file_, off, whence);
 #else
-    result =  :: fseeko(file_, off, whence);
+    result = :: fseeko(file_, off, whence);
 #endif
 #else
-    result =  STDIO_NAMESPACE fseek(file_, off, whence);
+    result = STDIO_NAMESPACE fseek(file_, off, whence);
 #endif
 #endif
     if (result) storeLastError();
@@ -676,7 +676,7 @@ public:
   offile_errno_t getLastError() const { return lasterror_; }
 
   /** return string describing last error code for this stream
-   *  @param string describing last error code for this stream returned in this parameter
+   *  @param s string describing last error code for this stream returned in this parameter
    */
   void getLastErrorString(OFString& s) const
   {
@@ -833,6 +833,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.8  2009-03-12 11:37:54  joergr
+ * Fixed various Doxygen API documentation issues.
+ *
  * Revision 1.7  2009-02-13 12:56:18  joergr
  * Added private undefined copy constructor and assignment operator in order to
  * avoid compiler warnings (reported by gcc with additional flags).
