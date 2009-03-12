@@ -95,7 +95,7 @@ On a big endian machine (Sparc, M68K, MIPS)
 This supersection contains one or more sections with arbitrary
 user-defined but unique section names that are used as symbolic labels.
 Within each section, one or more key/value pairs are contained. The key
-names are "PresentationContext1", "PresentationContext1" etc., in
+names are "PresentationContext1", "PresentationContext2" etc., in
 increasing order.  Each list must not contain more than 128 entries,
 due to the limitation of the DICOM network protocol to 128 presentation
 contexts per association.

@@ -12,6 +12,9 @@ Changes between releases are documented here.
 - Updated latest tested CMake version to 2.6.3.
   Affects: CMakeLists.txt
 
+- Fixed typo in section on Presentation Contexts.
+  Affects: dcmnet/docs/asconfig.txt
+
 **** Changes from 2009.03.11 (riesmeier)
 
 - Added support for specifying the filename of the DTD on the command line.
