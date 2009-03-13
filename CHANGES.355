@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.13 (riesmeier)
+
+- Added new helper function getFilenameFromPath().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Added check on pixel data directory (option --write-pixel), i.e. whether it
+  exists and whether it is writable.
+  Affects: dcmdata/apps/dcmdump.cc
+
+- Added support for option --write-pixel when --search is used to print
+  selected tags only.
+  Thanks to forum user "spasmous" <spasmous@gmail.com> for pointing this out.
+  Affects: dcmdata/apps/dcmdump.cc
+
 **** Changes from 2009.03.12 (riesmeier)
 
 - Added OFFile to the list of main classes.
