@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2008, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-08-28 10:44:30 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-13 09:46:40 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -409,6 +409,19 @@ OFBool OFStandard::isWriteable(const OFString &pathName)
 }
 
 
+OFString &OFStandard::getFilenameFromPath(OFString &result,
+                                          const OFString &pathName)
+{
+    const size_t pos = pathName.find_last_of(PATH_SEPARATOR);
+    /* path separator found? */
+    if (pos == OFString_npos)
+        result = pathName;
+    else
+        result = pathName.substr(pos + 1);
+    return result;
+}
+
+
 OFString &OFStandard::normalizeDirName(OFString &result,
                                        const OFString &dirName,
                                        const OFBool allowEmptyDirName)
@@ -460,7 +473,6 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
         }
     }
 #endif
-
     /* we only get here, if we don't have an absolute directory in "fileName" */
     /* now normalize the directory name */
     normalizeDirName(result, dirName, allowEmptyDirName);
@@ -484,7 +496,7 @@ OFCondition OFStandard::removeRootDirFromPathname(OFString &result,
 {
     OFCondition status = EC_IllegalParameter;
     const size_t rootLength = rootDir.length();
-    /* check for same length */
+    /* check for "compatible" length */
     if (rootLength <= pathName.length())
     {
         /* check for same prefix */
@@ -1775,6 +1787,9 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.49  2009-03-13 09:46:40  joergr
+ *  Added new helper function getFilenameFromPath().
+ *
  *  Revision 1.48  2008-08-28 10:44:30  onken
  *  Introduced deleteFile() method.
  *

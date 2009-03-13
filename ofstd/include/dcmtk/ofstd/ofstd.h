@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:33:12 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-13 09:47:20 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,6 +172,18 @@ class OFStandard
      *  @return OFTrue if path is writeable, OFFalse otherwise
      */
     static OFBool isWriteable(const OFString &pathName);
+
+    /** get file name component from given path name.
+     *  Extracts the substring after the last path separator. If there is no path
+     *  separator in the given path name, the value of 'pathName' is returned.
+     *  NB: This function neither checks whether the given 'pathName' exists nor
+     *      whether the resulting file name points to a valid or existing file name.
+     *  @param result string variable in which the resulting file name is stored
+     *  @param pathName path name from which the file name should be extracted
+     *  @return reference to the resulting file name (same as 'result')
+     */
+    static OFString &getFilenameFromPath(OFString &result,
+                                         const OFString &pathName);
 
     /** normalize the given directory name.
      *  Removes trailing path separators from the directory name. If the resulting
@@ -492,6 +504,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.33  2009-03-13 09:47:20  joergr
+ * Added new helper function getFilenameFromPath().
+ *
  * Revision 1.32  2009-03-05 13:33:12  onken
  * Added helper function that checks whether a given Uint32 addition would
  * result in an overflow.
