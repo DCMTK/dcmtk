@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-11 16:55:31 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2009-03-13 10:13:36 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,6 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             const size_t printFlags,
             const OFBool loadIntoMemory,
             const OFBool stopOnErrors,
-            const OFBool writePixelData,
             const char *pixelDirectory);
 
 // ********************************************
@@ -88,6 +87,7 @@ static const DcmTagKey *printTagKeys[MAX_PRINT_TAG_NAMES];
 static OFCmdUnsignedInt maxReadLength = 4096; // default is 4 KB
 static size_t fileCounter = 0;
 
+
 static DcmTagKey parseTagKey(const char *tagName)
 {
     unsigned int group = 0xffff;
@@ -99,7 +99,7 @@ static DcmTagKey parseTagKey(const char *tagName)
       const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
       if (dicent == NULL) {
         if (!quietMode)
-          CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
+          CERR << "error: unrecognized tag name: '" << tagName << "'" << OFendl;
         dcmDataDict.unlock();
         return DCM_UndefinedTagKey;
       } else {
@@ -117,7 +117,7 @@ static OFBool addPrintTagName(const char *tagName)
 {
   if (printTagCount >= MAX_PRINT_TAG_NAMES) {
     if (!quietMode)
-      CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
+      CERR << "error: too many print tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
     return OFFalse;
   }
 
@@ -129,10 +129,10 @@ static OFBool addPrintTagName(const char *tagName)
     const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
     if (dicent == NULL) {
-        if (!quietMode)
-            CERR << "error: unrecognised tag name: '" << tagName << "'" << OFendl;
-        dcmDataDict.unlock();
-        return OFFalse;
+      if (!quietMode)
+        CERR << "error: unrecognized tag name: '" << tagName << "'" << OFendl;
+      dcmDataDict.unlock();
+      return OFFalse;
     } else {
       /* note for later */
       printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
@@ -149,6 +149,7 @@ static OFBool addPrintTagName(const char *tagName)
   return OFTrue;
 }
 
+
 #define SHORTCOL 3
 #define LONGCOL 21
 
@@ -157,7 +158,6 @@ int main(int argc, char *argv[])
     int debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
     size_t printFlags = DCMTypes::PF_shortenLongTagValues;
-    OFBool writePixelData = OFFalse;
     E_FileReadMode readMode = ERM_autoDetect;
     E_TransferSyntax xfer = EXS_Unknown;
     OFBool stopOnErrors = OFTrue;
@@ -546,22 +546,34 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       if (cmd.findOption("--write-pixel"))
-      {
         app.checkValue(cmd.getValue(pixelDirectory));
-        writePixelData = OFTrue;
-      }
     }
 
     if (debugMode)
-        app.printIdentifier();
+      app.printIdentifier();
     SetDebugLevel((debugMode));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded() && !quietMode)
     {
-        CERR << "Warning: no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE;
+      CERR << "Warning: no data dictionary loaded, "
+           << "check environment variable: "
+           << DCM_DICT_ENVIRONMENT_VARIABLE;
+    }
+
+    /* make sure the pixel data directory exists and is writable */
+    if (pixelDirectory != NULL)
+    {
+      if (!OFStandard::dirExists(pixelDirectory))
+      {
+        app.printWarning("directory specified for --write-pixel does not exist, ignoring this option");
+        pixelDirectory = NULL;
+      }
+      else if (!OFStandard::isWriteable(pixelDirectory))
+      {
+        app.printWarning("directory specified for --write-pixel is not writeable, ignoring this option");
+        pixelDirectory = NULL;
+      }
     }
 
     int errorCount = 0;
@@ -580,7 +592,7 @@ int main(int argc, char *argv[])
         if (scanDir)
           OFStandard::searchDirectoryRecursively(paramString, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
         else if (debugMode && !quietMode)
-          CERR << "warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
+          CERR << "Warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
       } else
         inputFiles.push_back(paramString);
     }
@@ -604,14 +616,17 @@ int main(int argc, char *argv[])
         /* print header with filename */
         COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << fileCounter << "/" << count << "): " << current << OFendl;
       }
-      errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors,
-        writePixelData, pixelDirectory);
+      errorCount += dumpFile(COUT, current, readMode, xfer, printFlags, loadIntoMemory, stopOnErrors, pixelDirectory);
     }
 
     return errorCount;
 }
 
-static void printResult(STD_NAMESPACE ostream &out, DcmStack &stack, size_t printFlags)
+static void printResult(STD_NAMESPACE ostream &out,
+                        DcmStack &stack,
+                        size_t printFlags,
+                        const char*pixelFileName = NULL,
+                        size_t *pixelCounter = NULL)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -636,18 +651,17 @@ static void printResult(STD_NAMESPACE ostream &out, DcmStack &stack, size_t prin
 
     /* print the tag and its value */
     DcmObject *dobj = stack.top();
-    dobj->print(out, printFlags, 1 /*level*/);
+    dobj->print(out, printFlags, 1 /*level*/, pixelFileName, pixelCounter);
 }
 
 static int dumpFile(STD_NAMESPACE ostream &out,
-            const char *ifname,
-            const E_FileReadMode readMode,
-            const E_TransferSyntax xfer,
-            const size_t printFlags,
-            const OFBool loadIntoMemory,
-            const OFBool stopOnErrors,
-            const OFBool writePixelData,
-            const char *pixelDirectory)
+                    const char *ifname,
+                    const E_FileReadMode readMode,
+                    const E_TransferSyntax xfer,
+                    const size_t printFlags,
+                    const OFBool loadIntoMemory,
+                    const OFBool stopOnErrors,
+                    const char *pixelDirectory)
 {
     int result = 0;
 
@@ -675,23 +689,22 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
     if (loadIntoMemory) dfile.loadAllDataIntoMemory();
 
+    size_t pixelCounter = 0;
+    const char *pixelFileName = NULL;
+    OFString pixelFilenameStr;
+    if (pixelDirectory != NULL)
+    {
+        /* create filename for pixel data */
+        OFString fileName;
+        OFStandard::getFilenameFromPath(fileName, OFString(ifname));
+        OFStandard::combineDirAndFilename(pixelFilenameStr, pixelDirectory, fileName);
+        pixelFileName = pixelFilenameStr.c_str();
+    }
+
+    /* dump complete file content */
     if (printTagCount == 0)
     {
-        if (writePixelData)
-        {
-            OFString str = ifname;
-            OFString rname = pixelDirectory;
-            if ((rname.length() > 0) && (rname[rname.length() - 1] != PATH_SEPARATOR))
-                rname += PATH_SEPARATOR;
-            size_t pos = str.find_last_of(PATH_SEPARATOR);
-            if (pos == OFString_npos)
-                rname += str;
-            else
-                rname += str.substr(pos + 1);
-            size_t counter = 0;
-            dset->print(out, printFlags, 0 /*level*/, rname.c_str(), &counter);
-        } else
-            dset->print(out, printFlags);
+        dset->print(out, printFlags, 0 /*level*/, pixelFileName, &pixelCounter);
     } else {
         OFBool firstTag = OFTrue;
         /* only print specified tags */
@@ -731,16 +744,15 @@ static int dumpFile(STD_NAMESPACE ostream &out,
                         COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << fileCounter << "): " << ifname << OFendl;
                     firstTag = OFFalse;
                 }
-                printResult(out, stack, printFlags);
+                printResult(out, stack, printFlags, pixelFileName, &pixelCounter);
                 if (printAllInstances)
                 {
                     while (dset->search(searchKey, stack, ESM_afterStackTop, OFTrue) == EC_Normal)
-                      printResult(out, stack, printFlags);
+                      printResult(out, stack, printFlags, pixelFileName, &pixelCounter);
                 }
             }
         }
     }
-
     return result;
 }
 
@@ -748,6 +760,11 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.74  2009-03-13 10:13:36  joergr
+ * Added check on pixel data directory (option --write-pixel), i.e. whether it
+ * exists and whether it is writable. Added support for option --write-pixel
+ * when --search is used to print selected tags only.
+ *
  * Revision 1.73  2009-02-11 16:55:31  joergr
  * Renamed option --stop-at-elem to --stop-after-elem and fixed typo.
  *
