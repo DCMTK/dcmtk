@@ -1,7 +1,7 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2009.03.17 (riesmeier)
+**** Changes from 2009.03.18 (riesmeier)
 
 - Fixed "number overflow" issue with error message on non-standard VR.
   Affects: dcmdata/libsrc/dcitem.cc
