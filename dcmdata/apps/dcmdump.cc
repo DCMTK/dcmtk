@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-13 10:13:36 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2009-03-18 13:57:16 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -696,7 +696,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     {
         /* create filename for pixel data */
         OFString fileName;
-        OFStandard::getFilenameFromPath(fileName, OFString(ifname));
+        OFStandard::getFilenameFromPath(fileName, ifname);
         OFStandard::combineDirAndFilename(pixelFilenameStr, pixelDirectory, fileName);
         pixelFileName = pixelFilenameStr.c_str();
     }
@@ -760,6 +760,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.75  2009-03-18 13:57:16  joergr
+ * Removed redundant call to OFString constructor.
+ *
  * Revision 1.74  2009-03-13 10:13:36  joergr
  * Added check on pixel data directory (option --write-pixel), i.e. whether it
  * exists and whether it is writable. Added support for option --write-pixel
