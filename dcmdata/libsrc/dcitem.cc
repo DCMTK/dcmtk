@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:08:05 $
- *  CVS/RCS Revision: $Revision: 1.132 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-18 13:54:04 $
+ *  CVS/RCS Revision: $Revision: 1.133 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -474,7 +474,7 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
         do {
             dO = elementList->get();
             sublen = dO->calcElementLength(xfer, enctype);
-            /* explicit length: be sure that total size of contained elements fits into item's 
+            /* explicit length: be sure that total size of contained elements fits into item's
                32 Bit length field. If not, switch encoding automatically to undefined
                length for this item. Nevertheless, any contained elements will be
                written with explicit length if possible.
@@ -486,14 +486,14 @@ Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
                 if (dcmWriteOversizedSeqsAndItemsUndefined.get())
                 {
                     ofConsole.getCerr() << "trying to encode with undefined length" << OFendl;
-                } 
+                }
                 else
                 {
                     ofConsole.getCerr() << "aborting write" << OFendl;
                     errorFlag = EC_SeqOrItemContentOverflow;
                 }
                 ofConsole.unlockCerr();
-                return DCM_UndefinedLength;       
+                return DCM_UndefinedLength;
             }
             else
               itemlen += sublen;
@@ -648,7 +648,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                               ofConsole.lockCerr() << "DcmItem: Group length of group "
                                                    << actGLElem->getGTag() << " exceeds 32-Bit length field. "
                                                    << "Cannot calculate/write group length for this group." << OFendl;
-                              ofConsole.unlockCerr();                              
+                              ofConsole.unlockCerr();
                               exceededGroupLengthElems.push_back(actGLElem);
                               groupLengthExceeded = OFFalse;
                             }
@@ -765,7 +765,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
             }
         }
     }
-    /* delete invalid group length elements from item. Cannot be done in */ 
+    /* delete invalid group length elements from item. Cannot be done in */
     /* above while loop because then elementList iterator is invalidated */
     Uint32 numElems = exceededGroupLengthElems.size();
     for (Uint32 i=0; i < numElems; i++)
@@ -850,8 +850,8 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
                       << ((OFstatic_cast(unsigned char, vrstr[1]) < 32) ? ' ' : vrstr[1])
                       << "' ("
                       << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                      << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0]) << "\\"
-                      << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1])
+                      << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[0] & 0xff) << "\\"
+                      << STD_NAMESPACE setw(2) << OFstatic_cast(unsigned int, vrstr[1] & 0xff)
                       << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
                       << ") encountered while parsing element " << newTag.getXTag();
             /* encoding of this data element might be wrong, try to correct it */
@@ -964,7 +964,7 @@ OFCondition DcmItem::readTagAndLength(DcmInputStream &inStream,
             ofConsole.lockCerr() << "DcmItem: Element " << newTag.getTagName() << " " << newTag
                                  << " larger (" << valueLength << ") than remaining bytes ("
 								 /* need to cast remainingItemBytes to unsigned long because VC6 cannot print offile_off_t (int64_t). */
-                                 << OFstatic_cast(unsigned long, remainingItemBytes) 
+                                 << OFstatic_cast(unsigned long, remainingItemBytes)
 								 << ") of surrounding item" << OFendl;
             ofConsole.unlockCerr();
             l_error = EC_ElemLengthLargerThanItem;
@@ -1150,7 +1150,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
                 {
                     privateCreatorCache.updateCache(elementList->get());
                     // evaluate option for skipping rest of dataset
-                    if ( (dcmStopParsingAfterElement.get() != DCM_UndefinedTagKey) && 
+                    if ( (dcmStopParsingAfterElement.get() != DCM_UndefinedTagKey) &&
                          (dcmStopParsingAfterElement.get() == elementList->get()->getTag()) &&
                           ident() == EVR_dataset)
                     {
@@ -1180,7 +1180,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
     /* modify the result value: two kinds of special error codes do not count as an error */
     if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
         errorFlag = EC_Normal;
-    
+
     /* if at this point the error flag indicates success, the item has */
     /* been read completely; hence, set the transfer state to ERW_ready. */
     /* Note that all information for this element could be read from the */
@@ -3643,6 +3643,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.133  2009-03-18 13:54:04  joergr
+** Fixed "number overflow" issue with error message on non-standard VR.
+**
 ** Revision 1.132  2009-03-05 14:08:05  onken
 ** Fixed typo.
 **
