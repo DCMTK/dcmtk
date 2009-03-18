@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.17 (riesmeier)
+
+- Fixed "number overflow" issue with error message on non-standard VR.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Removed redundant call to OFString constructor.
+  Affects: dcmdata/apps/dcmdump.cc
+
 **** Changes from 2009.03.13 (riesmeier)
 
 - Added new helper function getFilenameFromPath().
