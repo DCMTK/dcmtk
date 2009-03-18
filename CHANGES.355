@@ -9,6 +9,9 @@ Changes between releases are documented here.
 - Removed redundant call to OFString constructor.
   Affects: dcmdata/apps/dcmdump.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2009.03.13 (riesmeier)
 
 - Added new helper function getFilenameFromPath().

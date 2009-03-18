@@ -1,4 +1,4 @@
-.TH "storescp" 1 "30 Jan 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -87,6 +87,15 @@ preferred network transfer syntaxes (not with --config-file):
   +xw   --prefer-j2k-lossy
           prefer JPEG 2000 lossy TS
 
+  +xt   --prefer-jls-lossless
+          prefer JPEG-LS lossless TS
+
+  +xu   --prefer-jls-lossy
+          prefer JPEG-LS lossy TS
+
+  +xm   --prefer-mpeg2
+          prefer MPEG2 Main Profile @ Main Level TS
+
   +xr   --prefer-rle
           prefer RLE lossless TS
 
@@ -96,7 +105,10 @@ preferred network transfer syntaxes (not with --config-file):
   +xi   --implicit
           accept implicit VR little endian TS only
 
-network host access control (tcp wrapper) options:
+  +xa   --accept-all
+          accept all supported transfer syntaxes
+
+network host access control (tcp wrapper):
 
   -ac   --access-full
           accept connections from any host (default)
@@ -170,7 +182,7 @@ bit preserving mode:
           allow implicit format conversions (default)
 
   +B    --bit-preserving
-          write data exactly as read (not with -ss/-sp)
+          write data exactly as read
 
 output file format:
 
@@ -243,11 +255,13 @@ deflate compression level (only with --write-xfer-deflated/same):
 sorting into subdirectories (not with --bit-preserving):
 
   -ss   --sort-conc-studies  [p]refix: string
-          sort concerning studies into subdirectories that
-          start with prefix p
+          sort studies using prefix p and a timestamp
 
-  -sp   --sort-on-patientsname
-          sort studies into subdirs by patient name
+  -su   --sort-on-study-uid  [p]refix: string
+          sort studies using prefix p and the Study Instance UID
+
+  -sp   --sort-on-patientname
+          sort studies using the Patient's Name and a timestamp
 
 filename generation:
 
@@ -269,32 +283,32 @@ filename generation:
 .nf
 
   -xcr  --exec-on-reception  [c]ommand: string
-          execute command c after having received and
-          processed one C-STORE-Request message
-
-  -xcs  --exec-on-eostudy  [c]ommand: string (only with -ss or -sp)
           execute command c after having received and processed
-          all C-STORE-Request messages that belong to one study
+          one C-STORE-RQ message
+
+  -xcs  --exec-on-eostudy  [c]ommand: string
+          execute command c after having received and processed
+          all C-STORE-RQ messages that belong to one study
 
   -rns  --rename-on-eostudy
-          (only with -ss or -sp) having received and processed
-          all C-STORE-Request messages that belong to one study,
-          rename output files according to a certain pattern
+          having received and processed all C-STORE-RQ messages
+          that belong to one study, rename output files according
+          to a certain pattern
 
   -tos  --eostudy-timeout  [t]imeout: integer
           specifies a timeout of t seconds for end-of-study
-          determination (only with -ss, -sp, -xcs or -rns)
+          determination
 
   -xs   --exec-sync
-          execute command synchronously in foreground.
-          This option is available on Windows only.
+          execute command synchronously in foreground
+          (this option is available on Windows only)
 .fi
 .PP
 .SS "transport layer security (TLS) options"
 .PP
 .nf
 
-transport protocol stack options:
+transport protocol stack:
 
   -tls  --disable-tls
           use normal TCP/IP connection (default)
@@ -302,7 +316,7 @@ transport protocol stack options:
   +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
           use authenticated secure TLS connection
 
-private key password options (only with --enable-tls):
+private key password (only with --enable-tls):
 
   +ps   --std-passwd
           prompt user to type password on stdin (default)
@@ -313,7 +327,7 @@ private key password options (only with --enable-tls):
   -pw   --null-passwd
           use empty string as password
 
-key and certificate file format options:
+key and certificate file format:
 
   -pem  --pem-keys
           read keys and certificates as PEM file (default)
@@ -321,7 +335,7 @@ key and certificate file format options:
   -der  --der-keys
           read keys and certificates as DER file
 
-certification authority options:
+certification authority:
 
   +cf   --add-cert-file  [c]ertificate filename: string
           add certificate file to list of certificates
@@ -329,7 +343,7 @@ certification authority options:
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
-ciphersuite options:
+ciphersuite:
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -337,7 +351,7 @@ ciphersuite options:
   +dp   --dhparam  [f]ilename: string
           read DH parameters for DH/DSS ciphersuites
 
-pseudo random generator options:
+pseudo random generator:
 
   +rs   --seed  [f]ilename: string
           seed random generator with contents of f
@@ -348,7 +362,7 @@ pseudo random generator options:
   +wf   --write-seed-file  [f]ilename: string (only with --seed)
           write modified seed to file f
 
-peer authentication options:
+peer authentication:
 
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
@@ -373,7 +387,27 @@ Option \fI--sort-conc-studies\fP enables a user to sort all received DICOM objec
 .fi
 .PP
 .PP
-where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31), HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to milliseconds (000-999).
+where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31), HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to milliseconds (000-999). If the prefix is an empty string, the first '_' is omitted.
+.PP
+The other \fI--sort-xxx\fP options work in a similar manner, only the subdirectory names are created differently. For option \fI--sort-on-study-uid\fP the pattern is
+.PP
+.PP
+.nf
+
+  [prefix]_[StudyInstanceUID]
+.fi
+.PP
+.PP
+and for option \fI--sort-on-patientname\fP 
+.PP
+.PP
+.nf
+
+  [PatientsName]_[YYYYMMDD]_[HHMMSSPPP]
+.fi
+.PP
+.PP
+where 'PatientsName' is replaced by 'ANONYMOUS' if the data element is empty or absent in the data set. Please note, however, that for option \fI--sort-on-study-uid\fP the same subdirectory will be used for all DICOM objects that belong to the same study, i.e. in contrast to the other \fI--sort-xxx\fP options there is no guarantee that a study directory is ever completed.
 .PP
 Option \fI--timenames\fP creates filenames from timestamps corresponding to the time, \fBstorescp\fP writes a file to disk. The format is
 .PP
@@ -388,7 +422,7 @@ where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above. If more 
 .PP
 Option \fI--filename-extension\fP appends a specified suffix to each filename (a dot '.' is not added automatically). This suffix is not appended to the filenames created by \fI--rename-on-eostudy\fP to maintain the length of 8 characters.
 .PP
-Option \fI--exec-on-reception\fP allows to execute a certain command line after having received and processed one DICOM object (through a C-STORE-Request message). The command line to be executed is passed to this option as a parameter. The specified command line may contain a number of placeholders which will be replaced at run time:
+Option \fI--exec-on-reception\fP allows to execute a certain command line after having received and processed one DICOM object (through a C-STORE-RQ message). The command line to be executed is passed to this option as a parameter. The specified command line may contain a number of placeholders which will be replaced at run time:
 .PP
 .PD 0
 .IP "\(bu" 2
@@ -404,7 +438,7 @@ The specified command line is executed as a separate process, so that the execut
 .PP
 Option \fI--exec-on-eostudy\fP allows to execute a certain command line when all DICOM objects that belong to one study have been received by \fBstorescp\fP. The same placeholders as with \fI--exec-on-reception\fP may be used, except for '#f', which is not supported. A study is considered complete by \fBstorescp\fP when an object belonging to a different study is received or the timeout specified with \fI--eostudy-timeout\fP takes place. If option \fI--rename-on-eostudy\fP is in force, the renaming takes place before the external command is executed.
 .PP
-Option \fI--rename-on-eostudy\fP refers to the above mentioned option \fI--sort-conc-studies\fP and can only be used in combination with this option. If a user specifies option \fI--rename-on-eostudy\fP and \fBstorescp\fP determines that all DICOM objects that belong to a certain study have been received, all DICOM files that belong to the last study will be renamed in the corresponding output directory. The filenames into which the files are being renamed will be calculated using the pattern
+Option \fI--rename-on-eostudy\fP refers to the above mentioned \fI--sort-xxx\fP options and can only be used in combination with one of these options. If a user specifies option \fI--rename-on-eostudy\fP and \fBstorescp\fP determines that all DICOM objects that belong to a certain study have been received, all DICOM files that belong to the last study will be renamed in the corresponding output directory. The filenames into which the files are being renamed will be calculated using the pattern
 .PP
 .PP
 .nf
@@ -415,7 +449,7 @@ Option \fI--rename-on-eostudy\fP refers to the above mentioned option \fI--sort-
 .PP
 where [prefix] is a 2 character prefix that reveals the kind of DICOM object stored in the file and [consecutive numbering] is a consecutively numbered, 6-digit number, starting at '000001'. In general, the question if all DICOM objects that belong to one study have been received by \fBstorescp\fP will be answered positively if and only if two consecutively received DICOM objects d_n and d_n+1 do not show the same values in attribute Study Instance UID; in such a case, d_n+1 is considered to belong to a new study.
 .PP
-Using option \fI--eostudy-timeout\fP a user can modify the determination process to figure out if all DICOM objects that belong to one study have already been received by \fBstorescp\fP. With regard to this fact, it is clear that this option can only be used in combination with at least one of the three options \fI--sort-conc-studies\fP, \fI--exec-on-eostudy\fP and \fI--rename-on-eostudy\fP. If option \fI--eostudy-timeout\fP is specified, the end of a study is considered to have occurred not only if two consecutively received DICOM objects d_n and d_n+1 do not show the same values in attribute Study Instance UID, but also if whithin a time span of x seconds after the reception of a DICOM object d_n, no other DICOM object was received over the network. Note that the amount x of seconds (which determines the length of this time span) has to be passed to this option as a parameter.
+Using option \fI--eostudy-timeout\fP a user can modify the determination process to figure out if all DICOM objects that belong to one study have already been received by \fBstorescp\fP. With regard to this fact, it is clear that this option can only be used in combination with at least one of the following options: \fI--sort-xxx\fP, \fI--exec-on-eostudy\fP and \fI--rename-on-eostudy\fP. If option \fI--eostudy-timeout\fP is specified, the end of a study is considered to have occurred not only if two consecutively received DICOM objects d_n and d_n+1 do not show the same values in attribute Study Instance UID, but also if whithin a time span of x seconds after the reception of a DICOM object d_n, no other DICOM object was received over the network. Note that the amount x of seconds (which determines the length of this time span) has to be passed to this option as a parameter.
 .SS "DICOM Conformance"
 The \fBstorescp\fP application supports the following SOP Classes as an SCP:
 .PP
@@ -511,7 +545,7 @@ BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4
 .fi
 .PP
 .PP
-The \fBstorescp\fP application will accept presentation contexts for all of the abovementioned supported SOP Classes using any of the transfer syntaxes:
+The \fBstorescp\fP application will accept presentation contexts for all of the abovementioned supported SOP Classes using any of the following transfer syntaxes:
 .PP
 .PP
 .nf
@@ -522,9 +556,30 @@ BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 .fi
 .PP
 .PP
-The default behaviour of the \fBstorescp\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBstorescp\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above).
+The default behaviour of the \fBstorescp\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBstorescp\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above). Using option \fI--accept-all\fP any of the following transfer syntaxes is supported:
 .PP
-The \fBstorescp\fP application does not support extended negotiation.
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+.fi
+.PP
+.PP
+Additional Storage SOP Classes and Transfer Syntaxes can be used with the so-called 'association negotiation profiles' (see below).
+.PP
+The \fBstorescp\fP application does not support extended negotiation by default. However, using an appropriate association negotiation profile (see below) the optional support for extended negotiation can be added to particular SOP classes.
 .SS "Access Control"
 When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBstorescp\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
 .SS "Running storescp from inetd"
@@ -564,4 +619,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBstorescu\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

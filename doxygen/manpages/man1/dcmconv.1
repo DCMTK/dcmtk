@@ -1,4 +1,4 @@
-.TH "dcmconv" 1 "30 Jan 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmconv" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmconv \- Convert DICOM file encoding
@@ -115,8 +115,21 @@ handling of private max-length elements (implicit VR):
          read as defined in dictionary (default)
 
   +sq  --maxlength-seq
-         read as sequence with undefined length         
-         
+         read as sequence with undefined length
+
+general handling of parser errors:
+
+  +Ep  --ignore-parse-errors
+         try to recover from parse errors
+
+  -Ep  --handle-parse-errors
+         handle parse errors and stop parsing (default)
+
+other parsing options:
+
+  +st  --stop-after-elem  [t]ag: "xxxx,xxxx" or a data dictionary
+         stop parsing after element specified by t
+
 automatic data correction:
 
   +dc  --enable-correction
@@ -189,6 +202,13 @@ length encoding in sequences and items:
 
   -e   --length-undefined
          write with undefined lengths
+
+  +eo  --impl-oversized
+         write oversized explicit length sequences
+         and items with undefined length (default)
+
+  -eo  --abort-oversized
+         abort on oversized explicit sequences/items
 
 data set trailing padding (not with --write-dataset):
 

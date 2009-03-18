@@ -1,4 +1,4 @@
-.TH "wlmscpfs" 1 "30 Jan 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "wlmscpfs" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 wlmscpfs \- DICOM Basic Worklist Management SCP (based on data files)
@@ -41,19 +41,6 @@ port  tcp/ip port number to listen on
 
   -d    --debug
           debug mode, print debug information
-
-  -nse  --no-sq-expansion
-          disable expansion of empty sequences
-          in C-FIND request messages
-
-  -dfp  --data-files-path  [p]ath: string (default: /home/www/wlist)
-          path to worklist data files
-
-  -efr  --enable-file-reject
-          enable rejection of incomplete worklist-files (default)
-
-  -dfr  --disable-file-reject
-          disable rejection of incomplete worklist-files
 .fi
 .PP
 .SS "multi-process options"
@@ -64,9 +51,29 @@ port  tcp/ip port number to listen on
           single process mode
 .fi
 .PP
-.SS "returned character set options"
+.SS "input options"
 .PP
 .nf
+
+general:
+
+  -dfp  --data-files-path  [p]ath: string (default: /home/www/wlist)
+          path to worklist data files
+
+handling of worklist files:
+
+  -efr  --enable-file-reject
+          enable rejection of incomplete worklist files (default)
+
+  -dfr  --disable-file-reject
+          disable rejection of incomplete worklist files
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+returned character set:
 
   -cs0  --return-no-char-set
           return no specific character set (default)
@@ -77,6 +84,11 @@ port  tcp/ip port number to listen on
   -csk  --keep-char-set
           return character set provided in file
 
+other processing options:
+
+  -nse  --no-sq-expansion
+          disable expansion of empty sequences in C-FIND
+          request messages
 .fi
 .PP
 .SS "network options"
@@ -97,13 +109,21 @@ preferred network transfer syntaxes:
   +xi   --implicit
           accept implicit VR little endian TS only
 
-network host access control (tcp wrapper) options:
+network host access control (tcp wrapper):
 
   -ac   --access-full
           accept connections from any host (default)
 
   +ac   --access-control
           enforce host access control rules
+
+post-1993 value representations:
+
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
+
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
 
 other network options:
 
@@ -136,19 +156,6 @@ other network options:
 
   -dhl  --disable-host-lookup
           disable hostname lookup
-.fi
-.PP
-.SS "encapsulated pixel data encoding options"
-.PP
-.nf
-
-post-1993 value representations:
-
-  +u    --enable-new-vr
-          enable support for new VRs (UN/UT) (default)
-
-  -u    --disable-new-vr
-          disable support for new VRs, convert to OB
 .fi
 .PP
 .SH "NOTES"
