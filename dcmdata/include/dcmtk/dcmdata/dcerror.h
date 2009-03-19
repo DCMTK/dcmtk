@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:47 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-19 11:46:20 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ extern const OFCondition EC_InvalidBasicOffsetTable;
 extern const OFCondition EC_ElemLengthLargerThanItem;
 /// Item or sequence content larger than explicit 32-bit length field permits
 extern const OFCondition EC_SeqOrItemContentOverflow;
-// File meta information header missing
+/// File meta information header missing
 extern const OFCondition EC_FileMetaInfoHeaderMissing;
 
 #ifndef OFCONDITION_STRICT_MODE
@@ -134,6 +134,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.30  2009-03-19 11:46:20  joergr
+** Fixed issue with Doxygen documentation.
+**
 ** Revision 1.29  2009-03-05 13:35:47  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds
