@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2008, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:49:45 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2009-03-19 12:11:24 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -326,9 +326,7 @@ int main(int argc, char *argv[])
     error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        CERR << "Error: " << error.text() << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
@@ -338,22 +336,22 @@ int main(int argc, char *argv[])
         COUT << "decompressing file" << OFendl;
 
     DcmXfer opt_oxferSyn(opt_oxfer);
+    DcmXfer original_xfer(dataset->getOriginalXfer());
 
     error = dataset->chooseRepresentation(opt_oxfer, NULL);
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": decompressing file: " <<  opt_ifname << OFendl;
-       if (error == EJ_UnsupportedColorConversion)
-           CERR << "Try --conv-never to disable color space conversion" << OFendl;
+        CERR << "Error: " << error.text() << ": decompressing file: " <<  opt_ifname << OFendl;
+        if (error == EJ_UnsupportedColorConversion)
+            CERR << "Try --conv-never to disable color space conversion" << OFendl;
+        else if (error == EC_CannotChangeRepresentation)
+            CERR << "Input transfer syntax " << original_xfer.getXferName() << " not supported" << OFendl;
         return 1;
     }
 
     if (! dataset->canWriteXfer(opt_oxfer))
     {
-        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible" << OFendl;
+        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible" << OFendl;
         return 1;
     }
 
@@ -365,9 +363,7 @@ int main(int argc, char *argv[])
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
     if (error != EC_Normal)
     {
-        CERR << "Error: "
-             << error.text()
-             << ": writing file: " <<  opt_ofname << OFendl;
+        CERR << "Error: " << error.text() << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
 
@@ -384,6 +380,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.19  2009-03-19 12:11:24  joergr
+ * Added more explicit message in case input transfer syntax is not supported.
+ *
  * Revision 1.18  2008-09-25 14:49:45  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.

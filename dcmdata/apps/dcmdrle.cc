@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Decompress RLE-compressed DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-03-19 12:07:49 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,9 +293,7 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        CERR << "Error: " << error.text() << ": reading file: " <<  opt_ifname << OFendl;
         return 1;
     }
 
@@ -303,20 +301,20 @@ int main(int argc, char *argv[])
         COUT << "decompressing file" << OFendl;
 
     DcmXfer opt_oxferSyn(opt_oxfer);
+    DcmXfer original_xfer(dataset->getOriginalXfer());
 
     error = dataset->chooseRepresentation(opt_oxfer, NULL);
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": decompressing file: " <<  opt_ifname << OFendl;
+        CERR << "Error: " << error.text() << ": decompressing file: " <<  opt_ifname << OFendl;
+        if (error == EC_CannotChangeRepresentation)
+            CERR << "Input transfer syntax " << original_xfer.getXferName() << " not supported" << OFendl;
         return 1;
     }
 
     if (! dataset->canWriteXfer(opt_oxfer))
     {
-        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible" << OFendl;
+        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible" << OFendl;
         return 1;
     }
 
@@ -329,9 +327,7 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": writing file: " <<  opt_ofname << OFendl;
+        CERR << "Error: " << error.text() << ": writing file: " <<  opt_ofname << OFendl;
         return 1;
     }
 
@@ -348,6 +344,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
+ * Revision 1.17  2009-03-19 12:07:49  joergr
+ * Added more explicit message in case input transfer syntax is not supported.
+ *
  * Revision 1.16  2008-09-25 14:38:48  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
