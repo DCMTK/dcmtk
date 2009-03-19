@@ -14,9 +14,9 @@ dcmcjpeg [options] dcmfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dcmcjpeg utility reads an uncompressed DICOM image (\e dicomfile-in),
+The \b dcmcjpeg utility reads an uncompressed DICOM image (\e dcmfile-in),
 performs a JPEG compression (i. e. conversion to an encapsulated DICOM transfer
-syntax) and writes the converted image to an output file (\e dicomfile-out).
+syntax) and writes the converted image to an output file (\e dcmfile-out).
 
 \section parameters PARAMETERS
 
@@ -539,6 +539,38 @@ windowing etc., there are a some issues to consider:
 However, when using the new encoder (default), you can be sure, that compression
 does not affect image quality.
 
+\section transfer_syntaxes TRANSFER SYNTAXES
+
+\b dcmcjpeg supports the following transfer syntaxes for input
+(\e dcmfile-in):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+\endverbatim
+
+(*) if compiled with zlib support enabled
+
+\b dcmcjpeg supports the following transfer syntaxes for output
+(\e dcmfile-out):
+
+\verbatim
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+\endverbatim
+
 \section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
@@ -583,6 +615,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -14,9 +14,9 @@ dcmdjpeg [options] dcmfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dcmdjpeg utility reads a JPEG-compressed DICOM image (\e dicomfile-in),
+The \b dcmdjpeg utility reads a JPEG-compressed DICOM image (\e dcmfile-in),
 decompresses the JPEG data (i. e. conversion to a native DICOM transfer syntax)
-and writes the converted image to an output file (\e dicomfile-out).
+and writes the converted image to an output file (\e dcmfile-out).
 
 \section parameters PARAMETERS
 
@@ -131,13 +131,13 @@ SOP Instance UID options:
 
   # Always assigns a new SOP instance UID
 
-  +w6   --workaround-pred6     
+  +w6   --workaround-pred6
           enable workaround for JPEG lossless images
           with overflow in predictor 6.
 
-  # DICOM images with 16 bits/pixel have been observed "in the wild" that are 
+  # DICOM images with 16 bits/pixel have been observed "in the wild" that are
   # compressed with lossless JPEG and need special handling because the encoder
-  # produced an 16-bit integer overflow in predictor 6, which needs to be 
+  # produced an 16-bit integer overflow in predictor 6, which needs to be
   # compensated (reproduced) during decompression. This flag enables a correct
   # decompression of such faulty images, but at the same time will cause an
   # incorrect decompression of correctly compressed images. Use with care.
@@ -206,6 +206,35 @@ data set trailing padding (not with --write-dataset):
           and items on multiple of i bytes
 \endverbatim
 
+\section transfer_syntaxes TRANSFER SYNTAXES
+
+\b dcmdjpeg supports the following transfer syntaxes for input
+(\e dcmfile-in):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+\endverbatim
+
+(*) if compiled with zlib support enabled
+
+\b dcmdjpeg supports the following transfer syntaxes for output
+(\e dcmfile-out):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+\endverbatim
+
 \section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
@@ -250,6 +279,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
