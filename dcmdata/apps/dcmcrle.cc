@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2009-03-19 12:06:42 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,9 +310,7 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        CERR << "Error: " << error.text() << ": reading file: " << opt_ifname << OFendl;
         return 1;
     }
 
@@ -320,16 +318,16 @@ int main(int argc, char *argv[])
     if (original_xfer.isEncapsulated())
     {
       if (opt_verbose)
-        COUT << "DICOM file is already compressed, convert to uncompressed xfer syntax first\n";
+        COUT << "DICOM file is already compressed, converting to uncompressed transfer syntax first" << OFendl;
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))
       {
-        CERR << "No conversion from compressed original to uncompressed xfer syntax possible!\n";
+        CERR << "No conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
         return 1;
       }
     }
 
     if (opt_verbose)
-        COUT << "Convert DICOM file to compressed transfer syntax\n";
+        COUT << "Convert DICOM file to compressed transfer syntax" << OFendl;
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
@@ -337,11 +335,9 @@ int main(int argc, char *argv[])
     if (dataset->canWriteXfer(opt_oxfer))
     {
         if (opt_verbose)
-            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written\n";
+            COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written" << OFendl;
     } else {
-        CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!\n";
+        CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
         return 1;
     }
 
@@ -362,14 +358,12 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": writing file: " <<  opt_ofname << OFendl;
+        CERR << "Error: " << error.text() << ": writing file: " << opt_ofname << OFendl;
         return 1;
     }
 
     if (opt_verbose)
-        COUT << "conversion successful\n";
+        COUT << "conversion successful" << OFendl;
 
     // deregister RLE codec
     DcmRLEEncoderRegistration::cleanup();
@@ -381,6 +375,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
+ * Revision 1.16  2009-03-19 12:06:42  joergr
+ * Replaced '\n' by OFendl where appropriate.
+ *
  * Revision 1.15  2008-09-25 14:38:48  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
