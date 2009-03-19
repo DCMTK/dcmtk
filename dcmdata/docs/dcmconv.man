@@ -14,9 +14,8 @@ dcmconv [options] dcmfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dcmconv utility reads a DICOM file (\e dicomfile-in), performs an
-encoding conversion and writes the converted data to an output file
-(\e dicomfile-out).
+The \b dcmconv utility reads a DICOM file (\e dcmfile-in), performs an encoding
+conversion and writes the converted data to an output file (\e dcmfile-out).
 
 \section parameters PARAMETERS
 
