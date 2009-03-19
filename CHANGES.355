@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.19 (riesmeier)
+
+- Added documentation on supported input and output transfer syntaxes.
+  Affects: dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+
+- Added more explicit message in case input transfer syntax is not supported.
+  Affects: dcmdata/apps/dcmdrle.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+
+- Replaced '\n' by OFendl where appropriate.
+  Affects: dcmdata/apps/dcmcrle.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+
+- Fixed inconsistency regarding parameter name.
+  Affects: dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+
+- Fixed issue with Doxygen documentation.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcerror.h
+
 **** Changes from 2009.03.18 (riesmeier)
 
 - Fixed "number overflow" issue with error message on non-standard VR.
