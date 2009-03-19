@@ -14,9 +14,9 @@ dcmdrle [options] dcmfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dcmdrle utility reads a RLE-compressed DICOM image (\e dicomfile-in),
+The \b dcmdrle utility reads a RLE-compressed DICOM image (\e dcmfile-in),
 decompresses the image data (i.e. conversion to a native DICOM transfer syntax)
-and writes the converted image to an output file (\e dicomfile-out).
+and writes the converted image to an output file (\e dcmfile-out).
 
 \section parameters PARAMETERS
 
@@ -151,6 +151,30 @@ data set trailing padding (not with --write-dataset):
          and items on multiple of i bytes
 \endverbatim
 
+\section transfer_syntaxes TRANSFER SYNTAXES
+
+\b dcmdrle supports the following transfer syntaxes for input
+(\e dcmfile-in):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+RLELosslessTransferSyntax                      1.2.840.10008.1.2.5
+\endverbatim
+
+(*) if compiled with zlib support enabled
+
+\b dcmdrle supports the following transfer syntaxes for output
+(\e dcmfile-out):
+
+\verbatim
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+\endverbatim
+
 \section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
@@ -195,6 +219,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany
+Copyright (C) 2002-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany
 
 */
