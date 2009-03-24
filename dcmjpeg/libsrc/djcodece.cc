@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:48:46 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-24 09:22:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,7 +481,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     DcmElement *dummyElem;
 
     // get relevant attributes for encoding from dataset
-    OFCondition result = datsetItem->findAndGetUint16(DCM_BitsStored, bitsStored);
+    result = datsetItem->findAndGetUint16(DCM_BitsStored, bitsStored);
     if (result.good()) result = datsetItem->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
     if (result.good()) result = datsetItem->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
     if (result.good()) result = datsetItem->findAndGetUint16(DCM_Columns, columns);
@@ -1467,6 +1467,10 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.26  2009-03-24 09:22:07  onken
+ * Removed doubled result variable declaration in true lossless encoder
+ * which may have lad the function to return success even in case of errors.
+ *
  * Revision 1.25  2008-05-29 10:48:46  meichel
  * Implemented new method DcmPixelData::getUncompressedFrame
  *   that permits frame-wise access to compressed and uncompressed

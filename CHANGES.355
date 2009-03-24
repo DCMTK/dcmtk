@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.24 (onken)
+
+- Removed doubled result variable declaration in true lossless encoder which may
+  have lad the function to return success even in case of errors. Thanks to
+  <cristian_ro2000@yahoo.com> for the bug report.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
 **** Changes from 2009.03.19 (riesmeier)
 
 - Added documentation on supported input and output transfer syntaxes.
