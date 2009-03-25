@@ -13,8 +13,6 @@ Changes between releases are documented here.
            
 - Added new module "dcmrt".
   Affects: CMakeLists.txt
-           doxygen/htmldocs.cfg
-           doxygen/htmldocs.dox
 
 **** Changes from 2009.03.24 (onken)
 
