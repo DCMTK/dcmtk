@@ -19,6 +19,9 @@ Changes between releases are documented here.
 - Fixed inconsistency regarding parameter name.
   Affects: dcmsign/docs/dcmsign.man
 
+- Added parentheses in order to keep MSVC quiet.
+  Affects: dcmdata/apps/dcm2xml.cc
+
 **** Changes from 2009.03.24 (onken)
 
 - Removed doubled result variable declaration in true lossless encoder which may

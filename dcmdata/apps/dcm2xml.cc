@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-11 13:06:12 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2009-03-25 17:54:35 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--use-dtd-file"))
         {
-            app.checkDependence("--use-dtd-file", "--embed-dtd-content", opt_writeFlags & DCMTypes::XF_embedDocumentType > 0);
+            app.checkDependence("--use-dtd-file", "--embed-dtd-content", (opt_writeFlags & DCMTypes::XF_embedDocumentType) > 0);
             app.checkValue(cmd.getValue(opt_dtdFilename));
         }
 
@@ -495,6 +495,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.34  2009-03-25 17:54:35  joergr
+ * Added parentheses in order to keep MSVC quiet.
+ *
  * Revision 1.33  2009-03-11 13:06:12  joergr
  * Added support for specifying the filename of the DTD on the command line.
  * Added command line option for quiet mode (print no warnings and errors).
