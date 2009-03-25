@@ -28,6 +28,9 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \if MODULE_DCMPPS
 \li \ref mod_dcmpps
 \endif
+\if MODULE_DCMRT
+\li \ref mod_dcmrt
+\endif
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library

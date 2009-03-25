@@ -35,7 +35,7 @@ SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 SET(PACKAGE_BUGREPORT "dicom-bugs@offis.de")
 
 # default build type
-SET(CMAKE_BUILD_TYPE RELEASE)
+SET(CMAKE_BUILD_TYPE Release)
 
 # various CMake-specific settings
 SET(CMAKE_USE_RELATIVE_PATHS ON)
@@ -238,4 +238,4 @@ INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
 # recurse into subdirectories
 SUBDIRS(config ofstd dcmdata dcmtls dcmnet dcmqrdb dcmimgle dcmimage dcmjpeg dcmsign dcmsr dcmpstat dcmwlm doxygen)
 # add non-public modules
-#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmwave)
+#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmrt dcmwave)
