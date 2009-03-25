@@ -1,11 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.25 (riesmeier)
+
+- Added new method isEmpty() to DICOM object, item and sequence class.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2009.03.24 (onken)
 
 - Removed doubled result variable declaration in true lossless encoder which may
-  have lad the function to return success even in case of errors. Thanks to
-  <cristian_ro2000@yahoo.com> for the bug report.
+  have led the function to return success even in case of errors.
+  Thanks to forum user "popu" <cristian_ro2000@yahoo.com> for the bug report.
   Affects: dcmjpeg/libsrc/djcodece.cc
 
 **** Changes from 2009.03.19 (riesmeier)

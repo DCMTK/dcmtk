@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:07:56 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-25 10:22:09 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -394,6 +394,11 @@ public:
      */
     virtual DcmItem *remove(DcmItem *item);
 
+    /** check if this sequence is empty
+     *  @return true if sequence is empty, i.e. has no items, false otherwise
+     */
+    virtual OFBool isEmpty() const;
+
     /** clear (remove) attribute value
      *  @return EC_Normal if successful, an error code otherwise
      */
@@ -573,6 +578,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
+** Revision 1.51  2009-03-25 10:22:09  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
 ** Revision 1.50  2009-03-05 14:07:56  onken
 ** Fixed typo.
 **

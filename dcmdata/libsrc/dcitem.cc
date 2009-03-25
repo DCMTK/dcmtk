@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-18 13:54:04 $
- *  CVS/RCS Revision: $Revision: 1.133 $
+ *  Update Date:      $Date: 2009-03-25 10:21:21 $
+ *  CVS/RCS Revision: $Revision: 1.134 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1667,6 +1667,12 @@ OFCondition DcmItem::clear()
     setLengthField(0);
 
     return errorFlag;
+}
+
+
+OFBool DcmItem::isEmpty() const
+{
+    return elementList->empty();
 }
 
 
@@ -3643,6 +3649,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.134  2009-03-25 10:21:21  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
 ** Revision 1.133  2009-03-18 13:54:04  joergr
 ** Fixed "number overflow" issue with error message on non-standard VR.
 **

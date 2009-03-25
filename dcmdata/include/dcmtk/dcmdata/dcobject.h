@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:07:56 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-25 10:22:09 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +149,7 @@ extern OFGlobal<OFBool> dcmIgnoreParsingErrors; /* default OFFalse */
  *  datasets containing garbage at the end, usually after the Pixel
  *  Data attribute. To prevent the parser for "stumbling" over that
  *  garbage, it is possible to tell the parser to stop after a
- *  specific element. The flag is only sensitive to elements on 
+ *  specific element. The flag is only sensitive to elements on
  *  dataset level, ie. inside sequence any occurence of the specified
  *  tag is ignored. Caution: Note that if Pixel Data is chosen
  *  as stop element, any attributes behind will not be parsed, e. g.
@@ -413,6 +413,11 @@ class DcmObject
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
+    /** check if this object is empty
+     *  @return true if object is empty, i.e. has no value, false otherwise
+     */
+    virtual OFBool isEmpty() const;
+
     /** clear (remove) attribute value
      *  @return EC_Normal if successful, an error code otherwise
      */
@@ -650,6 +655,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.61  2009-03-25 10:22:09  joergr
+ * Added new method isEmpty() to DICOM object, item and sequence class.
+ *
  * Revision 1.60  2009-03-05 14:07:56  onken
  * Fixed typo.
  *

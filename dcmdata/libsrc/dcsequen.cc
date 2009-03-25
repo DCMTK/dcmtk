@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:08:05 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-25 10:21:22 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -349,7 +349,7 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
         do {
             dI = OFstatic_cast(DcmItem *, itemList->get());
             sublen = dI->calcElementLength(xfer, enctype);
-            /* explicit length: be sure that total size of contained elements fits into sequence's 
+            /* explicit length: be sure that total size of contained elements fits into sequence's
                32 Bit length field. If not, switch encoding automatically to undefined
                length for this sequence. Nevertheless, any contained items will be
                written with explicit length if possible.
@@ -362,7 +362,7 @@ Uint32 DcmSequenceOfItems::getLength(const E_TransferSyntax xfer,
                 if (dcmWriteOversizedSeqsAndItemsUndefined.get())
                 {
                     ofConsole.getCerr() << "Trying to treat it as undefined length instead." << OFendl;
-                } 
+                }
                 else
                 {
                     ofConsole.getCerr() << "Writing with explicit length will not be possible" << OFendl;
@@ -1060,6 +1060,12 @@ OFCondition DcmSequenceOfItems::clear()
 }
 
 
+OFBool DcmSequenceOfItems::isEmpty() const
+{
+    return itemList->empty();
+}
+
+
 // ********************************
 
 
@@ -1306,6 +1312,9 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.83  2009-03-25 10:21:22  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
 ** Revision 1.82  2009-03-05 14:08:05  onken
 ** Fixed typo.
 **

@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:08:05 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-25 10:21:22 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -471,9 +471,18 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 }
 
 
+OFBool DcmObject::isEmpty() const
+{
+    return (Length == 0);
+}
+
+
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.61  2009-03-25 10:21:22  joergr
+ * Added new method isEmpty() to DICOM object, item and sequence class.
+ *
  * Revision 1.60  2009-03-05 14:08:05  onken
  * Fixed typo.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 14:07:56 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-03-25 10:22:09 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -318,7 +318,7 @@ class DcmItem
      *    next entry after this one. NULL if looking for the first entry.
      *  @return pointer to next object in container or NULL if not found
      */
-    virtual DcmObject  *nextInContainer(const DcmObject *obj);
+    virtual DcmObject *nextInContainer(const DcmObject *obj);
 
     /** remove element from list. If found, the element is not deleted but
      *  returned to the caller who is responsible for further management of the
@@ -343,6 +343,11 @@ class DcmItem
      *  @return pointer to DcmElement if found, NULL otherwise
      */
     virtual DcmElement *remove(const DcmTagKey &tag);
+
+    /** check if this item is empty
+     *  @return true if item is empty, i.e. has no elements, false otherwise
+     */
+    virtual OFBool isEmpty() const;
 
     /** clear (remove) attribute value
      *  @return EC_Normal if successful, an error code otherwise
@@ -1139,6 +1144,9 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.76  2009-03-25 10:22:09  joergr
+** Added new method isEmpty() to DICOM object, item and sequence class.
+**
 ** Revision 1.75  2009-03-05 14:07:56  onken
 ** Fixed typo.
 **
