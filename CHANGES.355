@@ -10,9 +10,14 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcitem.cc
            dcmdata/libsrc/dcobject.cc
            dcmdata/libsrc/dcsequen.cc
-           
+
 - Added new module "dcmrt".
   Affects: CMakeLists.txt
+           doxygen/htmldocs.cfg
+           doxygen/htmldocs.dox
+
+- Fixed inconsistency regarding parameter name.
+  Affects: dcmsign/docs/dcmsign.man
 
 **** Changes from 2009.03.24 (onken)
 
