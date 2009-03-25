@@ -14,9 +14,9 @@ dcmsign [options] dcmfile-in [dcmfile-out]
 
 \section description DESCRIPTION
 
-The \b dcmsign utility reads a DICOM file (\e dicomfile-in), performs a digital
+The \b dcmsign utility reads a DICOM file (\e dcmfile-in), performs a digital
 signature operation and, if any modification has taken place, writes the DICOM
-object to an output file (\e dicomfile-out).
+object to an output file (\e dcmfile-out).
 
 Five digital signature operations are supported:
 
@@ -299,6 +299,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
