@@ -22,8 +22,8 @@
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-26 11:15:10 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2009-03-26 11:15:40 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -781,9 +781,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.12  2009-03-26 11:15:40  joergr
+ * Fixed CVS entry.
+ *
  * Revision 1.11  2009-03-26 11:15:10  joergr
  * Added checks on JPEG data in order to avoid crash when pixel item is empty.
- * Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
  *
  * Revision 1.10  2008-08-15 09:18:13  meichel
  * Decoder now gracefully handles the case of faulty images where value of
