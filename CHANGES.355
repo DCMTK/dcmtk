@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.26 (riesmeier)
+
+- Added checks on JPEG data in order to avoid crash when pixel item is empty.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmjpeg/libsrc/djcodecd.cc
+
 **** Changes from 2009.03.25 (riesmeier)
 
 - Added new method isEmpty() to DICOM object, item and sequence class.
