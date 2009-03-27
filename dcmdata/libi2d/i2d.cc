@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 16:32:31 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-03-27 17:49:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,6 +484,16 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
   if (cond.bad())
     return cond;
 
+  if ( pixAspectH != pixAspectV )
+  {
+    char buf[200];
+    int err = sprintf(buf, "%u\\%u", pixAspectV, pixAspectH);
+    if (err == -1) return EC_IllegalCall;
+    cond = dset->putAndInsertOFStringArray(DCM_PixelAspectRatio, buf);
+    if (cond.bad())
+      return cond;
+  }
+
   return dset->putAndInsertUint16(DCM_PixelRepresentation, pixelRepr);
 }
 
@@ -687,6 +697,10 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.3  2009-03-27 17:49:20  onken
+ * Attribute "Pixel Aspect Ratio" (as found in JFIF header) is now written
+ * to DICOM dataset if not equal to 1.
+ *
  * Revision 1.2  2008-01-16 16:32:31  onken
  * Fixed some empty or doubled log messages in libi2d files.
  *

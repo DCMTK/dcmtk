@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.27 (onken)
+
+- Attribute "Pixel Aspect Ratio" (as found in JFIF header) is now written
+  to DICOM dataset if not equal to 1. Thanks to  Mathieu Malaterre
+  <mathieu.malaterre@gmail.com> for the suggestion.
+  Affects: dcmdata/libsrc/libi2d/i2d.cc
+
 **** Changes from 2009.03.26 (riesmeier)
 
 - Added checks on JPEG data in order to avoid crash when pixel item is empty.
