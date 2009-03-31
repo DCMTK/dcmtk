@@ -22,8 +22,8 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 11:29:54 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-03-31 11:31:05 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,8 +268,12 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.6  2009-03-31 11:31:05  onken
+ * Corrected commit message.
+ *
  * Revision 1.5  2009-03-31 11:29:54  onken
- * *** empty log message ***
+ * Added possibility to also insert type 2 elements with a default value
+ * when automatically inserting missing values (feature currently not in use).
  *
  * Revision 1.4  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.
