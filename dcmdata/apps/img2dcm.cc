@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-10-29 18:03:33 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-31 10:47:41 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -355,12 +355,15 @@ static OFCondition startConversion(OFCommandLine& cmd,
   if (cmd.findOption("--sec-capture"))
     outPlug = new I2DOutputPlugSC();
   if (cmd.findOption("--vl-photo"))
+  {
     outPlug = new I2DOutputPlugVLP();
+  }
   if (cmd.findOption("--new-sc"))
     outPlug = new I2DOutputPlugNewSC();
   cmd.endOptionBlock();
   if (!outPlug) // default is the old Secondary Capture object
     outPlug = new I2DOutputPlugSC();
+  if (outPlug == NULL) return EC_MemoryExhausted;
   if (vMode)
     COUT << outPlug->ident() << OFendl;
 
@@ -537,6 +540,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.10  2009-03-31 10:47:41  onken
+ * Added NULL pointer check.
+ *
  * Revision 1.9  2008-10-29 18:03:33  joergr
  * Fixed minor inconsistencies.
  *
