@@ -22,8 +22,8 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-16 09:51:55 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-03-31 11:29:54 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ public:
    * @param dataset - [in/out] Dataset to write to
    * @return EC_Normal if successful, error otherwise
    */
-  virtual OFCondition convert(DcmDataset &dataset) const = 0;
+  virtual OFCondition convert(DcmDataset &dataset) const =0;
 
   /** Do some completeness / validity checks. Should be called when
    *  dataset is completed and is about to be saved.
@@ -196,7 +196,8 @@ protected:
    *  @return Error string, which is empty if no error occurs.
    */
   virtual OFString checkAndInventType2Attrib(const DcmTagKey& key,
-                                             DcmDataset* targetDset) const
+                                             DcmDataset* targetDset,
+                                             const OFString& defaultValue ="") const
   {
     OFString err;
     OFBool exists = targetDset->tagExists(key);
@@ -204,10 +205,33 @@ protected:
     {
       if (m_inventMissingType2Attribs)
       {
-        DcmTag tag(key);
-        if (m_debug)
-          COUT << "Image2Dcm: Inserting missing type 2 attribute: " << tag.getTagName() << OFendl;
-        targetDset->insertEmptyElement(tag);
+        //holds element to insert in item
+        DcmElement *elem = NULL;
+        DcmTag tag(key); OFBool wasError = OFFalse;
+        //if dicom element could be created, insert in to item and modify to value
+        if ( newDicomElement(elem, tag).good())
+        {
+          if (targetDset->insert(elem, OFTrue).good())
+          {
+            OFCondition result;
+            if (!defaultValue.empty()) // only insert value if not empty(e. g. empty type 2 sequences)
+            {
+              result = elem->putString(defaultValue.c_str());
+            }
+            if (result.good())
+            {
+              if (m_debug)
+              {
+                COUT << "I2DOutputPlug: Inserting missing type 2 attribute: " << tag.getTagName() << " with value " << (defaultValue.empty() ? "<empty>" : defaultValue) << OFendl;
+                return err;
+              }
+            } else wasError = OFTrue;
+          } else wasError = OFTrue;
+        } else wasError = OFTrue;
+        if (wasError)
+        {
+          err += "Unable to insert type 2 attribute "; err += tag.getTagName(); err += " with value "; err += defaultValue; err += "\n";
+        }        
       }
       else
       {
@@ -244,6 +268,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.5  2009-03-31 11:29:54  onken
+ * *** empty log message ***
+ *
  * Revision 1.4  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.
  *
