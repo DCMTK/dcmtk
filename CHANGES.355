@@ -4,15 +4,15 @@ Changes between releases are documented here.
 **** Changes from 2009.03.31 (onken)
 
 - Small fix regarding lossy compression parameters.
-  dcmdata/libi2d/i2djpgs.cc
+  Affects: dcmdata/libi2d/i2djpgs.cc
 
 - Changed implementation of lossy compression attribute detection and writing.
   Affects: dcmdata/libi2d/i2d.cc
            dcmdata/libi2d/i2djpgs.cc
            dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
-           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h 
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
            dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
-            
+
 - Added NULL pointer check.
   Affects: dcmdata/apps/img2dcm.cc
 
