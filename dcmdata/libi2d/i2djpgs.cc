@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 13:05:27 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-03-31 13:27:03 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,10 +244,6 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
 OFCondition I2DJpegSource::getLossyComprInfo(OFBool& srcEncodingLossy,
                                              OFString& srcLossyComprMethod) const
 {
-  // return illegal call if we did not read pixel data yet
-  if (m_jpegFileMap.empty())
-    return EC_IllegalCall;
-  
   if (m_lossyCompressed)
   {
     srcEncodingLossy = OFTrue;
@@ -940,8 +936,8 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
- * Revision 1.6  2009-03-31 13:05:27  onken
- * Changed implementation of lossy compression attribute detection and writing.
+ * Revision 1.7  2009-03-31 13:27:03  onken
+ * Small fix regarding lossy compression parameters.
  *
  * Revision 1.4  2009-02-18 12:22:11  meichel
  * Minor changes needed for VC6
