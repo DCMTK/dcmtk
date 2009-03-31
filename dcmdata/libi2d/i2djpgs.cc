@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-02-18 12:22:11 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-03-31 11:33:16 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
                                          Uint16& pixAspectV,
                                          char*&  pixData,
                                          Uint32& length,
+                                         OFBool& srcEncodingLossy,
                                          E_TransferSyntax &ts)
 {
   if (m_debug)
@@ -237,6 +238,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   }
   length = tLength;
   pixData = tPixelData;
+  srcEncodingLossy = isSupportedTSLossy(ts);
   return cond;
 }
 
@@ -638,13 +640,13 @@ OFCondition I2DJpegSource::createJPEGFileMap()
 }
 
 
-OFBool I2DJpegSource::isRSTMarker(const E_JPGMARKER& marker) const
+OFBool I2DJpegSource::isRSTMarker(const E_JPGMARKER& marker)
 {
   return ((marker >= E_JPGMARKER_RST0) && (marker <= E_JPGMARKER_RST7));
 }
 
 
-OFBool I2DJpegSource::isSOFMarker(const E_JPGMARKER& marker) const
+OFBool I2DJpegSource::isSOFMarker(const E_JPGMARKER& marker)
 {
   return ( (marker >= E_JPGMARKER_SOF0) && (marker <= E_JPGMARKER_SOF15)
            && (marker != E_JPGMARKER_DHT) &&  (marker != E_JPGMARKER_DAC));
@@ -829,9 +831,9 @@ OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncodi
     printMessage(m_logStream, "I2DJpegSource: Checking whether JPEG encoding is supported: ", jpegMarkerToString(jpegEncoding));
   switch (jpegEncoding)
   {
-    case E_JPGMARKER_SOF0:
+    case E_JPGMARKER_SOF0: // Baseline
       return EC_Normal;
-    case E_JPGMARKER_SOF1:
+    case E_JPGMARKER_SOF1: // Extended sequential
       if (!m_disableExtSeqTs)
         return EC_Normal;
       else
@@ -852,7 +854,7 @@ OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncodi
 }
 
 
-E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding) const
+E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding)
 {
   switch (jpegEncoding)
   {
@@ -865,6 +867,19 @@ E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding) co
     default:
       return EXS_Unknown;
   }
+}
+
+
+OFBool I2DJpegSource::isSupportedTSLossy(const E_TransferSyntax& ts)
+{
+  switch (ts)
+  {
+    case EXS_JPEGProcess1TransferSyntax: // Baseline
+    case EXS_JPEGProcess2_4TransferSyntax: // Extended Sequential
+    case EXS_JPEGProcess10_12TransferSyntax: // Progressive
+      return OFTrue;
+    default: return OFFalse;
+  }     
 }
 
 
@@ -921,6 +936,11 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.5  2009-03-31 11:33:16  onken
+ * Attribute "Lossy Image Compression" is now written per default if
+ * source image already had a lossy encoding. Thanks to Mathieu Malaterre
+ * for the suggestion.
+ *
  * Revision 1.4  2009-02-18 12:22:11  meichel
  * Minor changes needed for VC6
  *

@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-16 09:51:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-03-31 11:32:06 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,8 @@ public:
    *  @param pixAspectV - [out] Vertical value of pixel aspect ratio
    *  @param pixData - [out] Pointer to the pixel data in JPEG Interchange Format (but without APPx markers).
    *  @param length - [out] Length of pixel data
+   *  @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
+   *                            data read was lossy (OFtrue) or lossless (OFFalse)
    *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data.
                         This is necessary for the JPEG importer that needs to report
                         which TS must be used for the imported JPEG data (ie. baseline, progressive, ...).
@@ -133,6 +135,7 @@ public:
                              Uint16& pixAspectV,
                              char*&  pixData,
                              Uint32& length,
+                             OFBool& srcEncodingLossy,
                              E_TransferSyntax& ts);
 
   /** Enable/Disable support for Extended Sequential JPEG Coding
@@ -241,19 +244,21 @@ protected:
    *  @param jpegEncoding - [in] Image marker that should be tested
    *  @return EC_Normal, marker is supported, error otherwise
    */
-  E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding) const;
+  static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding);
+
+  static OFBool isSupportedTSLossy(const E_TransferSyntax& ts);
 
   /** Returns true if marker is one of the RST0 to RST7 markers
    *  @param jpegEncoding - [in] Image marker that should be tested
    *  @return OFTrue, if marker is RST0 to RST7, OFFalse otherwise
    */
-  OFBool isRSTMarker(const E_JPGMARKER& jpegEncoding) const;
+  static OFBool isRSTMarker(const E_JPGMARKER& jpegEncoding);
 
   /** Returns true if marker is one of the SOF0 to SOF15 markers
    *  @param jpegEncoding - [in] Image marker that should be tested
    *  @return OFTrue, if marker is SOF0 to SOF15, OFFalse otherwise
    */
-  OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding) const;
+  static OFBool isSOFMarker(const E_JPGMARKER& jpegEncoding);
 
 
   /** Extract raw JPEG stream (i.e. without APPn markers) from JPEG file.
@@ -340,6 +345,11 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
+ * Revision 1.3  2009-03-31 11:32:06  onken
+ * Attribute "Lossy Image Compression" is now written per default if
+ * source image already had a lossy encoding. Thanks to Mathieu Malaterre
+ * for the suggestion.
+ *
  * Revision 1.2  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.
  *
