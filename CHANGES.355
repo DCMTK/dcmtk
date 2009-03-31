@@ -1,12 +1,31 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.03.31 (onken)
+
+- Added NULL pointer check.
+  Affects: dcmdata/apps/img2dcm.cc
+
+- Attribute "Lossy Image Compression" is now written per default if
+  source image already had a lossy encoding. Thanks to  Mathieu Malaterre
+  <mathieu.malaterre@gmail.com> for the suggestion.
+  Affects: dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
+
+- Added possibility to also insert type 2 elements with a default value
+  when automatically inserting missing values (feature currently not in use).
+
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+
 **** Changes from 2009.03.27 (onken)
 
 - Attribute "Pixel Aspect Ratio" (as found in JFIF header) is now written
   to DICOM dataset if not equal to 1. Thanks to  Mathieu Malaterre
   <mathieu.malaterre@gmail.com> for the suggestion.
-  Affects: dcmdata/libsrc/libi2d/i2d.cc
+  Affects: dcmdata/libi2d/i2d.cc
 
 **** Changes from 2009.03.26 (riesmeier)
 
