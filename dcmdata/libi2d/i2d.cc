@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 11:33:16 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-03-31 13:05:27 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,20 +108,27 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   generateUIDs(resultDset);
 
   // Read and insert pixel data
-  OFBool srcIsLossy = OFTrue;
-  cond = readAndInsertPixelData(inputPlug, resultDset, srcIsLossy, proposedTS);
+  cond = readAndInsertPixelData(inputPlug, resultDset, proposedTS);
   if (cond.bad())
   {
     delete resultDset; resultDset = NULL;
     return cond;
   }
 
-  // Insert Lossy Image Compression attribute if necessary
-  if (srcIsLossy)
+  // Insert Lossy Image Compression and Lossy Image Compression Method attributes if necessary
+  OFBool srcIsLossy = OFFalse; OFString comprMethod;
+  if (inputPlug->getLossyComprInfo(srcIsLossy, comprMethod).good()) //TODO)
   {
-    cond = resultDset->putAndInsertOFStringArray(DCM_LossyImageCompression, "01");
-    if (cond.bad()) return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write attribute Lossy Image Compression to result dataset");
+    if (srcIsLossy)
+    {
+      cond = resultDset->putAndInsertOFStringArray(DCM_LossyImageCompression, "01");
+      if (cond.good() && !comprMethod.empty())
+        cond = resultDset->putAndInsertOFStringArray(DCM_LossyImageCompressionMethod, comprMethod);
+      if (cond.bad()) return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write attribute Lossy Image Compression and/or Lossy Image Compression Method to result dataset");
+    }
   }
+  else if (m_debug) printMessage(m_logStream, "Image2Dcm: Warning: No information regarding lossy compression available");
+
 
   // Insert SOP Class specific attributes (and values)
   cond = outPlug->convert(*resultDset);
@@ -399,7 +406,6 @@ void Image2Dcm::setISOLatin1(OFBool insertLatin1)
 
 OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
                                               DcmDataset* dset,
-                                              OFBool& srcEncodingLossy,
                                               E_TransferSyntax& outputTS)
 {
   imgSource->setDebugMode(m_debug);
@@ -413,7 +419,8 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
 
   OFCondition cond = imgSource->readPixelData(rows, cols,
     samplesPerPixel, photoMetrInt, bitsAlloc, bitsStored, highBit, pixelRepr,
-    planConf, pixAspectH, pixAspectV, pixData, length, srcEncodingLossy, outputTS);
+    planConf, pixAspectH, pixAspectV, pixData, length, outputTS);
+
   if (cond.bad())
     return cond;
 
@@ -706,10 +713,8 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
- * Revision 1.4  2009-03-31 11:33:16  onken
- * Attribute "Lossy Image Compression" is now written per default if
- * source image already had a lossy encoding. Thanks to Mathieu Malaterre
- * for the suggestion.
+ * Revision 1.5  2009-03-31 13:05:27  onken
+ * Changed implementation of lossy compression attribute detection and writing.
  *
  * Revision 1.3  2009-03-27 17:49:20  onken
  * Attribute "Pixel Aspect Ratio" (as found in JFIF header) is now written

@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 11:33:16 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-03-31 13:05:27 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 
 I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(),
   m_disableProgrTs(OFFalse), m_disableExtSeqTs(OFFalse), m_insistOnJFIF(OFFalse),
-  m_keepAPPn(OFFalse)
+  m_keepAPPn(OFFalse), m_lossyCompressed(OFTrue)
 {
   if (m_debug)
     printMessage(m_logStream, "I2DJpegSource: Plugin instantiated");
@@ -101,7 +101,6 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
                                          Uint16& pixAspectV,
                                          char*&  pixData,
                                          Uint32& length,
-                                         OFBool& srcEncodingLossy,
                                          E_TransferSyntax &ts)
 {
   if (m_debug)
@@ -238,13 +237,31 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   }
   length = tLength;
   pixData = tPixelData;
-  srcEncodingLossy = isSupportedTSLossy(ts);
   return cond;
 }
 
-/*
- * Process a SOFn marker.
- */
+
+OFCondition I2DJpegSource::getLossyComprInfo(OFBool& srcEncodingLossy,
+                                             OFString& srcLossyComprMethod) const
+{
+  // return illegal call if we did not read pixel data yet
+  if (m_jpegFileMap.empty())
+    return EC_IllegalCall;
+  
+  if (m_lossyCompressed)
+  {
+    srcEncodingLossy = OFTrue;
+    srcLossyComprMethod = "ISO_10918_1"; // Defined term for JPEG Lossy Compression
+  }
+  else
+  {
+    // (will never get here, no lossless input supported so far)
+    srcEncodingLossy = OFFalse;
+  }
+  return EC_Normal;
+}
+
+
 OFCondition I2DJpegSource::getSOFImageParameters( const JPEGFileMapEntry& entry,
                                                   Uint16& imageWidth,
                                                   Uint16& imageHeight,
@@ -870,19 +887,6 @@ E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding)
 }
 
 
-OFBool I2DJpegSource::isSupportedTSLossy(const E_TransferSyntax& ts)
-{
-  switch (ts)
-  {
-    case EXS_JPEGProcess1TransferSyntax: // Baseline
-    case EXS_JPEGProcess2_4TransferSyntax: // Extended Sequential
-    case EXS_JPEGProcess10_12TransferSyntax: // Progressive
-      return OFTrue;
-    default: return OFFalse;
-  }     
-}
-
-
 void I2DJpegSource::debugDumpJPEGFileMap() const
 {
   printMessage(m_logStream,"I2DJpegSource: Dumping JPEG marker file map: ");
@@ -936,10 +940,8 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
- * Revision 1.5  2009-03-31 11:33:16  onken
- * Attribute "Lossy Image Compression" is now written per default if
- * source image already had a lossy encoding. Thanks to Mathieu Malaterre
- * for the suggestion.
+ * Revision 1.6  2009-03-31 13:05:27  onken
+ * Changed implementation of lossy compression attribute detection and writing.
  *
  * Revision 1.4  2009-02-18 12:22:11  meichel
  * Minor changes needed for VC6

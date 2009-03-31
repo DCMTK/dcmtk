@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 11:32:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-03-31 13:06:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,8 +114,6 @@ public:
    *  @param pixAspectV - [out] Vertical value of pixel aspect ratio
    *  @param pixData - [out] Pointer to the pixel data in JPEG Interchange Format (but without APPx markers).
    *  @param length - [out] Length of pixel data
-   *  @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
-   *                            data read was lossy (OFtrue) or lossless (OFFalse)
    *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data.
                         This is necessary for the JPEG importer that needs to report
                         which TS must be used for the imported JPEG data (ie. baseline, progressive, ...).
@@ -135,8 +133,19 @@ public:
                              Uint16& pixAspectV,
                              char*&  pixData,
                              Uint32& length,
-                             OFBool& srcEncodingLossy,
                              E_TransferSyntax& ts);
+
+  /* After reading of pixel data, this function can be used for getting
+   * information about lossy compression parameters.
+   * @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
+   *                           data read was lossy (OFtrue) or lossless (OFFalse)
+   * @param srcLossyComprMethod - [out] Denotes the lossy compression method used
+   *                              in source if there is one (srcEncodingLossy = OFTrue).
+   *                              Should use defined terms of attribute Lossy Compression Method.
+   * @return EC_Normal if information is available, error otherwise
+   */
+  OFCondition getLossyComprInfo(OFBool& srcEncodingLossy,
+                                OFString& srcLossyComprMethod) const;
 
   /** Enable/Disable support for Extended Sequential JPEG Coding
    *  @param enabled - [in] OFTrue: support Extended Sequential, OFTrue: Do not support
@@ -246,8 +255,6 @@ protected:
    */
   static E_TransferSyntax associatedTS(const E_JPGMARKER& jpegEncoding);
 
-  static OFBool isSupportedTSLossy(const E_TransferSyntax& ts);
-
   /** Returns true if marker is one of the RST0 to RST7 markers
    *  @param jpegEncoding - [in] Image marker that should be tested
    *  @return OFTrue, if marker is RST0 to RST7, OFFalse otherwise
@@ -338,6 +345,10 @@ protected:
   /// Default: false
   OFBool m_keepAPPn;
 
+  /// After reading pixel data, this denotes whether the source
+  /// data is already lossy compressed
+  OFBool m_lossyCompressed;
+
 };
 
 #endif // #ifndef I2DJPGS_H
@@ -345,10 +356,8 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
- * Revision 1.3  2009-03-31 11:32:06  onken
- * Attribute "Lossy Image Compression" is now written per default if
- * source image already had a lossy encoding. Thanks to Mathieu Malaterre
- * for the suggestion.
+ * Revision 1.4  2009-03-31 13:06:09  onken
+ * Changed implementation of lossy compression attribute detection and writing.
  *
  * Revision 1.2  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.

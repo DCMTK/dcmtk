@@ -23,8 +23,8 @@
  *           image files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 11:32:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-03-31 13:06:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,6 @@ public:
    *  @param pixAspectV - [out] Vertical value of pixel aspect ratio
    *  @param pixData - [out] Pointer to the pixel data in JPEG Interchange Format (but without APPx markers).
    *  @param length - [out] Length of pixel data
-   *  @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
-   *                            data read was lossy (OFtrue) or lossless (OFFalse)
    *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data.
                         This is necessary for the JPEG importer that needs to report
                         which TS must be used for the imported JPEG data (ie. baseline, progressive, ...).
@@ -91,8 +89,19 @@ public:
                                      Uint16& pixAspectV,
                                      char*&  pixData,
                                      Uint32& length,
-                                     OFBool& srcEncodingLossy,
                                      E_TransferSyntax& ts) =0;
+
+  /* After reading of pixel data, this function can be used for getting
+   * information about lossy compression parameters.
+   * @param srcEncodingLossy - [out] Denotes, whether the encoding of the pixel
+   *                           data read was lossy (OFtrue) or lossless (OFFalse)
+   * @param srcLossyComprMethod - [out] Denotes the lossy compression method used
+   *                              in source if there is one (srcEncodingLossy = OFTrue).
+   *                              Should use defined terms of attribute Lossy Compression Method.
+   * @return EC_Normal if information is available, error otherwise
+   */
+  virtual OFCondition getLossyComprInfo(OFBool& srcEncodingLossy,
+                                        OFString& srcLossyComprMethod) const =0;
 
   /** Sets the input image file to read.
    *  @param filename - [in] The filename of the image input file
@@ -100,11 +109,11 @@ public:
    */
   void setImageFile(const OFString& filename) { m_imageFile = filename; };
 
-  /** Returns the input image file that is going to be read
+  /** Returns the input image file that currently associated with plugin
    *  @return The filename of the image input file
    */
   OFString getImageFile() { return m_imageFile; };
-
+  
   /** Sets the log stream
    *  The log stream is used to report any warnings and error messages.
    *  @param stream - [out] pointer to the log stream (might be NULL = no messages)
@@ -161,10 +170,8 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
- * Revision 1.3  2009-03-31 11:32:06  onken
- * Attribute "Lossy Image Compression" is now written per default if
- * source image already had a lossy encoding. Thanks to Mathieu Malaterre
- * for the suggestion.
+ * Revision 1.4  2009-03-31 13:06:09  onken
+ * Changed implementation of lossy compression attribute detection and writing.
  *
  * Revision 1.2  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.

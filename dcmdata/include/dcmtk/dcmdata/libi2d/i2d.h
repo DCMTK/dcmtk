@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 11:32:06 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-03-31 13:06:09 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,14 +199,11 @@ protected:
    *  file and inserts them into dataset.
    *  @param imageSource - [in] The input plugin that actually reads the pixel data
    *  @param dset - [out] The dataset to export the pixel data attributes to
-   *  @param srcEncodingLossy - [out] Denotes whether source encoding is lossy
-   *                            e. g. as JPEG baseline encoding is
    *  @param outputTS - [out] The proposed transfex syntax of the dataset
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readAndInsertPixelData( I2DImgSource* imageSource,
                                       DcmDataset* dset,
-                                      OFBool& srcEncodingLossy,
                                       E_TransferSyntax& outputTS);
 
   /** Do some completeness / validity checks. Should be called when
@@ -306,10 +303,8 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
- * Revision 1.5  2009-03-31 11:32:06  onken
- * Attribute "Lossy Image Compression" is now written per default if
- * source image already had a lossy encoding. Thanks to Mathieu Malaterre
- * for the suggestion.
+ * Revision 1.6  2009-03-31 13:06:09  onken
+ * Changed implementation of lossy compression attribute detection and writing.
  *
  * Revision 1.4  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.
