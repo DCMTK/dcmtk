@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.01 (riesmeier)
+
+- Made all XML attributes that are not required by xml2dcm optional, i.e.
+  "card", "len" and "vm".
+  Affects: dcmdata/data/dcm2xml.dtd
+
 **** Changes from 2009.03.31 (onken)
 
 - Small fix regarding lossy compression parameters.

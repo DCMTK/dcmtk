@@ -1,5 +1,5 @@
 <!-- Document Type Definition for DCMTK tools dcm2xml and xml2dcm.
-     Copyright (C) 2002-2007 OFFIS. See COPYRIGHT file for details. -->
+     Copyright (C) 2002-2009 OFFIS. See COPYRIGHT file for details. -->
 
 <!ELEMENT file-format ( meta-header, data-set ) >
 <!ATTLIST file-format xmlns CDATA #IMPLIED >
@@ -14,26 +14,26 @@
 
 <!ELEMENT element ( #PCDATA ) >
 <!ATTLIST element binary ( yes | no | hidden | base64 | file ) "no" >
-<!ATTLIST element len NMTOKEN #REQUIRED >
+<!ATTLIST element len NMTOKEN #IMPLIED >
 <!ATTLIST element loaded ( yes | no ) "yes" >
 <!ATTLIST element name CDATA #IMPLIED >
 <!ATTLIST element tag CDATA #REQUIRED >
-<!ATTLIST element vm NMTOKEN #REQUIRED >
+<!ATTLIST element vm NMTOKEN #IMPLIED >
 <!ATTLIST element vr NMTOKEN #REQUIRED >
 
 <!ELEMENT sequence ( item* | pixel-item* ) >
-<!ATTLIST sequence card NMTOKEN #REQUIRED >
+<!ATTLIST sequence card NMTOKEN #IMPLIED >
 <!ATTLIST sequence len NMTOKEN #IMPLIED >
 <!ATTLIST sequence name CDATA #IMPLIED >
 <!ATTLIST sequence tag CDATA #REQUIRED >
 <!ATTLIST sequence vr NMTOKEN #REQUIRED >
 
 <!ELEMENT item ( element | sequence )* >
-<!ATTLIST item card NMTOKEN #REQUIRED >
+<!ATTLIST item card NMTOKEN #IMPLIED >
 <!ATTLIST item len NMTOKEN #IMPLIED >
 <!ATTLIST item offset NMTOKEN #IMPLIED >
 
 <!ELEMENT pixel-item ( CDATA ) >
 <!ATTLIST pixel-item binary ( yes | hidden | base64 | file ) "yes" >
-<!ATTLIST pixel-item len NMTOKEN #REQUIRED >
+<!ATTLIST pixel-item len NMTOKEN #IMPLIED >
 <!ATTLIST pixel-item loaded ( yes | no ) "yes" >
