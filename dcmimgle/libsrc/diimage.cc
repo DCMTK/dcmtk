@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-03 10:29:08 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2009-04-03 11:46:22 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -716,7 +716,8 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
         dataset.putAndInsertString(DCM_PixelSpacing, buffer);
     else
         delete dataset.remove(DCM_PixelSpacing);
-    if (hasPixelAspectRatio)
+    /* check for square pixels */
+    if (hasPixelAspectRatio && (PixelWidth != PixelHeight))
         dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
     else
         delete dataset.remove(DCM_PixelAspectRatio);
@@ -892,6 +893,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.40  2009-04-03 11:46:22  joergr
+ * Do not write PixelAspectRatio for square pixels (width == height).
+ *
  * Revision 1.39  2009-04-03 10:29:08  joergr
  * Avoid setting the value of PixelSpacing and PixelAspectRatio twice.
  *
