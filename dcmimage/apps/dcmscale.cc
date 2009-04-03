@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:43:22 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2009-04-03 11:45:02 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -416,10 +416,11 @@ int main(int argc, char *argv[])
     // read input file
 
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
-    {
-        CERR << "Error: invalid filename: <empty string>" << OFendl;
-        return 1;
-    }
+        app.printError("invalid input filename: <empty string>");
+
+    /* no clipping/scaling */
+    if (!opt_scaleType && !opt_useClip)
+        app.printError("nothing to do");
 
     if (opt_verbose)
         COUT << "open input file " << opt_ifname << OFendl;
@@ -664,13 +665,16 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.20  2009-04-03 11:45:02  joergr
+ * Added check whether neither scaling nor clipping is required.
+ *
  * Revision 1.19  2008-09-25 14:43:22  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.
  *
  * Revision 1.18  2008-09-25 12:47:58  joergr
  * Added support for printing the expanded command line arguments.
- * iAlways output the resource identifier of the command line tool in debug mode.
+ * Always output the resource identifier of the command line tool in debug mode.
  *
  * Revision 1.17  2008-05-20 09:58:22  joergr
  * Added new bilinear and bicubic scaling algorithms for image magnification.
