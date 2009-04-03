@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-12 12:05:28 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2009-04-03 10:29:08 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -713,16 +713,12 @@ void DiImage::updateImagePixelModuleAttributes(DcmItem &dataset)
     OFStandard::ftoa(strchr(buffer, 0), 15, PixelWidth, OFStandard::ftoa_format_f);
 
     if (hasPixelSpacing)
-    {
         dataset.putAndInsertString(DCM_PixelSpacing, buffer);
-        dataset.putAndInsertString(DCM_PixelSpacing, buffer);
-    } else
+    else
         delete dataset.remove(DCM_PixelSpacing);
     if (hasPixelAspectRatio)
-    {
         dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
-        dataset.putAndInsertString(DCM_PixelAspectRatio, buffer);
-    } else
+    else
         delete dataset.remove(DCM_PixelAspectRatio);
 }
 
@@ -896,6 +892,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.39  2009-04-03 10:29:08  joergr
+ * Avoid setting the value of PixelSpacing and PixelAspectRatio twice.
+ *
  * Revision 1.38  2009-02-12 12:05:28  joergr
  * Never update value of ImagerPixelSpacing when image is scaled, use
  * PixelSpacing instead.

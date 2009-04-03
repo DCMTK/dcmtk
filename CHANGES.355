@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.03 (riesmeier)
+
+- Avoid setting the value of PixelSpacing and PixelAspectRatio twice.
+  Affects: dcmimgle/libsrc/diimage.cc
+
 **** Changes from 2009.04.01 (riesmeier)
 
 - Made all XML attributes that are not required by xml2dcm optional, i.e.
