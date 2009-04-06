@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-06 14:53:53 $
- *  CVS/RCS Revision: $Revision: 1.105 $
+ *  Update Date:      $Date: 2009-04-06 11:37:56 $
+ *  CVS/RCS Revision: $Revision: 1.106 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -995,9 +995,11 @@ int main(int argc, char *argv[])
      */
     if (!OFStandard::dirExists(opt_outputDirectory))
       app.printError("specified output directory does not exist");
-    else if (!OFStandard::isWriteable(opt_outputDirectory))
-      app.printError("specified output directory is not writeable");
   }
+
+  /* check if the output directory is writeable */
+  if (!OFStandard::isWriteable(opt_outputDirectory))
+    app.printError("specified output directory is not writeable");
 
 #ifdef HAVE_FORK
   if (opt_forkMode)
@@ -2716,6 +2718,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.106  2009-04-06 11:37:56  joergr
+** Also check whether the output directory is writable if it's the current
+** directory (".").
+**
 ** Revision 1.105  2009-03-06 14:53:53  joergr
 ** Made error/warning messages and verbose output more consistent with movescu.
 ** Added check whether output directory is writable (not only existent).

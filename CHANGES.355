@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.06 (riesmeier)
+
+- Also check whether the output directory is writable if it's the current
+  directory (".").
+  Affects: dcmnet/apps/storescp.cc
+
 **** Changes from 2009.04.03 (riesmeier)
 
 - Avoid setting the value of PixelSpacing and PixelAspectRatio twice.
