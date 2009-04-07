@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.07 (riesmeier)
+
+- Fixed issue with unknown UID in uid2name().
+  Thanks to Evgeny Sabelskiy <evgeny.sabelskiy@gmail.com> for the report and
+  suggested fix.
+  Affects: dcmnet/libsrc/dimdump.cc
+
 **** Changes from 2009.04.06 (riesmeier)
 
 - Also check whether the output directory is writable if it's the current
