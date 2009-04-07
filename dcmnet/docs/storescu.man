@@ -14,10 +14,11 @@ storescu [options] peer port dcmfile-in...
 
 \section description DESCRIPTION
 
-The \b storescu application implements an SCU for the Storage Service Class.
-For each image file command line parameter it sends a C-STORE message to a
-Storage SCP and waits for a response.  The application can be used to transmit
-DICOM images and other DICOM composite objects.
+The \b storescu application implements a Service Class User (SCU) for the
+Storage Service Class.  For each DICOM file on the command line it sends
+a C-STORE message to a Storage Service Class Provider (SCP) and waits for a
+response.  The application can be used to transmit DICOM images and other
+DICOM composite objects.
 
 \section parameters PARAMETERS
 

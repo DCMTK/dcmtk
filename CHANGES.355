@@ -8,6 +8,10 @@ Changes between releases are documented here.
   suggested fix.
   Affects: dcmnet/libsrc/dimdump.cc
 
+- Updated description section in man page.
+  Affects: dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+
 **** Changes from 2009.04.06 (riesmeier)
 
 - Also check whether the output directory is writable if it's the current

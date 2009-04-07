@@ -16,10 +16,9 @@ storescp [options] [port]
 
 The \b storescp application implements a Service Class Provider (SCP) for the
 Storage Service Class.  It listens on a specific TCP/IP port for incoming
-association requests from a Storage SCU and can receive images according to
-the Storage Service Class.  Received images will normally be stored in files
-(within the current working directory).  The \b storescp application also
-supports the Verification Service Class as an SCP.
+association requests from a Storage Service Class User (SCU) and can receive
+both DICOM images and other DICOM composite objects.  The \b storescp
+application also supports the Verification Service Class as an SCP.
 
 \section parameters PARAMETERS
 
