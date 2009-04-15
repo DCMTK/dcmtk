@@ -4295,7 +4295,7 @@ Changes between releases are documented here.
            config/include/dcmtk/config/cfwin32.h
 
 - Added support for "configure --pdfdir=<path>".
-  Affects: config/Makefile.def
+  Affects: config/Makefile.def.in
 
 - Fixed minor layout and formatting issues.
   Affects: INSTALL
