@@ -53,6 +53,9 @@ port  tcp/ip port number to listen on
 \verbatim
   -s    --single-process
           single process mode
+
+        --fork
+          fork child process for each association (default)
 \endverbatim
 
 \subsection input_options input options
@@ -378,6 +381,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

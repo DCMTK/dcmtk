@@ -8,6 +8,11 @@ Changes between releases are documented here.
   Affects: dcmnet/apps/storescp.cc
            dcmnet/docs/storescp.man
 
+- Added new command line option --fork in order to explicitly indicate what
+  the default behavior is (multi-processing).
+  Affects: dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
+
 **** Changes from 2009.04.07 (riesmeier)
 
 - Fixed issue with unknown UID in uid2name().

@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-02 17:14:38 $
+ *  Update Date:      $Date: 2009-04-17 11:54:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,6 +119,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd->addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
     cmd->addOption("--single-process",        "-s",      "single process mode");
+    cmd->addOption("--fork",                             "fork child process for each association (def.)");
 #ifdef _WIN32
     cmd->addOption("--forked-child",                     "process is forked child, internal use only", OFCommandLine::AF_Internal);
 #endif
@@ -229,15 +230,12 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     }
 
 #if defined(HAVE_FORK) || defined(_WIN32)
-    if (cmd->findOption("--single-process"))
-    {
-      opt_singleProcess = OFTrue;
-    }
+    cmd->beginOptionBlock();
+    if (cmd->findOption("--single-process")) opt_singleProcess = OFTrue;
+    if (cmd->findOption("--fork")) opt_singleProcess = OFFalse;
+    cmd->endOptionBlock();
 #ifdef _WIN32
-    if (cmd->findOption("--forked-child"))
-    {
-      opt_forkedChild = OFTrue;
-    }
+    if (cmd->findOption("--forked-child")) opt_forkedChild = OFTrue;
 #endif
 #endif
 
@@ -437,6 +435,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.23  2009-04-17 11:54:13  joergr
+** Added new command line option --fork in order to explicitly indicate what
+** the default behavior is (multi-processing).
+**
 ** Revision 1.22  2009-03-02 17:14:38  joergr
 ** Restructured command line options (be more consistent with other tools).
 **
