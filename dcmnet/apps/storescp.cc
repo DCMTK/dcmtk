@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-06 11:37:56 $
- *  CVS/RCS Revision: $Revision: 1.106 $
+ *  Update Date:      $Date: 2009-04-17 11:51:58 $
+ *  CVS/RCS Revision: $Revision: 1.107 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,6 +277,7 @@ int main(int argc, char *argv[])
 
 #if defined(HAVE_FORK) || defined(_WIN32)
   cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
+    cmd.addOption("--single-process",                      "single process mode (default)");
     cmd.addOption("--fork",                                "fork child process for each association");
 #ifdef _WIN32
     cmd.addOption("--forked-child",                        "process is forked child, internal use only", OFCommandLine::AF_Internal);
@@ -523,16 +524,17 @@ int main(int argc, char *argv[])
 #endif
 
 #if defined(HAVE_FORK) || defined(_WIN32)
+    cmd.beginOptionBlock();
+    if (cmd.findOption("--single-process"))
+      opt_forkMode = OFFalse;
     if (cmd.findOption("--fork"))
     {
       app.checkConflict("--inetd", "--fork", opt_inetd_mode);
       opt_forkMode = OFTrue;
     }
+    cmd.endOptionBlock();
 #ifdef _WIN32
-    if (cmd.findOption("--forked-child"))
-    {
-      opt_forkedChild = OFTrue;
-    }
+    if (cmd.findOption("--forked-child")) opt_forkedChild = OFTrue;
 #endif
 #endif
 
@@ -2718,6 +2720,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.107  2009-04-17 11:51:58  joergr
+** Added new command line option --single-process in order to explicitly
+** indicate what the default behavior is (no multi-processing).
+**
 ** Revision 1.106  2009-04-06 11:37:56  joergr
 ** Also check whether the output directory is writable if it's the current
 ** directory (".").

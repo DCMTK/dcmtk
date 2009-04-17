@@ -48,6 +48,9 @@ port  tcp/ip port number to listen on.
 
 \subsection multi_process_options multi-process options
 \verbatim
+        --single-process
+          single process mode (default)
+
         --fork
           fork child process for each association
 \endverbatim
