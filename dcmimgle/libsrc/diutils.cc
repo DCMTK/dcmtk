@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-20 12:20:34 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,29 @@ unsigned int DicomImageClass::rangeToBits(double minvalue,
             return tobits(OFstatic_cast(unsigned long, fabs(maxvalue)), 0) + 1;
     }
     return tobits(OFstatic_cast(unsigned long, maxvalue), 0);
+}
+
+
+unsigned int DicomImageClass::getRepresentationBits(EP_Representation repres)
+{
+    unsigned int bits = 0;
+    /* determine number of bits for specified representation */
+    switch (repres)
+    {
+        case EPR_Uint8:
+        case EPR_Sint8:
+            bits = 8;
+            break;
+        case EPR_Uint16:
+        case EPR_Sint16:
+            bits = 16;
+            break;
+        case EPR_Uint32:
+        case EPR_Sint32:
+            bits = 32;
+            break;
+    }
+    return bits;
 }
 
 
@@ -146,7 +169,10 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
- * Revision 1.15  2006-08-15 16:30:11  meichel
+ * Revision 1.16  2009-04-20 12:20:34  joergr
+ * Added new helper function getRepresentationBits().
+ *
+ * Revision 1.15  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

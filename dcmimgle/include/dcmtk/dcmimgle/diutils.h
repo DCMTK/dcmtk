@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:56:06 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-04-20 12:19:40 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -376,6 +376,14 @@ class DicomImageClass
     static unsigned int rangeToBits(double minvalue,
                                     double maxvalue);
 
+    /** determine number of bits used for a particular integer representation
+     *
+     ** @param  repres  integer representation (enum) to be checked
+     *
+     ** @return number of bits
+     */
+    static unsigned int getRepresentationBits(EP_Representation repres);
+
     /** determine integer representation which is necessary to store values in the specified range
      *
      ** @param  minvalue  minimum value to be stored
@@ -442,7 +450,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.32  2007-03-16 11:56:06  joergr
+ * Revision 1.33  2009-04-20 12:19:40  joergr
+ * Added new helper function getRepresentationBits().
+ *
+ * Revision 1.32  2007/03/16 11:56:06  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
  *
