@@ -21,9 +21,9 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:06:27 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-20 16:00:08 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ public:
     void setElement(Uint16 e);
 
     /** returns group number
-     *  @return Returns the group number of the tag key
+     *  @return returns the group number of the tag key
      */
     Uint16 getGroup() const;
 
@@ -97,22 +97,28 @@ public:
      */
     Uint16 getElement() const;
 
-    /** returns if the tag key is private, ie. whether it has an odd group
+    /** checks whether the tag key is a valid group length element.
+     *  Also calls hasValidGroup().
+     *  @return returns OFTrue if tag key is a valid group length element
+     */
+    OFBool isGroupLength() const;
+
+    /** returns true if the tag key is private, ie. whether it has an odd group
      *  number. Also hasValidGroup() is called.
-     *  @return Returns OFTrue, if group is private and valid.
+     *  @return returns OFTrue if group is private and valid.
      */
     OFBool isPrivate() const;
 
     /** returns true, if tag is a private reservation tag
      *  of the form (gggg,00xx) with gggg being odd and
      *  xx in the range of 10 and FF.
-     *  @return Returns OFTrue, if tag key is a private reservation key
+     *  @return returns OFTrue if tag key is a private reservation key
      */
     OFBool isPrivateReservation() const;
 
-    /** Returns true, if group is valid (permitted in DICOM files).
-     *  Referring to the standard, groups  1,3,5,7 and FF are illegal.
-     *  @return Returns OFTrue, if tag key has a valid group number.
+    /** returns true, if group is valid (permitted in DICOM files).
+     *  Referring to the standard, groups 1, 3, 5, 7 and 0xFFFF are illegal.
+     *  @return returns OFTrue if tag key has a valid group number.
      */
     OFBool hasValidGroup() const;
 
@@ -136,13 +142,12 @@ public:
      */
     int operator == (const DcmTagKey& key) const;
 
-
     /** negation operator. Returns true if either group or element number
      *  are not the same.
      *  @param key key to compare with
      *  @return true if tag keys are not the same
      */
-     int operator != (const DcmTagKey& key) const;
+    int operator != (const DcmTagKey& key) const;
 
     /** 'less than' operator. Returns true if the given tag key is greater
      *  than "this".
@@ -287,23 +292,29 @@ DcmTagKey::getElement() const
 }
 
 inline OFBool
+DcmTagKey::isGroupLength() const
+{
+    return (element == 0) && hasValidGroup();
+}
+
+inline OFBool
 DcmTagKey::isPrivate() const
 {
-    return ( ((group & 1) != 0 ) && hasValidGroup());
+    return ((group & 1) != 0 ) && hasValidGroup();
 }
 
 inline OFBool
 DcmTagKey::isPrivateReservation() const
 {
   // private reservation has element number ranging from 0x0010 to 0x00FF
-  return ( isPrivate() && (element >= 0x10) && (element <= 0xFF) );
+  return isPrivate() && (element >= 0x10) && (element <= 0xFF);
 }
 
 inline OFBool
 DcmTagKey::hasValidGroup() const
 {
-    // group numbers 1,3,5,7 and FF are illegal in DICOM
-    if ( ((group & 1) != 0 ) && ((group <= 7) || (group == 0xFFFF)) )
+    // group numbers 1, 3, 5, 7 and 0xFFFF are illegal in DICOM
+    if (((group & 1) != 0) && ((group <= 7) || (group == 0xFFFF)))
         return OFFalse;
     else
         return OFTrue;
@@ -405,6 +416,9 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
+** Revision 1.20  2009-04-20 16:00:08  joergr
+** Added method that checks whether the tag key is a valid group length element.
+**
 ** Revision 1.19  2009-01-15 16:06:27  onken
 ** Added convenience methods for private tag handling. Added doxygen
 ** documentation for not or badly documented member functions.

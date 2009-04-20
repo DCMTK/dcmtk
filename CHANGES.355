@@ -11,6 +11,14 @@ Changes between releases are documented here.
   Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
            dcmimgle/libsrc/diutils.cc
 
+- Added method that checks whether the tag key is a valid group length element.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
+  
+- Fixed typo.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/tests/tstpath.cc
+
 **** Changes from 2009.04.17 (riesmeier)
 
 - Added new command line option --single-process in order to explicitly
