@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.20 (riesmeier)
+
+- Fixed issue with wrong BitsStored value in writeImageToDataset(). Thanks to
+  Marc Schlimbach <Marc.Schlimbach@uni-siegen.de> for the original report.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Added new helper function getRepresentationBits().
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/diutils.cc
+
 **** Changes from 2009.04.17 (riesmeier)
 
 - Added new command line option --single-process in order to explicitly
