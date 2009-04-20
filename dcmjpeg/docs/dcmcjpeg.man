@@ -296,8 +296,10 @@ non-standard YCbCr component subsampling options (not with +tl):
   # interpretation is encoded as YBR_FULL_422 which violates DICOM rules.
 \endverbatim
 
-\subsection enc_pix_data_fragm_opt encapsulated pixel data fragmentation options
+\subsection enc_pix_data_encoding_opt encapsulated pixel data encoding options:
 \verbatim
+encapsulated pixel data fragmentation options:
+
   +ff   --fragment-per-frame
           encode each frame as one fragment (default)
 

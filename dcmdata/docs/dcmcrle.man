@@ -77,7 +77,7 @@ input transfer syntax:
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection encoding_options encapsulated pixel data encoding options
+\subsection enc_pix_data_encoding_opt encapsulated pixel data encoding options
 \verbatim
 pixel data fragmentation options:
 

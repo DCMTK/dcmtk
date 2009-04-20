@@ -13,7 +13,11 @@ Changes between releases are documented here.
 
 - Added method that checks whether the tag key is a valid group length element.
   Affects: dcmdata/include/dcmtk/dcmdata/dctagkey.h
-  
+
+- Fixed wrong section title.
+  Affects: dcmjpeg/docs/dcmcjpeg.man
+           dcmdata/docs/dcmcrle.man
+
 - Fixed typo.
   Affects: dcmdata/libi2d/i2djpgs.cc
            dcmdata/libsrc/dcitem.cc
