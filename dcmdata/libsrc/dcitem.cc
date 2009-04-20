@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-25 10:21:21 $
- *  CVS/RCS Revision: $Revision: 1.134 $
+ *  Update Date:      $Date: 2009-04-20 16:02:09 $
+ *  CVS/RCS Revision: $Revision: 1.135 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -601,7 +601,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         /* very first element has already been treated */
                         beginning = OFFalse;
 
-                        /* if the current element is a group length element) and it's data type */
+                        /* if the current element is a group length element and its data type */
                         /* is not UL replace this element with one that has a UL datatype since */
                         /* group length elements are supposed to have this data type */
                         if (dO->getETag() == 0x0000 && dO->ident() != EVR_UL)
@@ -3649,6 +3649,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.135  2009-04-20 16:02:09  joergr
+** Fixed typo.
+**
 ** Revision 1.134  2009-03-25 10:21:21  joergr
 ** Added new method isEmpty() to DICOM object, item and sequence class.
 **

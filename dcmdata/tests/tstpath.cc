@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2008, OFFIS
+ *  Copyright (C) 2008-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Test program for testing path features of DcmItem
  *           and DcmSequenceOfItem
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-12-12 11:44:41 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-20 16:03:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,7 @@ static void testPathInsertionsWithWildcard(const OFString& path,
   if ( (numResults != expectedNumResults) && !expectFailed )
   {
 
-    CERR << " ...FAILED!: Expected " << expectedNumResults <<  " but " << numResults << " results were returned" << OFendl;
+    CERR << " ...FAILED!: Expected " << expectedNumResults << " but " << numResults << " results were returned" << OFendl;
     return;
   }
   // check results
@@ -337,6 +337,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.7  2009-04-20 16:03:12  joergr
+ * Fixed typo.
+ *
  * Revision 1.6  2008-12-12 11:44:41  onken
  * Moved path access functions to separate classes
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 13:27:03 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-20 16:02:35 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -894,7 +894,7 @@ void I2DJpegSource::debugDumpJPEGFileMap() const
     if (m_logStream)
     {
       m_logStream->lockCerr() 
-		  <<  "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) 
+		  << "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) 
 		  << STD_NAMESPACE setfill('0') 
 		  /* need to cast bytePos to unsigned long to keep VC6 happy */
 		  << OFstatic_cast(unsigned long, (*it)->bytePos)
@@ -936,6 +936,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.8  2009-04-20 16:02:35  joergr
+ * Fixed typo.
+ *
  * Revision 1.7  2009-03-31 13:27:03  onken
  * Small fix regarding lossy compression parameters.
  *
