@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-18 10:57:09 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Update Date:      $Date: 2009-04-20 12:22:42 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1975,6 +1975,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
     {
         const void *pixel = InterData->getData();
         const unsigned long count = InterData->getCount();
+        const EP_Representation repres = InterData->getRepresentation();
         if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
         {
             char numBuf[20];
@@ -1989,6 +1990,10 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
                 else
                     bits = 1;
             }
+            /* check determined bits stored value */
+            const unsigned int repBits = DicomImageClass::getRepresentationBits(repres);
+            if (bits > repBits)
+                bits = repBits;
             /* set color model */
             if (getInternalColorModel() == EPI_Monochrome1)
                 dataset.putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME1");
@@ -2005,7 +2010,7 @@ int DiMonoImage::writeImageToDataset(DcmItem &dataset,
             dataset.putAndInsertString(DCM_NumberOfFrames, numBuf);
             dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
             /* set pixel encoding and data */
-            switch (InterData->getRepresentation())
+            switch (repres)
             {
                 case EPR_Uint8:
                     dataset.putAndInsertUint16(DCM_BitsAllocated, 8);
@@ -2148,6 +2153,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.75  2009-04-20 12:22:42  joergr
+ * Fixed issue with wrong BitsStored value in writeImageToDataset().
+ *
  * Revision 1.74  2008-11-18 10:57:09  joergr
  * Fixed issue with incorrectly encoded overlay planes (wrong values for
  * OverlayBitsAllocated and OverlayBitPosition).
