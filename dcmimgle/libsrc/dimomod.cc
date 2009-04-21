@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-20 12:07:26 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2009-04-21 08:27:30 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     MinValue(0),
     MaxValue(0),
     Bits(0),
+    UsedBits(0),
     AbsMinimum(0),
     AbsMaximum(0),
     RescaleIntercept(0),
@@ -94,7 +95,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                 ofConsole.unlockCerr();
             }
         }
-        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+        determineRepresentation(docu);
     }
 }
 
@@ -107,6 +108,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     MinValue(0),
     MaxValue(0),
     Bits(0),
+    UsedBits(0),
     AbsMinimum(0),
     AbsMaximum(0),
     RescaleIntercept(intercept),
@@ -119,7 +121,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     {
         Rescaling = 1;
         checkRescaling(pixel);
-        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+        determineRepresentation(docu);
     }
 }
 
@@ -133,6 +135,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
     MinValue(0),
     MaxValue(0),
     Bits(0),
+    UsedBits(0),
     AbsMinimum(0),
     AbsMaximum(0),
     RescaleIntercept(0),
@@ -150,7 +153,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
             descMode = ELM_CheckValue;
         TableData = new DiLookupTable(data, descriptor, explanation, descMode);
         checkTable();
-        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+        determineRepresentation(docu);
     }
 }
 
@@ -160,6 +163,7 @@ DiMonoModality::DiMonoModality(const int bits)
     MinValue(0),
     MaxValue(0),
     Bits(bits),
+    UsedBits(0),
     AbsMinimum(0),
     AbsMaximum(DicomImageClass::maxval(bits)),
     RescaleIntercept(0),
@@ -231,7 +235,8 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
 {
     if (Rescaling)
     {
-        if (LookupTable) {
+        if (LookupTable)
+        {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
                 ofConsole.lockCerr() << "WARNING: redundant values for 'RescaleSlope/Intercept'"
@@ -249,9 +254,7 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
                     ofConsole.unlockCerr();
                 }
                 Rescaling = 0;
-            }
-            else
-            {
+            } else {
                 if (RescaleSlope < 0)                                       // negative slope value
                 {
                     const double temp = MinValue;
@@ -272,10 +275,26 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
 }
 
 
+void DiMonoModality::determineRepresentation(const DiDocument *docu)
+{
+    UsedBits = DicomImageClass::rangeToBits(MinValue, MaxValue);
+    if ((docu != NULL) && (docu->getFlags() & CIF_UseAbsolutePixelRange))
+        Representation = DicomImageClass::determineRepresentation(AbsMinimum, AbsMaximum);
+    else
+        Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
+ * Revision 1.25  2009-04-21 08:27:30  joergr
+ * Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way
+ * the internal representation of monochrome images is determined.
+ * Added method getUsedBits() which allows for retrieving the number of bits
+ * actually used to store the output data.
+ *
  * Revision 1.24  2008-06-20 12:07:26  joergr
  * Added check for retired SOP Class 'X-Ray Angiographic Bi-Plane Image Storage'
  * since the Modality LUT should not be applied to the pixel data in this case.

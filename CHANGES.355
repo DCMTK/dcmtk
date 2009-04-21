@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.21 (riesmeier)
+
+- Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way
+  the internal representation of monochrome images is determined.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/dimomod.cc
+
+- Added method getUsedBits() which allows for retrieving the number of bits
+  actually used to store the output data.
+  Affects: dcmimgle/include/dcmtk/dcmimgle/dimomod.h
+           dcmimgle/libsrc/dimomod.cc
+
 **** Changes from 2009.04.20 (riesmeier)
 
 - Fixed issue with wrong BitsStored value in writeImageToDataset(). Thanks to
