@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2009-04-21 08:31:29 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -335,7 +335,7 @@ void DSRDocumentTreeNode::writeXMLItemEnd(STD_NAMESPACE ostream &stream,
     if (flags & XF_valueTypeAsAttribute)
         stream << "</item>" << OFendl;
     else
-        stream << "</" << valueTypeToXMLTagName(ValueType) <<  ">" << OFendl;
+        stream << "</" << valueTypeToXMLTagName(ValueType) << ">" << OFendl;
     /* close optional template identification */
     if ((flags & XF_writeTemplateIdentification) && (flags & XF_templateElementEnclosesItems))
     {
@@ -1158,6 +1158,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.48  2009-04-21 08:31:29  joergr
+ *  Fixed typo.
+ *
  *  Revision 1.47  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *

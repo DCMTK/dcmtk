@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2007, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2009-04-21 08:32:38 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1171,7 +1171,7 @@ class DSRDocument
     /// Pertinent Other Evidence Sequence: (SQ, 1, 1C)
     DSRSOPInstanceReferenceList PertinentOtherEvidence;
 
- // --- declaration copy constructor and assignment operator
+ // --- declaration of copy constructor and assignment operator ---
 
     DSRDocument(const DSRDocument &);
     DSRDocument &operator=(const DSRDocument &);
@@ -1184,7 +1184,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.44  2007-11-15 16:33:30  joergr
+ *  Revision 1.45  2009-04-21 08:32:38  joergr
+ *  Fixed typo.
+ *
+ *  Revision 1.44  2007/11/15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *
  *  Revision 1.43  2006/12/06 11:50:42  joergr
