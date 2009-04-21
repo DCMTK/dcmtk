@@ -1,4 +1,4 @@
-.TH "dcmdjpeg" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdjpeg" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdjpeg \- Decode JPEG-compressed DICOM file
@@ -12,7 +12,7 @@ dcmdjpeg [options] dcmfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmdjpeg\fP utility reads a JPEG-compressed DICOM image (\fIdicomfile-in\fP), decompresses the JPEG data (i. e. conversion to a native DICOM transfer syntax) and writes the converted image to an output file (\fIdicomfile-out\fP).
+The \fBdcmdjpeg\fP utility reads a JPEG-compressed DICOM image (\fIdcmfile-in\fP), decompresses the JPEG data (i. e. conversion to a native DICOM transfer syntax) and writes the converted image to an output file (\fIdcmfile-out\fP).
 .SH "PARAMETERS"
 .PP
 .PP
@@ -132,13 +132,13 @@ SOP Instance UID options:
 
   # Always assigns a new SOP instance UID
 
-  +w6   --workaround-pred6     
+  +w6   --workaround-pred6
           enable workaround for JPEG lossless images
           with overflow in predictor 6.
 
-  # DICOM images with 16 bits/pixel have been observed "in the wild" that are 
+  # DICOM images with 16 bits/pixel have been observed "in the wild" that are
   # compressed with lossless JPEG and need special handling because the encoder
-  # produced an 16-bit integer overflow in predictor 6, which needs to be 
+  # produced an 16-bit integer overflow in predictor 6, which needs to be
   # compensated (reproduced) during decompression. This flag enables a correct
   # decompression of such faulty images, but at the same time will cause an
   # incorrect decompression of correctly compressed images. Use with care.
@@ -208,6 +208,38 @@ data set trailing padding (not with --write-dataset):
           and items on multiple of i bytes
 .fi
 .PP
+.SH "TRANSFER SYNTAXES"
+.PP
+\fBdcmdjpeg\fP supports the following transfer syntaxes for input (\fIdcmfile-in\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+.fi
+.PP
+.PP
+(*) if compiled with zlib support enabled
+.PP
+\fBdcmdjpeg\fP supports the following transfer syntaxes for output (\fIdcmfile-out\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+.fi
+.PP
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -225,4 +257,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmcjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

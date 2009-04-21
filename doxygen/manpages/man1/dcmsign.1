@@ -1,4 +1,4 @@
-.TH "dcmsign" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
@@ -12,7 +12,7 @@ dcmsign [options] dcmfile-in [dcmfile-out]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmsign\fP utility reads a DICOM file (\fIdicomfile-in\fP), performs a digital signature operation and, if any modification has taken place, writes the DICOM object to an output file (\fIdicomfile-out\fP).
+The \fBdcmsign\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs a digital signature operation and, if any modification has taken place, writes the DICOM object to an output file (\fIdcmfile-out\fP).
 .PP
 Five digital signature operations are supported:
 .PP
@@ -272,4 +272,4 @@ The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2000-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

@@ -1,4 +1,4 @@
-.TH "dcmcjpeg" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmcjpeg" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmcjpeg \- Encode DICOM file to JPEG transfer syntax
@@ -12,7 +12,7 @@ dcmcjpeg [options] dcmfile-in dcmfile-out
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmcjpeg\fP utility reads an uncompressed DICOM image (\fIdicomfile-in\fP), performs a JPEG compression (i. e. conversion to an encapsulated DICOM transfer syntax) and writes the converted image to an output file (\fIdicomfile-out\fP).
+The \fBdcmcjpeg\fP utility reads an uncompressed DICOM image (\fIdcmfile-in\fP), performs a JPEG compression (i. e. conversion to an encapsulated DICOM transfer syntax) and writes the converted image to an output file (\fIdcmfile-out\fP).
 .SH "PARAMETERS"
 .PP
 .PP
@@ -299,9 +299,11 @@ non-standard YCbCr component subsampling options (not with +tl):
   # interpretation is encoded as YBR_FULL_422 which violates DICOM rules.
 .fi
 .PP
-.SS "encapsulated pixel data fragmentation options"
+.SS "encapsulated pixel data encoding options"
 .PP
 .nf
+
+encapsulated pixel data fragmentation options:
 
   +ff   --fragment-per-frame
           encode each frame as one fragment (default)
@@ -537,6 +539,41 @@ The encoder changes automatically Planar Configuration from 1 to 0 if necessary
 The compression ratio can be lower than in --pseudo-lossless mode
 .PP
 However, when using the new encoder (default), you can be sure, that compression does not affect image quality.
+.SH "TRANSFER SYNTAXES"
+.PP
+\fBdcmcjpeg\fP supports the following transfer syntaxes for input (\fIdcmfile-in\fP):
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax             1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax             1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax   1.2.840.10008.1.2.1.99 (*)
+BigEndianExplicitTransferSyntax                1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+.fi
+.PP
+.PP
+(*) if compiled with zlib support enabled
+.PP
+\fBdcmcjpeg\fP supports the following transfer syntaxes for output (\fIdcmfile-out\fP):
+.PP
+.PP
+.nf
+
+JPEGProcess1TransferSyntax                     1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                   1.2.840.10008.1.2.4.51
+JPEGProcess6_8TransferSyntax                   1.2.840.10008.1.2.4.53
+JPEGProcess10_12TransferSyntax                 1.2.840.10008.1.2.4.55
+JPEGProcess14TransferSyntax                    1.2.840.10008.1.2.4.57
+JPEGProcess14SV1TransferSyntax                 1.2.840.10008.1.2.4.70
+.fi
+.PP
 .SH "COMMAND LINE"
 .PP
 All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
@@ -554,4 +591,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmdjpeg\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

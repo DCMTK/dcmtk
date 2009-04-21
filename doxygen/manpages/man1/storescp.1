@@ -1,4 +1,4 @@
-.TH "storescp" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -12,7 +12,7 @@ storescp [options] [port]
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBstorescp\fP application implements a Service Class Provider (SCP) for the Storage Service Class. It listens on a specific TCP/IP port for incoming association requests from a Storage SCU and can receive images according to the Storage Service Class. Received images will normally be stored in files (within the current working directory). The \fBstorescp\fP application also supports the Verification Service Class as an SCP.
+The \fBstorescp\fP application implements a Service Class Provider (SCP) for the Storage Service Class. It listens on a specific TCP/IP port for incoming association requests from a Storage Service Class User (SCU) and can receive both DICOM images and other DICOM composite objects. The \fBstorescp\fP application also supports the Verification Service Class as an SCP.
 .SH "PARAMETERS"
 .PP
 .PP
@@ -47,6 +47,9 @@ port  tcp/ip port number to listen on.
 .SS "multi-process options"
 .PP
 .nf
+
+        --single-process
+          single process mode (default)
 
         --fork
           fork child process for each association

@@ -1,4 +1,4 @@
-.TH "storescu" 1 "18 Mar 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
@@ -12,7 +12,7 @@ storescu [options] peer port dcmfile-in...
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBstorescu\fP application implements an SCU for the Storage Service Class. For each image file command line parameter it sends a C-STORE message to a Storage SCP and waits for a response. The application can be used to transmit DICOM images and other DICOM composite objects.
+The \fBstorescu\fP application implements a Service Class User (SCU) for the Storage Service Class. For each DICOM file on the command line it sends a C-STORE message to a Storage Service Class Provider (SCP) and waits for a response. The application can be used to transmit DICOM images and other DICOM composite objects.
 .SH "PARAMETERS"
 .PP
 .PP
