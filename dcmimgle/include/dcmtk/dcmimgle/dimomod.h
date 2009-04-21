@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeModality (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:47:52 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-21 08:21:06 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,11 +136,21 @@ class DiMonoModality
 
     /** get number of bits describing the width of output data
      *
-     ** @return number of bits
+     ** @return number of bits (might be 0)
      */
     inline unsigned int getBits() const
     {
         return Bits;
+    }
+
+    /** get number of bits actually used to store the output data.
+     *  (based on the range given by 'MinValue' and 'MaxValue')
+     *
+     ** @return number of used bits (might be 0)
+     */
+    inline unsigned int getUsedBits() const
+    {
+        return UsedBits;
     }
 
     /** get absolute (possible) minimum pixel value after modality transform
@@ -236,6 +246,12 @@ class DiMonoModality
      */
     void checkRescaling(const DiInputPixel *pixel);
 
+    /** determine integer representation used for the output data
+     *
+     ** @param  docu  pointer to dataset (encapsulated)
+     */
+    void determineRepresentation(const DiDocument *docu);
+
 
  private:
 
@@ -249,6 +265,9 @@ class DiMonoModality
 
     /// number of bits
     unsigned int Bits;
+    /// number of used bits
+    unsigned int UsedBits;
+
     /// absolute minimum pixel value
     double AbsMinimum;
     /// absolute maximum pixel value
@@ -281,7 +300,11 @@ class DiMonoModality
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.14  2005-12-08 16:47:52  meichel
+ * Revision 1.15  2009-04-21 08:21:06  joergr
+ * Added method getUsedBits() which allows for retrieving the number of bits
+ * actually used to store the output data.
+ *
+ * Revision 1.14  2005/12/08 16:47:52  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.13  2003/12/08 18:28:56  joergr
