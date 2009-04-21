@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 12:19:40 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2009-04-21 08:19:51 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 #define INCLUDE_LIBC
 #include "dcmtk/ofstd/ofstdinc.h"
 
+
 /*---------------------*
  *  const definitions  *
  *---------------------*/
@@ -59,7 +60,7 @@ const unsigned long CIF_AcrNemaCompatibility         = 0x0000001;
 /// accept wrong palette attribute tags
 const unsigned long CIF_WrongPaletteAttributeTags    = 0x0000002;
 
-/// element pixel data may be detached if it is no longer needed by dcmimage
+/// element pixel data may be detached if it is no longer needed by DicomImage
 const unsigned long CIF_MayDetachPixelData           = 0x0000004;
 
 /// use presentation state instead of 'built-in' LUTs & overlays
@@ -79,6 +80,9 @@ const unsigned long CIF_IgnoreModalityLutBitDepth    = 0x0000080;
 
 /// check third value of the LUT descriptor, compare with with expected bit depth based on LUT data
 const unsigned long CIF_CheckLutBitDepth             = 0x0000100;
+
+/// use absolute (possible) pixel range for determining the internal representation (monochrome only)
+const unsigned long CIF_UseAbsolutePixelRange        = 0x0000200;
 //@}
 
 
@@ -450,6 +454,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.34  2009-04-21 08:19:51  joergr
+ * Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way
+ * the internal representation of monochrome images is determined.
+ *
  * Revision 1.33  2009-04-20 12:19:40  joergr
  * Added new helper function getRepresentationBits().
  *
