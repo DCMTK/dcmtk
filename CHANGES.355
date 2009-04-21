@@ -13,6 +13,13 @@ Changes between releases are documented here.
   Affects: dcmimgle/include/dcmtk/dcmimgle/dimomod.h
            dcmimgle/libsrc/dimomod.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
+- Fixed typo.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
+           dcmsr/libsrc/dsrdoctn.cc
+
 **** Changes from 2009.04.20 (riesmeier)
 
 - Fixed issue with wrong BitsStored value in writeImageToDataset(). Thanks to
