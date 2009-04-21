@@ -77,7 +77,7 @@ input transfer syntax:
   -ti   --read-xfer-implicit
           read with implicit VR little endian TS
 
-compatibility options (ignored by +tl):
+compatibility (ignored by +tl):
 
   +Ma   --accept-acr-nema
           accept ACR-NEMA images without photometric interpretation
@@ -96,7 +96,7 @@ compatibility options (ignored by +tl):
 .PP
 .nf
 
-JPEG process options:
+JPEG process:
 
   +e1   --encode-lossless-sv1
           encode lossless sv1 (default)
@@ -150,7 +150,7 @@ lossless JPEG codec selection:
   # cause lossy images because of internal color space transformations
   # etc. Higher compression ratio than --true-lossless in most cases.
 
-lossless JPEG representation options:
+lossless JPEG representation:
 
   +sv   --selection-value  [sv]: integer (1..7, default: 6)
           use selection value sv only with --encode-lossless
@@ -164,7 +164,7 @@ lossless JPEG representation options:
   # WARNING: Using this option with a value other than zero causes
   # a loss of precision, i. e. makes the compression "lossy".
 
-lossy JPEG representation options:
+lossy JPEG representation:
 
   +q    --quality  [q]: integer (0..100, default: 90)
           use quality factor q
@@ -196,7 +196,7 @@ other JPEG options:
   # This option disables an optimization of the huffman tables during
   # image compression.
 
-compressed bits per sample options (always +ba with +tl):
+compressed bits per sample (always +ba with +tl):
 
   +ba   --bits-auto
           choose bits/sample automatically (default)
@@ -210,7 +210,7 @@ compressed bits per sample options (always +ba with +tl):
   +bs   --bits-force-16
           force 16 bits/sample (lossless only)
 
-compression color space conversion options (overriden by +tl):
+compression color space conversion (overriden by +tl):
 
   +cy   --color-ybr
           use YCbCr for color images if lossy (default)
@@ -259,7 +259,7 @@ decompr. color space conversion (if input is compressed; always +cn with +tl):
 
   # Never convert color space during decompression.
 
-standard YCbCr component subsampling options (not with +tl):
+standard YCbCr component subsampling (not with +tl):
 
   +s4   --sample-444
           4:4:4 sampling with YBR_FULL (default)
@@ -275,7 +275,7 @@ standard YCbCr component subsampling options (not with +tl):
   # compression in the YCbCr color space. The DICOM photometric
   # interpretation is encoded as YBR_FULL.
 
-non-standard YCbCr component subsampling options (not with +tl):
+non-standard YCbCr component subsampling (not with +tl):
 
   +n2   --nonstd-422-full
           4:2:2 subsampling with YBR_FULL
@@ -303,7 +303,7 @@ non-standard YCbCr component subsampling options (not with +tl):
 .PP
 .nf
 
-encapsulated pixel data fragmentation options:
+encapsulated pixel data fragmentation:
 
   +ff   --fragment-per-frame
           encode each frame as one fragment (default)
@@ -317,7 +317,7 @@ encapsulated pixel data fragmentation options:
   # This option limits the fragment size which may cause the creation of
   # multiple fragments per frame.
 
-basic offset table encoding options:
+basic offset table encoding:
 
   +ot   --offset-table-create
           create offset table (default)
@@ -331,7 +331,7 @@ basic offset table encoding options:
   # This option causes the creation of an empty offset table
   # for the compressed JPEG fragments.
 
-VOI windowing options for monochrome images (not with +tl):
+VOI windowing for monochrome images (not with +tl):
 
   -W    --no-windowing
           no VOI windowing (default)
@@ -340,13 +340,13 @@ VOI windowing options for monochrome images (not with +tl):
   # compression.  See notes below on pixel scaling and rescale slope
   # and intercept encoding.
 
-  +Wi   --use-window  [n]umber : integer
+  +Wi   --use-window  [n]umber: integer
           use the n-th VOI window from image file
 
   # Apply the n-th window center/width encoded in the image data prior
   # to compression.
 
-  +Wl   --use-voi-lut  [n]umber : integer
+  +Wl   --use-voi-lut  [n]umber: integer
           use the n-th VOI look up table from image file
 
   # Apply the n-th VOI LUT encoded in the image data prior
@@ -369,7 +369,7 @@ VOI windowing options for monochrome images (not with +tl):
   # into the image data which should not be considered for the window
   # computation.
 
-  +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight : integer
+  +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight: integer
           compute ROI window using min-max algorithm,
           region of interest is specified by l,t,w,h
 
@@ -384,7 +384,7 @@ VOI windowing options for monochrome images (not with +tl):
   # and width such than n% of the image data are ignored for the window
   # computation
 
-  +Ww   --set-window  [c]enter [w]idth : float
+  +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 
   # Apply the given window center/width prior to compression.
@@ -432,7 +432,7 @@ rescale slope/intercept encoding for monochrome (-W; ignored by +tl):
   # requires that the DICOM IOD supports a modality rescale slope
   # and intercept transformation other than identity.
 
-SOP Class UID options:
+SOP Class UID:
 
   +cd   --class-default
           keep SOP Class UID (default)
@@ -447,7 +447,8 @@ SOP Class UID options:
   # UID, all attributes required for a valid secondary capture image are
   # added. A new SOP instance UID is always assigned.
 
-SOP Instance UID options:
+SOP Instance UID:
+
   +ud   --uid-default
           assign new UID if lossy compression (default)
 

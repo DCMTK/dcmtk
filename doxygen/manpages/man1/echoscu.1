@@ -76,7 +76,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
         --repeat  [n]umber: integer
@@ -90,7 +90,7 @@ other network options:
 .PP
 .nf
 
-transport protocol stack options:
+transport protocol stack:
 
   -tls  --disable-tls
           use normal TCP/IP connection (default)
@@ -101,7 +101,7 @@ transport protocol stack options:
   +tla  --anonymous-tls
           use secure TLS connection without certificate
 
-private key password options (only with --enable-tls):
+private key password (only with --enable-tls):
 
   +ps   --std-passwd
           prompt user to type password on stdin (default)
@@ -112,7 +112,7 @@ private key password options (only with --enable-tls):
   -pw   --null-passwd
           use empty string as password
 
-key and certificate file format options:
+key and certificate file format:
 
   -pem  --pem-keys
           read keys and certificates as PEM file (default)
@@ -120,14 +120,14 @@ key and certificate file format options:
   -der  --der-keys
           read keys and certificates as DER file
 
-certification authority options:
+certification authority:
   +cf   --add-cert-file  [c]ertificate filename: string
           add certificate file to list of certificates
 
   +cd   --add-cert-dir  [c]ertificate directory: string
           add certificates in d to list of certificates
 
-ciphersuite options:
+ciphersuite:
 
   +cs   --cipher  [c]iphersuite name: string
           add ciphersuite to list of negotiated suites
@@ -135,7 +135,7 @@ ciphersuite options:
   +dp   --dhparam  [f]ilename: string
           read DH parameters for DH/DSS ciphersuites
 
-pseudo random generator options:
+pseudo random generator:
 
   +rs   --seed  [f]ilename: string
           seed random generator with contents of f
@@ -146,7 +146,7 @@ pseudo random generator options:
   +wf   --write-seed-file  [f]ilename: string (only with --seed)
           write modified seed to file f
 
-peer authentication options:
+peer authentication:
 
   -rc   --require-peer-cert
           verify peer certificate, fail if absent (default)
@@ -192,4 +192,4 @@ The \fBechoscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1994-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

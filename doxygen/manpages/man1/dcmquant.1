@@ -81,19 +81,19 @@ input transfer syntax:
 
 frame selection:
 
-  +F   --frame  [n]umber : integer
+  +F   --frame  [n]umber: integer
          select specified frame
 
   +Fa  --all-frames
          select all frames (default)
 
-compatibility options:
+compatibility:
 
   +Mp  --accept-palettes
          accept incorrect palette attribute tags
          (0028,111x) and (0028,121x)
 
-median cut dimension selection options:
+median cut dimension selection:
 
   +Dr  --mc-dimension-rgb
          max dimension from RGB range (default)
@@ -101,7 +101,7 @@ median cut dimension selection options:
   +Dl  --mc-dimension-lum
          max dimension from luminance
 
-median cut representative color selection options:
+median cut representative color selection:
 
   +Cb  --mc-color-avgbox
          average colors in box (default)
@@ -112,7 +112,7 @@ median cut representative color selection options:
   +Cc  --mc-color-center
          select center of box
 
-color palette creation options:
+color palette creation:
 
   +pw  --write-ow
          write Palette LUT as OW instead of US
@@ -126,7 +126,7 @@ color palette creation options:
   +pc  --colors  number of colors: 2..65536 (default 256)
          number of colors to quantize to
 
-SOP Class UID options:
+SOP Class UID:
 
   +cd  --class-default
          keep SOP Class UID (default)
@@ -135,7 +135,7 @@ SOP Class UID options:
          convert to Secondary Capture Image
          (implies --uid-always)
 
-SOP Instance UID options:
+SOP Instance UID:
 
   +ua  --uid-always
          always assign new UID (default)
@@ -226,4 +226,4 @@ The \fBdcmquant\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

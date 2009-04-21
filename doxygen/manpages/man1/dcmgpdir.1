@@ -62,24 +62,24 @@ dcmfile-in  referenced DICOM file
 
 DICOMDIR identifiers:
 
-  +D    --output-file  [f]ilename : string
+  +D    --output-file  [f]ilename: string
           generate specific DICOMDIR file
           (default: DICOMDIR in current directory)
 
-  +F    --fileset-id  [i]d : string (default: DCMTK_MEDIA_DEMO)
+  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
-  +R    --descriptor  [f]ilename : string
+  +R    --descriptor  [f]ilename: string
           add a file set descriptor file ID
           (e.g. README, default: no descriptor)
 
-  +C    --char-set  [c]har-set : string
+  +C    --char-set  [c]harset: string
           add a specific character set for descriptor
           (default: "ISO_IR 100" if descriptor present)
 
 reading:
 
-  +id   --input-directory  [d]irectory : string
+  +id   --input-directory  [d]irectory: string
           read referenced DICOM files from directory d
           (default for --recurse: current directory)
 
@@ -96,7 +96,7 @@ reading:
   +r    --recurse
           recurse within filesystem directories
 
-  +p    --pattern  [p]attern : string (only with --recurse)
+  +p    --pattern  [p]attern: string (only with --recurse)
           pattern for filename matching (wildcards)
 
           # possibly not available on all systems
@@ -211,4 +211,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmmkdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1996-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

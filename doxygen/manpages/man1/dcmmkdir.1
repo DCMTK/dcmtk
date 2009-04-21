@@ -96,24 +96,24 @@ dcmfile-in  referenced DICOM file
 
 DICOMDIR identifiers:
 
-  +D    --output-file  [f]ilename : string
+  +D    --output-file  [f]ilename: string
           generate specific DICOMDIR file
           (default: DICOMDIR in current directory)
 
-  +F    --fileset-id  [i]d : string (default: DCMTK_MEDIA_DEMO)
+  +F    --fileset-id  [i]d: string (default: DCMTK_MEDIA_DEMO)
           use specific file set ID
 
-  +R    --descriptor  [f]ilename : string
+  +R    --descriptor  [f]ilename: string
           add a file set descriptor file ID
           (e.g. README, default: no descriptor)
 
-  +C    --char-set  [c]har-set : string
+  +C    --char-set  [c]harset: string
           add a specific character set for descriptor
           (default: "ISO_IR 100" if descriptor present)
 
 reading:
 
-  +id   --input-directory  [d]irectory : string
+  +id   --input-directory  [d]irectory: string
           read referenced DICOM files from directory d
           (default for --recurse: current directory)
 
@@ -130,7 +130,7 @@ reading:
   +r    --recurse
           recurse within filesystem directories
 
-  +p    --pattern  [p]attern : string (only with --recurse)
+  +p    --pattern  [p]attern: string (only with --recurse)
           pattern for filename matching (wildcards)
 
           # possibly not available on all systems
@@ -188,15 +188,15 @@ icon images:
           add monochrome icon image on IMAGE level
           (default for cardiac profiles)
 
-  -Xs   --icon-image-size  [s]ize : integer (1..128)
+  -Xs   --icon-image-size  [s]ize: integer (1..128)
           width and height of the icon image (in pixel)
           (fixed: 128 for XA, 64 for CT/MR profile)
 
-  -Xi   --icon-file-prefix  [p]refix : string
+  -Xi   --icon-file-prefix  [p]refix: string
           use PGM image 'prefix'+'dcmfile-in' as icon
           (default: create icon from DICOM image)
 
-  -Xd   --default-icon  [f]ilename : string
+  -Xd   --default-icon  [f]ilename: string
           use specified PGM image if icon cannot be
           created automatically (default: black image)
 .fi
@@ -344,4 +344,4 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBdcmgpdir\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2001-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
