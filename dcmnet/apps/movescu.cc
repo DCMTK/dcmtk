@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-06 14:52:43 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2009-04-21 14:09:22 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -310,7 +310,7 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-big",         "-xb",     "propose all uncompressed TS, explicit VR\nbig endian first");
       cmd.addOption("--propose-implicit",    "-xi",     "propose implicit VR little endian TS only");
 #ifdef WITH_TCPWRAPPER
-    cmd.addSubGroup("network host access control (tcp wrapper) options:");
+    cmd.addSubGroup("network host access control (tcp wrapper):");
       cmd.addOption("--access-full",         "-ac",     "accept connections from any host (default)");
       cmd.addOption("--access-control",      "+ac",     "enforce host access control rules");
 #endif
@@ -331,13 +331,13 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
       opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer [";
+      OFString opt4 = "[n]umber of bytes: integer (";
       sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "..";
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
-      opt4 += "]";
+      opt4 += ")";
       cmd.addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
       cmd.addOption("--repeat",                      1, "[n]umber: integer", "repeat n times");
@@ -1569,6 +1569,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.72  2009-04-21 14:09:22  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.71  2009-03-06 14:52:43  joergr
 ** Made error/warning messages and verbose output more consistent with storescp.
 ** Changed output from stderr to CERR and from stdout to COUT.

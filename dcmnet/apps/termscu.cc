@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2008, OFFIS
+ *  Copyright (C) 2005-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           SOP class in order to shutdown server applications)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:00:58 $
+ *  Update Date:      $Date: 2009-04-21 14:09:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,13 +143,13 @@ int main( int argc, char *argv[] )
     sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
     opt3 += tempstr;
     opt3 += ")";
-    OFString opt4 = "[n]umber of bytes: integer [";
+    OFString opt4 = "[n]umber of bytes: integer (";
     sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
     opt4 += tempstr;
     opt4 += "..";
     sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
     opt4 += tempstr;
-    opt4 += "]";
+    opt4 += ")";
     cmd.addOption("--max-pdu", "-pdu", 1, opt4.c_str(), opt3.c_str());
 
   // evaluate command line
@@ -350,6 +350,9 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
+** Revision 1.9  2009-04-21 14:09:23  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.8  2008-09-25 16:00:58  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.

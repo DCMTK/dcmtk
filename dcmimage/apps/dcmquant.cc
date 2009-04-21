@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2008, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM color images palette color
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 12:47:58 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-04-21 14:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("image processing and encoding options:");
      cmd.addSubGroup("frame selection:");
-      cmd.addOption("--frame",               "+fr", 1, "[n]umber : integer",
+      cmd.addOption("--frame",               "+fr", 1, "[n]umber: integer",
                                                        "select specified frame");
       cmd.addOption("--all-frames",          "+fa",    "select all frames (default)");
 
@@ -166,30 +166,30 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 #endif
 
-     cmd.addSubGroup("compatibility options:");
+     cmd.addSubGroup("compatibility:");
       cmd.addOption("--accept-palettes",     "+Mp",    "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
-     cmd.addSubGroup("median cut dimension selection options:");
+     cmd.addSubGroup("median cut dimension selection:");
       cmd.addOption("--mc-dimension-rgb",    "+Dr",    "max dimension from RGB range (default)");
       cmd.addOption("--mc-dimension-lum",    "+Dl",    "max dimension from luminance");
 
-     cmd.addSubGroup("median cut representative color selection options:");
+     cmd.addSubGroup("median cut representative color selection:");
       cmd.addOption("--mc-color-avgbox",     "+Cb",    "average colors in box (default)");
       cmd.addOption("--mc-color-avgpixel",   "+Cp",    "average pixels in box");
       cmd.addOption("--mc-color-center",     "+Cc",    "select center of box");
 
-     cmd.addSubGroup("color palette creation options:");
+     cmd.addSubGroup("color palette creation:");
       cmd.addOption("--write-ow",            "+pw",    "write Palette LUT as OW instead of US");
       cmd.addOption("--lut-entries-word",    "+pe",    "write Palette LUT with 16-bit entries");
       cmd.addOption("--floyd-steinberg",     "+pf",    "use Floyd-Steinberg error diffusion");
       cmd.addOption("--colors",              "+pc", 1, "number of colors: 2..65536 (default 256)",
                                                        "number of colors to quantize to");
 
-     cmd.addSubGroup("SOP Class UID options:");
+     cmd.addSubGroup("SOP Class UID:");
       cmd.addOption("--class-default",       "+cd",    "keep SOP Class UID (default)");
       cmd.addOption("--class-sc",            "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
 
-     cmd.addSubGroup("SOP Instance UID options:");
+     cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-always",          "+ua",    "always assign new UID (default)");
       cmd.addOption("--uid-never",           "+un",    "never assign new UID");
 
@@ -517,6 +517,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
+ * Revision 1.17  2009-04-21 14:04:12  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.16  2008-09-25 12:47:58  joergr
  * Added support for printing the expanded command line arguments.
  * iAlways output the resource identifier of the command line tool in debug mode.

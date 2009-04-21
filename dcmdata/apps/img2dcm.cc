@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2008, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 10:47:41 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,7 +191,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
     cmd.addOption("--debug",                 "-d",      "debug mode, print debug information");
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
-    cmd.addSubGroup("general input options:");
+    cmd.addSubGroup("general:");
       cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default)");
       cmd.addOption("--dataset-from",        "-df",  1, "[f]ilename: string",
                                                         "use dataset from DICOM file f");
@@ -201,7 +201,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
       cmd.addOption("--series-from",         "-sef", 1, "[f]ilename: string",
                                                         "read patient/study/series from DICOM file f");
       cmd.addOption("--instance-inc",        "-ii",     "increase instance number read from DICOM file");
-    cmd.addSubGroup("JPEG input options:");
+    cmd.addSubGroup("JPEG format:");
       cmd.addOption("--disable-progr",       "-dp",     "disable support for progressive JPEG");
       cmd.addOption("--disable-ext",         "-de",     "disable support for extended sequential JPEG");
       cmd.addOption("--insist-on-jfif",      "-jf",     "insist on JFIF header");
@@ -540,6 +540,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.11  2009-04-21 14:02:49  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.10  2009-03-31 10:47:41  onken
  * Added NULL pointer check.
  *

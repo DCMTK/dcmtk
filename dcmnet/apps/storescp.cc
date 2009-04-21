@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-17 11:51:58 $
- *  CVS/RCS Revision: $Revision: 1.107 $
+ *  Update Date:      $Date: 2009-04-21 14:09:22 $
+ *  CVS/RCS Revision: $Revision: 1.108 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -330,13 +330,13 @@ int main(int argc, char *argv[])
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
       opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer [";
+      OFString opt4 = "[n]umber of bytes: integer (";
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MINIMUMPDUSIZE));
       opt4 += tempstr;
       opt4 += "..";
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_MAXIMUMPDUSIZE));
       opt4 += tempstr;
-      opt4 += "]";
+      opt4 += ")";
       cmd.addOption("--max-pdu",                "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup",    "-dhl",    "disable hostname lookup");
       cmd.addOption("--refuse",                            "refuse association");
@@ -432,7 +432,7 @@ int main(int argc, char *argv[])
                                                            "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
                                                            "add certificates in d to list of certificates");
-    cmd.addSubGroup("ciphersuite options:");
+    cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
                                                            "add ciphersuite to list of negotiated suites");
       cmd.addOption("--dhparam",                "+dp",  1, "[f]ilename: string",
@@ -2720,6 +2720,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.108  2009-04-21 14:09:22  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.107  2009-04-17 11:51:58  joergr
 ** Added new command line option --single-process in order to explicitly
 ** indicate what the default behavior is (no multi-processing).

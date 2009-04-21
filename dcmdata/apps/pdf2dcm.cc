@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2005-2008, OFFIS
+ *  Copyright (C) 2005-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -390,32 +390,32 @@ int main(int argc, char *argv[])
       cmd.addOption("--annotation-no",     "-an",    "PDF does not contain patient identifying data");
 
     cmd.addSubGroup("document title:");
-      cmd.addOption("--title",             "+t",  1, "[t]itle : string (default: empty)",
+      cmd.addOption("--title",             "+t",  1, "[t]itle: string (default: empty)",
                                                      "document title");
-      cmd.addOption("--concept-name",      "+cn", 3, "[CSD], [CV], [CM]: string (default: empty)",
+      cmd.addOption("--concept-name",      "+cn", 3, "[CSD] [CV] [CM]: string (default: empty)",
                                                      "document title as concept name code sequence\n"
                                                      "with coding scheme designator CSD, code value CV\n"
                                                      "and code meaning CM");
     cmd.addSubGroup("patient data:");
-      cmd.addOption("--patient-name",      "+pn", 1, "[n]ame : string",
+      cmd.addOption("--patient-name",      "+pn", 1, "[n]ame: string",
                                                      "patient's name in DICOM PN syntax");
-      cmd.addOption("--patient-id",        "+pi", 1, "[i]d : string",
+      cmd.addOption("--patient-id",        "+pi", 1, "[i]d: string",
                                                      "patient identifier");
-      cmd.addOption("--patient-birthdate", "+pb", 1, "[d]ate : string (YYYYMMDD)",
+      cmd.addOption("--patient-birthdate", "+pb", 1, "[d]ate: string (YYYYMMDD)",
                                                      "patient's birth date");
-      cmd.addOption("--patient-sex",       "+ps", 1, "[s]ex : string (M, F or O)",
+      cmd.addOption("--patient-sex",       "+ps", 1, "[s]ex: string (M, F or O)",
                                                      "patient's sex");
 
     cmd.addSubGroup("study and series:");
       cmd.addOption("--generate",          "+sg",    "generate new study and series UIDs (default)");
-      cmd.addOption("--study-from",        "+st", 1, "[f]ilename : string",
+      cmd.addOption("--study-from",        "+st", 1, "[f]ilename: string",
                                                      "read patient/study data from DICOM file");
-      cmd.addOption("--series-from",       "+se", 1, "[f]ilename : string",
+      cmd.addOption("--series-from",       "+se", 1, "[f]ilename: string",
                                                      "read patient/study/series data from DICOM file");
     cmd.addSubGroup("instance number:");
       cmd.addOption("--instance-one",      "+i1",    "use instance number 1 (default, not with +se)");
       cmd.addOption("--instance-inc",      "+ii",    "increment instance number (only with +se)");
-      cmd.addOption("--instance-set",      "+is", 1, "[i]nstance number : int", "use instance number i");
+      cmd.addOption("--instance-set",      "+is", 1, "[i]nstance number: integer", "use instance number i");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -669,6 +669,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.10  2009-04-21 14:02:49  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.9  2008-09-25 14:38:48  joergr
 ** Moved output of resource identifier in order to avoid printing the same
 ** information twice.

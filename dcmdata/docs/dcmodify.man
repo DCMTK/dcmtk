@@ -157,7 +157,7 @@ bitstream format of deflated input:
 
 \subsection processing_options processing options
 \verbatim
-insert mode options:
+insert mode:
 
   -i    --insert  "[t]ag-path=[v]alue"
           insert (or overwrite) path at position t with value v
@@ -165,7 +165,7 @@ insert mode options:
   -nrc  --no-reserv-check
           do not check private reservations
 
-modify mode options:
+modify mode:
 
   -m    --modify  "[t]ag-path=[v]alue"
           modify tag at position t to value v
@@ -173,7 +173,7 @@ modify mode options:
   -ma   --modify-all  "[t]ag=[v]alue"
           modify ALL matching tags t in file to value v
 
-erase mode options:
+erase mode:
 
   -e    --erase  "[t]ag-path"
           erase tag/item at position t
@@ -184,7 +184,7 @@ erase mode options:
   -ep   --erase-private
           erase ALL private data from file
 
-uid options:
+unique identifier:
 
   -gst  --gen-stud-uid
           generate new Study Instance UID

@@ -90,10 +90,10 @@ input transfer syntax:
 \verbatim
 frame selection:
 
-  +F    --frame  [n]umber : integer
+  +F    --frame  [n]umber: integer
           select specified frame (default: 1)
 
-  +Fr   --frame-range  [n]umber [c]ount : integer
+  +Fr   --frame-range  [n]umber [c]ount: integer
           select c frames beginning with frame n
 
   +Fa   --all-frames
@@ -129,7 +129,7 @@ scaling:
   -a    --ignore-aspect
           ignore pixel aspect ratio when scaling
 
-  +i    --interpolate  [n]umber of algorithm : integer
+  +i    --interpolate  [n]umber of algorithm: integer
           use interpolation when scaling (1..4, default: 1)
 
   -i    --no-interpolation
@@ -138,16 +138,16 @@ scaling:
   -S    --no-scaling
           no scaling, ignore pixel aspect ratio (default)
 
-  +Sxf  --scale-x-factor  [f]actor : float
+  +Sxf  --scale-x-factor  [f]actor: float
           scale x axis by factor, auto-compute y axis
 
-  +Syf  --scale-y-factor  [f]actor : float
+  +Syf  --scale-y-factor  [f]actor: float
           scale y axis by factor, auto-compute x axis
 
-  +Sxv  --scale-x-size  [n]umber : integer
+  +Sxv  --scale-x-size  [n]umber: integer
           scale x axis to n pixels, auto-compute y axis
 
-  +Syv  --scale-y-size  [n]umber : integer
+  +Syv  --scale-y-size  [n]umber: integer
           scale y axis to n pixels, auto-compute x axis
 
 modality LUT transformation:
@@ -163,10 +163,10 @@ VOI LUT transformation:
   -W    --no-windowing
           no VOI windowing (default)
 
-  +Wi   --use-window  [n]umber : integer
+  +Wi   --use-window  [n]umber: integer
           use the n-th VOI window from image file
 
-  +Wl   --use-voi-lut  [n]umber : integer
+  +Wl   --use-voi-lut  [n]umber: integer
           use the n-th VOI look up table from image file
 
   +Wm   --min-max-window
@@ -176,15 +176,15 @@ VOI LUT transformation:
           compute VOI window using min-max algorithm,
           ignoring extreme values
 
-  +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight : integer
+  +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight: integer
           compute ROI window using min-max algorithm,
           region of interest is specified by l,t,w,h
 
-  +Wh   --histogram-window  [n]umber : integer
+  +Wh   --histogram-window  [n]umber: integer
           compute VOI window using Histogram algorithm,
           ignoring n percent
 
-  +Ww   --set-window  [c]enter [w]idth : float
+  +Ww   --set-window  [c]enter [w]idth: float
           compute VOI window using center c and width w
 
 presentation LUT transformation:
@@ -203,7 +203,7 @@ overlay:
   -O    --no-overlays
           do not display overlays
 
-  +O    --display-overlay  [n]umber : integer
+  +O    --display-overlay  [n]umber: integer
           display overlay n (0..16, 0=all, default: +O 0)
 
   +Omr  --ovl-replace
@@ -223,32 +223,32 @@ overlay:
           use overlay mode "Region of Interest"
           (default for ROI overlays)
 
-  +Osf  --set-foreground  [d]ensity : float
+  +Osf  --set-foreground  [d]ensity: float
           set overlay foreground density (0..1, default: 1)
 
-  +Ost  --set-threshold  [d]ensity : float
+  +Ost  --set-threshold  [d]ensity: float
           set overlay threshold density (0..1, default: 0.5)
 
 display LUT transformation:
 
-  +Dm   --monitor-file  [f]ilename : string
+  +Dm   --monitor-file  [f]ilename: string
           calibrate output according to monitor characteristics
           defined in f
 
-  +Dp   --printer-file  [f]ilename : string
+  +Dp   --printer-file  [f]ilename: string
           calibrate output according to printer characteristics
           defined in f
 
-  +Da   --ambient-light  [a]mbient light : float
+  +Da   --ambient-light  [a]mbient light: float
           ambient light value (cd/m^2, default: file f)
 
-  +Di   --illumination  [i]llumination : float
+  +Di   --illumination  [i]llumination: float
           illumination value (cd/m^2, default: file f)
 
-  +Dn   --min-density  [m]inimum optical density : float
+  +Dn   --min-density  [m]inimum optical density: float
           Dmin value (default: off, only with +Dp)
 
-  +Dx   --max-density  [m]aximum optical density : float
+  +Dx   --max-density  [m]aximum optical density: float
           Dmax value (default: off, only with +Dp)
 
   +Dg   --gsd-function
@@ -257,7 +257,7 @@ display LUT transformation:
   +Dc   --cielab-function
           use CIELAB function for calibration
 
-compatibility options:
+compatibility:
 
   +Ma   --accept-acr-nema
           accept ACR-NEMA images without photometric
@@ -279,7 +279,7 @@ compatibility options:
           ignore 3rd value of the VOI LUT descriptor,
           determine bits per table entry automatically
 
-TIFF options:
+TIFF format:
 
   +Tl   --compr-lzw
           LZW compression (default)
@@ -299,10 +299,10 @@ TIFF options:
   +Ph   --predictor-horz
           LZW predictor 2 (horizontal differencing)
 
-  +Rs   --rows-per-strip  [r]ows : integer (default: 0)
+  +Rs   --rows-per-strip  [r]ows: integer (default: 0)
           rows per strip, default 8K per strip
 
-PNG options:
+PNG format:
 
   +il   --interlace
           create interlaced file (default)
@@ -324,7 +324,7 @@ other transformations:
   +P    --change-polarity
           change polarity (invert pixel output)
 
-  +C    --clip-region  [l]eft [t]op [w]idth [h]eight : integer
+  +C    --clip-region  [l]eft [t]op [w]idth [h]eight: integer
           clip image region (l, t, w, h)
 \endverbatim
 
@@ -342,7 +342,7 @@ other transformations:
   +opw  --write-16-bit-pnm
           write 16-bit ASCII PGM/PPM
 
-  +opn  --write-n-bit-pnm  [n]umber : integer
+  +opn  --write-n-bit-pnm  [n]umber: integer
           write n-bit ASCII PGM/PPM (1..32)
 
   +ob   --write-bmp
@@ -436,6 +436,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -22,8 +22,8 @@
  *  Purpose: Decompress RLE-compressed DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-19 12:07:49 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,19 +108,16 @@ int main(int argc, char *argv[])
    cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
 
    cmd.addGroup("input options:");
-
     cmd.addSubGroup("input file format:");
      cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
      cmd.addOption("--read-file-only",       "+fo",    "read file format only");
      cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
 
   cmd.addGroup("processing options:");
-
-    cmd.addSubGroup("SOP Instance UID options:");
+    cmd.addSubGroup("SOP Instance UID:");
      cmd.addOption("--uid-default",          "+ud",    "keep same SOP Instance UID (default)");
      cmd.addOption("--uid-always",           "+ua",    "always assign new UID");
-
-    cmd.addSubGroup("RLE byte segment order options:");
+    cmd.addSubGroup("RLE byte segment order:");
      cmd.addOption("--byte-order-default",   "+bd",    "most significant byte first (default)");
      cmd.addOption("--byte-order-reverse",   "+br",    "least significant byte first");
 
@@ -344,6 +341,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
+ * Revision 1.18  2009-04-21 14:02:49  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.17  2009-03-19 12:07:49  joergr
  * Added more explicit message in case input transfer syntax is not supported.
  *

@@ -58,26 +58,26 @@ burned-in annotation:
 
 document title:
 
-  +t    --title  [t]itle : string (default: empty)
+  +t    --title  [t]itle: string (default: empty)
           document title
 
-  +cn   --concept-name  [CSD], [CV], [CM]: string (default: empty)
+  +cn   --concept-name  [CSD] [CV] [CM]: string (default: empty)
           document title as concept name code sequence
           with coding scheme designator CSD, code value CV
           and code meaning CM
 
 patient data:
 
-  +pn   --patient-name  [n]ame : string
+  +pn   --patient-name  [n]ame: string
           patient's name in DICOM PN syntax
 
-  +pi   --patient-id  [i]d : string
+  +pi   --patient-id  [i]d: string
           patient identifier
 
-  +pb   --patient-birthdate  [d]ate : string (YYYYMMDD)
+  +pb   --patient-birthdate  [d]ate: string (YYYYMMDD)
           patient's birth date
 
-  +ps   --patient-sex  [s]ex : string (M, F or O)
+  +ps   --patient-sex  [s]ex: string (M, F or O)
           patient's sex
 
 study and series:
@@ -85,10 +85,10 @@ study and series:
   +sg   --generate
           generate new study and series UIDs (default)
 
-  +st   --study-from   [f]ilename : string
+  +st   --study-from  [f]ilename: string
           read patient/study data from DICOM file
 
-  +se   --series-from  [f]ilename : string
+  +se   --series-from  [f]ilename: string
           read patient/study/series data from DICOM file
 
 instance number:
@@ -99,7 +99,7 @@ instance number:
   +ii   --instance-inc
           increment instance number (only with +se)
 
-  +is   --instance-set [i]nstance number : int
+  +is   --instance-set  [i]nstance number: integer
           use instance number i
 \endverbatim
 
@@ -147,6 +147,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2005-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2005-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -87,7 +87,7 @@ scaling:
   -a    --ignore-aspect
           ignore pixel aspect ratio when scaling
 
-  +i    --interpolate  [n]umber of algorithm : integer
+  +i    --interpolate  [n]umber of algorithm: integer
           use interpolation when scaling (1..4, default: 1)
 
   -i    --no-interpolation
@@ -96,23 +96,23 @@ scaling:
   -S    --no-scaling
           no scaling, ignore pixel aspect ratio (default)
 
-  +Sxf  --scale-x-factor  [f]actor : float
+  +Sxf  --scale-x-factor  [f]actor: float
           scale x axis by factor, auto-compute y axis
 
-  +Syf  --scale-y-factor  [f]actor : float
+  +Syf  --scale-y-factor  [f]actor: float
           scale y axis by factor, auto-compute x axis
 
-  +Sxv  --scale-x-size  [n]umber : integer
+  +Sxv  --scale-x-size  [n]umber: integer
           scale x axis to n pixels, auto-compute y axis
 
-  +Syv  --scale-y-size  [n]umber : integer
+  +Syv  --scale-y-size  [n]umber: integer
           scale y axis to n pixels, auto-compute x axis
 
 other transformations:
-  +C    --clip-region  [l]eft [t]op [w]idth [h]eight : integer
+  +C    --clip-region  [l]eft [t]op [w]idth [h]eight: integer
           clip rectangular image region (l, t, w, h)
 
-SOP Instance UID options:
+SOP Instance UID:
 
   +ua   --uid-always
           always assign new SOP Instance UID (default)
@@ -181,7 +181,7 @@ data set trailing padding (not with --write-dataset):
   -p    --padding-off
           no padding (implicit if --write-dataset)
 
-  +p    --padding-create  [f]ile-pad [i]tem-pad : integer
+  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
           align file on multiple of f bytes and items on
           multiple of i bytes
 \endverbatim
@@ -236,6 +236,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

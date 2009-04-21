@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-16 10:03:22 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,17 +121,17 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 #endif
 
     cmd->addGroup("processing options:");
-        cmd->addSubGroup("insert mode options:");
+        cmd->addSubGroup("insert mode:");
             cmd->addOption("--insert",              "-i",   1, "\"[t]ag-path=[v]alue\"", "insert (or overwrite) path at position t\nwith value v");
             cmd->addOption("--no-reserv-check",     "-nrc",    "do not check private reservations\nwhen inserting private tags");
-        cmd->addSubGroup("modify mode options:");
+        cmd->addSubGroup("modify mode:");
             cmd->addOption("--modify",              "-m",   1, "\"[t]ag-path=[v]alue\"", "modify tag at position t to value v");
             cmd->addOption("--modify-all",          "-ma",  1, "\"[t]ag=[v]value\"", "modify ALL matching tags t in file to value v");
-        cmd->addSubGroup("erase mode options:");
+        cmd->addSubGroup("erase mode:");
             cmd->addOption("--erase",               "-e",   1, "\"[t]ag-path\"", "erase tag/item at position t");
             cmd->addOption("--erase-all",           "-ea",  1, "\"[t]ag\"", "erase ALL matching tags t in file");
             cmd->addOption("--erase-private",       "-ep",     "erase ALL private data from file");
-        cmd->addSubGroup("uid options:");
+        cmd->addSubGroup("unique identifier:");
             cmd->addOption("--gen-stud-uid",        "-gst",    "generate new Study Instance UID");
             cmd->addOption("--gen-ser-uid",         "-gse",    "generate new Series Instance UID");
             cmd->addOption("--gen-inst-uid",        "-gin",    "generate new SOP Instance UID");
@@ -684,6 +684,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.27  2009-04-21 14:02:49  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.26  2009-01-16 10:03:22  onken
 ** Fixed dcmodify help output
 **

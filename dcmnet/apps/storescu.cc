@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-06 16:41:00 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2009-04-21 14:09:22 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("input files:");
       cmd.addOption("--scan-directories",     "+sd",     "scan directories for input files (dcmfile-in)");
 #ifdef PATTERN_MATCHING_AVAILABLE
-      cmd.addOption("--scan-pattern",         "+sp",  1, "[p]attern : string (only with --scan-directories)",
+      cmd.addOption("--scan-pattern",         "+sp",  1, "[p]attern: string (only with --scan-directories)",
                                                          "pattern for filename matching (wildcards)");
 #endif
       cmd.addOption("--no-recurse",           "-r",      "do not recurse within directories (default)");
@@ -300,13 +300,13 @@ int main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
       opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer [";
+      OFString opt4 = "[n]umber of bytes: integer (";
       sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "..";
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
-      opt4 += "]";
+      opt4 += ")";
       cmd.addOption("--max-pdu",              "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd.addOption("--max-send-pdu",                 1, opt4.c_str(), "restrict max send pdu to n bytes");
       cmd.addOption("--repeat",                       1, "[n]umber: integer", "repeat n times");
@@ -333,36 +333,36 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
-    cmd.addSubGroup("transport protocol stack options:");
+    cmd.addSubGroup("transport protocol stack:");
       cmd.addOption("--disable-tls",          "-tls",    "use normal TCP/IP connection (default)");
       cmd.addOption("--enable-tls",           "+tls", 2, "[p]rivate key file, [c]ertificate file: string",
                                                          "use authenticated secure TLS connection");
       cmd.addOption("--anonymous-tls",        "+tla",    "use secure TLS connection without certificate");
-    cmd.addSubGroup("private key password options (only with --enable-tls):");
+    cmd.addSubGroup("private key password (only with --enable-tls):");
       cmd.addOption("--std-passwd",           "+ps",     "prompt user to type password on stdin (default)");
       cmd.addOption("--use-passwd",           "+pw",  1, "[p]assword: string ",
                                                          "use specified password");
       cmd.addOption("--null-passwd",          "-pw",     "use empty string as password");
-    cmd.addSubGroup("key and certificate file format options:");
+    cmd.addSubGroup("key and certificate file format:");
       cmd.addOption("--pem-keys",             "-pem",    "read keys and certificates as PEM file (default)");
       cmd.addOption("--der-keys",             "-der",    "read keys and certificates as DER file");
-    cmd.addSubGroup("certification authority options:");
+    cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",        "+cf",  1, "[c]ertificate filename: string",
                                                          "add certificate file to list of certificates");
       cmd.addOption("--add-cert-dir",         "+cd",  1, "[c]ertificate directory: string",
                                                          "add certificates in d to list of certificates");
-    cmd.addSubGroup("ciphersuite options:");
+    cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--cipher",               "+cs",  1, "[c]iphersuite name: string",
                                                          "add ciphersuite to list of negotiated suites");
       cmd.addOption("--dhparam",              "+dp",  1, "[f]ilename: string",
                                                          "read DH parameters for DH/DSS ciphersuites");
-    cmd.addSubGroup("pseudo random generator options:");
+    cmd.addSubGroup("pseudo random generator:");
       cmd.addOption("--seed",                 "+rs",  1, "[f]ilename: string",
                                                          "seed random generator with contents of f");
       cmd.addOption("--write-seed",           "+ws",     "write back modified seed (only with --seed)");
       cmd.addOption("--write-seed-file",      "+wf",  1, "[f]ilename: string (only with --seed)",
                                                          "write modified seed to file f");
-    cmd.addSubGroup("peer authentication options:");
+    cmd.addSubGroup("peer authentication:");
       cmd.addOption("--require-peer-cert",    "-rc",     "verify peer certificate, fail if absent (default)");
       cmd.addOption("--verify-peer-cert",     "-vc",     "verify peer certificate if present");
       cmd.addOption("--ignore-peer-cert",     "-ic",     "don't verify peer certificate");
@@ -1757,6 +1757,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.78  2009-04-21 14:09:22  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.77  2009-02-06 16:41:00  joergr
 ** Added support for JPEG-LS and MPEG2 transfer syntaxes.
 ** Fixed minor inconsistencies with regard to transfer syntaxes.

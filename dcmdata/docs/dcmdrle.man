@@ -68,7 +68,7 @@ input file format:
 
 \subsection processing_options processing options
 \verbatim
-SOP Instance UID options:
+SOP Instance UID:
 
   +ud  --uid-default
          keep same SOP Instance UID (default)
@@ -76,7 +76,7 @@ SOP Instance UID options:
   +ua  --uid-always
          always assign new UID
 
-RLE byte segment order options:
+RLE byte segment order:
 
   +bd   --byte-order-default
           most significant byte first (default)

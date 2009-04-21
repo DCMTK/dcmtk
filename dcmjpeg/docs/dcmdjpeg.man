@@ -69,7 +69,7 @@ input file format:
 \subsection processing_options processing options
 
 \verbatim
-color space conversion options:
+color space conversion:
 
   +cp   --conv-photometric
           convert if YCbCr photom. interpr. (default)
@@ -94,7 +94,7 @@ color space conversion options:
 
   # Never convert color space during decompression.
 
-planar configuration options:
+planar configuration:
 
   +pa   --planar-auto
           automatically determine planar configuration
@@ -119,7 +119,7 @@ planar configuration options:
   # If the compressed image is a color image, store in color-by-plane
   # planar configuration.
 
-SOP Instance UID options:
+SOP Instance UID:
 
   +ud   --uid-default
           keep same SOP Instance UID (default)
@@ -130,6 +130,8 @@ SOP Instance UID options:
           always assign new UID
 
   # Always assigns a new SOP instance UID
+
+workaround options for incorrect JPEG encodings:
 
   +w6   --workaround-pred6
           enable workaround for JPEG lossless images

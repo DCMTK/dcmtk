@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-10-24 08:51:56 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Update Date:      $Date: 2009-04-21 14:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,9 +249,9 @@ int main(int argc, char *argv[])
     cmd.addGroup("image processing options:");
 
      cmd.addSubGroup("frame selection:");
-      cmd.addOption("--frame",              "+F",   1, "[n]umber : integer",
+      cmd.addOption("--frame",              "+F",   1, "[n]umber: integer",
                                                         "select specified frame (default: 1)");
-      cmd.addOption("--frame-range",        "+Fr",  2, "[n]umber [c]ount : integer",
+      cmd.addOption("--frame-range",        "+Fr",  2, "[n]umber [c]ount: integer",
                                                        "select c frames beginning with frame n");
       cmd.addOption("--all-frames",         "+Fa",     "select all frames");
 
@@ -268,17 +268,17 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("scaling:");
       cmd.addOption("--recognize-aspect",   "+a",      "recognize pixel aspect ratio (default)");
       cmd.addOption("--ignore-aspect",      "-a",      "ignore pixel aspect ratio when scaling");
-      cmd.addOption("--interpolate",        "+i",   1, "[n]umber of algorithm : integer",
+      cmd.addOption("--interpolate",        "+i",   1, "[n]umber of algorithm: integer",
                                                        "use interpolation when scaling (1..4, def: 1)");
       cmd.addOption("--no-interpolation",   "-i",      "no interpolation when scaling");
       cmd.addOption("--no-scaling",         "-S",      "no scaling, ignore pixel aspect ratio (default)");
-      cmd.addOption("--scale-x-factor",     "+Sxf", 1, "[f]actor : float",
+      cmd.addOption("--scale-x-factor",     "+Sxf", 1, "[f]actor: float",
                                                        "scale x axis by factor, auto-compute y axis");
-      cmd.addOption("--scale-y-factor",     "+Syf", 1, "[f]actor : float",
+      cmd.addOption("--scale-y-factor",     "+Syf", 1, "[f]actor: float",
                                                        "scale y axis by factor, auto-compute x axis");
-      cmd.addOption("--scale-x-size",       "+Sxv", 1, "[n]umber : integer",
+      cmd.addOption("--scale-x-size",       "+Sxv", 1, "[n]umber: integer",
                                                        "scale x axis to n pixels, auto-compute y axis");
-      cmd.addOption("--scale-y-size",       "+Syv", 1, "[n]umber : integer",
+      cmd.addOption("--scale-y-size",       "+Syv", 1, "[n]umber: integer",
                                                        "scale y axis to n pixels, auto-compute x axis");
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
      cmd.addSubGroup("color space conversion (compressed images only):");
@@ -294,17 +294,17 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("VOI LUT transformation:");
       cmd.addOption("--no-windowing",       "-W",      "no VOI windowing (default)");
-      cmd.addOption("--use-window",         "+Wi",  1, "[n]umber : integer",
+      cmd.addOption("--use-window",         "+Wi",  1, "[n]umber: integer",
                                                        "use the n-th VOI window from image file");
-      cmd.addOption("--use-voi-lut",        "+Wl",  1, "[n]umber : integer",
+      cmd.addOption("--use-voi-lut",        "+Wl",  1, "[n]umber: integer",
                                                        "use the n-th VOI look up table from image file");
       cmd.addOption("--min-max-window",     "+Wm",     "compute VOI window using min-max algorithm");
       cmd.addOption("--min-max-window-n",   "+Wn",     "compute VOI window using min-max algorithm,\nignoring extreme values");
-      cmd.addOption("--roi-min-max-window", "+Wr",  4, "[l]eft [t]op [w]idth [h]eight : integer",
+      cmd.addOption("--roi-min-max-window", "+Wr",  4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                        "compute ROI window using min-max algorithm,\nregion of interest is specified by l,t,w,h");
-      cmd.addOption("--histogram-window",   "+Wh",  1, "[n]umber : integer",
+      cmd.addOption("--histogram-window",   "+Wh",  1, "[n]umber: integer",
                                                        "compute VOI window using Histogram algorithm,\nignoring n percent");
-      cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth : float",
+      cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth: float",
                                                        "compute VOI window using center c and width w");
 
      cmd.addSubGroup("presentation LUT transformation:");
@@ -314,35 +314,35 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("overlay:");
       cmd.addOption("--no-overlays",        "-O",      "do not display overlays");
-      cmd.addOption("--display-overlay",    "+O" ,  1, "[n]umber : integer",
+      cmd.addOption("--display-overlay",    "+O" ,  1, "[n]umber: integer",
                                                        "display overlay n (0..16, 0=all, default: +O 0)");
       cmd.addOption("--ovl-replace",        "+Omr",    "use overlay mode \"Replace\"\n(default for Graphic overlays)");
       cmd.addOption("--ovl-threshold",      "+Omt",    "use overlay mode \"Threshold Replace\"");
       cmd.addOption("--ovl-complement",     "+Omc",    "use overlay mode \"Complement\"");
       cmd.addOption("--ovl-invert",         "+Omv",    "use overlay mode \"Invert Bitmap\"");
       cmd.addOption("--ovl-roi",            "+Omi",    "use overlay mode \"Region of Interest\"\n(default for ROI overlays)");
-      cmd.addOption("--set-foreground",     "+Osf", 1, "[d]ensity : float",
+      cmd.addOption("--set-foreground",     "+Osf", 1, "[d]ensity: float",
                                                        "set overlay foreground density (0..1, def: 1)");
-      cmd.addOption("--set-threshold",      "+Ost", 1, "[d]ensity : float",
+      cmd.addOption("--set-threshold",      "+Ost", 1, "[d]ensity: float",
                                                        "set overlay threshold density (0..1, def: 0.5)");
 
      cmd.addSubGroup("display LUT transformation:");
-      cmd.addOption("--monitor-file",       "+Dm",  1, "[f]ilename : string",
+      cmd.addOption("--monitor-file",       "+Dm",  1, "[f]ilename: string",
                                                        "calibrate output according to monitor\ncharacteristics defined in f");
-      cmd.addOption("--printer-file",       "+Dp",  1, "[f]ilename : string",
+      cmd.addOption("--printer-file",       "+Dp",  1, "[f]ilename: string",
                                                        "calibrate output according to printer\ncharacteristics defined in f");
-      cmd.addOption("--ambient-light",      "+Da",  1, "[a]mbient light : float",
+      cmd.addOption("--ambient-light",      "+Da",  1, "[a]mbient light: float",
                                                        "ambient light value (cd/m^2, default: file f)");
-      cmd.addOption("--illumination",       "+Di",  1, "[i]llumination : float",
+      cmd.addOption("--illumination",       "+Di",  1, "[i]llumination: float",
                                                        "illumination value (cd/m^2, default: file f)");
-      cmd.addOption("--min-density",        "+Dn", 1,  "[m]inimum optical density : float",
+      cmd.addOption("--min-density",        "+Dn", 1,  "[m]inimum optical density: float",
                                                        "Dmin value (default: off, only with +Dp)");
-      cmd.addOption("--max-density",        "+Dx", 1,  "[m]aximum optical density : float",
+      cmd.addOption("--max-density",        "+Dx", 1,  "[m]aximum optical density: float",
                                                        "Dmax value (default: off, only with +Dp)");
       cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (default for +Dm/+Dp)");
       cmd.addOption("--cielab-function",    "+Dc",     "use CIELAB function for calibration ");
 
-     cmd.addSubGroup("compatibility options:");
+     cmd.addSubGroup("compatibility:");
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
       cmd.addOption("--check-lut-depth",    "+Mc",     "check 3rd value of the LUT descriptor, compare\nwith expected bit depth based on LUT data");
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--ignore-vlut-depth",  "+Mv",     "ignore 3rd value of the VOI LUT descriptor,\ndetermine bits per table entry automatically");
 
 #ifdef WITH_LIBTIFF
-     cmd.addSubGroup("TIFF options:");
+     cmd.addSubGroup("TIFF format:");
 #ifdef HAVE_LIBTIFF_LZW_COMPRESSION
       cmd.addOption("--compr-lzw",          "+Tl",     "LZW compression (default)");
       cmd.addOption("--compr-rle",          "+Tr",     "RLE compression");
@@ -362,12 +362,12 @@ int main(int argc, char *argv[])
       cmd.addOption("--compr-rle",          "+Tr",     "RLE compression (default)");
       cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
 #endif
-      cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows : integer (default: 0)",
+      cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows: integer (default: 0)",
                                                        "rows per strip, default 8K per strip");
 #endif
 
 #ifdef WITH_LIBPNG
-     cmd.addSubGroup("PNG options:");
+     cmd.addSubGroup("PNG format:");
       cmd.addOption("--interlace",          "+il",     "create interlaced file (default)");
       cmd.addOption("--nointerlace",        "-il",     "create non-interlaced file");
       cmd.addOption("--meta-file",          "+mf",     "create PNG file meta information (default)");
@@ -375,8 +375,8 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-     cmd.addSubGroup("JPEG options:");
-      cmd.addOption("--compr-quality",      "+Jq",  1, "[q]uality : integer (0..100, default: 90)",
+     cmd.addSubGroup("JPEG format");
+      cmd.addOption("--compr-quality",      "+Jq",  1, "[q]uality: integer (0..100, default: 90)",
                                                        "quality value for compression (in percent)");
       cmd.addOption("--sample-444",         "+Js4",    "4:4:4 sampling (no subsampling)");
       cmd.addOption("--sample-422",         "+Js2",    "4:2:2 subsampling (horizontal subsampling of\nchroma components, default)");
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("other transformations:");
       cmd.addOption("--grayscale",          "+G",      "convert to grayscale if necessary");
       cmd.addOption("--change-polarity",    "+P",      "change polarity (invert pixel output)");
-      cmd.addOption("--clip-region",        "+C",   4, "[l]eft [t]op [w]idth [h]eight : integer",
+      cmd.addOption("--clip-region",        "+C",   4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                        "clip image region (l, t, w, h)");
 
     cmd.addGroup("output options:", LONGCOL, SHORTCOL + 2);
@@ -394,7 +394,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-raw-pnm",       "+op",     "write 8-bit binary PGM/PPM (default for files)");
      cmd.addOption("--write-8-bit-pnm",     "+opb",    "write 8-bit ASCII PGM/PPM (default for stdout)");
      cmd.addOption("--write-16-bit-pnm",    "+opw",    "write 16-bit ASCII PGM/PPM");
-     cmd.addOption("--write-n-bit-pnm",     "+opn", 1, "[n]umber : integer",
+     cmd.addOption("--write-n-bit-pnm",     "+opn", 1, "[n]umber: integer",
                                                        "write n-bit ASCII PGM/PPM (1..32)");
      cmd.addOption("--write-bmp",           "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
      cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
@@ -1529,6 +1529,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.93  2009-04-21 14:04:12  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.92  2008-10-24 08:51:56  joergr
  * Made man pages more consistent with the command line tool.
  *

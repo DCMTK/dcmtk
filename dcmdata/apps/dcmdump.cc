@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-18 13:57:16 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("loading:");
         cmd.addOption("--load-all",            "+M",     "load very long tag values (default)");
         cmd.addOption("--load-short",          "-M",     "do not load very long values (e.g. pixel data)");
-        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer [4..4194302] (default: 4)",
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer (4..4194302) (default: 4)",
                                                          "set threshold for long values to k kbytes");
       cmd.addSubGroup("printing:");
         cmd.addOption("--print-all",           "+L",     "print long tag values completely");
@@ -760,6 +760,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.76  2009-04-21 14:02:49  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.75  2009-03-18 13:57:16  joergr
  * Removed redundant call to OFString constructor.
  *

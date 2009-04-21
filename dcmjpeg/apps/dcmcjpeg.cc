@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-19 12:11:13 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2009-04-21 14:07:14 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,12 +144,12 @@ int main(int argc, char *argv[])
      cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
      cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
      cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
-    cmd.addSubGroup("compatibility options (ignored by +tl):");
+    cmd.addSubGroup("compatibility (ignored by +tl):");
       cmd.addOption("--accept-acr-nema",     "+Ma",    "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",     "+Mp",    "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
   cmd.addGroup("JPEG encoding options:");
-    cmd.addSubGroup("JPEG process options:");
+    cmd.addSubGroup("JPEG process:");
      cmd.addOption("--encode-lossless-sv1",  "+e1",    "encode lossless sv1 (default)");
      cmd.addOption("--encode-lossless",      "+el",    "encode lossless");
      cmd.addOption("--encode-baseline",      "+eb",    "encode baseline");
@@ -161,13 +161,13 @@ int main(int argc, char *argv[])
      cmd.addOption("--true-lossless",        "+tl",    "true lossless codec (default)");
      cmd.addOption("--pseudo-lossless",      "+pl",    "old pseudo-lossless codec");
 
-    cmd.addSubGroup("lossless JPEG representation options:");
+    cmd.addSubGroup("lossless JPEG representation:");
      cmd.addOption("--selection-value",      "+sv", 1, "[sv]: integer (1..7, default: 6)",
                                                        "use selection value sv\nonly with --encode-lossless");
      cmd.addOption("--point-transform",      "+pt", 1, "[pt]: integer (0..15, default: 0)",
                                                        "use point transform pt");
 
-    cmd.addSubGroup("lossy JPEG representation options:");
+    cmd.addSubGroup("lossy JPEG representation:");
      cmd.addOption("--quality",              "+q",  1, "[q]: integer (0..100, default: 90)",
                                                        "use quality factor q");
      cmd.addOption("--smooth",               "+sm", 1, "[s]: integer (0..100, default: 0)",
@@ -176,13 +176,13 @@ int main(int argc, char *argv[])
      cmd.addOption("--huffman-optimize",     "+ho",    "optimize huffman tables (default)");
      cmd.addOption("--huffman-standard",     "-ho",    "use standard huffman tables if 8 bits/sample");
 
-    cmd.addSubGroup("compressed bits per sample options (always +ba with +tl):");
+    cmd.addSubGroup("compressed bits per sample (always +ba with +tl):");
      cmd.addOption("--bits-auto",            "+ba",    "choose bits/sample automatically (default)");
      cmd.addOption("--bits-force-8",         "+be",    "force 8 bits/sample");
      cmd.addOption("--bits-force-12",        "+bt",    "force 12 bits/sample (not with baseline)");
      cmd.addOption("--bits-force-16",        "+bs",    "force 16 bits/sample (lossless only)");
 
-    cmd.addSubGroup("compression color space conversion options (overriden by +tl):");
+    cmd.addSubGroup("compression color space conversion (overriden by +tl):");
       cmd.addOption("--color-ybr",           "+cy",    "use YCbCr for color images if lossy (default)");
       cmd.addOption("--color-rgb",           "+cr",    "use RGB for color images if lossy");
       cmd.addOption("--monochrome",          "+cm",    "convert color images to monochrome");
@@ -193,37 +193,37 @@ int main(int argc, char *argv[])
       cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 
-    cmd.addSubGroup("standard YCbCr component subsampling options (not with +tl):");
+    cmd.addSubGroup("standard YCbCr component subsampling (not with +tl):");
       cmd.addOption("--sample-444",          "+s4",    "4:4:4 sampling with YBR_FULL (default)");
       cmd.addOption("--sample-422",          "+s2",    "4:2:2 subsampling with YBR_FULL_422");
 
-    cmd.addSubGroup("non-standard YCbCr component subsampling options (not with +tl):");
+    cmd.addSubGroup("non-standard YCbCr component subsampling (not with +tl):");
       cmd.addOption("--nonstd-422-full",     "+n2",    "4:2:2 subsampling with YBR_FULL");
       cmd.addOption("--nonstd-411-full",     "+n1",    "4:1:1 subsampling with YBR_FULL");
       cmd.addOption("--nonstd-411",          "+np",    "4:1:1 subsampling with YBR_FULL_422");
 
   cmd.addGroup("encapsulated pixel data encoding options:");
-    cmd.addSubGroup("pixel data fragmentation options:");
+    cmd.addSubGroup("pixel data fragmentation:");
      cmd.addOption("--fragment-per-frame",   "+ff",    "encode each frame as one fragment (default)");
      cmd.addOption("--fragment-size",        "+fs", 1, "[s]ize: integer",
                                                        "limit fragment size to s kbytes");
-    cmd.addSubGroup("basic offset table encoding options:");
+    cmd.addSubGroup("basic offset table encoding:");
      cmd.addOption("--offset-table-create",  "+ot",    "create offset table (default)");
      cmd.addOption("--offset-table-empty",   "-ot",    "leave offset table empty");
 
-    cmd.addSubGroup("VOI windowing options for monochrome images (not with +tl):");
+    cmd.addSubGroup("VOI windowing for monochrome images (not with +tl):");
      cmd.addOption("--no-windowing",         "-W",     "no VOI windowing (default)");
-     cmd.addOption("--use-window",           "+Wi", 1, "[n]umber : integer",
+     cmd.addOption("--use-window",           "+Wi", 1, "[n]umber: integer",
                                                        "use the n-th VOI window from image file");
-     cmd.addOption("--use-voi-lut",          "+Wl", 1, "[n]umber : integer",
+     cmd.addOption("--use-voi-lut",          "+Wl", 1, "[n]umber: integer",
                                                        "use the n-th VOI look up table from image file");
      cmd.addOption("--min-max-window",       "+Wm",    "compute VOI window using min-max algorithm");
      cmd.addOption("--min-max-window-n",     "+Wn",    "compute VOI window using min-max algorithm,\nignoring extreme values");
-     cmd.addOption("--roi-min-max-window",   "+Wr", 4, "[l]eft [t]op [w]idth [h]eight : integer",
+     cmd.addOption("--roi-min-max-window",   "+Wr", 4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                        "compute ROI window using min-max algorithm,\nregion of interest is specified by l,t,w,h");
      cmd.addOption("--histogram-window",     "+Wh", 1, "[n]umber: integer",
                                                        "compute VOI window using Histogram algorithm,\nignoring n percent");
-     cmd.addOption("--set-window",           "+Ww", 2, "[c]enter [w]idth : float",
+     cmd.addOption("--set-window",           "+Ww", 2, "[c]enter [w]idth: float",
                                                        "compute VOI window using center c and width w");
 
     cmd.addSubGroup("pixel scaling for monochrome images (-W; ignored by +tl):");
@@ -234,11 +234,11 @@ int main(int argc, char *argv[])
      cmd.addOption("--rescale-identity",     "+ri",    "encode identity modality rescale (default)\nNever used for CT images");
      cmd.addOption("--rescale-map",          "+rm",    "use modality rescale to scale pixel range\nNever used for XA/RF/XA Biplane images");
 
-    cmd.addSubGroup("SOP Class UID options:");
+    cmd.addSubGroup("SOP Class UID:");
      cmd.addOption("--class-default",        "+cd",    "keep SOP Class UID (default)");
      cmd.addOption("--class-sc",             "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
 
-    cmd.addSubGroup("SOP Instance UID options:");
+    cmd.addSubGroup("SOP Instance UID:");
      cmd.addOption("--uid-default",          "+ud",    "assign new UID if lossy compression (default)");
      cmd.addOption("--uid-always",           "+ua",    "always assign new UID");
      cmd.addOption("--uid-never",            "+un",    "never assign new UID");
@@ -744,6 +744,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
+ * Revision 1.23  2009-04-21 14:07:14  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.22  2009-03-19 12:11:13  joergr
  * Replaced '\n' by OFendl where appropriate.
  *

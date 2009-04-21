@@ -46,8 +46,8 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-15 10:15:23 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,23 +149,23 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("DICOMDIR identifiers:");
-        cmd.addOption("--output-file",           "+D",  1, "[f]ilename : string",
+        cmd.addOption("--output-file",           "+D",  1, "[f]ilename: string",
                                                            "generate specific DICOMDIR file\n(default: " DEFAULT_DICOMDIR_NAME " in current directory)");
-        cmd.addOption("--fileset-id",            "+F",  1, "[i]d : string (default: " DEFAULT_FILESETID ")",
+        cmd.addOption("--fileset-id",            "+F",  1, "[i]d: string (default: " DEFAULT_FILESETID ")",
                                                            "use specific file set ID");
-        cmd.addOption("--descriptor",            "+R",  1, "[f]ilename : string",
+        cmd.addOption("--descriptor",            "+R",  1, "[f]ilename: string",
                                                            "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
-        cmd.addOption("--char-set",              "+C",  1, "[c]har-set : string",
+        cmd.addOption("--char-set",              "+C",  1, "[c]harset: string",
                                                            "add a specific character set for descriptor\n(default: \"" DEFAULT_DESCRIPTOR_CHARSET "\" if descriptor present)");
       cmd.addSubGroup("reading:");
-        cmd.addOption("--input-directory",       "+id", 1, "[d]irectory : string",
+        cmd.addOption("--input-directory",       "+id", 1, "[d]irectory: string",
                                                            "read referenced DICOM files from directory d\n(default for --recurse: current directory)");
         cmd.addOption("--keep-filenames",        "-m",     "expect filenames to be in DICOM format (def.)");
         cmd.addOption("--map-filenames",         "+m",     "map to DICOM filenames (lowercase->uppercase,\nand remove trailing period)");
         cmd.addOption("--no-recurse",            "-r",     "do not recurse within directories (default)");
         cmd.addOption("--recurse",               "+r",     "recurse within filesystem directories");
 #ifdef PATTERN_MATCHING_AVAILABLE
-        cmd.addOption("--pattern",               "+p",  1, "[p]attern : string (only with --recurse)",
+        cmd.addOption("--pattern",               "+p",  1, "[p]attern: string (only with --recurse)",
                                                            "pattern for filename matching (wildcards)");
 #endif
     cmd.addGroup("processing options:");
@@ -185,11 +185,11 @@ int main(int argc, char *argv[])
         cmd.addOption("--no-resolution-check",   "-Nrc",   "do not reject images with non-standard\nspatial resolution (just warn)");
       cmd.addSubGroup("icon images:");
         cmd.addOption("--add-icon-image",        "+X",     "add monochrome icon image on IMAGE level\n(default for cardiac profiles)");
-        cmd.addOption("--icon-image-size",       "-Xs", 1, "[s]ize : integer (1..128)",
+        cmd.addOption("--icon-image-size",       "-Xs", 1, "[s]ize: integer (1..128)",
                                                            "width and height of the icon image (in pixel)\n(fixed: 128 for XA, 64 for CT/MR profile)");
-        cmd.addOption("--icon-file-prefix",      "-Xi", 1, "[p]refix : string",
+        cmd.addOption("--icon-file-prefix",      "-Xi", 1, "[p]refix: string",
                                                            "use PGM image 'prefix'+'dcmfile-in' as icon\n(default: create icon from DICOM image)");
-        cmd.addOption("--default-icon",          "-Xd", 1, "[f]ilename : string",
+        cmd.addOption("--default-icon",          "-Xd", 1, "[f]ilename: string",
                                                            "use specified PGM image if icon cannot be\ncreated automatically (default: black image)");
 #endif
     cmd.addGroup("output options:");
@@ -621,6 +621,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.89  2009-04-21 14:02:49  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.88  2009-01-15 10:15:23  joergr
  * Added support for optional JPEG 2000 decompression (currently uncommented).
  *

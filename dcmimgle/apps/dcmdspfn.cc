@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:47:30 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2009-04-21 14:05:12 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,37 +92,37 @@ int main(int argc, char *argv[])
      cmd.addOption("--debug",         "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options: (mutually exclusive)");
-     cmd.addOption("--monitor-file",  "+Im", 1, "[f]ilename : string",
+     cmd.addOption("--monitor-file",  "+Im", 1, "[f]ilename: string",
                                                 "text file describing the monitor characteristics");
-     cmd.addOption("--camera-file",   "+Ic", 1, "[f]ilename : string",
+     cmd.addOption("--camera-file",   "+Ic", 1, "[f]ilename: string",
                                                 "text file describing the camera characteristics");
-     cmd.addOption("--printer-file",  "+Ip", 1, "[f]ilename : string",
+     cmd.addOption("--printer-file",  "+Ip", 1, "[f]ilename: string",
                                                 "text file describing the printer characteristics");
-     cmd.addOption("--scanner-file",  "+Is", 1, "[f]ilename : string",
+     cmd.addOption("--scanner-file",  "+Is", 1, "[f]ilename: string",
                                                 "text file describing the scanner characteristics");
-     cmd.addOption("--lum-range",     "+Il", 2, "[m]in max : float",
+     cmd.addOption("--lum-range",     "+Il", 2, "[m]in max: float",
                                                 "minimum and maximum luminance (cd/m^2)");
-     cmd.addOption("--od-range",      "+Io", 2, "[m]in max : float",
+     cmd.addOption("--od-range",      "+Io", 2, "[m]in max: float",
                                                 "minimum and maximum optical density (OD),\nautomatically converted to luminance");
 
     cmd.addGroup("creation options:");
-     cmd.addOption("--ambient-light", "+Ca", 1, "[a]mbient light : float",
+     cmd.addOption("--ambient-light", "+Ca", 1, "[a]mbient light: float",
                                                 "ambient light value (cd/m^2, default: file f)");
-     cmd.addOption("--illumination",  "+Ci", 1, "[i]llumination : float",
+     cmd.addOption("--illumination",  "+Ci", 1, "[i]llumination: float",
                                                 "illumination value (cd/m^2, default: file f)");
-     cmd.addOption("--min-density",   "+Dn", 1, "[m]inimum optical density : float",
+     cmd.addOption("--min-density",   "+Dn", 1, "[m]inimum optical density: float",
                                                 "Dmin value (default: off, only with +Ip and +Io)");
-     cmd.addOption("--max-density",   "+Dx", 1, "[m]aximum optical density : float",
+     cmd.addOption("--max-density",   "+Dx", 1, "[m]aximum optical density: float",
                                                 "Dmax value (default: off, only with +Ip and +Io)");
-     cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs : integer",
+     cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs: integer",
                                                 "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
      cmd.addOption("--curve-fitting", "+Cf", 1, "[n]umber : integer",
                                                 "use polynomial curve fitting algorithm with order n\n(0..99, default: file setting or cubic spline)");
 
     cmd.addGroup("output options:");
-     cmd.addOption("--gsdf",          "+Og", 1, "[f]ilename : string",
+     cmd.addOption("--gsdf",          "+Og", 1, "[f]ilename: string",
                                                 "write GSDF curve data to file f");
-     cmd.addOption("--cielab",        "+Oc", 1, "[f]ilename : string",
+     cmd.addOption("--cielab",        "+Oc", 1, "[f]ilename: string",
                                                 "write CIELAB curve data to file f");
 
     if (app.parseCommandLine(cmd, argc, argv))
@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
         {
             DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
                                            DicomImageClass::DL_DebugMessages);
-            app.printIdentifier();                                            
+            app.printIdentifier();
         }
     }
 
@@ -361,6 +361,9 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
+ * Revision 1.24  2009-04-21 14:05:12  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.23  2008-09-25 14:47:30  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.

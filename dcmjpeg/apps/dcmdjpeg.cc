@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-19 12:11:24 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2009-04-21 14:07:14 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,22 +117,22 @@ int main(int argc, char *argv[])
      cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
 
   cmd.addGroup("processing options:");
-    cmd.addSubGroup("color space conversion options:");
+    cmd.addSubGroup("color space conversion:");
       cmd.addOption("--conv-photometric",    "+cp",    "convert if YCbCr photom. interpr. (default)");
       cmd.addOption("--conv-lossy",          "+cl",    "convert YCbCr to RGB if lossy JPEG");
       cmd.addOption("--conv-always",         "+ca",    "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",          "+cn",    "never convert color space");
 
-    cmd.addSubGroup("planar configuration options:");
+    cmd.addSubGroup("planar configuration:");
       cmd.addOption("--planar-auto",         "+pa",    "automatically determine planar configuration\nfrom SOP class and color space (default)");
       cmd.addOption("--color-by-pixel",      "+px",    "always store color-by-pixel");
       cmd.addOption("--color-by-plane",      "+pl",    "always store color-by-plane");
 
-    cmd.addSubGroup("SOP Instance UID options:");
+    cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-default",         "+ud",    "keep same SOP Instance UID (default)");
       cmd.addOption("--uid-always",          "+ua",    "always assign new UID");
 
-    cmd.addSubGroup("Workaround options for incorrect JPEG encodings:");
+    cmd.addSubGroup("workaround options for incorrect JPEG encodings:");
       cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6.");
 
   cmd.addGroup("output options:");
@@ -380,6 +380,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.20  2009-04-21 14:07:14  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.19  2009-03-19 12:11:24  joergr
  * Added more explicit message in case input transfer syntax is not supported.
  *

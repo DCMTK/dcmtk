@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-19 12:06:42 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-04-21 14:02:49 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,19 +121,19 @@ int main(int argc, char *argv[])
      cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
 
   cmd.addGroup("encapsulated pixel data encoding options:");
-    cmd.addSubGroup("pixel data fragmentation options:");
+    cmd.addSubGroup("pixel data fragmentation:");
      cmd.addOption("--fragment-per-frame",   "+ff",    "encode each frame as one fragment (default)");
      cmd.addOption("--fragment-size",        "+fs", 1, "[s]ize: integer",
                                                        "limit fragment size to s kbytes (non-standard)");
-    cmd.addSubGroup("basic offset table encoding options:");
+    cmd.addSubGroup("basic offset table encoding:");
      cmd.addOption("--offset-table-create",  "+ot",    "create offset table (default)");
      cmd.addOption("--offset-table-empty",   "-ot",    "leave offset table empty");
 
-    cmd.addSubGroup("SOP Class UID options:");
+    cmd.addSubGroup("SOP Class UID:");
      cmd.addOption("--class-default",        "+cd",    "keep SOP Class UID (default)");
      cmd.addOption("--class-sc",             "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
 
-    cmd.addSubGroup("SOP Instance UID options:");
+    cmd.addSubGroup("SOP Instance UID:");
      cmd.addOption("--uid-never",            "+un",    "never assign new UID (default)");
      cmd.addOption("--uid-always",           "+ua",    "always assign new UID");
 
@@ -375,6 +375,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
+ * Revision 1.17  2009-04-21 14:02:49  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.16  2009-03-19 12:06:42  joergr
  * Replaced '\n' by OFendl where appropriate.
  *

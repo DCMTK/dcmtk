@@ -132,7 +132,7 @@ other network options:
   -aet  --aetitle  aetitle: string
           set my AE title (default: STORESCP)
 
-  -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
   -dhl  --disable-host-lookup  disable hostname lookup

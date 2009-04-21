@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-03 11:45:02 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2009-04-21 14:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,12 +137,10 @@ int main(int argc, char *argv[])
      cmd.addOption("--debug",               "-d",       "debug mode, print debug information");
 
     cmd.addGroup("input options:");
-
      cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",          "+f",       "read file format or data set (default)");
       cmd.addOption("--read-file-only",     "+fo",      "read file format only");
       cmd.addOption("--read-dataset",       "-f",       "read data set without file meta information");
-
      cmd.addSubGroup("input transfer syntax:");
       cmd.addOption("--read-xfer-auto",     "-t=",      "use TS recognition (default)");
       cmd.addOption("--read-xfer-detect",   "-td",      "ignore TS specified in the file meta header");
@@ -161,22 +159,22 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("scaling:");
       cmd.addOption("--recognize-aspect",    "+a",      "recognize pixel aspect ratio (default)");
       cmd.addOption("--ignore-aspect",       "-a",      "ignore pixel aspect ratio when scaling");
-      cmd.addOption("--interpolate",         "+i",   1, "[n]umber of algorithm : integer",
+      cmd.addOption("--interpolate",         "+i",   1, "[n]umber of algorithm: integer",
                                                         "use interpolation when scaling (1..4, def: 1)");
       cmd.addOption("--no-interpolation",    "-i",      "no interpolation when scaling");
       cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio (default)");
-      cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor : float",
+      cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor: float",
                                                         "scale x axis by factor, auto-compute y axis");
-      cmd.addOption("--scale-y-factor",      "+Syf", 1, "[f]actor : float",
+      cmd.addOption("--scale-y-factor",      "+Syf", 1, "[f]actor: float",
                                                         "scale y axis by factor, auto-compute x axis");
-      cmd.addOption("--scale-x-size",        "+Sxv", 1, "[n]umber : integer",
+      cmd.addOption("--scale-x-size",        "+Sxv", 1, "[n]umber: integer",
                                                         "scale x axis to n pixels, auto-compute y axis");
-      cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber : integer",
+      cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber: integer",
                                                         "scale y axis to n pixels, auto-compute x axis");
      cmd.addSubGroup("other transformations:");
-      cmd.addOption("--clip-region",         "+C",   4, "[l]eft [t]op [w]idth [h]eight : integer",
+      cmd.addOption("--clip-region",         "+C",   4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                         "clip rectangular image region (l, t, w, h)");
-     cmd.addSubGroup("SOP Instance UID options:");
+     cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-always",          "+ua",     "always assign new SOP Instance UID (default)");
       cmd.addOption("--uid-never",           "+un",     "never assign new SOP Instance UID");
 
@@ -202,7 +200,7 @@ int main(int argc, char *argv[])
     cmd.addSubGroup("data set trailing padding (not with --write-dataset):");
       cmd.addOption("--padding-retain",      "-p=",     "do not change padding\n(default if not --write-dataset)");
       cmd.addOption("--padding-off",         "-p",      "no padding (implicit if --write-dataset)");
-      cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad : integer",
+      cmd.addOption("--padding-create",      "+p",   2, "[f]ile-pad [i]tem-pad: integer",
                                                         "align file on multiple of f bytes\nand items on multiple of i bytes");
 
     if (app.parseCommandLine(cmd, argc, argv))
@@ -665,6 +663,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.21  2009-04-21 14:04:12  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.20  2009-04-03 11:45:02  joergr
  * Added check whether neither scaling nor clipping is required.
  *

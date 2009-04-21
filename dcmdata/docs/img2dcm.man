@@ -50,7 +50,7 @@ dcmfile-out  DICOM output file
 
 \subsection input_options input options
 \verbatim
-general input options:
+general:
 
   -i    --input-format  [i]nput file format: string
           supported formats: JPEG (default)
@@ -67,7 +67,7 @@ general input options:
   -ii   --instance-inc
           increase instance number read from DICOM file
 
-JPEG input options:
+JPEG format:
 
   -dp   --disable-progr
           disable support for progressive JPEG
@@ -435,6 +435,6 @@ images
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
