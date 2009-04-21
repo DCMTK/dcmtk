@@ -111,7 +111,7 @@ input transfer syntax:
 
 \subsection sco signature creation options (only with --sign or --sign-item):
 \verbatim
-private key password options:
+private key password:
 
   +ps   --std-passwd
           prompt user to type password on stdin (default)
@@ -122,7 +122,7 @@ private key password options:
   -pw   --null-passwd
           use empty string as password
 
-key and certificate file format options:
+key and certificate file format:
 
   -pem  --pem-keys
           read keys/certificates as PEM file (default)
@@ -130,7 +130,7 @@ key and certificate file format options:
   -der  --der-keys
           read keys/certificates as DER file
 
-digital signature profile options:
+digital signature profile:
 
   -pf   --profile-none
           don't enforce any signature profile (default)
@@ -144,7 +144,7 @@ digital signature profile options:
   +pa   --profile-auth
           enforce authorization signature profile
 
-MAC algorithm options:
+MAC algorithm:
 
   +mr   --mac-ripemd160
           use RIPEMD 160 (default)
@@ -155,7 +155,7 @@ MAC algorithm options:
   +mm   --mac-md5
           use MD 5
 
-tag selection options:
+tag selection:
 
   -t    --tag
           tag: "xxxx,xxxx" or a data dictionary name
@@ -165,7 +165,7 @@ tag selection options:
   -tf   --tag-file  filename: string
           read list of tags from text file
 
-signature format options:
+signature format:
 
   -fn   --format-new
           use correct DICOM signature format (default)

@@ -64,7 +64,7 @@ character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset : string constant
+  +Ca  --charset-assume  [c]harset: string constant
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
          assume charset c if no extended charset found
 
@@ -218,6 +218,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

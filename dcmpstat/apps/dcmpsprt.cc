@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2008, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,8 +26,8 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2009-04-21 14:10:54 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--print-no-lighting", "-pl",    "do not prepend illumination to annotation");
 
     cmd.addGroup("overlay options:");
-     cmd.addOption("--overlay",           "+O" , 3, "[f]ilename : string, [x] [y] : integer",
+     cmd.addOption("--overlay",           "+O" , 3, "[f]ilename: string, [x] [y]: integer",
                                                     "load overlay data from PBM file f and\ndisplay at position (x,y)");
      cmd.addOption("--ovl-graylevel",     "+Og", 1, "[v]alue: integer (0..4095)",
                                                     "use overlay gray level v (default: 4095 = white)");
@@ -712,6 +712,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
+ * Revision 1.40  2009-04-21 14:10:54  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.39  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

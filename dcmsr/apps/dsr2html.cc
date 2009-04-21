@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:14:21 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2009-04-21 14:13:27 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,7 +199,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--skip-invalid-items",   "-Ei",    "skip invalid content items (incl. sub-tree)");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset : string constant (latin-1 to -5,",
+        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
                                                           "greek, cyrillic, arabic, hebrew)\n"
                                                           "assume c if undeclared extended charset found");
     cmd.addGroup("output options:");
@@ -209,9 +209,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--xhtml-1.1",            "+X1",    "comply with XHTML version 1.1 specification");
         cmd.addOption("--add-document-type",    "+Hd",    "add reference to SGML document type definition");
       cmd.addSubGroup("cascading style sheet (CSS), not with HTML 3.2:");
-        cmd.addOption("--css-reference",        "+Sr", 1, "URL : string",
+        cmd.addOption("--css-reference",        "+Sr", 1, "URL: string",
                                                           "add reference to specified CSS to document");
-        cmd.addOption("--css-file",             "+Sf", 1, "filename : string",
+        cmd.addOption("--css-file",             "+Sf", 1, "[f]ilename: string",
                                                           "embed content of specified CSS into document");
       cmd.addSubGroup("general rendering:");
         cmd.addOption("--expand-inline",        "+Ri",    "expand short content items inline (default)");
@@ -442,6 +442,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.32  2009-04-21 14:13:27  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.31  2008-09-25 14:14:21  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

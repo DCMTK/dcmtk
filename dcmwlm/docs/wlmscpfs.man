@@ -152,7 +152,7 @@ other network options:
         --sleep-during  [s]econds: integer
           sleep s seconds during find (default: 0)
 
-  -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
   -dhl  --disable-host-lookup

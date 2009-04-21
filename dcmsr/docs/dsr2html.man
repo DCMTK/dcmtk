@@ -113,7 +113,7 @@ character set:
   +Cr  --charset-require
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume  [c]harset : string constant
+  +Ca  --charset-assume  [c]harset: string constant
          (latin-1 to -5, greek, cyrillic, arabic, hebrew)
          assume c if undeclared extended charset found
 \endverbatim
@@ -136,10 +136,10 @@ HTML/XHTML compatibility:
 
 cascading style sheet (CSS), not with HTML 3.2:
 
-  +Sr  --css-reference  URL : string
+  +Sr  --css-reference  URL: string
          add reference to specified CSS to document
 
-  +Sf  --css-file  filename : string
+  +Sf  --css-file  [f]ilename: string
          embed content of specified CSS into document
 
 general rendering:
@@ -260,6 +260,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2000-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

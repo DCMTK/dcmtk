@@ -33,7 +33,7 @@ dcmfile-out  DICOM presentation state file to be created
 
 \section options OPTIONS
 
-\subsection general_options general options:
+\subsection general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -210,6 +210,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1998-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

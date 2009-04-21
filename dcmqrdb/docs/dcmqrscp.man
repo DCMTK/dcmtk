@@ -259,7 +259,7 @@ proposed transmission transfer syntaxes (outgoing associations):
           propose deflated explicit VR little endian TS
           and all uncompressed transfer syntaxes
 
-network host access control (tcp wrapper) options:
+network host access control (tcp wrapper):
 
   -ac   --access-full
           accept connections from any host (default)
@@ -278,7 +278,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -pdu  --max-pdu  [n]umber of bytes: integer [4096..131072]
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes
           (default: use value from configuration file)
 

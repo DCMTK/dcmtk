@@ -20,6 +20,66 @@ Changes between releases are documented here.
   Affects: dcmsr/include/dcmtk/dcmsr/dsrdoc.h
            dcmsr/libsrc/dsrdoctn.cc
 
+- Fixed minor inconsistencies in manpage / syntax usage.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/img2dcm.man
+           dcmdata/docs/pdf2dcm.man
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmquant.man
+           dcmimage/docs/dcmscale.man
+           dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/docs/dcmdspfn.man
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpeg/docs/dcmmkdir.man
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmnet/docs/storescu.man
+           dcmnet/docs/termscu.man
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/docs/dcmpsmk.man
+           dcmpstat/docs/dcmpsprt.man
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
+           dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/docs/dsr2html.man
+           dcmsr/docs/dsr2xml.man
+           dcmwlm/apps/wlcefs.cc
+           dcmwlm/docs/wlmscpfs.man
+
 **** Changes from 2009.04.20 (riesmeier)
 
 - Fixed issue with wrong BitsStored value in writeImageToDataset(). Thanks to

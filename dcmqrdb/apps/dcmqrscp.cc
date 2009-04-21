@@ -22,8 +22,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-09 09:13:20 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2009-04-21 14:11:45 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,7 +246,7 @@ main(int argc, char *argv[])
 #endif
 
 #ifdef WITH_TCPWRAPPER
-    cmd.addSubGroup("network host access control (tcp wrapper) options:");
+    cmd.addSubGroup("network host access control (tcp wrapper):");
       cmd.addOption("--access-full",            "-ac",       "accept connections from any host (default)");
       cmd.addOption("--access-control",         "+ac",       "enforce host access control rules");
 #endif
@@ -255,13 +255,13 @@ main(int argc, char *argv[])
       cmd.addOption("--timeout",                "-to",    1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       cmd.addOption("--acse-timeout",           "-ta",    1, "[s]econds: integer (default: 30)", "timeout for ACSE messages");
       cmd.addOption("--dimse-timeout",          "-td",    1, "[s]econds: integer (default: unlimited)", "timeout for DIMSE messages");
-      OFString opt4 = "[n]umber of bytes: integer [";
+      OFString opt4 = "[n]umber of bytes: integer (";
       sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "..";
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
-      opt4 += "]";
+      opt4 += ")";
       cmd.addOption("--max-pdu",                "-pdu",   1, opt4.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)");
       cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--refuse",                              "refuse association");
@@ -758,6 +758,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.16  2009-04-21 14:11:45  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.15  2009-02-09 09:13:20  joergr
  * Allowed option --compression-level also with --propose-deflated (storescu).
  *

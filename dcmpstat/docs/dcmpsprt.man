@@ -179,7 +179,7 @@ dcmfile-in  DICOM image file(s) to be printed
 
 \subsection overlay_options overlay options
 \verbatim
-  +O   --overlay  [f]ilename : string, [x] [y] : integer
+  +O   --overlay  [f]ilename: string, [x] [y]: integer
          load overlay data from PBM file f and display at position (x,y)
 
   +Og  --ovl-graylevel  [v]alue: integer (0..4095)
@@ -282,6 +282,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1999-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 1999-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

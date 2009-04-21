@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:14:21 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2009-04-21 14:13:27 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
         cmd.addOption("--charset-require",      "+Cr",    "require declaration of ext. charset (default)");
-        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset : string constant (latin-1 to -5,",
+        cmd.addOption("--charset-assume",       "+Ca", 1, "[c]harset: string constant (latin-1 to -5,",
                                                           "greek, cyrillic, arabic, hebrew)\n"
                                                           "assume charset c if no extended charset found");
         cmd.addOption("--charset-check-all",    "+Cc",    "check all data elements with string values\n(default: only PN, LO, LT, SH, ST and UT)");
@@ -363,6 +363,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.38  2009-04-21 14:13:27  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.37  2008-09-25 14:14:21  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

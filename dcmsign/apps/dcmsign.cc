@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:55:22 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2009-04-21 14:12:23 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -764,27 +764,27 @@ int main(int argc, char *argv[])
       cmd.addOption("--remove-all",                "+ra",       "remove all signatures from data set");
 
   cmd.addGroup("signature creation options (only with --sign or --sign-item):");
-    cmd.addSubGroup("private key password options:");
+    cmd.addSubGroup("private key password:");
       cmd.addOption("--std-passwd",               "+ps",        "prompt user to type password on stdin (default)");
       cmd.addOption("--use-passwd",               "+pw",    1,  "[p]assword: string ",
                                                                 "use specified password");
       cmd.addOption("--null-passwd",              "-pw",        "use empty string as password");
-    cmd.addSubGroup("key and certificate file format options:");
+    cmd.addSubGroup("key and certificate file format:");
       cmd.addOption("--pem-keys",                 "-pem",       "read keys/certificates as PEM file (default)");
       cmd.addOption("--der-keys",                 "-der",       "read keys/certificates as DER file");
-    cmd.addSubGroup("digital signature profile options:");
+    cmd.addSubGroup("digital signature profile:");
       cmd.addOption("--profile-none",             "-pf",        "don't enforce any signature profile (default)");
       cmd.addOption("--profile-base",             "+pb",        "enforce base RSA signature profile");
       cmd.addOption("--profile-creator",          "+pc",        "enforce creator RSA signature profile");
       cmd.addOption("--profile-auth",             "+pa",        "enforce authorization signature profile");
-    cmd.addSubGroup("MAC algorithm options:");
+    cmd.addSubGroup("MAC algorithm:");
       cmd.addOption("--mac-ripemd160",            "+mr",        "use RIPEMD 160 (default)");
       cmd.addOption("--mac-sha1",                 "+ms",        "use SHA-1");
       cmd.addOption("--mac-md5",                  "+mm",        "use MD 5");
-    cmd.addSubGroup("tag selection options:");
+    cmd.addSubGroup("tag selection:");
       cmd.addOption("--tag",                      "-t",      1, "tag: \"xxxx,xxxx\" or a data dictionary name", "sign only specified tag\nthis option can be specified multiple times");
       cmd.addOption("--tag-file",                 "-tf",     1, "filename: string", "read list of tags from text file");
-    cmd.addSubGroup("signature format options:");
+    cmd.addSubGroup("signature format:");
       cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
       cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format,\n"
                                                                 "non-conformant if signature includes\n"
@@ -1171,6 +1171,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.27  2009-04-21 14:12:23  joergr
+ *  Fixed minor inconsistencies in manpage / syntax usage.
+ *
  *  Revision 1.26  2008-09-25 14:55:22  joergr
  *  Added support for printing the expanded command line arguments.
  *  Always output the resource identifier of the command line tool in debug mode.

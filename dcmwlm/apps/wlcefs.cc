@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-17 11:54:13 $
+ *  Update Date:      $Date: 2009-04-21 14:14:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,13 +178,13 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
       opt3 += ")";
-      OFString opt4 = "[n]umber of bytes: integer [";
+      OFString opt4 = "[n]umber of bytes: integer (";
       sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "..";
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
-      opt4 += "]";
+      opt4 += ")";
       cmd->addOption("--max-pdu",             "-pdu", 1, opt4.c_str(), opt3.c_str());
       cmd->addOption("--disable-host-lookup", "-dhl",    "disable hostname lookup");
 
@@ -435,6 +435,9 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
+** Revision 1.24  2009-04-21 14:14:05  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.23  2009-04-17 11:54:13  joergr
 ** Added new command line option --fork in order to explicitly indicate what
 ** the default behavior is (multi-processing).

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2008, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 15:34:37 $
+ *  Update Date:      $Date: 2009-04-21 14:11:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,13 +155,13 @@ int main( int argc, char *argv[] )
     opt1 += APPLICATIONTITLE;
     opt1 += ")";
     cmd.addOption( "--aetitle",                   "-aet", 1, "aetitle: string", opt1.c_str() );
-    OFString opt2 = "[n]umber of bytes: integer [";
+    OFString opt2 = "[n]umber of bytes: integer (";
     sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
     opt2 += tempstr;
     opt2 += "..";
     sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
     opt2 += tempstr;
-    opt2 += "]";
+    opt2 += ")";
     cmd.addOption( "--max-pdu",                   "-pdu", 1, opt2.c_str(), "set max receive pdu to n bytes\n(default: use value from configuration file)" );
 
   cmd.addGroup( "other options:" );
@@ -428,6 +428,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.12  2009-04-21 14:11:45  joergr
+ * Fixed minor inconsistencies in manpage / syntax usage.
+ *
  * Revision 1.11  2008-09-25 15:34:37  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2009-04-21 14:10:54 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -436,6 +436,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
+** Revision 1.26  2009-04-21 14:10:54  joergr
+** Fixed minor inconsistencies in manpage / syntax usage.
+**
 ** Revision 1.25  2008-09-25 16:30:24  joergr
 ** Added support for printing the expanded command line arguments.
 ** Always output the resource identifier of the command line tool in debug mode.
