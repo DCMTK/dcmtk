@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.22 (riesmeier)
+
+- Made inetd code and documentation more consistent with ppsscpfs.
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.man
+
 **** Changes from 2009.04.21 (riesmeier)
 
 - Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way

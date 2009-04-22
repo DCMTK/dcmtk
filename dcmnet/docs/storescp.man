@@ -23,11 +23,12 @@ application also supports the Verification Service Class as an SCP.
 \section parameters PARAMETERS
 
 \verbatim
-port  tcp/ip port number to listen on.
-      This parameter is required unless the --inetd option is specified.
+port  tcp/ip port number to listen on
+      (this parameter is required unless the --inetd option is specified)
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options
 \verbatim
   -h    --help
@@ -120,7 +121,7 @@ network host access control (tcp wrapper):
 other network options:
 
   -id   --inetd
-          run from inetd super server
+          run from inetd super server (not with --fork)
           (this option is available only on Posix platforms)
 
   -ta   --acse-timeout  [s]econds: integer (default: 30)

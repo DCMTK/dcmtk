@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:09:22 $
- *  CVS/RCS Revision: $Revision: 1.108 $
+ *  Update Date:      $Date: 2009-04-22 13:32:02 $
+ *  CVS/RCS Revision: $Revision: 1.109 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -486,14 +486,11 @@ int main(int argc, char *argv[])
       }
     }
 
-    /* command line parameters */
-    if (cmd.getParamCount() == 1)
-      app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
-
 #ifdef HAVE_CONFIG_H
     if (cmd.findOption("--inetd"))
     {
       opt_inetd_mode = OFTrue;
+      opt_forkMode = OFFalse;
 
       // duplicate stdin, which is the socket passed by inetd
       int inetd_fd = dup(0);
@@ -538,24 +535,18 @@ int main(int argc, char *argv[])
 #endif
 #endif
 
-    if (cmd.findOption("--acse-timeout"))
+    if (opt_inetd_mode)
     {
-      OFCmdSignedInt opt_timeout = 0;
-      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-      opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+      // port number is not required in inetd mode
+      if (cmd.getParamCount() > 0)
+        app.printWarning("Parameter port not required");
+    } else {
+      // omitting the port number is only allowed in inetd mode
+      if (cmd.getParamCount() == 0)
+        app.printError("Missing parameter port");
+      else
+        app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
     }
-
-    if (cmd.findOption("--dimse-timeout"))
-    {
-      OFCmdSignedInt opt_timeout = 0;
-      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
-      opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
-      opt_blockMode = DIMSE_NONBLOCKING;
-    }
-
-    // omitting the port number is only allowed in inetd mode
-    if ((!opt_inetd_mode) && (cmd.getParamCount() == 0))
-      app.printError("Missing parameter port");
 
     if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
     if (cmd.findOption("--debug"))
@@ -585,6 +576,20 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--implicit")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     if (cmd.findOption("--accept-all")) opt_acceptAllXfers = OFTrue;  opt_networkTransferSyntax = EXS_Unknown;
     cmd.endOptionBlock();
+
+    if (cmd.findOption("--acse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+      opt_acse_timeout = OFstatic_cast(int, opt_timeout);
+    }
+    if (cmd.findOption("--dimse-timeout"))
+    {
+      OFCmdSignedInt opt_timeout = 0;
+      app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+      opt_dimse_timeout = OFstatic_cast(int, opt_timeout);
+      opt_blockMode = DIMSE_NONBLOCKING;
+    }
 
     if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
     if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
@@ -2720,6 +2725,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.109  2009-04-22 13:32:02  joergr
+** Made inetd code and documentation more consistent with ppsscpfs.
+**
 ** Revision 1.108  2009-04-21 14:09:22  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **
