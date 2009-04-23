@@ -57,7 +57,6 @@ dcmfile-out  DICOM output filename
   +d    --dump  [f]ilename: string
           dump byte stream fed into the MAC codec to file
           (only with --sign or --sign-item)
-
 \endverbatim
 
 \subsection input_options input options
@@ -109,7 +108,7 @@ input transfer syntax:
           remove all signatures from data set
 \endverbatim
 
-\subsection sco signature creation options (only with --sign or --sign-item):
+\subsection signature_creation_options signature creation options (only with --sign or --sign-item):
 \verbatim
 private key password:
 
@@ -173,7 +172,6 @@ signature format:
   -fo   --format-old
           use old (pre-3.5.4) DCMTK signature format, non-conformant
           if signature includes compressed pixel data
-
 \endverbatim
 
 \subsection output_options output options

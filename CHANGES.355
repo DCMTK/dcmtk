@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.23 (riesmeier)
+
+- Fixed minor layout and formatting issues.
+  Affects: dcmsign/docs/dcmsign.man
+
 **** Changes from 2009.04.22 (riesmeier)
 
 - Made inetd code and documentation more consistent with ppsscpfs.
