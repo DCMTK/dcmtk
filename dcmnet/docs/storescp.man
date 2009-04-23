@@ -130,7 +130,7 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -aet  --aetitle  aetitle: string
+  -aet  --aetitle  [a]etitle: string
           set my AE title (default: STORESCP)
 
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
