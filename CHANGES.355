@@ -3,8 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2009.04.23 (riesmeier)
 
+- Changed the condition under which the process is terminated in inetd mode
+  (the behavior should be identical but now the source code is more clear).
+  Affects: dcmnet/apps/storescp.cc
+
 - Fixed minor layout and formatting issues.
-  Affects: dcmsign/docs/dcmsign.man
+  Affects: dcmnet/docs/storescp.man
+           dcmsign/docs/dcmsign.man
 
 **** Changes from 2009.04.22 (riesmeier)
 

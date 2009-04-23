@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-22 13:32:02 $
- *  CVS/RCS Revision: $Revision: 1.109 $
+ *  Update Date:      $Date: 2009-04-23 16:51:41 $
+ *  CVS/RCS Revision: $Revision: 1.110 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--accept-all",             "+xa",     "accept all supported transfer syntaxes");
 
 #ifdef WITH_TCPWRAPPER
-    cmd.addSubGroup("network host access control (tcp wrapper)");
+    cmd.addSubGroup("network host access control (tcp wrapper):");
       cmd.addOption("--access-full",            "-ac",     "accept connections from any host (default)");
       cmd.addOption("--access-control",         "+ac",     "enforce host access control rules");
 #endif
@@ -325,7 +325,7 @@ int main(int argc, char *argv[])
       OFString opt1 = "set my AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet", 1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",                "-aet", 1, "[a]etitle: string", opt1.c_str());
       OFString opt3 = "set max receive pdu to n bytes (def.: ";
       sprintf(tempstr, "%ld", OFstatic_cast(long, ASC_DEFAULTMAXPDU));
       opt3 += tempstr;
@@ -1167,7 +1167,7 @@ int main(int argc, char *argv[])
     }
 #endif
     // if running in inetd mode, we always terminate after one association
-    if (dcmExternalSocketHandle.get() >= 0) break;
+    if (opt_inetd_mode) break;
 
     // if running in multi-process mode, always terminate child after one association
     if (DUL_processIsForkedChild()) break;
@@ -2725,6 +2725,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.110  2009-04-23 16:51:41  joergr
+** Changed the condition under which the process is terminated in inetd mode
+** (the behavior should be identical but now the source code is more clear).
+**
 ** Revision 1.109  2009-04-22 13:32:02  joergr
 ** Made inetd code and documentation more consistent with ppsscpfs.
 **
