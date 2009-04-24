@@ -22,8 +22,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:11:45 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-04-24 12:29:17 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,11 +154,11 @@ main(int argc, char *argv[])
 
   OFCommandLine cmd;
 
-  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("port", "tcp/ip port number to listen on\n(default: in config file)", OFCmdParam::PM_Optional);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                               "print version information and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--arguments",                             "print expanded command line arguments");
@@ -178,7 +178,9 @@ main(int argc, char *argv[])
         cmd.addOption("--config",               "-c",     1, opt5.c_str(), "use specific configuration file");
     }
 #ifdef HAVE_FORK
+  cmd.addGroup("multi-process options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--single-process",           "-s",        "single process mode");
+    cmd.addOption("--fork",                                  "fork child process for each assoc. (default)");
 #endif
 
   cmd.addGroup("database options:");
@@ -353,7 +355,10 @@ main(int argc, char *argv[])
       }
       if (cmd.findOption("--config")) app.checkValue(cmd.getValue(opt_configFileName));
 #ifdef HAVE_FORK
+      cmd.beginOptionBlock();
       if (cmd.findOption("--single-process")) options.singleProcess_ = OFTrue;
+      if (cmd.findOption("--fork")) options.singleProcess_ = OFFalse;
+      cmd.endOptionBlock();
 #endif
 
       if (cmd.findOption("--require-find")) options.requireFindForMove_ = OFTrue;
@@ -758,6 +763,11 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.17  2009-04-24 12:29:17  joergr
+ * Added new command line option --fork in order to explicitly indicate what
+ * the default behavior is (= multi-processing).
+ * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  * Revision 1.16  2009-04-21 14:11:45  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

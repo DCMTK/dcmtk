@@ -1,6 +1,46 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.24 (riesmeier)
+
+- Added new command line option --fork in order to explicitly indicate what
+  the default behavior is (= multi-processing).
+  Affects: dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/docs/dcmqrscp.man
+
+- Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+  Affects: dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/img2dcm.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/termscu.cc
+           dcmnet/docs/echoscu.man
+           dcmnet/docs/findscu.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescu.man
+           dcmpstat/docs/dcmprscu.man
+           dcmqrdb/apps/dcmqrscp.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/docs/dcmqridx.man
+           dcmqrdb/docs/dcmqrscp.man
+           dcmqrdb/docs/dcmqrti.man
+           dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+           dcmwlm/docs/wlmscpfs.man
+           dcmwlm/docs/wwwapp.txt
+
 **** Changes from 2009.04.23 (riesmeier)
 
 - Changed the condition under which the process is terminated in inetd mode

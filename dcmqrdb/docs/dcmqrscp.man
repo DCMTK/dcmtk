@@ -66,7 +66,10 @@ port  tcp/ip port number to listen on (default: in config file)
   # configuration file is not available.  See the documentation
   # on configuration for more information (dcmqrcnf.txt and the
   # example configuration file dcmqrscp.cfg).
+\endverbatim
 
+\subsection multiprocess_options multi-process options
+\verbatim
   -s    --single-process
           single process mode
 
@@ -75,6 +78,9 @@ port  tcp/ip port number to listen on (default: in config file)
   # each association.  This option will prevent such copies being
   # spawned and is particularly useful when running within a
   # debugger.
+
+        --fork
+          fork child process for each association (default)
 \endverbatim
 
 \subsection database_options database options
