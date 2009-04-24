@@ -3,24 +3,24 @@
 RANDOM SEEDS FOR TLS TRANSMISSION IN DCMTK
 ==========================================
 
-The Transport Layer Security (TLS) protocol relies on a pseudo-random number 
-generator (PRNG) for the creation of session keys.  The ability of an 
-attacker (e.g. eavesdropper) to predict the sequence of random numbers 
-issued by the PRNG would facilitate cryptographic attacks against the TLS 
-protected communication. For this reason it is important that the internal 
-state of the PRNG is initialized with true random data which cannot be 
-predicted by an attacker. The OpenSSL library on which DCMTK relies for its 
-TLS functions initially tests whether the PRNG has been seeded with 
-sufficient random data. If this test fails, the a warning is issued and no 
+The Transport Layer Security (TLS) protocol relies on a pseudo-random number
+generator (PRNG) for the creation of session keys.  The ability of an
+attacker (e.g. eavesdropper) to predict the sequence of random numbers
+issued by the PRNG would facilitate cryptographic attacks against the TLS
+protected communication. For this reason it is important that the internal
+state of the PRNG is initialized with true random data which cannot be
+predicted by an attacker. The OpenSSL library on which DCMTK relies for its
+TLS functions initially tests whether the PRNG has been seeded with
+sufficient random data. If this test fails, the a warning is issued and no
 secure TLS connection can be negotiated:
 
     Warning: PRNG for TLS not seeded with sufficient random data.
 
-For this reason, all TLS-aware DCMTK applications allow to initialize the 
-PRNG with a random seed which is read from file. Optionally the (modified) 
-state of the PRNG can be written back to file upon termination of the 
-application, providing a new random seed for the next application run. The 
-command line options that control this behaviour for the storescu and 
+For this reason, all TLS-aware DCMTK applications allow to initialize the
+PRNG with a random seed which is read from file. Optionally the (modified)
+state of the PRNG can be written back to file upon termination of the
+application, providing a new random seed for the next application run. The
+command line options that control this behaviour for the storescu and
 storescp applications are:
 
     +rs   --seed              [f]ilename: string
@@ -29,17 +29,17 @@ storescp applications are:
     +wf   --write-seed-file   [f]ilename: string (only with --seed)
                               write modified seed to file [f]
 
-This document describes sources from which an initial random seed file 
+This document describes sources from which an initial random seed file
 containing physical random data can be obtained.
 
 
 1. Kernel Random Number Source Device
 
-Some modern Unix operating systems (in particular Linux) have a kernel 
-module that gathers environmental noise from device drivers and other 
-sources and feeds them into an entropy pool.  Random data can be read from 
-this entropy pool using the /dev/random and /dev/urandom devices (see 
-random(4) manual page.) For example, the following command creates a 1024 
+Some modern Unix operating systems (in particular Linux) have a kernel
+module that gathers environmental noise from device drivers and other
+sources and feeds them into an entropy pool.  Random data can be read from
+this entropy pool using the /dev/random and /dev/urandom devices (see
+random(4) manual page.) For example, the following command creates a 1024
 byte file "randseed.bin" that can be used to seed the OpenSSL PRNG:
 
     dd if=/dev/urandom of=randseed.bin count=2
@@ -47,23 +47,23 @@ byte file "randseed.bin" that can be used to seed the OpenSSL PRNG:
 
 2. GUI content
 
-The content of the screen on systems with graphical user interface is hardly 
-predictable for an attacker (unless an application is run as a service in 
-the background with a well-predictable blank or login screen.)  For this 
-reason, the Win32 version of OpenSSL always seeds the PRNG with the content 
-of the current screen. This feature is built-in and does not require 
+The content of the screen on systems with graphical user interface is hardly
+predictable for an attacker (unless an application is run as a service in
+the background with a well-predictable blank or login screen.)  For this
+reason, the Win32 version of OpenSSL always seeds the PRNG with the content
+of the current screen. This feature is built-in and does not require
 additional user interaction.
 
 
 3. Entropy Gathering Demon (EGD)
 
-Entropy Gathering Demon is a user space application (Perl script) that can 
-be run as a daemon on Unix systems that do not provide a kernel random 
-number source device. EGD is available from http://www.lothar.com/tech/crypto/ 
+Entropy Gathering Demon is a user space application (Perl script) that can
+be run as a daemon on Unix systems that do not provide a kernel random
+number source device. EGD is available from http://www.lothar.com/tech/crypto/
 
-On systems where EGD is installed, the "openssl" tool can be used to 
-generate a random seeed for the PRNG from EGD. If the EGD socket is 
-installed as /etc/entropy, the following command creates a 1024 byte 
+On systems where EGD is installed, the "openssl" tool can be used to
+generate a random seeed for the PRNG from EGD. If the EGD socket is
+installed as /etc/entropy, the following command creates a 1024 byte
 file "randseed.bin" that can be used to seed the OpenSSL PRNG:
 
     openssl rand -rand /etc/entropy -out randseed.bin 1024
@@ -71,24 +71,24 @@ file "randseed.bin" that can be used to seed the OpenSSL PRNG:
 
 4. Pseudo Random Number Generator Daemon (PRNGD)
 
-Pseudo Random Number Generator Daemon is a user space application that 
-"offers an EGD compatible interface to obtain random data and is intented to 
-be used as an entropy source to feed other software, especially software 
-based on OpenSSL. Like EGD it calls system programs to collect entropy. 
-Unlike EGD it does not generate a pool of random bits that can be called 
-from other software. Rather more it feeds the bits gathered into the OpenSSL 
-PRNG from which the "random bits" are obtained when requested. This way, 
-PRNGD is never drained and can never block (unlike EGD), so it is also 
-suitable to seed inetd-started programs. It also features a seed-save file, 
-so that it is immediately usable after system start." PRNGD is available 
+Pseudo Random Number Generator Daemon is a user space application that
+"offers an EGD compatible interface to obtain random data and is intented to
+be used as an entropy source to feed other software, especially software
+based on OpenSSL. Like EGD it calls system programs to collect entropy.
+Unlike EGD it does not generate a pool of random bits that can be called
+from other software. Rather more it feeds the bits gathered into the OpenSSL
+PRNG from which the "random bits" are obtained when requested. This way,
+PRNGD is never drained and can never block (unlike EGD), so it is also
+suitable to seed inetd-started programs. It also features a seed-save file,
+so that it is immediately usable after system start." PRNGD is available
 from http://www.aet.tu-cottbus.de/personen/jaenicke/postfix_tls/prngd.html
 
 
 5. Pretty Good Privacy (PGP)
 
-Pretty Good Privacy contains a random data generator that relies on the time 
-intervals between keystrokes.  The following Unix shell commands would cause 
-PGP 2.6.3i to create a file /tmp/random_data/randseed.bin with about 1000 
+Pretty Good Privacy contains a random data generator that relies on the time
+intervals between keystrokes.  The following Unix shell commands would cause
+PGP 2.6.3i to create a file /tmp/random_data/randseed.bin with about 1000
 bits of random data, which can be used to seed the OpenSSL PRNG:
 
     mkdir /tmp/random_data
@@ -99,13 +99,11 @@ bits of random data, which can be used to seed the OpenSSL PRNG:
 
 6. Medical Images
 
-Medical image modalities such as CT, MR, Ultrasound or CR produce lots of 
-unpredictable random noise in the background that is perfectly suited to 
-initialize a PRNG, given that the image is never made available to a third 
-party.  The following OpenSSL command line would read a DICOM file 
-"image.dcm" and create a 1024 byte file "randseed.bin" that can be used to 
+Medical image modalities such as CT, MR, Ultrasound or CR produce lots of
+unpredictable random noise in the background that is perfectly suited to
+initialize a PRNG, given that the image is never made available to a third
+party.  The following OpenSSL command line would read a DICOM file
+"image.dcm" and create a 1024 byte file "randseed.bin" that can be used to
 seed the OpenSSL PRNG:
 
     openssl rand -rand image.dcm -out randseed.bin 1024
-
-

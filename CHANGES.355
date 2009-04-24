@@ -41,6 +41,10 @@ Changes between releases are documented here.
            dcmwlm/docs/wlmscpfs.man
            dcmwlm/docs/wwwapp.txt
 
+- Removed empty lines at the end of the file and trailing spaces.
+  Affects: dcmtls/docs/ciphers.txt
+           dcmtls/docs/randseed.txt
+
 **** Changes from 2009.04.23 (riesmeier)
 
 - Changed the condition under which the process is terminated in inetd mode
