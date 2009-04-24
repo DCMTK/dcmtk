@@ -22,9 +22,9 @@
  *  Purpose: Telnet Initiator (ti) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:11:45 $
+ *  Update Date:      $Date: 2009-04-24 12:29:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ int main( int argc, char *argv[] )
     OFString opt1 = "set my AE title (default: ";
     opt1 += APPLICATIONTITLE;
     opt1 += ")";
-    cmd.addOption( "--aetitle",                   "-aet", 1, "aetitle: string", opt1.c_str() );
+    cmd.addOption( "--aetitle",                   "-aet", 1, "[a]etitle: string", opt1.c_str() );
     OFString opt2 = "[n]umber of bytes: integer (";
     sprintf(tempstr, "%ld", (long)ASC_MINIMUMPDUSIZE);
     opt2 += tempstr;
@@ -428,6 +428,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.13  2009-04-24 12:29:29  joergr
+ * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  * Revision 1.12  2009-04-21 14:11:45  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

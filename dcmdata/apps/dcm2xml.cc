@@ -22,8 +22,8 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2009-04-24 12:20:41 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -266,7 +266,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("long tag values:");
         cmd.addOption("--load-all",           "+M",     "load very long tag values (e.g. pixel data)");
         cmd.addOption("--load-short",         "-M",     "do not load very long values (default)");
-        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer (4..4194302) (default: 4)",
+        cmd.addOption("--max-read-length",    "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
                                                         "set threshold for long values to k kbytes");
     cmd.addGroup("processing options:");
       cmd.addSubGroup("character set:");
@@ -495,6 +495,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.36  2009-04-24 12:20:41  joergr
+ * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  * Revision 1.35  2009-04-21 14:02:49  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

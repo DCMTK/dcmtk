@@ -176,4 +176,3 @@ Please include  the following  information with  your request:
 * Compiler,  Perl  Interpreter and  Operating  System  used
   (including version numbers and patch levels if appropriate).
 * WWW Server and Browser used
-

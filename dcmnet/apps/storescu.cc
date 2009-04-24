@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:09:22 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Update Date:      $Date: 2009-04-24 12:26:05 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,11 +244,11 @@ int main(int argc, char *argv[])
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",              "-aet", 1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",              "-aet", 1, "[a]etitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",                 "-aec", 1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",                 "-aec", 1, "[a]etitle: string", opt2.c_str());
     cmd.addSubGroup("association negotiation profile from configuration file:");
       cmd.addOption("--config-file",          "-xf",  2, "[f]ilename, [p]rofile: string",
                                                          "use profile p from config file f");
@@ -1757,6 +1757,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.79  2009-04-24 12:26:05  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.78  2009-04-21 14:09:22  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **

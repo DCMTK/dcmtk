@@ -143,7 +143,6 @@ workaround options for incorrect JPEG encodings:
   # compensated (reproduced) during decompression. This flag enables a correct
   # decompression of such faulty images, but at the same time will cause an
   # incorrect decompression of correctly compressed images. Use with care.
-
 \endverbatim
 
 \subsection output_options output options

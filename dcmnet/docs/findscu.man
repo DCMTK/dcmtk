@@ -54,7 +54,7 @@ dcmfile-in  DICOM query file(s)
 \verbatim
 override matching keys:
 
-  -k    --key  key: gggg,eeee="str" or data dictionary name="str"
+  -k    --key  [k]ey: gggg,eeee="str" or dictionary name="str"
           override matching key
 
 query information model:
@@ -73,10 +73,10 @@ query information model:
 
 application entity titles:
 
-  -aet  --aetitle  aetitle: string
+  -aet  --aetitle  [a]etitle: string
           set my calling AE title (default: FINDSCU)
 
-  -aec  --call  aetitle: string
+  -aec  --call  [a]etitle: string
           set called AE title of peer (default: ANY-SCP)
 
 post-1993 value representations:

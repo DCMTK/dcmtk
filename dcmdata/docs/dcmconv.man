@@ -125,7 +125,7 @@ general handling of parser errors:
 
 other parsing options:
 
-  +st  --stop-after-elem  [t]ag: "xxxx,xxxx" or a data dictionary
+  +st  --stop-after-elem  [t]ag: "gggg,eeee" or a data dictionary
          stop parsing after element specified by t
 
 automatic data correction:

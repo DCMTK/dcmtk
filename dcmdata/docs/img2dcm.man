@@ -112,7 +112,7 @@ JPEG format:
   -l1   --no-latin1
           keep 7-bit ASCII as standard character set
 
-  -k    --key  key: gggg,eeee="str" or dictionary name="str"
+  -k    --key  [k]ey: gggg,eeee="str" or dictionary name="str"
           add further attribute
 \endverbatim
 

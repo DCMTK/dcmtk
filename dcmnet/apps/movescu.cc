@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:09:22 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2009-04-24 12:26:05 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,13 +253,13 @@ main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM retrieve (C-MOVE) SCU", rcsid);
   OFCommandLine cmd;
 
-  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
   cmd.addParam("dcmfile-in", "DICOM query file(s)", OFCmdParam::PM_MultiOptional);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                   "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                           "print version information and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--arguments",                         "print expanded command line arguments");
@@ -267,7 +267,7 @@ main(int argc, char *argv[])
    cmd.addOption("--debug",                  "-d",      "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",                 "-k",   1, "key: gggg,eeee=\"str\" or data dict. name=\"str\"",
+      cmd.addOption("--key",                 "-k",   1, "[k]ey: gggg,eeee=\"str\" or dict. name=\"str\"",
                                                         "override matching key");
     cmd.addSubGroup("query information model:");
       cmd.addOption("--patient",             "-P",      "use patient root information model (default)");
@@ -277,15 +277,15 @@ main(int argc, char *argv[])
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",             "-aet", 1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",             "-aet", 1, "[a]etitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",                "-aec", 1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",                "-aec", 1, "[a]etitle: string", opt2.c_str());
       OFString opt5 = "set move destinat. AE title (default: ";
       opt5 += APPLICATIONTITLE;
       opt5 += ")";
-      cmd.addOption("--move",                "-aem", 1, "aetitle: string", opt5.c_str());
+      cmd.addOption("--move",                "-aem", 1, "[a]etitle: string", opt5.c_str());
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",      "+x=",     "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",       "+xe",     "prefer explicit VR little endian TS");
@@ -1569,6 +1569,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.73  2009-04-24 12:26:05  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.72  2009-04-21 14:09:22  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **

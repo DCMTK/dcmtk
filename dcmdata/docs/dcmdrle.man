@@ -87,7 +87,6 @@ RLE byte segment order:
   # This option allows to decompress RLE compressed DICOM files in which the
   # order of byte segments is encoded in incorrect order. This only affects
   # images with more than one byte per sample.
-
 \endverbatim
 
 \subsection output_options output options

@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-04-24 12:20:42 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,7 +152,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
             cmd->addOption("--enable-new-vr",       "+u",      "enable support for new VRs (UN/UT) (default)");
             cmd->addOption("--disable-new-vr",      "-u",      "disable support for new VRs, convert to OB");
         cmd->addSubGroup("group length encoding:");
-            cmd->addOption("--group-length-recalc", "+g=",     "recalcul. group lengths if present (default)");
+            cmd->addOption("--group-length-recalc", "+g=",     "recalculate group lengths if present (default)");
             cmd->addOption("--group-length-create", "+g",      "always write with group length elements");
             cmd->addOption("--group-length-remove", "-g",      "always write without group length elements");
         cmd->addSubGroup("length encoding in sequences and items:");
@@ -684,6 +684,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.28  2009-04-24 12:20:42  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.27  2009-04-21 14:02:49  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **

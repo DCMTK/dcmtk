@@ -23,9 +23,8 @@
  *           SOP class in order to shutdown server applications)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:09:23 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/termscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-04-24 12:26:06 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +120,7 @@ int main( int argc, char *argv[] )
   cmd.addParam("port", "tcp/ip port number of peer");
 
   cmd.setOptionColumns( LONGCOL, SHORTCOL );
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
   cmd.addOption("--help",      "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
   cmd.addOption("--version",              "print version information and exit", OFCommandLine::AF_Exclusive);
   cmd.addOption("--arguments",            "print expanded command line arguments");
@@ -133,11 +132,11 @@ int main( int argc, char *argv[] )
     OFString opt1 = "set my calling AE title (default: ";
     opt1 += APPLICATIONTITLE;
     opt1 += ")";
-    cmd.addOption("--aetitle", "-aet", 1, "aetitle: string", opt1.c_str());
+    cmd.addOption("--aetitle", "-aet", 1, "[a]etitle: string", opt1.c_str());
     OFString opt2 = "set called AE title of peer (default: ";
     opt2 += PEERAPPLICATIONTITLE;
     opt2 += ")";
-    cmd.addOption("--call",    "-aec", 1, "aetitle: string", opt2.c_str());
+    cmd.addOption("--call",    "-aec", 1, "[a]etitle: string", opt2.c_str());
    cmd.addSubGroup("other network options:");
     OFString opt3 = "set max receive pdu to n bytes (default: ";
     sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
@@ -350,6 +349,9 @@ int main( int argc, char *argv[] )
 /*
 ** CVS Log
 ** $Log: termscu.cc,v $
+** Revision 1.10  2009-04-24 12:26:06  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.9  2009-04-21 14:09:23  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **

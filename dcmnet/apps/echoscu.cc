@@ -22,9 +22,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:09:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2009-04-24 12:26:05 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,11 +194,11 @@ main(int argc, char *argv[])
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",           "-aet", 1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",           "-aet", 1, "[a]etitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",              "-aec", 1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", opt2.c_str());
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
       sprintf(tempstr, "%ld", (long)maxXferSyntaxes);
@@ -800,6 +799,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.44  2009-04-24 12:26:05  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.43  2009-04-21 14:09:22  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **

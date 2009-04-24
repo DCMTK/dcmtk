@@ -22,9 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:09:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2009-04-24 12:26:05 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,13 +119,13 @@ int main(int argc, char *argv[])
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "DICOM query (C-FIND) SCU", rcsid);
   OFCommandLine cmd;
 
-  cmd.setParamColumn(LONGCOL+SHORTCOL+4);
+  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
   cmd.addParam("peer", "hostname of DICOM peer");
   cmd.addParam("port", "tcp/ip port number of peer");
   cmd.addParam("dcmfile-in", "DICOM query file(s)", OFCmdParam::PM_MultiOptional);
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                 "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--arguments",                       "print expanded command line arguments");
@@ -134,7 +133,7 @@ int main(int argc, char *argv[])
    cmd.addOption("--debug",                "-d",      "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",               "-k",   1, "key: gggg,eeee=\"str\" or data dictionary name=\"str\"",
+      cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\" or dictionary name=\"str\"",
                                                       "override matching key");
     cmd.addSubGroup("query information model:");
       cmd.addOption("--worklist",          "-W",      "use modality worklist information model (default)");
@@ -145,11 +144,11 @@ int main(int argc, char *argv[])
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",           "-aet", 1,  "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",           "-aet", 1, "[a]etitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",              "-aec", 1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",              "-aec", 1, "[a]etitle: string", opt2.c_str());
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",     "+u",      "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",    "-u",      "disable support for new VRs, convert to OB");
@@ -604,6 +603,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.55  2009-04-24 12:26:05  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.54  2009-04-21 14:09:22  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **

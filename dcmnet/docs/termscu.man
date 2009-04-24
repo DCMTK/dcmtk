@@ -52,10 +52,10 @@ port  tcp/ip port number of peer
 \verbatim
 application entity titles:
 
-  -aet  --aetitle  aetitle: string
+  -aet  --aetitle  [a]etitle: string
           set my calling AE title (default: ECHOSCU)
 
-  -aec  --call  aetitle: string
+  -aec  --call  [a]etitle: string
           set called AE title of peer (default: ANY-SCP)
 
 other network options:

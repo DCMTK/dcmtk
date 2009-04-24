@@ -81,17 +81,16 @@ input files:
 
   +r    --recurse
           recurse within specified directories
-
 \endverbatim
 
 \subsection network_options network options
 \verbatim
 application entity titles:
 
-  -aet  --aetitle  aetitle: string
+  -aet  --aetitle  [a]etitle: string
           set my calling AE title (default: STORESCU)
 
-  -aec  --call  aetitle: string
+  -aec  --call  [a]etitle: string
           set called AE title of peer (default: ANY-SCP)
 
 association negotiation profile from configuration file:

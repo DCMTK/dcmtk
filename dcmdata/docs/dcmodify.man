@@ -448,7 +448,6 @@ but only works on single elements (i.e. a single dictionary name or tag key).
        This will modify the SOPInstanceUID to the given [UID],
        but -nmu avoids, that dcmodify adjusts the
        MediaStorageSOPInstanceUID in the metaheader, too.
-
 \endverbatim
 
 \section error_handling ERROR HANDLING

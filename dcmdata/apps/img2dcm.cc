@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2009-04-24 12:20:42 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -216,7 +216,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
      cmd.addOption("--no-type1-invent",      "-i1",     "do not invent missing type 1 attributes\n(only with --do-checks)");
      cmd.addOption("--latin1",               "+l1",     "set latin-1 as standard character set (default)");
      cmd.addOption("--no-latin1",            "-l1",     "keep 7-bit ASCII as standard character set");
-     cmd.addOption("--key",                  "-k",   1, "key: gggg,eeee=\"str\" or dictionary name=\"str\"",
+     cmd.addOption("--key",                  "-k",   1, "[k]ey: gggg,eeee=\"str\" or dictionary name=\"str\"",
                                                         "add further attribute");
 
   cmd.addGroup("output options:");
@@ -540,6 +540,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.12  2009-04-24 12:20:42  joergr
+ * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  * Revision 1.11  2009-04-21 14:02:49  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

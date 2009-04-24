@@ -74,7 +74,7 @@ peer  peer host name or symbolic name from cfg file
   -xi   --propose-implicit
           propose implicit VR little endian TS only
 
-  -aet  --aetitle  aetitle: string
+  -aet  --aetitle  [a]etitle: string
           set my AE title (default: TELNET_INITIATOR)
 
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)

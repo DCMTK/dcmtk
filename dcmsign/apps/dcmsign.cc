@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:12:23 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-04-24 12:30:59 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -782,7 +782,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--mac-sha1",                 "+ms",        "use SHA-1");
       cmd.addOption("--mac-md5",                  "+mm",        "use MD 5");
     cmd.addSubGroup("tag selection:");
-      cmd.addOption("--tag",                      "-t",      1, "tag: \"xxxx,xxxx\" or a data dictionary name", "sign only specified tag\nthis option can be specified multiple times");
+      cmd.addOption("--tag",                      "-t",      1, "[t]ag: \"gggg,eeee\" or dictionary name", "sign only specified tag\n(this option can be specified multiple times)");
       cmd.addOption("--tag-file",                 "-tf",     1, "filename: string", "read list of tags from text file");
     cmd.addSubGroup("signature format:");
       cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
@@ -1171,6 +1171,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.28  2009-04-24 12:30:59  joergr
+ *  Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  *  Revision 1.27  2009-04-21 14:12:23  joergr
  *  Fixed minor inconsistencies in manpage / syntax usage.
  *

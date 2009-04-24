@@ -157,9 +157,9 @@ MAC algorithm:
 tag selection:
 
   -t    --tag
-          tag: "xxxx,xxxx" or a data dictionary name
+          [t]ag: "gggg,eeee" or dictionary name
           sign only specified tag
-          this option can be specified multiple times
+          (this option can be specified multiple times)
 
   -tf   --tag-file  filename: string
           read list of tags from text file

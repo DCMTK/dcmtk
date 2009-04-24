@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-05 17:45:56 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Update Date:      $Date: 2009-04-24 12:20:41 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,7 @@ static DcmTagKey parseTagKey(const char *tagName)
       return dicent->getKey();
     }
     dcmDataDict.unlock();
-  } else     /* tag name has format xxxx,xxxx */
+  } else     /* tag name has format "gggg,eeee" */
   {
     DcmTagKey tagKey(group,elem);
     return tagKey;
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
       cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
     cmd.addSubGroup("other parsing options:");
-        cmd.addOption("--stop-after-elem",   "+st", 1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+        cmd.addOption("--stop-after-elem",   "+st", 1, "[t]ag: \"gggg,eeee\" or dictionary name",
                                                        "stop parsing after element specified by t");
     cmd.addSubGroup("automatic data correction:");
       cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
@@ -525,6 +525,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.64  2009-04-24 12:20:41  joergr
+** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+**
 ** Revision 1.63  2009-03-05 17:45:56  joergr
 ** Fixed description of command line option.
 **

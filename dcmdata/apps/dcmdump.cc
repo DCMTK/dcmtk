@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2009-04-24 12:20:41 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ static DcmTagKey parseTagKey(const char *tagName)
         return dicent->getKey();
       }
       dcmDataDict.unlock();
-    } else     /* tag name has format xxxx,xxxx */
+    } else     /* tag name has format "gggg,eeee" */
     {
       DcmTagKey tagKey(group,elem);
       return tagKey;
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
         cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
       cmd.addSubGroup("other parsing options:");
-        cmd.addOption("--stop-after-elem",     "+st", 1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+        cmd.addOption("--stop-after-elem",     "+st", 1, "[t]ag: \"gggg,eeee\" or dictionary name",
                                                          "stop parsing after element specified by t");
       cmd.addSubGroup("automatic data correction:");
         cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("loading:");
         cmd.addOption("--load-all",            "+M",     "load very long tag values (default)");
         cmd.addOption("--load-short",          "-M",     "do not load very long values (e.g. pixel data)");
-        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer (4..4194302) (default: 4)",
+        cmd.addOption("--max-read-length",     "+R",  1, "[k]bytes: integer (4..4194302, default: 4)",
                                                          "set threshold for long values to k kbytes");
       cmd.addSubGroup("printing:");
         cmd.addOption("--print-all",           "+L",     "print long tag values completely");
@@ -267,11 +267,11 @@ int main(int argc, char *argv[])
         cmd.addOption("--ignore-errors",       "+E",     "attempt to print even if file is damaged");
 
       cmd.addSubGroup("searching:");
-        cmd.addOption("--search",              "+P",  1, "[t]ag: \"xxxx,xxxx\" or a data dictionary name",
+        cmd.addOption("--search",              "+P",  1, "[t]ag: \"gggg,eeee\" or dictionary name",
                                                          "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
         cmd.addOption("--search-all",          "+s",     "print all instances of searched tags (default)");
         cmd.addOption("--search-first",        "-s",     "only print first instance of searched tags");
-        cmd.addOption("--prepend",             "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
+        cmd.addOption("--prepend",             "+p",     "prepend sequence hierarchy to printed tag,\ndenoted by: (gggg,eeee).(gggg,eeee).*\n(only with --search-all or --search-first)");
         cmd.addOption("--no-prepend",          "-p",     "do not prepend hierarchy to tag (default)");
 
       cmd.addSubGroup("writing:");
@@ -760,6 +760,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.77  2009-04-24 12:20:41  joergr
+ * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  * Revision 1.76  2009-04-21 14:02:49  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *
