@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-13 09:46:40 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2009-04-27 14:25:31 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -449,23 +449,24 @@ OFString &OFStandard::combineDirAndFilename(OFString &result,
                                             const OFString &fileName,
                                             const OFBool allowEmptyDirName)
 {
-    // ## might use system function realpath() in the future to resolve paths including ".."?
+    // # might use system function realpath() in the future to resolve paths including ".."
+    // # or combinations of absolute paths in both 'dirName' and 'fileName'
 
     /* check whether 'fileName' contains absolute path */
+    /* (this check also covers UNC syntax, e. g. "\\server\...") */
     if (!fileName.empty() && (fileName.at(0) == PATH_SEPARATOR))
     {
         result = fileName;
         return result;
     }
 #ifdef HAVE_WINDOWS_H
-    /* check for absolute path containing windows drive name, e. g. "c:\..." */
-    else if ( (fileName.length() >= 3) )
+    else if ((fileName.length() >= 3))
     {
+        /* check for absolute path containing windows drive name, e. g. "c:\..." */
         char c = fileName.at(0);
-        if ( ((c >= 'A') && (c <= 'Z')) ||
-             ((c >= 'a') && (c <= 'z')) )
+        if (((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')))
         {
-            if (fileName.substr(1,2) == ":\\")
+            if (fileName.substr(1, 2) == ":\\")
             {
                 result = fileName;
                 return result;
@@ -1787,6 +1788,9 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.50  2009-04-27 14:25:31  joergr
+ *  Added comment on absolute path names e.g. in UNC syntax.
+ *
  *  Revision 1.49  2009-03-13 09:46:40  joergr
  *  Added new helper function getFilenameFromPath().
  *

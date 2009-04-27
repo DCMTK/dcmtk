@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-13 09:47:20 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2009-04-27 14:26:00 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,7 +207,8 @@ class OFStandard
      *  directory). If 'dirName' is "." and the flag 'allowEmptyDirName' is OFTrue an
      *  empty directory name is used.
      *  NB: This function neither checks whether the given 'dirName' exists nor whether
-     *      the resulting path name points to a valid or existing file name.
+     *      the resulting path name points to a valid or existing file name. Furthermore,
+     *      the value of 'dirName' is ignored if 'fileName' starts with a path separator.
      *  @param result string variable in which the resulting path name is stored
      *  @param dirName directory name to be combined with the file name
      *  @param fileName file name to be combined with the directory name
@@ -504,6 +505,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.34  2009-04-27 14:26:00  joergr
+ * Added comment on absolute path names e.g. in UNC syntax.
+ *
  * Revision 1.33  2009-03-13 09:47:20  joergr
  * Added new helper function getFilenameFromPath().
  *
