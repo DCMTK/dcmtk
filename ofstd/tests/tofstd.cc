@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: test program for class OFStandard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-18 09:14:02 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2009-04-27 14:21:43 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #define pathname6 "///"
 #define pathname7 "."
 #define pathname8 "/home/joergr/tmp/test"
+#define pathname9 "//caesar/share"
 
 static const size_t bin_len = 10;
 static const unsigned char bin_data[bin_len] = {10, 5, 88, 99, 255, 250, 150, 128, 0, 254};
@@ -88,6 +89,7 @@ int main()
     COUT << "normalizeDirName(\"" << pathname5 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname5) << OFendl;
     COUT << "normalizeDirName(\"" << pathname6 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname6) << OFendl;
     COUT << "normalizeDirName(\"" << pathname7 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname7) << OFendl;
+    COUT << "normalizeDirName(\"" << pathname9 << "\") = " << OFStandard::normalizeDirName(tmpString, pathname9) << OFendl;
     COUT << "normalizeDirName(\"\") = " << OFStandard::normalizeDirName(tmpString, "") << OFendl << OFendl;
 
     COUT << "combineDirAndFilename(\"" << pathname1 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname1, "file") << OFendl;
@@ -97,6 +99,7 @@ int main()
     COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname5, "file") << OFendl;
     COUT << "combineDirAndFilename(\"" << pathname5 << "\", \"/file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname5, "/file") << OFendl;
     COUT << "combineDirAndFilename(\"" << pathname6 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname6, "file") << OFendl;
+    COUT << "combineDirAndFilename(\"" << pathname9 << "\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, pathname9, "file") << OFendl;
     COUT << "combineDirAndFilename(\"\", \"file\") = " << OFStandard::combineDirAndFilename(tmpString, "", "file") << OFendl;
     COUT << "combineDirAndFilename(\"\", \"file\", OFTrue) = " << OFStandard::combineDirAndFilename(tmpString, "", "file", OFTrue) << OFendl;
     COUT << "combineDirAndFilename(\"\", \".\") = " << OFStandard::combineDirAndFilename(tmpString, "", ".") << OFendl;
@@ -171,6 +174,9 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tofstd.cc,v $
+ * Revision 1.12  2009-04-27 14:21:43  joergr
+ * Added further test for UNC syntax of path expressions.
+ *
  * Revision 1.11  2008-04-18 09:14:02  joergr
  * Added further tests for combineDirAndFilename().
  *
