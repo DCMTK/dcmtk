@@ -95,13 +95,13 @@ input transfer syntax:
         --verify
           verify all signatures (default)
 
-  +s    --sign  private key file, certificate file: string
+  +s    --sign  [p]rivate key file, [c]ertificate file: string
           create signature in main object
 
-  +si   --sign-item  keyfile, certfile, item location: string
+  +si   --sign-item  [k]eyfile, [c]ertfile, [i]tem location: string
           create signature in sequence item
 
-  +r    --remove  signature UID: string
+  +r    --remove  [s]ignature UID: string
           remove signature
 
   +ra   --remove-all
@@ -161,7 +161,7 @@ tag selection:
           sign only specified tag
           (this option can be specified multiple times)
 
-  -tf   --tag-file  filename: string
+  -tf   --tag-file  [f]ilename: string
           read list of tags from text file
 
 signature format:
