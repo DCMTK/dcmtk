@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:30:59 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2009-04-29 13:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,10 +44,10 @@
 
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>         /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmsign"
@@ -506,9 +506,9 @@ static int do_verify(
         COUT <<   "Signature #" << counter << " UID=";
         if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << OFendl; else COUT << "(unknown)" << OFendl;
         printSignatureItemPosition(stack, aString);
-        COUT <<   "  Location                    : " << aString.c_str() << OFendl;
         if (opt_verbose)
         {
+          COUT << "  Location                    : " << aString.c_str() << OFendl;
           COUT << "  MAC ID                      : ";
           if (EC_Normal == signer.getCurrentMacID(macID)) COUT << macID << OFendl; else COUT << "(unknown)" << OFendl;
           COUT << "  MAC algorithm               : ";
@@ -568,8 +568,11 @@ static int do_verify(
                 break;
             }
           }
+          COUT << "  Verification                : ";
+        } else {
+          COUT << "  Location     : " << aString.c_str() << OFendl;
+          COUT << "  Verification : ";
         }
-        COUT << "  Verification : ";
         sicond = signer.verifyCurrent();
         if (sicond.good())
         {
@@ -577,7 +580,7 @@ static int do_verify(
         } else {
           corrupt_counter++;
           COUT << sicond.text() << OFendl << OFendl;
-  }
+        }
       }
     }
     signer.detach();
@@ -708,7 +711,7 @@ int main(int argc, char *argv[])
   const char *                  opt_keyfile = NULL;  // private key file
   int                           opt_keyFileFormat = X509_FILETYPE_PEM; // file format for certificates and private keys
   const char *                  opt_location = NULL; // location (path) within dataset
-  SiMAC *                       opt_mac = NULL; // MAC object
+  SiMAC *                       opt_mac = NULL;      // MAC object
   OFBool                        opt_oDataset = OFFalse;
   E_EncodingType                opt_oenctype = EET_ExplicitLength;
   const char *                  opt_ofname = NULL;
@@ -716,7 +719,7 @@ int main(int argc, char *argv[])
   E_PaddingEncoding             opt_opadenc = EPD_noChange;
   DcmSignOperation              opt_operation = DSO_verify; // command to execute
   E_TransferSyntax              opt_oxfer = EXS_Unknown;
-  const char *                  opt_passwd = NULL; // password for private key
+  const char *                  opt_passwd = NULL;  // password for private key
   SiSecurityProfile *           opt_profile = NULL; // security profile
   const char *                  opt_tagFile = NULL; // text file with attribute tags
   DcmAttributeTag *             opt_tagList = NULL; // list of attribute tags
@@ -740,8 +743,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
       cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
       cmd.addOption("--dump",                      "+d",     1, "[f]ilename: string",
-                                                                "dump byte stream fed into the MAC codec to file\n"
-                                                                "(only with --sign or --sign-item)");
+                                                                "dump byte stream fed into the MAC codec to file\n(only with --sign or --sign-item)");
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
       cmd.addOption("--read-file",                 "+f",        "read file format or data set (default)");
@@ -756,11 +758,11 @@ int main(int argc, char *argv[])
 
   cmd.addGroup("signature commands:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--verify",                                 "verify all signatures (default)");
-      cmd.addOption("--sign",                      "+s",     2, "private key file, certificate file: string",
+      cmd.addOption("--sign",                      "+s",     2, "[p]rivate key file, [c]ertificate file: string",
                                                                 "create signature in main object");
-      cmd.addOption("--sign-item",                 "+si",    3, "keyfile, certfile, item location: string",
+      cmd.addOption("--sign-item",                 "+si",    3, "[k]eyfile, [c]ertfile, [i]tem location: string",
                                                                 "create signature in sequence item");
-      cmd.addOption("--remove",                    "+r",     1, "signature UID: string", "remove signature");
+      cmd.addOption("--remove",                    "+r",     1, "[s]ignature UID: string", "remove signature");
       cmd.addOption("--remove-all",                "+ra",       "remove all signatures from data set");
 
   cmd.addGroup("signature creation options (only with --sign or --sign-item):");
@@ -783,12 +785,11 @@ int main(int argc, char *argv[])
       cmd.addOption("--mac-md5",                  "+mm",        "use MD 5");
     cmd.addSubGroup("tag selection:");
       cmd.addOption("--tag",                      "-t",      1, "[t]ag: \"gggg,eeee\" or dictionary name", "sign only specified tag\n(this option can be specified multiple times)");
-      cmd.addOption("--tag-file",                 "-tf",     1, "filename: string", "read list of tags from text file");
+      cmd.addOption("--tag-file",                 "-tf",     1, "[f]ilename: string", "read list of tags from text file");
     cmd.addSubGroup("signature format:");
       cmd.addOption("--format-new",               "-fn",        "use correct DICOM signature format (default)");
       cmd.addOption("--format-old",               "-fo",        "use old (pre-3.5.4) DCMTK signature format,\n"
-                                                                "non-conformant if signature includes\n"
-                                                                "compressed pixel data");
+                                                                "non-conformant if signature includes\ncompressed pixel data");
   cmd.addGroup("output options:");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",          "+t=",        "write with same TS as input (default)");
@@ -1022,11 +1023,10 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--format-new")) dcmEnableOldSignatureFormat.set(OFFalse);
     if (cmd.findOption("--format-old")) dcmEnableOldSignatureFormat.set(OFTrue);
     cmd.endOptionBlock();
-
   }
 
   if (opt_debugMode)
-      app.printIdentifier();
+    app.printIdentifier();
   SetDebugLevel((opt_debugMode));
 
   /* make sure data dictionary is loaded */
@@ -1080,6 +1080,10 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
+
+  // need to load all data into memory before signing the document,
+  // otherwise the pixel data would be empty for compressed images
+  fileformat->loadAllDataIntoMemory();
 
   // select transfer syntax in which digital signatures are created
   opt_signatureXfer = dataset->getOriginalXfer();
@@ -1137,11 +1141,10 @@ int main(int argc, char *argv[])
     dataset->chooseRepresentation(opt_oxfer, NULL);
     if (! dataset->canWriteXfer(opt_oxfer))
     {
-      CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!\n";
+      CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
       return 1;
     }
 
-    fileformat->loadAllDataIntoMemory();
     sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
     if (sicond.bad())
     {
@@ -1171,6 +1174,12 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.29  2009-04-29 13:05:57  joergr
+ *  Load all data into memory before signing the document, otherwise the pixel
+ *  data would be empty for compressed images.
+ *  Fixed small issue regarding the console output when verifying a signature.
+ *  Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+ *
  *  Revision 1.28  2009-04-24 12:30:59  joergr
  *  Fixed minor inconsistencies regarding layout/formatting in syntax usage.
  *

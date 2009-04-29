@@ -7,6 +7,18 @@ Changes between releases are documented here.
   Thanks to forum user "yeganeh" <yeganeh135@yahoo.com> for the report.
   Affects: dcmsign/libsrc/dcsignat.cc
 
+- Load all data into memory before signing the document, otherwise the pixel
+  data would be empty for compressed images.
+  Thanks to Mathieu Malaterre <mathieu.malaterre@gmail.com> for the report.
+  Affects: dcmsign/apps/dcmsign.cc
+
+- Fixed small issue regarding the console output when verifying a signature.
+  Affects: dcmsign/apps/dcmsign.cc
+
+- Fixed minor inconsistencies regarding layout/formatting in syntax usage.
+  Affects: dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+
 **** Changes from 2009.04.27 (riesmeier)
 
 - Added comment on absolute path names e.g. in UNC syntax.
