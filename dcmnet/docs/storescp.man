@@ -136,7 +136,8 @@ other network options:
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
-  -dhl  --disable-host-lookup  disable hostname lookup
+  -dhl  --disable-host-lookup
+          disable hostname lookup
 
         --refuse
           refuse association

@@ -16,7 +16,8 @@ Changes between releases are documented here.
   Affects: dcmsign/apps/dcmsign.cc
 
 - Fixed minor inconsistencies regarding layout/formatting in syntax usage.
-  Affects: dcmsign/apps/dcmsign.cc
+  Affects: dcmnet/docs/storescp.man
+           dcmsign/apps/dcmsign.cc
            dcmsign/docs/dcmsign.man
 
 **** Changes from 2009.04.27 (riesmeier)
