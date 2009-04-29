@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.29 (riesmeier)
+
+- Fixed memory leak in method verifyCurrent().
+  Thanks to forum user "yeganeh" <yeganeh135@yahoo.com> for the report.
+  Affects: dcmsign/libsrc/dcsignat.cc
+
 **** Changes from 2009.04.27 (riesmeier)
 
 - Added comment on absolute path names e.g. in UNC syntax.

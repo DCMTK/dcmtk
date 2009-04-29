@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:17 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-29 12:21:42 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -362,8 +362,8 @@ OFCondition DcmSignature::createSignature(
       // Digital Signature Date/Time
       if (result.good())
       {
-      	OFString aString;
-      	currentDateTime(aString);
+        OFString aString;
+        currentDateTime(aString);
         DcmDateTime *elemDT = new DcmDateTime(DCM_DigitalSignatureDateTime);
         if (elemDT)
         {
@@ -467,7 +467,7 @@ OFCondition DcmSignature::createSignature(
 
       if (result.good())
       {
-      	result = signatureSq->append(seqItem);
+        result = signatureSq->append(seqItem);
         if (result.bad())
         {
           delete seqItem;
@@ -531,7 +531,7 @@ OFCondition DcmSignature::createSignature(
       // Data Elements Signed
       if (result.good())
       {
-      	result = macItem->insert(tagListOut, OFTrue);
+        result = macItem->insert(tagListOut, OFTrue);
         if (result.good())
         {
           tagListOut = NULL; // make sure we don't delete tagListOut later
@@ -540,7 +540,7 @@ OFCondition DcmSignature::createSignature(
 
       if (result.good())
       {
-      	result = macParametersSq->append(macItem);
+        result = macParametersSq->append(macItem);
         if (result.bad())
         {
           delete macItem;
@@ -699,6 +699,7 @@ OFCondition DcmSignature::verifyCurrent()
     } else result = SI_EC_VerificationFailed_NoCertificate;
   }
   
+  delete signature;
   delete tagList;
   delete mac;
   return result;
@@ -745,8 +746,8 @@ OFCondition DcmSignature::getCurrentMacXferSyntaxName(OFString& str)
       DcmXfer xf(uid);
       if (xf.getXfer() == EXS_Unknown) str=uid; else 
       {
-      	str="=";
-      	str.append(xf.getXferName());
+        str = "=";
+        str.append(xf.getXferName());
       }
     } else result = SI_EC_VerificationFailed_NoMAC;
   } else result = SI_EC_VerificationFailed_NoMAC;
@@ -827,7 +828,10 @@ int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: dcsignat.cc,v $
- *  Revision 1.3  2005-12-08 15:47:17  meichel
+ *  Revision 1.4  2009-04-29 12:21:42  joergr
+ *  Fixed memory leak in method verifyCurrent().
+ *
+ *  Revision 1.3  2005/12/08 15:47:17  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.2  2003/07/09 13:59:50  meichel
@@ -880,4 +884,3 @@ int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  *
  */
-
