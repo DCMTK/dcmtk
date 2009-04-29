@@ -17,6 +17,7 @@ Changes between releases are documented here.
 
 - Fixed minor inconsistencies regarding layout/formatting in syntax usage.
   Affects: dcmnet/docs/storescp.man
+           dcmpstat/docs/dcmmklut.man
            dcmsign/apps/dcmsign.cc
            dcmsign/docs/dcmsign.man
 

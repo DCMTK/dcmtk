@@ -162,7 +162,6 @@ LUT data VR:
 
 \subsection file_options file options
 \verbatim
-
   +Fi  --dicom-input  [f]ilename: string
          read dataset from DICOM file f
 
