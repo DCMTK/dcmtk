@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.04.30 (riesmeier)
+
+- Fixed bug in writeXML(): Used wrong byte order for 16-bit data on systems
+  with big endian byte-ordering (wrong parameter order for swapBytes() call).
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
+- Fixed memory leak in putElementContent() for base64 encoded data.
+  Affects: dcmdata/apps/xml2dcm.cc
+
+- Avoid swapping the byte-ording back to the original state in printPixel().
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
+- Update the byte order variable in writeXML() and printPixel() if necessary.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2009.04.29 (riesmeier)
 
 - Fixed memory leak in method verifyCurrent().

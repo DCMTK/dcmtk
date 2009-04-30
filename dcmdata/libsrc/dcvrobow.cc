@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-08-15 09:26:33 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-04-30 15:09:34 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,8 +213,8 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
                     if (data != NULL)
                     {
                         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, data, getLengthField(), sizeof(Uint16));
+                        setByteOrder(EBO_LittleEndian);
                         fwrite(data, sizeof(Uint16), OFstatic_cast(size_t, getLengthField() / sizeof(Uint16)), file);
-                        swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, data, getLengthField(), sizeof(Uint16));
                     }
                 } else {
                     Uint8 *data = NULL;
@@ -247,7 +247,7 @@ OFCondition DcmOtherByteOtherWord::alignValue()
         // We have an odd number of bytes. This should never happen and is certainly not allowed in DICOM.
         // To fix this problem, we will add a zero pad byte at the end of the value field.
         // This requires us to load the value field into memory, which may very well be a problem
-        // if this is part of a very large multi-frame object. 
+        // if this is part of a very large multi-frame object.
         Uint8 *bytes = OFstatic_cast(Uint8 *, getValue(getByteOrder()));
 
         if (bytes)
@@ -601,7 +601,7 @@ OFCondition DcmOtherByteOtherWord::write(
         errorFlag = EC_IllegalCall;
     else
     {
-        if (getTransferState() == ERW_init) 
+        if (getTransferState() == ERW_init)
         {
           // if the attribute value is in file, we should call compact() if the write
           // operation causes the value to be loaded into main memory, which can happen
@@ -612,7 +612,7 @@ OFCondition DcmOtherByteOtherWord::write(
           alignValue();
         }
 
-        // call inherited method 
+        // call inherited method
         errorFlag = DcmElement::write(outStream, oxfer, enctype, wcache);
     }
 
@@ -635,7 +635,7 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
         errorFlag = EC_IllegalCall;
     else
     {
-        if (getTransferState() == ERW_init) 
+        if (getTransferState() == ERW_init)
         {
           // if the attribute value is in file, we should call compact() if the write
           // operation causes the value to be loaded into main memory, which can happen
@@ -646,7 +646,7 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(
           alignValue();
         }
 
-        // call inherited method 
+        // call inherited method
         errorFlag = DcmElement::writeSignatureFormat(outStream, oxfer, enctype, wcache);
     }
 
@@ -682,7 +682,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
             if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
             {
                 /* Base64 encoder requires big endian input data */
-                swapIfNecessary(gLocalByteOrder, EBO_BigEndian, byteValues, getLengthField(), sizeof(Uint16));
+                swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint16));
+                /* update the byte order indicator variable correspondingly */
+                setByteOrder(EBO_BigEndian);
             }
             OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
         } else {
@@ -702,6 +704,13 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.54  2009-04-30 15:09:34  joergr
+** Fixed bug in writeXML(): Used wrong byte order for 16-bit data on systems
+** with big endian byte-ordering (wrong parameter order for swapBytes() call).
+** Fixed memory leak in putElementContent() for base64 encoded data.
+** Avoid swapping the byte-ording back to the original state in printPixel().
+** Update the byte order variable in writeXML() and printPixel() if necessary.
+**
 ** Revision 1.53  2008-08-15 09:26:33  meichel
 ** Under certain conditions (odd length compressed pixel data fragments)
 **   class DcmOtherByteOtherWord needs to load the attribute value into main
