@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 15:50:42 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2009-04-30 14:56:39 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,8 +218,8 @@ static OFCondition putElementContent(xmlNodePtr current,
                     swapIfNecessary(gLocalByteOrder, EBO_BigEndian, data, length, sizeof(Uint16));
                 }
                 result = element->putUint8Array(data, length);
-                if (result.bad())
-                    delete[] data;
+                /* delete buffer since data is copied into the element */
+                delete[] data;
             }
         }
         /* check whether node content is stored in a file */
@@ -975,6 +975,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.25  2009-04-30 14:56:39  joergr
+ * Fixed memory leak in putElementContent() for base64 encoded data.
+ *
  * Revision 1.24  2008-11-03 15:50:42  joergr
  * Added ZLIB related output options --write-xfer-deflated, --compression-level.
  *
