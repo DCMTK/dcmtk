@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:57:19 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-05-04 14:29:02 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,7 +290,7 @@ OFCondition DcmPixelItem::writeSignatureFormat(
                   if (outStream.avail() >= 4)
                   {
                       /* if there is no value, Length (member variable) shall be set to 0 */
-                      if (!value) setLengthField(0);
+                      if (! accessPossible) setLengthField(0);
 
                       /* write tag and length information (and possibly also data type information) to the stream, */
                       /* mind the transfer syntax and remember the amount of bytes that have been written */
@@ -373,6 +373,11 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.37  2009-05-04 14:29:02  meichel
+** Fixed bug in DcmPixelItem::writeSignatureFormat() that caused pixel data
+**   to be removed from the dataset when a digital signature was generated
+**   for a compressed image.
+**
 ** Revision 1.36  2009-02-04 17:57:19  joergr
 ** Fixes various type mismatches reported by MSVC introduced with OFFile class.
 **

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.04 (eichelberg)
+
+- Fixed bug in DcmPixelItem::writeSignatureFormat() that caused pixel data
+  to be removed from the dataset when a digital signature was generated
+  for a compressed image.
+  Affects: dcmdata/libsrc/dcpxitem.cc
+
 **** Changes from 2009.04.30 (riesmeier)
 
 - Fixed issue in writeXML(): Used wrong byte order for 16-bit data on systems
