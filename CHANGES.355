@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Fixed outdated reference to "test.cfg" in header comment.
   Affects: dcmpstat/etc/printers.cfg
 
+- Fixed minor layout issues.
+  Affects: dcmpstat/etc/dcmpstat.cfg
+
 **** Changes from 2009.05.04 (eichelberg)
 
 - Fixed bug in DcmPixelItem::writeSignatureFormat() that caused pixel data
