@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-30 14:56:39 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Update Date:      $Date: 2009-05-07 09:05:09 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "xml2dcm"
@@ -653,6 +653,8 @@ int main(int argc, char *argv[])
     OFBool opt_updateMeta = OFFalse;
     OFBool opt_namespace = OFFalse;
     OFBool opt_validate = OFFalse;
+    OFBool opt_generateUIDs = OFFalse;
+    OFBool opt_overwriteUIDs = OFFalse;
     E_TransferSyntax opt_xfer = EXS_Unknown;
     E_EncodingType opt_enctype = EET_ExplicitLength;
     E_GrpLenEncoding opt_glenc = EGL_recalcGL;
@@ -687,6 +689,10 @@ int main(int argc, char *argv[])
       cmd.addSubGroup("validation:");
         cmd.addOption("--validate-document",   "+Vd",    "validate XML document against DTD");
         cmd.addOption("--check-namespace",     "+Vn",    "check XML namespace in document root");
+      cmd.addSubGroup("unique identifiers:");
+        cmd.addOption("--generate-new-uids",   "+Ug",    "generate new Study/Series/SOP Instance UID");
+        cmd.addOption("--dont-overwrite-uids", "-Uo",    "do not overwrite existing UIDs (default)");
+        cmd.addOption("--overwrite-uids",      "+Uo",    "overwrite existing UIDs");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output file format:");
@@ -767,6 +773,16 @@ int main(int argc, char *argv[])
             opt_validate = OFTrue;
         if (cmd.findOption("--check-namespace"))
             opt_namespace = OFTrue;
+
+        if (cmd.findOption("--generate-new-uids"))
+            opt_generateUIDs = OFTrue;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--dont-overwrite-uids"))
+            opt_overwriteUIDs = OFFalse;
+        if (cmd.findOption("--overwrite-uids"))
+            opt_overwriteUIDs = OFTrue;
+        cmd.endOptionBlock();
 
         /* output options */
 
@@ -913,10 +929,36 @@ int main(int argc, char *argv[])
                              opt_validate, opt_verbose, opt_debug != 0);
         if (result.good())
         {
+            DcmDataset *dataset = fileformat.getDataset();
+            DcmMetaInfo *metaInfo = (opt_metaInfo) ? fileformat.getMetaInfo() : NULL;
+            /* generate new UIDs (if required) */
+            if (opt_generateUIDs)
+            {
+                char uid[100];
+                if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
+                {
+                    if (opt_verbose)
+                        COUT << "generating new Study Instance UID" << OFendl;
+                    dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
+                }
+                if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
+                {
+                    if (opt_verbose)
+                        COUT << "generating new Series Instance UID" << OFendl;
+                    dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+                }
+                if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
+                {
+                    if (opt_verbose)
+                        COUT << "generating new SOP Instance UID" << OFendl;
+                    dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
+                    if (metaInfo != NULL)
+                        delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+                }
+            }
             /* update particular file meta information */
             if (opt_updateMeta && !opt_dataset)
             {
-                DcmMetaInfo *metaInfo = fileformat.getMetaInfo();
                 if (metaInfo != NULL)
                 {
                     if (opt_verbose)
@@ -975,6 +1017,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.26  2009-05-07 09:05:09  joergr
+ * Added new command line options that allow for generating new Study/Series/SOP
+ * Instance UIDs (incl. an option for overwriting existing values).
+ *
  * Revision 1.25  2009-04-30 14:56:39  joergr
  * Fixed memory leak in putElementContent() for base64 encoded data.
  *
