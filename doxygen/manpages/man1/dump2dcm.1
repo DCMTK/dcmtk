@@ -1,4 +1,4 @@
-.TH "dump2dcm" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dump2dcm" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dump2dcm \- Convert ASCII dump to DICOM file
@@ -49,8 +49,34 @@ dcmfile-out  DICOM output filename
 .PP
 .nf
 
+input file format:
+
+  +f   --read-meta-info
+         read meta information if present (default)
+
+  -f   --ignore-meta-info
+         ignore file meta information
+
+other input options:
+
   +l   --line  [m]ax-length: integer
          maximum line length m (default: 4096)
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+unique identifiers:
+
+  +Ug  --generate-new-uids
+         generate new Study/Series/SOP Instance UID
+
+  -Uo  --dont-overwrite-uids
+         do not overwrite existing UIDs (default)
+
+  +Uo  --overwrite-uids
+         overwrite existing UIDs
 .fi
 .PP
 .SS "output options"
@@ -64,6 +90,9 @@ output file format:
 
   -F   --write-dataset
          write data set without file meta information
+
+  +Fu  --update-meta-info
+         update particular file meta information
 
 output transfer syntax:
 

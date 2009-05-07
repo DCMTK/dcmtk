@@ -1,4 +1,4 @@
-.TH "dcmsign" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
@@ -62,7 +62,6 @@ dcmfile-out  DICOM output filename
   +d    --dump  [f]ilename: string
           dump byte stream fed into the MAC codec to file
           (only with --sign or --sign-item)
-
 .fi
 .PP
 .SS "input options"
@@ -105,13 +104,13 @@ input transfer syntax:
         --verify
           verify all signatures (default)
 
-  +s    --sign  private key file, certificate file: string
+  +s    --sign  [p]rivate key file, [c]ertificate file: string
           create signature in main object
 
-  +si   --sign-item  keyfile, certfile, item location: string
+  +si   --sign-item  [k]eyfile, [c]ertfile, [i]tem location: string
           create signature in sequence item
 
-  +r    --remove  signature UID: string
+  +r    --remove  [s]ignature UID: string
           remove signature
 
   +ra   --remove-all
@@ -169,11 +168,11 @@ MAC algorithm:
 tag selection:
 
   -t    --tag
-          tag: "xxxx,xxxx" or a data dictionary name
+          [t]ag: "gggg,eeee" or dictionary name
           sign only specified tag
-          this option can be specified multiple times
+          (this option can be specified multiple times)
 
-  -tf   --tag-file  filename: string
+  -tf   --tag-file  [f]ilename: string
           read list of tags from text file
 
 signature format:
@@ -184,7 +183,6 @@ signature format:
   -fo   --format-old
           use old (pre-3.5.4) DCMTK signature format, non-conformant
           if signature includes compressed pixel data
-
 .fi
 .PP
 .SS "output options"

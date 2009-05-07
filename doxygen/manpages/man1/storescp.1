@@ -1,4 +1,4 @@
-.TH "storescp" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -18,8 +18,8 @@ The \fBstorescp\fP application implements a Service Class Provider (SCP) for the
 .PP
 .nf
 
-port  tcp/ip port number to listen on.
-      This parameter is required unless the --inetd option is specified.
+port  tcp/ip port number to listen on
+      (this parameter is required unless the --inetd option is specified)
 .fi
 .PP
 .SH "OPTIONS"
@@ -122,7 +122,7 @@ network host access control (tcp wrapper):
 other network options:
 
   -id   --inetd
-          run from inetd super server
+          run from inetd super server (not with --fork)
           (this option is available only on Posix platforms)
 
   -ta   --acse-timeout  [s]econds: integer (default: 30)
@@ -131,13 +131,14 @@ other network options:
   -td   --dimse-timeout  [s]econds: integer (default: unlimited)
           timeout for DIMSE messages
 
-  -aet  --aetitle  aetitle: string
+  -aet  --aetitle  [a]etitle: string
           set my AE title (default: STORESCP)
 
   -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
           set max receive pdu to n bytes (default: 16384)
 
-  -dhl  --disable-host-lookup  disable hostname lookup
+  -dhl  --disable-host-lookup
+          disable hostname lookup
 
         --refuse
           refuse association

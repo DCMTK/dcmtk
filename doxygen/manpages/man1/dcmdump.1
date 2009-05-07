@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "21 Apr 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -151,7 +151,7 @@ general handling of parser errors:
 
 other parsing options:
 
-  +st  --stop-after-elem  [t]ag: "xxxx,xxxx" or a data dictionary
+  +st  --stop-after-elem  [t]ag: "gggg,eeee" or a data dictionary
          stop parsing after element specified by t
 
 bitstream format of deflated input:
@@ -175,7 +175,7 @@ loading:
   -M   --load-short
          do not load very long values (e.g. pixel data)
 
-  +R   --max-read-length  [k]bytes: integer (4..4194302) (default: 4)
+  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
          set threshold for long values to k kbytes
 
 printing:
@@ -221,7 +221,7 @@ error handling:
 
 searching:
 
-  +P   --search  [t]ag: "xxxx,xxxx" or a data dictionary name
+  +P   --search  [t]ag: "gggg,eeee" or dictionary name
          print the value of tag t this option can be specified
          multiple times (default: the complete file is printed)
 
@@ -233,7 +233,7 @@ searching:
 
   +p   --prepend
          prepend sequence hierarchy to printed tag,
-         denoted by: (xxxx,xxxx).(xxxx,xxxx).*
+         denoted by: (gggg,eeee).(gggg,eeee).*
          (only with --search-all or --search-first)
 
   -p   --no-prepend

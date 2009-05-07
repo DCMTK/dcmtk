@@ -17,6 +17,9 @@ Changes between releases are documented here.
   Affects: dcmdata/apps/dump2dcm.cc
            dcmdata/docs/dump2dcm.man
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 - Removed email addresses.
   Affects: ANNOUNCE.355
 
