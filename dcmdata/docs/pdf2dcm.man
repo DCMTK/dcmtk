@@ -50,57 +50,56 @@ dcmfile-out  DICOM output filename
 \verbatim
 burned-in annotation:
 
-  +an   --annotation-yes
-          PDF contains patient identifying data (default)
+  +an  --annotation-yes
+         PDF contains patient identifying data (default)
 
-  -an   --annotation-no
-          PDF does not contain patient identifying data
+  -an  --annotation-no
+         PDF does not contain patient identifying data
 
 document title:
 
-  +t    --title  [t]itle: string (default: empty)
-          document title
+  +t   --title  [t]itle: string (default: empty)
+         document title
 
-  +cn   --concept-name  [CSD] [CV] [CM]: string (default: empty)
-          document title as concept name code sequence
-          with coding scheme designator CSD, code value CV
-          and code meaning CM
+  +cn  --concept-name  [CSD] [CV] [CM]: string (default: empty)
+         document title as concept name code sequence with coding
+         scheme designator CSD, code value CV and code meaning CM
 
 patient data:
 
-  +pn   --patient-name  [n]ame: string
-          patient's name in DICOM PN syntax
+  +pn  --patient-name  [n]ame: string
+         patient's name in DICOM PN syntax
 
-  +pi   --patient-id  [i]d: string
-          patient identifier
+  +pi  --patient-id  [i]d: string
+         patient identifier
 
-  +pb   --patient-birthdate  [d]ate: string (YYYYMMDD)
-          patient's birth date
+  +pb  --patient-birthdate  [d]ate: string (YYYYMMDD)
+         patient's birth date
 
-  +ps   --patient-sex  [s]ex: string (M, F or O)
-          patient's sex
+  +ps  --patient-sex  [s]ex: string (M, F or O)
+         patient's sex
 
 study and series:
 
-  +sg   --generate
-          generate new study and series UIDs (default)
+  +sg  --generate
+         generate new study and series UIDs (default)
 
-  +st   --study-from  [f]ilename: string
-          read patient/study data from DICOM file
+  +st  --study-from  [f]ilename: string
+         read patient/study data from DICOM file
 
-  +se   --series-from  [f]ilename: string
-          read patient/study/series data from DICOM file
+  +se  --series-from  [f]ilename: string
+         read patient/study/series data from DICOM file
 
 instance number:
 
-  +i1   --instance-one
-          use instance number 1 (default, not with +se)
+  +i1  --instance-one
+         use instance number 1 (default, not with +se)
 
-  +ii   --instance-inc
-          increment instance number (only with +se)
+  +ii  --instance-inc
+         increment instance number (only with +se)
 
-  +is   --instance-set  [i]nstance number: integer
-          use instance number i
+  +is  --instance-set  [i]nstance number: integer
+         use instance number i
 \endverbatim
 
 \section command_line COMMAND LINE

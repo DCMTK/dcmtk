@@ -23,6 +23,9 @@ Changes between releases are documented here.
 - Removed email addresses.
   Affects: ANNOUNCE.355
 
+- Fixed minor layout issues.
+  Affects: dcmdata/docs/pdf2dcm.man
+
 **** Changes from 2009.05.06 (riesmeier)
 
 - Fixed outdated reference to "test.cfg" in header comment.
