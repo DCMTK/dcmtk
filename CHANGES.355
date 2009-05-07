@@ -17,6 +17,9 @@ Changes between releases are documented here.
   Affects: dcmdata/apps/dump2dcm.cc
            dcmdata/docs/dump2dcm.man
 
+- Removed email addresses.
+  Affects: ANNOUNCE.355
+
 **** Changes from 2009.05.06 (riesmeier)
 
 - Fixed outdated reference to "test.cfg" in header comment.
