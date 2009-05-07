@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-26 12:07:42 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2009-05-07 09:08:03 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define SHORTCOL 3
 #define LONGCOL 21
 
-// Maximum Line Size
+// Maximum Line Size (default)
 
 const unsigned int DCM_DumpMaxLineSize = 4096;
 
@@ -844,13 +844,24 @@ int main(int argc, char *argv[])
      cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--line",                  "+l",  1, "[m]ax-length: integer",
+      cmd.addSubGroup("input file format:");
+        cmd.addOption("--read-meta-info",      "+f",     "read meta information if present (default)");
+        cmd.addOption("--ignore-meta-info",    "-f",     "ignore file meta information");
+      cmd.addSubGroup("other input options:");
+        cmd.addOption("--line",                "+l",  1, "[m]ax-length: integer",
                                                          "maximum line length m (default: 4096)");
+
+    cmd.addGroup("processing options:");
+      cmd.addSubGroup("unique identifiers:");
+        cmd.addOption("--generate-new-uids",   "+Ug",    "generate new Study/Series/SOP Instance UID");
+        cmd.addOption("--dont-overwrite-uids", "-Uo",    "do not overwrite existing UIDs (default)");
+        cmd.addOption("--overwrite-uids",      "+Uo",    "overwrite existing UIDs");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output file format:");
         cmd.addOption("--write-file",          "+F",     "write file format (default)");
         cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
+        cmd.addOption("--update-meta-info",    "+Fu",    "update particular file meta information");
       cmd.addSubGroup("output transfer syntax:");
         cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
         cmd.addOption("--write-xfer-little",   "+te",    "write with explicit VR little endian");
@@ -896,6 +907,10 @@ int main(int argc, char *argv[])
     OFBool opt_verboseMode = OFFalse;
     OFBool opt_stopOnErrors = OFTrue;
     OFBool opt_dataset = OFFalse;
+    OFBool opt_metaInfo = OFTrue;
+    OFBool opt_updateMeta = OFFalse;
+    OFBool opt_generateUIDs = OFFalse;
+    OFBool opt_overwriteUIDs = OFFalse;
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -929,13 +944,37 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--verbose")) opt_verboseMode = OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode = 5;
 
+      /* input options */
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-meta-info")) opt_metaInfo = OFTrue;
+      if (cmd.findOption("--ignore-meta-info")) opt_metaInfo = OFFalse;
+      cmd.endOptionBlock();
+
       if (cmd.findOption("--line"))
           app.checkValue(cmd.getValueAndCheckMin(opt_linelength, 80));
+
+      /* processing options */
+
+      if (cmd.findOption("--generate-new-uids")) opt_generateUIDs = OFTrue;
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--dont-overwrite-uids")) opt_overwriteUIDs = OFFalse;
+      if (cmd.findOption("--overwrite-uids")) opt_overwriteUIDs = OFTrue;
+      cmd.endOptionBlock();
+
+      /* output options */
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-file")) opt_dataset = OFFalse;
       if (cmd.findOption("--write-dataset")) opt_dataset = OFTrue;
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--update-meta-info"))
+      {
+          app.checkConflict("--update-meta-info", "--write-dataset", opt_dataset);
+          opt_updateMeta = OFTrue;
+      }
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-xfer-same")) opt_xfer = EXS_Unknown;;
@@ -1006,7 +1045,7 @@ int main(int argc, char *argv[])
     }
 
     DcmFileFormat fileformat;
-    DcmMetaInfo *metaheader = fileformat.getMetaInfo();
+    DcmMetaInfo *metaheader = (opt_metaInfo) ? fileformat.getMetaInfo() : NULL;
     DcmDataset *dataset = fileformat.getDataset();
 
     if (opt_debugMode)
@@ -1043,6 +1082,44 @@ int main(int argc, char *argv[])
     if (readDumpFile(metaheader, dataset, dumpfile, opt_ifname, xfer, opt_stopOnErrors,
         OFstatic_cast(unsigned long, opt_linelength)))
     {
+        /* generate new UIDs (if required) */
+        if (opt_generateUIDs)
+        {
+            char uid[100];
+            if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
+            {
+                if (opt_verboseMode)
+                    COUT << "generating new Study Instance UID" << OFendl;
+                dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
+            }
+            if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
+            {
+                if (opt_verboseMode)
+                    COUT << "generating new Series Instance UID" << OFendl;
+                dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+            }
+            if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
+            {
+                if (opt_verboseMode)
+                    COUT << "generating new SOP Instance UID" << OFendl;
+                dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
+                if (metaheader != NULL)
+                    delete metaheader->remove(DCM_MediaStorageSOPInstanceUID);
+            }
+        }
+
+        /* update particular file meta information */
+        if (opt_updateMeta && !opt_dataset)
+        {
+            if (metaheader != NULL)
+            {
+                if (opt_verboseMode)
+                    COUT << "updating file meta information" << OFendl;
+                delete metaheader->remove(DCM_MediaStorageSOPClassUID);
+                delete metaheader->remove(DCM_MediaStorageSOPInstanceUID);
+            }
+        }
+
         // write into file format or dataset
         if (opt_verboseMode)
             COUT << "writing DICOM file" << OFendl;
@@ -1093,6 +1170,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.63  2009-05-07 09:08:03  joergr
+** Added new command line options that allow for generating new Study/Series/SOP
+** Instance UIDs (incl. an option for overwriting existing values).
+** Added new command line options that allow for ignoring the file meta
+** information and for updating particular file meta information.
+**
 ** Revision 1.62  2008-11-26 12:07:42  joergr
 ** Updated documentation of newDicomElement() in order to reflect the current
 ** implementation.

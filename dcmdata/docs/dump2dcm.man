@@ -49,8 +49,32 @@ dcmfile-out  DICOM output filename
 
 \subsection input_options input options
 \verbatim
+input file format:
+
+  +f   --read-meta-info
+         read meta information if present (default)
+
+  -f   --ignore-meta-info
+         ignore file meta information
+
+other input options:
+
   +l   --line  [m]ax-length: integer
          maximum line length m (default: 4096)
+\endverbatim
+
+\subsection processing_options processing options
+\verbatim
+unique identifiers:
+
+  +Ug  --generate-new-uids
+         generate new Study/Series/SOP Instance UID
+
+  -Uo  --dont-overwrite-uids
+         do not overwrite existing UIDs (default)
+
+  +Uo  --overwrite-uids
+         overwrite existing UIDs
 \endverbatim
 
 \subsection output_options output options
@@ -62,6 +86,9 @@ output file format:
 
   -F   --write-dataset
          write data set without file meta information
+
+  +Fu  --update-meta-info
+         update particular file meta information
 
 output transfer syntax:
 

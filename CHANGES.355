@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.07 (riesmeier)
+
+- Added new command line options that allow for generating new Study/Series/SOP
+  Instance UIDs (incl. an option for overwriting existing values).
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/docs/xml2dsr.man
+
+- Added new command line options that allow for ignoring the file meta
+  information and for updating particular file meta information.
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.man
+
 **** Changes from 2009.05.06 (riesmeier)
 
 - Fixed outdated reference to "test.cfg" in header comment.
