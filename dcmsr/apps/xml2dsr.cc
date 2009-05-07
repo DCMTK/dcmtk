@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,8 @@
  *            reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-03 15:46:28 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/xml2dsr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-05-07 08:56:51 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +43,7 @@
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_ZLIB
-#include <zlib.h>       /* for zlibVersion() */
+#include <zlib.h>                     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "xml2dsr"
@@ -71,6 +70,8 @@ int main(int argc, char *argv[])
     int opt_debug = 0;
     OFBool opt_verbose = OFFalse;
     OFBool opt_dataset = OFFalse;
+    OFBool opt_generateUIDs = OFFalse;
+    OFBool opt_overwriteUIDs = OFFalse;
     size_t opt_readFlags = 0;
     E_TransferSyntax opt_xfer = EXS_LittleEndianExplicit;
     E_EncodingType opt_enctype = EET_ExplicitLength;
@@ -107,6 +108,10 @@ int main(int argc, char *argv[])
         cmd.addOption("--validate-schema",     "+Vs",    "validate XML document against Schema\n(not with --template-envelope)");
 #endif
         cmd.addOption("--check-namespace",     "+Vn",    "check XML namespace in document root");
+      cmd.addSubGroup("unique identifiers:");
+        cmd.addOption("--generate-new-uids",   "+Ug",    "generate new Study/Series/SOP Instance UID");
+        cmd.addOption("--dont-overwrite-uids", "-Uo",    "do not overwrite existing UIDs (default)");
+        cmd.addOption("--overwrite-uids",      "+Uo",    "overwrite existing UIDs");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("output file format:");
@@ -186,6 +191,16 @@ int main(int argc, char *argv[])
 #endif
         if (cmd.findOption("--check-namespace"))
             opt_readFlags |= DSRTypes::XF_useDcmsrNamespace;
+
+        if (cmd.findOption("--generate-new-uids"))
+            opt_generateUIDs = OFTrue;
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--dont-overwrite-uids"))
+            opt_overwriteUIDs = OFFalse;
+        if (cmd.findOption("--overwrite-uids"))
+            opt_overwriteUIDs = OFTrue;
+        cmd.endOptionBlock();
 
         /* output options */
         cmd.beginOptionBlock();
@@ -326,10 +341,34 @@ int main(int argc, char *argv[])
             result = dsrdoc->readXML(opt_ifname, opt_readFlags);
             if (result.good())
             {
+                DcmDataset *dataset = fileformat.getDataset();
                 if (opt_verbose)
                     COUT << "writing DICOM SR output file: " << opt_ofname << OFendl;
                 /* write SR document to dataset */
-                result = dsrdoc->write(*fileformat.getDataset());
+                result = dsrdoc->write(*dataset);
+                /* generate new UIDs (if required) */
+                if (opt_generateUIDs)
+                {
+                    char uid[100];
+                    if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
+                    {
+                        if (opt_verbose)
+                            COUT << "generating new Study Instance UID" << OFendl;
+                        dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
+                    }
+                    if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
+                    {
+                        if (opt_verbose)
+                            COUT << "generating new Series Instance UID" << OFendl;
+                        dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+                    }
+                    if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
+                    {
+                        if (opt_verbose)
+                            COUT << "generating new SOP Instance UID" << OFendl;
+                        dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
+                    }
+                }
                 /* write DICOM file */
                 if (result.good())
                     result = fileformat.saveFile(opt_ofname, opt_xfer, opt_enctype, opt_glenc, opt_padenc,
@@ -366,6 +405,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.11  2009-05-07 08:56:51  joergr
+ * Added new command line options that allow for generating new Study/Series/SOP
+ * Instance UIDs (incl. an option for overwriting existing values).
+ *
  * Revision 1.10  2008-11-03 15:46:28  joergr
  * Removed "option block" encapsulation from option --compression-level.
  *

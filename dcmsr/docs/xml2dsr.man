@@ -70,6 +70,17 @@ validation:
 
   +Vn  --check-namespace
          check XML namespace in document root
+
+unique identifiers:
+
+  +Ug  --generate-new-uids
+         generate new Study/Series/SOP Instance UID
+
+  -Uo  --dont-overwrite-uids
+         do not overwrite existing UIDs (default)
+
+  +Uo  --overwrite-uids
+         overwrite existing UIDs
 \endverbatim
 
 \subsection output_options output options
@@ -212,6 +223,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2003-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2003-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
