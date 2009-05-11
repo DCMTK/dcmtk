@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-30 13:28:14 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-05-11 16:06:51 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1075,7 +1075,12 @@ OFCondition DcmPixelData::getUncompressedFrame(
     Uint32 frameSize;
     OFCondition result = getUncompressedFrameSize(dataset, frameSize);
     if (result.bad()) return result;
-    if (bufSize < frameSize) return EC_IllegalCall;
+    
+    // determine the minimum buffer size, which may be frame size plus one pad byte if frame size is odd.
+    Uint32 minBufSize = frameSize;
+    if (minBufSize & 1) ++minBufSize;
+
+    if (bufSize < minBufSize) return EC_IllegalCall;
 
     // check frame number
     if (frameNo >= OFstatic_cast(Uint32, numberOfFrames)) return EC_IllegalCall;
@@ -1102,6 +1107,10 @@ OFCondition DcmPixelData::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.45  2009-05-11 16:06:51  meichel
+** DcmPixelData::getUncompressedFrame() now works with uncompressed multi-frame
+**   images with odd frame size.
+**
 ** Revision 1.44  2009-01-30 13:28:14  joergr
 ** Fixed bug in hasRepresentation() which returned the wrong status in case of
 ** compressed pixel data.
