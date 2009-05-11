@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:52:17 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-05-11 16:05:45 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -620,8 +620,10 @@ class DcmElement
     virtual void compact();
 
     /** compute uncompressed frame size of a single frame of this image.
+     *  Note that the value returned by this method does not include the pad byte 
+     *  to even size needed for a buffer into which a frame is to be loaded.
      *  @param dataset dataset in which this pixel data element is contained
-     *  @param frameSize frame size in bytes returned in this parameter upon success
+     *  @param frameSize frame size in bytes (without padding) returned in this parameter upon success
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition getUncompressedFrameSize(DcmItem *dataset,
@@ -774,6 +776,11 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.41  2009-05-11 16:05:45  meichel
+** Minor fix in DcmElement::getUncompressedFrameSize for the rare case that
+**   BitsAllocated is not 8 or 16. Also the method now returns the true frame
+**   size without any pad byte.
+**
 ** Revision 1.40  2009-02-04 17:52:17  joergr
 ** Fixes various type mismatches reported by MSVC introduced with OFFile class.
 **

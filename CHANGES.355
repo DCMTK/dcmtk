@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.11 (eichelberg)
+
+- Minor fix in DcmElement::getUncompressedFrameSize for the rare case that
+  BitsAllocated is not 8 or 16. Also the method now returns the true frame
+  size without any pad byte.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcelem.h
+           dcmdata/libsrc/dcelem.cc
+
+- DcmPixelData::getUncompressedFrame() now works with uncompressed multi-frame
+  images with odd frame size.
+  Affects: dcmdata/libsrc/dcpixel.cc
+
 **** Changes from 2009.05.11 (riesmeier)
 
 - Fixed typo.

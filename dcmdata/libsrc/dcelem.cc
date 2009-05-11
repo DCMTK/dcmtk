@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:07 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-05-11 16:05:47 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1455,12 +1455,18 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
   if (result.good()) result = dataset->findAndGetUint16(DCM_Rows, rows);
   if (result.good()) result = dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel);
   if (result.good()) result = dataset->findAndGetUint16(DCM_BitsAllocated, bitsAllocated);
-  // compute frame size
-  Uint16 bytesAllocated = (bitsAllocated > 8) ? 2 : 1;
-  frameSize = bytesAllocated * rows * cols * samplesPerPixel;
 
-  // make sure we have enough room for correctly byte-swapping the pixel data if needed
-  if (frameSize & 1) ++frameSize;
+  // compute frame size
+  if ((bitsAllocated % 8) == 0)
+  {
+    Uint16 bytesAllocated = bitsAllocated / 8;
+    frameSize = bytesAllocated * rows * cols * samplesPerPixel;    
+  }
+  else
+  {
+    frameSize = (bitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
+  }
+
   return result;
 }
 
@@ -1478,6 +1484,11 @@ OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.69  2009-05-11 16:05:47  meichel
+** Minor fix in DcmElement::getUncompressedFrameSize for the rare case that
+**   BitsAllocated is not 8 or 16. Also the method now returns the true frame
+**   size without any pad byte.
+**
 ** Revision 1.68  2009-03-05 13:35:07  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds 32-bit
