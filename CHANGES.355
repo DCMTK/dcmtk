@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.11 (riesmeier)
+
+- Fixed typo.
+  Affects: dcmdata/docs/xml2dcm.man
+
 **** Changes from 2009.05.07 (riesmeier)
 
 - Added new command line options that allow for generating new Study/Series/SOP
