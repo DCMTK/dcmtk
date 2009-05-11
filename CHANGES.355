@@ -13,6 +13,10 @@ Changes between releases are documented here.
   images with odd frame size.
   Affects: dcmdata/libsrc/dcpixel.cc
 
+- DcmPixelData::getUncompressedFrame() now returns color model also
+  for uncompressed images.
+  Affects: dcmdata/libsrc/dcpixel.cc
+
 **** Changes from 2009.05.11 (riesmeier)
 
 - Fixed typo.

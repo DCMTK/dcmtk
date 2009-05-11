@@ -22,8 +22,8 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-05-11 16:06:51 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2009-05-11 16:10:14 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1091,6 +1091,7 @@ OFCondition DcmPixelData::getUncompressedFrame(
       // either in memory or in file. We can directly access this using
       // DcmElement::getPartialValue.
       result = getPartialValue(buffer, frameNo * frameSize, frameSize, cache);
+      if (result.good()) result = dataset->findAndGetOFString(DCM_PhotometricInterpretation, decompressedColorModel);
     }
     else
     {
@@ -1107,6 +1108,10 @@ OFCondition DcmPixelData::getUncompressedFrame(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
+** Revision 1.46  2009-05-11 16:10:14  meichel
+** DcmPixelData::getUncompressedFrame() now returns color model also
+**   for uncompressed images.
+**
 ** Revision 1.45  2009-05-11 16:06:51  meichel
 ** DcmPixelData::getUncompressedFrame() now works with uncompressed multi-frame
 **   images with odd frame size.
