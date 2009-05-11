@@ -199,7 +199,7 @@ The basic structure of the XML input expected looks like the following:
 </file-format>
 \endverbatim
 
-The "file-format" and "meta-header" tags maybe absent for DICOM data sets.
+The "file-format" and "meta-header" tags may be absent for DICOM data sets.
 
 \subsection character_encoding Character Encoding
 
