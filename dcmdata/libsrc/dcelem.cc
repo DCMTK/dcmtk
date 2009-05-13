@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-05-11 16:05:47 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-05-13 09:54:54 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1459,12 +1459,17 @@ OFCondition DcmElement::getUncompressedFrameSize(DcmItem *dataset,
   // compute frame size
   if ((bitsAllocated % 8) == 0)
   {
-    Uint16 bytesAllocated = bitsAllocated / 8;
-    frameSize = bytesAllocated * rows * cols * samplesPerPixel;    
+    const Uint16 bytesAllocated = bitsAllocated / 8;
+    frameSize = bytesAllocated * rows * cols * samplesPerPixel;
   }
   else
   {
-    frameSize = (bitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
+    /* need to split calculation in order to avoid integer overflow for large pixel data */
+    const Uint32 v1 = rows * cols * samplesPerPixel;
+    const Uint32 v2 = (bitsAllocated / 8) * v1;
+    const Uint32 v3 = ((bitsAllocated % 8) * v1 + 7) / 8;
+//  # old code: frameSize = (bitsAllocated * rows * cols * samplesPerPixel + 7) / 8;
+    frameSize = v2 + v3;
   }
 
   return result;
@@ -1484,6 +1489,11 @@ OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.70  2009-05-13 09:54:54  joergr
+** Fixed possible integer overflow for images with very large pixel data in
+** method getUncompressedFrameSize() for the rare case that BitsAllocated is
+** not a multiple of 8.
+**
 ** Revision 1.69  2009-05-11 16:05:47  meichel
 ** Minor fix in DcmElement::getUncompressedFrameSize for the rare case that
 **   BitsAllocated is not 8 or 16. Also the method now returns the true frame

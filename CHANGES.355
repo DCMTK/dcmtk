@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.13 (riesmeier)
+
+- Fixed possible integer overflow for images with very large pixel data in
+  method getUncompressedFrameSize() for the rare case that BitsAllocated is
+  not a multiple of 8.
+  Affects: dcmdata/libsrc/dcelem.cc
+
 **** Changes from 2009.05.11 (eichelberg)
 
 - Minor fix in DcmElement::getUncompressedFrameSize for the rare case that
