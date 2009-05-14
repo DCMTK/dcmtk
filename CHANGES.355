@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.14 (riesmeier)
+
+- Added new tags from Supplement 43 (Storage of 3D Ultrasound Images) to data
+  dictionary.
+  Affects: dcmdata/data/dicom.dic
+           dcmdata/include/dcmtk/dcmdata/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2009.05.13 (riesmeier)
 
 - Fixed possible integer overflow for images with very large pixel data in

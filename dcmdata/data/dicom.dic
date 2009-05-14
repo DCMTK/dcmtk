@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2008, OFFIS
+#  Copyright (C) 1994-2009, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -22,12 +22,13 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2009-01-15 14:25:23 $
-#  CVS/RCS Revision: $Revision: 1.1 $
+#  Update Date:      $Date: 2009-05-14 14:12:21 $
+#  CVS/RCS Revision: $Revision: 1.2 $
 #  Status:           $State: Exp $
 #
-#  This dictionary contains the complete dictionary from the 
-#  2008 DICOM publication.
+# This dictionary contains the complete dictionary from the 2008 DICOM
+# publication.  In addition, the following Final Text Supplements have
+# been incorporated: 43.
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -2378,7 +2379,58 @@
 (FFFE,E000)	na	Item	1	DICOM_2008
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM_2008
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM_2008
-
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 43 (Storage of 3D Ultrasound Images)
+#
+(0008,2133)	SQ	EventTimerSequence	1	Supplement_43
+(0008,2134)	FD	EventTimeOffset	1	Supplement_43
+(0008,2135)	SQ	EventCodeSequence	1	Supplement_43
+(0018,9801)	FD	DepthsOfFocus	1-n	Supplement_43
+(0018,9803)	SQ	ExcludedIntervalsSequence	1	Supplement_43
+(0018,9804)	DT	ExclusionStartDateTime	1	Supplement_43
+(0018,9805)	FD	ExclusionDuration	1	Supplement_43
+(0018,9806)	SQ	USImageDescriptionSequence	1	Supplement_43
+(0018,9807)	SQ	ImageDataTypeSequence	1	Supplement_43
+(0018,9808)	CS	DataType	1	Supplement_43
+(0018,9809)	SQ	TransducerScanPatternCodeSequence	1	Supplement_43
+(0018,980B)	CS	AliasedDataType	1	Supplement_43
+(0018,980C)	CS	PositionMeasuringDeviceUsed	1	Supplement_43
+(0018,980D)	SQ	TransducerGeometryCodeSequence	1	Supplement_43
+(0018,980E)	SQ	TransducerBeamSteeringCodeSequence	1	Supplement_43
+(0018,980F)	SQ	TransducerApplicationCodeSequence	1	Supplement_43
+(0020,9301)	FD	ImagePositionVolume	3	Supplement_43
+(0020,9302)	FD	ImageOrientationVolume	6	Supplement_43
+(0020,9307)	CS	UltrasoundAcquisitionGeometry	1	Supplement_43
+(0020,9308)	FD	ApexPosition	3	Supplement_43
+(0020,9309)	FD	VolumeToTransducerMappingMatrix	16	Supplement_43
+(0020,930A)	FD	VolumeToTableMappingMatrix	16	Supplement_43
+(0020,930C)	CS	PatientFrameOfReferenceSource	1	Supplement_43
+(0020,930D)	FD	TemporalPositionTimeOffset	1	Supplement_43
+(0020,930E)	SQ	PlanePositionVolumeSequence	1	Supplement_43
+(0020,930F)	SQ	PlaneOrientationVolumeSequence	1	Supplement_43
+(0020,9310)	SQ	TemporalPositionSequence	1	Supplement_43
+(0020,9311)	CS	DimensionOrganizationType	1	Supplement_43
+(0020,9312)	UI	VolumeFrameOfReferenceUID	1	Supplement_43
+(0020,9313)	UI	TableFrameOfReferenceUID	1	Supplement_43
+(0028,1104)	US	AlphaPaletteColorLookupTableDescriptor	3	Supplement_43
+(0028,1204)	OW	AlphaPaletteColorLookupTableData	1	Supplement_43
+(0028,1401)	SQ	DataFrameAssignmentSequence	1	Supplement_43
+(0028,1402)	CS	DataPathAssignment	1	Supplement_43
+(0028,1403)	US	BitsMappedToColorLookupTable	1	Supplement_43
+(0028,1404)	SQ	BlendingLUT1Sequence	1	Supplement_43
+(0028,1405)	CS	BlendingLUT1TransferFunction	1	Supplement_43
+(0028,1406)	FD	BlendingWeightConstant	1	Supplement_43
+(0028,1407)	US	BlendingLookupTableDescriptor	3	Supplement_43
+(0028,1408)	OW	BlendingLookupTableData	1	Supplement_43
+(0028,140B)	SQ	EnhancedPaletteColorLookupTableSequence	1	Supplement_43
+(0028,140C)	SQ	BlendingLUT2Sequence	1	Supplement_43
+(0028,140D)	CS	BlendingLUT2TransferFunction	1	Supplement_43
+(0028,140E)	CS	DataPathID	1	Supplement_43
+(0028,140F)	CS	RGBLUTTransferFunction	1	Supplement_43
+(0028,1410)	CS	AlphaLUTTransferFunction	1	Supplement_43
+(0040,0261)	CS	PerformedProtocolType	1	Supplement_43
 #
 #---------------------------------------------------------------------------
 #

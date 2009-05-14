@@ -4,11 +4,11 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2008-11-06 18:43:22
+**   Date: 2009-05-14 15:56:43
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
-** From: /home/joergr/source/dcmtk/dcmdata/libsrc/dicom.dic
-**       /home/joergr/source/dcmtk/dcmdata/libsrc/private.dic
+**   From: ../data/dicom.dic
+**         ../data/private.dic
 **
 */
 
@@ -17,12 +17,12 @@
 
 #include "dcmtk/dcmdata/dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2008-11-06 18:43:22"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2009-05-14 15:56:43"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 2630
+** Number of entries: 2677
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -213,6 +213,9 @@
 #define DCM_NumberOfViewsInStage                 DcmTagKey(0x0008, 0x212a)
 #define DCM_EventElapsedTimes                    DcmTagKey(0x0008, 0x2130)
 #define DCM_EventTimerNames                      DcmTagKey(0x0008, 0x2132)
+#define DCM_EventTimerSequence                   DcmTagKey(0x0008, 0x2133)
+#define DCM_EventTimeOffset                      DcmTagKey(0x0008, 0x2134)
+#define DCM_EventCodeSequence                    DcmTagKey(0x0008, 0x2135)
 #define DCM_StartTrim                            DcmTagKey(0x0008, 0x2142)
 #define DCM_StopTrim                             DcmTagKey(0x0008, 0x2143)
 #define DCM_RecommendedDisplayFrameRate          DcmTagKey(0x0008, 0x2144)
@@ -936,6 +939,19 @@
 #define DCM_DiffusionBValueYY                    DcmTagKey(0x0018, 0x9605)
 #define DCM_DiffusionBValueYZ                    DcmTagKey(0x0018, 0x9606)
 #define DCM_DiffusionBValueZZ                    DcmTagKey(0x0018, 0x9607)
+#define DCM_DepthsOfFocus                        DcmTagKey(0x0018, 0x9801)
+#define DCM_ExcludedIntervalsSequence            DcmTagKey(0x0018, 0x9803)
+#define DCM_ExclusionStartDateTime               DcmTagKey(0x0018, 0x9804)
+#define DCM_ExclusionDuration                    DcmTagKey(0x0018, 0x9805)
+#define DCM_USImageDescriptionSequence           DcmTagKey(0x0018, 0x9806)
+#define DCM_ImageDataTypeSequence                DcmTagKey(0x0018, 0x9807)
+#define DCM_DataType                             DcmTagKey(0x0018, 0x9808)
+#define DCM_TransducerScanPatternCodeSequence    DcmTagKey(0x0018, 0x9809)
+#define DCM_AliasedDataType                      DcmTagKey(0x0018, 0x980b)
+#define DCM_PositionMeasuringDeviceUsed          DcmTagKey(0x0018, 0x980c)
+#define DCM_TransducerGeometryCodeSequence       DcmTagKey(0x0018, 0x980d)
+#define DCM_TransducerBeamSteeringCodeSequence   DcmTagKey(0x0018, 0x980e)
+#define DCM_TransducerApplicationCodeSequence    DcmTagKey(0x0018, 0x980f)
 #define DCM_ContributingEquipmentSequence        DcmTagKey(0x0018, 0xa001)
 #define DCM_ContributionDateTime                 DcmTagKey(0x0018, 0xa002)
 #define DCM_ContributionDescription              DcmTagKey(0x0018, 0xa003)
@@ -1031,6 +1047,20 @@
 #define DCM_NominalRespiratoryTriggerDelayTime   DcmTagKey(0x0020, 0x9255)
 #define DCM_RespiratoryTriggerDelayThreshold     DcmTagKey(0x0020, 0x9256)
 #define DCM_ActualRespiratoryTriggerDelayTime    DcmTagKey(0x0020, 0x9257)
+#define DCM_ImagePositionVolume                  DcmTagKey(0x0020, 0x9301)
+#define DCM_ImageOrientationVolume               DcmTagKey(0x0020, 0x9302)
+#define DCM_UltrasoundAcquisitionGeometry        DcmTagKey(0x0020, 0x9307)
+#define DCM_ApexPosition                         DcmTagKey(0x0020, 0x9308)
+#define DCM_VolumeToTransducerMappingMatrix      DcmTagKey(0x0020, 0x9309)
+#define DCM_VolumeToTableMappingMatrix           DcmTagKey(0x0020, 0x930a)
+#define DCM_PatientFrameOfReferenceSource        DcmTagKey(0x0020, 0x930c)
+#define DCM_TemporalPositionTimeOffset           DcmTagKey(0x0020, 0x930d)
+#define DCM_PlanePositionVolumeSequence          DcmTagKey(0x0020, 0x930e)
+#define DCM_PlaneOrientationVolumeSequence       DcmTagKey(0x0020, 0x930f)
+#define DCM_TemporalPositionSequence             DcmTagKey(0x0020, 0x9310)
+#define DCM_DimensionOrganizationType            DcmTagKey(0x0020, 0x9311)
+#define DCM_VolumeFrameOfReferenceUID            DcmTagKey(0x0020, 0x9312)
+#define DCM_TableFrameOfReferenceUID             DcmTagKey(0x0020, 0x9313)
 #define DCM_DimensionDescriptionLabel            DcmTagKey(0x0020, 0x9421)
 #define DCM_PatientOrientationInFrameSequence    DcmTagKey(0x0020, 0x9450)
 #define DCM_FrameLabel                           DcmTagKey(0x0020, 0x9453)
@@ -1181,6 +1211,7 @@
 #define DCM_RedPaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1101)
 #define DCM_GreenPaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1102)
 #define DCM_BluePaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1103)
+#define DCM_AlphaPaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1104)
 #define DCM_RETIRED_LargeRedPaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1111)
 #define DCM_RETIRED_LargeGreenPaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1112)
 #define DCM_RETIRED_LargeBluePaletteColorLookupTableDescriptor DcmTagKey(0x0028, 0x1113)
@@ -1189,6 +1220,7 @@
 #define DCM_RedPaletteColorLookupTableData       DcmTagKey(0x0028, 0x1201)
 #define DCM_GreenPaletteColorLookupTableData     DcmTagKey(0x0028, 0x1202)
 #define DCM_BluePaletteColorLookupTableData      DcmTagKey(0x0028, 0x1203)
+#define DCM_AlphaPaletteColorLookupTableData     DcmTagKey(0x0028, 0x1204)
 #define DCM_RETIRED_LargeRedPaletteColorLookupTableData DcmTagKey(0x0028, 0x1211)
 #define DCM_RETIRED_LargeGreenPaletteColorLookupTableData DcmTagKey(0x0028, 0x1212)
 #define DCM_RETIRED_LargeBluePaletteColorLookupTableData DcmTagKey(0x0028, 0x1213)
@@ -1201,6 +1233,20 @@
 #define DCM_PartialViewDescription               DcmTagKey(0x0028, 0x1351)
 #define DCM_PartialViewCodeSequence              DcmTagKey(0x0028, 0x1352)
 #define DCM_SpatialLocationsPreserved            DcmTagKey(0x0028, 0x135a)
+#define DCM_DataFrameAssignmentSequence          DcmTagKey(0x0028, 0x1401)
+#define DCM_DataPathAssignment                   DcmTagKey(0x0028, 0x1402)
+#define DCM_BitsMappedToColorLookupTable         DcmTagKey(0x0028, 0x1403)
+#define DCM_BlendingLUT1Sequence                 DcmTagKey(0x0028, 0x1404)
+#define DCM_BlendingLUT1TransferFunction         DcmTagKey(0x0028, 0x1405)
+#define DCM_BlendingWeightConstant               DcmTagKey(0x0028, 0x1406)
+#define DCM_BlendingLookupTableDescriptor        DcmTagKey(0x0028, 0x1407)
+#define DCM_BlendingLookupTableData              DcmTagKey(0x0028, 0x1408)
+#define DCM_EnhancedPaletteColorLookupTableSequence DcmTagKey(0x0028, 0x140b)
+#define DCM_BlendingLUT2Sequence                 DcmTagKey(0x0028, 0x140c)
+#define DCM_BlendingLUT2TransferFunction         DcmTagKey(0x0028, 0x140d)
+#define DCM_DataPathID                           DcmTagKey(0x0028, 0x140e)
+#define DCM_RGBLUTTransferFunction               DcmTagKey(0x0028, 0x140f)
+#define DCM_AlphaLUTTransferFunction             DcmTagKey(0x0028, 0x1410)
 #define DCM_ICCProfile                           DcmTagKey(0x0028, 0x2000)
 #define DCM_LossyImageCompression                DcmTagKey(0x0028, 0x2110)
 #define DCM_LossyImageCompressionRatio           DcmTagKey(0x0028, 0x2112)
@@ -1369,6 +1415,7 @@
 #define DCM_PerformedProcedureStepDescription    DcmTagKey(0x0040, 0x0254)
 #define DCM_PerformedProcedureTypeDescription    DcmTagKey(0x0040, 0x0255)
 #define DCM_PerformedProtocolCodeSequence        DcmTagKey(0x0040, 0x0260)
+#define DCM_PerformedProtocolType                DcmTagKey(0x0040, 0x0261)
 #define DCM_ScheduledStepAttributesSequence      DcmTagKey(0x0040, 0x0270)
 #define DCM_RequestAttributesSequence            DcmTagKey(0x0040, 0x0275)
 #define DCM_CommentsOnThePerformedProcedureStep  DcmTagKey(0x0040, 0x0280)

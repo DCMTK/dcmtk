@@ -4,18 +4,18 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2008-11-06 18:43:53
+**   Date: 2009-05-14 15:59:19
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
-** From: /home/joergr/source/dcmtk/dcmdata/libsrc/dicom.dic
-**       /home/joergr/source/dcmtk/dcmdata/libsrc/private.dic
+**   From: ../data/dicom.dic
+**         ../data/private.dic
 **
 */
 
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2008-11-06 18:43:53";
+const char* dcmBuiltinDictBuildDate = "2009-05-14 15:59:19";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -827,6 +827,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0008, 0x2132, 0x0008, 0x2132,
       EVR_LO, "EventTimerNames", 1, -1, "DICOM_2008",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x2133, 0x0008, 0x2133,
+      EVR_SQ, "EventTimerSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x2134, 0x0008, 0x2134,
+      EVR_FD, "EventTimeOffset", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0008, 0x2135, 0x0008, 0x2135,
+      EVR_SQ, "EventCodeSequence", 1, 1, "Supplement_43",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x2142, 0x0008, 0x2142,
@@ -5105,6 +5117,58 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0018, 0x9607, 0x0018, 0x9607,
       EVR_FD, "DiffusionBValueZZ", 1, 1, "DICOM_2008",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9801, 0x0018, 0x9801,
+      EVR_FD, "DepthsOfFocus", 1, -1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9803, 0x0018, 0x9803,
+      EVR_SQ, "ExcludedIntervalsSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9804, 0x0018, 0x9804,
+      EVR_DT, "ExclusionStartDateTime", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9805, 0x0018, 0x9805,
+      EVR_FD, "ExclusionDuration", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9806, 0x0018, 0x9806,
+      EVR_SQ, "USImageDescriptionSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9807, 0x0018, 0x9807,
+      EVR_SQ, "ImageDataTypeSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9808, 0x0018, 0x9808,
+      EVR_CS, "DataType", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x9809, 0x0018, 0x9809,
+      EVR_SQ, "TransducerScanPatternCodeSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x980b, 0x0018, 0x980b,
+      EVR_CS, "AliasedDataType", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x980c, 0x0018, 0x980c,
+      EVR_CS, "PositionMeasuringDeviceUsed", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x980d, 0x0018, 0x980d,
+      EVR_SQ, "TransducerGeometryCodeSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x980e, 0x0018, 0x980e,
+      EVR_SQ, "TransducerBeamSteeringCodeSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0018, 0x980f, 0x0018, 0x980f,
+      EVR_SQ, "TransducerApplicationCodeSequence", 1, 1, "Supplement_43",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0018, 0xa001, 0x0018, 0xa001,
@@ -9741,6 +9805,62 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_FD, "ActualRespiratoryTriggerDelayTime", 1, 1, "DICOM_2008",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0020, 0x9301, 0x0020, 0x9301,
+      EVR_FD, "ImagePositionVolume", 3, 3, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9302, 0x0020, 0x9302,
+      EVR_FD, "ImageOrientationVolume", 6, 6, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9307, 0x0020, 0x9307,
+      EVR_CS, "UltrasoundAcquisitionGeometry", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9308, 0x0020, 0x9308,
+      EVR_FD, "ApexPosition", 3, 3, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9309, 0x0020, 0x9309,
+      EVR_FD, "VolumeToTransducerMappingMatrix", 16, 16, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x930a, 0x0020, 0x930a,
+      EVR_FD, "VolumeToTableMappingMatrix", 16, 16, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x930c, 0x0020, 0x930c,
+      EVR_CS, "PatientFrameOfReferenceSource", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x930d, 0x0020, 0x930d,
+      EVR_FD, "TemporalPositionTimeOffset", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x930e, 0x0020, 0x930e,
+      EVR_SQ, "PlanePositionVolumeSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x930f, 0x0020, 0x930f,
+      EVR_SQ, "PlaneOrientationVolumeSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9310, 0x0020, 0x9310,
+      EVR_SQ, "TemporalPositionSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9311, 0x0020, 0x9311,
+      EVR_CS, "DimensionOrganizationType", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9312, 0x0020, 0x9312,
+      EVR_UI, "VolumeFrameOfReferenceUID", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0020, 0x9313, 0x0020, 0x9313,
+      EVR_UI, "TableFrameOfReferenceUID", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0020, 0x9421, 0x0020, 0x9421,
       EVR_LO, "DimensionDescriptionLabel", 1, 1, "DICOM_2008",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12409,6 +12529,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_xs, "BluePaletteColorLookupTableDescriptor", 3, 3, "DICOM_2008",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
+  , { 0x0028, 0x1104, 0x0028, 0x1104,
+      EVR_US, "AlphaPaletteColorLookupTableDescriptor", 3, 3, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
   , { 0x0028, 0x1111, 0x0028, 0x1111,
       EVR_xs, "RETIRED_LargeRedPaletteColorLookupTableDescriptor", 4, 4, "DICOM/retired",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -12439,6 +12563,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0028, 0x1203, 0x0028, 0x1203,
       EVR_OW, "BluePaletteColorLookupTableData", 1, 1, "DICOM_2008",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1204, 0x0028, 0x1204,
+      EVR_OW, "AlphaPaletteColorLookupTableData", 1, 1, "Supplement_43",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x1211, 0x0028, 0x1211,
@@ -12487,6 +12615,62 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0028, 0x135a, 0x0028, 0x135a,
       EVR_CS, "SpatialLocationsPreserved", 1, 1, "DICOM_2008",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1401, 0x0028, 0x1401,
+      EVR_SQ, "DataFrameAssignmentSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1402, 0x0028, 0x1402,
+      EVR_CS, "DataPathAssignment", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1403, 0x0028, 0x1403,
+      EVR_US, "BitsMappedToColorLookupTable", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1404, 0x0028, 0x1404,
+      EVR_SQ, "BlendingLUT1Sequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1405, 0x0028, 0x1405,
+      EVR_CS, "BlendingLUT1TransferFunction", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1406, 0x0028, 0x1406,
+      EVR_FD, "BlendingWeightConstant", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1407, 0x0028, 0x1407,
+      EVR_US, "BlendingLookupTableDescriptor", 3, 3, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1408, 0x0028, 0x1408,
+      EVR_OW, "BlendingLookupTableData", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x140b, 0x0028, 0x140b,
+      EVR_SQ, "EnhancedPaletteColorLookupTableSequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x140c, 0x0028, 0x140c,
+      EVR_SQ, "BlendingLUT2Sequence", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x140d, 0x0028, 0x140d,
+      EVR_CS, "BlendingLUT2TransferFunction", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x140e, 0x0028, 0x140e,
+      EVR_CS, "DataPathID", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x140f, 0x0028, 0x140f,
+      EVR_CS, "RGBLUTTransferFunction", 1, 1, "Supplement_43",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0028, 0x1410, 0x0028, 0x1410,
+      EVR_CS, "AlphaLUTTransferFunction", 1, 1, "Supplement_43",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x2000, 0x0028, 0x2000,
@@ -14709,6 +14893,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       NULL }
   , { 0x0040, 0x0260, 0x0040, 0x0260,
       EVR_SQ, "PerformedProtocolCodeSequence", 1, 1, "DICOM_2008",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      NULL }
+  , { 0x0040, 0x0261, 0x0040, 0x0261,
+      EVR_CS, "PerformedProtocolType", 1, 1, "Supplement_43",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0040, 0x0270, 0x0040, 0x0270,
