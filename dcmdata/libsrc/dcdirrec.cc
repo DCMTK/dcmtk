@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 18:02:11 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2009-05-15 09:15:11 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1086,42 +1086,65 @@ void DcmDirectoryRecord::print(STD_NAMESPACE ostream&out,
                                const char *pixelFileName,
                                size_t *pixelCounter)
 {
-    /* print record start line */
-    OFOStringStream oss;
-    oss << "\"Directory Record\" " << DRTypeNames[DirRecordType]
-        << " #=" << card() << OFStringStream_ends;
-    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-    printInfoLine(out, flags, level, tmpString);
-    OFSTRINGSTREAM_FREESTR(tmpString)
-    /* print record comment line */
-    printNestingLevel(out, flags, level);
-    out << "#  offset=$" << getFileOffset();
-    if (referencedMRDR != NULL)
-        out << "  refMRDR=$" << referencedMRDR->getFileOffset();
-    if (DirRecordType == ERT_Mrdr)
-        out << "  refCount=" << numberOfReferences;
-    const char *refFile = getReferencedFileName();
-    if (refFile != NULL)
-        out << "  refFileID=\"" << refFile << "\"";
-    out << OFendl;
-    /* print item content */
-    if (!elementList->empty())
+    if (flags & DCMTypes::PF_showTreeStructure)
     {
-        DcmObject *dO;
-        elementList->seek(ELP_first);
-        do {
-            dO = elementList->get();
-            dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
-        } while (elementList->seek(ELP_next));
+        /* print record line */
+        OFOStringStream oss;
+        oss << "\"Directory Record\" (offset=$"
+            << getFileOffset() << ")" << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        printInfoLine(out, flags, level, tmpString);
+        OFSTRINGSTREAM_FREESTR(tmpString)
+        /* print item content */
+        if (!elementList->empty())
+        {
+            DcmObject *dO;
+            elementList->seek(ELP_first);
+            do {
+                dO = elementList->get();
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+            } while (elementList->seek(ELP_next));
+        }
+        if (lowerLevelList->card() > 0)
+            lowerLevelList->print(out, flags, level + 1);
+   } else {
+        /* print record start line */
+        OFOStringStream oss;
+        oss << "\"Directory Record\" " << DRTypeNames[DirRecordType]
+            << " #=" << card() << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        printInfoLine(out, flags, level, tmpString);
+        OFSTRINGSTREAM_FREESTR(tmpString)
+        /* print record comment line */
+        printNestingLevel(out, flags, level);
+        out << "#  offset=$" << getFileOffset();
+        if (referencedMRDR != NULL)
+            out << "  refMRDR=$" << referencedMRDR->getFileOffset();
+        if (DirRecordType == ERT_Mrdr)
+            out << "  refCount=" << numberOfReferences;
+        const char *refFile = getReferencedFileName();
+        if (refFile != NULL)
+            out << "  refFileID=\"" << refFile << "\"";
+        out << OFendl;
+        /* print item content */
+        if (!elementList->empty())
+        {
+            DcmObject *dO;
+            elementList->seek(ELP_first);
+            do {
+                dO = elementList->get();
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+            } while (elementList->seek(ELP_next));
+        }
+        if (lowerLevelList->card() > 0)
+            lowerLevelList->print(out, flags, level + 1);
+        /* print record end line */
+        DcmTag delimItemTag(DCM_ItemDelimitationItem);
+        if (getLengthField() == DCM_UndefinedLength)
+            printInfoLine(out, flags, level, "\"ItemDelimitationItem\"", &delimItemTag);
+        else
+            printInfoLine(out, flags, level, "\"ItemDelimitationItem for re-encoding\"", &delimItemTag);
     }
-    if (lowerLevelList->card() > 0)
-        lowerLevelList->print(out, flags, level + 1);
-    /* print item end line */
-    DcmTag delimItemTag(DCM_ItemDelimitationItem);
-    if (getLengthField() == DCM_UndefinedLength)
-        printInfoLine(out, flags, level, "\"ItemDelimitationItem\"", &delimItemTag);
-    else
-        printInfoLine(out, flags, level, "\"ItemDelimitationItem for re-encoding\"", &delimItemTag);
 }
 
 
@@ -1489,6 +1512,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
+ * Revision 1.66  2009-05-15 09:15:11  joergr
+ * Made output of directory record in "tree mode" more consistent with the rest
+ * of the textual dump (print flag = PF_showTreeStructure).
+ *
  * Revision 1.65  2009-02-04 18:02:11  joergr
  * Fixed wrong CVS log entry.
  *
