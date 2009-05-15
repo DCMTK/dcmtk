@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 16:02:09 $
- *  CVS/RCS Revision: $Revision: 1.135 $
+ *  Update Date:      $Date: 2009-05-15 09:20:09 $
+ *  CVS/RCS Revision: $Revision: 1.136 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,11 +41,11 @@
 
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmdata/dcdefine.h"    /* for memzero() */
-#include "dcmtk/dcmdata/dcdeftag.h"    /* for name constants */
-#include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
+#include "dcmtk/dcmdata/dcdefine.h"   /* for memzero() */
+#include "dcmtk/dcmdata/dcdeftag.h"   /* for name constants */
+#include "dcmtk/dcmdata/dcistrma.h"   /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcobject.h"
-#include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
+#include "dcmtk/dcmdata/dcostrma.h"   /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcovlay.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcsequen.h"
@@ -301,7 +301,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
 
     /* return determined transfer syntax */
     return transferSyntax;
-} // DcmItem::checkTransferSyntax
+}
 
 
 // ********************************
@@ -322,21 +322,19 @@ unsigned long DcmItem::getVM()
 // ********************************
 
 
-void DcmItem::print(STD_NAMESPACE ostream&out,
+void DcmItem::print(STD_NAMESPACE ostream &out,
                     const size_t flags,
                     const int level,
                     const char *pixelFileName,
                     size_t *pixelCounter)
 {
-    /* print item start line */
     if (flags & DCMTypes::PF_showTreeStructure)
     {
-        /* empty text */
+        /* print item line with empty text */
         printInfoLine(out, flags, level);
         /* print item content */
         if (!elementList->empty())
         {
-            /* print attributes on this level */
             DcmObject *dO;
             elementList->seek(ELP_first);
             do {
@@ -345,6 +343,7 @@ void DcmItem::print(STD_NAMESPACE ostream&out,
             } while (elementList->seek(ELP_next));
         }
     } else {
+        /* print item start line */
         OFOStringStream oss;
         oss << "(Item with ";
         if (getLengthField() == DCM_UndefinedLength)
@@ -378,7 +377,7 @@ void DcmItem::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmItem::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmItem::writeXML(STD_NAMESPACE ostream &out,
                               const size_t flags)
 {
     /* XML start tag for "item" */
@@ -1190,7 +1189,7 @@ OFCondition DcmItem::read(DcmInputStream & inStream,
 
     /* return result value */
     return errorFlag;
-} // DcmItem::read()
+}
 
 
 // ********************************
@@ -3649,6 +3648,9 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.136  2009-05-15 09:20:09  joergr
+** Fixed wrong comments in print() method.
+**
 ** Revision 1.135  2009-04-20 16:02:09  joergr
 ** Fixed typo.
 **
