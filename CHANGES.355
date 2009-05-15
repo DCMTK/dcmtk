@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.15 (riesmeier)
+
+- Made output of directory record in "tree mode" more consistent with the rest
+  of the textual dump (print flag = PF_showTreeStructure).
+  Affects: dcmdata/libsrc/dcdirrec.cc
+
+- Fixed wrong comments in print() method.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2009.05.14 (riesmeier)
 
 - Added new tags from Supplement 43 (Storage of 3D Ultrasound Images) to data
