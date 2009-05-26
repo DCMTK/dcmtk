@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.26 (riesmeier)
+
+- Updated latest tested CMake version to 2.6.4.
+  Affects: CMakeLists.txt
+
 **** Changes from 2009.05.15 (riesmeier)
 
 - Made output of directory record in "tree mode" more consistent with the rest
