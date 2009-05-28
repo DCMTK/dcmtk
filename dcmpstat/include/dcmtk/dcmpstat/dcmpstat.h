@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-05-28 10:40:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,19 +37,19 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctk.h"
 
-#include "dcmtk/ofstd/ofstring.h"    /* for class OFString */
-#include "dcmtk/dcmpstat/dvpstyp.h"     /* for enum types */
-#include "dcmtk/dcmpstat/dvpsovl.h"     /* for DVPSOverlay_PList */
-#include "dcmtk/dcmpstat/dvpsgll.h"     /* for DVPSGraphicLayer_PList */
-#include "dcmtk/dcmpstat/dvpsrsl.h"     /* for DVPSReferencedSeries_PList */
-#include "dcmtk/dcmpstat/dvpsall.h"     /* for DVPSOverlayCurveActivationLayer_PList */
-#include "dcmtk/dcmpstat/dvpsgal.h"     /* for DVPSGraphicObject_PList */
-#include "dcmtk/dcmpstat/dvpscul.h"     /* for DVPSCurve_PList */
-#include "dcmtk/dcmpstat/dvpsvll.h"     /* for DVPSVOILUT_PList */
-#include "dcmtk/dcmpstat/dvpsvwl.h"     /* for DVPSVOIWindow_PList */
-#include "dcmtk/dcmpstat/dvpsdal.h"     /* for DVPSDisplayedArea_PList */
-#include "dcmtk/dcmpstat/dvpssvl.h"     /* for DVPSSoftcopyVOI_PList */
-#include "dcmtk/dcmpstat/dvpspl.h"      /* for DVPSPresentationLUT */
+#include "dcmtk/ofstd/ofstring.h"     /* for class OFString */
+#include "dcmtk/dcmpstat/dvpstyp.h"   /* for enum types */
+#include "dcmtk/dcmpstat/dvpsovl.h"   /* for DVPSOverlay_PList */
+#include "dcmtk/dcmpstat/dvpsgll.h"   /* for DVPSGraphicLayer_PList */
+#include "dcmtk/dcmpstat/dvpsrsl.h"   /* for DVPSReferencedSeries_PList */
+#include "dcmtk/dcmpstat/dvpsall.h"   /* for DVPSOverlayCurveActivationLayer_PList */
+#include "dcmtk/dcmpstat/dvpsgal.h"   /* for DVPSGraphicObject_PList */
+#include "dcmtk/dcmpstat/dvpscul.h"   /* for DVPSCurve_PList */
+#include "dcmtk/dcmpstat/dvpsvll.h"   /* for DVPSVOILUT_PList */
+#include "dcmtk/dcmpstat/dvpsvwl.h"   /* for DVPSVOIWindow_PList */
+#include "dcmtk/dcmpstat/dvpsdal.h"   /* for DVPSDisplayedArea_PList */
+#include "dcmtk/dcmpstat/dvpssvl.h"   /* for DVPSSoftcopyVOI_PList */
+#include "dcmtk/dcmpstat/dvpspl.h"    /* for DVPSPresentationLUT */
 
 class DVPSTextObject;
 class DVPSGraphicObject;
@@ -581,6 +581,7 @@ public:
   OFCondition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
 
   /** removes recommended display values for the given graphic layer.
+   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param rgb if true, the RGB recommended display value is removed
    *  @param monochrome if true the monochrome recommended display value is removed
    */
@@ -656,7 +657,7 @@ public:
 
   /** returns the number of curve activations for the given
    *  graphic layer.
-   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return number of curves
    */
   size_t getNumberOfCurves(size_t layer);
@@ -849,12 +850,14 @@ protected:
 
   /* Module: Displayed Area (M)
    */
+  /// Module=Displayed_Area, VR=SQ, Card=1-n, Type 1
   DVPSDisplayedArea_PList  displayedAreaSelectionList;
 
   /* Module: Softcopy Presentation LUT (M)
    * There must never be more that one Presentation LUT for one Presentation State,
    * therefore we need not save a list of LUTs.
    */
+  /// Module=Softcopy_Presentation_LUT, VR=SQ, Card=1, Type 1C
   DVPSPresentationLUT      presentationLUT;
 
   /* Module: Presentation State (M)
@@ -987,6 +990,7 @@ protected:
   /* Module: Softcopy VOI LUT (C)
    * "required if VOI LUT to be applied"
    */
+  /// Module=Softcopy_VOI_LUT, VR=SQ, Card=1-n, Type 1
   DVPSSoftcopyVOI_PList    softcopyVOIList;
 
   /** output stream for error messages, never NULL
@@ -1007,7 +1011,10 @@ protected:
 
 /*
  *  $Log: dcmpstat.h,v $
- *  Revision 1.2  2005-12-08 16:03:29  meichel
+ *  Revision 1.3  2009-05-28 10:40:20  joergr
+ *  Fixed various Doxygen API documentation issues.
+ *
+ *  Revision 1.2  2005/12/08 16:03:29  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.1  2003/08/27 14:57:19  meichel
