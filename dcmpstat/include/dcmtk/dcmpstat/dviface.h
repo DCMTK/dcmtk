@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:31 $
- *  CVS/RCS Revision: $Revision: 1.91 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-05-28 10:55:38 $
+ *  CVS/RCS Revision: $Revision: 1.92 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,8 +42,8 @@
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmpstat/dvpscf.h"     /* for class DVConfiguration */
 #include "dcmtk/dcmpstat/dvpstat.h"    /* for class DVPresentationState */
-#include "dcmtk/dcmqrdb/dcmqridx.h"   /* for struct IdxRecord */
-#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/dcmqrdb/dcmqridx.h"    /* for struct IdxRecord */
+#include "dcmtk/ofstd/ofstring.h"      /* for class OFString */
 #include "dcmtk/dcmpstat/dvcache.h"    /* for index file caching */
 
 
@@ -919,7 +919,7 @@ class DVInterface: public DVConfiguration
      *    width*height bytes of data.
      *  @param width the width of the image, must be <= 0xFFFF
      *  @param height the height of the image, must be <= 0xFFFF
-     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *  @param aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
      *  @param explicitVR selects the transfer syntax to be written.
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
@@ -947,7 +947,7 @@ class DVInterface: public DVConfiguration
      *    width*height bytes of data.
      *  @param width the width of the image, must be <= 0xFFFF
      *  @param height the height of the image, must be <= 0xFFFF
-     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *  @param aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -965,7 +965,7 @@ class DVInterface: public DVConfiguration
      *    width*height*2 bytes of data.
      *  @param width the width of the image, must be <= 0xFFFF
      *  @param height the height of the image, must be <= 0xFFFF
-     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *  @param aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
      *  @param explicitVR selects the transfer syntax to be written.
      *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
@@ -993,7 +993,7 @@ class DVInterface: public DVConfiguration
      *    width*height*2 bytes of data.
      *  @param width the width of the image, must be <= 0xFFFF
      *  @param height the height of the image, must be <= 0xFFFF
-     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *  @param aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -1458,7 +1458,7 @@ class DVInterface: public DVConfiguration
      *  the WITH_OPENSSL flag, otherwise always returns false.
      *  @param userID symbolic user ID for given user, as returned by
      *    DVConfiguration::getUserID()
-     *  @param password for user as entered in some GUI control
+     *  @param passwd for user as entered in some GUI control
      *  @return true if password verification succeeds, false otherwise.
      */
     OFBool verifyUserPassword(const char *userID, const char *passwd);
@@ -1478,7 +1478,7 @@ class DVInterface: public DVConfiguration
      *  error code if mode differs from DVPSY_verify).
      *  @param userID symbolic user ID for given user, as returned by
      *    DVConfiguration::getUserID()
-     *  @param password for user as entered in some GUI control
+     *  @param passwd for user as entered in some GUI control
      *  @param mode flag specifying whether to verify only, verify and sign or verify and
      *    sign and finalize the document. The difference between the second and the third mode
      *    is that "finalize" always signs the entire document whereas the other mode only signs
@@ -1584,8 +1584,8 @@ private:
     /** helper function that exchanges the current presentation state and image
      *  by the pointers passed and frees the old ones.
      *  @param newState new presentation state, must not be NULL
-     *  @image image file
-     *  @state presentation state if newState was not created from image.
+     *  @param image image file
+     *  @param state presentation state if newState was not created from image.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     OFCondition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
@@ -1887,7 +1887,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.91  2005-12-08 16:03:31  meichel
+ *  Revision 1.92  2009-05-28 10:55:38  joergr
+ *  Fixed various Doxygen API documentation issues.
+ *
+ *  Revision 1.91  2005/12/08 16:03:31  meichel
  *  Changed include path schema for all DCMTK header files
  *
  *  Revision 1.90  2005/04/04 10:11:57  meichel
