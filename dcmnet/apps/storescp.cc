@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-23 16:51:41 $
- *  CVS/RCS Revision: $Revision: 1.110 $
+ *  Update Date:      $Date: 2009-05-28 10:12:56 $
+ *  CVS/RCS Revision: $Revision: 1.111 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ enum E_SortStudyMode
 OFBool             opt_uniqueFilenames = OFFalse;
 OFString           opt_fileNameExtension;
 OFBool             opt_timeNames = OFFalse;
-int                timeNameCounter = -1; // "serial number" to differentiate between files with same timestamp
+int                timeNameCounter = -1;   // "serial number" to differentiate between files with same timestamp
 OFCmdUnsignedInt   opt_port = 0;
 OFBool             opt_refuseAssociation = OFFalse;
 OFBool             opt_rejectWithoutImplementationUID = OFFalse;
@@ -172,9 +172,11 @@ OFBool             opt_abortAfterStore = OFFalse;
 OFBool             opt_promiscuous = OFFalse;
 OFBool             opt_correctUIDPadding = OFFalse;
 OFBool             opt_inetd_mode = OFFalse;
-OFString           callingaetitle;  // calling AE title will be stored here
-OFString           calledaetitle;   // called AE title will be stored here
-const char *       opt_respondingaetitle = APPLICATIONTITLE;
+OFString           callingAETitle;       // calling application entity title will be stored here
+OFString           lastCallingAETitle;
+OFString           calledAETitle;        // called application entity title will be stored here
+OFString           lastCalledAETitle;
+const char *       opt_respondingAETitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory = ".";         // default: output directory equals "."
 E_SortStudyMode    opt_sortStudyMode = ESM_None;      // default: no sorting
@@ -591,7 +593,7 @@ int main(int argc, char *argv[])
       opt_blockMode = DIMSE_NONBLOCKING;
     }
 
-    if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
+    if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingAETitle));
     if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
     if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
@@ -1515,7 +1517,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
 
   /* set our app title */
-  ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingaetitle);
+  ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingAETitle);
 
   /* acknowledge or reject this association */
   cond = ASC_getApplicationContextName(assoc->params, buf);
@@ -1593,6 +1595,9 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   }
 #endif
 
+  // store previous values for later use
+  lastCallingAETitle = callingAETitle;
+  lastCalledAETitle = calledAETitle;
   // store calling and called aetitle in global variables to enable
   // the --exec options using them. Enclose in quotation marks because
   // aetitles may contain space characters.
@@ -1600,18 +1605,18 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
   DIC_AE calledTitle;
   if (ASC_getAPTitles(assoc->params, callingTitle, calledTitle, NULL).good())
   {
-    callingaetitle = "\"";
-    callingaetitle += callingTitle;
-    callingaetitle += "\"";
-    calledaetitle = "\"";
-    calledaetitle += calledTitle;
-    calledaetitle += "\"";
+    callingAETitle = "\"";
+    callingAETitle += callingTitle;
+    callingAETitle += "\"";
+    calledAETitle = "\"";
+    calledAETitle += calledTitle;
+    calledAETitle += "\"";
   }
   else
   {
     // should never happen
-    callingaetitle.clear();
-    calledaetitle.clear();
+    callingAETitle.clear();
+    calledAETitle.clear();
   }
 
   /* now do the real work, i.e. receive DIMSE commmands over the network connection */
@@ -2323,10 +2328,10 @@ static void executeOnReception()
   }
 
   // perform substitution for placeholder #a
-  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingAETitle );
 
   // perform substitution for placeholder #c
-  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledaetitle );
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledAETitle );
 
   // Execute command in a new process
   executeCommand( cmd );
@@ -2433,10 +2438,10 @@ static void executeOnEndOfStudy()
   cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
 
   // perform substitution for placeholder #a
-  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
+  cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? callingAETitle : lastCallingAETitle );
 
   // perform substitution for placeholder #c
-  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), calledaetitle );
+  cmd = replaceChars( cmd, OFString(CALLED_AETITLE_PLACEHOLDER), (endOfStudyThroughTimeoutEvent) ? calledAETitle : lastCalledAETitle );
 
   // Execute command in a new process
   executeCommand( cmd );
@@ -2725,6 +2730,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.111  2009-05-28 10:12:56  joergr
+** Fixed issue with substitution variables "#a" and "#c": In some cases, the AE
+** titles from the wrong association were used during execute on end-of-study.
+**
 ** Revision 1.110  2009-04-23 16:51:41  joergr
 ** Changed the condition under which the process is terminated in inetd mode
 ** (the behavior should be identical but now the source code is more clear).
