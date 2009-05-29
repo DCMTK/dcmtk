@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.05.29 (onken)
+
+- Fixed exception thrown by later WSACleanup call because of socket handle
+  being (apparently) not closed corretly after socket handle duplication.
+  Thanks to Yves Neumann <neumann@image-systems.biz> for the bug report and
+  suggested fix.
+  Affects: dcmnet/libsrc/dul.cc
+
 **** Changes from 2009.05.28 (riesmeier)
 
 - Fixed issue with substitution variables "#a" and "#c": In some cases, the AE

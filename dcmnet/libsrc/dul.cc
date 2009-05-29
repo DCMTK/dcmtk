@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: joergr $, $Date: 2009-01-29 12:08:04 $
+** Last Update:         $Author: onken $, $Date: 2009-05-29 08:57:59 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.78 $
+** Revision:            $Revision: 1.79 $
 ** Status:              $State: Exp $
 */
 
@@ -1715,7 +1715,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             // GetCurrentProcess() only returns a psuedo handle which may not
             // allow DuplicateHandle to create the child process socket with
             // sufficient permissions on certain versions of Windows.
-            HANDLE hParentProcessHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, GetCurrentProcessId());
+            HANDLE hParentProcessHandle = OpenProcess(PROCESS_DUP_HANDLE, FALSE, GetCurrentProcessId());
             if (hParentProcessHandle == NULL)
             {
                 // unable to get process handle...
@@ -1723,20 +1723,23 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
                 CloseHandle((HANDLE)sock);
-                return makeDcmnetCondition (DULC_CANNOTFORK, OF_error, "error getting real process handle");
+                char buf4[256];
+                sprintf(buf4, "error getting real process handle: OpenProcess failed, windows error code: (%i)", (int)GetLastError());
+                return makeDcmnetCondition(DULC_CANNOTFORK, OF_error, buf4);
             }
 
             // PROCESS_INFORMATION pi now contains various handles for the new process.
             // Now that we have a handle to the new process, we can duplicate the
             // socket handle into the new child process.
             if (DuplicateHandle(hParentProcessHandle, (HANDLE)sock, pi.hProcess,
-                &childSocketHandle, 0, TRUE, DUPLICATE_CLOSE_SOURCE | DUPLICATE_SAME_ACCESS))
+                &childSocketHandle, 0, TRUE, DUPLICATE_SAME_ACCESS))
             {
                 // close handles in PROCESS_INFORMATION structure
                 // and our local copy of the socket handle.
                 CloseHandle(hParentProcessHandle);
                 CloseHandle(pi.hProcess);
                 CloseHandle(pi.hThread);
+                closesocket(sock);
 
                 // send number of socket handle in child process over anonymous pipe
                 DWORD bytesWritten;
@@ -2629,6 +2632,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.79  2009-05-29 08:57:59  onken
+** Fixed exception thrown by later WSACleanup call because of socket handle
+** being (apparently) not closed corretly after socket handle duplication.
+**
 ** Revision 1.78  2009-01-29 12:08:04  joergr
 ** Replaced remaining tab characters by spaces. Fixed source code formatting.
 **
