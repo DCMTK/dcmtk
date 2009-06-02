@@ -808,22 +808,22 @@ typedef unsigned short ushort;
 /* #undef  USE_STD_CXX_INCLUDES */
 
 /* Define if we are compiling with libpng support */
-/* #undef  WITH_LIBPNG */
+#cmakedefine WITH_LIBPNG
 
 /* Define if we are compiling with libtiff support */
-/* #undef  WITH_LIBTIFF */
+#cmakedefine WITH_LIBTIFF
 
 /* Define if we are compiling with libxml support */
-/* #undef  WITH_LIBXML */
+#cmakedefine WITH_LIBXML
 
 /* Define if we are compiling with OpenSSL support */
-/* #undef  WITH_OPENSSL */
+#cmakedefine WITH_OPENSSL
 
 /* Define if we are compiling for built-in private tag dictionary */
-/* #undef  WITH_PRIVATE_TAGS */
+#cmakedefine WITH_PRIVATE_TAGS
 
 /* Define if we are compiling with sndfile support */
-/* #undef WITH_SNDFILE */
+#cmakedefine WITH_SNDFILE
 
 /* Define if we are compiling with libwrap (TCP wrapper) support */
 /* #undef  WITH_TCPWRAPPER */
@@ -832,7 +832,7 @@ typedef unsigned short ushort;
 #define WITH_THREADS
 
 /* Define if we are compiling with zlib support */
-/* #undef  WITH_ZLIB */
+#cmakedefine WITH_ZLIB
 
 /* Define to 1 if on AIX 3.
    System headers sometimes define this.

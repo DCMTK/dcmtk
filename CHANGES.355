@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.02 (riesmeier)
+
+- Made CMake support for optional features (such as external libraries) on
+  Windows more consistent with GNU autoconf mechanism on Unix, i.e. add defines
+  to cfwin32.h instead of the project settings.
+  Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the suggestion.
+  Affects: CMakeLists.txt
+           config/include/dcmtk/config/cfwin32.h.in
+
 **** Changes from 2009.05.29 (onken)
 
 - Fixed exception thrown by later WSACleanup call because of socket handle
