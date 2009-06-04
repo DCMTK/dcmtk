@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-13 09:54:54 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Update Date:      $Date: 2009-06-04 17:10:19 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -541,15 +541,16 @@ Uint8 *DcmElement::newValueField()
     {
         if (lengthField == DCM_UndefinedLength)
         {
-              /* Print an error message when private attribute states to have an odd length
-               * equal to the maximum length, because we are not able then to make this value even (+1)
-               * which would an overflow on some systems as well as being illegal in DICOM
-               */
-                ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
-                    << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded" << OFendl;
-                ofConsole.unlockCerr();
-                errorFlag = EC_CorruptedData;
-                return NULL;
+            /* Print an error message when private attribute states to have an odd length
+             * equal to the maximum length, because we are not able then to make this value even (+1)
+             * which would an overflow on some systems as well as being illegal in DICOM
+             */
+              ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
+                                   << " has odd, maximum length (" << DCM_UndefinedLength
+                                   << ") and therefore is not loaded" << OFendl;
+              ofConsole.unlockCerr();
+              errorFlag = EC_CorruptedData;
+              return NULL;
         }
         /* create an array of Length+1 bytes */
 #ifdef HAVE_STD__NOTHROW
@@ -1489,6 +1490,9 @@ OFCondition DcmElement::getUncompressedFrame(DcmItem * /* dataset */ ,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.71  2009-06-04 17:10:19  joergr
+** Fixed minor source code formatting issues.
+**
 ** Revision 1.70  2009-05-13 09:54:54  joergr
 ** Fixed possible integer overflow for images with very large pixel data in
 ** method getUncompressedFrameSize() for the rare case that BitsAllocated is

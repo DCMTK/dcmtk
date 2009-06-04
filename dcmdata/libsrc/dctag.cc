@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmTag
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-02-04 11:51:56 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-06-04 17:10:19 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dctag.h"
-#include "dcmtk/dcmdata/dcerror.h"     /* for dcmdata error constants */
+#include "dcmtk/dcmdata/dcerror.h"    /* for dcmdata error constants */
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
@@ -163,7 +163,7 @@ const char *DcmTag::getTagName()
   const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
   const DcmDictEntry *dictRef = globalDataDict.findEntry(*this, privateCreator);
   if (dictRef) newTagName=dictRef->getTagName();
-  if (newTagName==NULL) newTagName = DcmTag_ERROR_TagName;
+  if (newTagName == NULL) newTagName = DcmTag_ERROR_TagName;
   updateTagName(newTagName);
   dcmDataDict.unlock();
 
@@ -206,7 +206,7 @@ OFCondition DcmTag::findTagFromName(const char *name,
         result = EC_Normal;
         unsigned int grp = 0xffff;
         unsigned int elm = 0xffff;
-        /* check whether tag name has format 'xxxx,xxxx' */
+        /* check whether tag name has format 'gggg,eeee' */
         if (sscanf(name, "%x,%x", &grp, &elm) == 2)
         {
             /* store resulting tag value */
@@ -233,7 +233,7 @@ OFCondition DcmTag::findTagFromName(const char *name,
 
 const char* DcmTag::getPrivateCreator() const
 {
-  return privateCreator;
+    return privateCreator;
 }
 
 void DcmTag::setPrivateCreator(const char *privCreator)
@@ -250,7 +250,7 @@ void DcmTag::updateTagName(const char *c)
     delete[] tagName;
     if (c)
     {
-      tagName = new char[strlen(c)+1];
+      tagName = new char[strlen(c) + 1];
       if (tagName) strcpy(tagName,c);
     } else tagName = NULL;
 }
@@ -260,7 +260,7 @@ void DcmTag::updatePrivateCreator(const char *c)
     delete[] privateCreator;
     if (c)
     {
-      privateCreator = new char[strlen(c)+1];
+      privateCreator = new char[strlen(c) + 1];
       if (privateCreator) strcpy(privateCreator,c);
     } else privateCreator = NULL;
 }
@@ -269,6 +269,9 @@ void DcmTag::updatePrivateCreator(const char *c)
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
+** Revision 1.23  2009-06-04 17:10:19  joergr
+** Fixed minor source code formatting issues.
+**
 ** Revision 1.22  2008-02-04 11:51:56  onken
 ** Added missing VR lookup for function findTagFromName().
 **
