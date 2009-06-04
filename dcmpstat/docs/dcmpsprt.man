@@ -17,9 +17,9 @@ dcmpsprt [options] [dcmfile-in...]
 The \b dcmpsprt utility reads one or more DICOM images and presentation states
 and creates a print job.  The print job consists of one Stored Print object
 and one or more Hardcopy Grayscale images and is written to the database
-specified in the configuration file.  The print job can optionally be
-spooled to the printer.  In this case, \b dcmpsprt calls the \b dcmprscu
-application which performs communication with the printer.
+specified in the configuration file.  The print job can optionally be spooled
+to the printer.  In this case, \b dcmpsprt calls the \b dcmprscu application
+which performs communication with the printer.
 
 \section parameters PARAMETERS
 
@@ -49,8 +49,9 @@ dcmfile-in  DICOM image file(s) to be printed
 
 \subsection processing_options processing options
 \verbatim
-  +p   --pstate  [p]state-file: string
-         render the following image with pres. state p
+  +p   --pstate  [p]state file: string
+         render the following image with presentation state p
+         (this option can be specified multiple times)
 
   -c   --config  [f]ilename: string
          process using settings from configuration file f
@@ -156,7 +157,7 @@ dcmfile-in  DICOM image file(s) to be printed
          do not create annotation (default)
 
   -a   --annotation  [t]ext: string
-         create annotation with text [t]
+         create annotation with text t
 
   +pd  --print-date
          prepend date/time to annotation (default)
