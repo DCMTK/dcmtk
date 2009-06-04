@@ -26,8 +26,8 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:10:54 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2009-06-04 09:55:51 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,8 +186,8 @@ int main(int argc, char *argv[])
      cmd.addOption("--debug",             "-d",     "debug mode, print debug information");
 
     cmd.addGroup("processing options:");
-     cmd.addOption("--pstate",            "+p",  1, "[p]state-file: string",
-                                                    "render the following image with pres. state p");
+     cmd.addOption("--pstate",            "+p",  1, "[p]state file: string",
+                                                    "render the following image with pres. state p\n(this option can be specified multiple times)", OFCommandLine::AF_NoWarning);
      cmd.addOption("--config",            "-c",  1, "[f]ilename: string",
                                                     "process using settings from configuration file f");
      cmd.addOption("--printer",           "-p",  1, "[n]ame: string (default: 1st printer in cfg file)",
@@ -369,13 +369,13 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--print-name"))         opt_annotationPrinter = OFTrue;
-      if (cmd.findOption("--print-no-name"))      opt_annotationPrinter = OFFalse;
+      if (cmd.findOption("--print-name"))    opt_annotationPrinter = OFTrue;
+      if (cmd.findOption("--print-no-name")) opt_annotationPrinter = OFFalse;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--print-lighting"))         opt_annotationIllumination = OFTrue;
-      if (cmd.findOption("--print-no-lighting"))      opt_annotationIllumination = OFFalse;
+      if (cmd.findOption("--print-lighting"))    opt_annotationIllumination = OFTrue;
+      if (cmd.findOption("--print-no-lighting")) opt_annotationIllumination = OFFalse;
       cmd.endOptionBlock();
 
       if (cmd.findOption("--filmsize"))          app.checkValue(cmd.getValue(opt_filmsize));
@@ -435,8 +435,6 @@ int main(int argc, char *argv[])
         app.checkConflict("--copies", "--nospool", (! opt_spool));
         app.checkValue(cmd.getValueAndCheckMinMax(opt_copies, 1, 100));
       }
-
-      if (cmd.findOption("--pstate")) { /* prevent warning - this option is only checked if image filenames are really specified */ }
 
       if (cmd.findOption("--layout"))
       {
@@ -712,6 +710,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
+ * Revision 1.41  2009-06-04 09:55:51  joergr
+ * Added note on --pstate that this option can be specified multiple times.
+ * Added new flag that can be used to avoid wrong warning messages (in debug
+ * mode) that an option has possibly never been checked.
+ *
  * Revision 1.40  2009-04-21 14:10:54  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *
