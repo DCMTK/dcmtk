@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-28 10:12:56 $
- *  CVS/RCS Revision: $Revision: 1.111 $
+ *  Update Date:      $Date: 2009-06-04 10:16:24 $
+ *  CVS/RCS Revision: $Revision: 1.112 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ END_EXTERN_C
 #endif
 
 #ifdef HAVE_WINDOWS_H
-#include <direct.h>        /* for _mkdir() */
+#include <direct.h>      /* for _mkdir() */
 #endif
 
 #include "dcmtk/ofstd/ofstd.h"
@@ -84,7 +84,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>          /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
@@ -431,9 +431,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--der-keys",               "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",          "+cf",  1, "[c]ertificate filename: string",
-                                                           "add certificate file to list of certificates");
+                                                           "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
       cmd.addOption("--add-cert-dir",           "+cd",  1, "[c]ertificate directory: string",
-                                                           "add certificates in d to list of certificates");
+                                                           "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--cipher",                 "+cs",  1, "[c]iphersuite name: string",
                                                            "add ciphersuite to list of negotiated suites");
@@ -877,12 +877,6 @@ int main(int argc, char *argv[])
   }
 
 #ifdef WITH_OPENSSL
-
-#ifdef DEBUG
-  /* prevent command line code from moaning that --add-cert-dir and --add-cert-file have not been checked */
-  if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-  if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-#endif
 
   cmd.beginOptionBlock();
   if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
@@ -2730,6 +2724,10 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.112  2009-06-04 10:16:24  joergr
+** Added new flag that can be used to avoid wrong warning messages (in debug
+** mode) that an option has possibly never been checked.
+**
 ** Revision 1.111  2009-05-28 10:12:56  joergr
 ** Fixed issue with substitution variables "#a" and "#c": In some cases, the AE
 ** titles from the wrong association were used during execute on end-of-study.

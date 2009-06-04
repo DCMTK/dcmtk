@@ -22,8 +22,8 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:26:05 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 2009-06-04 10:16:24 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcuid.h"    /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 
 #ifdef WITH_OPENSSL
 #include "dcmtk/dcmtls/tlstrans.h"
@@ -54,7 +54,7 @@
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>     /* for zlibVersion() */
+#include <zlib.h>     				  /* for zlibVersion() */
 #endif
 
 #ifdef PRIVATE_ECHOSCU_DECLARATIONS
@@ -244,9 +244,9 @@ main(int argc, char *argv[])
       cmd.addOption("--der-keys",          "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",     "+cf",  1, "[c]ertificate filename: string",
-                                                      "add certificate file to list of certificates");
+                                                      "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
       cmd.addOption("--add-cert-dir",      "+cd",  1, "[c]ertificate directory: string",
-                                                      "add certificates in d to list of certificates");
+                                                      "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--cipher",            "+cs",  1, "[c]iphersuite name: string",
                                                       "add ciphersuite to list of negotiated suites");
@@ -340,12 +340,6 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-pc")) app.checkValue(cmd.getValueAndCheckMinMax(opt_numPresentationCtx, 1, 128));
 
 #ifdef WITH_OPENSSL
-
-#ifdef DEBUG
-      /* prevent command line code from moaning that --add-cert-dir and --add-cert-file have not been checked */
-      if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-      if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
@@ -799,6 +793,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.45  2009-06-04 10:16:24  joergr
+** Added new flag that can be used to avoid wrong warning messages (in debug
+** mode) that an option has possibly never been checked.
+**
 ** Revision 1.44  2009-04-24 12:26:05  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **

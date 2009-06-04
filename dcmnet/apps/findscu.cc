@@ -22,15 +22,15 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:26:05 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2009-06-04 10:16:24 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcmtk/config/osconfig.h" /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmnet/dfindscu.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -196,9 +196,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--der-keys",          "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",     "+cf",  1, "[c]ertificate filename: string",
-                                                      "add certificate file to list of certificates");
+                                                      "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
       cmd.addOption("--add-cert-dir",      "+cd",  1, "[c]ertificate directory: string",
-                                                      "add certificates in d to list of certificates");
+                                                      "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--cipher",            "+cs",  1, "[c]iphersuite name: string",
                                                       "add ciphersuite to list of negotiated suites");
@@ -347,12 +347,6 @@ int main(int argc, char *argv[])
       }
 
 #ifdef WITH_OPENSSL
-
-#ifdef DEBUG
-      /* prevent command line code from moaning that --add-cert-dir and --add-cert-file have not been checked */
-      if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-      if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
@@ -603,6 +597,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.56  2009-06-04 10:16:24  joergr
+** Added new flag that can be used to avoid wrong warning messages (in debug
+** mode) that an option has possibly never been checked.
+**
 ** Revision 1.55  2009-04-24 12:26:05  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **

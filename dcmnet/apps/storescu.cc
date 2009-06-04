@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:26:05 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Update Date:      $Date: 2009-06-04 10:16:24 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -348,9 +348,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--der-keys",             "-der",    "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority:");
       cmd.addOption("--add-cert-file",        "+cf",  1, "[c]ertificate filename: string",
-                                                         "add certificate file to list of certificates");
+                                                         "add certificate file to list of certificates", OFCommandLine::AF_NoWarning);
       cmd.addOption("--add-cert-dir",         "+cd",  1, "[c]ertificate directory: string",
-                                                         "add certificates in d to list of certificates");
+                                                         "add certificates in d to list of certificates", OFCommandLine::AF_NoWarning);
     cmd.addSubGroup("ciphersuite:");
       cmd.addOption("--cipher",               "+cs",  1, "[c]iphersuite name: string",
                                                          "add ciphersuite to list of negotiated suites");
@@ -575,12 +575,6 @@ int main(int argc, char *argv[])
       }
 
 #ifdef WITH_OPENSSL
-
-#ifdef DEBUG
-      /* prevent command line code from moaning that --add-cert-dir and --add-cert-file have not been checked */
-      if (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-      if (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_First)) /* nothing */ ;
-#endif
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--disable-tls")) opt_secureConnection = OFFalse;
@@ -1757,6 +1751,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.80  2009-06-04 10:16:24  joergr
+** Added new flag that can be used to avoid wrong warning messages (in debug
+** mode) that an option has possibly never been checked.
+**
 ** Revision 1.79  2009-04-24 12:26:05  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **

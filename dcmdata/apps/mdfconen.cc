@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:20:42 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2009-06-04 10:21:00 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,19 +122,24 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 
     cmd->addGroup("processing options:");
         cmd->addSubGroup("insert mode:");
-            cmd->addOption("--insert",              "-i",   1, "\"[t]ag-path=[v]alue\"", "insert (or overwrite) path at position t\nwith value v");
+            cmd->addOption("--insert",              "-i",   1, "\"[t]ag-path=[v]alue\"",
+                                                               "insert (or overwrite) path at position t\nwith value v", OFCommandLine::AF_NoWarning);
             cmd->addOption("--no-reserv-check",     "-nrc",    "do not check private reservations\nwhen inserting private tags");
         cmd->addSubGroup("modify mode:");
-            cmd->addOption("--modify",              "-m",   1, "\"[t]ag-path=[v]alue\"", "modify tag at position t to value v");
-            cmd->addOption("--modify-all",          "-ma",  1, "\"[t]ag=[v]value\"", "modify ALL matching tags t in file to value v");
+            cmd->addOption("--modify",              "-m",   1, "\"[t]ag-path=[v]alue\"",
+                                                               "modify tag at position t to value v", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--modify-all",          "-ma",  1, "\"[t]ag=[v]value\"",
+                                                               "modify ALL matching tags t in file to value v", OFCommandLine::AF_NoWarning);
         cmd->addSubGroup("erase mode:");
-            cmd->addOption("--erase",               "-e",   1, "\"[t]ag-path\"", "erase tag/item at position t");
-            cmd->addOption("--erase-all",           "-ea",  1, "\"[t]ag\"", "erase ALL matching tags t in file");
-            cmd->addOption("--erase-private",       "-ep",     "erase ALL private data from file");
+            cmd->addOption("--erase",               "-e",   1, "\"[t]ag-path\"",
+                                                               "erase tag/item at position t", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--erase-all",           "-ea",  1, "\"[t]ag\"",
+                                                               "erase ALL matching tags t in file", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--erase-private",       "-ep",     "erase ALL private data from file", OFCommandLine::AF_NoWarning);
         cmd->addSubGroup("unique identifier:");
-            cmd->addOption("--gen-stud-uid",        "-gst",    "generate new Study Instance UID");
-            cmd->addOption("--gen-ser-uid",         "-gse",    "generate new Series Instance UID");
-            cmd->addOption("--gen-inst-uid",        "-gin",    "generate new SOP Instance UID");
+            cmd->addOption("--gen-stud-uid",        "-gst",    "generate new Study Instance UID", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--gen-ser-uid",         "-gse",    "generate new Series Instance UID", OFCommandLine::AF_NoWarning);
+            cmd->addOption("--gen-inst-uid",        "-gin",    "generate new SOP Instance UID", OFCommandLine::AF_NoWarning);
             cmd->addOption("--no-meta-uid",         "-nmu",    "don't update metaheader UIDs\nUIDs in the metaheader won't be changed,\nif related UIDs in dataset are modified\nvia options -m, -i or -ma");
         cmd->addSubGroup("other processing options:");
             cmd->addOption("--ignore-missing-tags", "-imt",    "treat 'tag not found' as success\nwhen modifying or erasing in datasets");
@@ -199,7 +204,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         //iterate the files (parameters) and save them in list
         files=new OFList<OFString>;
         OFString current_file;
-        for (int i=1; i<=cmd->getParamCount(); i++)
+        for (int i = 1; i <= cmd->getParamCount(); i++)
         {
             cmd->getParam(i,current_file);
             files->push_back(current_file);
@@ -225,16 +230,16 @@ void MdfConsoleEngine::parseNonJobOptions()
 {
     // catch "general" options
     if (cmd->findOption("--verbose"))
-        verbose_option=OFTrue;
+        verbose_option = OFTrue;
     if (cmd->findOption("--debug"))
     {
         app->printIdentifier();
-        debug_option=OFTrue;
+        debug_option = OFTrue;
     }
     if (cmd->findOption("--ignore-errors"))
-        ignore_errors_option=OFTrue;
+        ignore_errors_option = OFTrue;
     if (cmd->findOption("--no-meta-uid"))
-        update_metaheader_uids_option=OFFalse;
+        update_metaheader_uids_option = OFFalse;
     if (cmd->findOption("--no-backup"))
         no_backup_option = OFTrue;
     // input options
@@ -684,6 +689,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.29  2009-06-04 10:21:00  joergr
+** Added new flag that can be used to avoid wrong warning messages (in debug
+** mode) that an option has possibly never been checked.
+**
 ** Revision 1.28  2009-04-24 12:20:42  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **
