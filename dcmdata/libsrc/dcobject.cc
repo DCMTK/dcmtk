@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-25 10:21:22 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2009-06-04 16:52:53 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,7 @@ OFGlobal<OFBool> dcmReadImplPrivAttribMaxLengthAsSQ(OFFalse);
 OFGlobal<OFBool> dcmIgnoreParsingErrors(OFFalse);
 OFGlobal<DcmTagKey> dcmStopParsingAfterElement(DCM_UndefinedTagKey); // (0xffff,0xffff)
 OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined(OFTrue);
+OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength(OFFalse);
 
 // ****** public methods **********************************
 
@@ -480,6 +481,10 @@ OFBool DcmObject::isEmpty() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.62  2009-06-04 16:52:53  joergr
+ * Added new parsing flag that allows for ignoring the value of File Meta
+ * Information Group Length (0002,0000).
+ *
  * Revision 1.61  2009-03-25 10:21:22  joergr
  * Added new method isEmpty() to DICOM object, item and sequence class.
  *

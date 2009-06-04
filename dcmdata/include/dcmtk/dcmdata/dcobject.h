@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-25 10:22:09 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Update Date:      $Date: 2009-06-04 16:52:14 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,14 @@ extern OFGlobal<DcmTagKey> dcmStopParsingAfterElement; /* default OFTrue */
  *  size of length field is exceeded.
  */
 extern OFGlobal<OFBool> dcmWriteOversizedSeqsAndItemsUndefined; /* default OFTrue */
+
+/** This flag allows for ignoring the value of (0002,0000) File Meta Information
+ *  Group Length which is useful in cases where this value is incorrect.  If the
+ *  header length is ignored, the behavior is identical to the case when no value
+ *  is available (i.e. all elements are read as long as the group number is 0x0002).
+ */
+extern OFGlobal<OFBool> dcmIgnoreFileMetaInformationGroupLength; /* default OFFalse */
+
 
 /** Abstract base class for most classes in module dcmdata. As a rule of thumb,
  *  everything that is either a dataset or that can be identified with a DICOM
@@ -655,6 +663,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.62  2009-06-04 16:52:14  joergr
+ * Added new parsing flag that allows for ignoring the value of File Meta
+ * Information Group Length (0002,0000).
+ *
  * Revision 1.61  2009-03-25 10:22:09  joergr
  * Added new method isEmpty() to DICOM object, item and sequence class.
  *
