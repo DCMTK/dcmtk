@@ -35,6 +35,11 @@ Changes between releases are documented here.
            dcmdata/docs/dcmconv.man
            dcmdata/docs/dcmdump.man
 
+- Fixed wrong name of command line option: used --impl-oversized instead of
+  --write-oversized.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+
 - Fixed minor source code formatting issues.
   Affects: dcmdata/libsrc/dcelem.cc
            dcmdata/libsrc/dctag.cc

@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 16:50:18 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Update Date:      $Date: 2009-06-04 17:22:17 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -421,7 +421,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--impl-oversized"))  dcmWriteOversizedSeqsAndItemsUndefined.set(OFTrue);
+      if (cmd.findOption("--write-oversized"))  dcmWriteOversizedSeqsAndItemsUndefined.set(OFTrue);
       if (cmd.findOption("--abort-oversized")) dcmWriteOversizedSeqsAndItemsUndefined.set(OFFalse);
       cmd.endOptionBlock();
 
@@ -539,6 +539,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.66  2009-06-04 17:22:17  joergr
+** Fixed wrong name of command line option: used --impl-oversized instead of
+** --write-oversized.
+**
 ** Revision 1.65  2009-06-04 16:50:18  joergr
 ** Added new command line option that allows for ignoring the value of File Meta
 ** Information Group Length (0002,0000).
