@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-11 16:35:27 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2009-06-04 17:00:13 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ DcmEVR DcmFileFormat::ident() const
 // ********************************
 
 
-void DcmFileFormat::print(STD_NAMESPACE ostream&out,
+void DcmFileFormat::print(STD_NAMESPACE ostream &out,
                           const size_t flags,
                           const int level,
                           const char *pixelFileName,
@@ -166,7 +166,7 @@ void DcmFileFormat::print(STD_NAMESPACE ostream&out,
 // ********************************
 
 
-OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream&out,
+OFCondition DcmFileFormat::writeXML(STD_NAMESPACE ostream &out,
                                     const size_t flags)
 {
     OFCondition result = EC_CorruptedData;
@@ -264,7 +264,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
             } else {
                 currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
                 currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
-                STD_NAMESPACE ostream& localCerr = ofConsole.lockCerr();
+                STD_NAMESPACE ostream &localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
                 localCerr << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                           << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
@@ -470,9 +470,8 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
         checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer);
 
-        /* dump some information if reuqired */
-        DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
-                metinf->card()));
+        /* dump some information if required */
+        DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo 'metinf'.", metinf->card()));
 
         /* calculate new GroupLength for meta header */
         if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
@@ -898,6 +897,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.50  2009-06-04 17:00:13  joergr
+** Fixed typo.
+**
 ** Revision 1.49  2009-02-11 16:35:27  joergr
 ** Introduced new error code EC_FileMetaInfoHeaderMissing.
 **
