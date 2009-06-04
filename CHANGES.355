@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.04 (riesmeier)
+
+- Added new flag that can be used to avoid wrong warning messages (in debug
+  mode) that an option has possibly never been checked.
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/apps/dcmpsprt.cc
+           ofstd/include/dcmtk/ofstd/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Added note on --pstate that this option can be specified multiple times.
+  Affects: dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/docs/dcmpsprt.man
+           
+- Fixed typo.
+  Affects: dcmdata/docs/img2dcm.man
+
 **** Changes from 2009.06.02 (riesmeier)
 
 - Made CMake support for optional features (such as external libraries) on
@@ -13,7 +33,7 @@ Changes between releases are documented here.
 **** Changes from 2009.05.29 (onken)
 
 - Fixed exception thrown by later WSACleanup call because of socket handle
-  being (apparently) not closed corretly after socket handle duplication.
+  being (apparently) not closed correctly after socket handle duplication.
   Thanks to Yves Neumann <neumann@image-systems.biz> for the bug report and
   suggested fix.
   Affects: dcmnet/libsrc/dul.cc
