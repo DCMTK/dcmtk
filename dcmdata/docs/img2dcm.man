@@ -224,7 +224,7 @@ order:
     \e --do-checks is enabled (default). If the \e --no-checks options is
     enabled, no automatic attribute insertion will take place.
 
-\li The \e --key option can be used to add additonal attributes to the DICOM
+\li The \e --key option can be used to add additional attributes to the DICOM
     output file. This option is applied at the very end, just before saving the
     DICOM file.
 
