@@ -17,9 +17,31 @@ Changes between releases are documented here.
 - Added note on --pstate that this option can be specified multiple times.
   Affects: dcmpstat/apps/dcmpsprt.cc
            dcmpstat/docs/dcmpsprt.man
-           
+
+- Report a warning on all data elements in the meta-header which have an
+  incorrect group number, i.e. everything but 0x0002.
+  Affects: dcmdata/libsrc/dcmetinf.cc
+
+- Added new parsing flag that allows for ignoring the value of File Meta
+  Information Group Length (0002,0000).
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcmetinf.cc
+
+- Added new command line option that allows for ignoring the value of File Meta
+  Information Group Length (0002,0000).
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmdump.man
+
+- Fixed minor source code formatting issues.
+  Affects: dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dctag.cc
+
 - Fixed typo.
   Affects: dcmdata/docs/img2dcm.man
+           dcmdata/libsrc/dcfilefo.cc
 
 **** Changes from 2009.06.02 (riesmeier)
 
