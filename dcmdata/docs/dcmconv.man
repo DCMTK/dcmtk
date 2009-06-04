@@ -75,6 +75,14 @@ input transfer syntax:
   -ti  --read-xfer-implicit
          read with implicit VR little endian TS
 
+parsing of file meta information:
+
+  +ml  --use-meta-length
+         use file meta information group length (default)
+
+  -ml  --ignore-meta-length
+         ignore file meta information group length
+
 parsing of odd-length attributes:
 
   +ao  --accept-odd-length

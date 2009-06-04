@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:20:41 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2009-06-04 16:50:18 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-#define SHORTCOL 4
+#define SHORTCOL 3
 #define LONGCOL 21
 
 static DcmTagKey parseTagKey(const char *tagName)
@@ -144,6 +144,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
       cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
       cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
+    cmd.addSubGroup("parsing of file meta information:");
+      cmd.addOption("--use-meta-length",     "+ml",    "use file meta information group length (default)");
+      cmd.addOption("--ignore-meta-length",  "-ml",    "ignore file meta information group length");
     cmd.addSubGroup("parsing of odd-length attributes:");
       cmd.addOption("--accept-odd-length",   "+ao",    "accept odd length attributes (default)");
       cmd.addOption("--assume-even-length",  "+ae",    "assume real length is one byte larger");
@@ -266,6 +269,17 @@ int main(int argc, char *argv[])
       {
           app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
           opt_ixfer = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--use-meta-length"))
+      {
+        dcmIgnoreFileMetaInformationGroupLength.set(OFFalse);
+      }
+      if (cmd.findOption("--ignore-meta-length"))
+      {
+        dcmIgnoreFileMetaInformationGroupLength.set(OFTrue);
       }
       cmd.endOptionBlock();
 
@@ -525,6 +539,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.65  2009-06-04 16:50:18  joergr
+** Added new command line option that allows for ignoring the value of File Meta
+** Information Group Length (0002,0000).
+**
 ** Revision 1.64  2009-04-24 12:20:41  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **

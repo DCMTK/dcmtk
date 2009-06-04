@@ -102,6 +102,14 @@ input files:
   +r   --recurse
          recurse within specified directories
 
+parsing of file meta information:
+
+  +ml  --use-meta-length
+         use file meta information group length (default)
+
+  -ml  --ignore-meta-length
+         ignore file meta information group length
+
 parsing of odd-length attributes:
 
   +ao  --accept-odd-length

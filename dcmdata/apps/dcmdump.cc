@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:20:41 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2009-06-04 16:50:18 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,6 +214,9 @@ int main(int argc, char *argv[])
 #endif
         cmd.addOption("--no-recurse",          "-r",     "do not recurse within directories (default)");
         cmd.addOption("--recurse",             "+r",     "recurse within specified directories");
+      cmd.addSubGroup("parsing of file meta information:");
+        cmd.addOption("--use-meta-length",     "+ml",    "use file meta information group length (default)");
+        cmd.addOption("--ignore-meta-length",  "-ml",    "ignore file meta information group length");
       cmd.addSubGroup("parsing of odd-length attributes:");
         cmd.addOption("--accept-odd-length",   "+ao",    "accept odd length attributes (default)");
         cmd.addOption("--assume-even-length",  "+ae",    "assume real length is one byte larger");
@@ -355,6 +358,17 @@ int main(int argc, char *argv[])
       {
         app.checkDependence("--recurse", "--scan-directories", scanDir);
         recurse = OFTrue;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--use-meta-length"))
+      {
+        dcmIgnoreFileMetaInformationGroupLength.set(OFFalse);
+      }
+      if (cmd.findOption("--ignore-meta-length"))
+      {
+        dcmIgnoreFileMetaInformationGroupLength.set(OFTrue);
       }
       cmd.endOptionBlock();
 
@@ -760,6 +774,10 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.78  2009-06-04 16:50:18  joergr
+ * Added new command line option that allows for ignoring the value of File Meta
+ * Information Group Length (0002,0000).
+ *
  * Revision 1.77  2009-04-24 12:20:41  joergr
  * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
  *
