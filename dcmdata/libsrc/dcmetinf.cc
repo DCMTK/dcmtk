@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-02 11:16:36 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Update Date:      $Date: 2009-06-04 16:58:24 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,7 +246,7 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             newxfer = tmpxferSyn.getXfer();   // use determined xfer
             if (xferSyn.getXfer() != EXS_Unknown)
             {
-                ofConsole.lockCerr() << "DcmMetaInfo: TransferSyntax of MetaInfo is other than expected." << OFendl;
+                ofConsole.lockCerr() << "DcmMetaInfo: TransferSyntax of MetaInfo is other than expected" << OFendl;
                 ofConsole.unlockCerr();
             }
         } else
@@ -316,7 +316,7 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             if (l_error.good() && newTag.getXTag() == xtag && elementList->get() != NULL && newValueLength > 0)
             {
                 l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
-                DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header=%d", headerLen + bytesRead));
+                DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header = %d", headerLen + bytesRead));
             } else {
                 l_error = EC_CorruptedData;
                 ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << OFendl;
@@ -378,8 +378,16 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                     setTransferredBytes(bytesRead);
 
                     if (errorFlag.good())
-                        setLengthField(headerLength + getTransferredBytes());
-                    else
+                    {
+                        /* FileMetaInformationGroupLength (0002,0000) is present but should be ignored  */
+                        if (dcmIgnoreFileMetaInformationGroupLength.get())
+                        {
+                            ofConsole.lockCerr() << "DcmMetaInfo: Ignoring Group Length of Meta Information Header" << OFendl;
+                            ofConsole.unlockCerr();
+                            setLengthField(DCM_UndefinedLength);
+                        } else
+                            setLengthField(headerLength + getTransferredBytes());
+                    } else
                         setLengthField(DCM_UndefinedLength);
                 }
             }
@@ -415,6 +423,13 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                         errorFlag = DcmItem::readSubElement(inStream, newTag, newValueLength, newxfer, glenc, maxReadLength);
                         if (errorFlag.good())
                             lastElementComplete = OFTrue;
+                        /* check for valid meta-header elements */
+                        if (newTag.getGroup() != 0x0002)
+                        {
+                            ofConsole.lockCerr() << "DcmMetaInfo: Invalid Element " << newTag
+                                                 << " found in Meta Information Header" << OFendl;
+                            ofConsole.unlockCerr();
+                        }
                     } else {
                         errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
                         if (errorFlag.good())
@@ -436,10 +451,10 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             {
                 if (getLengthField() != DCM_UndefinedLength && getTransferredBytes() != getLengthField())
                 {
-                    ofConsole.lockCerr() << "DcmMetaInfo: Group Length of MetaInformation Header has incorrect value." << OFendl;
+                    ofConsole.lockCerr() << "DcmMetaInfo: Group Length of Meta Information Header has incorrect value" << OFendl;
                     ofConsole.unlockCerr();
                 }
-                setTransferState(ERW_ready);          // MetaInfo ist komplett
+                setTransferState(ERW_ready);          // MetaInfo is complete
             }
         }
     }
@@ -556,6 +571,12 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.46  2009-06-04 16:58:24  joergr
+** Added new parsing flag that allows for ignoring the value of File Meta
+** Information Group Length (0002,0000).
+** Report a warning on all data elements in the meta-header which have an
+** incorrect group number, i.e. everything but 0x0002.
+**
 ** Revision 1.45  2009-03-02 11:16:36  joergr
 ** Moved variable definition.
 **
