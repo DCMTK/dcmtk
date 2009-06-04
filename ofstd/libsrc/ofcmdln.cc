@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-24 13:04:58 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2009-06-04 09:52:31 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ const int OFCommandLine::PF_NoCommandFiles  = 0x0002;
 
 const int OFCommandLine::AF_Exclusive       = 0x0001;
 const int OFCommandLine::AF_Internal        = 0x0002;
-
+const int OFCommandLine::AF_NoWarning       = 0x0004;
 
 /*-----------------------*
  *  struct declarations  *
@@ -101,7 +101,7 @@ struct OFCmdOption
     ~OFCmdOption()
     {
 #ifdef DEBUG
-        if (!Checked && !(Flags & OFCommandLine::AF_Exclusive) && (LongOption.length() > 0))
+        if (!Checked && !(Flags & (OFCommandLine::AF_Exclusive | OFCommandLine::AF_NoWarning)) && (LongOption.length() > 0))
         {
             ofConsole.lockCerr() << "WARNING: option " << LongOption << " has possibly never been checked !" << OFendl;
             ofConsole.unlockCerr();
@@ -1552,6 +1552,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
+ * Revision 1.47  2009-06-04 09:52:31  joergr
+ * Added new flag that can be used to avoid wrong warning messages (in debug
+ * mode) that an option has possibly never been checked.
+ *
  * Revision 1.46  2008-09-24 13:04:58  joergr
  * Fixed typo in output of getStatusString().
  *

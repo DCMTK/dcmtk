@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2008, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-16 12:39:35 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2009-06-04 09:53:00 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -857,6 +857,9 @@ class OFCommandLine
     static const int AF_Exclusive;
     /// internal option that is not shown in the syntax usage output
     static const int AF_Internal;
+    /// do not output a warning message if option has never been checked.
+    /// (useful if option is only checked depending on another option)
+    static const int AF_NoWarning;
 
  protected:
 
@@ -975,6 +978,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
+ * Revision 1.40  2009-06-04 09:53:00  joergr
+ * Added new flag that can be used to avoid wrong warning messages (in debug
+ * mode) that an option has possibly never been checked.
+ *
  * Revision 1.39  2008-04-16 12:39:35  joergr
  * Added support for reverse search direction (left to right) to findOption().
  *
