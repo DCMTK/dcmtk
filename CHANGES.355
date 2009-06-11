@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.11 (riesmeier)
+
+- Fixed issue with "Date" and "DateTime" Schema definitions: the "second" part
+  was not only optional but multi-optional (used '*' instead of '?').
+  Thanks to David Clunie <dclunie@dclunie.com> for pointing this out.
+  Affects: dcmsr/data/dsr2xml.xsd
+
 **** Changes from 2009.06.04 (riesmeier)
 
 - Added new flag that can be used to avoid wrong warning messages (in debug
