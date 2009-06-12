@@ -29,7 +29,7 @@ sample and support data (data) as well as test programs (tests).
 To build and install the DCMTK package see the INSTALL file.  For copyright
 information see the COPYRIGHT file.  For information about the history of
 this software see the HISTORY file.  For answers to frequently asked
-questions (FAQ) see:
+questions please consult the FAQ:
 
         http://forum.dcmtk.org/faq/
 
@@ -40,7 +40,7 @@ There is also a Wiki system where additional information can be found:
 If you find bugs or other problems with this software, we would appreciate
 hearing about them.  Please send electronic mail to:
 
-        dicom-bugs@offis.de
+        dicom-bugs/at/offis/dot/de
 
 Please try to describe the problem in detail and if possible give a
 suggested fix.  For general questions on how to compile, install or use
