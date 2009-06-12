@@ -31,7 +31,11 @@ information see the COPYRIGHT file.  For information about the history of
 this software see the HISTORY file.  For answers to frequently asked
 questions (FAQ) see:
 
-        http://forum.dcmtk.org/faq
+        http://forum.dcmtk.org/faq/
+
+There is also a Wiki system where additional information can be found:
+
+        http://support.dcmtk.org/wiki/
 
 If you find bugs or other problems with this software, we would appreciate
 hearing about them.  Please send electronic mail to:

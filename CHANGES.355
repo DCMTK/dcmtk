@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.12 (riesmeier)
+
+- Added reference to Wiki system.
+  Affects: README
+
 **** Changes from 2009.06.11 (riesmeier)
 
 - Fixed issue with "Date" and "DateTime" Schema definitions: the "second" part
