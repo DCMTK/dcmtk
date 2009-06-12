@@ -3,8 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.06.12 (riesmeier)
 
-- Added reference to Wiki system.
+- Added reference to Wiki system and obfuscated e-mail address.
   Affects: README
+           doxygen/htmldoc.dox
+
+- Added reference to "data" subdirectories.
+  Affects: doxygen/htmldoc.dox
 
 **** Changes from 2009.06.11 (riesmeier)
 
