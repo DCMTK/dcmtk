@@ -57,8 +57,8 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2009-03-06 14:43:57 $
-** CVS/RCS Revision:    $Revision: 1.51 $
+** Update Date:         $Date: 2009-06-18 13:30:27 $
+** CVS/RCS Revision:    $Revision: 1.52 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1538,7 +1538,7 @@ DIMSE_receiveDataSetInFile(
 #ifdef DEBUG
           if (debug)
           {
-             COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+             COUT << "DIMSE receiveDataSetInFile: " << pdv.fragmentLength
                   << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
           }
 #endif
@@ -1735,7 +1735,7 @@ DIMSE_receiveDataSetInMemory(
             /* dump information if required */
             if (debug)
             {
-                COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+                COUT << "DIMSE receiveDataSetInMemory: " << pdv.fragmentLength
                      << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << OFendl;
             }
 #endif
@@ -1805,6 +1805,9 @@ void DIMSE_warning(
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
+** Revision 1.52  2009-06-18 13:30:27  joergr
+** Fixed wrong output in debug mode (probably cut and paste error).
+**
 ** Revision 1.51  2009-03-06 14:43:57  joergr
 ** Output details on DIMSE fragments (PDUs) only if DEBUG is defined.
 ** Minor cleanup of output messages.

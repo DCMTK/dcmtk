@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.18 (riesmeier)
+
+- Fixed wrong output in debug mode (probably cut and paste error).
+  Affects: dcmnet/libsrc/dimse.cc
+
 **** Changes from 2009.06.12 (riesmeier)
 
 - Added reference to Wiki system and obfuscated e-mail address.
