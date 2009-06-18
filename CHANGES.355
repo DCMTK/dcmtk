@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.06.18 (riesmeier)
 
+- Clarified img2dcm documentation regarding --study-from and --series-from.
+  Affects: dcmdata/docs/img2dcm.man
+
+**** Changes from 2009.06.18 (riesmeier)
+
 - Fixed wrong output in debug mode (probably cut and paste error).
   Affects: dcmnet/libsrc/dimse.cc
 

@@ -189,12 +189,12 @@ order:
     VLP objects. See also section "Input Templates".
 
 \li The \e --study-from and \e --series-from options (mutually exclusive) can
-    be used to import study and series information from an existing DICOM file.
-    If \e --series-from is specified, then the given DICOM file is opened by
-    \b img2dcm and all mandatory information down to the series level is
-    imported. Note that this includes patient information, study information
-    and - in case of \e --series-from - also series information. The following
-    attributes are taken over:
+    be used to import patient, study and series information from an existing
+    DICOM file. If \e --series-from is specified, then the given DICOM file
+    is opened by \b img2dcm and all mandatory information down to the series
+    level is imported. Note that this includes patient, study and series
+    information. In case of \e --study-from, the series information is
+    excluded. The following attributes are taken over:
     \verbatim
       Patient Level:
         Patient's Name
