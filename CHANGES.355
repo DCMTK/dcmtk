@@ -1,7 +1,7 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2009.06.18 (riesmeier)
+**** Changes from 2009.06.18 (onken)
 
 - Clarified img2dcm documentation regarding --study-from and --series-from.
   Affects: dcmdata/docs/img2dcm.man
