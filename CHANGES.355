@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.24 (onken)
+
+- Adapted sndfile library/include paths to libsndfile's standard
+  installation directory structure for windows.
+  Affects: CMakeLists.txt
+
 **** Changes from 2009.06.18 (onken)
 
 - Clarified img2dcm documentation regarding --study-from and --series-from.
