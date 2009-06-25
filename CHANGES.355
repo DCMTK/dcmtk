@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.25 (riesmeier)
+
+- Replaced abbreviated spelling ("expl." -> "explicit") in manpage.
+  Affects: dcmdata/docs/dcmconv.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmnet/docs/movescu.man
+           dcmnet/docs/storescp.man
+           dcmsr/docs/xml2dsr.man
+
 **** Changes from 2009.06.24 (onken)
 
 - Adapted sndfile library/include paths to libsndfile's standard

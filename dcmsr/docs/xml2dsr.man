@@ -108,7 +108,7 @@ output transfer syntax:
          write with implicit VR little endian TS
 
   +td  --write-xfer-deflated
-         write with deflated expl. VR little endian TS
+         write with deflated explicit VR little endian TS
 
 post-1993 value representations:
 

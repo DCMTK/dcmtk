@@ -123,7 +123,7 @@ preferred network transfer syntaxes (incoming associations):
           prefer RLE lossless TS
 
   +xd   --prefer-deflated
-          prefer deflated expl. VR little endian TS
+          prefer deflated explicit VR little endian TS
 
   +xi   --implicit
           accept implicit VR little endian TS only
