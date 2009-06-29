@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.29 (riesmeier)
+
+- Use full path to "cfunix.h" file in order to be more consistent with Windows
+  systems.
+  Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the suggestion.
+  Affects: config/include/dcmtk/config/osconfig.h
+
+- Changed definition of macro "WIN32" in order to avoid compiler warning (MS).
+  Thanks to Peter Klotz <peter.klotz@ith-icoserve.com> for the suggestion.
+  Affects: config/include/dcmtk/config/cfwin32.h
+
 **** Changes from 2009.06.25 (riesmeier)
 
 - Replaced abbreviated spelling ("expl." -> "explicit") in manpage.
