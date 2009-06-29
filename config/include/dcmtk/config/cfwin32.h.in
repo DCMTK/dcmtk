@@ -17,7 +17,9 @@
 #endif /* __BORLANDC__ */
 
 /* Compiling for windows */
-#define WIN32 1
+#ifndef WIN32
+#define WIN32
+#endif
 
 /* Define if you have the <windows.h> header file.  */
 #define HAVE_WINDOWS_H 1
