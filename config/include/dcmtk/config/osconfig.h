@@ -15,17 +15,17 @@
 
 /*
 ** This head includes an OS/Compiler specific configuration header.
-** Add entries for specific non-unix OS/Compiler environments.
-** Under unix the default <cfunix.h> should be used.
+** Add entries for specific non-Unix OS/Compiler environments.
+** Under Unix the default "dcmtk/config/cfunix.h" should be used.
 **
 */
 
 #ifdef HAVE_CONFIG_H
 /*
 ** Some sort of Unix platform supported by the GNU Configure utility.
-** Just include the automatically generated <cfunix.h>
+** Just include the automatically generated header file.
 */
-#include "cfunix.h"
+#include "dcmtk/config/cfunix.h"
 
 #elif defined(_WIN32)
 /*
