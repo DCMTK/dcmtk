@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.06.30 (riesmeier)
+
+- Fixed incorrect wording.
+  Affects: config/docs/macros.txt
+
 **** Changes from 2009.06.29 (riesmeier)
 
 - Use full path to "cfunix.h" file in order to be more consistent with Windows

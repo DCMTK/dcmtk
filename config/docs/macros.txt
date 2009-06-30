@@ -47,10 +47,10 @@ DCMTK_GUI
 DETERMINE_OUTPUT_COLOR_SPACE_FROM_IJG_GUESS
   Affected: dcmjpeg
   Type of modification: Activates alternative implementation
-  Explanation: By default, the JPEG decompressor takes determines the
-    color model of the compressed stream from the DICOM Photometric
-    Interpretation.  If this flag is activated, the decoder uses the
-    "guess" provided by the Independent JPEG Group Library instead.
+  Explanation: By default, the JPEG decompressor determines the color model
+    of the compressed stream from the DICOM Photometric Interpretation.  If
+    this flag is activated, the decoder uses the "guess" provided by the
+    Independent JPEG Group Library instead.
 
 DICOMDIR_WITHOUT_BACKUP
   Affected: dcmdata
