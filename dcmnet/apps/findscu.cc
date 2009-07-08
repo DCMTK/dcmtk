@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 10:16:24 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-07-08 16:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt      opt_repeatCount = 1;
     OFBool                opt_secureConnection = OFFalse; /* default: no secure connection */
     OFBool                opt_verbose = OFFalse;
-    DcmDataset *          overrideKeys = NULL;
+    OFList<OFString>      overrideKeys;
 
 #ifdef WITH_OPENSSL
     const char *          opt_certificateFile = NULL;
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
    cmd.addOption("--debug",                "-d",      "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\" or dictionary name=\"str\"",
+      cmd.addOption("--key",               "-k",   1, "[k]ey: gggg,eeee=\"str\", path or dictionary name=\"str\"",
                                                       "override matching key");
     cmd.addSubGroup("query information model:");
       cmd.addOption("--worklist",          "-W",      "use modality worklist information model (default)");
@@ -259,13 +259,13 @@ int main(int argc, char *argv[])
         SetDebugLevel(3);
       }
 
-      if (cmd.findOption("--key", 0, OFCommandLine::FOM_First))
+      if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
       {
         const char *ovKey = NULL;
         do {
           app.checkValue(cmd.getValue(ovKey));
-          DcmFindSCU::addOverrideKey(overrideKeys, app, ovKey);
-        } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
+          overrideKeys.push_back(ovKey);
+        } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
       }
 
       cmd.beginOptionBlock();
@@ -341,7 +341,7 @@ int main(int argc, char *argv[])
         fileNameList.push_back(currentFilename);
       }
 
-      if ((fileNameList.empty()) && (overrideKeys == NULL))
+      if ((fileNameList.empty()) && (overrideKeys.empty()))
       {
           app.printError("either query file or override keys (or both) must be specified");
       }
@@ -559,7 +559,7 @@ int main(int argc, char *argv[])
       opt_repeatCount,
       opt_extractResponsesToFile,
       opt_cancelAfterNResponses,
-      overrideKeys,
+      &overrideKeys,
       NULL, /* we want to use the default callback */
       &fileNameList);
 
@@ -590,13 +590,15 @@ int main(int argc, char *argv[])
 
 #endif
 
-    delete overrideKeys;
     return 0;
 }
 
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
+** Revision 1.57  2009-07-08 16:14:08  onken
+** Added support for specifying tag paths as override keys.
+**
 ** Revision 1.56  2009-06-04 10:16:24  joergr
 ** Added new flag that can be used to avoid wrong warning messages (in debug
 ** mode) that an option has possibly never been checked.

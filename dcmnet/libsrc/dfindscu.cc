@@ -22,9 +22,9 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2007-10-19 10:56:33 $
+ *  Update Date:      $Date: 2009-07-08 16:14:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #include "dcmtk/dcmdata/dcfilefo.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dcdict.h"
+#include "dcmtk/dcmdata/dcpath.h"
 #include "dcmtk/ofstd/ofconapp.h"
 
 /* ---------------- static functions ---------------- */
@@ -150,80 +151,65 @@ DcmFindSCU::~DcmFindSCU()
 
 
 
-void DcmFindSCU::addOverrideKey(DcmDataset * & overrideKeys, OFConsoleApplication& app, const char* s)
+OFCondition DcmFindSCU::addOverrideKey(DcmDataset *dataset, 
+                                       const OFString& pathParam)
 {
-    unsigned int g = 0xffff;
-    unsigned int e = 0xffff;
-    int n = 0;
-    char val[1024];
-    OFString dicName, valStr;
-    OFString msg;
-    char msg2[200];
-    val[0] = '\0';
+  if (dataset == NULL) return EC_IllegalCall;
+  if (pathParam.empty()) return EC_Normal;
+  OFString path = pathParam;
+  OFString value;
+  OFBool valueSpecified = OFFalse;
+  size_t pos = path.find('=');
+  // separate tag from value if there is one
+  if (pos != OFString_npos)
+  {
+    value = path.substr(pos+1); // value now contains value
+    path.erase(pos);            // pure path without value
+    valueSpecified = OFTrue;
+  }
+  DcmPathProcessor proc;
+  /* disable item wildcards since they don't make sense for Q/R or worklist
+     where always a single item is sent in the query. Further, do not check
+     for private reservations in query dataset.
+   */
+  proc.setItemWildcardSupport(OFFalse);
+  proc.checkPrivateReservations(OFFalse);
+  // create path
+  OFCondition result = proc.findOrCreatePath(dataset, path, OFTrue /* create if necessary */);
+  if (result.bad())
+    return result;
+  OFList<DcmPath*> pathResults;
+  // check for results (there must be some when creating the path successfully)
+  Uint32 numResults = proc.getResults(pathResults);
+  if (numResults == 0)
+  {
+    return EC_IllegalCall;
+  }
+  // if no value is specified, work is already done at this point
+  if (!valueSpecified)
+    return EC_Normal;
 
-    // try to parse group and element number
-    n = sscanf(s, "%x,%x=%s", &g, &e, val);
-    OFString toParse = s;
-    size_t eqPos = toParse.find('=');
-    if (n < 2)  // if at least no tag could be parsed
-    { 
-      // if value is given, extract it (and extrect dictname)
-      if (eqPos != OFString_npos)
-      {
-        dicName = toParse.substr(0,eqPos).c_str();
-        valStr = toParse.substr(eqPos+1,toParse.length());
-      }
-      else // no value given, just dictionary name
-        dicName = s; // only dictionary name given (without value)
-      // try to lookup in dictionary
-      DcmTagKey key(0xffff,0xffff);
-      const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-      const DcmDictEntry *dicent = globalDataDict.findEntry(dicName.c_str());
-      dcmDataDict.unlock();
-      if (dicent!=NULL) {
-        // found dictionary name, copy group and element number
-        key = dicent->getKey();
-        g = key.getGroup();
-        e = key.getElement();
-      }
-      else {
-        // not found in dictionary
-        msg = "bad key format or dictionary name not found in dictionary: ";
-        msg += dicName;
-        app.printError(msg.c_str());
-      }
-    } // tag could be parsed, copy value if it exists
-    else
-    {
-      if (eqPos != OFString_npos)
-        valStr = toParse.substr(eqPos+1,toParse.length());
-    }
-    DcmTag tag(g,e);
-    if (tag.error() != EC_Normal) {
-        sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
-        app.printError(msg2);
-    }
-    DcmElement *elem = newDicomElement(tag);
-    if (elem == NULL) {
-        sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
-        app.printError(msg2);
-    }
-    if (valStr.length() > 0) {
-        if (elem->putString(valStr.c_str()).bad())
-        {
-            sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
-            msg = msg2;
-            msg += valStr;
-            msg += "\"";
-            app.printError(msg.c_str());
-        }
-    }
+  // if value is specified, be sure path does not end with item
+  OFListIterator(DcmPath*) it = pathResults.begin();
+  DcmPathNode *last = (*it)->back();
+  if (last == NULL) return EC_IllegalCall;
+  if (! (last->m_obj->isLeaf()) )
+    return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot insert value into path ending with item or sequence");
+  OFListConstIterator(DcmPath*) endList = pathResults.end();
 
-    if (overrideKeys == NULL) overrideKeys = new DcmDataset;
-    if (overrideKeys->insert(elem, OFTrue).bad()) {
-        sprintf(msg2, "cannot insert tag: (%04x,%04x)", g, e);
-        app.printError(msg2);
-    }
+  // Insert value into each element affected by path
+  while (it != endList)
+  {
+    last = (*it)->back();
+    if (last == NULL) return EC_IllegalCall;
+    DcmElement *elem = OFstatic_cast(DcmElement*, last->m_obj);
+    if (elem == NULL) return EC_IllegalCall;
+    result = elem->putString(value.c_str());
+    if (result.bad())
+      break;
+    it++;
+  }
+  return result;
 }
 
 
@@ -257,7 +243,7 @@ OFCondition DcmFindSCU::performQuery(
     unsigned int repeatCount,
     OFBool extractResponsesToFile,
     int cancelAfterNResponses,
-    DcmDataset *overrideKeys,
+    OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback,
     OFList<OFString> *fileNameList)
 {
@@ -490,22 +476,6 @@ OFCondition DcmFindSCU::addPresentationContext(
         transferSyntaxes, numTransferSyntaxes);
 }
 
-void DcmFindSCU::substituteOverrideKeys(const DcmDataset *overrideKeys, DcmDataset *dset) const
-{
-    if (overrideKeys == NULL) {
-        return; /* nothing to do */
-    }
-
-    /* copy the override keys */
-    DcmDataset keys(*overrideKeys);
-
-    /* put the override keys into dset replacing existing tags */
-    unsigned long elemCount = keys.card();
-    for (unsigned long i=0; i<elemCount; i++) {
-        DcmElement *elem = keys.remove((unsigned long)0);
-        dset->insert(elem, OFTrue);
-    }
-}
 
 OFBool DcmFindSCU::writeToFile(const char* ofname, DcmDataset *dataset)
 {
@@ -539,7 +509,7 @@ OFCondition DcmFindSCU::findSCU(
   int dimse_timeout, 
   OFBool extractResponsesToFile,
   int cancelAfterNResponses,
-  DcmDataset *overrideKeys,
+  OFList<OFString> *overrideKeys,
   DcmFindSCUCallback *callback) const
     /*
      * This function will read all the information from the given file
@@ -559,6 +529,7 @@ OFCondition DcmFindSCU::findSCU(
     DcmFileFormat dcmff;
 
     /* if there is a valid filename */
+    OFCondition cond;
     if (fname != NULL) {
 
         /* read information from file (this information specifies a search mask). After the */
@@ -566,7 +537,7 @@ OFCondition DcmFindSCU::findSCU(
         /* will be available through the DcmFileFormat object. In detail, it will be available */
         /* through calls to DcmFileFormat::getMetaInfo() (for meta header information) and */
         /* DcmFileFormat::getDataset() (for data set information). */
-        OFCondition cond = dcmff.loadFile(fname);
+        cond = dcmff.loadFile(fname);
 
         /* figure out if an error occured while the file was read*/
         if (cond.bad()) {
@@ -577,7 +548,19 @@ OFCondition DcmFindSCU::findSCU(
     }
 
     /* replace specific keys by those in overrideKeys */
-    substituteOverrideKeys(overrideKeys, dcmff.getDataset());
+    OFListIterator(OFString) path = overrideKeys->begin();
+    OFListConstIterator(OFString) endOfList = overrideKeys->end();
+    DcmDataset* dset = dcmff.getDataset();
+    while (path != endOfList)
+    {
+        cond = addOverrideKey(dset, *path);
+        if (cond.bad()) {
+            ofConsole.lockCerr() << "Bad override key/path: " << *path << ": " << cond.text() << OFendl;
+            ofConsole.unlockCerr();
+            return cond;
+        }
+        path++;
+    }
 
     /* figure out which of the accepted presentation contexts should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, abstractSyntax);
@@ -604,7 +587,7 @@ OFCondition DcmFindSCU::findSCU(
     callback->setPresentationContextID(presId);
 
     /* as long as no error occured and the counter does not equal 0 */
-    OFCondition cond = EC_Normal;
+    cond = EC_Normal;
     while (cond.good() && n--) 
     {
         DcmDataset *statusDetail = NULL;
@@ -666,6 +649,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.4  2009-07-08 16:14:32  onken
+ * Added support for specifying tag paths as override keys.
+ *
  * Revision 1.3  2007-10-19 10:56:33  onken
  * Fixed bug in addOverrideKey() that caused  problems when parsing a value in a
  * tag-value combination if the value contained whitespace characters.

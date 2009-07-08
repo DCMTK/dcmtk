@@ -21,10 +21,10 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 13:13:28 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-07-08 16:14:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dfindscu.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,9 +219,9 @@ public:
    *    (works only with default callback)
    *  @param cancelAfterNResponses issue C-FIND-CANCEL after given number of responses
    *    (works only with default callback)
-   *  @param overrideKeys dataset with keys that override those in the query files, if any.
+   *  @param overrideKeys list of keys/paths that override those in the query files, if any.
    *    Either the list of query files or override keys or both should be non-empty, because the query
-   *    dataset will be empty otherwise.
+   *    dataset will be empty otherwise. For path syntax see DcmPath.
    *  @param callback user-provided non-default callback handler object. 
    *    For default callback, pass NULL.
    *  @param fileNameList list of query files. Each file is expected to be a DICOM file
@@ -244,7 +244,7 @@ public:
     unsigned int repeatCount,
     OFBool extractResponsesToFile,
     int cancelAfterNResponses,
-    DcmDataset *overrideKeys,
+    OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL,
     OFList<OFString> *fileNameList = NULL);    
 
@@ -259,26 +259,17 @@ public:
   static OFBool writeToFile(const char* ofname, DcmDataset *dataset);
 
   /** static helper function that adds a given "override key" using findscu's command line syntax
-   *  to the given dataset of override keys. The name "override" indicates that these keys have
+   *  to the given dataset. The name "override" indicates that these keys have
    *  higher precedence than identical keys in a request dataset that might possibly read from
    *  a DICOM query file.
-   *  @param overrideKeys the query key is added to this dataset, if successful
-   *    The overrideKeys object is created on the heap and a pointer passed back to the caller
-   *    if the caller passes a reference to a NULL pointer.
-   *  @param app console application object, only used for error output.
-   *  @param s query key
+   *  @param dataset the dataset (query keys) the override key is applied to. Must be non-NULL.
+   *  @param pathParam the override key in path syntax (see class DcmPath).
+   *  @return EC_Normal if adding was successful, error code otherwise
    */
-  static void addOverrideKey(DcmDataset * & overrideKeys, OFConsoleApplication& app, const char* s);
+  static OFCondition addOverrideKey(DcmDataset *dataset, 
+				       	             		    const OFString& pathParam);
 
 private:
-
-  /** copy override keys over existing keys in given dataset.
-   *  @param override keys dataset of "override" keys with higher precedence
-   *  @param dset dataset to which the override keys are copied
-   */
-  void substituteOverrideKeys(
-    const DcmDataset *overrideKeys, 
-    DcmDataset *dset) const;
 
   /** add presentation context for given abstract syntax and given preferred transfer syntax
    *  to the ACSE parameter struct. 
@@ -324,7 +315,7 @@ private:
     int dimse_timeout, 
     OFBool extractResponsesToFile,
     int cancelAfterNResponses,
-    DcmDataset *overrideKeys,
+    OFList<OFString> *overrideKeys,
     DcmFindSCUCallback *callback = NULL) const;
 
 private:
@@ -345,6 +336,9 @@ private:
 /*
  * CVS Log
  * $Log: dfindscu.h,v $
+ * Revision 1.2  2009-07-08 16:14:25  onken
+ * Added support for specifying tag paths as override keys.
+ *
  * Revision 1.1  2007-02-19 13:13:28  meichel
  * Refactored findscu code into class DcmFindSCU, which is now part of the dcmnet
  *   library, and a short command line tool that only evaluates command line
