@@ -286,7 +286,8 @@ always work.
 If you wish to insert a private tag (not a reservation with gggg,00xx), be
 sure, that you've listed it in your dictionary (see
 <em><docdir>/datadict.txt</em> for details).  If it's not listed, \b dcmodify
-will insert it with VR=UN.
+will insert it with VR=UN. Also, for some cases insertion may even fail for
+some values.
 
 If you've got your private tag in the dictionary, \b dcmodify acts as follows:
 When it finds a reservation in the tag's enclosing dataset, whose private
