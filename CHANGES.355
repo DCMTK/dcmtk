@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.07.08 (onken)
+
+- Added support for specifying tag paths as override keys.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.man
+           dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/libsrc/dfindscu.cc
+
+- Added note that inserting new private tags that are not known to the
+  dictionary may fail when combined with specific attribute values.
+  Affects: dcmdata/docs/dcmodify.man
+
+- Adapted dcmodify to changes in DcmPath API.
+  Affects: dcmdata/apps/mdfdsman.cc
+
+- Cleaned up code for private reservation checking and added option for
+  disabling item wildcards for searching/creating tag paths.
+  Affects: dcmdata/libsrc/dcpath.cc
+           dcmdata/include/dcmtk/dcmdata/dcpath.h
+
 **** Changes from 2009.06.30 (riesmeier)
 
 - Fixed incorrect wording.
