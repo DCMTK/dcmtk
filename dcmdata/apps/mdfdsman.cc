@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-16 10:03:13 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2009-07-08 16:10:36 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -309,7 +309,7 @@ OFCondition MdfDatasetManager::modifyOrInsertPath(OFString tag_path,
 
   // find or create specified path
   DcmPathProcessor proc;
-  proc.setPrivateReservationChecking(!no_reservation_checks);
+  proc.checkPrivateReservations(!no_reservation_checks);
   OFCondition result = proc.findOrCreatePath(dset, tag_path, !only_modify /*create if desired*/);
   // if desired, handle tag not found as being not an error
   if ( (result == EC_TagNotFound) && only_modify && ignore_missing_tags )
@@ -669,6 +669,9 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.24  2009-07-08 16:10:36  onken
+** Adapted dcmodify to changes in DcmPath API.
+**
 ** Revision 1.23  2009-01-16 10:03:13  onken
 ** Code simplification for VR checking.
 **
