@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:04:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-07-08 16:09:30 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,15 +230,24 @@ public:
    */
   DcmPathProcessor();
 
-  /** Enable or disable checking for private tag reservations when
-   *  inserting new private tags. If enabled (default), any private
-   *  tags to be inserted not having an appropriate reservation inside the
-   *  containing item will lead to an error. If disabled, the tag is
-   *  inserted anyway.
-   *  @param checkForReservation [in] If true, private tags are only inserted
-   *                                  if there is a corresponding reservation
+  /** Sets whether searching/creating paths will support wildcard for
+   *  items. If set to false, any path operation with item wildcard characters
+   *  will return an error.
+   *  @param supported [in] If true, wildcard are enabled (default)
+   *                   If false, item wildcard support is disabled.
    */
-  void setPrivateReservationChecking(const OFBool& checkForReservation);
+  void setItemWildcardSupport(const OFBool& supported);
+
+  
+  /** Enables (class default: enabled) or disables checking of private
+   *  reservations when inserting private tags. If enabled and a private
+   *  tag is created that has no private reservation, an error is returned.
+   *  If disabled, it is possible to insert private tags that do not have
+   *  a reservation in the corresponding item/dataset.
+   *  @param doChecking [in] OFTrue enables reservation checking,
+   *                    OFFalse disables it.
+   */
+  void checkPrivateReservations(const OFBool& doChecking);
 
   /** Function that allows for finding and/or inserting a hierarchy of items
    *  and attributes as defined by a path string; also returns a list of
@@ -318,26 +327,6 @@ public:
    *  @return Number of results returned
    */
   Uint32 getResults(OFList<DcmPath*>& searchResults);
-
-  /** Checks whether a given private tag has a reservation in an item
-   *  and returns the private creator if found.
-   *  @param privateTag [in] The private tag key to look for
-   *  @param item [in] The item to search the reservation tag in
-   *  @param privateCreator The private creator, if found
-   *  @return OFTrue, if a reservation element could be found, OFFals otherwise
-   */
-  static OFBool hasPrivateReservationContext(const DcmTagKey &privateTag,
-                                             DcmItem *item,
-                                             OFString &privateCreator);
-
-  /** Returns the private reservation tag key for a given private tag
-   *  @param privateKey [in] The private key to calculate reservation tag for
-   *  @return The reservation key. If given key is not private or an error,
-   *          return DCM_UndefinedTagKey. If the given key is a reservation
-   *          itself, it is directly returned.
-   */
-  static DcmTagKey calcPrivateReservationTag(const DcmTagKey &privateKey);
-
 
   /** Deconstructor, cleans up memory that was allocated for any
    *  search results.
@@ -458,6 +447,13 @@ protected:
    */
   OFCondition checkPrivateTagReservation(DcmItem *item,
                                          DcmTag& tag);
+  /** Returns the private reservation tag key for a given private tag
+   *  @param privateKey [in] The private key to calculate reservation tag for
+   *  @return The reservation key. If given key is not private or an error,
+   *          return DCM_UndefinedTagKey. If the given key is a reservation
+   *          itself, it is directly returned.
+   */
+  static DcmTagKey calcPrivateReservationTag(const DcmTagKey &privateKey);
 
   /** Cleans up memory that was allocated for any search results.
    *  Called when a new search is started or during object destruction.
@@ -483,6 +479,10 @@ private:
   /// corresponding reservation exists in the underlying item
   OFBool m_checkPrivateReservations;
 
+  /// Denotes, whether a path is accepted that contains wildcards.
+  /// If false, then any search containing wildcards will return an error.
+  OFBool m_itemWildcardsEnabled;
+
   /** Private undefined copy constructor
    */
   DcmPathProcessor(const DcmPathProcessor& rhs);
@@ -499,6 +499,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.5  2009-07-08 16:09:30  onken
+** Cleaned up code for private reservation checking and added option for
+** disabling item wildcards for searching/creating tag paths.
+**
 ** Revision 1.4  2009-01-15 16:04:06  onken
 ** Added options for handling of private tags and fixed bug for deleting
 ** tags on main level.

@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:04:02 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-07-08 16:09:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -324,14 +324,23 @@ DcmPathProcessor::DcmPathProcessor() :
   m_currentPath(),
   m_results(),
   m_createIfNecessary(OFFalse),
-  m_checkPrivateReservations(OFTrue)
+  m_checkPrivateReservations(OFTrue),
+  m_itemWildcardsEnabled(OFTrue)
 {
 }
 
 
-void DcmPathProcessor::setPrivateReservationChecking(const OFBool& checkForReservation)
+// enables (class default:enabled) or disables checking of private reservations
+void DcmPathProcessor::checkPrivateReservations(const OFBool& doChecking)
 {
-  m_checkPrivateReservations = checkForReservation;
+  m_checkPrivateReservations = doChecking;
+}
+
+
+// enables (class default:enabled) or disables support for item wildcards
+void DcmPathProcessor::setItemWildcardSupport(const OFBool& supported)
+{
+  m_itemWildcardsEnabled = supported;
 }
 
 
@@ -344,9 +353,16 @@ OFCondition DcmPathProcessor::findOrCreatePath(DcmObject* obj,
   if ( (obj == NULL) || path.empty())
     return EC_IllegalParameter;
 
+  if (!m_itemWildcardsEnabled)
+  {
+    if (path.find('*') != OFString_npos)
+    {
+      return makeOFCondition(OFM_dcmdata, 25, OF_error, "Item wildcard '*' found in path but wildcards disabled");
+    }
+  }
   clear();
   m_createIfNecessary = createIfNecessary;
-
+  
   // do real work in private member functions
   OFString pathCopy = path;
   if ((obj->ident() == EVR_item) || (obj->ident() == EVR_dataset))
@@ -367,6 +383,13 @@ OFCondition DcmPathProcessor::findOrDeletePath(DcmObject* obj,
   if ( (obj == NULL) || path.empty())
     return EC_IllegalParameter;
   numDeleted = 0;
+  if (!m_itemWildcardsEnabled)
+  {
+    if (path.find('*') != OFString_npos)
+    {
+      return makeOFCondition(OFM_dcmdata, 25, OF_error, "Item wildcard '*' found in path but wildcards disabled");
+    }
+  }
 
   // search
   m_createIfNecessary = OFFalse;
@@ -562,7 +585,7 @@ OFCondition DcmPathProcessor::findOrCreateItemPath(DcmItem* item,
     if (m_createIfNecessary)
     {
       // private tags needs special handling, e. g. checking reservation
-      if (tag.isPrivate())
+      if (tag.isPrivate() && m_checkPrivateReservations)
       {
         status = checkPrivateTagReservation(item, tag);
         if (status.bad()) return status;
@@ -793,24 +816,6 @@ OFCondition DcmPathProcessor::findOrCreateSequencePath(DcmSequenceOfItems* seq,
 }
 
 
-OFBool DcmPathProcessor::hasPrivateReservationContext(const DcmTagKey &privateTag,
-                                                      DcmItem *item,
-                                                      OFString &privateCreator)
-{
-  // Calculate reservation tag
-  DcmTagKey reservatorKey(calcPrivateReservationTag(privateTag));
-  DcmElement *reservationElem;
-  // Find corresponding element and return false if none is found
-  OFCondition result = item->findAndGetElement(reservatorKey, reservationElem, OFFalse);
-  if (result.bad())
-    return OFFalse;
-
-  // Get private creator name and return succcess
-  reservationElem->getOFString(privateCreator, 0);
-  return OFTrue;
-}
-
-
 DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKey)
 {
   DcmTagKey reservationTag(0xFFFF, 0xFFFF);
@@ -823,7 +828,7 @@ DcmTagKey DcmPathProcessor::calcPrivateReservationTag(const DcmTagKey &privateKe
 
   // Calculate corresponding private creator element
   Uint16 elemNo = privateKey.getElement();
-  // Get xx from given element number yzxx, groups stays the same
+  // Get yz from given element number wxyz, groups stays the same
   elemNo >>= 8;
   reservationTag.setGroup(privateKey.getGroup());
   reservationTag.setElement(elemNo);
@@ -871,6 +876,10 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.5  2009-07-08 16:09:12  onken
+** Cleaned up code for private reservation checking and added option for
+** disabling item wildcards for searching/creating tag paths.
+**
 ** Revision 1.4  2009-01-15 16:04:02  onken
 ** Added options for handling of private tags and fixed bug for deleting
 ** tags on main level.
