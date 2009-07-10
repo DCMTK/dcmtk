@@ -22,9 +22,9 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-08 16:14:32 $
+ *  Update Date:      $Date: 2009-07-10 13:21:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,70 +148,6 @@ DcmFindSCU::~DcmFindSCU()
 { 
   dropNetwork(); 
 }
-
-
-
-OFCondition DcmFindSCU::addOverrideKey(DcmDataset *dataset, 
-                                       const OFString& pathParam)
-{
-  if (dataset == NULL) return EC_IllegalCall;
-  if (pathParam.empty()) return EC_Normal;
-  OFString path = pathParam;
-  OFString value;
-  OFBool valueSpecified = OFFalse;
-  size_t pos = path.find('=');
-  // separate tag from value if there is one
-  if (pos != OFString_npos)
-  {
-    value = path.substr(pos+1); // value now contains value
-    path.erase(pos);            // pure path without value
-    valueSpecified = OFTrue;
-  }
-  DcmPathProcessor proc;
-  /* disable item wildcards since they don't make sense for Q/R or worklist
-     where always a single item is sent in the query. Further, do not check
-     for private reservations in query dataset.
-   */
-  proc.setItemWildcardSupport(OFFalse);
-  proc.checkPrivateReservations(OFFalse);
-  // create path
-  OFCondition result = proc.findOrCreatePath(dataset, path, OFTrue /* create if necessary */);
-  if (result.bad())
-    return result;
-  OFList<DcmPath*> pathResults;
-  // check for results (there must be some when creating the path successfully)
-  Uint32 numResults = proc.getResults(pathResults);
-  if (numResults == 0)
-  {
-    return EC_IllegalCall;
-  }
-  // if no value is specified, work is already done at this point
-  if (!valueSpecified)
-    return EC_Normal;
-
-  // if value is specified, be sure path does not end with item
-  OFListIterator(DcmPath*) it = pathResults.begin();
-  DcmPathNode *last = (*it)->back();
-  if (last == NULL) return EC_IllegalCall;
-  if (! (last->m_obj->isLeaf()) )
-    return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot insert value into path ending with item or sequence");
-  OFListConstIterator(DcmPath*) endList = pathResults.end();
-
-  // Insert value into each element affected by path
-  while (it != endList)
-  {
-    last = (*it)->back();
-    if (last == NULL) return EC_IllegalCall;
-    DcmElement *elem = OFstatic_cast(DcmElement*, last->m_obj);
-    if (elem == NULL) return EC_IllegalCall;
-    result = elem->putString(value.c_str());
-    if (result.bad())
-      break;
-    it++;
-  }
-  return result;
-}
-
 
 OFCondition DcmFindSCU::initializeNetwork(int acse_timeout)
 {
@@ -551,10 +487,18 @@ OFCondition DcmFindSCU::findSCU(
     OFListIterator(OFString) path = overrideKeys->begin();
     OFListConstIterator(OFString) endOfList = overrideKeys->end();
     DcmDataset* dset = dcmff.getDataset();
+    DcmPathProcessor proc;
+    /* disable item wildcards since they don't make sense for Q/R or worklist
+       where always a single item is sent in the query. Further, do not check
+       for private reservations in query dataset.
+     */
+    proc.setItemWildcardSupport(OFFalse);
+    proc.checkPrivateReservations(OFFalse);
     while (path != endOfList)
     {
-        cond = addOverrideKey(dset, *path);
-        if (cond.bad()) {
+        cond = proc.applyPathWithValue(dset, *path);
+        if (cond.bad()) 
+        {
             ofConsole.lockCerr() << "Bad override key/path: " << *path << ": " << cond.text() << OFendl;
             ofConsole.unlockCerr();
             return cond;
@@ -599,13 +543,13 @@ OFCondition DcmFindSCU::findSCU(
         if (verbose_) {
             STD_NAMESPACE ostream& mycout = ofConsole.lockCout();
             mycout << "Find SCU RQ: MsgID " << req.MessageID << "\nREQUEST:\n";
-            dcmff.getDataset()->print(mycout);
+            dset->print(mycout);
             mycout << "--------" << OFendl;
             ofConsole.unlockCout();
         }
         
         /* finally conduct transmission of data */
-        OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(),
+        OFCondition cond = DIMSE_findUser(assoc, presId, &req, dset,
             progressCallback, callback, blockMode, dimse_timeout,
             &rsp, &statusDetail);
         
@@ -649,6 +593,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.5  2009-07-10 13:21:09  onken
+ * Moved override key functionality to DcmPathProcessor.
+ *
  * Revision 1.4  2009-07-08 16:14:32  onken
  * Added support for specifying tag paths as override keys.
  *

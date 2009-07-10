@@ -22,9 +22,9 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-08 16:14:25 $
+ *  Update Date:      $Date: 2009-07-10 13:21:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dfindscu.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,17 +258,6 @@ public:
    */   
   static OFBool writeToFile(const char* ofname, DcmDataset *dataset);
 
-  /** static helper function that adds a given "override key" using findscu's command line syntax
-   *  to the given dataset. The name "override" indicates that these keys have
-   *  higher precedence than identical keys in a request dataset that might possibly read from
-   *  a DICOM query file.
-   *  @param dataset the dataset (query keys) the override key is applied to. Must be non-NULL.
-   *  @param pathParam the override key in path syntax (see class DcmPath).
-   *  @return EC_Normal if adding was successful, error code otherwise
-   */
-  static OFCondition addOverrideKey(DcmDataset *dataset, 
-				       	             		    const OFString& pathParam);
-
 private:
 
   /** add presentation context for given abstract syntax and given preferred transfer syntax
@@ -336,6 +325,9 @@ private:
 /*
  * CVS Log
  * $Log: dfindscu.h,v $
+ * Revision 1.3  2009-07-10 13:21:04  onken
+ * Moved override key functionality to DcmPathProcessor.
+ *
  * Revision 1.2  2009-07-08 16:14:25  onken
  * Added support for specifying tag paths as override keys.
  *
