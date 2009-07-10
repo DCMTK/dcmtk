@@ -3,6 +3,23 @@ Changes between releases are documented here.
 
 **** Changes from 2009.07.08 (onken)
 
+- Moved override key functionality to DcmPathProcessor.
+  Affects: dcmnet/include/dcmtk/dcmnet/dfindscu.h
+           dcmnet/libsrc/dfindscu.cc
+
+- Added path functionality for --key option and lets the code make use
+  of the DcmPath classes.
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/libi2d/i2d.cc
+           dcmdata/apps/img2dcm.cc
+
+- Added override key functionality used by tools like findscu to the more
+  central DcmPathProcessor class.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libsrc/dcpath.cc
+
+**** Changes from 2009.07.08 (onken)
+
 - Added support for specifying tag paths as override keys.
   Affects: dcmnet/apps/findscu.cc
            dcmnet/docs/findscu.man
