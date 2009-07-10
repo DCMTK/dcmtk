@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 13:06:09 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-07-10 13:16:16 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,10 +108,14 @@ public:
    *  They will override any identical attributes already existing in the
    *  converted result DICOM object. The override keys are applied at the very
    *  end of the conversion and do not undergoe any validity checking.
-   *  @param dset - [in] The dataset with override attributes (is copied)
+   *  @param ovkeys [in] override keys that can be tags, dictionary names
+   *                     and paths (see DcmPath for syntax). Also it is
+   *                     permitted to set a value if appropriate, e. g.
+   *                     "PatientsName=Doe^John" would be a valid override
+   *                     key.
    *  @return none
    */
-  void setOverrideKeys(const DcmDataset* dset);
+  void setOverrideKeys(const OFList<OFString>& ovkeys);
 
   /** Enable/Disable basic validity checks for output dataset
    *  @param doChecks - [in] OFTrue enables checking, OFFalse turns it off.
@@ -159,7 +163,6 @@ public:
         stream->unlockCerr();
     }
   }
-
 
   /** Destructor, frees plugin memory
    *  @return none
@@ -215,8 +218,9 @@ protected:
 
   /** Copy override keys over existing keys in given dataset.
    *  @param outputDset - [out] dataset to which the override keys are copied
+   *  @return Error code if error occurs, EC_Normal otherwise
    */
-   void applyOverrideKeys(DcmDataset *outputDset);
+   OFCondition applyOverrideKeys(DcmDataset *outputDset);
 
    /** Inserts "ISO_IR100" in the attribute "Specific Character Set".
     *  Overwrites any existing value.
@@ -253,7 +257,7 @@ private:
 
   /// These attributes are applied to the dataset after conversion
   /// (and are not checked by the isValid() function)
-  DcmDataset *m_overrideKeys;
+  OFList<OFString> m_overrideKeys;
 
   /// If not empty, the DICOM file specified in this variable is used
   /// as a base for the DICOM image file to be created, ie. all attributes
@@ -303,6 +307,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.7  2009-07-10 13:16:16  onken
+ * Added path functionality for --key option and lets the code make use
+ * of the DcmPath classes.
+ *
  * Revision 1.6  2009-03-31 13:06:09  onken
  * Changed implementation of lossy compression attribute detection and writing.
  *

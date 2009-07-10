@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 13:05:27 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-07-10 13:16:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,9 +34,10 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2d.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
+#include "dcmtk/dcmdata/dcpath.h" /* for override keys */
 
 
-Image2Dcm::Image2Dcm() : m_overrideKeys(NULL), m_templateFile(""),
+Image2Dcm::Image2Dcm() : m_overrideKeys(), m_templateFile(""),
   m_readStudyLevel(OFFalse), m_readSeriesLevel(OFFalse), m_studySeriesFile(),
   m_incInstNoFromFile(OFFalse), m_disableAttribChecks(OFFalse),
   m_inventMissingType2Attribs(OFTrue), m_inventMissingType1Attribs(OFFalse),
@@ -601,30 +602,37 @@ void Image2Dcm::setIncrementInstanceNumber(OFBool incInstNo)
 }
 
 
-void Image2Dcm::setOverrideKeys(const DcmDataset* dset)
+void Image2Dcm::setOverrideKeys(const OFList<OFString>& ovkeys)
 {
-  delete m_overrideKeys;
-  m_overrideKeys = new DcmDataset(*dset);
+  OFListConstIterator(OFString) it = ovkeys.begin();
+  OFListConstIterator(OFString) end = ovkeys.end();
+  while (it != end)
+  {
+    m_overrideKeys.push_back(*it);
+    it++;
+  }
 }
 
 
-void Image2Dcm::applyOverrideKeys(DcmDataset *outputDset)
+OFCondition Image2Dcm::applyOverrideKeys(DcmDataset *outputDset)
 
 {
-  if ((m_overrideKeys == NULL) || (outputDset == NULL)) {
-    return; /* nothing to do */
+  /* replace specific keys by those in overrideKeys, copied from findscu */
+  OFListIterator(OFString) path = m_overrideKeys.begin();
+  OFListConstIterator(OFString) endOfList = m_overrideKeys.end();
+  OFCondition cond;
+  DcmPathProcessor proc;
+  while (path != endOfList)
+  {
+    cond = proc.applyPathWithValue(outputDset, *path);
+    if (cond.bad()) {
+      OFString err;
+      err += "Bad override key/path: "; err += *path; err += ": "; err += cond.text();
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, err.c_str());
+    }
+    path++;
   }
-  if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Applying override keys");
-  /* copy the override keys */
-  DcmDataset keys(*m_overrideKeys);
-
-  /* put the override keys into dset replacing existing tags */
-  unsigned long elemCount = keys.card();
-  for (unsigned long i=0; i<elemCount; i++) {
-    DcmElement *elem = keys.remove((unsigned long)0);
-    outputDset->insert(elem, OFTrue);
-  }
+  return cond;
 }
 
 
@@ -702,17 +710,21 @@ OFString Image2Dcm::checkAndInventType2Attrib(const DcmTagKey& key,
   return err;
 }
 
+
 Image2Dcm::~Image2Dcm()
 {
   if (m_debug)
     printMessage(m_logStream,"Image2Dcm: Freeing memory");
-  delete m_overrideKeys; m_overrideKeys = NULL;
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.6  2009-07-10 13:16:07  onken
+ * Added path functionality for --key option and lets the code make use
+ * of the DcmPath classes.
+ *
  * Revision 1.5  2009-03-31 13:05:27  onken
  * Changed implementation of lossy compression attribute detection and writing.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:20:42 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-07-10 13:16:10 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,95 +44,6 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 #define SHORTCOL 4
 #define LONGCOL 21
-
-
-/** static helper function that adds a given "override key" using image2dcm's command line syntax
- *  to the given dataset of override keys. The name "override" indicates that these keys have
- *  higher precedence than identical keys in the image dataset that might possibly read from
- *  a DICOM file or set by other command line parameters.
- *  @param overrideKeys the attribute is added to this dataset, if successful
- *    The overrideKeys object is created on the heap and a pointer passed back to the caller
- *    if the caller passes a reference to a NULL pointer.
- *  @param app console application object, only used for error output.
- *  @param s override key
- */
-static void addOverrideKey(DcmDataset * & overrideKeys,
-                           OFConsoleApplication& app,
-                           const char* s)
-{
-  unsigned int g = 0xffff;
-  unsigned int e = 0xffff;
-  int n = 0;
-  char val[1024];
-  OFString dicName, valStr;
-  OFString msg;
-  char msg2[200];
-  val[0] = '\0';
-
-  // try to parse group and element number
-  n = sscanf(s, "%x,%x=%s", &g, &e, val);
-  OFString toParse = s;
-  size_t eqPos = toParse.find('=');
-  if (n < 2)  // if at least no tag could be parsed
-  {
-    // if value is given, extract it (and extrect dictname)
-    if (eqPos != OFString_npos)
-    {
-      dicName = toParse.substr(0, eqPos).c_str();
-      valStr = toParse.substr(eqPos + 1, toParse.length());
-    }
-    else // no value given, just dictionary name
-      dicName = s; // only dictionary name given (without value)
-    // try to lookup in dictionary
-    DcmTagKey key(0xffff,0xffff);
-    const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dicent = globalDataDict.findEntry(dicName.c_str());
-    dcmDataDict.unlock();
-    if (dicent!=NULL) {
-      // found dictionary name, copy group and element number
-      key = dicent->getKey();
-      g = key.getGroup();
-      e = key.getElement();
-    }
-    else {
-      // not found in dictionary
-      msg = "bad key format or dictionary name not found in dictionary: ";
-      msg += dicName;
-      app.printError(msg.c_str());
-    }
-  } // tag could be parsed, copy value if it exists
-  else
-  {
-    if (eqPos != OFString_npos)
-      valStr = toParse.substr(eqPos + 1, toParse.length());
-  }
-  DcmTag tag(g,e);
-  if (tag.error() != EC_Normal) {
-      sprintf(msg2, "unknown tag: (%04x,%04x)", g, e);
-      app.printError(msg2);
-  }
-  DcmElement *elem = newDicomElement(tag);
-  if (elem == NULL) {
-      sprintf(msg2, "cannot create element for tag: (%04x,%04x)", g, e);
-      app.printError(msg2);
-  }
-  if (valStr.length() > 0) {
-      if (elem->putString(valStr.c_str()).bad())
-      {
-          sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
-          msg = msg2;
-          msg += valStr;
-          msg += "\"";
-          app.printError(msg.c_str());
-      }
-  }
-
-  if (overrideKeys == NULL) overrideKeys = new DcmDataset;
-  if (overrideKeys->insert(elem, OFTrue).bad()) {
-      sprintf(msg2, "cannot insert tag: (%04x,%04x)", g, e);
-      app.printError(msg2);
-  }
-}
 
 
 static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
@@ -285,7 +196,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   // Write only pure dataset, i.e. without meta header
   OFBool writeOnlyDataset = OFFalse;
   // Override keys are applied at the very end of the conversion "pipeline"
-  DcmDataset *overrideKeys = NULL;
+  OFList<OFString> overrideKeys;
   // The transfersytanx proposed to be written by output plugin
   E_TransferSyntax writeXfer;
 
@@ -403,16 +314,15 @@ static OFCondition startConversion(OFCommandLine& cmd,
   cmd.endOptionBlock();
 
   // create override attribute dataset (copied from findscu code)
-  if (cmd.findOption("--key", 0, OFCommandLine::FOM_First))
+  if (cmd.findOption("--key", 0, OFCommandLine::FOM_FirstFromLeft))
   {
     const char *ovKey = NULL;
     do {
       app.checkValue(cmd.getValue(ovKey));
-      addOverrideKey(overrideKeys, app, ovKey);
-    } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
-    i2d.setOverrideKeys(overrideKeys); // does a deep copy
-    delete overrideKeys; overrideKeys = NULL;
+      overrideKeys.push_back(ovKey);
+    } while (cmd.findOption("--key", 0, OFCommandLine::FOM_NextFromLeft));
   }
+  i2d.setOverrideKeys(overrideKeys);
 
   // Test for ISO Latin 1 option
   OFBool insertLatin1 = OFTrue;
@@ -540,6 +450,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.13  2009-07-10 13:16:10  onken
+ * Added path functionality for --key option and lets the code make use
+ * of the DcmPath classes.
+ *
  * Revision 1.12  2009-04-24 12:20:42  joergr
  * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
  *
