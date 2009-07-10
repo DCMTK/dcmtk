@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-08 16:09:12 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-07-10 13:12:16 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,7 +313,6 @@ OFCondition DcmPath::separatePathNodes(const OFString& path,
 }
 
 
-
 /*******************************************************************/
 /*          Implementation of class DcmPathProcessor               */
 /*******************************************************************/
@@ -395,6 +394,7 @@ OFCondition DcmPathProcessor::findOrDeletePath(DcmObject* obj,
   m_createIfNecessary = OFFalse;
   OFString pathCopy = path;
   OFCondition result;
+  clear();
   if ((obj->ident() == EVR_item) || (obj->ident() == EVR_dataset))
     result = findOrCreateItemPath(OFstatic_cast(DcmItem*, obj), pathCopy);
   else if (obj->ident() == EVR_SQ)
@@ -452,6 +452,56 @@ Uint32 DcmPathProcessor::getResults(OFList<DcmPath*>& searchResults)
   return m_results.size();
 }
 
+// applies a string path (optionally with value) to a dataset
+OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset, 
+                                                 const OFString& overrideKey)
+{
+  if (dataset == NULL) return EC_IllegalCall;
+  if (overrideKey.empty()) return EC_Normal;
+  OFString path = overrideKey;
+  OFString value;
+  size_t pos = path.find('=');
+  // separate tag from value if there is one
+  if (pos != OFString_npos)
+  {
+    value = path.substr(pos+1); // value now contains value
+    path.erase(pos);            // pure path without value
+  }
+  clear();
+
+  // create path
+  OFCondition result = findOrCreatePath(dataset, path, OFTrue /* create if necessary */);
+  if (result.bad())
+    return result;
+
+  // prepare for value insertion
+  OFListIterator(DcmPath*) it = m_results.begin();
+  OFListConstIterator(DcmPath*) endList = m_results.end();
+  DcmPathNode *last = (*it)->back();
+  if (last == NULL) return EC_IllegalCall;
+  // if value is specified, be sure path does not end with item
+  if ( !last->m_obj->isLeaf() )
+  {
+    if (value.empty())
+      return EC_Normal;
+    else 
+      return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot insert value into path ending with item or sequence");
+  }
+  // insert value into each element affected by path
+  while (it != endList)
+  {
+    last = (*it)->back();
+    if (last == NULL) return EC_IllegalCall;
+    DcmElement *elem = OFstatic_cast(DcmElement*, last->m_obj);
+    if (elem == NULL) return EC_IllegalCall;
+    result = elem->putString(value.c_str());
+    if (result.bad())
+      break;
+    it++;
+  }
+  return result;
+}
+
 
 // Resets status (including results) of DcmPathProcessor and frees corresponding memory
 void DcmPathProcessor::clear()
@@ -477,8 +527,6 @@ void DcmPathProcessor::clear()
     }
     m_currentPath.pop_front();
   }
-
-  m_createIfNecessary = OFFalse;
 
 }
 
@@ -876,6 +924,10 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.6  2009-07-10 13:12:16  onken
+** Added override key functionality used by tools like findscu to the more
+** central DcmPathProcessor class.
+**
 ** Revision 1.5  2009-07-08 16:09:12  onken
 ** Cleaned up code for private reservation checking and added option for
 ** disabling item wildcards for searching/creating tag paths.

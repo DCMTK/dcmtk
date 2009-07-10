@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-08 16:09:30 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-07-10 13:12:30 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -328,6 +328,22 @@ public:
    */
   Uint32 getResults(OFList<DcmPath*>& searchResults);
 
+
+  /** Helper function that applies a specified "override key" in path syntax
+   *  to the given dataset. The name "override" indicates that these keys have
+   *  higher precedence than identical keys in a request dataset that might possibly read from
+   *  a DICOM query file.
+   *  @param dataset [in/out] the dataset (e.g. query keys) the override key is applied to.
+   *                          Must be non-NULL.
+   *  @param pathParam [in] the override key in path syntax (see class DcmPath). Also the 
+   *                        path can end with a value assignment, e. g. "PatientsName=Doe^John".
+   *                        An empty (or missing value) will not be ignored but will be
+   *                        written as empty to the attribute (if not a sequence or item)
+   *  @return EC_Normal if adding was successful, error code otherwise
+   */
+  OFCondition applyPathWithValue(DcmDataset *dataset, 
+	     	             		         const OFString& overrideKey);
+
   /** Deconstructor, cleans up memory that was allocated for any
    *  search results.
    */
@@ -459,7 +475,9 @@ protected:
    *  Called when a new search is started or during object destruction.
    *  The DICOM data all freed paths and path nodes point to, is not
    *  touched, ie. all memory to the DICOM objects pointed to must be
-   *  freed from outside.
+   *  freed from outside. Processing options like checking for private
+   *  reservations and so on are not reset to default values but
+   *  keep valid.
    */
   void clear();
 
@@ -499,6 +517,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.6  2009-07-10 13:12:30  onken
+** Added override key functionality used by tools like findscu to the more
+** central DcmPathProcessor class.
+**
 ** Revision 1.5  2009-07-08 16:09:30  onken
 ** Cleaned up code for private reservation checking and added option for
 ** disabling item wildcards for searching/creating tag paths.
