@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:26:05 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-07-13 09:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -810,7 +810,7 @@ main(int argc, char *argv[])
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
       OFListIterator(OFString) enditer = fileNameList.end();
-      while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+      while ((iter != enditer) && cond.good())
       {
           cond = cmove(assoc, (*iter).c_str());
           ++iter;
@@ -1569,6 +1569,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.74  2009-07-13 09:44:18  onken
+** Removed misleading comment about dcmnet DIMSE return code and changed
+** corresponding OFCondition check from EC_Normal to .good().
+**
 ** Revision 1.73  2009-04-24 12:26:05  joergr
 ** Fixed minor inconsistencies regarding layout/formatting in syntax usage.
 **

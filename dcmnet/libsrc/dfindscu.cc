@@ -22,9 +22,9 @@
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:21:09 $
+ *  Update Date:      $Date: 2009-07-13 09:44:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,7 +277,7 @@ OFCondition DcmFindSCU::performQuery(
     } else {
       OFListIterator(OFString) iter = fileNameList->begin();
       OFListIterator(OFString) enditer = fileNameList->end();
-      while ((iter != enditer) && (cond.good())) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+      while ((iter != enditer) && cond.good()) 
       {
           cond = findSCU(assoc, (*iter).c_str(), repeatCount, abstractSyntax, blockMode, dimse_timeout, extractResponsesToFile, cancelAfterNResponses, overrideKeys, callback);
           ++iter;
@@ -593,6 +593,10 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.6  2009-07-13 09:44:26  onken
+ * Removed misleading comment about dcmnet DIMSE return code and changed
+ * corresponding OFCondition check from EC_Normal to .good().
+ *
  * Revision 1.5  2009-07-10 13:21:09  onken
  * Moved override key functionality to DcmPathProcessor.
  *

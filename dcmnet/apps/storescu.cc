@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 10:16:24 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-07-13 09:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1019,7 +1019,7 @@ int main(int argc, char *argv[])
     OFListIterator(OFString) iter = fileNameList.begin();
     OFListIterator(OFString) enditer = fileNameList.end();
 
-    while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+    while ((iter != enditer) && cond.good())
     {
       cond = cstore(assoc, *iter);
       ++iter;
@@ -1751,6 +1751,10 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.81  2009-07-13 09:44:18  onken
+** Removed misleading comment about dcmnet DIMSE return code and changed
+** corresponding OFCondition check from EC_Normal to .good().
+**
 ** Revision 1.80  2009-06-04 10:16:24  joergr
 ** Added new flag that can be used to avoid wrong warning messages (in debug
 ** mode) that an option has possibly never been checked.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 10:16:24 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2009-07-13 09:44:18 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -785,7 +785,7 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 
     /* as long as no error occured and the counter does not equal 0 */
     /* send an C-ECHO-RQ and handle the response */
-    while (cond == EC_Normal && n--) cond = echoSCU(assoc); // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
+    while (cond.good() && n--) cond = echoSCU(assoc); 
 
     return cond;
 }
@@ -793,6 +793,10 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.46  2009-07-13 09:44:18  onken
+** Removed misleading comment about dcmnet DIMSE return code and changed
+** corresponding OFCondition check from EC_Normal to .good().
+**
 ** Revision 1.45  2009-06-04 10:16:24  joergr
 ** Added new flag that can be used to avoid wrong warning messages (in debug
 ** mode) that an option has possibly never been checked.
