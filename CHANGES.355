@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.07.13 (onken)
+
+- Removed misleading comment about dcmnet DIMSE return code and changed
+  corresponding OFCondition check from EC_Normal to .good(). Thanks to 
+  Peter Klotz <peter.klotz@ith-icoserve.com> for the suggestion.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dfindscu.cc
+
 **** Changes from 2009.07.08 (onken)
 
 - Moved override key functionality to DcmPathProcessor.
