@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.07.16 (onken)
+
+- Added img2dcm input plugin for the BMP graphics format (at the moment only
+  support for 24 Bit RGB). Thanks to Uli Schlachter <psychon@znc.in> for the
+  code contribution.
+  Added:    dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+            dcmdata/libi2d/i2dbmps.cc
+  Affects:  dcmdata/docs/img2dcm.man
+            dcmdata/libi2d/CMakeLists.txt
+            dcmdata/libi2d/Makefile.dep
+            dcmdata/libi2d/Makefile.in
+
+- Extended Image2Dcm engine to also work for uncompressed pixel data input.
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/libi2d/i2d.cc
+
+- Changed comment (and thus semantic of parameter for output transfer syntax).
+  Affects: dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+
 **** Changes from 2009.07.13 (onken)
 
 - Removed misleading comment about dcmnet DIMSE return code and changed
