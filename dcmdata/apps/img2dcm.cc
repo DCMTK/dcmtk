@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:16:10 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2009-07-16 14:26:25 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/libi2d/i2d.h"
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2dbmps.h"
 #include "dcmtk/dcmdata/libi2d/i2dplsc.h"
 #include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
 #include "dcmtk/dcmdata/libi2d/i2dplnsc.h"
@@ -103,7 +104,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general:");
-      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default)");
+      cmd.addOption("--input-format",        "-i",   1, "[i]nput file format: string", "supported formats: JPEG (default), BMP");
       cmd.addOption("--dataset-from",        "-df",  1, "[f]ilename: string",
                                                         "use dataset from DICOM file f");
 
@@ -242,14 +243,18 @@ static OFCondition startConversion(OFCommandLine& cmd,
     if (tempStr == "JPEG")
     {
       inputPlug = new I2DJpegSource();
-      if (!inputPlug)
-      {
-        return EC_MemoryExhausted;
-      }
+    }
+    else if (tempStr == "BMP")
+    {
+      inputPlug = new I2DBmpSource();
     }
     else
     {
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "No plugin for selected input format available");
+    }
+    if (!inputPlug)
+    {
+      return EC_MemoryExhausted;
     }
   }
   else // default is JPEG
@@ -450,6 +455,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.14  2009-07-16 14:26:25  onken
+ * Added img2dcm input plugin for the BMP graphics format (at the moment only
+ * support for 24 Bit RGB).
+ *
  * Revision 1.13  2009-07-10 13:16:10  onken
  * Added path functionality for --key option and lets the code make use
  * of the DcmPath classes.

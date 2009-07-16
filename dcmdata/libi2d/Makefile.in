@@ -18,7 +18,7 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmdatadir)/include/libi2d
 LOCALDEFS =
 
-objs = i2d.o i2dplvlp.o i2djpgs.o i2dplsc.o i2dplnsc.o
+objs = i2d.o i2dplvlp.o i2djpgs.o i2dbmps.o i2dplsc.o i2dplnsc.o
 
 library = libi2d.$(LIBEXT)
 
