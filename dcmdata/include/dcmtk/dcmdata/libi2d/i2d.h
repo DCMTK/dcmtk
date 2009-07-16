@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:16:16 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-07-16 14:23:37 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,6 +253,14 @@ protected:
 
 private:
 
+  /** Correctly inserts encapsulated pixel data.
+   *  @param dset [in] - The dataset to which we should add this.
+   *  @param pixData [in] - The data to add.
+   *  @param length [in] - The length of pixData.
+   *  @return EC_Normal, if successfull, error otherwise.
+   */
+  OFCondition insertEncapsulatedPixelData(DcmDataset* dset, char *pixData, Uint32 length) const;
+
   /* Attributes for writing DICOM dataset */
 
   /// These attributes are applied to the dataset after conversion
@@ -307,6 +315,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.8  2009-07-16 14:23:37  onken
+ * Extended Image2Dcm engine to also work for uncompressed pixel data input.
+ *
  * Revision 1.7  2009-07-10 13:16:16  onken
  * Added path functionality for --key option and lets the code make use
  * of the DcmPath classes.

@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:16:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-07-16 14:23:23 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -404,27 +404,9 @@ void Image2Dcm::setISOLatin1(OFBool insertLatin1)
   m_insertLatin1 = insertLatin1;
 }
 
-
-OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
-                                              DcmDataset* dset,
-                                              E_TransferSyntax& outputTS)
+OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset, char *pixData, Uint32 length) const
 {
-  imgSource->setDebugMode(m_debug);
-
-  Uint16 samplesPerPixel, rows, cols, bitsAlloc, bitsStored, highBit, pixelRepr, planConf;
-  Uint16 pixAspectH =1; Uint16 pixAspectV = 1;
-  OFString photoMetrInt;
-  outputTS = EXS_Unknown;
-  char* pixData = NULL;
-  Uint32 length;
-
-  OFCondition cond = imgSource->readPixelData(rows, cols,
-    samplesPerPixel, photoMetrInt, bitsAlloc, bitsStored, highBit, pixelRepr,
-    planConf, pixAspectH, pixAspectV, pixData, length, outputTS);
-
-  if (cond.bad())
-    return cond;
-
+  OFCondition cond;
   DcmPixelSequence *pixelSequence = NULL;
 
   if (m_debug)
@@ -450,7 +432,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
 
   // insert frame into pixel sequence
   DcmOffsetList dummyList;
-  cond = pixelSequence->storeCompressedFrame(dummyList, (Uint8*)pixData, length, 0);
+  cond = pixelSequence->storeCompressedFrame(dummyList, OFreinterpret_cast(Uint8*,pixData), length, 0);
   // storeCompressedFrame(..) does a deep copy, so the pixdata memory can be freed now
   delete[] pixData;
   if (cond.bad())
@@ -460,7 +442,43 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
   }
   cond = dset->insert(pixelSequence);
   if (cond.bad())
+  {
     delete pixelSequence;
+    return cond;
+  }
+
+  return EC_Normal;
+}
+
+OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
+                                              DcmDataset* dset,
+                                              E_TransferSyntax& outputTS)
+{
+  imgSource->setDebugMode(m_debug);
+
+  Uint16 samplesPerPixel, rows, cols, bitsAlloc, bitsStored, highBit, pixelRepr, planConf;
+  Uint16 pixAspectH =1; Uint16 pixAspectV = 1;
+  OFString photoMetrInt;
+  outputTS = EXS_Unknown;
+  char* pixData = NULL;
+  Uint32 length;
+
+  OFCondition cond = imgSource->readPixelData(rows, cols,
+    samplesPerPixel, photoMetrInt, bitsAlloc, bitsStored, highBit, pixelRepr,
+    planConf, pixAspectH, pixAspectV, pixData, length, outputTS);
+
+  if (cond.bad())
+    return cond;
+
+  DcmXfer transport(outputTS);
+  if (transport.isEncapsulated())
+    insertEncapsulatedPixelData(dset, pixData, length);
+  else
+  {
+    /* Not encapsulated */
+    dset->putAndInsertUint8Array(DCM_PixelData, OFreinterpret_cast(Uint8*, pixData), length);
+    delete[] pixData;
+  }
 
   if (m_debug)
     printMessage(m_logStream, "Image2Dcm: Inserting Image Pixel module information");
@@ -721,6 +739,9 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.7  2009-07-16 14:23:23  onken
+ * Extended Image2Dcm engine to also work for uncompressed pixel data input.
+ *
  * Revision 1.6  2009-07-10 13:16:07  onken
  * Added path functionality for --key option and lets the code make use
  * of the DcmPath classes.
