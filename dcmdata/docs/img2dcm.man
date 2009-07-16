@@ -53,7 +53,7 @@ dcmfile-out  DICOM output file
 general:
 
   -i    --input-format  [i]nput file format: string
-          supported formats: JPEG (default)
+          supported formats: JPEG (default), BMP
 
   -df   --dataset-from  [f]ilename: string
           use dataset from DICOM file f
