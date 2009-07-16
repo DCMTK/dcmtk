@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-31 13:06:09 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-07-16 14:22:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,6 @@ public:
    *  @param ts - [out] The transfer syntax imposed by the imported pixel pixel data.
                         This is necessary for the JPEG importer that needs to report
                         which TS must be used for the imported JPEG data (ie. baseline, progressive, ...).
-                        If pixel data is uncompressed, EXS_Unknown is returned
    *  @return EC_Normal, if successful, error otherwise
    */
   OFCondition readPixelData( Uint16& rows,
@@ -356,6 +355,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
+ * Revision 1.5  2009-07-16 14:22:19  onken
+ * Changed comment (and thus semantic of parameter for output transfer syntax).
+ *
  * Revision 1.4  2009-03-31 13:06:09  onken
  * Changed implementation of lossy compression attribute detection and writing.
  *
