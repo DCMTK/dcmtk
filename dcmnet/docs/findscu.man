@@ -218,7 +218,7 @@ example:
 \endverbatim
 
 Individual attributes of each file sent can be modified or supplemented
-using the "-k key" option.  For example the command:
+using the \e -k option.  For example the command:
 
 \verbatim
 findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
@@ -230,34 +230,37 @@ present it will be replaced, if absent it will be inserted.  The \e -k option
 can be present more than once.  The value part (after the '=') may be absent
 causing the attribute to be sent with zero length.
 
-In earlier versions of findscu the tag keys were specified without braces
+In earlier versions of \b findscu, the tag keys were specified without braces
 around group and element number, e. g. "0010,0010" instead of  "(0010,0010)".
 It is recommended switching to the new syntax; however, the old syntax is
 still working.
 
 Also \e -k accepts dictionary names instead of element tags for specifying
-DICOM elements. For example, the findscu call above then reads like this:
+DICOM elements.  For example, the \b findscu call above then reads like this:
 
 \verbatim
 findscu -P -k PatientsName="HEWETT*" caesar 5678 patqry.dcm
 \endverbatim
 
 It is also possible to specify sequences, items and nested attributes using
-the \e -k option. Therefore, a special "path" notation has to be used, e. g. 
+the \e -k option.  In these cases, a special "path" notation has to be used,
+e. g.
 
 \verbatim
 findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
 \endverbatim
 
 This call queries a worklist server at host caesar for any planned procedures
-for CT modalities by specifing "Scheduled Procedure Step Sequence 
-(0040,0100)" with one item ("[0]") and one attribute "Modality" in
-that item with value [CT].
+for CT modalities by specifing tag (0040,0100) "Scheduled Procedure Step
+Sequence" and an attribute "Modality" in the first item of this sequence with
+value "CT".  Details on this path notation can be found in the documentation
+of \b dcmodify.
 
 If no file is specified on the command line, the query must be specified
-completely with one or more "-k key" options.
+completely with one or more \e -k options.
 
-Each set of response identifers received will be printed to stdout.
+Each set of response identifiers received will be printed to stdout unless
+option \e --extract is used.
 
 \subsection dicom_conformance DICOM Conformance
 
@@ -323,7 +326,7 @@ It is an error if no data dictionary can be loaded.
 
 \section see_also SEE ALSO
 
-<b>movescu</b>(1), <b>dump2dcm</b>(1)
+<b>movescu</b>(1), <b>dump2dcm</b>(1), <b>dcmodify</b>(1)
 
 \section copyright COPYRIGHT
 
