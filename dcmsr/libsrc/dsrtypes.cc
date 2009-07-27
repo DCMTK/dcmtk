@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-12-11 15:50:25 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2009-07-27 15:31:55 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -682,13 +682,15 @@ OFCondition DSRTypes::addElementToDataset(OFCondition &result,
                                           DcmItem &dataset,
                                           DcmElement *delem)
 {
-    if (result.good())
+    if (delem != NULL)
     {
-        if (delem != NULL)
+        if (result.good())
             result = dataset.insert(delem, OFTrue /*replaceOld*/);
-        else
-            result = EC_MemoryExhausted;
-    }
+        /* delete element if not inserted into the dataset */
+        if (result.bad())
+            delete delem;
+    } else
+        result = EC_MemoryExhausted;
     return result;
 }
 
@@ -1494,6 +1496,9 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.57  2009-07-27 15:31:55  joergr
+ *  Fixed possible memory leak in method addElementToDataset().
+ *
  *  Revision 1.56  2008-12-11 15:50:25  joergr
  *  Enhanced method checkElementValue(), e.g. added support for type 1C elements.
  *

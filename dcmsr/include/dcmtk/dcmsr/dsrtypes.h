@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-12-11 15:48:55 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Update Date:      $Date: 2009-07-27 15:32:29 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -952,7 +952,7 @@ class DSRTypes
      *  The element is only added if 'result' is EC_Normal and the 'delem' pointer is not NULL.
      ** @param  result   reference to status variable (checked before adding and updated afterwards!)
      *  @param  dataset  reference to DICOM dataset to which the element should be added
-     *  @param  delem    pointer to DICOM element which should be added
+     *  @param  delem    pointer to DICOM element which should be added. deleted in case of error.
      ** @return current value of 'result', EC_Normal if successful, an error code otherwise
      */
     static OFCondition addElementToDataset(OFCondition &result,
@@ -1237,6 +1237,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.55  2009-07-27 15:32:29  joergr
+ *  Fixed possible memory leak in method addElementToDataset().
+ *
  *  Revision 1.54  2008-12-11 15:48:55  joergr
  *  Enhanced method checkElementValue(), e.g. added support for type 1C elements.
  *
