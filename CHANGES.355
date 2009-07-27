@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.07.27 (riesmeier)
+
+- Fixed possible memory leak in method addElementToDataset().
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2009.07.23 (riesmeier)
 
 - Enhanced wording and consistency for new path notation of the --key option.
