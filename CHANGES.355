@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.07.28 (riesmeier)
+
+- Fixed wrong definition of value representation DS (Decimal String): According
+  to the referenced standard (ANSI X3.9 - 1978), the sign symbol after the "E"
+  or "e" is optional. Copied lexical scanner files from "dcmcheck" module.
+  Affects: dcmpstat/apps/vrscan.cc
+           dcmpstat/apps/vrscan.h
+
 **** Changes from 2009.07.27 (riesmeier)
 
 - Fixed possible memory leak in method addElementToDataset().

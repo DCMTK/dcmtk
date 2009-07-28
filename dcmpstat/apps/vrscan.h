@@ -57,22 +57,22 @@
 
 
 /* % here is the declaration from section1 %header{  */ 
-#line 76 "vrscan.l"
+#line 89 "vrscan.l"
 #define YY_vrscan_IOSTREAM 
-#line 78 "vrscan.l"
+#line 91 "vrscan.l"
 #define YY_vrscan_MEMBERS  \
   private: \
     /* undefined */ vrscan& operator=(const vrscan&); \
     /* undefined */ vrscan(const vrscan&);
-#line 84 "vrscan.l"
+#line 97 "vrscan.l"
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#line 134 "vrscan.l"
+#line 152 "vrscan.l"
 #line 56 "flexskel.xh"
 
 #ifdef YY_USE_CLASS
 #ifdef YY_vrscan_IOSTREAM
 #include "dcmtk/ofstd/ofstream.h"
-#define YY_vrscan_IFILE  STD_NAMESPACE istream
+#define YY_vrscan_IFILE STD_NAMESPACE istream
 #define YY_vrscan_OFILE STD_NAMESPACE ostream 
 #define YY_vrscan_ERRFILE STD_NAMESPACE cerr
 
@@ -288,7 +288,7 @@ YY_vrscan_LEX_PARAM_DEF
 #ifndef YY_vrscan_IOSTREAM
 #define YY_vrscan_FATAL_ERROR_CODE fputs( msg, YY_vrscan_ERRFILE );putc( '\n', YY_vrscan_ERRFILE );exit( 1 );
 #else
-#define YY_vrscan_FATAL_ERROR_CODE YY_vrscan_ERRFILE<< msg <<STD_NAMESPACE endl;exit( 1 );
+#define YY_vrscan_FATAL_ERROR_CODE YY_vrscan_ERRFILE<< msg << STD_NAMESPACE endl;exit( 1 );
 #endif
 #endif
 
@@ -391,7 +391,7 @@ class YY_vrscan_CLASS YY_vrscan_INHERIT
 /* declaration of externs for public use of yylex scanner */
 
 /* % here is the declaration from section2 %header{ */ 
-#line 153 "vrscan.l"
+#line 173 "vrscan.l"
 #endif
 #line 379 "flexskel.xh"
 
