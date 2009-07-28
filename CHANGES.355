@@ -9,6 +9,9 @@ Changes between releases are documented here.
   Affects: dcmpstat/apps/vrscan.cc
            dcmpstat/apps/vrscan.h
 
+- Added support for dubious date checking (year before 1850 or after 2050).
+  Affects: dcmpstat/apps/dcmpschk.cc
+
 **** Changes from 2009.07.27 (riesmeier)
 
 - Fixed possible memory leak in method addElementToDataset().

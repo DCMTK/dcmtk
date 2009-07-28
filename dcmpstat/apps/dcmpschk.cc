@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,47 +17,46 @@
  *
  *  Module: dcmpstat
  *
- *  Author: Andrew Hewett/Marco Eichelberg
+ *  Author: Andrew Hewett, Marco Eichelberg
  *
  *  Purpose:
  *    VR and IOD checker for Presentation States
  *
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2009-07-28 14:17:55 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
 
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #ifdef HAVE_WINDOWS_H
-#include <windows.h>     /* this includes either winsock.h or winsock2.h */
+#include <windows.h>                   /* this includes either winsock.h or winsock2.h */
 #endif
 
 #ifdef HAVE_GUSI_H
-    /* needed for Macintosh */
-#include <GUSI.h>
+#include <GUSI.h>                      /* needed for Macintosh */
 #include <SIOUX.h>
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dctk.h"        /* for class DcmDataset */
-#include "dcmtk/ofstd/ofstring.h"    /* for class OFString */
+#include "dcmtk/ofstd/ofstring.h"      /* for class OFString */
 #include "vrscan.h"
-#include "dcmtk/ofstd/ofconapp.h"    /* for OFConsoleApplication */
-#include "dcmtk/dcmpstat/dcmpstat.h"    /* for DcmPresentationState */
+#include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
+#include "dcmtk/dcmpstat/dcmpstat.h"   /* for DcmPresentationState */
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmnet/dul.h"
 
 #ifdef WITH_ZLIB
-#include <zlib.h>        /* for zlibVersion() */
+#include <zlib.h>                      /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpschk"
@@ -66,12 +65,12 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* command line options */
-static OFBool           opt_verbose         = OFFalse;             /* default: not verbose */
-static const char *     opt_logfilename     = NULL;
-static const char *     opt_filename        = NULL;
-static int              opt_debugMode       = 0;
+static OFBool      opt_verbose          = OFFalse;   /* default: not verbose */
+static const char *opt_logfilename      = NULL;
+static const char *opt_filename         = NULL;
+static int         opt_debugMode        = 0;
 
-static STD_NAMESPACE ostream *        logstream           = &COUT;
+static STD_NAMESPACE ostream *logstream = &COUT;
 
 // ********************************************
 
@@ -95,6 +94,7 @@ enum ErrorMode
 #define MSGe_wrongDType    "Error: Attribute value does not conform to data type definition."
 #define MSGi_wrongDType    "Informational: Attribute value does not conform to data type definition."
 #define MSGw_wrongDType    "Warning: Attribute value uses retired form."
+#define MSGw_dubiousDate   "Warning: Dubious date (year before 1850 or after 2050)."
 
 void printVRError(
   STD_NAMESPACE ostream& out,
@@ -103,7 +103,7 @@ void printVRError(
   const DcmDictEntry* dictRef,
   const char *format)
 {
-  if (mode == EM_error)              out << MSGe_wrongDType << OFendl;
+  if      (mode == EM_error)         out << MSGe_wrongDType << OFendl;
   else if (mode == EM_warning)       out << MSGw_wrongDType << OFendl;
   else if (mode == EM_informational) out << MSGi_wrongDType << OFendl;
   out << "   Affected attribute: ";
@@ -127,7 +127,10 @@ void printVRError(
   out << OFendl;
 }
 
-void printResult(STD_NAMESPACE ostream& out, DcmStack& stack, OFBool showFullData)
+void printResult(
+  STD_NAMESPACE ostream& out,
+  DcmStack& stack,
+  OFBool showFullData)
 {
     unsigned long n = stack.card();
     if (n == 0) {
@@ -221,8 +224,11 @@ const char* streamLengthOfValue(DcmVR& vr)
     return buf;
 }
 
-int
-splitFields(char* line, char* fields[], Uint32 maxFields, char splitChar)
+int splitFields(
+  char* line,
+  char* fields[],
+  Uint32 maxFields,
+  char splitChar)
 {
     char* p;
     Uint32 foundFields = 0;
@@ -275,9 +281,14 @@ int scanValue(STD_NAMESPACE istream& scannerInput)
    return firstResult;
 }
 
-int checkelem(STD_NAMESPACE ostream&  out, DcmElement *elem,  DcmXfer& oxfer,
-        DcmStack& stack, OFBool showFullData,
-        int& dderrors, OFBool /* verbose */)
+int checkelem(
+  STD_NAMESPACE ostream& out,
+  DcmElement *elem,
+  DcmXfer& oxfer,
+  DcmStack& stack,
+  OFBool showFullData,
+  int& dderrors,
+  OFBool /* verbose */)
 {
     DcmVR vr(elem->getVR());
     Uint32 len = elem->getLength();
@@ -469,16 +480,24 @@ int checkelem(STD_NAMESPACE ostream&  out, DcmElement *elem,  DcmXfer& oxfer,
                 vrAndValue += value;
                 OFIStringStream input((char*)(vrAndValue.c_str()));
                 int realVR = scanValue(input);
-                if (realVR != 2 )
+                if (realVR != 2)
                 {
-                   if (realVR == 3)
-                   {
+                  switch (realVR)
+                  {
+                    case 3:
                       printVRError(out, EM_warning, value, dictRef, NULL);
                       dderrors++;
-                   } else {
-                     printVRError(out, EM_error, value, dictRef, "[0-9]{8} with valid values for year, month and day");
-                     dderrors++;
-                   }
+                      break;
+                    case 17:
+                      out << MSGw_dubiousDate << OFendl;
+                      printVRError(out, EM_ok, value, dictRef, NULL);
+                      dderrors++;
+                      break;
+                    default:
+                      printVRError(out, EM_error, value, dictRef, "[0-9]{8} with valid values for year, month and day");
+                      dderrors++;
+                      break;
+                  }
                 }
               }
               break;
@@ -503,8 +522,15 @@ int checkelem(STD_NAMESPACE ostream&  out, DcmElement *elem,  DcmXfer& oxfer,
              int realVR = scanValue(input);
              if (realVR != 7)
              {
-                printVRError(out, EM_error, value, dictRef, "[0-9]{8}[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?([\\+\\-][0-9]{4})?");
-                dderrors++;
+               if (realVR == 18)
+               {
+                  out << MSGw_dubiousDate << OFendl;
+                  printVRError(out, EM_ok, value, dictRef, NULL);
+                  dderrors++;
+               } else {
+                  printVRError(out, EM_error, value, dictRef, "[0-9]{8}[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?([\\+\\-][0-9]{4})?");
+                  dderrors++;
+               }
              }
            }
            break;
@@ -611,8 +637,14 @@ int checkelem(STD_NAMESPACE ostream&  out, DcmElement *elem,  DcmXfer& oxfer,
     return 0;
 }
 
-int checkitem(STD_NAMESPACE ostream&  out, DcmItem *item,  DcmXfer& oxfer,
-        DcmStack& stack, OFBool showFullData, int& dderrors, OFBool verbose)
+int checkitem(
+  STD_NAMESPACE ostream& out,
+  DcmItem *item,
+  DcmXfer& oxfer,
+  DcmStack& stack,
+  OFBool showFullData,
+  int& dderrors,
+  OFBool verbose)
 {
 
     if (item == NULL) {
@@ -645,7 +677,7 @@ int checkitem(STD_NAMESPACE ostream&  out, DcmItem *item,  DcmXfer& oxfer,
 }
 
 int dcmchk(
-  STD_NAMESPACE ostream&  out,
+  STD_NAMESPACE ostream& out,
   const char* ifname,
   E_FileReadMode readMode,
   E_TransferSyntax xfer,
@@ -692,9 +724,10 @@ int dcmchk(
 
 //*********************************************************
 
-static void
-printAttribute(STD_NAMESPACE ostream& out, DcmItem* dset,
-               const DcmTagKey& key)
+static void printAttribute(
+  STD_NAMESPACE ostream& out,
+  DcmItem* dset,
+  const DcmTagKey& key)
 {
     DcmElement *elem = NULL;
     DcmStack stack;
@@ -706,8 +739,10 @@ printAttribute(STD_NAMESPACE ostream& out, DcmItem* dset,
 }
 
 static OFBool
-chkType1AttributeExistance(STD_NAMESPACE ostream& out, DcmItem* dset,
-                      const DcmTagKey& key)
+chkType1AttributeExistance(
+  STD_NAMESPACE ostream& out,
+  DcmItem* dset,
+  const DcmTagKey& key)
 {
     OFBool found = OFTrue;
     if (!dset->tagExistsWithValue(key)) {
@@ -721,7 +756,10 @@ chkType1AttributeExistance(STD_NAMESPACE ostream& out, DcmItem* dset,
     return found;
 }
 
-int dcmchkMetaHeader(STD_NAMESPACE ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
+int dcmchkMetaHeader(
+  STD_NAMESPACE ostream& out,
+  DcmMetaInfo* meta,
+  DcmDataset* dset)
 {
 
     if (meta == NULL || meta->card() == 0) {
@@ -885,7 +923,12 @@ int dcmchkMetaHeader(STD_NAMESPACE ostream& out, DcmMetaInfo* meta, DcmDataset* 
     return nErrs;
 }
 
-int checkfile(const char *filename, OFBool verbose, STD_NAMESPACE ostream& out, OFConsole *outconsole, OFBool opt_debug)
+int checkfile(
+  const char *filename,
+  OFBool verbose,
+  STD_NAMESPACE ostream& out,
+  OFConsole *outconsole,
+  OFBool opt_debug)
 {
     DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile == NULL)
@@ -1103,6 +1146,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
+ * Revision 1.27  2009-07-28 14:17:55  joergr
+ * Added support for dubious date checking (year before 1850 or after 2050).
+ *
  * Revision 1.26  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.
