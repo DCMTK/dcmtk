@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-19 11:46:20 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-07-29 14:16:15 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,7 @@ const unsigned short OFM_dcmjp2k  = 18;
 const unsigned short OFM_dcmjpls  = 19;
 const unsigned short OFM_dcmwave  = 20;
 const unsigned short OFM_dcmrt    = 21;
+const unsigned short OFM_dcmloco  = 22;
 
 
 // condition constants
@@ -134,6 +135,9 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.31  2009-07-29 14:16:15  meichel
+** Defined new constant OFM_dcmloco
+**
 ** Revision 1.30  2009-03-19 11:46:20  joergr
 ** Fixed issue with Doxygen documentation.
 **
