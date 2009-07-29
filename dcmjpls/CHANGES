@@ -1,0 +1,62 @@
+
+Changes between releases are documented here.
+
+**** Changes from 2009.07.29 (eichelberg)
+
+- Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
+  Added:   dcmjpls/CMakeLists.txt
+           dcmjpls/Makefile.in
+           dcmjpls/configure
+           dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/Makefile.dep
+           dcmjpls/apps/Makefile.in
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/data/Makefile.in
+           dcmjpls/docs/Makefile.in
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/docs/charls.patch
+           dcmjpls/etc/Makefile.in
+           dcmjpls/include/Makefile.in
+           dcmjpls/include/dcmtk/dcmjpls/CMakeLists.txt
+           dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libcharls/CMakeLists.txt
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/Makefile.in
+           dcmjpls/libcharls/colortransform.h
+           dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/contextrunmode.h
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/defaulttraits.h
+           dcmjpls/libcharls/encoderstrategy.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/header.h
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/lookuptable.h
+           dcmjpls/libcharls/losslesstraits.h
+           dcmjpls/libcharls/processline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/stdafx.cc
+           dcmjpls/libcharls/stdafx.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/CMakeLists.txt
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/Makefile.in
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djcparam.cc
+           dcmjpls/libsrc/djdecode.cc
+           dcmjpls/libsrc/djencode.cc
+           dcmjpls/libsrc/djrparam.cc
+           dcmjpls/libsrc/djutils.cc
+           dcmjpls/tests/Makefile.in
+

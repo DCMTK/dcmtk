@@ -1,0 +1,55 @@
+The libcharls library containing the JPEG-LS encoder and decoder in this 
+DCMTK module is based on the CharLS library (see http://charls.codeplex.com/).
+
+The CharLS library is available under the following license:
+-------------------------------------------------------------------------------
+Copyright (c) 2007-2009, Jan de Vaan
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of my employer, nor the names of its contributors may be
+  used to endorse or promote products derived from this software without
+  specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-------------------------------------------------------------------------------
+
+The current CharLS version used is revision 25004 dated 2009-06-10.
+
+The following modifications have been applied to the library:
+- removed "test" directory
+- removed project files (CharLS.sln, CharLS.vcproj)
+- renamed implementation file extensions from .cpp to .cc
+- converted file to use UNIX line feeds instead of Windows CR/LF
+- removed trailing whitespace, purified tab usage
+- Fixed several bugs (and provided bug reports and fixes to the CharLS authors)
+
+All modifications to the CharLS source code are contained in file charls.patch
+in this directory. This patch was generated on Linux using the following commands:
+
+  mkdir dcmjpls/libcharls.orig
+  cd dcmjpls/libcharls.orig
+  <uncompress charls source>
+  rm -r test CharLS.sln CharLS.vcproj
+  <rename files from .cpp to .cc>
+  cd ..
+  diff -Nurpw libcharls.orig/ libcharls > docs/charls.patch
+
