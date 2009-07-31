@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:52 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-07-31 10:18:37 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
   // JPEG-LS options
   OFCmdUnsignedInt opt_nearlossless_deviation = 2;
   OFBool opt_prefer_cooked = OFFalse;
-  DJLSCodecParameter::interleaveMode opt_interleaveMode = DJLSCodecParameter::interleaveDefault;
+  DJLSCodecParameter::interleaveMode opt_interleaveMode = DJLSCodecParameter::interleaveLine;
 
   // encapsulated pixel data encoding options
   OFCmdUnsignedInt opt_fragmentSize = 0; // 0=unlimited
@@ -139,6 +139,7 @@ LICENSE_FILE_DECLARATIONS
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                          "print expanded command line arguments");
     cmd.addOption("--verbose",                  "-v",     "verbose mode, print processing details");
     cmd.addOption("--debug",                    "-d",     "debug mode, print debug information");
 
@@ -184,10 +185,10 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
                                                           "set JPEG-LS encoding parameter limit");
 
     cmd.addSubGroup("JPEG-LS interleave options:");
-      cmd.addOption("--interleave-default",     "+iv",    "Use the fastest possible interleave mode (default)");
+      cmd.addOption("--interleave-line",        "+il",    "Force line-interleaved JPEG-LS images (default)");
       cmd.addOption("--interleave-sample",      "+is",    "Force sample-interleaved JPEG-LS images");
-      cmd.addOption("--interleave-line",        "+il",    "Force line-interleaved JPEG-LS images");
       cmd.addOption("--interleave-none",        "+in",    "Force uninterleaved JPEG-LS images");
+      cmd.addOption("--interleave-default",     "+iv",    "Use the fastest possible interleave mode");
 
   cmd.addGroup("encapsulated pixel data encoding options:");
     cmd.addSubGroup("pixel data fragmentation options:");
@@ -359,7 +360,6 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 
       // interleave mode
       cmd.beginOptionBlock();
-      // @TODO Error out if more than one of these options is used
       if (cmd.findOption("--interleave-default"))
       {
         opt_interleaveMode = DJLSCodecParameter::interleaveDefault;
@@ -367,7 +367,6 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       if (cmd.findOption("--interleave-sample"))
       {
         opt_interleaveMode = DJLSCodecParameter::interleaveSample;
-        app.checkConflict("--interleave-default", "--encode-lossless", opt_oxfer == EXS_JPEGLSLossless);
       }
       if (cmd.findOption("--interleave-line"))
       {
@@ -555,6 +554,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.3  2009-07-31 10:18:37  meichel
+ * Line interleaved JPEG-LS mode now default. This mode works correctly
+ *   when decompressing images with the LOCO-I reference implementation.
+ *
  * Revision 1.2  2009-07-31 09:14:52  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing

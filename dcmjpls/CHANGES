@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.07.31 (eichelberg)
 
+- Line interleaved JPEG-LS mode now default. This mode works correctly
+  when decompressing images with the LOCO-I reference implementation.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/libsrc/djcodece.cc
+
 - Updated makefile dependencies
   Affects: dcmjpls/apps/Makefile.dep
            dcmjpls/libsrc/Makefile.dep

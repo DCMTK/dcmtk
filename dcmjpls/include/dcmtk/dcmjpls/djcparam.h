@@ -22,9 +22,9 @@
  *  Purpose: codec parameter class JPEG-LS codecs
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:53 $
+ *  Update Date:      $Date: 2009-07-31 10:18:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,7 @@ public:
   enum interleaveMode
   {
     /// Use same interleave mode as the DICOM header says in planarConfiguration,
-    /// if possible. The cooked encoder will force interleaveSample.
+    /// if possible. The cooked encoder will force interleaveLine.
     interleaveDefault,
     /// Sample-interleaved (color-by-pixel)
     interleaveSample,
@@ -91,7 +91,7 @@ public:
      OFBool convertToSC = OFFalse,
      JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
      OFBool ignoreOffsetTable = OFFalse,
-     interleaveMode jplsInterleaveMode = interleaveDefault);
+     interleaveMode jplsInterleaveMode = interleaveLine);
 
   /** constructor, for use with decoders. Initializes all encoder options to defaults.
    *  @param verboseMode               verbose mode
@@ -304,6 +304,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djcparam.h,v $
+ * Revision 1.3  2009-07-31 10:18:37  meichel
+ * Line interleaved JPEG-LS mode now default. This mode works correctly
+ *   when decompressing images with the LOCO-I reference implementation.
+ *
  * Revision 1.2  2009-07-31 09:14:53  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing

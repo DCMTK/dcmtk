@@ -22,9 +22,9 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:53 $
+ *  Update Date:      $Date: 2009-07-31 10:18:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1028,8 +1028,8 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
       break;
     case DJLSCodecParameter::interleaveDefault:
     default:
-      // Default for the cooked encoder is ILV_SAMPLE
-      jls_params.ilv = ILV_SAMPLE;
+      // Default for the cooked encoder is always ILV_LINE
+      jls_params.ilv = ILV_LINE;
       break;
   }
 
@@ -1131,6 +1131,10 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.4  2009-07-31 10:18:37  meichel
+ * Line interleaved JPEG-LS mode now default. This mode works correctly
+ *   when decompressing images with the LOCO-I reference implementation.
+ *
  * Revision 1.3  2009-07-31 09:14:53  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing
