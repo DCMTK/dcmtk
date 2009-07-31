@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2009.07.31 (eichelberg)
 
+- Updated makefile dependencies
+  Affects: dcmjpls/apps/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+
 - Added codec parameter and command line options that allow to control
   the interleave mode used in the JPEG-LS bitstream when compressing 
   color images.

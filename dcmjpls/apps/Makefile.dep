@@ -109,6 +109,8 @@ dcmcjpls.o: dcmcjpls.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../include/dcmtk/dcmjpls/djlsutil.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../include/dcmtk/dcmjpls/djcparam.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dccodec.h \
   ../include/dcmtk/dcmjpls/djrparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h
 dcmdjpls.o: dcmdjpls.cc ../../config/include/dcmtk/config/osconfig.h \
