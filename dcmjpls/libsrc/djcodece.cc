@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Marco Eichelberg, Uli Schlachter
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:47 $
+ *  Update Date:      $Date: 2009-07-31 09:05:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@
 // dcmjpls includes
 #include "dcmtk/dcmjpls/djcparam.h"  /* for class DJLSCodecParameter */
 #include "dcmtk/dcmjpls/djrparam.h"  /* for class D2RepresentationParameter */
+#include "djerror.h"                 /* for private class DJLSError */
 
 // dcmimgle includes
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
@@ -459,7 +460,7 @@ OFCondition DJLSEncoderBase::losslessRawEncode(
     // make sure that we have at least as many bytes of pixel data as we expect
     if (bytesAllocated * samplesPerPixel * columns * rows *
       OFstatic_cast(unsigned long,numberOfFrames) > length)
-      result = EC_JLSPixelDataTooShort;
+      result = EC_JLSUncompressedBufferTooSmall;
   }
 
   DcmPixelSequence *pixelSequence = NULL;
@@ -606,14 +607,6 @@ OFCondition DJLSEncoderBase::compressRawFrame(
       return EC_IllegalCall;
   }
 
-#if 0
-  if (djcp->isVerbose())
-  {
-    sprintf(param_verbose, "-v2");
-    callarray[callparams++] = param_verbose;
-  }
-#endif
-
   // We have no idea how big the compressed pixel data will be and we have no
   // way to find out, so we just allocate a buffer large enough for the raw data
   // plus a little more for JPEG metadata.
@@ -625,25 +618,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   Uint8 *buffer = new Uint8[size];
 
   JLS_ERROR err = JpegLsEncode(buffer, size, &size, framePointer, frameSize, &jls_params);
-  switch (err)
-  {
-    case OK:
-      break;
-    case UncompressedBufferTooSmall:
-    case CompressedBufferTooSmall:
-      result = EC_JLSPixelDataTooShort;
-      break;
-    case ImageTypeNotSupported:
-      result = EC_JLSUnsupportedImageType;
-      break;
-    case InvalidJlsParameters:
-    case ParameterValueNotSupported:
-    case InvalidCompressedData:
-    case UnsupportedBitDepthForTransform:
-    case UnsupportedColorTransform:
-      result = EC_JLSCodecError;
-      break;
-  }
+  result = DJLSError::convert(err);
 
   if (result.good())
   {
@@ -924,8 +899,8 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
           const Uint16 *bv = OFreinterpret_cast(const Uint16 *, planes[2]) + framesize * frame;
 
           buffer_size = framesize * 3;
-          Uint16 *_buffer = new Uint16[buffer_size];
-          buffer = OFreinterpret_cast(Uint8 *, _buffer);
+          Uint16 *buffer16 = new Uint16[buffer_size];
+          buffer = OFreinterpret_cast(Uint8 *, buffer16);
 
           // Convert to byte count
           buffer_size *= 2;
@@ -935,9 +910,9 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
           {
             for (int col=width; col; --col)
             {
-              _buffer[i++] = *rv;
-              _buffer[i++] = *gv;
-              _buffer[i++] = *bv;
+              buffer16[i++] = *rv;
+              buffer16[i++] = *gv;
+              buffer16[i++] = *bv;
 
               rv++;
               gv++;
@@ -994,14 +969,6 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     jls_params.custom.RESET = djcp->getReset();
   }
 
-#if 0
-  if (djcp->isVerbose())
-  {
-    sprintf(param_verbose, "-v2");
-    callarray[callparams++] = param_verbose;
-  }
-#endif
-
   // We have no idea how big the compressed pixel data will be and we have no
   // way to find out, so we just allocate a buffer large enough for the raw data
   // plus a little more for JPEG metadata.
@@ -1014,25 +981,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   JLS_ERROR err = JpegLsEncode(compressed_buffer, compressed_buffer_size,
       &compressed_buffer_size, buffer, buffer_size, &jls_params);
-  switch (err)
-  {
-    case OK:
-      break;
-    case UncompressedBufferTooSmall:
-    case CompressedBufferTooSmall:
-      result = EC_JLSPixelDataTooShort;
-      break;
-    case ImageTypeNotSupported:
-      result = EC_JLSUnsupportedImageType;
-      break;
-    case InvalidJlsParameters:
-    case ParameterValueNotSupported:
-    case InvalidCompressedData:
-    case UnsupportedBitDepthForTransform:
-    case UnsupportedColorTransform:
-      result = EC_JLSCodecError;
-      break;
-  }
+  result = DJLSError::convert(err);
 
   if (result.good())
   {
@@ -1050,6 +999,9 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.2  2009-07-31 09:05:43  meichel
+ * Added more detailed error messages, minor code clean-up
+ *
  * Revision 1.1  2009-07-29 14:46:47  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

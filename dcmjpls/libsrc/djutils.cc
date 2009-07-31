@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: Support code for dcmjpls
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:48 $
+ *  Update Date:      $Date: 2009-07-31 09:05:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,33 +35,31 @@
 #include "dcmtk/dcmjpls/djlsutil.h"
 #include "dcmtk/dcmdata/dcerror.h"
 
-const OFConditionConst ECC_JLSCodecError                           ( OFM_dcmjpls,  1, OF_error, "JPEG-LS codec error");
-const OFConditionConst ECC_JLSUnsupportedBitDepth                  ( OFM_dcmjpls,  2, OF_error, "Unsupported bit depth in JPEG-LS transfer syntax");
-const OFConditionConst ECC_JLSCannotComputeNumberOfFragments       ( OFM_dcmjpls,  3, OF_error, "Cannot compute number of fragments for JPEG-LS frame");
-const OFConditionConst ECC_JLSTempFileWriteError                   ( OFM_dcmjpls,  4, OF_error, "Error while writing temporary file");
-const OFConditionConst ECC_JLSTempFileReadError                    ( OFM_dcmjpls,  5, OF_error, "Error while reading temporary file");
-const OFConditionConst ECC_JLSUnknownPNMFormat                     ( OFM_dcmjpls,  6, OF_error, "Unknown PNM file format found in temporary file");
-const OFConditionConst ECC_JLSImageDataMismatch                    ( OFM_dcmjpls,  7, OF_error, "Image data mismatch between DICOM header and JPEG-LS bitstream");
-const OFConditionConst ECC_JLSUnsupportedPhotometricInterpretation ( OFM_dcmjpls,  8, OF_error, "Unsupported photometric interpretation for near-lossless JPEG-LS compression");
-const OFConditionConst ECC_JLSUnsupportedPixelRepresentation       ( OFM_dcmjpls,  9, OF_error, "Unsupported pixel representation for near-lossless JPEG-LS compression");
-const OFConditionConst ECC_JLSUnsupportedImageType                 ( OFM_dcmjpls, 10, OF_error, "Unsupported type of image for JPEG-LS compression");
-const OFConditionConst ECC_JLSPixelDataTooShort                    ( OFM_dcmjpls, 11, OF_error, "Pixel data too short for uncompressed image");
+#define MAKE_DCMJPLS_ERROR(number, name, description)  \
+const OFConditionConst ECC_ ## name (OFM_dcmjpls, number, OF_error, description); \
+const OFCondition      EC_  ## name (ECC_ ## name);
 
-const OFCondition      EC_JLSCodecError(                           ECC_JLSCodecError                     );
-const OFCondition      EC_JLSUnsupportedBitDepth(                  ECC_JLSUnsupportedBitDepth            );
-const OFCondition      EC_JLSCannotComputeNumberOfFragments(       ECC_JLSCannotComputeNumberOfFragments );
-const OFCondition      EC_JLSTempFileWriteError(                   ECC_JLSTempFileWriteError             );
-const OFCondition      EC_JLSTempFileReadError(                    ECC_JLSTempFileReadError              );
-const OFCondition      EC_JLSUnknownPNMFormat(                     ECC_JLSUnknownPNMFormat               );
-const OFCondition      EC_JLSImageDataMismatch(                    ECC_JLSImageDataMismatch              );
-const OFCondition      EC_JLSUnsupportedPhotometricInterpretation( ECC_JLSUnsupportedPhotometricInterpretation );
-const OFCondition      EC_JLSUnsupportedPixelRepresentation(       ECC_JLSUnsupportedPixelRepresentation );
-const OFCondition      EC_JLSUnsupportedImageType(                 ECC_JLSUnsupportedImageType );
-const OFCondition      EC_JLSPixelDataTooShort(                    ECC_JLSPixelDataTooShort );
+MAKE_DCMJPLS_ERROR( 1, JLSUncompressedBufferTooSmall, "Uncompressed pixel data too short for uncompressed image");
+MAKE_DCMJPLS_ERROR( 2, JLSCompressedBufferTooSmall, "Allocated too small buffer for compressed image data");
+MAKE_DCMJPLS_ERROR( 3, JLSCodecUnsupportedImageType, "Codec does not support this JPEG-LS image");
+MAKE_DCMJPLS_ERROR( 4, JLSCodecInvalidParameters, "Codec received invalid compression parameters");
+MAKE_DCMJPLS_ERROR( 5, JLSCodecUnsupportedValue, "Codec received unsupported compression parameters");
+MAKE_DCMJPLS_ERROR( 6, JLSInvalidCompressedData, "Invalid compressed image data");
+MAKE_DCMJPLS_ERROR( 7, JLSUnsupportedBitDepthForTransform, "Codec does not support the image's color transformation with this bit depth");
+MAKE_DCMJPLS_ERROR( 8, JLSUnsupportedColorTransform, "Codec does not support the image's color transformation");
+MAKE_DCMJPLS_ERROR( 9, JLSUnsupportedBitDepth, "Unsupported bit depth in JPEG-LS transfer syntax");
+MAKE_DCMJPLS_ERROR(10, JLSCannotComputeNumberOfFragments, "Cannot compute number of fragments for JPEG-LS frame");
+MAKE_DCMJPLS_ERROR(11, JLSImageDataMismatch, "Image data mismatch between DICOM header and JPEG-LS bitstream");
+MAKE_DCMJPLS_ERROR(12, JLSUnsupportedPhotometricInterpretation, "Unsupported photometric interpretation for near-lossless JPEG-LS compression");
+MAKE_DCMJPLS_ERROR(13, JLSUnsupportedPixelRepresentation, "Unsupported pixel representation for near-lossless JPEG-LS compression");
+MAKE_DCMJPLS_ERROR(14, JLSUnsupportedImageType, "Unsupported type of image for JPEG-LS compression");
 
 /*
  * CVS/RCS Log:
  * $Log: djutils.cc,v $
+ * Revision 1.2  2009-07-31 09:05:43  meichel
+ * Added more detailed error messages, minor code clean-up
+ *
  * Revision 1.1  2009-07-29 14:46:48  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

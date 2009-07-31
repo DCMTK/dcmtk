@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm, Marco Eichelberg
+ *  Author:  Martin Willkomm, Marco Eichelberg, Uli Schlachter
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:47 $
+ *  Update Date:      $Date: 2009-07-31 09:05:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,8 @@
 #include "dcmtk/dcmdata/dcvrpobw.h"  /* for class DcmPolymorphOBOW */
 #include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary() */
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
-#include "dcmtk/dcmjpls/djcparam.h" /* for class DJLSCodecParameter */
+#include "dcmtk/dcmjpls/djcparam.h"  /* for class DJLSCodecParameter */
+#include "djerror.h"                 /* for private class DJLSError */
 
 // JPEG-LS library (CharLS) includes
 #include "interface.h"
@@ -219,12 +220,12 @@ OFCondition DJLSDecoderBase::decode(
       if (result.good())
       {
         // Don't modify the original values for now
-        Uint32 _fragmentsForThisFrame = fragmentsForThisFrame;
-        Uint32 _currentItem = currentItem;
+        Uint32 fragmentsForThisFrame2 = fragmentsForThisFrame;
+        Uint32 currentItem2 = currentItem;
 
-        while (result.good() && _fragmentsForThisFrame--)
+        while (result.good() && fragmentsForThisFrame2--)
         {
-          result = pixSeq->getItem(pixItem, _currentItem++);
+          result = pixSeq->getItem(pixItem, currentItem2++);
           if (result.good() && pixItem)
           {
             fragmentLength = pixItem->getLength();
@@ -262,25 +263,7 @@ OFCondition DJLSDecoderBase::decode(
         JLS_ERROR err;
 
         err = JpegLsReadHeader(jlsData, compressedSize, &params);
-        switch (err)
-        {
-          case OK:
-            break;
-          case UncompressedBufferTooSmall:
-          case CompressedBufferTooSmall:
-            result = EC_JLSPixelDataTooShort;
-            break;
-          case ImageTypeNotSupported:
-            result = EC_JLSUnsupportedImageType;
-            break;
-          case InvalidJlsParameters:
-          case ParameterValueNotSupported:
-          case InvalidCompressedData:
-          case UnsupportedBitDepthForTransform:
-          case UnsupportedColorTransform:
-            result = EC_JLSCodecError;
-            break;
-        }
+        result = DJLSError::convert(err);
 
         if (result.good())
         {
@@ -298,27 +281,8 @@ OFCondition DJLSDecoderBase::decode(
         else
         {
           err = JpegLsDecode(pixeldata8, totalSize, jlsData, compressedSize, &params);
+          result = DJLSError::convert(err);
           delete[] jlsData;
-
-          switch (err)
-          {
-            case OK:
-              break;
-            case UncompressedBufferTooSmall:
-            case CompressedBufferTooSmall:
-              result = EC_JLSPixelDataTooShort;
-              break;
-            case ImageTypeNotSupported:
-              result = EC_JLSUnsupportedImageType;
-              break;
-            case InvalidJlsParameters:
-            case ParameterValueNotSupported:
-            case InvalidCompressedData:
-            case UnsupportedBitDepthForTransform:
-            case UnsupportedColorTransform:
-              result = EC_JLSCodecError;
-              break;
-          }
 
           if (result.good() && imageSamplesPerPixel == 3)
           {
@@ -689,6 +653,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.2  2009-07-31 09:05:43  meichel
+ * Added more detailed error messages, minor code clean-up
+ *
  * Revision 1.1  2009-07-29 14:46:47  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

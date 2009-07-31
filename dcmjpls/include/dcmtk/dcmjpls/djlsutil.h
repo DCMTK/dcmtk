@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjp2k
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
+ *  Update Date:      $Date: 2009-07-31 09:05:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djlsutil.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,23 +97,35 @@ enum JLS_CompressionBitDepth
 
 // CONDITION CONSTANTS
 
-/// error condition constant: JPEG-LS Codec Error
-extern const OFCondition EC_JLSCodecError;
+/// error condition constant: Too small buffer used for image data (internal error)
+extern const OFCondition EC_JLSUncompressedBufferTooSmall;
+
+/// error condition constant: Too small buffer used for compressed image data (internal error)
+extern const OFCondition EC_JLSCompressedBufferTooSmall;
+
+/// error condition constant: The image uses some features which the codec does not support
+extern const OFCondition EC_JLSCodecUnsupportedImageType;
+
+/// error condition constant: The codec was fed with invalid parameters (e.g. height = -1)
+extern const OFCondition EC_JLSCodecInvalidParameters;
+
+/// error condition constant: The codec was fed with unsupported parameters (e.g. 32 bit per sample)
+extern const OFCondition EC_JLSCodecUnsupportedValue;
+
+/// error condition constant: The compressed image is invalid
+extern const OFCondition EC_JLSInvalidCompressedData;
+
+/// error condition constant: The images' color transformation is not supported in this bit depth
+extern const OFCondition EC_JLSUnsupportedBitDepthForTransform;
+
+/// error condition constant: The images' color transformation is not supported
+extern const OFCondition EC_JLSUnsupportedColorTransform;
 
 /// error condition constant: Unsupported bit depth in JPEG-LS transfer syntax
 extern const OFCondition EC_JLSUnsupportedBitDepth;
 
 /// error condition constant: Cannot compute number of fragments for JPEG-LS frame
 extern const OFCondition EC_JLSCannotComputeNumberOfFragments;
-
-/// error condition constant: Error while writing temporary file
-extern const OFCondition EC_JLSTempFileWriteError;
-
-/// error condition constant: Error while reading temporary file
-extern const OFCondition EC_JLSTempFileReadError;
-
-/// error condition constant: Unknown PNM file format found in temporary file
-extern const OFCondition EC_JLSUnknownPNMFormat;
 
 /// error condition constant: Image data mismatch between DICOM header and JPEG-LS bitstream
 extern const OFCondition EC_JLSImageDataMismatch;
@@ -127,14 +139,14 @@ extern const OFCondition EC_JLSUnsupportedPixelRepresentation;
 /// error condition constant: Unsupported type of image for JPEG-LS compression
 extern const OFCondition EC_JLSUnsupportedImageType;
 
-/// error condition constant: Pixel data too short for uncompressed image
-extern const OFCondition EC_JLSPixelDataTooShort;
-
 #endif
 
 /*
  * CVS/RCS Log:
  * $Log: djlsutil.h,v $
+ * Revision 1.2  2009-07-31 09:05:43  meichel
+ * Added more detailed error messages, minor code clean-up
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *
