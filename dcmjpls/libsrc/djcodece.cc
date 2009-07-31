@@ -22,9 +22,9 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:05:43 $
+ *  Update Date:      $Date: 2009-07-31 09:14:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -564,6 +564,7 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   Uint32 fragmentSize = djcp->getFragmentSize();
   OFBool opt_use_custom_options = djcp->getUseCustomOptions();
   JlsParamaters jls_params = {0};
+  Uint8 *frameBuffer = NULL;
 
   // Set up the information structure for CharLS
   jls_params.bitspersample = bitsAllocated;
@@ -594,40 +595,88 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   else
     return EC_IllegalCall;
 
+  enum interleavemode ilv;
   switch (planarConfiguration)
   {
     // ILV_LINE is not supported by DICOM
     case 0:
-      jls_params.ilv = ILV_SAMPLE;
+      ilv = ILV_SAMPLE;
       break;
     case 1:
-      jls_params.ilv = ILV_NONE;
+      ilv = ILV_NONE;
       break;
     default:
       return EC_IllegalCall;
   }
 
-  // We have no idea how big the compressed pixel data will be and we have no
-  // way to find out, so we just allocate a buffer large enough for the raw data
-  // plus a little more for JPEG metadata.
-  // Yes, this is way too much for just a little JPEG metadata, but some
-  // test-images showed that the buffer previously was too small. Plus, at some
-  // places charls fails to do proper bounds checking and writes behind the end
-  // of the buffer (sometimes way behind its end...).
-  size_t size = frameSize + 1024;
-  Uint8 *buffer = new Uint8[size];
+  switch (djcp->getJplsInterleaveMode())
+  {
+    case DJLSCodecParameter::interleaveSample:
+      jls_params.ilv = ILV_SAMPLE;
+      break;
+    case DJLSCodecParameter::interleaveLine:
+      jls_params.ilv = ILV_LINE;
+      break;
+    case DJLSCodecParameter::interleaveNone:
+      jls_params.ilv = ILV_NONE;
+      break;
+    case DJLSCodecParameter::interleaveDefault:
+    default:
+      // In default mode we just never convert the image to another
+      // interleave-mode. Instead, we use what is already there.
+      jls_params.ilv = ilv;
+      break;
+  }
 
-  JLS_ERROR err = JpegLsEncode(buffer, size, &size, framePointer, frameSize, &jls_params);
-  result = DJLSError::convert(err);
+  // Do we have to convert the image to some other interleave mode?
+  if ((jls_params.ilv == ILV_NONE && (ilv == ILV_SAMPLE || ilv == ILV_LINE)) ||
+      (ilv == ILV_NONE && (jls_params.ilv == ILV_SAMPLE || jls_params.ilv == ILV_LINE)))
+  {
+    if (djcp->isVerbose())
+    {
+        ofConsole.lockCout() << "Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
+          << " to " << (jls_params.ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel") << OFendl;
+        ofConsole.unlockCout();
+    }
+
+    frameBuffer = new Uint8[frameSize];
+    if (jls_params.ilv == ILV_NONE)
+      result = convertToUninterleaved(frameBuffer, framePointer, samplesPerPixel, width, height, bitsAllocated);
+    else
+      /* For CharLS, sample-interleaved and line-interleaved is both expected to
+       * be color-by-pixel.
+       */
+      result = convertToSampleInterleaved(frameBuffer, framePointer, samplesPerPixel, width, height, bitsAllocated);
+    framePointer = frameBuffer;
+  }
 
   if (result.good())
   {
-    // 'size' now contains the size of the compressed data in buffer
-    compressedSize = size;
-    result = pixelSequence->storeCompressedFrame(offsetList, buffer, size, fragmentSize);
+    // We have no idea how big the compressed pixel data will be and we have no
+    // way to find out, so we just allocate a buffer large enough for the raw data
+    // plus a little more for JPEG metadata.
+    // Yes, this is way too much for just a little JPEG metadata, but some
+    // test-images showed that the buffer previously was too small. Plus, at some
+    // places charls fails to do proper bounds checking and writes behind the end
+    // of the buffer (sometimes way behind its end...).
+    size_t size = frameSize + 1024;
+    Uint8 *buffer = new Uint8[size];
+
+    JLS_ERROR err = JpegLsEncode(buffer, size, &size, framePointer, frameSize, &jls_params);
+    result = DJLSError::convert(err);
+
+    if (result.good())
+    {
+      // 'size' now contains the size of the compressed data in buffer
+      compressedSize = size;
+      result = pixelSequence->storeCompressedFrame(offsetList, buffer, size, fragmentSize);
+    }
+
+    delete[] buffer;
   }
 
-  delete[] buffer;
+  if (frameBuffer)
+    delete[] frameBuffer;
 
   return result;
 }
@@ -938,9 +987,6 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   jls_params.bitspersample = depth;
   // No idea what this one does, but I don't think DICOM says anything about it
   jls_params.colorTransform = 0;
-  // The cooked encoder always uses sample-interleaved (color-by-pixel) images.
-  /// @TODO Is this necessary? What is the alternative?
-  jls_params.ilv = ILV_SAMPLE;
 
   // This was already checked for a sane value above
   jls_params.components = samplesPerPixel;
@@ -969,6 +1015,40 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
     jls_params.custom.RESET = djcp->getReset();
   }
 
+  switch (djcp->getJplsInterleaveMode())
+  {
+    case DJLSCodecParameter::interleaveSample:
+      jls_params.ilv = ILV_SAMPLE;
+      break;
+    case DJLSCodecParameter::interleaveLine:
+      jls_params.ilv = ILV_LINE;
+      break;
+    case DJLSCodecParameter::interleaveNone:
+      jls_params.ilv = ILV_NONE;
+      break;
+    case DJLSCodecParameter::interleaveDefault:
+    default:
+      // Default for the cooked encoder is ILV_SAMPLE
+      jls_params.ilv = ILV_SAMPLE;
+      break;
+  }
+
+  Uint8 *frameBuffer = NULL;
+  Uint8 *framePointer = buffer;
+  // Do we have to convert the image to color-by-plane now?
+  if (jls_params.ilv == ILV_NONE)
+  {
+    if (djcp->isVerbose())
+    {
+        ofConsole.lockCout() << "Converting image from color-by-pixel to color-by-plane" << OFendl;
+        ofConsole.unlockCout();
+    }
+
+    frameBuffer = new Uint8[buffer_size];
+    framePointer = frameBuffer;
+    result = convertToUninterleaved(frameBuffer, buffer, samplesPerPixel, width, height, jls_params.bitspersample);
+  }
+
   // We have no idea how big the compressed pixel data will be and we have no
   // way to find out, so we just allocate a buffer large enough for the raw data
   // plus a little more for JPEG metadata.
@@ -980,7 +1060,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   Uint8 *compressed_buffer = new Uint8[compressed_buffer_size];
 
   JLS_ERROR err = JpegLsEncode(compressed_buffer, compressed_buffer_size,
-      &compressed_buffer_size, buffer, buffer_size, &jls_params);
+      &compressed_buffer_size, framePointer, buffer_size, &jls_params);
   result = DJLSError::convert(err);
 
   if (result.good())
@@ -992,13 +1072,70 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
 
   delete[] buffer;
   delete[] compressed_buffer;
+  if (frameBuffer)
+    delete[] frameBuffer;
 
   return result;
+}
+
+OFCondition DJLSEncoderBase::convertToUninterleaved(
+    Uint8 *target,
+    const Uint8 *source,
+    Uint8 components,
+    Uint32 width,
+    Uint32 height,
+    Uint8 bitsAllocated) const
+{
+  Uint8 bytesAllocated = bitsAllocated / 8;
+  Uint32 planeSize = width * height * bytesAllocated;
+
+  if (bitsAllocated % 8 != 0)
+    return EC_IllegalCall;
+
+  for (Uint32 pos = 0; pos < width * height; pos++)
+  {
+    for (int i = 0; i < components; i++)
+    {
+      memcpy(&target[i * planeSize + pos * bytesAllocated], source, bytesAllocated);
+      source += bytesAllocated;
+    }
+  }
+  return EC_Normal;
+}
+
+OFCondition DJLSEncoderBase::convertToSampleInterleaved(
+    Uint8 *target,
+    const Uint8 *source,
+    Uint8 components,
+    Uint32 width,
+    Uint32 height,
+    Uint8 bitsAllocated) const
+{
+  Uint8 bytesAllocated = bitsAllocated / 8;
+  Uint32 planeSize = width * height * bytesAllocated;
+
+  if (bitsAllocated % 8 != 0)
+    return EC_IllegalCall;
+
+  for (Uint32 pos = 0; pos < width * height; pos++)
+  {
+    for (int i = 0; i < components; i++)
+    {
+      memcpy(target, &source[i * planeSize + pos * bytesAllocated], bytesAllocated);
+      target += bytesAllocated;
+    }
+  }
+  return EC_Normal;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.3  2009-07-31 09:14:53  meichel
+ * Added codec parameter and command line options that allow to control
+ *   the interleave mode used in the JPEG-LS bitstream when compressing
+ *   color images.
+ *
  * Revision 1.2  2009-07-31 09:05:43  meichel
  * Added more detailed error messages, minor code clean-up
  *

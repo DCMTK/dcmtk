@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG-LS processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
+ *  Update Date:      $Date: 2009-07-31 09:14:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/ofstd/oftypes.h"  /* for OFBool */
 #include "dcmtk/dcmjpls/djlsutil.h"
 #include "dcmtk/dcmdata/dctypes.h"  /* for Uint32 */
+#include "dcmtk/dcmjpls/djcparam.h" /* for class DJLSCodecParameter */
 
 class DJLSCodecParameter;
 class DJLSLosslessEncoder;
@@ -64,6 +65,7 @@ public:
    *  @param createOffsetTable         create offset table during image compression
    *  @param uidCreation               mode for SOP Instance UID creation
    *  @param convertToSC               flag indicating whether image should be converted to Secondary Capture upon compression
+   *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
    */
   static void registerCodecs(
     OFBool verboseMode = OFFalse,
@@ -77,7 +79,8 @@ public:
     Uint32 fragmentSize = 0,
     OFBool createOffsetTable = OFTrue,
     JLS_UIDCreation uidCreation = EJLSUC_default,
-    OFBool convertToSC = OFFalse);
+    OFBool convertToSC = OFFalse,
+    DJLSCodecParameter::interleaveMode jplsInterleaveMode = DJLSCodecParameter::interleaveDefault);
 
   /** deregisters encoders.
    *  Attention: Must not be called while other threads might still use
@@ -107,6 +110,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djencode.h,v $
+ * Revision 1.2  2009-07-31 09:14:53  meichel
+ * Added codec parameter and command line options that allow to control
+ *   the interleave mode used in the JPEG-LS bitstream when compressing
+ *   color images.
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

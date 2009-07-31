@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2008, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
+ *  Update Date:      $Date: 2009-07-31 09:14:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djcodece.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,6 +306,38 @@ private:
     Uint32 frame,
     Uint16 nearLosslessDeviation) const;
 
+  /** Convert an image from sample interleaved to uninterleaved.
+   *  @param target A buffer where the converted image will be stored
+   *  @param source The image buffer to be converted
+   *  @param components Color components used in the image
+   *  @param width The width of the image
+   *  @param height The height of the image
+   *  @param bitsAllocated The number of bits allocated in the image.
+   *  @return EC_Normal if succesful, an error code otherwise
+   */
+  OFCondition convertToUninterleaved(
+      Uint8 *target,
+      const Uint8 *source,
+      Uint8 components,
+      Uint32 width,
+      Uint32 height,
+      Uint8 bitsAllocated) const;
+
+  /** Convert an image from uninterleaved to sample interleaved.
+   *  @param target A buffer where the converted image will be stored
+   *  @param source The image buffer to be converted
+   *  @param components Color components used in the image
+   *  @param size The size of one plane of the buffers
+   *  @param bitsAllocated The number of bits allocated in the image.
+   *  @return EC_Normal if succesful, an error code otherwise
+   */
+  OFCondition convertToSampleInterleaved(
+      Uint8 *target,
+      const Uint8 *source,
+      Uint8 components,
+      Uint32 width,
+      Uint32 height,
+      Uint8 bitsAllocated) const;
 };
 
 
@@ -336,6 +368,11 @@ class DJLSNearLosslessEncoder : public DJLSEncoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodece.h,v $
+ * Revision 1.2  2009-07-31 09:14:52  meichel
+ * Added codec parameter and command line options that allow to control
+ *   the interleave mode used in the JPEG-LS bitstream when compressing
+ *   color images.
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

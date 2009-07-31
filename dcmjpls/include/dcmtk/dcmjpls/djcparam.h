@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: codec parameter class JPEG-LS codecs
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
+ *  Update Date:      $Date: 2009-07-31 09:14:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,21 @@ class DJLSCodecParameter: public DcmCodecParameter
 {
 public:
 
+  /** Constants describing the interleave mode which the encoder will use
+   */
+  enum interleaveMode
+  {
+    /// Use same interleave mode as the DICOM header says in planarConfiguration,
+    /// if possible. The cooked encoder will force interleaveSample.
+    interleaveDefault,
+    /// Sample-interleaved (color-by-pixel)
+    interleaveSample,
+    /// Line-interleaved (color-by-line)
+    interleaveLine,
+    /// Uninterleaved (color-by-plane)
+    interleaveNone
+  };
+
   /** constructor, for use with encoders.
    *  @param verboseMode               verboseMode
    *  @param jpls_optionsEnabled       enable/disable use of all five JPEG-LS parameters
@@ -59,6 +74,7 @@ public:
    *  @param convertToSC               flag indicating whether image should be converted to Secondary Capture upon compression
    *  @param planarConfiguration       flag describing how planar configuration of decompressed color images should be handled
    *  @param ignoreOffsetTable         flag indicating whether to ignore the offset table when decompressing multiframe images
+   *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
    */
    DJLSCodecParameter(
      OFBool verboseMode,
@@ -74,7 +90,8 @@ public:
      JLS_UIDCreation uidCreation = EJLSUC_default,
      OFBool convertToSC = OFFalse,
      JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
-     OFBool ignoreOffsetTable = OFFalse);
+     OFBool ignoreOffsetTable = OFFalse,
+     interleaveMode jplsInterleaveMode = interleaveDefault);
 
   /** constructor, for use with decoders. Initializes all encoder options to defaults.
    *  @param verboseMode               verbose mode
@@ -215,6 +232,14 @@ public:
     return ignoreOffsetTable_;
   }
 
+  /** returns the interleave mode which the encoder should use
+   *  @return the interleave mode which the encoder should use
+   */
+  interleaveMode getJplsInterleaveMode() const
+  {
+    return jplsInterleaveMode_;
+  }
+
 private:
 
   /// private undefined copy assignment operator
@@ -259,6 +284,9 @@ private:
   /// flag indicating whether image should be converted to Secondary Capture upon compression
   OFBool convertToSC_;
 
+  /// Flag describing the interleave mode which the encoder will use
+  interleaveMode jplsInterleaveMode_;
+
   // ****************************************************
   // **** Parameters describing the decoding process ****
 
@@ -276,6 +304,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djcparam.h,v $
+ * Revision 1.2  2009-07-31 09:14:53  meichel
+ * Added codec parameter and command line options that allow to control
+ *   the interleave mode used in the JPEG-LS bitstream when compressing
+ *   color images.
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

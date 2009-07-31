@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: codec parameter class for JPEG-LS codecs
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:47 $
+ *  Update Date:      $Date: 2009-07-31 09:14:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +49,8 @@ DJLSCodecParameter::DJLSCodecParameter(
      JLS_UIDCreation uidCreation,
      OFBool convertToSC,
      JLS_PlanarConfiguration planarConfiguration,
-     OFBool ignoreOffsetTable)
+     OFBool ignoreOffsetTable,
+     interleaveMode jplsInterleaveMode)
 : DcmCodecParameter()
 , verboseMode_(verboseMode)
 , jpls_optionsEnabled_(jpls_optionsEnabled)
@@ -63,6 +64,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , preferCookedEncoding_(preferCookedEncoding)
 , uidCreation_(uidCreation)
 , convertToSC_(convertToSC)
+, jplsInterleaveMode_(jplsInterleaveMode)
 , planarConfiguration_(planarConfiguration)
 , ignoreOffsetTable_(ignoreOffsetTable)
 {
@@ -87,6 +89,7 @@ DJLSCodecParameter::DJLSCodecParameter(
 , preferCookedEncoding_(OFTrue)
 , uidCreation_(uidCreation)
 , convertToSC_(OFFalse)
+, jplsInterleaveMode_(interleaveDefault)
 , planarConfiguration_(planarConfiguration)
 , ignoreOffsetTable_(ignoreOffsetTable)
 {
@@ -130,6 +133,11 @@ const char *DJLSCodecParameter::className() const
 /*
  * CVS/RCS Log:
  * $Log: djcparam.cc,v $
+ * Revision 1.2  2009-07-31 09:14:53  meichel
+ * Added codec parameter and command line options that allow to control
+ *   the interleave mode used in the JPEG-LS bitstream when compressing
+ *   color images.
+ *
  * Revision 1.1  2009-07-29 14:46:47  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

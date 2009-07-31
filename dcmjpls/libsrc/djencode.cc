@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmjpls
  *
- *  Author:  Martin Willkomm
+ *  Author:  Martin Willkomm, Uli Schlachter
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:48 $
+ *  Update Date:      $Date: 2009-07-31 09:14:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,13 +56,14 @@ void DJLSEncoderRegistration::registerCodecs(
     Uint32 fragmentSize,
     OFBool createOffsetTable,
     JLS_UIDCreation uidCreation,
-    OFBool convertToSC)
+    OFBool convertToSC,
+    DJLSCodecParameter::interleaveMode jplsInterleaveMode)
 {
   if (! registered_)
   {
     cp_ = new DJLSCodecParameter(verboseMode, jpls_optionsEnabled, jpls_t1, jpls_t2, jpls_t3, jpls_reset, 
       jpls_limit, preferCookedEncoding, fragmentSize, createOffsetTable, uidCreation, 
-      convertToSC, EJLSPC_restore, OFFalse);
+      convertToSC, EJLSPC_restore, OFFalse, jplsInterleaveMode);
 
     if (cp_)
     {
@@ -97,6 +98,11 @@ void DJLSEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log:
  * $Log: djencode.cc,v $
+ * Revision 1.2  2009-07-31 09:14:53  meichel
+ * Added codec parameter and command line options that allow to control
+ *   the interleave mode used in the JPEG-LS bitstream when compressing
+ *   color images.
+ *
  * Revision 1.1  2009-07-29 14:46:48  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *
