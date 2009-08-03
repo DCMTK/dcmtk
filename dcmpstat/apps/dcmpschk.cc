@@ -24,8 +24,8 @@
  *
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-07-28 14:17:55 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-08-03 09:12:53 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,12 +47,11 @@
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dctk.h"        /* for class DcmDataset */
 #include "dcmtk/ofstd/ofstring.h"      /* for class OFString */
-#include "vrscan.h"
 #include "dcmtk/ofstd/ofconapp.h"      /* for OFConsoleApplication */
-#include "dcmtk/dcmpstat/dcmpstat.h"   /* for DcmPresentationState */
+#include "dcmtk/dcmdata/dctk.h"        /* for class DcmDataset */
 #include "dcmtk/dcmdata/dcdebug.h"
+#include "dcmtk/dcmpstat/dcmpstat.h"   /* for DcmPresentationState */
 #include "dcmtk/dcmnet/dul.h"
 
 #ifdef WITH_ZLIB
@@ -179,6 +178,7 @@ OFBool isaStringVR(DcmVR& vr)
     case EVR_ST:
     case EVR_TM:
     case EVR_UI:
+    case EVR_UT:
         isaString = OFTrue;
         break;
     default:
@@ -269,16 +269,6 @@ OFBool isaKnownPointer(DcmTag& t)
 
     dcmDataDict.unlock();
     return result;
-}
-
-int scanValue(STD_NAMESPACE istream& scannerInput)
-{
-   vrscan valueScanner;
-   valueScanner.yyin = &scannerInput;
-   int firstResult = valueScanner.yylex();
-   if (valueScanner.yylex())
-      return 16;
-   return firstResult;
 }
 
 int checkelem(
@@ -428,7 +418,6 @@ int checkelem(
       **  check, wether the value of the element is suitable to the data type.
       */
 
-
       /*** differenciate all value representations */
        if (isaStringVR(vr))
        {
@@ -437,10 +426,7 @@ int checkelem(
          {
            case EVR_AE:
               {
-                OFString vrAndValue("ae");
-                vrAndValue += value;
-                OFIStringStream input((char*)(vrAndValue.c_str()));
-                int realVR = scanValue(input);
+                const int realVR = DcmElement::scanValue(value, "ae");
                 if (realVR != 13)
                 {
                    printVRError(out, EM_error, value, dictRef, "all but control characters");
@@ -450,10 +436,7 @@ int checkelem(
              break;
            case EVR_AS:
               {
-                OFString vrAndValue("as");
-                vrAndValue += value;
-                OFIStringStream input((char*)(vrAndValue.c_str()));
-                int realVR = scanValue(input);
+                const int realVR = DcmElement::scanValue(value, "as");
                 if (realVR != 1)
                 {
                    printVRError(out, EM_error, value, dictRef, "[0-9]{3}[DWMY]");
@@ -463,10 +446,7 @@ int checkelem(
               break;
            case EVR_CS:
               {
-                OFString vrAndValue("cs");
-                vrAndValue += value;
-                OFIStringStream input((char*)(vrAndValue.c_str()));
-                int realVR = scanValue(input);
+                const int realVR = DcmElement::scanValue(value, "cs");
                 if (realVR != 10)
                 {
                    printVRError(out, EM_error, value, dictRef, "[0-9A-Z _]+");
@@ -476,10 +456,7 @@ int checkelem(
              break;
            case EVR_DA:
               {
-                OFString vrAndValue("da");
-                vrAndValue += value;
-                OFIStringStream input((char*)(vrAndValue.c_str()));
-                int realVR = scanValue(input);
+                const int realVR = DcmElement::scanValue(value, "da");
                 if (realVR != 2)
                 {
                   switch (realVR)
@@ -503,132 +480,109 @@ int checkelem(
               break;
            case EVR_DS:
               {
-                OFString vrAndValue("ds");
-                vrAndValue += value;
-                OFIStringStream input((char*)(vrAndValue.c_str()));
-                int realVR = scanValue(input);
+                const int realVR = DcmElement::scanValue(value, "ds");
                 if (realVR != 6)
                 {
                    printVRError(out, EM_error, value, dictRef, "([\\-\\+]?[0-9]*[\\.]?[0-9]+)|([\\-\\+]?[0-9][\\.]?[0-9]+[Ee][\\+\\-][0-9]+)");
                    dderrors++;
                 }
-           }
-           break;
-        case EVR_DT:
-           {
-             OFString vrAndValue("dt");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 7)
-             {
-               if (realVR == 18)
-               {
-                  out << MSGw_dubiousDate << OFendl;
-                  printVRError(out, EM_ok, value, dictRef, NULL);
-                  dderrors++;
-               } else {
-                  printVRError(out, EM_error, value, dictRef, "[0-9]{8}[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?([\\+\\-][0-9]{4})?");
-                  dderrors++;
-               }
-             }
-           }
-           break;
-        case EVR_IS:
-           {
-             OFString vrAndValue("is");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 8)
-             {
-                printVRError(out, EM_error, value, dictRef, "[\\+\\-]?[0-9]+ in the range -2^31 .. 2^31-1");
-                dderrors++;
-             }
-           }
-           break;
-        case EVR_SH:
-        case EVR_LO:
-           {
-             OFString vrAndValue("lo");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 12)
-             {
-                printVRError(out, EM_error, value, dictRef, "all but '\\' and control characters");
-                dderrors++;
-             }
-           }
-           break;
-        case EVR_ST:
-        case EVR_LT:
-           {
-             OFString vrAndValue("lt");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 14)
-             {
-                printVRError(out, EM_error, value, dictRef, "all");
-                dderrors++;
-             }
-           }
-           break;
-        case EVR_PN:
-           {
-             OFString vrAndValue("pn");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 11)
-             {
-                if (realVR == 15) /* OLD_PN */
+              }
+              break;
+           case EVR_DT:
+              {
+                const int realVR = DcmElement::scanValue(value, "dt");
+                if (realVR != 7)
                 {
-                  printVRError(out, EM_warning, value, dictRef, NULL);
-                  dderrors++;
-                } else {
-                  printVRError(out, EM_error, value, dictRef, "{all}*([\\^]{all}*([\\^]{all}*([\\^]{all}*(\\^{all}*)?)?)?)?");
-                  dderrors++;
+                  if (realVR == 18)
+                  {
+                     out << MSGw_dubiousDate << OFendl;
+                     printVRError(out, EM_ok, value, dictRef, NULL);
+                     dderrors++;
+                  } else {
+                     printVRError(out, EM_error, value, dictRef, "[0-9]{8}[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)?([\\+\\-][0-9]{4})?");
+                     dderrors++;
+                  }
                 }
-             }
-           }
-           break;
-        case EVR_TM:
-           {
-             OFString vrAndValue("tm");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 4)
-             {
-                if (realVR == 5)
+              }
+              break;
+           case EVR_IS:
+              {
+                const int realVR = DcmElement::scanValue(value, "is");
+                if (realVR != 8)
                 {
-                  printVRError(out, EM_warning, value, dictRef, NULL);
-                  dderrors++;
-                } else {
-                  printVRError(out, EM_error, value, dictRef, "[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)? with valid values for hour, minute and second");
-                  dderrors++;
+                   printVRError(out, EM_error, value, dictRef, "[\\+\\-]?[0-9]+ in the range -2^31 .. 2^31-1");
+                   dderrors++;
                 }
-             }
-           }
-           break;
-        case EVR_UI:
-           {
-             OFString vrAndValue("ui");
-             vrAndValue += value;
-             OFIStringStream input((char*)(vrAndValue.c_str()));
-             int realVR = scanValue(input);
-             if (realVR != 9)
-             {
-                printVRError(out, EM_error, value, dictRef, "([0-9]+\\.)*[0-9]+ without any leading zeroes");
-                dderrors++;
-             }
-           }
-           break;
-        default:
-           break;
-        }
+              }
+              break;
+           case EVR_SH:
+           case EVR_LO:
+              {
+                const int realVR = DcmElement::scanValue(value, "lo");
+                if (realVR != 12)
+                {
+                   printVRError(out, EM_error, value, dictRef, "all but '\\' and control characters");
+                   dderrors++;
+                }
+              }
+              break;
+           case EVR_ST:
+           case EVR_LT:
+           case EVR_UT:
+              {
+                const int realVR = DcmElement::scanValue(value, "lt");
+                if (realVR != 14)
+                {
+                   printVRError(out, EM_error, value, dictRef, "all");
+                   dderrors++;
+                }
+              }
+              break;
+           case EVR_PN:
+              {
+                const int realVR = DcmElement::scanValue(value, "pn");
+                if (realVR != 11)
+                {
+                   if (realVR == 15) /* OLD_PN */
+                   {
+                     printVRError(out, EM_warning, value, dictRef, NULL);
+                     dderrors++;
+                   } else {
+                     printVRError(out, EM_error, value, dictRef, "{all}*([\\^]{all}*([\\^]{all}*([\\^]{all}*(\\^{all}*)?)?)?)?");
+                     dderrors++;
+                   }
+                }
+              }
+              break;
+           case EVR_TM:
+              {
+                const int realVR = DcmElement::scanValue(value, "tm");
+                if (realVR != 4)
+                {
+                   if (realVR == 5)
+                   {
+                     printVRError(out, EM_warning, value, dictRef, NULL);
+                     dderrors++;
+                   } else {
+                     printVRError(out, EM_error, value, dictRef, "[0-9]{2}([0-9]{2}([0-9]{2}(\\.[0-9]{1,6})?)?)? with valid values for hour, minute and second");
+                     dderrors++;
+                   }
+                }
+              }
+              break;
+           case EVR_UI:
+              {
+                const int realVR = DcmElement::scanValue(value, "ui");
+                if (realVR != 9)
+                {
+                   printVRError(out, EM_error, value, dictRef, "([0-9]+\\.)*[0-9]+ without any leading zeroes");
+                   dderrors++;
+                }
+              }
+              break;
+           default:
+              break;
+         }
 
       } //end of if (isaStringVR(vr))
 
@@ -1146,6 +1100,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
+ * Revision 1.28  2009-08-03 09:12:53  joergr
+ * Added support for checking the data type UT (Unlimited Text).
+ * Moved flex++ generated lexical scanner from module "dcmpstat" to "dcmdata".
+ *
  * Revision 1.27  2009-07-28 14:17:55  joergr
  * Added support for dubious date checking (year before 1850 or after 2050).
  *
