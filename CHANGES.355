@@ -1,6 +1,68 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.03 (riesmeier)
+
+- Added methods that check whether a given string value conforms to the VR and
+  VM definitions of the DICOM standards.
+  Added:   dcmdata/tests/tstchval.cc
+  Affects: dcmdata/include/dcbytstr.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcerror.h
+           dcmdata/include/dcvrae.h
+           dcmdata/include/dcvras.h
+           dcmdata/include/dcvrcs.h
+           dcmdata/include/dcvrda.h
+           dcmdata/include/dcvrds.h
+           dcmdata/include/dcvrdt.h
+           dcmdata/include/dcvris.h
+           dcmdata/include/dcvrlo.h
+           dcmdata/include/dcvrlt.h
+           dcmdata/include/dcvrpn.h
+           dcmdata/include/dcvrsh.h
+           dcmdata/include/dcvrst.h
+           dcmdata/include/dcvrtm.h
+           dcmdata/include/dcvrui.h
+           dcmdata/include/dcvrut.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvras.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrut.cc
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmpschk.cc
+
+- Moved flex++ generated lexical scanner from module "dcmpstat" to "dcmdata".
+  Added:   dcmdata/include/dcmtk/dcmdata/vrscan.h
+           dcmdata/libsrc/vrscan.cc
+  Removed: dcmpstat/apps/vrscan.cc
+           dcmpstat/apps/vrscan.h
+  Affects: dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmpstat/apps/CMakeLists.txt
+           dcmpstat/apps/dcmpschk.cc
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+
+- Added support for checking the data type UT (Unlimited Text).
+  Affects: dcmpstat/apps/dcmpschk.cc
+
 **** Changes from 2009.07.28 (riesmeier)
 
 - Fixed wrong definition of value representation DS (Decimal String): According
