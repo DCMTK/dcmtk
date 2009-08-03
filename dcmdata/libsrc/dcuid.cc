@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-29 15:58:47 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-03 15:50:09 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,8 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofcrc32.h"
 #include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/ofstd/ofconsol.h"
 
 struct UIDNameMap {
     const char* uid;
@@ -1321,7 +1323,7 @@ static OFMutex uidCounterMutex;  // mutex protecting access to counterOfCurrentU
 
 static unsigned int counterOfCurrentUID = 1;
 
-static const int maxUIDLen = 64;    /* A UID may be 64 chars or less */
+static const unsigned int maxUIDLen = 64;    /* A UID may be 64 chars or less */
 
 static char*
 stripTrailing(char* s, char c)
@@ -1339,16 +1341,12 @@ stripTrailing(char* s, char c)
 static void
 addUIDComponent(char* uid, const char* s)
 {
-    int charsLeft = maxUIDLen - strlen(uid);
-
-    if (charsLeft > 0) {
-        /* copy into uid as much of the contents of s as possible */
-        int slen = strlen(s);
-        int use = charsLeft;
-        if (slen < charsLeft) use = slen;
-            strncat(uid, s, use);
+    /* copy into UID as much of the contents of s as possible */
+    if (OFStandard::strlcat(uid, s, maxUIDLen + 1) >= maxUIDLen + 1) // maxUIDLen+1 because strlcat() wants the size of the buffer, not the permitted number of characters.
+    {
+        ofConsole.lockCerr() << "Truncated UID in dcmGenerateUniqueIdentifier(), SITE_UID_ROOT too long?" << OFendl;
+        ofConsole.unlockCerr();
     }
-
     stripTrailing(uid, '.');
 }
 
@@ -1404,6 +1402,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.69  2009-08-03 15:50:09  meichel
+** Fixed possible buffer overflow in UID generation code when UID root too
+**   long. Now printing warning message to stderr when truncating a UID.
+**
 ** Revision 1.68  2009-01-29 15:58:47  onken
 ** Fixed compilation under windows (missing memzero) by including dcdefine.h.
 **

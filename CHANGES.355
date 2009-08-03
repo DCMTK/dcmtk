@@ -3,7 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.03 (eichelberg)
 
-- Fixed resource leak the in code creating forked child processes
+- Fixed possible buffer overflow in UID generation code when UID root too 
+  long. Now printing warning message to stderr when truncating a UID.
+  Affects: dcmdata/libsrc/dcuid.cc
+
+- Fixed resource leak the in code creating forked child processes.
+  Thanks to forum user <rhinojunk> for the bug report and fix.
   Affects: dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/dul.cc
 
