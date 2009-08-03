@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmTime
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrtm.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:05:30 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -256,6 +255,18 @@ class DcmTime
      */
     static OFCondition getTimeZoneFromString(const OFString &dicomTimeZone,
                                              double &timeZone);
+
+    /** check whether given string value conforms to the VR "TM" (Time)
+     *  and to the specified VM.
+     *  @param value string value to be checked (possibly multi-valued)
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-n", "2", "2-n", "2-2n", "3", "3-n", "3-3n", "4", "6")
+     *  @param oldFormat support old ACR/NEMA time format if OFTrue (i.e. with ":" and "." delimiters)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    static OFCondition checkValue(const OFString &value,
+                                  const OFString &vm = "1-n",
+                                  const OFBool oldFormat = OFFalse);
 };
 
 
@@ -265,6 +276,10 @@ class DcmTime
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
+** Revision 1.20  2009-08-03 09:05:30  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.19  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDateTime
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,6 +31,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcvrdt.h"
 #include "dcmtk/dcmdata/dcvrda.h"
 #include "dcmtk/dcmdata/dcvrtm.h"
@@ -41,6 +42,9 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
+#define MAX_DT_LENGTH 26
+
+
 // ********************************
 
 
@@ -48,7 +52,7 @@ DcmDateTime::DcmDateTime(const DcmTag &tag,
                          const Uint32 len)
   : DcmByteString(tag, len)
 {
-    setMaxLength(26);
+    setMaxLength(MAX_DT_LENGTH);
 }
 
 DcmDateTime::DcmDateTime(const DcmDateTime &old)
@@ -336,9 +340,58 @@ OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicom
 }
 
 
+// ********************************
+
+
+OFCondition DcmDateTime::checkValue(const OFString &value,
+                                    const OFString &vm)
+{
+    OFCondition result = EC_Normal;
+    const size_t valLen = value.length();
+    if (valLen > 0)
+    {
+      size_t posStart = 0;
+      unsigned long vmNum = 0;
+      /* iterate over all value components */
+      while (posStart != OFString_npos)
+      {
+        ++vmNum;
+        /* search for next component separator */
+        const size_t posEnd = value.find('\\', posStart);
+        const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+        /* check length of current value component */
+        if (length > MAX_DT_LENGTH)
+        {
+          result = EC_MaximumLengthViolated;
+          break;
+        } else {
+          /* check value representation */
+          const int vrID = DcmElement::scanValue(value, "dt", posStart, length);
+          if ((vrID != 7) && (vrID != 18))
+          {
+            result = EC_ValueRepresentationViolated;
+            break;
+          }
+        }
+        posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
+      }
+      if (result.good() && !vm.empty())
+      {
+        /* check value multiplicity */
+        result = DcmElement::checkVM(vmNum, vm);
+      }
+    }
+    return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
+** Revision 1.29  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.28  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

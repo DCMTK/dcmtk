@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation class DcmLongString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,9 +99,23 @@ OFCondition DcmLongString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFCondition DcmLongString::checkValue(const OFString &value,
+                                      const OFString &vm)
+{
+    return DcmByteString::checkValue(value, vm, "lo", 12 /*, maxLen: 64 characters */);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.cc,v $
+** Revision 1.17  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.16  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
@@ -172,4 +185,3 @@ OFCondition DcmLongString::getOFString(OFString &stringVal,
 ** - more cleanups
 **
 */
-

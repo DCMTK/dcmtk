@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-05-11 16:05:45 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:05:29 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -620,7 +620,7 @@ class DcmElement
     virtual void compact();
 
     /** compute uncompressed frame size of a single frame of this image.
-     *  Note that the value returned by this method does not include the pad byte 
+     *  Note that the value returned by this method does not include the pad byte
      *  to even size needed for a buffer into which a frame is to be loaded.
      *  @param dataset dataset in which this pixel data element is contained
      *  @param frameSize frame size in bytes (without padding) returned in this parameter upon success
@@ -663,6 +663,20 @@ class DcmElement
                                              Uint32 bufSize,
                                              OFString &decompressedColorModel,
                                              DcmFileCache *cache = NULL);
+
+    /* --- static helper functions --- */
+
+    /** scan string value for conformance with given value representation (VR)
+     *  @param value string value to be scanned
+     *  @param vr two-character identifier of the VR to be checked (lower case)
+     *  @param pos position of the first character to be scanned in 'value'
+     *  @param num number of characters to be scanned in 'value' (default: all)
+     *  @return numeric identifier of the VR found, 16 in case of unknown VR
+     */
+    static int scanValue(const OFString &value,
+                         const OFString &vr,
+                         const size_t pos = 0,
+                         const size_t num = OFString_npos);
 
   protected:
 
@@ -757,6 +771,18 @@ class DcmElement
      */
     void setByteOrder(E_ByteOrder val) { fByteOrder = val; }
 
+    /* --- static helper functions --- */
+
+    /** check for correct value multiplicity (VM)
+     *  @param vmNum value multiplicity of the value to be checked.
+     *    For empty values (vmNum=0), the status of the check is always EC_Normal (i.e. no error).
+     *  @param vmStr value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-n", "2", "2-n", "2-2n", "3", "3-n", "3-3n", "4", "6")
+     *  @return status of the check, EC_ValueMultiplicityViolated in case of error
+     */
+    static OFCondition checkVM(const unsigned long vmNum,
+                               const OFString &vmStr);
+
   private:
 
     /// current byte order of attribute value in memory
@@ -776,6 +802,10 @@ class DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
+** Revision 1.42  2009-08-03 09:05:29  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.41  2009-05-11 16:05:45  meichel
 ** Minor fix in DcmElement::getUncompressedFrameSize for the rare case that
 **   BitsAllocated is not 8 or 16. Also the method now returns the true frame

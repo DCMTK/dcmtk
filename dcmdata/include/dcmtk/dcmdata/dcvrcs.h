@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmCodeString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrcs.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:05:30 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +111,9 @@ class DcmCodeString
 
     /** check whether given value conforms to value representation CS (Code String).
      *  Valid characters are: A-Z, 0-9, _ and ' ' (space).  The maximum length is 16.
-     *  @param value string value to be checked
+     *  NB: This method is only used by the DicomDirInterface class and might be
+     *      replaced by the following method (checkValue) in the future.
+     *  @param value string value to be checked (single value only)
      *  @param pos returns index of first invalid character (0..n-1) if not NULL.
      *    Points to trailing zero byte (eos) if value is valid.
      *  @param checkLength check maximum length if OFTrue, ignore length if OFFalse
@@ -121,6 +122,16 @@ class DcmCodeString
     static OFBool checkVR(const OFString &value,
                           size_t *pos = NULL,
                           const OFBool checkLength = OFTrue);
+
+    /** check whether given string value conforms to the VR "CS" (Code String)
+     *  and to the specified VM.
+     *  @param value string value to be checked (possibly multi-valued)
+     *  @param vm value multiplicity (according to the data dictionary) to be checked for.
+     *    (valid values: "1", "1-2", "1-3", "1-n", "2", "2-n", "2-2n", "3", "3-n", "3-3n", "4", "6")
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    static OFCondition checkValue(const OFString &value,
+                                  const OFString &vm = "1-n");
 };
 
 
@@ -130,6 +141,10 @@ class DcmCodeString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.h,v $
+** Revision 1.19  2009-08-03 09:05:30  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.18  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

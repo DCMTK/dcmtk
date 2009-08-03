@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmByteString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:05:29 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -266,10 +266,28 @@ class DcmByteString: public DcmElement
      */
     void setPaddingChar(char c) { paddingChar = c; }
 
-    /** set the max length of string
-     *  @param val max length of string
+    /** set the maximum number of characters for each string component
+     *  @param val maximum number of characters for each string component
      */
     void setMaxLength(Uint32 val) { maxLength = val; }
+
+    /* --- static helper functions --- */
+
+    /** check whether given string value conforms to a certain VR and VM.
+     *  @param value string value to be checked (possibly multi-valued)
+     *  @param vm value multiplicity value multiplicity (according to the data dictionary)
+     *    to be checked for. (valid values: "1", "1-2", "1-3", "1-n", "2", "2-n", "2-2n",
+     *    "3", "3-n", "3-3n", "4", "6" or "" for no check)
+     *  @param vr two-character identifier of the VR to be checked (lower case)
+     *  @param vrID expected numeric identifier of the VR
+     *  @param maxLen maximum number of characters allowed for a single value (0 = no check)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    static OFCondition checkValue(const OFString &value,
+                                  const OFString &vm,
+                                  const OFString &vr,
+                                  const int vrID,
+                                  const size_t maxLen = 0);
 
 private:
     /// padding character used to adjust odd value length (space)
@@ -333,6 +351,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.40  2009-08-03 09:05:29  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.39  2008-07-17 11:19:48  onken
 ** Updated copyFrom() documentation.
 **

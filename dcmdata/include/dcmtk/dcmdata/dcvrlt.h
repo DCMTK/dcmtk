@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface of class DcmLongText
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrlt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:05:30 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +120,14 @@ class DcmLongText
      */
     virtual OFCondition getOFStringArray(OFString &stringVal,
                                          OFBool normalize = OFTrue);
+
+    /* --- static helper functions --- */
+
+    /** check whether given string value conforms to the VR "LT" (Long Text)
+     *  @param value string value to be checked (possibly multi-valued)
+     *  @return status of the check, EC_Normal if value is correct, an error code otherwise
+     */
+    static OFCondition checkValue(const OFString &value);
 };
 
 
@@ -130,6 +137,10 @@ class DcmLongText
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.h,v $
+** Revision 1.16  2009-08-03 09:05:30  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.15  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

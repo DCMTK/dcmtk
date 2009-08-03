@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,7 +31,8 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -43,6 +44,9 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 
+#define MAX_UI_LENGTH 64
+
+
 // ********************************
 
 
@@ -52,7 +56,7 @@ DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmTag &tag,
 {
     /* padding character is NULL not a space! */
     setPaddingChar('\0');
-    setMaxLength(64);
+    setMaxLength(MAX_UI_LENGTH);
 }
 
 
@@ -186,9 +190,23 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString()
 }
 
 
+// ********************************
+
+
+OFCondition DcmUniqueIdentifier::checkValue(const OFString &value,
+                                            const OFString &vm)
+{
+    return DcmByteString::checkValue(value, vm, "ui", 9, MAX_UI_LENGTH);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
+** Revision 1.29  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.28  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,16 +21,17 @@
  *
  *  Purpose: Implementation of class DcmShortString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsh.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/dcvrsh.h"
 
@@ -98,9 +99,23 @@ OFCondition DcmShortString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFCondition DcmShortString::checkValue(const OFString &value,
+                                       const OFString &vm)
+{
+    return DcmByteString::checkValue(value, vm, "lo", 12 /*, maxLength: 16 characters */);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
+** Revision 1.17  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.16  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

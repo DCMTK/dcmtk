@@ -18,8 +18,8 @@ LOCALINCLUDES = -I$(top_srcdir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc
 LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
 
-objs = tvrdatim.o tstpread.o tstpath.o
-progs = tvrdatim tstpread tstpath
+objs = tvrdatim.o tstpread.o tstpath.o tstchval.o
+progs = tvrdatim tstpread tstpath tstchval
 
 
 all: $(progs)
@@ -32,6 +32,10 @@ tstpread: tstpread.o
 
 tstpath: tstpath.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+tstchval: tstchval.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
 
 install: all
 

@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-02 14:41:08 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2009-08-03 09:02:59 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -648,10 +648,71 @@ void normalizeString(OFString &string,
     }
 }
 
+// ********************************
+
+
+OFCondition DcmByteString::checkValue(const OFString &value,
+                                      const OFString &vm,
+                                      const OFString &vr,
+                                      const int vrID,
+                                      const size_t maxLen)
+{
+    OFCondition result = EC_Normal;
+    const size_t valLen = value.length();
+    if (valLen > 0)
+    {
+      /* do we need to search for value components at all? */
+      if (vm.empty())
+      {
+        /* check value length (if a maximum is specified) */
+        if ((maxLen > 0) && (value.length() > maxLen))
+          result = EC_MaximumLengthViolated;
+        /* check value representation */
+        else if (DcmElement::scanValue(value, vr) != vrID)
+          result = EC_ValueRepresentationViolated;
+      } else {
+        size_t posStart = 0;
+        unsigned long vmNum = 0;
+        /* iterate over all value components */
+        while (posStart != OFString_npos)
+        {
+          ++vmNum;
+          /* search for next component separator */
+          const size_t posEnd = value.find('\\', posStart);
+          const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+          /* check length of current value component */
+          if ((maxLen > 0) && (length > maxLen))
+          {
+            result = EC_MaximumLengthViolated;
+            break;
+          } else {
+            /* check value representation */
+            if (DcmElement::scanValue(value, vr, posStart, length) != vrID)
+            {
+              result = EC_ValueRepresentationViolated;
+              break;
+            }
+          }
+          posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
+        }
+        if (result.good())
+        {
+          /* check value multiplicity */
+          result = DcmElement::checkVM(vmNum, vm);
+        }
+      }
+    }
+    return result;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.53  2009-08-03 09:02:59  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.52  2009-03-02 14:41:08  joergr
 ** Fixed bug that caused the print flag PF_convertToMarkup always being set.
 **

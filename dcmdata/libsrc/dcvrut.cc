@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2007, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmUnlimitedText
  *           Value Representation UT is defined in Correction Proposal 101
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,9 +117,22 @@ OFCondition DcmUnlimitedText::getOFStringArray(OFString &strValue,
 }
 
 
+// ********************************
+
+
+OFCondition DcmUnlimitedText::checkValue(const OFString &value)
+{
+    return DcmByteString::checkValue(value, "" /* vm */, "lt", 14 /*, maxLength: 4294967295 characters */);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrut.cc,v $
+** Revision 1.13  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.12  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

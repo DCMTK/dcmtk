@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-05 13:35:07 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:02:59 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,10 @@ const OFConditionConst ECC_ElemLengthLargerThanItem(   OFM_dcmdata, 27, OF_error
 const OFConditionConst ECC_FileMetaInfoHeaderMissing(  OFM_dcmdata, 28, OF_error, "File meta information header missing" );
 const OFConditionConst ECC_SeqOrItemContentOverflow(   OFM_dcmdata, 29, OF_error, "Item or sequence content exceeds maximum of 32-bit length field");
 
+const OFConditionConst ECC_ValueRepresentationViolated(OFM_dcmdata, 30, OF_error, "Value Representation violated");
+const OFConditionConst ECC_ValueMultiplicityViolated(  OFM_dcmdata, 31, OF_error, "Value Multiplicity violated");
+const OFConditionConst ECC_MaximumLengthViolated(      OFM_dcmdata, 32, OF_error, "Maximum VR length violated");
+
 const OFCondition EC_InvalidTag(                 ECC_InvalidTag);
 const OFCondition EC_TagNotFound(                ECC_TagNotFound);
 const OFCondition EC_InvalidVR(                  ECC_InvalidVR);
@@ -87,8 +91,12 @@ const OFCondition EC_InvalidOffset(              ECC_InvalidOffset);
 const OFCondition EC_TooManyBytesRequested(      ECC_TooManyBytesRequested);
 const OFCondition EC_InvalidBasicOffsetTable(    ECC_InvalidBasicOffsetTable);
 const OFCondition EC_ElemLengthLargerThanItem(   ECC_ElemLengthLargerThanItem);
-const OFCondition EC_SeqOrItemContentOverflow(   ECC_SeqOrItemContentOverflow);
 const OFCondition EC_FileMetaInfoHeaderMissing(  ECC_FileMetaInfoHeaderMissing);
+const OFCondition EC_SeqOrItemContentOverflow(   ECC_SeqOrItemContentOverflow);
+const OFCondition EC_ValueRepresentationViolated(ECC_ValueRepresentationViolated);
+const OFCondition EC_ValueMultiplicityViolated(  ECC_ValueMultiplicityViolated);
+const OFCondition EC_MaximumLengthViolated(      ECC_MaximumLengthViolated);
+
 
 const char *dcmErrorConditionToString(OFCondition cond)
 {
@@ -99,6 +107,10 @@ const char *dcmErrorConditionToString(OFCondition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
+** Revision 1.24  2009-08-03 09:02:59  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.23  2009-03-05 13:35:07  onken
 ** Added checks for sequence and item lengths which prevents overflow in length
 ** field, if total length of contained items (or sequences) exceeds 32-bit

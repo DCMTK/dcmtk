@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDate
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:02:59 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +31,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcvrda.h"
 
 #define INCLUDE_CSTDIO
@@ -245,9 +245,52 @@ OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
 }
 
 
+// ********************************
+
+
+OFCondition DcmDate::checkValue(const OFString &value,
+                                const OFString &vm,
+                                const OFBool oldFormat)
+{
+    OFCondition result = EC_Normal;
+    const size_t valLen = value.length();
+    if (valLen > 0)
+    {
+      size_t posStart = 0;
+      unsigned long vmNum = 0;
+      /* iterate over all value components */
+      while (posStart != OFString_npos)
+      {
+        ++vmNum;
+        /* search for next component separator */
+        const size_t posEnd = value.find('\\', posStart);
+        const size_t length = (posEnd == OFString_npos) ? valLen - posStart : posEnd - posStart;
+        /* check value representation */
+        const int vrID = DcmElement::scanValue(value, "da", posStart, length);
+        if ((vrID != 2) && (!oldFormat || (vrID != 3)) && (vrID != 17))
+        {
+          result = EC_ValueRepresentationViolated;
+          break;
+        }
+        posStart = (posEnd == OFString_npos) ? posEnd : posEnd + 1;
+      }
+      if (result.good() && !vm.empty())
+      {
+        /* check value multiplicity */
+        result = DcmElement::checkVM(vmNum, vm);
+      }
+    }
+    return result;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
+** Revision 1.19  2009-08-03 09:02:59  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.18  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

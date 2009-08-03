@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmIntegerString
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:03:00 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,15 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcvris.h"
 #include "dcmtk/ofstd/ofstring.h"
 
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
+
+
+#define MAX_IS_LENGTH 12
 
 
 // ********************************
@@ -46,7 +49,7 @@ DcmIntegerString::DcmIntegerString(const DcmTag &tag,
                                    const Uint32 len)
   : DcmByteString(tag, len)
 {
-    setMaxLength(12);
+    setMaxLength(MAX_IS_LENGTH);
 }
 
 
@@ -127,9 +130,23 @@ OFCondition DcmIntegerString::getOFString(OFString &stringVal,
 }
 
 
+// ********************************
+
+
+OFCondition DcmIntegerString::checkValue(const OFString &value,
+                                         const OFString &vm)
+{
+    return DcmByteString::checkValue(value, vm, "is", 8, MAX_IS_LENGTH);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
+** Revision 1.22  2009-08-03 09:03:00  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.21  2008-07-17 10:31:32  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented
@@ -216,6 +233,3 @@ OFCondition DcmIntegerString::getOFString(OFString &stringVal,
 ** - more cleanups
 **
 */
-
-
-

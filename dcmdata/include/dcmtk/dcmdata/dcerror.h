@@ -21,9 +21,9 @@
  *
  *  Purpose: Error handling, codes and strings
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:16:15 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-03 09:05:29 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,10 +112,16 @@ extern const OFCondition EC_TooManyBytesRequested;
 extern const OFCondition EC_InvalidBasicOffsetTable;
 /// Element length is larger than (explicit) length of surrounding item
 extern const OFCondition EC_ElemLengthLargerThanItem;
-/// Item or sequence content larger than explicit 32-bit length field permits
-extern const OFCondition EC_SeqOrItemContentOverflow;
 /// File meta information header missing
 extern const OFCondition EC_FileMetaInfoHeaderMissing;
+/// Item or sequence content larger than explicit 32-bit length field permits
+extern const OFCondition EC_SeqOrItemContentOverflow;
+/// Value Representation (VR) violated
+extern const OFCondition EC_ValueRepresentationViolated;
+/// Value Multiplicity (VM) violated
+extern const OFCondition EC_ValueMultiplicityViolated;
+/// Maximum VR length violated
+extern const OFCondition EC_MaximumLengthViolated;
 
 #ifndef OFCONDITION_STRICT_MODE
 
@@ -135,6 +141,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
+** Revision 1.32  2009-08-03 09:05:29  joergr
+** Added methods that check whether a given string value conforms to the VR and
+** VM definitions of the DICOM standards.
+**
 ** Revision 1.31  2009-07-29 14:16:15  meichel
 ** Defined new constant OFM_dcmloco
 **
