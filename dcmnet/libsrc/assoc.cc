@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: onken $
-** Update Date:         $Date: 2008-10-07 09:07:28 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2009-08-03 15:32:35 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.51 $
+** CVS/RCS Revision:    $Revision: 1.52 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1727,7 +1727,13 @@ ASC_receiveAssociation(T_ASC_Network * network,
     cond = DUL_ReceiveAssociationRQ(&network->network, block, timeout,
                                     &(params->DULparams), &DULassociation, retrieveRawPDU);
 
-    if (cond.code() == DULC_FORKEDCHILD) return cond;
+    if (cond.code() == DULC_FORKEDCHILD)
+    {
+        ASC_destroyAssociationParameters(&params);
+        free(*assoc);
+        *assoc = NULL;
+        return cond;
+    }
 
     (*assoc)->DULassociation = DULassociation;
 
@@ -2148,6 +2154,9 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.52  2009-08-03 15:32:35  meichel
+** Fixed resource leak the in code creating forked child processes
+**
 ** Revision 1.51  2008-10-07 09:07:28  onken
 ** Fixed possible memory leak in user identity classes and added code for
 ** accessing user identity from the server's side.

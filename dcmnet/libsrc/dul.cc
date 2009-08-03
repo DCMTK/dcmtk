@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: onken $, $Date: 2009-05-29 08:57:59 $
+** Last Update:         $Author: meichel $, $Date: 2009-08-03 15:32:35 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.79 $
+** Revision:            $Revision: 1.80 $
 ** Status:              $State: Exp $
 */
 
@@ -597,7 +597,11 @@ DUL_ReceiveAssociationRQ(
     cond = receiveTransportConnection(network, block, timeout, params, association);
 
     if (cond.bad() || (cond.code() == DULC_FORKEDCHILD))
+    {
+        destroyAssociationKey(association);
+        *association = NULL;
         return cond;
+    }
 
     cond = PRV_StateMachine(network, association,
                   TRANS_CONN_INDICATION, (*network)->protocolState, params);
@@ -2632,6 +2636,9 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.80  2009-08-03 15:32:35  meichel
+** Fixed resource leak the in code creating forked child processes
+**
 ** Revision 1.79  2009-05-29 08:57:59  onken
 ** Fixed exception thrown by later WSACleanup call because of socket handle
 ** being (apparently) not closed corretly after socket handle duplication.
