@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-03 15:50:09 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2009-08-03 16:01:41 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,14 @@ BEGIN_EXTERN_C
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
 #endif
+
+#ifndef HAVE_WINDOWS_H
+#ifndef HAVE_PROTOTYPE_GETTIMEOFDAY
+ /* Ultrix has gettimeofday() but no prototype in the header files */
+ int gettimeofday(struct timeval *tp, void *);
+#endif
+#endif
+
 END_EXTERN_C
 
 #include "dcmtk/ofstd/ofstream.h"
@@ -1321,9 +1329,28 @@ static unsigned long hostIdentifier = 0;
 static OFMutex uidCounterMutex;  // mutex protecting access to counterOfCurrentUID and hostIdentifier
 #endif
 
-static unsigned int counterOfCurrentUID = 1;
+static unsigned int counterOfCurrentUID = 0;
 
 static const unsigned int maxUIDLen = 64;    /* A UID may be 64 chars or less */
+
+static void
+initCounterOfCurrentUID()
+{
+    /* Code taken from oftime.cc */
+#ifdef HAVE_WINDOWS_H
+    /* Windows: no microseconds available, use milliseconds instead */
+    SYSTEMTIME timebuf;
+    GetSystemTime(&timebuf);
+    counterOfCurrentUID = timebuf.wMilliseconds; /* This is in the range 0 - 999 */
+#else /* Unix */
+    struct timeval tv;
+    if (gettimeofday(&tv, NULL) == 0)
+        counterOfCurrentUID = tv.tv_usec; /* This is in the range 0 - 999999 */
+#endif
+    /* Do not ever use "0" for the counter */
+    counterOfCurrentUID++;
+}
+
 
 static char*
 stripTrailing(char* s, char c)
@@ -1371,6 +1398,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
            sign-extended to a 64-bit long, so we need to blank the upper 32 bits */
         hostIdentifier = OFstatic_cast(unsigned long, gethostid() & 0xffffffff);
     }
+    if (counterOfCurrentUID == 0)
+        initCounterOfCurrentUID();
+
     unsigned int counter = counterOfCurrentUID++;
 #ifdef _REENTRANT
     uidCounterMutex.unlock();
@@ -1402,6 +1432,16 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.70  2009-08-03 16:01:41  meichel
+** In order to reduce the probability of generating duplicate UIDs when one
+**   process is spawned immediately after termination of another one, and both
+**   use the same process ID and generate UIDs within the same second of
+**   system time (which may happen if a command line tool is implemented that
+**   just generates and prints a single UID and then terminates, and that tool
+**   is called repeatedly from a shell script), initialize the counter
+**   component of the UID with a sub-second fraction from the system time
+**   (microseconds on Posix systems, milliseconds on Win32).
+**
 ** Revision 1.69  2009-08-03 15:50:09  meichel
 ** Fixed possible buffer overflow in UID generation code when UID root too
 **   long. Now printing warning message to stderr when truncating a UID.

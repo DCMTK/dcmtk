@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.03 (eichelberg)
 
+- In order to reduce the probability of generating duplicate UIDs when one 
+  process is spawned immediately after termination of another one, and both 
+  use the same process ID and generate UIDs within the same second of 
+  system time (which may happen if a command line tool is implemented that 
+  just generates and prints a single UID and then terminates, and that tool 
+  is called repeatedly from a shell script), initialize the counter 
+  component of the UID with a sub-second fraction from the system time 
+  (microseconds on Posix systems, milliseconds on Win32).
+  Affects: dcmdata/libsrc/dcuid.cc
+  
 - Fixed possible buffer overflow in UID generation code when UID root too 
   long. Now printing warning message to stderr when truncating a UID.
   Affects: dcmdata/libsrc/dcuid.cc
