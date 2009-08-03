@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2009-08-03 15:32:35 $
+** Update Date:         $Date: 2009-08-03 15:39:13 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.52 $
+** CVS/RCS Revision:    $Revision: 1.53 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1074,6 +1074,9 @@ ASC_findAcceptedPresentationContextID(
     LST_HEAD **l;
     OFBool found = OFFalse;
 
+    if (assoc->params->DULparams.acceptedPresentationContext == NULL)
+      return 0;
+
     l = &assoc->params->DULparams.acceptedPresentationContext;
     pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
     (void)LST_Position(l, (LST_NODE*)pc);
@@ -1106,7 +1109,10 @@ ASC_findAcceptedPresentationContextID(
     LST_HEAD **l;
     OFBool found = OFFalse;
 
-    if ((transferSyntax==NULL)||(abstractSyntax==NULL)) return 0;
+    if ((transferSyntax==NULL)||(abstractSyntax==NULL))
+      return 0;
+    if (assoc->params->DULparams.acceptedPresentationContext == NULL)
+      return 0;
 
     /* first of all we look for a presentation context
      * matching both abstract and transfer syntax
@@ -2154,6 +2160,10 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
+** Revision 1.53  2009-08-03 15:39:13  meichel
+** Fixed application crash due to dereferenced NULL pointer that affected
+**   some SCP applications when connected by a non-DICOM tool such as nmap.
+**
 ** Revision 1.52  2009-08-03 15:32:35  meichel
 ** Fixed resource leak the in code creating forked child processes
 **

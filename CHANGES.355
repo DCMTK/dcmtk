@@ -7,6 +7,11 @@ Changes between releases are documented here.
   Affects: dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/dul.cc
 
+- Fixed application crash due to dereferenced NULL pointer that affected 
+  some SCP applications when connected by a non-DICOM tool such as nmap.
+  Thanks to forum user <parigaud> for the bug report.
+  Affects: dcmnet/libsrc/assoc.cc
+    
 **** Changes from 2009.08.03 (riesmeier)
 
 - Added methods that check whether a given string value conforms to the VR and
