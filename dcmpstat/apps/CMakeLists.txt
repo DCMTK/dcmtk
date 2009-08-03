@@ -8,7 +8,7 @@ LINK_DIRECTORIES(${dcmpstat_BINARY_DIR} ${ofstd_BINARY_DIR} ${dcmdata_BINARY_DIR
 FOREACH(PROGRAM dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpsmk dcmpsprt dcmpsrcv dcmpssnd)
   ADD_EXECUTABLE(${PROGRAM} ${PROGRAM})
 ENDFOREACH(PROGRAM)
-ADD_EXECUTABLE(dcmpschk dcmpschk vrscan)
+ADD_EXECUTABLE(dcmpschk dcmpschk)
 
 # declare installation files
 FOREACH(PROGRAM dcmmkcrv dcmmklut dcmp2pgm dcmprscp dcmprscu dcmpschk dcmpsmk dcmpsprt dcmpsrcv dcmpssnd)

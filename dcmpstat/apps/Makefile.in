@@ -68,7 +68,7 @@ DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 DCMMKCRV_LIBS = $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 
 objs = dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o dcmpsprt.o dcmprscu.o \
-	dcmprscp.o vrscan.o dcmpschk.o
+	dcmprscp.o dcmpschk.o
 progs = dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dcmprscu dcmprscp dcmpschk
 
 
@@ -101,8 +101,8 @@ dcmprscu: dcmprscu.o
 dcmprscp: dcmprscp.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
-dcmpschk: dcmpschk.o vrscan.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o vrscan.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+dcmpschk: dcmpschk.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 
 install: all

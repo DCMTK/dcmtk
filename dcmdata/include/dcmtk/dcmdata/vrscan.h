@@ -66,7 +66,7 @@
     /* undefined */ vrscan(const vrscan&);
 #line 97 "vrscan.l"
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#line 152 "vrscan.l"
+#line 153 "vrscan.l"
 #line 56 "flexskel.xh"
 
 #ifdef YY_USE_CLASS
@@ -391,7 +391,7 @@ class YY_vrscan_CLASS YY_vrscan_INHERIT
 /* declaration of externs for public use of yylex scanner */
 
 /* % here is the declaration from section2 %header{ */ 
-#line 173 "vrscan.l"
+#line 174 "vrscan.l"
 #endif
 #line 379 "flexskel.xh"
 
