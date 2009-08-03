@@ -63,6 +63,9 @@ Changes between releases are documented here.
 - Added support for checking the data type UT (Unlimited Text).
   Affects: dcmpstat/apps/dcmpschk.cc
 
+- Added non-public modules "dcmjpls" and "dcmloco".
+  Affects: CMakeLists.txt
+
 **** Changes from 2009.07.28 (riesmeier)
 
 - Fixed wrong definition of value representation DS (Decimal String): According

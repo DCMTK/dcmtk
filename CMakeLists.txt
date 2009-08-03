@@ -227,4 +227,4 @@ INCLUDE_DIRECTORIES(${dcmtk_SOURCE_DIR}/config/include)
 # recurse into subdirectories
 SUBDIRS(config ofstd dcmdata dcmtls dcmnet dcmqrdb dcmimgle dcmimage dcmjpeg dcmsign dcmsr dcmpstat dcmwlm doxygen)
 # add non-public modules
-#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmrt dcmwave)
+#SUBDIRS(dcmdbsup dcmwlmxl dcmpps dcmppswm dcmjp2k dcmjpls dcmloco dcmqrdbx dcmcheck dcmprint dcmprscp dcmavi dcmmisc dcmppscu dcmrt dcmwave)
