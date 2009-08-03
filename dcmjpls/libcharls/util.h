@@ -16,7 +16,7 @@
 #  endif
 #endif
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #ifndef CHARLS_IMEXPORT
 #  define CHARLS_IMEXPORT __declspec(dllexport)
 #endif

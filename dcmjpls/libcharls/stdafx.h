@@ -6,7 +6,7 @@
 #ifndef STDAFX
 #define STDAFX
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #define CHARLS_IMEXPORT __declspec(dllexport)
 #if defined(_MSC_VER)
 #pragma warning (disable:4100)
