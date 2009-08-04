@@ -22,8 +22,8 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 10:16:24 $
- *  CVS/RCS Revision: $Revision: 1.112 $
+ *  Update Date:      $Date: 2009-08-04 10:08:42 $
+ *  CVS/RCS Revision: $Revision: 1.113 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2188,7 +2188,7 @@ static OFCondition storeSCP(
   if (opt_verbose)
   {
     COUT << "Received ";
-    DIMSE_printCStoreRQ(stdout, req);
+    DIMSE_printCStoreRQ(stdout, req, (opt_debug) ? presID : 0);
   }
 
   // intialize some variables
@@ -2724,6 +2724,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.113  2009-08-04 10:08:42  joergr
+** Added output of Presentation Context ID of the C-STORE message in debug mode.
+**
 ** Revision 1.112  2009-06-04 10:16:24  joergr
 ** Added new flag that can be used to avoid wrong warning messages (in debug
 ** mode) that an option has possibly never been checked.

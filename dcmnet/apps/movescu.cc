@@ -21,9 +21,9 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-13 09:44:18 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-04 10:08:42 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1297,7 +1297,7 @@ static OFCondition storeSCP(
     if (opt_verbose)
     {
       COUT << "Received ";
-      DIMSE_printCStoreRQ(stdout, req);
+      DIMSE_printCStoreRQ(stdout, req, (opt_debug) ? presID : 0);
     }
 
     StoreCallbackData callbackData;
@@ -1569,6 +1569,9 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.75  2009-08-04 10:08:42  joergr
+** Added output of Presentation Context ID of the C-STORE message in debug mode.
+**
 ** Revision 1.74  2009-07-13 09:44:18  onken
 ** Removed misleading comment about dcmnet DIMSE return code and changed
 ** corresponding OFCondition check from EC_Normal to .good().

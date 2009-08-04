@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-13 09:44:18 $
- *  CVS/RCS Revision: $Revision: 1.81 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-04 10:08:42 $
+ *  CVS/RCS Revision: $Revision: 1.82 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1477,7 +1477,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
    */
 {
   DIC_US msgId = assoc->nextMsgID++;
-  T_ASC_PresentationContextID presId;
+  T_ASC_PresentationContextID presID;
   T_DIMSE_C_StoreRQ req;
   T_DIMSE_C_StoreRSP rsp;
   DIC_UI sopClass;
@@ -1529,9 +1529,9 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     filexfer = EXS_DeflatedLittleEndianExplicit;
   }
 
-  if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
-  else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
-  if (presId == 0) {
+  if (filexfer.getXfer() != EXS_Unknown) presID = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
+  else presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+  if (presID == 0) {
     const char *modalityName = dcmSOPClassUIDToModality(sopClass);
     if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
     if (!modalityName) modalityName = "unknown SOP class";
@@ -1543,7 +1543,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   if (opt_verbose) {
     DcmXfer fileTransfer(dcmff.getDataset()->getOriginalXfer());
     T_ASC_PresentationContext pc;
-    ASC_findAcceptedPresentationContext(assoc->params, presId, &pc);
+    ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
     DcmXfer netTransfer(pc.acceptedTransferSyntax);
     COUT << "Transfer: " << dcmFindNameOfUID(fileTransfer.getXferID())
          << " -> " << dcmFindNameOfUID(netTransfer.getXferID()) << OFendl;
@@ -1562,7 +1562,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
     COUT << "Store SCU RQ: MsgID " << msgId << ", (" << dcmSOPClassUIDToModality(sopClass) << ")" << OFendl;
 
   /* finally conduct transmission of data */
-  cond = DIMSE_storeUser(assoc, presId, &req,
+  cond = DIMSE_storeUser(assoc, presID, &req,
     NULL, dcmff.getDataset(), progressCallback, NULL,
     opt_blockMode, opt_dimse_timeout,
     &rsp, &statusDetail, NULL, DU_fileSize(fname));
@@ -1582,7 +1582,7 @@ storeSCU(T_ASC_Association *assoc, const char *fname)
   if (cond == EC_Normal)
   {
     if (opt_verbose) {
-      DIMSE_printCStoreRSP(stdout, &rsp);
+      DIMSE_printCStoreRSP(stdout, &rsp, (opt_debug) ? presID : 0);
     }
   }
   else
@@ -1751,6 +1751,9 @@ checkUserIdentityResponse(T_ASC_Parameters *params)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
+** Revision 1.82  2009-08-04 10:08:42  joergr
+** Added output of Presentation Context ID of the C-STORE message in debug mode.
+**
 ** Revision 1.81  2009-07-13 09:44:18  onken
 ** Removed misleading comment about dcmnet DIMSE return code and changed
 ** corresponding OFCondition check from EC_Normal to .good().
