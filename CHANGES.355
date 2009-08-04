@@ -9,6 +9,19 @@ Changes between releases are documented here.
   and suggested fix.
   Affects: dcmdata/libsrc/dcelem.cc
 
+- Added optional parameter to printCStore() functions that allows for printing
+  the Presentation Context ID.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+           dcmnet/libsrc/dimdump.cc
+
+- Added output of Presentation Context ID of the C-STORE message in debug mode.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+
+- Replaced remaining tabs by spaces.
+  Affects: dcmnet/include/dcmtk/dcmnet/dimse.h
+
 **** Changes from 2009.08.04 (eichelberg)
 
 - Fixed incorrect code meaning string.
