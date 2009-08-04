@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2009-04-07 09:09:22 $
+** Update Date:         $Date: 2009-08-04 10:05:58 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:    $Revision: 1.10 $
+** CVS/RCS Revision:    $Revision: 1.11 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -214,10 +214,13 @@ DIMSE_printCEchoRSP(FILE * f, T_DIMSE_C_EchoRSP * rsp)
 }
 
 void
-DIMSE_printCStoreRQ(FILE * f, T_DIMSE_C_StoreRQ * req)
+DIMSE_printCStoreRQ(FILE * f, T_DIMSE_C_StoreRQ * req, T_ASC_PresentationContextID presID)
 {
     fprintf(f, "C-Store RQ: MsgID: %d\n",
             req->MessageID);
+    if (presID > 0)
+        fprintf(f, "  PresentationContextID: %d\n",
+                presID);
     fprintf(f, "  AffectedSOPClassUID: %s\n",
             uid2name(req->AffectedSOPClassUID));
     fprintf(f, "  AffectedSOPInstanceUID: %s\n",
@@ -235,11 +238,14 @@ DIMSE_printCStoreRQ(FILE * f, T_DIMSE_C_StoreRQ * req)
 }
 
 void
-DIMSE_printCStoreRSP(FILE * f, T_DIMSE_C_StoreRSP * rsp)
+DIMSE_printCStoreRSP(FILE * f, T_DIMSE_C_StoreRSP * rsp, T_ASC_PresentationContextID presID)
 {
     fprintf(f, "C-Store RSP: MsgID: %d [Status=%s]\n",
             rsp->MessageIDBeingRespondedTo,
             DU_cstoreStatusString(rsp->DimseStatus));
+    if (presID > 0)
+        fprintf(f, "  PresentationContextID: %d\n",
+                presID);
     if (rsp->opts & O_STORE_AFFECTEDSOPCLASSUID)
         fprintf(f, "  AffectedSOPClassUID: %s\n",
                 uid2name(rsp->AffectedSOPClassUID));
@@ -1324,6 +1330,10 @@ void DIMSE_printMessage(STD_NAMESPACE ostream& outstream, T_DIMSE_Message &msg, 
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
+** Revision 1.11  2009-08-04 10:05:58  joergr
+** Added optional parameter to printCStore() functions that allows for printing
+** the Presentation Context ID.
+**
 ** Revision 1.10  2009-04-07 09:09:22  joergr
 ** Fixed issue with unknown UID in uid2name().
 **

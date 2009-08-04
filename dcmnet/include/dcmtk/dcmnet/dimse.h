@@ -46,21 +46,21 @@
 */
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
+** Author: Andrew Hewett                Created: 03-06-93
 ** 
 ** Module: dimse
 **
 ** Purpose: 
-**	This file contains the routines which provide dimse layer services
-**	for DICOM applications.  
+**      This file contains the routines which provide dimse layer services
+**      for DICOM applications.  
 **
-**	Module Prefix: DIMSE_
+**      Module Prefix: DIMSE_
 **
-** Last Update:		$Author: onken $
-** Update Date:		$Date: 2007-07-12 12:18:00 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
-** Status:		$State: Exp $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2009-08-04 10:07:48 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/dcmtk/dcmnet/dimse.h,v $
+** CVS/RCS Revision:    $Revision: 1.20 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -108,8 +108,8 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 /* 
  * General Status Codes 
  */
-#define STATUS_Success	0x0000
-#define STATUS_Pending	0xff00
+#define STATUS_Success  0x0000
+#define STATUS_Pending  0xff00
 
 #define DICOM_PENDING_STATUS(status) (((status)&0xff00) == 0xff00)
 #define DICOM_WARNING_STATUS(status) (((status)&0xf000) == 0xb000)
@@ -120,40 +120,40 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
  * or high nibble (4 bits).
  */
 /* Storage Specific Codes*/
-#define STATUS_STORE_Refused_OutOfResources		/* high byte */	0xa700	
-#define STATUS_STORE_Refused_SOPClassNotSupported 	/* high byte */	0xa800 
-#define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass 	/* high byte */	0xa900 
-#define STATUS_STORE_Error_CannotUnderstand	/* high nibble */	0xc000	
-#define STATUS_STORE_Warning_CoersionOfDataElements 			0xb000
-#define STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass 		0xb007
-#define STATUS_STORE_Warning_ElementsDiscarded				0xb006
+#define STATUS_STORE_Refused_OutOfResources             /* high byte */ 0xa700  
+#define STATUS_STORE_Refused_SOPClassNotSupported       /* high byte */ 0xa800 
+#define STATUS_STORE_Error_DataSetDoesNotMatchSOPClass  /* high byte */ 0xa900 
+#define STATUS_STORE_Error_CannotUnderstand           /* high nibble */ 0xc000  
+#define STATUS_STORE_Warning_CoersionOfDataElements                     0xb000
+#define STATUS_STORE_Warning_DataSetDoesNotMatchSOPClass                0xb007
+#define STATUS_STORE_Warning_ElementsDiscarded                          0xb006
 
 /* Find Specific Codes */
-#define STATUS_FIND_Refused_OutOfResources				0xa700
-#define STATUS_FIND_Refused_SOPClassNotSupported 			0xa800
-#define STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass 		0xa900
-#define STATUS_FIND_Failed_UnableToProcess	/* high nibble */	0xc000	
-#define STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest		0xfe00
-#define STATUS_FIND_Pending_WarningUnsupportedOptionalKeys		0xff01
+#define STATUS_FIND_Refused_OutOfResources                              0xa700
+#define STATUS_FIND_Refused_SOPClassNotSupported                        0xa800
+#define STATUS_FIND_Failed_IdentifierDoesNotMatchSOPClass               0xa900
+#define STATUS_FIND_Failed_UnableToProcess            /* high nibble */ 0xc000  
+#define STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest         0xfe00
+#define STATUS_FIND_Pending_WarningUnsupportedOptionalKeys              0xff01
 
 /* Move Specific Codes */
-#define STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches		0xa701
-#define STATUS_MOVE_Refused_OutOfResourcesSubOperations			0xa702
-#define STATUS_MOVE_Failed_SOPClassNotSupported 			0xa800
-#define STATUS_MOVE_Failed_MoveDestinationUnknown			0xa801
-#define STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass 		0xa900
-#define STATUS_MOVE_Failed_UnableToProcess 	 /* high nibble */      0xc000 
-#define STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication	0xfe00
-#define STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures	0xb000
+#define STATUS_MOVE_Refused_OutOfResourcesNumberOfMatches               0xa701
+#define STATUS_MOVE_Refused_OutOfResourcesSubOperations                 0xa702
+#define STATUS_MOVE_Failed_SOPClassNotSupported                         0xa800
+#define STATUS_MOVE_Failed_MoveDestinationUnknown                       0xa801
+#define STATUS_MOVE_Failed_IdentifierDoesNotMatchSOPClass               0xa900
+#define STATUS_MOVE_Failed_UnableToProcess            /* high nibble */ 0xc000 
+#define STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication 0xfe00
+#define STATUS_MOVE_Warning_SubOperationsCompleteOneOrMoreFailures      0xb000
 
 /* Get Specific Codes */
-#define STATUS_GET_Refused_OutOfResourcesNumberOfMatches		0xa701
-#define STATUS_GET_Refused_OutOfResourcesSubOperations			0xa702
-#define STATUS_GET_Failed_SOPClassNotSupported 			        0xa800
-#define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass 		0xa900
-#define STATUS_GET_Failed_UnableToProcess 	 /* high nibble */      0xc000 
-#define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication	0xfe00
-#define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures	0xb000
+#define STATUS_GET_Refused_OutOfResourcesNumberOfMatches                0xa701
+#define STATUS_GET_Refused_OutOfResourcesSubOperations                  0xa702
+#define STATUS_GET_Failed_SOPClassNotSupported                          0xa800
+#define STATUS_GET_Failed_IdentifierDoesNotMatchSOPClass                0xa900
+#define STATUS_GET_Failed_UnableToProcess             /* high nibble */ 0xc000 
+#define STATUS_GET_Cancel_SubOperationsTerminatedDueToCancelIndication  0xfe00
+#define STATUS_GET_Warning_SubOperationsCompleteOneOrMoreFailures       0xb000
 
 /* DIMSE-N Specific Codes */
 #define STATUS_N_Cancel                                                 0xFE00
@@ -200,10 +200,10 @@ extern OFGlobal<Uint32> dcmMaxOutgoingPDUSize; /* default 2^32-1 */
 /*
  * DIMSE Command Codes (Request and Response)
  */
-typedef enum {			/* DIC_US */
-    DIMSE_NOTHING = 0x0000,	/* none of the rest !! */
-    DIMSE_C_STORE_RQ = 0x0001,	/* also known as C_SEND_RQ  */
-    DIMSE_C_STORE_RSP = 0x8001,	/* also known as C_SEND_RSP */
+typedef enum {                  /* DIC_US */
+    DIMSE_NOTHING = 0x0000,     /* none of the rest !! */
+    DIMSE_C_STORE_RQ = 0x0001,  /* also known as C_SEND_RQ  */
+    DIMSE_C_STORE_RSP = 0x8001, /* also known as C_SEND_RSP */
     DIMSE_C_GET_RQ = 0x0010,
     DIMSE_C_GET_RSP = 0x8010,
     DIMSE_C_FIND_RQ = 0x0020,
@@ -233,8 +233,8 @@ typedef enum {			/* DIC_US */
  * DIMSE Data Set Type Codes
  */
 
-typedef enum {			/* DIC_US */
-    DIMSE_DATASET_PRESENT = 0x0001,	/* anything other than 0x0101) */
+typedef enum {                  /* DIC_US */
+    DIMSE_DATASET_PRESENT = 0x0001,     /* anything other than 0x0101) */
     DIMSE_DATASET_NULL = 0x0101
 } T_DIMSE_DataSetType;
 
@@ -242,7 +242,7 @@ typedef enum {			/* DIC_US */
  * DIMSE Priority Codes
  */
 
-typedef enum {			/* DIC_US */
+typedef enum {                  /* DIC_US */
     DIMSE_PRIORITY_LOW = 0x0002,
     DIMSE_PRIORITY_MEDIUM = 0x0000,
     DIMSE_PRIORITY_HIGH = 0x0001
@@ -266,287 +266,287 @@ typedef enum {
 /* C-STORE */
 
 struct T_DIMSE_C_StoreRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	T_DIMSE_Priority Priority;				/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* M */
-	DIC_AE          MoveOriginatorApplicationEntityTitle;	/* U */
-	DIC_US          MoveOriginatorID;			/* U */
-	/* DataSet provided as argument to DIMSE functions */	/* M */
-	unsigned int	opts; /* which optional items are set */
-#define O_STORE_MOVEORIGINATORAETITLE			0x0001
-#define O_STORE_MOVEORIGINATORID			0x0002
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        T_DIMSE_Priority Priority;                              /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* M */
+        DIC_AE          MoveOriginatorApplicationEntityTitle;   /* U */
+        DIC_US          MoveOriginatorID;                       /* U */
+        /* DataSet provided as argument to DIMSE functions */   /* M */
+        unsigned int    opts; /* which optional items are set */
+#define O_STORE_MOVEORIGINATORAETITLE                   0x0001
+#define O_STORE_MOVEORIGINATORID                        0x0002
         /* the following flag is set on incoming C-STORE requests if
          * the SOP instance UID is (incorrectly) padded with a space
          * character. Will only be detected if the dcmdata flag
          * dcmEnableAutomaticInputDataCorrection is false.
          */
-#define O_STORE_RQ_BLANK_PADDING			0x0008
+#define O_STORE_RQ_BLANK_PADDING                        0x0008
 };
 
 struct T_DIMSE_C_StoreRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U(=) */
-	unsigned int	opts; /* which optional items are set */
-#define O_STORE_AFFECTEDSOPCLASSUID		0x0001
-#define O_STORE_AFFECTEDSOPINSTANCEUID		0x0002
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U(=) */
+        unsigned int    opts; /* which optional items are set */
+#define O_STORE_AFFECTEDSOPCLASSUID             0x0001
+#define O_STORE_AFFECTEDSOPINSTANCEUID          0x0002
         /* peer requires an exact copy of the SOP instance UID
          * as it was sent in the C-STORE-RQ,
          * including any illegal trailing space padding.
          */
 #define O_STORE_PEER_REQUIRES_EXACT_UID_COPY    0x0004
         /* SOP instance UID in C-STORE-RQ was space padded. */
-#define O_STORE_RSP_BLANK_PADDING		0x0008
+#define O_STORE_RSP_BLANK_PADDING               0x0008
 } ;
 
 /* C-ECHO */
 
 struct T_DIMSE_C_EchoRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
 } ;
 
 struct T_DIMSE_C_EchoRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          DimseStatus;				/* M */
-	unsigned int	opts; /* which optional items are set */
-#define O_ECHO_AFFECTEDSOPCLASSUID		0x0001
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          DimseStatus;                            /* M */
+        unsigned int    opts; /* which optional items are set */
+#define O_ECHO_AFFECTEDSOPCLASSUID              0x0001
 } ;
 
 /* C-FIND */
 
 struct T_DIMSE_C_FindRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	T_DIMSE_Priority Priority;				/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* Identifier provided as argument to DIMSE functions *//* M */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        T_DIMSE_Priority Priority;                              /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* Identifier provided as argument to DIMSE functions *//* M */
 } ;
 
 struct T_DIMSE_C_FindRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          DimseStatus;				/* M */
-	/* Identifier provided as argument to DIMSE functions *//* C */
-	unsigned int	opts; /* which optional items are set */
-#define O_FIND_AFFECTEDSOPCLASSUID		0x0001
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          DimseStatus;                            /* M */
+        /* Identifier provided as argument to DIMSE functions *//* C */
+        unsigned int    opts; /* which optional items are set */
+#define O_FIND_AFFECTEDSOPCLASSUID              0x0001
 } ;
 
 /* C-GET */
 
 struct T_DIMSE_C_GetRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	T_DIMSE_Priority Priority;				/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* Identifier provided as argument to DIMSE functions *//* M */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        T_DIMSE_Priority Priority;                              /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* Identifier provided as argument to DIMSE functions *//* M */
 } ;
 
 struct T_DIMSE_C_GetRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          DimseStatus;				/* M */
-	DIC_US          NumberOfRemainingSubOperations;		/* C */
-	DIC_US          NumberOfCompletedSubOperations;		/* C */
-	DIC_US          NumberOfFailedSubOperations;		/* C */
-	DIC_US          NumberOfWarningSubOperations;		/* C */
-	unsigned int	opts; /* which optional items are set */
-#define O_GET_AFFECTEDSOPCLASSUID		0x0001
-#define O_GET_NUMBEROFREMAININGSUBOPERATIONS	0x0002
-#define O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS	0x0004
-#define O_GET_NUMBEROFFAILEDSUBOPERATIONS	0x0008
-#define O_GET_NUMBEROFWARNINGSUBOPERATIONS	0x0010
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_US          NumberOfRemainingSubOperations;         /* C */
+        DIC_US          NumberOfCompletedSubOperations;         /* C */
+        DIC_US          NumberOfFailedSubOperations;            /* C */
+        DIC_US          NumberOfWarningSubOperations;           /* C */
+        unsigned int    opts; /* which optional items are set */
+#define O_GET_AFFECTEDSOPCLASSUID               0x0001
+#define O_GET_NUMBEROFREMAININGSUBOPERATIONS    0x0002
+#define O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS    0x0004
+#define O_GET_NUMBEROFFAILEDSUBOPERATIONS       0x0008
+#define O_GET_NUMBEROFWARNINGSUBOPERATIONS      0x0010
 } ;
 
 /* C-MOVE */
 
 struct T_DIMSE_C_MoveRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	T_DIMSE_Priority Priority;				/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_AE          MoveDestination;			/* M */
-	/* Identifier provided as argument to DIMSE functions *//* M */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        T_DIMSE_Priority Priority;                              /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_AE          MoveDestination;                        /* M */
+        /* Identifier provided as argument to DIMSE functions *//* M */
 } ;
 
 struct T_DIMSE_C_MoveRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          DimseStatus;				/* M */
-	DIC_US          NumberOfRemainingSubOperations;		/* C */
-	DIC_US          NumberOfCompletedSubOperations;		/* C */
-	DIC_US          NumberOfFailedSubOperations;		/* C */
-	DIC_US          NumberOfWarningSubOperations;		/* C */
-	unsigned int	opts; /* which optional items are set */
-#define O_MOVE_AFFECTEDSOPCLASSUID		0x0001
-#define O_MOVE_NUMBEROFREMAININGSUBOPERATIONS	0x0002
-#define O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS	0x0004
-#define O_MOVE_NUMBEROFFAILEDSUBOPERATIONS	0x0008
-#define O_MOVE_NUMBEROFWARNINGSUBOPERATIONS	0x0010
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_US          NumberOfRemainingSubOperations;         /* C */
+        DIC_US          NumberOfCompletedSubOperations;         /* C */
+        DIC_US          NumberOfFailedSubOperations;            /* C */
+        DIC_US          NumberOfWarningSubOperations;           /* C */
+        unsigned int    opts; /* which optional items are set */
+#define O_MOVE_AFFECTEDSOPCLASSUID              0x0001
+#define O_MOVE_NUMBEROFREMAININGSUBOPERATIONS   0x0002
+#define O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS   0x0004
+#define O_MOVE_NUMBEROFFAILEDSUBOPERATIONS      0x0008
+#define O_MOVE_NUMBEROFWARNINGSUBOPERATIONS     0x0010
 } ;
 
 
 /* C-CANCEL */
 
 struct T_DIMSE_C_CancelRQ {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
 } ;
 
 
 /* N-EVENT-REPORT */
 
 struct T_DIMSE_N_EventReportRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US		EventTypeID;				/* M */
-	/* EventInformation provided as argument to DIMSE functions *//* U */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          EventTypeID;                            /* M */
+        /* EventInformation provided as argument to DIMSE functions *//* U */
 } ;
 
 struct T_DIMSE_N_EventReportRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US		EventTypeID;				/* C(=) */
-	/* EventReply provided as argument to DIMSE functions *//* C */
-	unsigned int	opts; /* which optional items are set */
-#define O_NEVENTREPORT_AFFECTEDSOPCLASSUID		0x0001
-#define O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID		0x0002
-#define O_NEVENTREPORT_EVENTTYPEID			0x0004
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        DIC_US          EventTypeID;                            /* C(=) */
+        /* EventReply provided as argument to DIMSE functions *//* C */
+        unsigned int    opts; /* which optional items are set */
+#define O_NEVENTREPORT_AFFECTEDSOPCLASSUID              0x0001
+#define O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID           0x0002
+#define O_NEVENTREPORT_EVENTTYPEID                      0x0004
 } ;
 
 /* N-GET */
 
 struct T_DIMSE_N_GetRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          RequestedSOPClassUID;			/* M */
-	DIC_UI          RequestedSOPInstanceUID;		/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/*
-	 * In the following array, the attributes to get should be coded
-	 * in pairs along the array (e.g. {g,e,g,e,g,e,...}).  The ListCount
-	 * variable should contain the number of 'DIC_US' values in the
-	 * array (not the number of pairs).
-	 */
-	int		ListCount;
-	DIC_US		*AttributeIdentifierList;		/* U */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          RequestedSOPClassUID;                   /* M */
+        DIC_UI          RequestedSOPInstanceUID;                /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /*
+         * In the following array, the attributes to get should be coded
+         * in pairs along the array (e.g. {g,e,g,e,g,e,...}).  The ListCount
+         * variable should contain the number of 'DIC_US' values in the
+         * array (not the number of pairs).
+         */
+        int             ListCount;
+        DIC_US          *AttributeIdentifierList;               /* U */
 } ;
 
 struct T_DIMSE_N_GetRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* AttributeList provided as argument to DIMSE functions *//* C */
-	unsigned int	opts; /* which optional items are set */
-#define O_NGET_AFFECTEDSOPCLASSUID		0x0001
-#define O_NGET_AFFECTEDSOPINSTANCEUID		0x0002
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* AttributeList provided as argument to DIMSE functions *//* C */
+        unsigned int    opts; /* which optional items are set */
+#define O_NGET_AFFECTEDSOPCLASSUID              0x0001
+#define O_NGET_AFFECTEDSOPINSTANCEUID           0x0002
 } ;
 
 /* N-SET */
 
 struct T_DIMSE_N_SetRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          RequestedSOPClassUID;			/* M */
-	DIC_UI          RequestedSOPInstanceUID;		/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* ModificationList provided as argument to DIMSE functions *//* M */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          RequestedSOPClassUID;                   /* M */
+        DIC_UI          RequestedSOPInstanceUID;                /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* ModificationList provided as argument to DIMSE functions *//* M */
 } ;
 
 struct T_DIMSE_N_SetRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* AttributeList provided as argument to DIMSE functions *//* U */
-	unsigned int	opts; /* which optional items are set */
-#define O_NSET_AFFECTEDSOPCLASSUID		0x0001
-#define O_NSET_AFFECTEDSOPINSTANCEUID		0x0002
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* AttributeList provided as argument to DIMSE functions *//* U */
+        unsigned int    opts; /* which optional items are set */
+#define O_NSET_AFFECTEDSOPCLASSUID              0x0001
+#define O_NSET_AFFECTEDSOPINSTANCEUID           0x0002
 } ;
 
 /* N-ACTION */
 
 struct T_DIMSE_N_ActionRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          RequestedSOPClassUID;			/* M */
-	DIC_UI          RequestedSOPInstanceUID;		/* M */
-	DIC_US		ActionTypeID;				/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* ActionInformation provided as argument to DIMSE functions *//* U */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          RequestedSOPClassUID;                   /* M */
+        DIC_UI          RequestedSOPInstanceUID;                /* M */
+        DIC_US          ActionTypeID;                           /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* ActionInformation provided as argument to DIMSE functions *//* U */
 } ;
 
 struct T_DIMSE_N_ActionRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U */
-	DIC_US		ActionTypeID;				/* C(=) */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* ActionReply provided as argument to DIMSE functions *//* C */
-	unsigned int	opts; /* which optional items are set */
-#define O_NACTION_AFFECTEDSOPCLASSUID		0x0001
-#define O_NACTION_AFFECTEDSOPINSTANCEUID	0x0002
-#define O_NACTION_ACTIONTYPEID			0x0004
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U */
+        DIC_US          ActionTypeID;                           /* C(=) */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* ActionReply provided as argument to DIMSE functions *//* C */
+        unsigned int    opts; /* which optional items are set */
+#define O_NACTION_AFFECTEDSOPCLASSUID           0x0001
+#define O_NACTION_AFFECTEDSOPINSTANCEUID        0x0002
+#define O_NACTION_ACTIONTYPEID                  0x0004
 } ;
 
 /* N-CREATE */
 
 struct T_DIMSE_N_CreateRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          AffectedSOPClassUID;			/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* AttributeList provided as argument to DIMSE functions *//* M */
-	unsigned int	opts; /* which optional items are set */
-#define O_NCREATE_AFFECTEDSOPINSTANCEUID	0x0002
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* AttributeList provided as argument to DIMSE functions *//* M */
+        unsigned int    opts; /* which optional items are set */
+#define O_NCREATE_AFFECTEDSOPINSTANCEUID        0x0002
 } ;
 
 struct T_DIMSE_N_CreateRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* C */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	/* AttributeList provided as argument to DIMSE functions *//* U */
-	unsigned int	opts; /* which optional items are set */
-#define O_NCREATE_AFFECTEDSOPCLASSUID		0x0001
-#define O_NCREATE_AFFECTEDSOPINSTANCEUID	0x0002
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U(=) */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* C */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        /* AttributeList provided as argument to DIMSE functions *//* U */
+        unsigned int    opts; /* which optional items are set */
+#define O_NCREATE_AFFECTEDSOPCLASSUID           0x0001
+#define O_NCREATE_AFFECTEDSOPINSTANCEUID        0x0002
 } ;
 
 /* N-DELETE */
 
 struct T_DIMSE_N_DeleteRQ {
-	DIC_US          MessageID;				/* M */
-	DIC_UI          RequestedSOPClassUID;			/* M */
-	DIC_UI          RequestedSOPInstanceUID;		/* M */
-	T_DIMSE_DataSetType DataSetType;			/* M */
+        DIC_US          MessageID;                              /* M */
+        DIC_UI          RequestedSOPClassUID;                   /* M */
+        DIC_UI          RequestedSOPInstanceUID;                /* M */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
 } ;
 
 struct T_DIMSE_N_DeleteRSP {
-	DIC_US          MessageIDBeingRespondedTo;		/* M */
-	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          DimseStatus;				/* M */
-	DIC_UI          AffectedSOPInstanceUID;			/* U */
-	T_DIMSE_DataSetType DataSetType;			/* M */
-	unsigned int	opts; /* which optional items are set */
-#define O_NDELETE_AFFECTEDSOPCLASSUID		0x0001
-#define O_NDELETE_AFFECTEDSOPINSTANCEUID	0x0002
+        DIC_US          MessageIDBeingRespondedTo;              /* M */
+        DIC_UI          AffectedSOPClassUID;                    /* U */
+        DIC_US          DimseStatus;                            /* M */
+        DIC_UI          AffectedSOPInstanceUID;                 /* U */
+        T_DIMSE_DataSetType DataSetType;                        /* M */
+        unsigned int    opts; /* which optional items are set */
+#define O_NDELETE_AFFECTEDSOPCLASSUID           0x0001
+#define O_NDELETE_AFFECTEDSOPINSTANCEUID        0x0002
 } ;
 
 
@@ -556,36 +556,36 @@ struct T_DIMSE_N_DeleteRSP {
  */
 
 struct T_DIMSE_Message {
-	T_DIMSE_Command CommandField;	/* M */
+        T_DIMSE_Command CommandField;   /* M */
 
-	union {
-		/* requests */
-		T_DIMSE_C_StoreRQ CStoreRQ;
-		T_DIMSE_C_EchoRQ  CEchoRQ;
-		T_DIMSE_C_FindRQ  CFindRQ;
-		T_DIMSE_C_GetRQ   CGetRQ;
-		T_DIMSE_C_MoveRQ  CMoveRQ;
-		T_DIMSE_C_CancelRQ  CCancelRQ;
-		T_DIMSE_N_EventReportRQ NEventReportRQ;
-		T_DIMSE_N_GetRQ NGetRQ;
-		T_DIMSE_N_SetRQ NSetRQ;
-		T_DIMSE_N_ActionRQ NActionRQ;
-		T_DIMSE_N_CreateRQ NCreateRQ;
-		T_DIMSE_N_DeleteRQ NDeleteRQ;
+        union {
+                /* requests */
+                T_DIMSE_C_StoreRQ CStoreRQ;
+                T_DIMSE_C_EchoRQ  CEchoRQ;
+                T_DIMSE_C_FindRQ  CFindRQ;
+                T_DIMSE_C_GetRQ   CGetRQ;
+                T_DIMSE_C_MoveRQ  CMoveRQ;
+                T_DIMSE_C_CancelRQ  CCancelRQ;
+                T_DIMSE_N_EventReportRQ NEventReportRQ;
+                T_DIMSE_N_GetRQ NGetRQ;
+                T_DIMSE_N_SetRQ NSetRQ;
+                T_DIMSE_N_ActionRQ NActionRQ;
+                T_DIMSE_N_CreateRQ NCreateRQ;
+                T_DIMSE_N_DeleteRQ NDeleteRQ;
 
-		/* responses */
-		T_DIMSE_C_StoreRSP CStoreRSP;
-		T_DIMSE_C_EchoRSP CEchoRSP;
-		T_DIMSE_C_FindRSP CFindRSP;
-		T_DIMSE_C_GetRSP  CGetRSP;
-		T_DIMSE_C_MoveRSP CMoveRSP;
-		T_DIMSE_N_EventReportRSP NEventReportRSP;
-		T_DIMSE_N_GetRSP NGetRSP;
-		T_DIMSE_N_SetRSP NSetRSP;
-		T_DIMSE_N_ActionRSP NActionRSP;
-		T_DIMSE_N_CreateRSP NCreateRSP;
-		T_DIMSE_N_DeleteRSP NDeleteRSP;
-	} msg;
+                /* responses */
+                T_DIMSE_C_StoreRSP CStoreRSP;
+                T_DIMSE_C_EchoRSP CEchoRSP;
+                T_DIMSE_C_FindRSP CFindRSP;
+                T_DIMSE_C_GetRSP  CGetRSP;
+                T_DIMSE_C_MoveRSP CMoveRSP;
+                T_DIMSE_N_EventReportRSP NEventReportRSP;
+                T_DIMSE_N_GetRSP NGetRSP;
+                T_DIMSE_N_SetRSP NSetRSP;
+                T_DIMSE_N_ActionRSP NActionRSP;
+                T_DIMSE_N_CreateRSP NCreateRSP;
+                T_DIMSE_N_DeleteRSP NDeleteRSP;
+        } msg;
 
 };
 
@@ -648,17 +648,17 @@ extern OFBool            g_dimse_save_dimse_data;              /* default: OFFal
  
 OFCondition
 DIMSE_echoUser(
-	/* in */ 
-	T_ASC_Association *assoc, DIC_US msgId, 
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* out */
-	DIC_US *status, DcmDataset **statusDetail);
+        /* in */ 
+        T_ASC_Association *assoc, DIC_US msgId, 
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* out */
+        DIC_US *status, DcmDataset **statusDetail);
  
 OFCondition
 DIMSE_sendEchoResponse(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presID,
-	T_DIMSE_C_EchoRQ *request, DIC_US status, DcmDataset *statusDetail);
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_C_EchoRQ *request, DIC_US status, DcmDataset *statusDetail);
 
 
 /*
@@ -666,23 +666,23 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
  */
 
 typedef enum {
-    DIMSE_StoreBegin, 	/* before data set */
+    DIMSE_StoreBegin,   /* before data set */
     DIMSE_StoreProgressing, /* during data set */
-    DIMSE_StoreEnd		/* after data set */
+    DIMSE_StoreEnd              /* after data set */
 } T_DIMSE_StoreProgressState;
 
 struct T_DIMSE_StoreProgress { /* progress structure for store callback routines */
-    T_DIMSE_StoreProgressState state;	/* current state */
-    long callbackCount;	/* callback execution count */
-    long progressBytes;	/* sent/received so far */
-    long totalBytes;		/* total/estimated total to send/receive */
+    T_DIMSE_StoreProgressState state;   /* current state */
+    long callbackCount; /* callback execution count */
+    long progressBytes; /* sent/received so far */
+    long totalBytes;            /* total/estimated total to send/receive */
 } ;
 
 
 typedef void (*DIMSE_StoreUserCallback)(
     void *callbackData, 
     T_DIMSE_StoreProgress *progress,
-    T_DIMSE_C_StoreRQ *request	/* original store request */
+    T_DIMSE_C_StoreRQ *request  /* original store request */
    );
 
 struct T_DIMSE_DetectedCancelParameters {
@@ -693,16 +693,16 @@ struct T_DIMSE_DetectedCancelParameters {
 
 OFCondition
 DIMSE_storeUser(
-	/* in */ 
-	T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
-	T_DIMSE_C_StoreRQ *request,
-	const char *imageFileName, DcmDataset *imageDataSet,
-	DIMSE_StoreUserCallback callback, void *callbackData,
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* out */
-	T_DIMSE_C_StoreRSP *response,
-	DcmDataset **statusDetail,
+        /* in */ 
+        T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
+        T_DIMSE_C_StoreRQ *request,
+        const char *imageFileName, DcmDataset *imageDataSet,
+        DIMSE_StoreUserCallback callback, void *callbackData,
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* out */
+        T_DIMSE_C_StoreRSP *response,
+        DcmDataset **statusDetail,
         T_DIMSE_DetectedCancelParameters *checkForCancelParams = NULL,
         /* in */
         long imageFileTotalBytes=0);
@@ -710,31 +710,31 @@ DIMSE_storeUser(
 typedef void (*DIMSE_StoreProviderCallback)(
     /* in */
     void *callbackData, 
-    T_DIMSE_StoreProgress *progress,	/* progress state */
-    T_DIMSE_C_StoreRQ *request,		/* original store request */
+    T_DIMSE_StoreProgress *progress,    /* progress state */
+    T_DIMSE_C_StoreRQ *request,         /* original store request */
     char *imageFileName, DcmDataset **imageDataSet, /* being received into */
     /* in/out */
-    T_DIMSE_C_StoreRSP *response, 	/* final store response */
+    T_DIMSE_C_StoreRSP *response,       /* final store response */
     /* out */
     DcmDataset **statusDetail);
 
 OFCondition
 DIMSE_storeProvider(/* in */
-	T_ASC_Association *assoc, 
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_StoreRQ *request,
+        T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_StoreRQ *request,
     const char* imageFileName, int writeMetaheader,
     DcmDataset **imageDataSet,
-	DIMSE_StoreProviderCallback callback, void *callbackData,
-	/* blocking info for data set */
-	T_DIMSE_BlockingMode blockMode, int timeout);
+        DIMSE_StoreProviderCallback callback, void *callbackData,
+        /* blocking info for data set */
+        T_DIMSE_BlockingMode blockMode, int timeout);
 
 OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc,
-	T_ASC_PresentationContextID presID,
-	T_DIMSE_C_StoreRQ *request, /* send response to this request */
-	T_DIMSE_C_StoreRSP *response, /* response structure */
-	DcmDataset *statusDetail);
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_C_StoreRQ *request, /* send response to this request */
+        T_DIMSE_C_StoreRSP *response, /* response structure */
+        DcmDataset *statusDetail);
 
 /*
  * Query/Retrieve Service Class (FIND)
@@ -742,163 +742,163 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
 
 
 typedef void (*DIMSE_FindUserCallback)(
-	/* in */
-	void *callbackData, 
-	T_DIMSE_C_FindRQ *request, 	/* original find request */
-	int responseCount, 
-	T_DIMSE_C_FindRSP *response,	/* pending response received */
-	DcmDataset *responseIdentifiers /* pending response identifiers */
-	);
+        /* in */
+        void *callbackData, 
+        T_DIMSE_C_FindRQ *request,      /* original find request */
+        int responseCount, 
+        T_DIMSE_C_FindRSP *response,    /* pending response received */
+        DcmDataset *responseIdentifiers /* pending response identifiers */
+        );
 
 OFCondition
 DIMSE_findUser(
-	/* in */
-	T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc, 
         T_ASC_PresentationContextID presID,
-	T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
-	DIMSE_FindUserCallback callback, void *callbackData,
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* out */
-	T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail);
+        T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
+        DIMSE_FindUserCallback callback, void *callbackData,
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* out */
+        T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail);
 
 typedef void (*DIMSE_FindProviderCallback)(
-	/* in */ 
-	void *callbackData,  
-	OFBool cancelled, T_DIMSE_C_FindRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_FindRSP *response,
-	DcmDataset **responseIdentifiers,
-	DcmDataset **statusDetail);
+        /* in */ 
+        void *callbackData,  
+        OFBool cancelled, T_DIMSE_C_FindRQ *request, 
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_FindRSP *response,
+        DcmDataset **responseIdentifiers,
+        DcmDataset **statusDetail);
 
 OFCondition
 DIMSE_findProvider(
-	/* in */ 
-	T_ASC_Association *assoc, 
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_FindRQ *request,
-	DIMSE_FindProviderCallback callback, void *callbackData,
-	/* blocking info for data set */
-	T_DIMSE_BlockingMode blockMode, int timeout);
+        /* in */ 
+        T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_FindRQ *request,
+        DIMSE_FindProviderCallback callback, void *callbackData,
+        /* blocking info for data set */
+        T_DIMSE_BlockingMode blockMode, int timeout);
  
 OFCondition
 DIMSE_sendFindResponse(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presID,
-	T_DIMSE_C_FindRQ *request, 
-	T_DIMSE_C_FindRSP *response, DcmDataset *responseIdentifiers,
-	DcmDataset *statusDetail);
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_C_FindRQ *request, 
+        T_DIMSE_C_FindRSP *response, DcmDataset *responseIdentifiers,
+        DcmDataset *statusDetail);
 
 /*
  * Query/Retrieve Service Class (MOVE)
  */
 
 typedef void (*DIMSE_MoveUserCallback)(
-	/* in */ 
-	void *callbackData,  
-	T_DIMSE_C_MoveRQ *request, 
-	int responseCount, T_DIMSE_C_MoveRSP *response);
+        /* in */ 
+        void *callbackData,  
+        T_DIMSE_C_MoveRQ *request, 
+        int responseCount, T_DIMSE_C_MoveRSP *response);
 
 typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
-	T_ASC_Network *net, T_ASC_Association **subOpAssoc);
+        T_ASC_Network *net, T_ASC_Association **subOpAssoc);
 
 OFCondition
 DIMSE_moveUser(
-	/* in */
-	T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc, 
         T_ASC_PresentationContextID presID,
-	T_DIMSE_C_MoveRQ *request,
-	DcmDataset *requestIdentifiers,
-	DIMSE_MoveUserCallback callback, void *callbackData,
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* sub-operation provider callback */
-	T_ASC_Network *net,
-	DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
-	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_MoveRQ *request,
+        DcmDataset *requestIdentifiers,
+        DIMSE_MoveUserCallback callback, void *callbackData,
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* sub-operation provider callback */
+        T_ASC_Network *net,
+        DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
+        /* out */
+        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
         DcmDataset **responseIdentifers,
         OFBool ignorePendingDatasets = OFFalse);
-	
+        
 typedef void (*DIMSE_MoveProviderCallback)(
-	/* in */ 
-	void *callbackData,  
-	OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,	
-	DcmDataset **responseIdentifiers);
+        /* in */ 
+        void *callbackData,  
+        OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail, 
+        DcmDataset **responseIdentifiers);
 
 OFCondition
 DIMSE_moveProvider(
-	/* in */ 
-	T_ASC_Association *assoc, 
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_MoveRQ *request,
-	DIMSE_MoveProviderCallback callback, void *callbackData,
-	/* blocking info for data set */
-	T_DIMSE_BlockingMode blockMode, int timeout);
+        /* in */ 
+        T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_MoveRQ *request,
+        DIMSE_MoveProviderCallback callback, void *callbackData,
+        /* blocking info for data set */
+        T_DIMSE_BlockingMode blockMode, int timeout);
 
 OFCondition
 DIMSE_sendMoveResponse(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
-	T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
-	DcmDataset *statusDetail);
+        T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
+        T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
+        DcmDataset *statusDetail);
 
 /*
  * Query/Retrieve Service Class (GET)
  */
 
 typedef void (*DIMSE_GetUserCallback)(
-	/* in */ 
-	void *callbackData,  
-	T_DIMSE_C_GetRQ *request, 
-	int responseCount, T_DIMSE_C_GetRSP *response);
+        /* in */ 
+        void *callbackData,  
+        T_DIMSE_C_GetRQ *request, 
+        int responseCount, T_DIMSE_C_GetRSP *response);
 
 typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
-	T_ASC_Network *net, T_ASC_Association **subOpAssoc);
+        T_ASC_Network *net, T_ASC_Association **subOpAssoc);
 
 OFCondition
 DIMSE_getUser(
-	/* in */
-	T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc, 
         T_ASC_PresentationContextID presID,
-	T_DIMSE_C_GetRQ *request,
-	DcmDataset *requestIdentifiers,
-	DIMSE_GetUserCallback callback, void *callbackData,
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* sub-operation provider callback */
-	T_ASC_Network *net,
-	DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
-	/* out */
-	T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_GetRQ *request,
+        DcmDataset *requestIdentifiers,
+        DIMSE_GetUserCallback callback, void *callbackData,
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* sub-operation provider callback */
+        T_ASC_Network *net,
+        DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
+        /* out */
+        T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,
         DcmDataset **responseIdentifers);
-	
+        
 typedef void (*DIMSE_GetProviderCallback)(
-	/* in */ 
-	void *callbackData,  
-	OFBool cancelled, T_DIMSE_C_GetRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,	
-	DcmDataset **responseIdentifiers);
+        /* in */ 
+        void *callbackData,  
+        OFBool cancelled, T_DIMSE_C_GetRQ *request, 
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,  
+        DcmDataset **responseIdentifiers);
 
 OFCondition
 DIMSE_getProvider(
-	/* in */ 
-	T_ASC_Association *assoc, 
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_GetRQ *request,
-	DIMSE_GetProviderCallback callback, void *callbackData,
-	/* blocking info for data set */
-	T_DIMSE_BlockingMode blockMode, int timeout);
+        /* in */ 
+        T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_GetRQ *request,
+        DIMSE_GetProviderCallback callback, void *callbackData,
+        /* blocking info for data set */
+        T_DIMSE_BlockingMode blockMode, int timeout);
 
 OFCondition
 DIMSE_sendGetResponse(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request, 
-	T_DIMSE_C_GetRSP *response, DcmDataset *rspIds, 
-	DcmDataset *statusDetail);
+        T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request, 
+        T_DIMSE_C_GetRSP *response, DcmDataset *rspIds, 
+        DcmDataset *statusDetail);
 
 /*
  * Query/Retrieve Service Class (CANCEL)
@@ -906,7 +906,7 @@ DIMSE_sendGetResponse(T_ASC_Association * assoc,
  
 OFCondition
 DIMSE_sendCancelRequest(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presId, DIC_US msgId);
+        T_ASC_PresentationContextID presId, DIC_US msgId);
 
 OFCondition
 DIMSE_checkForCancelRQ(T_ASC_Association * assoc, 
@@ -932,57 +932,57 @@ typedef void (*DIMSE_ProgressCallback)(void *callbackContext,
 
 OFCondition 
 DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
-		  T_ASC_PresentationContextID presID,
-		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
-		  const char* dataFileName,
-		  DIMSE_ProgressCallback callback,
-		  void *callbackContext,
-		  DcmDataset **commandSet=NULL);
+                  T_ASC_PresentationContextID presID,
+                  T_DIMSE_Message *msg, DcmDataset *statusDetail,
+                  const char* dataFileName,
+                  DIMSE_ProgressCallback callback,
+                  void *callbackContext,
+                  DcmDataset **commandSet=NULL);
 
 OFCondition 
 DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
-		  T_ASC_PresentationContextID presID,
-		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
-		  DcmDataset *dataObject,
-		  DIMSE_ProgressCallback callback,
-		  void *callbackContext,
-		  DcmDataset **commandSet=NULL);
+                  T_ASC_PresentationContextID presID,
+                  T_DIMSE_Message *msg, DcmDataset *statusDetail,
+                  DcmDataset *dataObject,
+                  DIMSE_ProgressCallback callback,
+                  void *callbackContext,
+                  DcmDataset **commandSet=NULL);
 
 OFCondition
 DIMSE_receiveCommand(T_ASC_Association *association,
-		     T_DIMSE_BlockingMode blocking,
-		     int timeout,
-		     T_ASC_PresentationContextID *presID,
-		     T_DIMSE_Message *msg, 
-		     DcmDataset **statusDetail,
-		     DcmDataset **commandSet=NULL);
+                     T_DIMSE_BlockingMode blocking,
+                     int timeout,
+                     T_ASC_PresentationContextID *presID,
+                     T_DIMSE_Message *msg, 
+                     DcmDataset **statusDetail,
+                     DcmDataset **commandSet=NULL);
 
 OFCondition
 DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
-		     T_DIMSE_BlockingMode blocking,
-		     int timeout, 
-		     T_ASC_PresentationContextID *presID,
-		     DcmDataset **dataObject,
-		     DIMSE_ProgressCallback callback,
-		     void *callbackContext);
+                     T_DIMSE_BlockingMode blocking,
+                     int timeout, 
+                     T_ASC_PresentationContextID *presID,
+                     DcmDataset **dataObject,
+                     DIMSE_ProgressCallback callback,
+                     void *callbackContext);
 
 OFCondition
 DIMSE_createFilestream(
-		     /* in */
-		     const char *filename,
-		     const T_DIMSE_C_StoreRQ *request,
-		     const T_ASC_Association *assoc, 
-		     T_ASC_PresentationContextID presIdCmd,
-		     int writeMetaheader,
-		     /* out */
-		     DcmOutputFileStream **filestream);
+                     /* in */
+                     const char *filename,
+                     const T_DIMSE_C_StoreRQ *request,
+                     const T_ASC_Association *assoc, 
+                     T_ASC_PresentationContextID presIdCmd,
+                     int writeMetaheader,
+                     /* out */
+                     DcmOutputFileStream **filestream);
 
 OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
-		     T_DIMSE_BlockingMode blocking, int timeout, 
-		     T_ASC_PresentationContextID *presID,
-		     DcmOutputStream *filestream,
-		     DIMSE_ProgressCallback callback, void *callbackData);
+                     T_DIMSE_BlockingMode blocking, int timeout, 
+                     T_ASC_PresentationContextID *presID,
+                     DcmOutputStream *filestream,
+                     DIMSE_ProgressCallback callback, void *callbackData);
 
 OFCondition 
 DIMSE_ignoreDataSet( T_ASC_Association * assoc,
@@ -996,7 +996,7 @@ DIMSE_ignoreDataSet( T_ASC_Association * assoc,
  */
 
 void DIMSE_debug(int level);
-	/* set debug level */
+        /* set debug level */
 
 void DIMSE_warning(T_ASC_Association *assoc, const char *format, ...);
 
@@ -1004,8 +1004,8 @@ void DIMSE_warning(T_ASC_Association *assoc, const char *format, ...);
 void DIMSE_printCommand(FILE *f, T_DIMSE_Message *msg);
 void DIMSE_printCEchoRQ(FILE * f, T_DIMSE_C_EchoRQ * req);
 void DIMSE_printCEchoRSP(FILE * f, T_DIMSE_C_EchoRSP * rsp);
-void DIMSE_printCStoreRQ(FILE * f, T_DIMSE_C_StoreRQ * req);
-void DIMSE_printCStoreRSP(FILE * f, T_DIMSE_C_StoreRSP * rsp);
+void DIMSE_printCStoreRQ(FILE * f, T_DIMSE_C_StoreRQ * req, T_ASC_PresentationContextID presID = 0);
+void DIMSE_printCStoreRSP(FILE * f, T_DIMSE_C_StoreRSP * rsp, T_ASC_PresentationContextID presID = 0);
 void DIMSE_printCGetRQ(FILE * f, T_DIMSE_C_GetRQ * req);
 void DIMSE_printCGetRSP(FILE * f, T_DIMSE_C_GetRSP * rsp);
 void DIMSE_printCMoveRQ(FILE * f, T_DIMSE_C_MoveRQ * req);
@@ -1034,7 +1034,11 @@ void DIMSE_printMessage(STD_NAMESPACE ostream& outstream, T_DIMSE_Message &msg, 
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.19  2007-07-12 12:18:00  onken
+** Revision 1.20  2009-08-04 10:07:48  joergr
+** Added optional parameter to printCStore() functions that allows for printing
+** the Presentation Context ID.
+**
+** Revision 1.19  2007/07/12 12:18:00  onken
 ** Added status codes and corresponding printing routines for DIMSE-N.
 **
 ** Revision 1.18  2006/08/15 16:04:29  meichel
