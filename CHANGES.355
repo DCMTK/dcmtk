@@ -7,7 +7,7 @@ Changes between releases are documented here.
   in order to avoid memory creation/deletion mismatches.
   Thanks to Andreas Barth <andreas.barth@bruker-biospin.de> for the report
   and suggested fix.
-  Affects:
+  Affects: dcmdata/libsrc/dcelem.cc
 
 **** Changes from 2009.08.04 (eichelberg)
 
