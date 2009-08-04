@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:02:59 $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  Update Date:      $Date: 2009-08-04 07:57:20 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,13 +86,29 @@ DcmElement::DcmElement(const DcmElement &elem)
         // is added to the Length for this purpose.
         if (getLengthField() & 1)
         {
-            fValue = new Uint8[getLengthField() + 1 + pad]; // protocol error: odd value length
+#ifdef HAVE_STD__NOTHROW
+            // we want to use a non-throwing new here if available
+            // If the allocation fails, we report an EC_MemoryExhausted error
+            // back to the caller.
+            fValue = new (std::nothrow) Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+#else
+            fValue = new Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+#endif
             if (fValue)
                 fValue[getLengthField()] = 0;
-            setLengthField(getLengthField() + 1);           // make Length even
+            setLengthField(getLengthField() + 1);              // make Length even
         }
         else
+        {
+#ifdef HAVE_STD__NOTHROW
+            // we want to use a non-throwing new here if available.
+            // If the allocation fails, we report an EC_MemoryExhausted error
+            // back to the caller.
+            fValue = new (std::nothrow) Uint8[getLengthField() + pad];
+#else
             fValue = new Uint8[getLengthField() + pad];
+#endif
+        }
 
         if (!fValue)
             errorFlag = EC_MemoryExhausted;
@@ -112,7 +128,13 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 {
   if (this != &obj)
   {
+#ifdef HAVE_STD__NOTHROW
+    // if created with the nothrow version it must also be deleted with
+    // the nothrow version else memory error.
+    operator delete[] (fValue, std::nothrow);
+#else
     delete[] fValue;
+#endif
     delete fLoadValue;
     fLoadValue = NULL;
     fValue = NULL;
@@ -132,13 +154,29 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 
         if (getLengthField() & 1)
         {
-            fValue = new Uint8[getLengthField() + 1 + pad]; // protocol error: odd value length
+#ifdef HAVE_STD__NOTHROW
+            // we want to use a non-throwing new here if available.
+            // If the allocation fails, we report an EC_MemoryExhausted error
+            // back to the caller.
+            fValue = new (std::nothrow) Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+#else
+            fValue = new Uint8[getLengthField() + 1 + pad];    // protocol error: odd value length
+#endif
             if (fValue)
                 fValue[getLengthField()] = 0;
-            setLengthField(getLengthField() + 1);           // make Length even
+            setLengthField(getLengthField() + 1);              // make Length even
         }
         else
+        {
+#ifdef HAVE_STD__NOTHROW
+            // we want to use a non-throwing new here if available.
+            // If the allocation fails, we report an EC_MemoryExhausted error
+            // back to the caller.
+            fValue = new (std::nothrow) Uint8[getLengthField() + pad];
+#else
             fValue = new Uint8[getLengthField() + pad];
+#endif
+        }
 
         if (!fValue)
             errorFlag = EC_MemoryExhausted;
@@ -170,7 +208,13 @@ OFCondition DcmElement::copyFrom(const DcmObject& rhs)
 
 DcmElement::~DcmElement()
 {
+#ifdef HAVE_STD__NOTHROW
+    // if created with the nothrow version it must also be deleted with
+    // the nothrow version else memory error.
+    operator delete[] (fValue, std::nothrow);
+#else
     delete[] fValue;
+#endif
     delete fLoadValue;
 }
 
@@ -181,7 +225,13 @@ DcmElement::~DcmElement()
 OFCondition DcmElement::clear()
 {
     errorFlag = EC_Normal;
+#ifdef HAVE_STD__NOTHROW
+    // if created with the nothrow version it must also be deleted with
+    // the nothrow version else memory error.
+    operator delete[] (fValue, std::nothrow);
+#else
     delete[] fValue;
+#endif
     fValue = NULL;
     delete fLoadValue;
     fLoadValue = NULL;
@@ -222,7 +272,12 @@ OFCondition DcmElement::detachValueField(OFBool copy)
         {
             if (!fValue)
                 l_error = loadValue();
+#ifdef HAVE_STD__NOTHROW
+            // we want to use a non-throwing new here if available
+            Uint8 * newValue = new (std::nothrow) Uint8[getLengthField()];
+#else
             Uint8 * newValue = new Uint8[getLengthField()];
+#endif
             memcpy(newValue, fValue, size_t(getLengthField()));
             fValue = newValue;
         } else {
@@ -539,7 +594,7 @@ Uint8 *DcmElement::newValueField()
     Uint8 * value;
     /* if this element's lenght is odd */
     Uint32 lengthField = getLengthField();
-    if ( lengthField & 1)
+    if (lengthField & 1)
     {
         if (lengthField == DCM_UndefinedLength)
         {
@@ -568,7 +623,7 @@ Uint8 *DcmElement::newValueField()
         if (value)
             value[lengthField] = 0;
         /* enforce old (pre DCMTK 3.5.2) behaviour ? */
-        if (! dcmAcceptOddAttributeLength.get())
+        if (!dcmAcceptOddAttributeLength.get())
         {
             lengthField++;
             setLengthField(lengthField);           // make Length even
@@ -629,7 +684,14 @@ OFCondition DcmElement::changeValue(const void *value,
             if (!fValue)
                 loadValue();
             // allocate new memory for value
-            Uint8 * newValue = new Uint8[getLengthField() + num];
+#ifdef HAVE_STD__NOTHROW
+            // we want to use a non-throwing new here if available.
+            // If the allocation fails, we report an EC_MemoryExhausted error
+            // back to the caller.
+            Uint8 *newValue = new (std::nothrow) Uint8[getLengthField() + num];
+#else
+            Uint8 *newValue = new Uint8[getLengthField() + num];
+#endif
             if (!newValue)
                 errorFlag = EC_MemoryExhausted;
             if (errorFlag.good())
@@ -642,7 +704,13 @@ OFCondition DcmElement::changeValue(const void *value,
                 memcpy(newValue, fValue, size_t(getLengthField()));
                 // set parameter value in the extension
                 memcpy(&newValue[getLengthField()], OFstatic_cast(const Uint8 *, value), size_t(num));
+#ifdef HAVE_STD__NOTHROW
+                // if created with the nothrow version it must also be deleted with
+                // the nothrow version else memory error.
+                operator delete[] (fValue, std::nothrow);
+#else
                 delete[] fValue;
+#endif
                 fValue = newValue;
                 setLengthField(getLengthField() + num);
             }
@@ -797,7 +865,15 @@ OFCondition DcmElement::putValue(const void * newValue,
     errorFlag = EC_Normal;
 
     if (fValue)
+    {
+#ifdef HAVE_STD__NOTHROW
+        // if created with the nothrow version it must also be deleted with
+        // the nothrow version else memory error.
+        operator delete[] (fValue, std::nothrow);
+#else
         delete[] fValue;
+#endif
+    }
     fValue = NULL;
 
     if (fLoadValue)
@@ -852,7 +928,15 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
 {
     errorFlag = EC_Normal;
     if (fValue)
+    {
+#ifdef HAVE_STD__NOTHROW
+        // if created with the nothrow version it must also be deleted with
+        // the nothrow version else memory error.
+        operator delete[] (fValue, std::nothrow);
+#else
         delete[] fValue;
+#endif
+    }
     fValue = NULL;
     if (fLoadValue)
         delete fLoadValue;
@@ -938,7 +1022,13 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                     }
                 }
                 /* if there is already a value for this element, delete this value */
+#ifdef HAVE_STD__NOTHROW
+                // if created with the nothrow version it must also be deleted with
+                // the nothrow version else memory error.
+                operator delete[] (fValue, std::nothrow);
+#else
                 delete[] fValue;
+#endif
                 /* set the transfer state to ERW_inWork */
                 setTransferState(ERW_inWork);
             }
@@ -1436,7 +1526,13 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
 {
     if (factory && !(length & 1))
     {
+#ifdef HAVE_STD__NOTHROW
+        // if created with the nothrow version it must also be deleted with
+        // the nothrow version else memory error.
+        operator delete[] (fValue, std::nothrow);
+#else
         delete[] fValue;
+#endif
         fValue = 0;
         delete fLoadValue;
         fLoadValue = factory;
@@ -1579,6 +1675,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.73  2009-08-04 07:57:20  joergr
+** Consistently use non-throwing version of "new" and "delete[]" (if available)
+** in order to avoid memory creation/deletion mismatches.
+**
 ** Revision 1.72  2009-08-03 09:02:59  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

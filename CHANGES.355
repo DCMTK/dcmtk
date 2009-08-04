@@ -1,24 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.04 (riesmeier)
+
+- Consistently use non-throwing version of "new" and "delete[]" (if available)
+  in order to avoid memory creation/deletion mismatches.
+  Thanks to Andreas Barth <andreas.barth@bruker-biospin.de> for the report
+  and suggested fix.
+  Affects:
+
 **** Changes from 2009.08.04 (eichelberg)
 
 - Fixed incorrect code meaning string.
   Affects: dcmjpeg/libsrc/djcodece.cc
-  
+
 **** Changes from 2009.08.03 (eichelberg)
 
-- In order to reduce the probability of generating duplicate UIDs when one 
-  process is spawned immediately after termination of another one, and both 
-  use the same process ID and generate UIDs within the same second of 
-  system time (which may happen if a command line tool is implemented that 
-  just generates and prints a single UID and then terminates, and that tool 
-  is called repeatedly from a shell script), initialize the counter 
-  component of the UID with a sub-second fraction from the system time 
+- In order to reduce the probability of generating duplicate UIDs when one
+  process is spawned immediately after termination of another one, and both
+  use the same process ID and generate UIDs within the same second of
+  system time (which may happen if a command line tool is implemented that
+  just generates and prints a single UID and then terminates, and that tool
+  is called repeatedly from a shell script), initialize the counter
+  component of the UID with a sub-second fraction from the system time
   (microseconds on Posix systems, milliseconds on Win32).
   Affects: dcmdata/libsrc/dcuid.cc
-  
-- Fixed possible buffer overflow in UID generation code when UID root too 
+
+- Fixed possible buffer overflow in UID generation code when UID root too
   long. Now printing warning message to stderr when truncating a UID.
   Affects: dcmdata/libsrc/dcuid.cc
 
@@ -27,11 +35,11 @@ Changes between releases are documented here.
   Affects: dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/dul.cc
 
-- Fixed application crash due to dereferenced NULL pointer that affected 
+- Fixed application crash due to dereferenced NULL pointer that affected
   some SCP applications when connected by a non-DICOM tool such as nmap.
   Thanks to forum user <parigaud> for the bug report.
   Affects: dcmnet/libsrc/assoc.cc
-    
+
 **** Changes from 2009.08.03 (riesmeier)
 
 - Added methods that check whether a given string value conforms to the VR and
