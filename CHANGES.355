@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.04 (eichelberg)
+
+- Fixed incorrect code meaning string.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+  
 **** Changes from 2009.08.03 (eichelberg)
 
 - In order to reduce the probability of generating duplicate UIDs when one 

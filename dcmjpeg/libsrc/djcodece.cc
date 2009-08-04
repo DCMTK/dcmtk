@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-03-24 09:22:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-04 06:54:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -786,7 +786,7 @@ OFCondition DJCodecEncoder::updateDerivationDescription(
     DJCodecParameter *djcp = (DJCodecParameter *)cp;
 
     if (djcp->getTrueLosslessMode())
-      result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "121327", "Full fidelity image, uncompressed or lossless compressed");
+      result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "121327", "Full fidelity image");
     else
       result = DcmCodec::insertCodeSequence(dataset, DCM_DerivationCodeSequence, "DCM", "113040", "Lossy Compression");
   }
@@ -1467,6 +1467,9 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.27  2009-08-04 06:54:47  meichel
+ * Fixed incorrect code meaning string.
+ *
  * Revision 1.26  2009-03-24 09:22:07  onken
  * Removed doubled result variable declaration in true lossless encoder
  * which may have lad the function to return success even in case of errors.
