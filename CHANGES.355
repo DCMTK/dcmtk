@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.05 (riesmeier)
+
+- Replaced numeric tag by pre-defined tag name (DCM_PixelDataProviderURL).
+  Affects: dcmdata/libi2d/i2d.cc
+
+- Fixed various inconsistencies in condition text values and log messages.
+  Affects: dcmdata/libi2d/i2d.cc
+
 **** Changes from 2009.08.04 (riesmeier)
 
 - Consistently use non-throwing version of "new" and "delete[]" (if available)
@@ -43,7 +51,7 @@ Changes between releases are documented here.
   long. Now printing warning message to stderr when truncating a UID.
   Affects: dcmdata/libsrc/dcuid.cc
 
-- Fixed resource leak the in code creating forked child processes.
+- Fixed resource leak in the code creating forked child processes.
   Thanks to forum user <rhinojunk> for the bug report and fix.
   Affects: dcmnet/libsrc/assoc.cc
            dcmnet/libsrc/dul.cc

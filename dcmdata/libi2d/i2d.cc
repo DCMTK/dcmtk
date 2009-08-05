@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:23:23 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-05 08:51:02 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,6 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
   }
   else if (m_debug) printMessage(m_logStream, "Image2Dcm: Warning: No information regarding lossy compression available");
 
-
   // Insert SOP Class specific attributes (and values)
   cond = outPlug->convert(*resultDset);
   if (cond.bad())
@@ -163,7 +162,7 @@ OFCondition Image2Dcm::insertLatin1(DcmDataset *outputDset)
 {
   if (outputDset == NULL)
     return EC_IllegalParameter;
-  return outputDset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, "ISO_IR 100");
+  return outputDset->putAndInsertString(DCM_SpecificCharacterSet, "ISO_IR 100");
 }
 
 
@@ -172,7 +171,7 @@ void Image2Dcm::cleanupTemplate(DcmDataset *targetDset)
   if (!targetDset)
     return;
   // Remove any existing image pixel module attribute
-  targetDset->findAndDeleteElement(DcmTagKey(0x0028,0x7FE0)); // Pixel Data Provider URL (JPIP)
+  targetDset->findAndDeleteElement(DCM_PixelDataProviderURL);
   targetDset->findAndDeleteElement(DCM_PhotometricInterpretation);
   targetDset->findAndDeleteElement(DCM_SamplesPerPixel);
   targetDset->findAndDeleteElement(DCM_Rows);
@@ -227,71 +226,70 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
   srcDset->findAndGetOFString(DCM_PatientsName, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_PatientsName, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Patients Name to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient's Name to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_PatientID, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_PatientID, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Patient ID to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient ID to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_PatientsSex, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_PatientsSex, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Patient's Sex to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient's Sex to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_PatientsBirthDate, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_PatientsBirthDate, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Patient's Birth Date to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Patient's Birth Date to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_SpecificCharacterSet, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_SpecificCharacterSet, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Specific Character Set to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Specific Character Set to file");
   value.clear();
 
   // Study level attributes (type 2 except Study Instance UID)
-
   cond = srcDset->findAndGetOFString(DCM_StudyInstanceUID, value);
   if (cond.bad())
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to read Study Instance UID (type 1) from file");
   cond = targetDset->putAndInsertOFStringArray(DCM_StudyInstanceUID, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Study Instance UID to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Study Instance UID to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_StudyDate, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_StudyDate, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Study Date to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Study Date to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_StudyTime, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_StudyTime, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Study Time to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Study Time to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_ReferringPhysiciansName, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_ReferringPhysiciansName, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Referring Physician's Name to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Referring Physician's Name to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_StudyID, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_StudyID, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Study ID to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Study ID to file");
   value.clear();
 
   srcDset->findAndGetOFString(DCM_AccessionNumber, value);
   cond = targetDset->putAndInsertOFStringArray(DCM_AccessionNumber, value);
   if (cond.bad())
-    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Accession Number to file");
+    return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to trite Accession Number to file");
   value.clear();
 
   // Series Level attributes (type 2 except Series Instance UID which is type 1)
@@ -303,20 +301,20 @@ OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
       return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to read Series Instance UID (type 1) from file");
     cond = targetDset->putAndInsertOFStringArray(DCM_SeriesInstanceUID, value);
     if (cond.bad())
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Series Instance UID to file");
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Series Instance UID to file");
     value.clear();
 
     srcDset->findAndGetOFString(DCM_SeriesNumber, value);
     cond = targetDset->putAndInsertOFStringArray(DCM_SeriesNumber, value);
     if (cond.bad())
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Series Number to file");
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Series Number to file");
     value.clear();
 
     // General Equipment Module attributes
     srcDset->findAndGetOFString(DCM_Manufacturer, value);
     cond = targetDset->putAndInsertOFStringArray(DCM_Manufacturer, value);
     if (cond.bad())
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Manufacturer to file");
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Manufacturer to file");
     value.clear();
   }
 
@@ -330,7 +328,7 @@ OFCondition Image2Dcm::incrementInstanceNumber(DcmDataset *targetDset)
   if (m_incInstNoFromFile)
   {
     if (m_debug)
-      printMessage(m_logStream, "Image2Dcm: Trying to read and increment instance number");
+      printMessage(m_logStream, "Image2Dcm: Trying to read and increment Instance Number");
     Sint32 instanceNumber;
     if ( targetDset->findAndGetSint32(DCM_InstanceNumber, instanceNumber).good() )
     {
@@ -365,7 +363,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
       dcmGenerateUniqueIdentifier(newUID, SITE_SERIES_UID_ROOT);
       cond = dset->putAndInsertOFStringArray(DCM_SeriesInstanceUID, newUID);
       if (cond.bad())
-        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Series Instance UID to file");
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Series Instance UID to file");
     }
     value.clear();
   }
@@ -380,7 +378,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
       dcmGenerateUniqueIdentifier(newUID, SITE_STUDY_UID_ROOT);
       cond = dset->putAndInsertOFStringArray(DCM_StudyInstanceUID, newUID);
       if (cond.bad())
-        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write Study Instance UID to file");
+        return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write Study Instance UID to file");
     }
     value.clear();
   }
@@ -393,7 +391,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
     dcmGenerateUniqueIdentifier(newUID, SITE_INSTANCE_UID_ROOT);
     cond = dset->putAndInsertOFStringArray(DCM_SOPInstanceUID, newUID);
     if (cond.bad())
-      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable write SOP Instance UID to file");
+      return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write SOP Instance UID to file");
   }
 
   return EC_Normal;
@@ -481,7 +479,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
   }
 
   if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Inserting Image Pixel module information");
+    printMessage(m_logStream, "Image2Dcm: Inserting Image Pixel Module information");
 
   cond = dset->putAndInsertUint16(DCM_SamplesPerPixel, samplesPerPixel);
   if (cond.bad())
@@ -565,7 +563,6 @@ OFString Image2Dcm::isValid(DcmDataset& dset) const
      takes care about this attribute
    */
   err += checkAndInventType2Attrib(DCM_PatientOrientation, &dset);
-
 
   // Image Pixel Module
   err += checkAndInventType1Attrib(DCM_Rows, &dset);
@@ -739,6 +736,10 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.8  2009-08-05 08:51:02  joergr
+ * Replaced numeric tag by pre-defined tag name (DCM_PixelDataProviderURL).
+ * Fixed various inconsistencies in condition text values and log messages.
+ *
  * Revision 1.7  2009-07-16 14:23:23  onken
  * Extended Image2Dcm engine to also work for uncompressed pixel data input.
  *
