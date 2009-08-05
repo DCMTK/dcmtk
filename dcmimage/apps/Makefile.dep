@@ -130,6 +130,9 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diregbas.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/dcmimage/dipitiff.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
+  ../include/dcmtk/dcmimage/dipipng.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h
 dcmquant.o: dcmquant.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \

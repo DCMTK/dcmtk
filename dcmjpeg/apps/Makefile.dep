@@ -363,6 +363,9 @@ dcmj2pnm.o: dcmj2pnm.cc ../../dcmimage/apps/dcm2pnm.cc \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../include/dcmtk/dcmjpeg/dipijpeg.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
+  ../../dcmimage/include/dcmtk/dcmimage/dipitiff.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diplugin.h \
+  ../../dcmimage/include/dcmtk/dcmimage/dipipng.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h
 dcmmkdir.o: dcmmkdir.cc ../../dcmdata/apps/dcmgpdir.cc \
   ../../config/include/dcmtk/config/osconfig.h \
