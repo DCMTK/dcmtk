@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-08-05 10:52:49 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-#define SHORTCOL 4
+#define SHORTCOL 3
 #define LONGCOL 21
 
 int main(int argc, char *argv[])
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   OFBool           opt_uidcreation = OFFalse;
   OFBool           opt_secondarycapture = OFFalse;
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Encode DICOM file to RLE transfer syntax", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Encode DICOM file to RLE transfer syntax", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -102,11 +102,11 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                        "print expanded command line arguments");
-   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+    cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                       "print expanded command line arguments");
+    cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
+    cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
@@ -114,28 +114,28 @@ int main(int argc, char *argv[])
       cmd.addOption("--read-file-only",      "+fo",    "read file format only");
       cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
     cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",       "-t=",    "use TS recognition (default)");
-     cmd.addOption("--read-xfer-detect",     "-td",    "ignore TS specified in the file meta header");
-     cmd.addOption("--read-xfer-little",     "-te",    "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",        "-tb",    "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit",   "-ti",    "read with implicit VR little endian TS");
+      cmd.addOption("--read-xfer-auto",      "-t=",    "use TS recognition (default)");
+      cmd.addOption("--read-xfer-detect",    "-td",    "ignore TS specified in the file meta header");
+      cmd.addOption("--read-xfer-little",    "-te",    "read with explicit VR little endian TS");
+      cmd.addOption("--read-xfer-big",       "-tb",    "read with explicit VR big endian TS");
+      cmd.addOption("--read-xfer-implicit",  "-ti",    "read with implicit VR little endian TS");
 
   cmd.addGroup("encapsulated pixel data encoding options:");
     cmd.addSubGroup("pixel data fragmentation:");
-     cmd.addOption("--fragment-per-frame",   "+ff",    "encode each frame as one fragment (default)");
-     cmd.addOption("--fragment-size",        "+fs", 1, "[s]ize: integer",
+      cmd.addOption("--fragment-per-frame",  "+ff",    "encode each frame as one fragment (default)");
+      cmd.addOption("--fragment-size",       "+fs", 1, "[s]ize: integer",
                                                        "limit fragment size to s kbytes (non-standard)");
     cmd.addSubGroup("basic offset table encoding:");
-     cmd.addOption("--offset-table-create",  "+ot",    "create offset table (default)");
-     cmd.addOption("--offset-table-empty",   "-ot",    "leave offset table empty");
+      cmd.addOption("--offset-table-create", "+ot",    "create offset table (default)");
+      cmd.addOption("--offset-table-empty",  "-ot",    "leave offset table empty");
 
     cmd.addSubGroup("SOP Class UID:");
-     cmd.addOption("--class-default",        "+cd",    "keep SOP Class UID (default)");
-     cmd.addOption("--class-sc",             "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
+      cmd.addOption("--class-default",       "+cd",    "keep SOP Class UID (default)");
+      cmd.addOption("--class-sc",            "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
 
     cmd.addSubGroup("SOP Instance UID:");
-     cmd.addOption("--uid-never",            "+un",    "never assign new UID (default)");
-     cmd.addOption("--uid-always",           "+ua",    "always assign new UID");
+      cmd.addOption("--uid-never",           "+un",    "never assign new UID (default)");
+      cmd.addOption("--uid-always",          "+ua",    "always assign new UID");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("post-1993 value representations:");
@@ -229,7 +229,6 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--offset-table-empty")) opt_createOffsetTable = OFFalse;
       cmd.endOptionBlock();
 
-
       cmd.beginOptionBlock();
       if (cmd.findOption("--class-default")) opt_secondarycapture = OFFalse;
       if (cmd.findOption("--class-sc")) opt_secondarycapture = OFTrue;
@@ -274,7 +273,6 @@ int main(int argc, char *argv[])
           opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
-
     }
 
     if (opt_debugMode)
@@ -375,6 +373,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
+ * Revision 1.18  2009-08-05 10:52:49  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ *
  * Revision 1.17  2009-04-21 14:02:49  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

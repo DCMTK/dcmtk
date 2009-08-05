@@ -22,8 +22,8 @@
  *  Purpose: Decompress RLE-compressed DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2009-08-05 10:52:49 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-#define SHORTCOL 4
+#define SHORTCOL 3
 #define LONGCOL 21
 
 int main(int argc, char *argv[])
@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
   OFBool opt_uidcreation = OFFalse;
   OFBool opt_reversebyteorder = OFFalse;
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Decode RLE-compressed DICOM file", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Decode RLE-compressed DICOM file", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -101,25 +101,25 @@ int main(int argc, char *argv[])
   cmd.addParam("dcmfile-out", "DICOM output filename");
 
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                        "print expanded command line arguments");
-   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+    cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
+    cmd.addOption("--arguments",                       "print expanded command line arguments");
+    cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
+    cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
 
-   cmd.addGroup("input options:");
+  cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
-     cmd.addOption("--read-file",            "+f",     "read file format or data set (default)");
-     cmd.addOption("--read-file-only",       "+fo",    "read file format only");
-     cmd.addOption("--read-dataset",         "-f",     "read data set without file meta information");
+      cmd.addOption("--read-file",           "+f",     "read file format or data set (default)");
+      cmd.addOption("--read-file-only",      "+fo",    "read file format only");
+      cmd.addOption("--read-dataset",        "-f",     "read data set without file meta information");
 
   cmd.addGroup("processing options:");
     cmd.addSubGroup("SOP Instance UID:");
-     cmd.addOption("--uid-default",          "+ud",    "keep same SOP Instance UID (default)");
-     cmd.addOption("--uid-always",           "+ua",    "always assign new UID");
+      cmd.addOption("--uid-default",         "+ud",    "keep same SOP Instance UID (default)");
+      cmd.addOption("--uid-always",          "+ua",    "always assign new UID");
     cmd.addSubGroup("RLE byte segment order:");
-     cmd.addOption("--byte-order-default",   "+bd",    "most significant byte first (default)");
-     cmd.addOption("--byte-order-reverse",   "+br",    "least significant byte first");
+      cmd.addOption("--byte-order-default",  "+bd",    "most significant byte first (default)");
+      cmd.addOption("--byte-order-reverse",  "+br",    "least significant byte first");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -255,7 +255,6 @@ int main(int argc, char *argv[])
           opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
-
     }
 
     if (opt_debugMode)
@@ -341,6 +340,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
+ * Revision 1.19  2009-08-05 10:52:49  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ *
  * Revision 1.18  2009-04-21 14:02:49  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

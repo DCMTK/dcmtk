@@ -51,14 +51,14 @@ dcmfile-out  DICOM output filename
 \verbatim
 input file format:
 
-  +f    --read-file
-          read file format or data set (default)
+  +f   --read-file
+         read file format or data set (default)
 
-  +fo   --read-file-only
-          read file format only
+  +fo  --read-file-only
+         read file format only
 
-  -f    --read-dataset
-          read data set without file meta information
+  -f   --read-dataset
+         read data set without file meta information
 
   # This option allows to decompress RLE compressed DICOM objects that have
   # been stored as dataset without meta-header. Such a thing should not exist
@@ -78,11 +78,11 @@ SOP Instance UID:
 
 RLE byte segment order:
 
-  +bd   --byte-order-default
-          most significant byte first (default)
+  +bd  --byte-order-default
+         most significant byte first (default)
 
-  +br   --byte-order-reverse
-          least significant byte first
+  +br  --byte-order-reverse
+         least significant byte first
 
   # This option allows to decompress RLE compressed DICOM files in which the
   # order of byte segments is encoded in incorrect order. This only affects

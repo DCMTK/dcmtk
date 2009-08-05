@@ -10,7 +10,10 @@ Changes between releases are documented here.
   Affects: dcmdata/libi2d/i2d.cc
 
 - Fixed various issues with syntax usage (e.g. layout and formatting).
-  Affects: dcmjpeg/apps/dcmcjpeg.cc
+  Affects: dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/docs/dcmdrle.man
+           dcmjpeg/apps/dcmcjpeg.cc
            dcmjpeg/apps/dcmdjpeg.cc
            dcmjpeg/docs/dcmcjpeg.man
            dcmjpeg/docs/dcmdjpeg.man
