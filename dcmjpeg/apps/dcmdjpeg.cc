@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:07:14 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2009-08-05 10:30:00 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // ********************************************
 
 
-#define SHORTCOL 4
+#define SHORTCOL 3
 #define LONGCOL 21
 
 int main(int argc, char *argv[])
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
   E_PlanarConfiguration opt_planarconfig = EPC_default;
   OFBool opt_predictor6WorkaroundEnable = OFFalse;
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Decode JPEG-compressed DICOM file", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Decode JPEG-compressed DICOM file", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--uid-always",          "+ua",    "always assign new UID");
 
     cmd.addSubGroup("workaround options for incorrect JPEG encodings:");
-      cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6.");
+      cmd.addOption("--workaround-pred6",    "+w6",    "enable workaround for JPEG lossless images\nwith overflow in predictor 6");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -380,6 +380,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.21  2009-08-05 10:30:00  joergr
+ * Fixed various issues with syntax usage (e.g. layout and formatting).
+ *
  * Revision 1.20  2009-04-21 14:07:14  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

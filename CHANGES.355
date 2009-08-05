@@ -9,6 +9,12 @@ Changes between releases are documented here.
 - Fixed various inconsistencies in condition text values and log messages.
   Affects: dcmdata/libi2d/i2d.cc
 
+- Fixed various issues with syntax usage (e.g. layout and formatting).
+  Affects: dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+
 **** Changes from 2009.08.04 (riesmeier)
 
 - Consistently use non-throwing version of "new" and "delete[]" (if available)
