@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveSCP
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-06 15:25:43 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-05 14:54:54 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -480,11 +480,10 @@ void DcmQueryRetrieveSCP::refuseAnyStorageContexts(T_ASC_Association * assoc)
     T_ASC_PresentationContextID pid;
 
     for (i = 0; i < numberOfAllDcmStorageSOPClassUIDs; i++) {
-        pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
-        if (pid != 0) {
-            /* refuse */
-            ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
-        }
+    	do {   		
+          pid = ASC_findAcceptedPresentationContextID(assoc, dcmAllStorageSOPClassUIDs[i]);
+          if (pid != 0) ASC_refusePresentationContext(assoc->params, pid, ASC_P_USERREJECTION);
+        } while (pid != 0); // repeat as long as we find presentation contexts for this SOP class - there might be multiple ones.
     }
 }
 
@@ -1148,6 +1147,11 @@ void DcmQueryRetrieveSCP::setDatabaseFlags(
 /*
  * CVS Log
  * $Log: dcmqrsrv.cc,v $
+ * Revision 1.4  2009-08-05 14:54:54  meichel
+ * Fixed bug that caused dcmqrscp to accept image transmissions to read-only
+ *   storage areas when multiple presentation contexts were proposed for a
+ *   single SOP class.
+ *
  * Revision 1.3  2009-02-06 15:25:43  joergr
  * Added support for JPEG-LS and MPEG2 transfer syntaxes.
  *
