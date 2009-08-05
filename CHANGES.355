@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.05 (eichelberg)
+
+- Fixed bug that caused dcmqrscp to accept image transmissions to read-only 
+  storage areas when multiple presentation contexts were proposed for a 
+  single SOP class.
+  Affects: dcmqrdb/libsrc/dcmqrsrv.cc
+
+- Modified some output messages to make their meaning clearer.
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
 **** Changes from 2009.08.05 (riesmeier)
 
 - Replaced numeric tag by pre-defined tag name (DCM_PixelDataProviderURL).
@@ -42,6 +52,7 @@ Changes between releases are documented here.
 **** Changes from 2009.08.04 (eichelberg)
 
 - Fixed incorrect code meaning string.
+  Thanks to Mathieu Malaterre for the bug report.
   Affects: dcmjpeg/libsrc/djcodece.cc
 
 **** Changes from 2009.08.03 (eichelberg)

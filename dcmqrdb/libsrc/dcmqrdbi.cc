@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2008, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
+ *  Update Date:      $Date: 2009-08-05 14:55:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2559,10 +2559,10 @@ void DcmQueryRetrieveIndexDatabaseHandle::enableQuotaSystem(OFBool enable)
 OFCondition DcmQueryRetrieveIndexDatabaseHandle::deleteImageFile(char* imgFile)
 {
     if (!quotaSystemEnabled) {
-    CERR << "DB QUOTA: disabled: retaining: " << imgFile << OFendl;
-    return EC_Normal;
+      CERR << "file delete operations are disabled, keeping file: " << imgFile << " despite duplicate SOP Instance UID." << OFendl;
+      return EC_Normal;
     } else {
-    CERR << "DB QUOTA: enabled: deleting: " << imgFile << OFendl;
+      CERR << "Deleting file: " << imgFile << " due to quota or duplicate SOP instance UID." << OFendl;
     }
 
 #ifdef LOCK_IMAGE_FILES
@@ -3470,6 +3470,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.13  2009-08-05 14:55:13  meichel
+ * Modified some output messages to make their meaning clearer.
+ *
  * Revision 1.12  2008-04-30 12:38:43  meichel
  * Fixed compile errors due to changes in attribute tag names
  *
