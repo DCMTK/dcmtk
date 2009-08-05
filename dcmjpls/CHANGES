@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.05 (riesmeier)
+
+- Made syntax usage more consistent with other DCMTK compression tools.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+
+- Fixed wrong reference to JPEG-LS implementation and added revision number.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+
 **** Changes from 2009.08.03 (riesmeier)
 
 - Replaced checking of macro WIN32 by _WIN32.

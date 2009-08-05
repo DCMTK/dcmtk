@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 10:18:37 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-05 10:24:54 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 LICENSE_FILE_DECLARATIONS
 #endif
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Encode DICOM file to JPEG-LS transfer syntax", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Encode DICOM file to JPEG-LS transfer syntax", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -152,7 +152,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
       cmd.addOption("--read-file",              "+f",     "read file format or data set (default)");
       cmd.addOption("--read-file-only",         "+fo",    "read file format only");
       cmd.addOption("--read-dataset",           "-f",     "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax:", LONGCOL, SHORTCOL);
+    cmd.addSubGroup("input transfer syntax:");
       cmd.addOption("--read-xfer-auto",         "-t=",    "use TS recognition (default)");
       cmd.addOption("--read-xfer-detect",       "-td",    "ignore TS specified in the file meta header");
       cmd.addOption("--read-xfer-little",       "-te",    "read with explicit VR little endian TS");
@@ -160,19 +160,17 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
       cmd.addOption("--read-xfer-implicit",     "-ti",    "read with implicit VR little endian TS");
 
   cmd.addGroup("JPEG-LS encoding options:");
-    cmd.addSubGroup("JPEG-LS process options:");
+    cmd.addSubGroup("JPEG-LS process:");
       cmd.addOption("--encode-lossless",        "+el",    "encode JPEG-LS lossless (default)");
       cmd.addOption("--encode-nearlossless",    "+en",    "encode JPEG-LS TS near-lossless (NEAR: 2)");
-
-    cmd.addSubGroup("JPEG-LS bit rate options (near-lossless only):");
+    cmd.addSubGroup("JPEG-LS bit rate (near-lossless only):");
       cmd.addOption("--max-deviation",          "+md", 1, "[d]eviation: integer (default: 2)",
-                                                          "defines maximum deviation for an encoded Pixel\nwhen using Near-Lossless Mode");
-
-    cmd.addSubGroup("lossless compression options:");
+                                                          "defines maximum deviation for an encoded pixel");
+    cmd.addSubGroup("lossless compression:");
       cmd.addOption("--prefer-raw",             "+pr",    "prefer raw encoder mode (default)");
       cmd.addOption("--prefer-cooked",          "+pc",    "prefer cooked encoder mode ");
 
-    cmd.addSubGroup("JPEG-LS compression options:");
+    cmd.addSubGroup("JPEG-LS compression:");
       cmd.addOption("--threshold1",             "+t1", 1, "[t]hreshhold: integer (default for 8 bpp: 3)",
                                                           "set JPEG-LS encoding parameter threshold 1");
       cmd.addOption("--threshold2",             "+t2", 1, "[t]hreshhold: integer (default for 8 bpp: 7)",
@@ -183,47 +181,43 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
                                                           "set JPEG-LS encoding parameter reset");
       cmd.addOption("--limit",                  "+lm", 1, "[l]imit: integer (default: 0)",
                                                           "set JPEG-LS encoding parameter limit");
-
-    cmd.addSubGroup("JPEG-LS interleave options:");
-      cmd.addOption("--interleave-line",        "+il",    "Force line-interleaved JPEG-LS images (default)");
-      cmd.addOption("--interleave-sample",      "+is",    "Force sample-interleaved JPEG-LS images");
-      cmd.addOption("--interleave-none",        "+in",    "Force uninterleaved JPEG-LS images");
-      cmd.addOption("--interleave-default",     "+iv",    "Use the fastest possible interleave mode");
+    cmd.addSubGroup("JPEG-LS interleave:");
+      cmd.addOption("--interleave-line",        "+il",    "force line-interleaved JPEG-LS images (default)");
+      cmd.addOption("--interleave-sample",      "+is",    "force sample-interleaved JPEG-LS images");
+      cmd.addOption("--interleave-none",        "+in",    "force uninterleaved JPEG-LS images");
+      cmd.addOption("--interleave-default",     "+iv",    "use the fastest possible interleave mode");
 
   cmd.addGroup("encapsulated pixel data encoding options:");
-    cmd.addSubGroup("pixel data fragmentation options:");
+    cmd.addSubGroup("pixel data fragmentation:");
       cmd.addOption("--fragment-per-frame",     "+ff",    "encode each frame as one fragment (default)");
       cmd.addOption("--fragment-size",          "+fs", 1, "[s]ize: integer",
                                                           "limit fragment size to s kbytes");
-    cmd.addSubGroup("basic offset table encoding options:");
+    cmd.addSubGroup("basic offset table encoding:");
       cmd.addOption("--offset-table-create",    "+ot",    "create offset table (default)");
       cmd.addOption("--offset-table-empty",     "-ot",    "leave offset table empty");
-
-
-     cmd.addSubGroup("SOP Class UID options:");
-       cmd.addOption("--class-default",         "+cd",    "keep SOP Class UID (default)");
-       cmd.addOption("--class-sc",              "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
-
-     cmd.addSubGroup("SOP Instance UID options:");
-       cmd.addOption("--uid-default",           "+ud",    "assign new UID if lossy compression (default)");
-       cmd.addOption("--uid-always",            "+ua",    "always assign new UID");
+    cmd.addSubGroup("SOP Class UID:");
+      cmd.addOption("--class-default",          "+cd",    "keep SOP Class UID (default)");
+      cmd.addOption("--class-sc",               "+cs",    "convert to Secondary Capture Image\n(implies --uid-always)");
+    cmd.addSubGroup("SOP Instance UID:");
+      cmd.addOption("--uid-default",            "+ud",    "assign new UID if lossy compression (default)");
+      cmd.addOption("--uid-always",             "+ua",    "always assign new UID");
        cmd.addOption("--uid-never",             "+un",    "never assign new UID");
 
-   cmd.addGroup("output options:");
-     cmd.addSubGroup("post-1993 value representations:");
-       cmd.addOption("--enable-new-vr",         "+u",     "enable support for new VRs (UN/UT) (default)");
-       cmd.addOption("--disable-new-vr",        "-u",     "disable support for new VRs, convert to OB");
-     cmd.addSubGroup("group length encoding:");
-       cmd.addOption("--group-length-recalc",   "+g=",    "recalculate group lengths if present (default)");
-       cmd.addOption("--group-length-create",   "+g",     "always write with group length elements");
-       cmd.addOption("--group-length-remove",   "-g",     "always write without group length elements");
-     cmd.addSubGroup("length encoding in sequences and items:");
-       cmd.addOption("--length-explicit",       "+e",     "write with explicit lengths (default)");
-       cmd.addOption("--length-undefined",      "-e",     "write with undefined lengths");
-     cmd.addSubGroup("data set trailing padding:");
-       cmd.addOption("--padding-retain",        "-p=",    "do not change padding (default)");
-       cmd.addOption("--padding-off",           "-p",     "no padding");
-       cmd.addOption("--padding-create",        "+p",  2, "[f]ile-pad [i]tem-pad: integer",
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("post-1993 value representations:");
+      cmd.addOption("--enable-new-vr",          "+u",     "enable support for new VRs (UN/UT) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",     "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("group length encoding:");
+      cmd.addOption("--group-length-recalc",    "+g=",    "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create",    "+g",     "always write with group length elements");
+      cmd.addOption("--group-length-remove",    "-g",     "always write without group length elements");
+    cmd.addSubGroup("length encoding in sequences and items:");
+      cmd.addOption("--length-explicit",        "+e",     "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",       "-e",     "write with undefined lengths");
+    cmd.addSubGroup("data set trailing padding:");
+      cmd.addOption("--padding-retain",         "-p=",    "do not change padding (default)");
+      cmd.addOption("--padding-off",            "-p",     "no padding");
+      cmd.addOption("--padding-create",         "+p",  2, "[f]ile-pad [i]tem-pad: integer",
                                                           "align file on multiple of f bytes\nand items on multiple of i byte");
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -243,7 +237,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          COUT << "- " << "SPMG/JPEG-LS Implementation, Version 2.1" << OFendl;
+          COUT << "- " << "CharLS, Revision 25004 (modified)" << OFendl;
           return 0;
         }
       }
@@ -309,15 +303,13 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       cmd.endOptionBlock();
 
       // JPEG-LS bit rate options
-      cmd.beginOptionBlock();
-
       if (cmd.findOption("--max-deviation"))
       {
         app.checkConflict("--max-deviation", "--encode-lossless", opt_oxfer == EXS_JPEGLSLossless);
         app.checkValue(cmd.getValueAndCheckMin(opt_nearlossless_deviation, 1));
       }
-      cmd.endOptionBlock();
 
+      // lossless compression options
       cmd.beginOptionBlock();
       if (cmd.findOption("--prefer-raw"))
       {
@@ -554,6 +546,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.4  2009-08-05 10:24:54  joergr
+ * Made syntax usage more consistent with other DCMTK compression tools.
+ * Fixed wrong reference to JPEG-LS implementation and added revision number.
+ *
  * Revision 1.3  2009-07-31 10:18:37  meichel
  * Line interleaved JPEG-LS mode now default. This mode works correctly
  *   when decompressing images with the LOCO-I reference implementation.

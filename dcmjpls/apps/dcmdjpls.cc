@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-05 10:24:54 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
 #include "dcmtk/dcmimage/diregist.h"  /* include to support color images */
-#include "dcmtk/dcmjpls/djlsutil.h"   /* for dcmjp2k/jpgls typedefs */
+#include "dcmtk/dcmjpls/djlsutil.h"   /* for dcmjpgls typedefs */
 #include "dcmtk/dcmjpls/djdecode.h"   /* for JPEG-LS decoder */
 
 #ifdef WITH_ZLIB
@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
   E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
 
-  //Parameter
+  // parameter
   JLS_UIDCreation opt_uidcreation = EJLSUC_default;
   JLS_PlanarConfiguration opt_planarconfig = EJLSPC_restore;
   OFBool opt_ignoreOffsetTable = OFFalse;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 LICENSE_FILE_DECLARATIONS
 #endif
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Decode JPEG-LS compressed DICOM file", rcsid);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Decode JPEG-LS compressed DICOM file", rcsid);
   OFCommandLine cmd;
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
@@ -131,18 +131,16 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
      cmd.addOption("--read-dataset",            "-f",     "read data set without file meta information");
 
   cmd.addGroup("processing options:");
-    cmd.addSubGroup("planar configuration options:");
+    cmd.addSubGroup("planar configuration:");
       cmd.addOption("--planar-restore",         "+pr",    "restore original planar configuration (default)");
       cmd.addOption("--planar-auto",            "+pa",    "automatically determine planar configuration\nfrom SOP class and color space");
       cmd.addOption("--color-by-pixel",         "+px",    "always store color-by-pixel");
       cmd.addOption("--color-by-plane",         "+pl",    "always store color-by-plane");
-
-    cmd.addSubGroup("other processing options:");
-      cmd.addOption("--ignore-offsettable",     "+io",    "ignore offset table when decompressing");
-
-    cmd.addSubGroup("SOP Instance UID options:");
+    cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-default",            "+ud",    "keep same SOP Instance UID (default)");
       cmd.addOption("--uid-always",             "+ua",    "always assign new UID");
+    cmd.addSubGroup("other processing options:");
+      cmd.addOption("--ignore-offsettable",     "+io",    "ignore offset table when decompressing");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
@@ -186,7 +184,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          COUT << "- " << "SPMG/JPEG-LS Implementation, Version 2.1" << OFendl;
+          COUT << "- " << "CharLS, Revision 25004 (modified)" << OFendl;
           return 0;
         }
       }
@@ -212,12 +210,12 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       if (cmd.findOption("--color-by-plane")) opt_planarconfig = EJLSPC_colorByPlane;
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--ignore-offsettable")) opt_ignoreOffsetTable = OFTrue;
-
       cmd.beginOptionBlock();
       if (cmd.findOption("--uid-default")) opt_uidcreation = EJLSUC_default;
       if (cmd.findOption("--uid-always")) opt_uidcreation = EJLSUC_always;
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--ignore-offsettable")) opt_ignoreOffsetTable = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file"))
@@ -375,6 +373,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpls.cc,v $
+ * Revision 1.2  2009-08-05 10:24:54  joergr
+ * Made syntax usage more consistent with other DCMTK compression tools.
+ * Fixed wrong reference to JPEG-LS implementation and added revision number.
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *
