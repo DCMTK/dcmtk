@@ -153,14 +153,14 @@ quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
 allows to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
-<em><datadir>/dumppat.txt</em>).
+<em>\<datadir\>/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcm2pdf utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em><datadir>/dicom.dic</em> will be loaded unless the dictionary is built
+<em>\<datadir\>/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -177,6 +177,6 @@ It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2007-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2007-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */

@@ -152,14 +152,14 @@ quotation marks) prior to any further evaluation.  Please note that a command
 file cannot contain another command file.  This simple but effective approach
 allows to summarize common combinations of options/parameters and avoids
 longish and confusing command lines (an example is provided in file
-<em><datadir>/dumppat.txt</em>).
+<em>\<datadir\>/dumppat.txt</em>).
 
 \section files FILES
 
-<em><datadir>/camera.lut</em> - sample characteristics file of a camera
-\n<em><datadir>/monitor.lut</em> - sample characteristics file of a monitor
-\n<em><datadir>/printer.lut</em> - sample characteristics file of a printer
-\n<em><datadir>/scanner.lut</em> - sample characteristics file of a scanner
+<em>\<datadir\>/camera.lut</em> - sample characteristics file of a camera
+\n<em>\<datadir\>/monitor.lut</em> - sample characteristics file of a monitor
+\n<em>\<datadir\>/printer.lut</em> - sample characteristics file of a printer
+\n<em>\<datadir\>/scanner.lut</em> - sample characteristics file of a scanner
 
 \section see_also SEE ALSO
 

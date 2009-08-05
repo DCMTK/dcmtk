@@ -45,10 +45,10 @@ sample characteristics file monitors, cameras, printers and scanners.
 
 \section files FILES
 
-<em><datadir>/camera.lut</em> - sample characteristics file of a camera
-\n<em><datadir>/monitor.lut</em> - sample characteristics file of a monitor
-\n<em><datadir>/printer.lut</em> - sample characteristics file of a printer
-\n<em><datadir>/scanner.lut</em> - sample characteristics file of a scanner
+<em>\<datadir\>/camera.lut</em> - sample characteristics file of a camera
+\n<em>\<datadir\>/monitor.lut</em> - sample characteristics file of a monitor
+\n<em>\<datadir\>/printer.lut</em> - sample characteristics file of a printer
+\n<em>\<datadir\>/scanner.lut</em> - sample characteristics file of a scanner
 
 \section see_also SEE ALSO
 
@@ -56,6 +56,6 @@ sample characteristics file monitors, cameras, printers and scanners.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+Copyright (C) 2002-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 
 */
