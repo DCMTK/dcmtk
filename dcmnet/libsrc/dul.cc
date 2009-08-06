@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2009-08-03 15:32:35 $
+** Last Update:         $Author: meichel $, $Date: 2009-08-06 16:42:58 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.80 $
+** Revision:            $Revision: 1.81 $
 ** Status:              $State: Exp $
 */
 
@@ -608,7 +608,8 @@ DUL_ReceiveAssociationRQ(
     if (cond.bad())
         return cond;
 
-    cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
+    cond = PRV_NextPDUType(association, block, timeout, &pduType); 
+
     if (cond == DUL_NETWORKCLOSED)
         event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
@@ -2636,6 +2637,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.81  2009-08-06 16:42:58  meichel
+** Fixed bug in DUL_ReceiveAssociationRQ() that under very rare circumstances
+**   caused ASC_receiveAssociation() to return successfully although no DICOM
+**   association request had been received.
+**
 ** Revision 1.80  2009-08-03 15:32:35  meichel
 ** Fixed resource leak the in code creating forked child processes
 **

@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.06 (eichelberg)
 
+- Fixed bug in DUL_ReceiveAssociationRQ() that under very rare circumstances
+  caused ASC_receiveAssociation() to return successfully although no DICOM
+  association request had been received.
+  Thanks to Markus Sabin for the bug report and bug fix.
+  Affects: dcmnet/libsrc/dul.cc  
+  
 - Use of std::nothrow delete now conditional on compiler support for this feature
   Affects: dcmdata/libsrc/dcelem.cc
     
