@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-04 07:57:20 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-06 15:57:17 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
 {
   if (this != &obj)
   {
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
     // if created with the nothrow version it must also be deleted with
     // the nothrow version else memory error.
     operator delete[] (fValue, std::nothrow);
@@ -208,7 +208,7 @@ OFCondition DcmElement::copyFrom(const DcmObject& rhs)
 
 DcmElement::~DcmElement()
 {
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
     // if created with the nothrow version it must also be deleted with
     // the nothrow version else memory error.
     operator delete[] (fValue, std::nothrow);
@@ -225,7 +225,7 @@ DcmElement::~DcmElement()
 OFCondition DcmElement::clear()
 {
     errorFlag = EC_Normal;
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
     // if created with the nothrow version it must also be deleted with
     // the nothrow version else memory error.
     operator delete[] (fValue, std::nothrow);
@@ -704,7 +704,7 @@ OFCondition DcmElement::changeValue(const void *value,
                 memcpy(newValue, fValue, size_t(getLengthField()));
                 // set parameter value in the extension
                 memcpy(&newValue[getLengthField()], OFstatic_cast(const Uint8 *, value), size_t(num));
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
                 // if created with the nothrow version it must also be deleted with
                 // the nothrow version else memory error.
                 operator delete[] (fValue, std::nothrow);
@@ -866,7 +866,7 @@ OFCondition DcmElement::putValue(const void * newValue,
 
     if (fValue)
     {
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
         // if created with the nothrow version it must also be deleted with
         // the nothrow version else memory error.
         operator delete[] (fValue, std::nothrow);
@@ -929,7 +929,7 @@ OFCondition DcmElement::createEmptyValue(const Uint32 length)
     errorFlag = EC_Normal;
     if (fValue)
     {
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
         // if created with the nothrow version it must also be deleted with
         // the nothrow version else memory error.
         operator delete[] (fValue, std::nothrow);
@@ -1022,7 +1022,7 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                     }
                 }
                 /* if there is already a value for this element, delete this value */
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
                 // if created with the nothrow version it must also be deleted with
                 // the nothrow version else memory error.
                 operator delete[] (fValue, std::nothrow);
@@ -1526,7 +1526,7 @@ OFCondition DcmElement::createValueFromTempFile(DcmInputStreamFactory *factory,
 {
     if (factory && !(length & 1))
     {
-#ifdef HAVE_STD__NOTHROW
+#if defined(HAVE_STD__NOTHROW) && defined(HAVE_NOTHROW_DELETE)
         // if created with the nothrow version it must also be deleted with
         // the nothrow version else memory error.
         operator delete[] (fValue, std::nothrow);
@@ -1675,6 +1675,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.74  2009-08-06 15:57:17  meichel
+** Use of std::nothrow delete now conditional on compiler support for this feature
+**
 ** Revision 1.73  2009-08-04 07:57:20  joergr
 ** Consistently use non-throwing version of "new" and "delete[]" (if available)
 ** in order to avoid memory creation/deletion mismatches.

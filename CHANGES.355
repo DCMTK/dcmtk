@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.06 (eichelberg)
 
+- Use of std::nothrow delete now conditional on compiler support for this feature
+  Affects: dcmdata/libsrc/dcelem.cc
+    
 - Added configure test that checks for a std::nothrow version of operator delete.
   VC6 has a std::nothrow version of operator new, but not of operator delete.
   Affects: config/aclocal.m4
