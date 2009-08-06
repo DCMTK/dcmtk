@@ -358,8 +358,14 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 /* #undef  HAVE_NETINET_TCP_H */
 
+/* Define to 1 if you have the <new> header file. */
+#define HAVE_NEW 1
+
 /* Define to 1 if you have the <new.h> header file. */
 #define HAVE_NEW_H 1
+
+/* Define if the compiler supports operator delete (std::nothrow) */
+/* defined below */
 
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #define HAVE_NO_TYPEDEF_PID_T 1
@@ -886,6 +892,16 @@ typedef unsigned short ushort;
 /* Define if the compiler supports std::nothrow */
 #define HAVE_STD__NOTHROW 1
 
+/* Define if the compiler supports operator delete (std::nothrow).
+ * Microsoft Visual C++ 6.0 does NOT have it, newer versions do.
+ * For other Win32 compilers, by default assume that it exists.
+ */
+#if defined(_MSC_VER) && (_MSC_VER <= 1200)
+/* #undef HAVE_NOTHROW_DELETE */
+#else
+#define HAVE_NOTHROW_DELETE
+#endif
+
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 /* #undef HAVE_PROTOTYPE_STD__VFPRINTF */
 
@@ -902,6 +918,9 @@ typedef unsigned short ushort;
 
 /* Define if the compiler supports std::nothrow */
 /* #undef HAVE_STD__NOTHROW  */
+
+/* Define if the compiler supports operator delete (std::nothrow) */
+/* #undef HAVE_NOTHROW_DELETE */
 
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 /* #undef HAVE_PROTOTYPE_STD__VFPRINTF  */

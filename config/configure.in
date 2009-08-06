@@ -252,6 +252,7 @@ AC_CXX_DYNAMIC_CAST
 AC_CXX_REINTERPRET_CAST
 AC_CXX_STATIC_CAST
 AC_CXX_STD_NOTHROW
+AC_CXX_NOTHROW_DELETE
 
 dnl -------------------------------------------------------
 dnl Check for Debug Mode
@@ -431,6 +432,7 @@ AC_CHECK_HEADERS(limits.h)
 AC_CHECK_HEADERS(locale.h)
 AC_CHECK_HEADERS(malloc.h)
 AC_CHECK_HEADERS(math.h)
+AC_CHECK_HEADERS(new)
 AC_CHECK_HEADERS(new.h)
 AC_CHECK_HEADERS(netdb.h)
 AC_CHECK_HEADERS(pthread.h)

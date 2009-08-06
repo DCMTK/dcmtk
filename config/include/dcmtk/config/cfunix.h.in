@@ -337,8 +337,14 @@
 /* Define to 1 if you have the <netinet/tcp.h> header file. */
 #undef HAVE_NETINET_TCP_H
 
+/* Define to 1 if you have the <new> header file. */
+#undef HAVE_NEW
+
 /* Define to 1 if you have the <new.h> header file. */
 #undef HAVE_NEW_H
+
+/* Define if the compiler supports operator delete (std::nothrow) */
+#undef HAVE_NOTHROW_DELETE
 
 /* Define `pid_t' to `int' if <sys/types.h> does not define. */
 #undef HAVE_NO_TYPEDEF_PID_T

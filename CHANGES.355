@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.06 (eichelberg)
 
+- Added configure test that checks for a std::nothrow version of operator delete.
+  VC6 has a std::nothrow version of operator new, but not of operator delete.
+  Affects: config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/dcmtk/config/cfunix.h.in
+           config/include/dcmtk/config/cfwin32.h.in
+
 - Fixed bug that caused TIFF export in dcm2pnm to fail on Win32
   for newer releases of libtiff (3.7.4 and newer)
   Affects: dcmimage/libsrc/dipitiff.cc

@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.41 $
+dnl Revision:     $Revision: 1.42 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1300,6 +1300,25 @@ fi
 ])
 
 
+dnl AC_CXX_NOTHROW_DELETE checks if the compiler supports non-throwing delete using
+dnl std::nothrow.
+
+AC_DEFUN([AC_CXX_NOTHROW_DELETE],
+[AH_TEMPLATE([HAVE_NOTHROW_DELETE], [Define if the compiler supports operator delete (std::nothrow)])
+AC_CACHE_CHECK(whether the compiler supports supports operator delete (std::nothrow),
+ac_cv_cxx_nothrow_delete,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <new>],[int *i = new (std::nothrow) int; operator delete (i,std::nothrow)],
+ ac_cv_cxx_nothrow_delete=yes, ac_cv_cxx_nothrow_delete=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_nothrow_delete" = yes; then
+  AC_DEFINE(HAVE_NOTHROW_DELETE,, [Define if the compiler supports operator delete (std::nothrow)])
+fi
+])
+
+
 dnl AC_LIBTIFF_LZW_COMPRESSION checks if libtiff supports LZW compression.
 
 AC_DEFUN([AC_LIBTIFF_LZW_COMPRESSION],
@@ -1688,6 +1707,10 @@ fi
 
 dnl
 dnl $Log: aclocal.m4,v $
+dnl Revision 1.42  2009-08-06 12:58:09  meichel
+dnl Added configure test that checks for a std::nothrow version of operator delete.
+dnl   VC6 has a std::nothrow version of operator new, but not of operator delete.
+dnl
 dnl Revision 1.41  2008-02-07 16:55:45  meichel
 dnl Added configure test AC_CHECK_CHARP_STRERROR_R that checks whether strerror_r
 dnl   is the GNU version or the X/OPEN version.
