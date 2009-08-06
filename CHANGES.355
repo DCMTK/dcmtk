@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.06 (eichelberg)
+
+- Fixed bug that caused TIFF export in dcm2pnm to fail on Win32
+  for newer releases of libtiff (3.7.4 and newer)
+  Affects: dcmimage/libsrc/dipitiff.cc
+ 
 **** Changes from 2009.08.05 (eichelberg)
 
 - Added missing escape sequences in manpage text, updated copyright

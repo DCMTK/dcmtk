@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements TIFF interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:27 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2009-08-06 12:33:56 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,18 +72,24 @@ int DiTIFFPlugin::write(
   {
     int stream_fd = fileno(stream);
 
+
 #ifdef HAVE_WINDOWS_H
-    /* The Win32 version of libtiff expects a Win32 HANDLE (casted to int)
-     * instead of a file descriptor. Therefore, we use _get_osfhandle()
-     * which takes a Unix-style file descriptor and derives the corresponding
-     * Win32 API file handle (HANDLE). This function may not be available on all
-     * compilers for Win32, sorry.
-     */
-#ifdef __CYGWIN__
-    stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
-#else
-    stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
+
+#if TIFFLIB_VERSION < 20050912
+#error TIFF library versions prior to 3.7.4 are not supported by DCMTK on Win32 - critical API change!
 #endif
+
+/* Older versions of libtiff expected a Win32 HANDLE when compiled on Windows
+ * instead of a file descriptor. The code below was needed to make that work.
+ * Libtiff version 3.7.4 and newer are known to use a file descriptor instead,
+ * but it is not completely clear at which libtiff release the API change happened.
+ *
+ * #ifdef __CYGWIN__
+ *   stream_fd = OFstatic_cast(int, get_osfhandle(stream_fd));
+ * #else
+ *   stream_fd =OFstatic_cast(int, _get_osfhandle(stream_fd));
+ * #endif
+ */
 #endif
 
     /* create bitmap with 8 bits per sample */
@@ -210,6 +216,10 @@ int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
+ * Revision 1.9  2009-08-06 12:33:56  meichel
+ * Fixed bug that caused TIFF export in dcm2pnm to fail on Win32
+ *   for newer releases of libtiff (3.7.4 and newer)
+ *
  * Revision 1.8  2005-12-08 15:42:27  meichel
  * Changed include path schema for all DCMTK header files
  *
