@@ -1,4 +1,4 @@
-.TH "storescp" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescp" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescp \- DICOM storage (C-STORE) SCP
@@ -103,7 +103,629 @@ preferred network transfer syntaxes (not with --config-file):
           prefer RLE lossless TS
 
   +xd   --prefer-deflated
-          prefer deflated expl. VR little endian TS
+          prefer deflated explicit VR little endian TS
+
+  +xi   --implicit
+          accept implicit VR little endian TS only
+
+  +xa   --accept-all
+          accept all supported transfer syntaxes
+
+network host access control (tcp wrapper):
+
+  -ac   --access-full
+          accept connections from any host (default)
+
+  +ac   --access-control
+          enforce host access control rules
+
+other network options:
+
+  -id   --inetd
+          run from inetd super server (not with --fork)
+          (this option is available only on Posix platforms)
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
+  -aet  --aetitle  [a]etitle: string
+          set my AE title (default: STORESCP)
+
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+          set max receive pdu to n bytes (default: 16384)
+
+  -dhl  --disable-host-lookup
+          disable hostname lookup
+
+        --refuse
+          refuse association
+
+        --reject
+          reject association if no implementation class UID
+
+        --ignore
+          ignore store data, receive but do not store
+
+        --sleep-after  [s]econds: integer
+          sleep s seconds after store (default: 0)
+
+        --sleep-during  [s]econds: integer
+          sleep s seconds during store (default: 0)
+
+        --abort-after
+          abort association after receipt of C-STORE-RQ
+          (but before sending response)
+
+        --abort-during
+          abort association during receipt of C-STORE-RQ
+
+  -pm   --promiscuous
+          promiscuous mode, accept unknown SOP classes
+          (not with --config-file)
+
+  -up   --uid-padding
+          silently correct space-padded UIDs
+.fi
+.PP
+.SH "output options"
+.PP
+.PP
+.nf
+
+general:
+
+  -od   --output-directory  [d]irectory: string (default: ".")
+          write received objects to existing directory d
+
+bit preserving mode:
+
+  -B    --normal
+          allow implicit format conversions (default)
+
+  +B    --bit-preserving
+          write data exactly as read
+
+output file format:
+
+  +F    --write-file
+          write file format (default)
+
+  -F    --write-dataset
+          write data set without file meta information
+
+output transfer syntax
+(not with --bit-preserving or compressed transmission):
+
+  +t=   --write-xfer-same
+          write with same TS as input (default)
+
+  +te   --write-xfer-little
+          write with explicit VR little endian TS
+
+  +tb   --write-xfer-big
+          write with explicit VR big endian TS
+
+  +ti   --write-xfer-implicit
+          write with implicit VR little endian TS
+
+  +td   --write-xfer-deflated
+          write with deflated explicit VR little endian TS
+
+post-1993 value representations (not with --bit-preserving):
+
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
+
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
+
+group length encoding (not with --bit-preserving):
+
+  +g=   --group-length-recalc
+          recalculate group lengths if present (default)
+
+  +g    --group-length-create
+          always write with group length elements
+
+  -g    --group-length-remove
+          always write without group length elements
+
+length encoding in sequences and items (not with --bit-preserving):
+
+  +e    --length-explicit
+          write with explicit lengths (default)
+
+  -e    --length-undefined
+          write with undefined lengths
+
+data set trailing padding
+(not with --write-dataset or --bit-preserving):
+
+  -p    --padding-off
+          no padding (default)
+
+  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+          align file on multiple of f bytes and items on
+          multiple of i bytes
+
+deflate compression level (only with --write-xfer-deflated/same):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
+
+sorting into subdirectories (not with --bit-preserving):
+
+  -ss   --sort-conc-studies  [p]refix: string
+          sort studies using prefix p and a timestamp
+
+  -su   --sort-on-study-uid  [p]refix: string
+          sort studies using prefix p and the Study Instance UID
+
+  -sp   --sort-on-patientname
+          sort studies using the Patient's Name and a timestamp
+
+filename generation:
+
+  -uf   --default-filenames
+          generate filename from instance UID (default)
+
+  +uf   --unique-filenames
+          generate unique filenames
+
+  -tn   --timenames
+          generate filename from creation time
+
+  -fe   --filename-extension  [e]xtension: string
+          append e to all filenames
+.fi
+.PP
+.SS "event options"
+.PP
+.nf
+
+  -xcr  --exec-on-reception  [c]ommand: string
+          execute command c after having received and processed
+          one C-STORE-RQ message
+
+  -xcs  --exec-on-eostudy  [c]ommand: string
+          execute command c after having received and processed
+          all C-STORE-RQ messages that belong to one study
+
+  -rns  --rename-on-eostudy
+          having received and processed all C-STORE-RQ messages
+          that belong to one study, rename output files according
+          to a certain pattern
+
+  -tos  --eostudy-timeout  [t]imeout: integer
+          specifies a timeout of t seconds for end-of-study
+          determination
+
+  -xs   --exec-sync
+          execute command synchronously in foreground
+          (this option is available on Windows only)
+.fi
+.PP
+.SS "transport layer security (TLS) options"
+.PP
+.nf
+
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [c]ertificate filename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [c]ertificate directory: string
+          add certificates in d to list of certificates
+
+ciphersuite:
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
+.fi
+.PP
+.SH "NOTES"
+.PP
+The semantic impacts of the above mentioned options is clear for the majority of options. Some particular options, however, are so specific that they need detailed descriptions which will be given in this passage.
+.PP
+Option \fI--sort-conc-studies\fP enables a user to sort all received DICOM objects into different subdirectories. The sorting will be done with regard to the studies the individual objects belong to, i.e. objects that belong to the same study will be stored in the same subdirectory. In general, a DICOM object d_n+1 is considered to belong to the same study as a DICOM object d_n if and only if d_n and d_n+1 show the exact same values in attribute Study Instance UID. The names of the resulting subdirectories always start with a prefix p which was passed to this option as a parameter. In addition to this prefix, the subdirectory names contain time stamp information with regard to the date and time of reception of this particular study's first DICOM object. In detail, the determination of the subdirectory names pertains to the pattern
+.PP
+.PP
+.nf
+
+  [prefix]_[YYYYMMDD]_[HHMMSSPPP]
+.fi
+.PP
+.PP
+where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31), HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to milliseconds (000-999). If the prefix is an empty string, the first '_' is omitted.
+.PP
+The other \fI--sort-xxx\fP options work in a similar manner, only the subdirectory names are created differently. For option \fI--sort-on-study-uid\fP the pattern is
+.PP
+.PP
+.nf
+
+  [prefix]_[StudyInstanceUID]
+.fi
+.PP
+.PP
+and for option \fI--sort-on-patientname\fP 
+.PP
+.PP
+.nf
+
+  [PatientsName]_[YYYYMMDD]_[HHMMSSPPP]
+.fi
+.PP
+.PP
+where 'PatientsName' is replaced by 'ANONYMOUS' if the data element is empty or absent in the data set. Please note, however, that for option \fI--sort-on-study-uid\fP the same subdirectory will be used for all DICOM objects that belong to the same study, i.e. in contrast to the other \fI--sort-xxx\fP options there is no guarantee that a study directory is ever completed.
+.PP
+Option \fI--timenames\fP creates filenames from timestamps corresponding to the time, \fBstorescp\fP writes a file to disk. The format is
+.PP
+.PP
+.nf
+
+  [YYYYMMDDHHMMSSPPP]_[SERIALNO].[MD]
+.fi
+.PP
+.PP
+where YYYY, MM, DD, HH, MM, SS, PPP are interpreted as described above. If more files are created at the same time, SERIALNO is inserted. It consists of a 4-digit, consecutive number (0000 to 9999). For the first file, that exists for a specific time, no number (and no '_') is inserted at all. MD represents an identification code (2 letters) for the kind of object stored in the file (see notes on \fI--rename-on-eostudy\fP).
+.PP
+Option \fI--filename-extension\fP appends a specified suffix to each filename (a dot '.' is not added automatically). This suffix is not appended to the filenames created by \fI--rename-on-eostudy\fP to maintain the length of 8 characters.
+.PP
+Option \fI--exec-on-reception\fP allows to execute a certain command line after having received and processed one DICOM object (through a C-STORE-RQ message). The command line to be executed is passed to this option as a parameter. The specified command line may contain a number of placeholders which will be replaced at run time:
+.PP
+.PD 0
+.IP "\(bu" 2
+\fB#p:\fP complete path to the output directory into which the last DICOM object was stored (not available with option \fI--ignore\fP though) 
+.IP "\(bu" 2
+\fB#f:\fP filename of the current output file (not available with option \fI--ignore\fP though) 
+.IP "\(bu" 2
+\fB#a:\fP calling application entity title of the peer Storage SCU 
+.IP "\(bu" 2
+\fB#c:\fP called application entity title used by the peer Storage SCU to address \fBstorescp\fP.
+.PP
+The specified command line is executed as a separate process, so that the execution of \fBstorescp\fP will not be held back.
+.PP
+Option \fI--exec-on-eostudy\fP allows to execute a certain command line when all DICOM objects that belong to one study have been received by \fBstorescp\fP. The same placeholders as with \fI--exec-on-reception\fP may be used, except for '#f', which is not supported. A study is considered complete by \fBstorescp\fP when an object belonging to a different study is received or the timeout specified with \fI--eostudy-timeout\fP takes place. If option \fI--rename-on-eostudy\fP is in force, the renaming takes place before the external command is executed.
+.PP
+Option \fI--rename-on-eostudy\fP refers to the above mentioned \fI--sort-xxx\fP options and can only be used in combination with one of these options. If a user specifies option \fI--rename-on-eostudy\fP and \fBstorescp\fP determines that all DICOM objects that belong to a certain study have been received, all DICOM files that belong to the last study will be renamed in the corresponding output directory. The filenames into which the files are being renamed will be calculated using the pattern
+.PP
+.PP
+.nf
+
+  [prefix][consecutive numbering]
+.fi
+.PP
+.PP
+where [prefix] is a 2 character prefix that reveals the kind of DICOM object stored in the file and [consecutive numbering] is a consecutively numbered, 6-digit number, starting at '000001'. In general, the question if all DICOM objects that belong to one study have been received by \fBstorescp\fP will be answered positively if and only if two consecutively received DICOM objects d_n and d_n+1 do not show the same values in attribute Study Instance UID; in such a case, d_n+1 is considered to belong to a new study.
+.PP
+Using option \fI--eostudy-timeout\fP a user can modify the determination process to figure out if all DICOM objects that belong to one study have already been received by \fBstorescp\fP. With regard to this fact, it is clear that this option can only be used in combination with at least one of the following options: \fI--sort-xxx\fP, \fI--exec-on-eostudy\fP and \fI--rename-on-eostudy\fP. If option \fI--eostudy-timeout\fP is specified, the end of a study is considered to have occurred not only if two consecutively received DICOM objects d_n and d_n+1 do not show the same values in attribute Study Instance UID, but also if whithin a time span of x seconds after the reception of a DICOM object d_n, no other DICOM object was received over the network. Note that the amount x of seconds (which determines the length of this time span) has to be passed to this option as a parameter.
+.SS "DICOM Conformance"
+The \fBstorescp\fP application supports the following SOP Classes as an SCP:
+.PP
+.PP
+.nf
+
+VerificationSOPClass                                 1.2.840.10008.1.1
+
+StoredPrintStorage                                   1.2.840.10008.5.1.1.27
+HardcopyGrayscaleImageStorage                        1.2.840.10008.5.1.1.29
+HardcopyColorImageStorage                            1.2.840.10008.5.1.1.30
+ComputedRadiographyImageStorage                      1.2.840.10008.5.1.4.1.1.1
+DigitalXRayImageStorageForPresentation               1.2.840.10008.5.1.4.1.1.1.1
+DigitalXRayImageStorageForProcessing                 1.2.840.10008.5.1.4.1.1.1.1.1
+DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
+DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
+DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
+DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
+StandaloneModalityLUTStorage                         1.2.840.10008.5.1.4.1.1.10
+EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
+StandaloneVOILUTStorage                              1.2.840.10008.5.1.4.1.1.11
+GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
+ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.2
+PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
+BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
+XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
+EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
+XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
+EnhancedXRFImageStorage                              1.2.840.10008.5.1.4.1.1.12.2.1
+RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
+PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
+PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
+CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
+EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
+RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
+UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
+MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
+EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
+MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
+RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
+RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
+RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
+RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481.4
+RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
+RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
+RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
+RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
+RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
+UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
+SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
+SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
+RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
+RETIRED_VLImageStorage                               1.2.840.10008.5.1.4.1.1.77.1
+VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
+VideoEndoscopicImageStorage                          1.2.840.10008.5.1.4.1.1.77.1.1.1
+VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
+VideoMicroscopicImageStorage                         1.2.840.10008.5.1.4.1.1.77.1.2.1
+VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
+VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
+VideoPhotographicImageStorage                        1.2.840.10008.5.1.4.1.1.77.1.4.1
+OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.1.5.1
+OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
+StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
+RETIRED_VLMultiFrameImageStorage                     1.2.840.10008.5.1.4.1.1.77.2
+StandaloneOverlayStorage                             1.2.840.10008.5.1.4.1.1.8
+DRAFT_SRTextStorage                                  1.2.840.10008.5.1.4.1.1.88.1
+DRAFT_SRAudioStorage                                 1.2.840.10008.5.1.4.1.1.88.2
+DRAFT_SRDetailStorage                                1.2.840.10008.5.1.4.1.1.88.3
+DRAFT_SRComprehensiveStorage                         1.2.840.10008.5.1.4.1.1.88.4
+BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSR                                  1.2.840.10008.5.1.4.1.1.88.67
+StandaloneCurveStorage                               1.2.840.10008.5.1.4.1.1.9
+DRAFT_WaveformStorage                                1.2.840.10008.5.1.4.1.1.9.1
+TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
+GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
+AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
+CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
+BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
+.fi
+.PP
+.PP
+The \fBstorescp\fP application will accept presentation contexts for all of the abovementioned supported SOP Classes using any of the following transfer syntaxes:
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+.fi
+.PP
+.PP
+The default behaviour of the \fBstorescp\fP application is to prefer transfer syntaxes having an explicit encoding over the default implicit transfer syntax. If \fBstorescp\fP is running on big-endian hardware it will prefer BigEndianExplicit to LittleEndianExplicit transfer syntax (and vice versa). This behaviour can be changed with the \fI--prefer\fP options (see above). Using option \fI--accept-all\fP any of the following transfer syntaxes is supported:
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+.fi
+.PP
+.PP
+Additional Storage SOP Classes and Transfer Syntaxes can be used with the so-called 'association negotiation profiles' (see below).
+.PP
+The \fBstorescp\fP application does not support extended negotiation by default. However, using an appropriate association negotiation profile (see below) the optional support for extended negotiation can be added to particular SOP classes.
+.SS "Access Control"
+When compiled on Unix platforms with TCP wrapper support, host-based access control can be enabled with the \fI--access-control\fP command line option. In this case the access control rules defined in the system's host access control tables for \fBstorescp\fP are enforced. The default locations of the host access control tables are \fI/etc/hosts.allow\fP and \fI/etc/hosts.deny\fP. Further details are described in \fBhosts_access\fP(5).
+.SS "Running storescp from inetd"
+On Posix platforms, \fBstorescp\fP can be initiated through the inetd(8) super server. This requires that \fBstorescp\fP be configured in the \fI/etc/inetd.conf\fP configuration file. A typical configuration line could look like this:
+.PP
+.PP
+.nf
+
+acr-nema stream tcp nowait root /usr/sbin/storescp -id +ac -od /tmp/storescp
+.fi
+.PP
+.PP
+where \fI-id\fP (\fI--inetd\fP) activates the inetd mode in which the DICOM association is actually accepted by inetd and passed to \fBstorescp\fP, \fI+ac\fP (\fI--access-control\fP) activates the TCP wrapper based access control described above and \fI-od\fP (\fI--output-directory\fP) defines the directory in which \fBstorescp\fP stores incoming DICOM objects. Note that the service name ('acr-nema' in this example) determines the port number on which DICOM associations are accepted and must be defined in \fI/etc/services\fP. When runnning from inetd, the stdout and stderr streams are redirected to files in the \fI/tmp\fP filesystem which can be identified by the filename starting with the prefix 'storescp_'.
+.PP
+Please note that when run through inetd, \fBstorescp\fP is executed with root privileges, which may be a security risk.
+.SS "Association Negotiation Profiles and Configuration Files"
+\fBstorescp\fP supports a flexible mechanism for specifying the DICOM network association negotiation behaviour, based on so-called 'association negotiation profiles' which may be read from a configuration file. The format and semantics of this configuration file are documented in \fIasconfig.txt\fP.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBstorescp\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "FILES"
+.PP
+\fI<docdir>/asconfig.txt\fP - configuration file documentation 
+.br
+\fI<etcdir>/storescp.cfg\fP - example association negotiation profile
+.SH "SEE ALSO"
+.PP
+\fBstorescu\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+storescp [options] [port]
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBstorescp\fP application implements a Service Class Provider (SCP) for the Storage Service Class. It listens on a specific TCP/IP port for incoming association requests from a Storage Service Class User (SCU) and can receive both DICOM images and other DICOM composite objects. The \fBstorescp\fP application also supports the Verification Service Class as an SCP.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+port  tcp/ip port number to listen on
+      (this parameter is required unless the --inetd option is specified)
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+.fi
+.PP
+.SS "multi-process options"
+.PP
+.nf
+
+        --single-process
+          single process mode (default)
+
+        --fork
+          fork child process for each association
+.fi
+.PP
+.SS "network options"
+.PP
+.nf
+
+association negotiation profile from configuration file:
+
+  -xf   --config-file  [f]ilename [p]rofile: string
+          use profile p from config file f
+
+preferred network transfer syntaxes (not with --config-file):
+
+  +x=   --prefer-uncompr
+          prefer explicit VR local byte order (default)
+
+  +xe   --prefer-little
+          prefer explicit VR little endian TS
+
+  +xb   --prefer-big
+          prefer explicit VR big endian TS
+
+  +xs   --prefer-lossless
+          prefer default JPEG lossless TS
+
+  +xy   --prefer-jpeg8
+          prefer default JPEG lossy TS for 8 bit data
+
+  +xx   --prefer-jpeg12
+          prefer default JPEG lossy TS for 12 bit data
+
+  +xv   --prefer-j2k-lossless
+          prefer JPEG 2000 lossless TS
+
+  +xw   --prefer-j2k-lossy
+          prefer JPEG 2000 lossy TS
+
+  +xt   --prefer-jls-lossless
+          prefer JPEG-LS lossless TS
+
+  +xu   --prefer-jls-lossy
+          prefer JPEG-LS lossy TS
+
+  +xm   --prefer-mpeg2
+          prefer MPEG2 Main Profile @ Main Level TS
+
+  +xr   --prefer-rle
+          prefer RLE lossless TS
+
+  +xd   --prefer-deflated
+          prefer deflated explicit VR little endian TS
 
   +xi   --implicit
           accept implicit VR little endian TS only

@@ -1,4 +1,4 @@
-.TH "xml2dcm" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "xml2dcm" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 xml2dcm \- Convert XML document to DICOM file or data set
@@ -112,7 +112,7 @@ output transfer syntax:
          write with implicit VR little endian TS
 
   +td  --write-xfer-deflated
-         write with deflated expl. VR little endian TS
+         write with deflated explicit VR little endian TS
 
 post-1993 value representations:
 
@@ -205,7 +205,268 @@ The basic structure of the XML input expected looks like the following:
 .fi
 .PP
 .PP
-The 'file-format' and 'meta-header' tags maybe absent for DICOM data sets.
+The 'file-format' and 'meta-header' tags may be absent for DICOM data sets.
+.SS "Character Encoding"
+The DICOM character encoding is determined automatically from the element with tag '0008,0005' (Specific Character Set) - if present. The following character sets are currently supported (requires \fBlibxml2\fP to include \fBiconv\fP support):
+.PP
+.PP
+.nf
+
+ASCII         "ISO_IR 6"    (UTF-8)
+UTF-8         "ISO_IR 192"  (UTF-8)
+ISO Latin 1   "ISO_IR 100"  (ISO-8859-1)
+ISO Latin 2   "ISO_IR 101"  (ISO-8859-2)
+ISO Latin 3   "ISO_IR 109"  (ISO-8859-3)
+ISO Latin 4   "ISO_IR 110"  (ISO-8859-4)
+ISO Latin 5   "ISO_IR 148"  (ISO-8859-9)
+Cyrillic      "ISO_IR 144"  (ISO-8859-5)
+Arabic        "ISO_IR 127"  (ISO-8859-6)
+Greek         "ISO_IR 126"  (ISO-8859-7)
+Hebrew        "ISO_IR 138"  (ISO-8859-8)
+.fi
+.PP
+.PP
+Multiple character sets are not supported (only the first value of the 'Specific Character Set' is used for the character encoding in case of value multiplicity).
+.PP
+See \fBdcm2xml\fP documentation for more details on the XML structure.
+.SS "Binary Data"
+Binary data can be encoded either as a sequence of hex numbers separated by a backslash '\\' or in Base64 format (binary='base64'). In addition, binary data can also be read from file (binary='file'). In this case, the filename has to be specified as the element value, e.g.
+.PP
+.PP
+.nf
+
+<element tag="7fe0,0010" vr="OW" ... binary="file">subdir/pixeldata.raw</element>
+.fi
+.PP
+.PP
+Please note that the contents of the file will be read as is. OW data is expected to be little endian ordered and will be swapped if necessary. No checks will be made to ensure that the amount of data is reasonable in terms of other attributes such as Rows or Columns.
+.SS "Limitations"
+Please note that \fBxml2dcm\fP currently does not fully support DICOMDIR files. Specifically, the value of the various offset data elements is not updated automatically by this tool.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBxml2dcm\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "FILES"
+.PP
+\fI<datadir>/dcm2xml.dtd\fP - Document Type Definition (DTD) file
+.SH "SEE ALSO"
+.PP
+\fBdcm2xml\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2003-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+xml2dcm [options] xmlfile-in dcmfile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBxml2dcm\fP utility converts the contents of an XML (Extensible Markup Language) document to DICOM file or data set. The XML document is expected to validate against the DTD (Document Type Definition) which is described in file \fIdcm2xml.dtd\fP. An appropriate XML file can be created using the \fBdcm2xml\fP tool (option \fI+Wb\fP recommended to include binary data).
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+xmlfile-in   XML input filename to be converted (stdin: "-")
+
+dcmfile-out  DICOM output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-meta-info
+         read meta information if present (default)
+
+  -f   --ignore-meta-info
+         ignore file meta information
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+validation:
+
+  +Vd  --validate-document
+         validate XML document against DTD
+
+  +Vn  --check-namespace
+         check XML namespace in document root
+
+unique identifiers:
+
+  +Ug  --generate-new-uids
+         generate new Study/Series/SOP Instance UID
+
+  -Uo  --dont-overwrite-uids
+         do not overwrite existing UIDs (default)
+
+  +Uo  --overwrite-uids
+         overwrite existing UIDs
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+output file format:
+
+  +F   --write-file
+         write file format (default)
+
+  -F   --write-dataset
+         write data set without file meta information
+
+  +Fu  --update-meta-info
+         update particular file meta information
+
+output transfer syntax:
+
+  +t=  --write-xfer-same
+         write with same TS as input (default)
+
+  +te  --write-xfer-little
+         write with explicit VR little endian TS
+
+  +tb  --write-xfer-big
+         write with explicit VR big endian TS
+
+  +ti  --write-xfer-implicit
+         write with implicit VR little endian TS
+
+  +td  --write-xfer-deflated
+         write with deflated explicit VR little endian TS
+
+post-1993 value representations:
+
+  +u   --enable-new-vr
+         enable support for new VRs (UN/UT) (default)
+
+  -u   --disable-new-vr
+         disable support for new VRs, convert to OB
+
+group length encoding:
+
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
+
+  +g   --group-length-create
+         always write with group length elements
+
+  -g   --group-length-remove
+         always write without group length elements
+
+length encoding in sequences and items:
+
+  +e   --length-explicit
+         write with explicit lengths (default)
+
+  -e   --length-undefined
+         write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p=  --padding-retain
+         do not change padding (default if not --write-dataset)
+
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes and items on
+         multiple of i bytes
+
+deflate compression level (only with --write-xfer-deflated):
+
+  +cl  --compression-level  [l]evel: integer (default: 6)
+         0=uncompressed, 1=fastest, 9=best compression
+.fi
+.PP
+.SH "NOTES"
+.PP
+The basic structure of the XML input expected looks like the following:
+.PP
+.PP
+.nf
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
+<file-format xmlns="http://dicom.offis.de/dcmtk">
+  <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
+    <element tag="0002,0000" vr="UL" vm="1" len="4"
+             name="MetaElementGroupLength">
+      166
+    </element>
+    ...
+    <element tag="0002,0013" vr="SH" vm="1" len="16"
+             name="ImplementationVersionName">
+      OFFIS_DCMTK_353
+    </element>
+  </meta-header>
+  <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
+    <element tag="0008,0005" vr="CS" vm="1" len="10"
+             name="SpecificCharacterSet">
+      ISO_IR 100
+    </element>
+    ...
+    <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
+      <item card="3">
+        <element tag="0028,3002" vr="xs" vm="3" len="6"
+                 name="LUTDescriptor">
+          256\\0\\8
+        </element>
+        ...
+      </item>
+      ...
+    </sequence>
+    ...
+    <element tag="7fe0,0010" vr="OW" vm="1" len="262144"
+             name="PixelData" loaded="no" binary="hidden">
+    </element>
+  </data-set>
+</file-format>
+.fi
+.PP
+.PP
+The 'file-format' and 'meta-header' tags may be absent for DICOM data sets.
 .SS "Character Encoding"
 The DICOM character encoding is determined automatically from the element with tag '0008,0005' (Specific Character Set) - if present. The following character sets are currently supported (requires \fBlibxml2\fP to include \fBiconv\fP support):
 .PP

@@ -1,7 +1,236 @@
-.TH "dsr2html" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dsr2html" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dsr2html \- Render DICOM SR file and data set to HTML/XHTML
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dsr2html [options] dsrfile-in [htmlfile-out]
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdsr2html\fP utility renders the contents of a DICOM Structured Reporting (SR) document (file format or raw data set) to HTML (Hyper Text Markup Language) version 3.2 or 4.01 as well as to XHTML (Extensible Hyper Text Markup Language) version 1.1.
+.PP
+If \fBdsr2html\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdsr2html\fP to read a dataset with a particular transfer syntax.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dsrfile-in    DICOM SR input filename to be rendered
+
+htmlfile-out  HTML/XHTML output filename (default: stdout)
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -d   --debug
+         debug mode, print debug information
+
+  -dd  --verbose-debug
+         verbose debug mode, print more details
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax:
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+.fi
+.PP
+.SS "parsing options"
+.PP
+.nf
+
+additional information:
+
+  -Ip  --processing-details
+         show currently processed content item
+
+error handling:
+
+  -Er  --unknown-relationship
+         accept unknown/missing relationship type
+
+  -Ec  --ignore-constraints
+         ignore relationship content constraints
+
+  -Ee  --ignore-item-errors
+         do not abort on content item errors, just warn
+         (e.g. missing value type specific attributes)
+
+  -Ei  --skip-invalid-items
+         skip invalid content items (incl. sub-tree)
+
+character set:
+
+  +Cr  --charset-require
+         require declaration of extended charset (default)
+
+  +Ca  --charset-assume  [c]harset: string constant
+         (latin-1 to -5, greek, cyrillic, arabic, hebrew)
+         assume c if undeclared extended charset found
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+HTML/XHTML compatibility:
+
+  +H3  --html-3.2
+         use only HTML version 3.2 compatible features
+
+  +H4  --html-4.0
+         allow all HTML version 4.01 features (default)
+
+  +X1  --xhtml-1.1
+         comply with XHTML version 1.1 specification
+
+  +Hd  --add-document-type
+         add reference to SGML document type definition
+
+cascading style sheet (CSS), not with HTML 3.2:
+
+  +Sr  --css-reference  URL: string
+         add reference to specified CSS to document
+
+  +Sf  --css-file  [f]ilename: string
+         embed content of specified CSS into document
+
+general rendering:
+
+  +Ri  --expand-inline
+         expand short content items inline (default)
+
+  -Ri  --never-expand-inline
+         never expand content items inline
+
+  +Ra  --always-expand-inline
+         always expand content items inline
+
+  +Rd  --render-full-data
+         render full data of content items
+
+  +Rt  --section-title-inline
+         render section titles inline, not separately
+
+document rendering:
+
+  +Dt  --document-type-title
+         use document type as document title (default)
+
+  +Dp  --patient-info-title
+         use patient information as document title
+
+  -Dh  --no-document-header
+         do not render general document information
+
+code rendering:
+
+  +Ci  --render-inline-codes
+         render codes in continuous text blocks
+
+  +Cn  --concept-name-codes
+         render code of concept names
+
+  +Cu  --numeric-unit-codes
+         render code of numeric measurement units
+
+  +Cv  --code-value-unit
+         use code value as measurement unit (default)
+
+  +Cm  --code-meaning-unit
+         use code meaning as measurement unit
+
+  +Cc  --render-all-codes
+         render all codes (implies +Ci, +Cn and +Cu)
+
+  +Ct  --code-details-tooltip
+         render code details as a tooltip (implies +Cc)
+.fi
+.PP
+.SH "NOTES"
+.PP
+.SS "DICOM Conformance"
+The \fBdsr2html\fP utility supports the following SOP Classes:
+.PP
+.PP
+.nf
+
+BasicTextSR                 1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSR                  1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSR             1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLog                1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSR            1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocument  1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSR                  1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSR         1.2.840.10008.5.1.4.1.1.88.67
+.fi
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdsr2html\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "FILES"
+.PP
+\fI<datadir>/report.css\fP - Sample Cascading Stylesheet file for HTML \fI<datadir>/reportx.css\fP - Sample Cascading Stylesheet file for XHTML
+.SH "SEE ALSO"
+.PP
+\fBdcmconv\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 .SH "SYNOPSIS"
 .PP
 .PP

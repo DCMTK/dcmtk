@@ -1,7 +1,276 @@
-.TH "dcmsign" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmsign" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmsign \- Sign and Verify DICOM Files
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmsign [options] dcmfile-in [dcmfile-out]
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmsign\fP utility reads a DICOM file (\fIdcmfile-in\fP), performs a digital signature operation and, if any modification has taken place, writes the DICOM object to an output file (\fIdcmfile-out\fP).
+.PP
+Five digital signature operations are supported:
+.PP
+.PD 0
+.IP "\(bu" 2
+verification of all signatures in the DICOM file 
+.IP "\(bu" 2
+creation of a new digital signature located in the main dataset, 
+.IP "\(bu" 2
+creation of a new digital signature in an item of a sequence embedded within the dataset, 
+.IP "\(bu" 2
+removal of a single digital signature from the DICOM file, and 
+.IP "\(bu" 2
+removal of all digital signatures from the DICOM file.
+.PP
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in   DICOM input filename to be processed
+
+dcmfile-out  DICOM output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+
+  +d    --dump  [f]ilename: string
+          dump byte stream fed into the MAC codec to file
+          (only with --sign or --sign-item)
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input transfer syntax:
+
+  -t=   --read-xfer-auto
+          use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
+
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
+
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
+
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
+.fi
+.PP
+.SS "signature commands"
+.PP
+.nf
+
+        --verify
+          verify all signatures (default)
+
+  +s    --sign  [p]rivate key file, [c]ertificate file: string
+          create signature in main object
+
+  +si   --sign-item  [k]eyfile, [c]ertfile, [i]tem location: string
+          create signature in sequence item
+
+  +r    --remove  [s]ignature UID: string
+          remove signature
+
+  +ra   --remove-all
+          remove all signatures from data set
+.fi
+.PP
+.SS "signature creation options (only with --sign or --sign-item):"
+.PP
+.nf
+
+private key password:
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys/certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys/certificates as DER file
+
+digital signature profile:
+
+  -pf   --profile-none
+          don't enforce any signature profile (default)
+
+  +pb   --profile-base
+          enforce base RSA signature profile
+
+  +pc   --profile-creator
+          enforce creator RSA signature profile
+
+  +pa   --profile-auth
+          enforce authorization signature profile
+
+MAC algorithm:
+
+  +mr   --mac-ripemd160
+          use RIPEMD 160 (default)
+
+  +ms   --mac-sha1
+          use SHA-1
+
+  +mm   --mac-md5
+          use MD 5
+
+tag selection:
+
+  -t    --tag
+          [t]ag: "gggg,eeee" or dictionary name
+          sign only specified tag
+          (this option can be specified multiple times)
+
+  -tf   --tag-file  [f]ilename: string
+          read list of tags from text file
+
+signature format:
+
+  -fn   --format-new
+          use correct DICOM signature format (default)
+
+  -fo   --format-old
+          use old (pre-3.5.4) DCMTK signature format, non-conformant
+          if signature includes compressed pixel data
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+output transfer syntax:
+
+  +t=   --write-xfer-same
+          write with same TS as input (default)
+
+  +te   --write-xfer-little
+          write with explicit VR little endian TS
+
+  +tb   --write-xfer-big
+          write with explicit VR big endian TS
+
+  +ti   --write-xfer-implicit
+          write with implicit VR little endian TS
+
+length encoding in sequences and items:
+
+  +e    --length-explicit
+          write with explicit lengths (default)
+
+  -e    --length-undefined
+          write with undefined lengths
+.fi
+.PP
+.SH "NOTES"
+.PP
+.SS "Files and Parameters"
+The \fBdcmsign\fP utility reads and writes a number of files and file formats which are described in this section.
+.PP
+Public Key Certificates are expected in X.509v3 format, either with PEM or DER encoding. The dcmsign utility currently supports RSA and DSA public keys, although only RSA keys are defines in the Security Profiles of the DICOM standard.
+.PP
+Private Keys are expected in PEM or DER encoding. PEM is recommended (and default) because this allows to keep private keys in encrypted form. Command line options control the behaviour of \fBdcmsign\fP when an encrypted PEM key is opened (see above). In general it is not recommended to specify the encryption password in the command line because the command line may be visible to other processes in the system, e.g. 'ps -ef'.
+.PP
+The list of data elements to sign can either be read from a file or specified on the command line or both (in this case the keys are combined).
+.PP
+On the command line, attribute keys are specified as
+.PP
+.PP
+.nf
+
+--tag "gggg,eeee"  where gggg and eeee are the hexadecimal group
+                   and element numbers
+--tag "Name"       where 'Name' is a symbolic attribute name from
+                   the DICOM dictionary (see below).
+.fi
+.PP
+.PP
+When attribute tags are read from file with the \fI--tag-file\fP option, a plain text file of max. 64 kbyte is expected. Tags within the file are either symbolic names from the data dictionary or have the format (gggg,eeee) (with braces). Tags are separated by one or more whitespace characters.
+.PP
+The \fI--sign-item\fP operation requires a location string that describes in which sequence item a signature is to be created. The location string has the following format:
+.PP
+.PP
+.nf
+
+SequenceName[index].SequenceName[index].SequenceName[index](...)
+.fi
+.PP
+.PP
+where SequenceName is either a symbolic attribute name from the data dictionary or a numeric tag in the format (gggg,eeee) and index is an unsigned decimal integer for the item number, starting with zero for the first item in a sequence. As an example, the following location string
+.PP
+.PP
+.nf
+
+ReferencedSeriesSequence[0].ReferencedImageSequence[1]
+.fi
+.PP
+.PP
+would cause a digital signature to be created in the second item of the ReferencedImageSequence (0008,1140) which is located in the first item of the ReferencedSeriesSequence (0008,1115) which is located in the main DICOM dataset.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmsign\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2000-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 .SH "SYNOPSIS"
 .PP
 .PP

@@ -1,4 +1,4 @@
-.TH "dcmmkcrv" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmmkcrv" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmmkcrv \- Add 2D curve data to image
@@ -114,4 +114,117 @@ The \fBdcmmkcrv\fP utility will attempt to load DICOM data dictionaries specifie
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 1998-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 1998-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmmkcrv [options] dcmfile-in curvedata-in dcmfile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmmkcrv\fP utility allows to create DICOM images containing curve data. Since curve data is hardly used by vendors today, this is intended as a means to test implementations that can read curve data. The utility reads an existing DICOM image and a text file containing the curve data in textual form. A DICOM curve data repeating group is created according to the options specified on the command line, added to the existing image and written back to file. The output file is encoded with the same transfer syntax used for the input file. This utility only supports the creation of two-dimensional curves.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in    DICOM input image file
+
+curvedata-in  curve data input file (text)
+
+dcmfile-out   DICOM output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h  --help
+        print this help text and exit
+
+      --version
+        print version information and exit
+
+      --arguments
+        print expanded command line arguments
+
+  -v  --verbose
+        verbose mode, print processing details
+
+  -d  --debug
+        debug mode, print debug information
+.fi
+.PP
+.SS "curve creation options"
+.PP
+.nf
+
+curve type:
+
+  -r  --poly
+        create as POLY curve (default)
+
+  +r  --roi
+        create as ROI curve
+
+curve value representation:
+
+  +v  --data-vr  [n]umber: integer 0..4 (default: 4)
+        select curve data VR: 0=US, 1=SS, 2=FL, 3=FD, 4=SL
+
+  -c  --curve-vr  [n]umber: integer 0..2 (default: 0)
+        select VR with which the Curve Data element is written
+        0=VR according to --data-vr, 1=OB, 2=OW
+
+repeating group:
+
+  -g  --group  [n]umber: integer 0..15 (default: 0)
+        select repeating group: 0=0x5000, 1=0x5002 etc.
+
+curve description:
+
+  -l  --label  s: string
+        set Curve Label to s (default: absent)
+
+  +d  --description  s: string
+        set Curve Description to s (default: absent)
+
+  -a  --axis  x: string, y: string
+        set Axis Units to x\y (default: absent)
+.fi
+.PP
+.SH "NOTES"
+.PP
+.SS "Syntax of the Curve Data File"
+The curve data file is expected to be a plain ASCII text file containing numbers (integer or floating point) comprising the values of the point coordinates. Numbers must be separated by whitespace. No checking of the value range or value range conversion is performed. Example:
+.PP
+.PP
+.nf
+
+ 256.451947    1.000000
+ 477.689863  128.822080
+ 128.822080  477.689863
+  35.310137  128.822080
+ 256.451947    1.000000
+.fi
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmmkcrv\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1998-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

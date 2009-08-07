@@ -50,6 +50,9 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcvrtm.cc
            dcmdata/libsrc/dcvrui.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2009.08.06 (eichelberg)
 
 - Fixed bug in DUL_ReceiveAssociationRQ() that under very rare circumstances

@@ -1,4 +1,4 @@
-.TH "findscu" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "findscu" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 findscu \- DICOM query (C-FIND) SCU
@@ -217,20 +217,42 @@ Each file supplied on the command line will be sent to the SCP as part of a C-FI
 .fi
 .PP
 .PP
-Individual attributes of each file sent can be modified or supplemented using the '-k key' option. For example the command:
+Individual attributes of each file sent can be modified or supplemented using the \fI-k\fP option. For example the command:
 .PP
 .PP
 .nf
 
-findscu -P -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
+findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
 .fi
 .PP
 .PP
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length. It is not possible to replace or insert attributes within sequences using the \fI-k\fP option.
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length.
 .PP
-If no file is specified on the command line, the query must be specified completely with one or more '-k key' options.
+In earlier versions of \fBfindscu\fP, the tag keys were specified without braces around group and element number, e. g. '0010,0010' instead of '(0010,0010)'. It is recommended switching to the new syntax; however, the old syntax is still working.
 .PP
-Each set of response identifers received will be printed to stdout.
+Also \fI-k\fP accepts dictionary names instead of element tags for specifying DICOM elements. For example, the \fBfindscu\fP call above then reads like this:
+.PP
+.PP
+.nf
+
+findscu -P -k PatientsName="HEWETT*" caesar 5678 patqry.dcm
+.fi
+.PP
+.PP
+It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option. In these cases, a special 'path' notation has to be used, e. g.
+.PP
+.PP
+.nf
+
+findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
+.fi
+.PP
+.PP
+This call queries a worklist server at host caesar for any planned procedures for CT modalities by specifing tag (0040,0100) 'Scheduled Procedure Step Sequence' and an attribute 'Modality' in the first item of this sequence with value 'CT'. Details on this path notation can be found in the documentation of \fBdcmodify\fP.
+.PP
+If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options.
+.PP
+Each set of response identifiers received will be printed to stdout unless option \fI--extract\fP is used.
 .SS "DICOM Conformance"
 The \fBfindscu\fP application supports the following SOP Classes as an SCU:
 .PP
@@ -270,7 +292,301 @@ The \fBfindscu\fP utility will attempt to load DICOM data dictionaries specified
 The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
 .SH "SEE ALSO"
 .PP
-\fBmovescu\fP(1), \fBdump2dcm\fP(1)
+\fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+findscu [options] peer port [dcmfile-in...]
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBfindscu\fP application implements an SCU for the Query/Retrieve Service Class and the Basic Worklist Management Service Class. \fBfindscu\fP only supports query functionality using the C-FIND message. It sends query keys to an SCP and awaits responses. The application can be used to test SCPs of the Query/Retrieve and Basic Worklist Management Service Classes.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+peer        hostname of DICOM peer
+
+port        tcp/ip port number of peer
+
+dcmfile-in  DICOM query file(s)
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  -d    --debug
+          debug mode, print debug information
+.fi
+.PP
+.SS "network options"
+.PP
+.nf
+
+override matching keys:
+
+  -k    --key  [k]ey: gggg,eeee="str" or dictionary name="str"
+          override matching key
+
+query information model:
+
+  -W    --worklist
+          use modality worklist information model (default)
+
+  -P    --patient
+          use patient root information model
+
+  -S    --study
+          use study root information model
+
+  -O    --psonly
+          use patient/study only information model
+
+application entity titles:
+
+  -aet  --aetitle  [a]etitle: string
+          set my calling AE title (default: FINDSCU)
+
+  -aec  --call  [a]etitle: string
+          set called AE title of peer (default: ANY-SCP)
+
+post-1993 value representations:
+
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
+
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
+
+proposed transmission transfer syntaxes:
+
+  -x=   --propose-uncompr
+          propose all uncompressed TS, explicit VR
+          with local byte ordering first (default)
+
+  -xe   --propose-little
+          propose all uncompressed TS, explicit VR
+          little endian first
+
+  -xb   --propose-big
+          propose all uncompressed TS, explicit VR
+          big endian first
+
+  -xi   --propose-implicit
+          propose implicit VR little endian TS only
+
+other network options:
+
+  -to   --timeout  [s]econds: integer (default: unlimited)
+          timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+          set max receive pdu to n bytes (default: 16384)
+
+        --repeat  [n]umber: integer
+          repeat n times
+
+        --abort
+          abort association instead of releasing it
+
+        --cancel  [n]umber: integer
+          cancel after n responses (default: never)
+
+  -X    --extract
+          extract responses to file (rsp0001.dcm, ...)
+.fi
+.PP
+.SS "transport layer security (TLS) options"
+.PP
+.nf
+
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+  +tla  --anonymous-tls
+          use secure TLS connection without certificate
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [c]ertificate filename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [c]ertificate directory: string
+          add certificates in d to list of certificates
+
+ciphersuite:
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
+.fi
+.PP
+.SH "NOTES"
+.PP
+Each file supplied on the command line will be sent to the SCP as part of a C-FIND request. The query file must be a valid DICOM data set containing the dataset part of a C-FIND-RQ message. The query file could, for instance, be created with the \fBdump2dcm\fP utility from a script like the following example:
+.PP
+.PP
+.nf
+
+# query patient names and IDs
+(0008,0052) CS [PATIENT]     # QueryRetrieveLevel
+(0010,0010) PN []            # PatientsName
+(0010,0020) LO []            # PatientID
+.fi
+.PP
+.PP
+Individual attributes of each file sent can be modified or supplemented using the \fI-k\fP option. For example the command:
+.PP
+.PP
+.nf
+
+findscu -P -k "(0010,0010)=HEWETT*" caesar 5678 patqry.dcm
+.fi
+.PP
+.PP
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. If such an attribute is present it will be replaced, if absent it will be inserted. The \fI-k\fP option can be present more than once. The value part (after the '=') may be absent causing the attribute to be sent with zero length.
+.PP
+In earlier versions of \fBfindscu\fP, the tag keys were specified without braces around group and element number, e. g. '0010,0010' instead of '(0010,0010)'. It is recommended switching to the new syntax; however, the old syntax is still working.
+.PP
+Also \fI-k\fP accepts dictionary names instead of element tags for specifying DICOM elements. For example, the \fBfindscu\fP call above then reads like this:
+.PP
+.PP
+.nf
+
+findscu -P -k PatientsName="HEWETT*" caesar 5678 patqry.dcm
+.fi
+.PP
+.PP
+It is also possible to specify sequences, items and nested attributes using the \fI-k\fP option. In these cases, a special 'path' notation has to be used, e. g.
+.PP
+.PP
+.nf
+
+findscu -W -k "(0040,0100)[0].Modality=CT" caesar 5678
+.fi
+.PP
+.PP
+This call queries a worklist server at host caesar for any planned procedures for CT modalities by specifing tag (0040,0100) 'Scheduled Procedure Step Sequence' and an attribute 'Modality' in the first item of this sequence with value 'CT'. Details on this path notation can be found in the documentation of \fBdcmodify\fP.
+.PP
+If no file is specified on the command line, the query must be specified completely with one or more \fI-k\fP options.
+.PP
+Each set of response identifiers received will be printed to stdout unless option \fI--extract\fP is used.
+.SS "DICOM Conformance"
+The \fBfindscu\fP application supports the following SOP Classes as an SCU:
+.PP
+.PP
+.nf
+
+FINDPatientRootQueryRetrieveInformationModel       1.2.840.10008.5.1.4.1.2.1.1
+FINDStudyRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.2.1
+FINDPatientStudyOnlyQueryRetrieveInformationModel  1.2.840.10008.5.1.4.1.2.3.1
+FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
+.fi
+.PP
+.PP
+The \fBfindscu\fP application will propose presentation contexts for one of the abovementioned supported SOP Classes depending on command line options (\fI-P\fP, \fI-S\fP, \fI-O\fP or \fI-W\fP). Each proposed presentation context will propose the transfer syntaxes:
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
+.fi
+.PP
+.PP
+The \fBfindscu\fP application does not support extended negotiation.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBfindscu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "SEE ALSO"
+.PP
+\fBmovescu\fP(1), \fBdump2dcm\fP(1), \fBdcmodify\fP(1)
 .SH "COPYRIGHT"
 .PP
 Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

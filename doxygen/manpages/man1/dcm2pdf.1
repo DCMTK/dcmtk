@@ -1,4 +1,4 @@
-.TH "dcm2pdf" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pdf" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pdf \- Extract PDF file from DICOM encapsulated PDF
@@ -146,4 +146,149 @@ The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment 
 \fBpdf2dcm\fP(1)
 .SH "COPYRIGHT"
 .PP
-Copyright (C) 2007-2008 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
+Copyright (C) 2007-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcm2pdf [options] dcmfile-in pdffile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcm2pdf\fP utility reads a DICOM file of the Encapsulated PDF Storage SOP Class (\fIdcmfile-in\fP), extracts the embedded PDF document and writes it to an output file (\fIpdffile-out\fP). Optionally a command can be executed after the creation of the PDF file.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in   DICOM input filename
+
+pdffile-out  PDF output filename
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -v   --verbose
+         verbose mode, print processing details
+
+  -d   --debug
+         debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax:
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+
+parsing of odd-length attributes:
+
+  +ao  --accept-odd-length
+         accept odd length attributes (default)
+
+  +ae  --assume-even-length
+         assume real length is one byte larger
+
+handling of undefined length UN elements:
+
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
+
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
+
+handling of defined length UN elements:
+
+  -uc  --retain-un
+         retain elements as UN (default)
+
+  +uc  --convert-un
+         convert to real VR if known
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
+
+bitstream format of deflated input:
+
+  +bd  --bitstream-deflated
+         expect deflated bitstream (default)
+
+  +bz  --bitstream-zlib
+         expect deflated zlib bitstream
+.fi
+.PP
+.SS "execution options"
+.PP
+.nf
+
+  -x   --exec  [c]ommand: string
+         execute command c after PDF extraction
+.fi
+.PP
+.SH "NOTES"
+.PP
+Option \fI--exec\fP allows for the execution of a certain command line after the creation of the PDF document. The command line to be executed is passed to this option as a parameter. The specified command line may contain the placeholder '#f', which will be replaced by the PDF filename at run time. The specified command line is executed in the foreground, i.e. \fBpdf2dcm\fP will be blocked until the command terminates.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcm2pdf\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "SEE ALSO"
+.PP
+\fBpdf2dcm\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2007-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

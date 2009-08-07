@@ -1,7 +1,232 @@
-.TH "dcmquant" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmquant" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmquant \- Convert DICOM color images to palette color
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmquant [options] dcmfile-in dcmfile-out
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmquant\fP utility reads a DICOM color image, computes a palette color look-up table of the desired size for this image (based on the median cut algorithm published by Paul Heckbert) and converts the color image into a DICOM palette color image.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in   DICOM input filename to be converted
+
+dcmfile-out  DICOM output filename to be written
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -v   --verbose
+         verbose mode, print processing details
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax:
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+frame selection:
+
+  +F   --frame  [n]umber: integer
+         select specified frame
+
+  +Fa  --all-frames
+         select all frames (default)
+
+compatibility:
+
+  +Mp  --accept-palettes
+         accept incorrect palette attribute tags
+         (0028,111x) and (0028,121x)
+
+median cut dimension selection:
+
+  +Dr  --mc-dimension-rgb
+         max dimension from RGB range (default)
+
+  +Dl  --mc-dimension-lum
+         max dimension from luminance
+
+median cut representative color selection:
+
+  +Cb  --mc-color-avgbox
+         average colors in box (default)
+
+  +Cp  --mc-color-avgpixel
+         average pixels in box
+
+  +Cc  --mc-color-center
+         select center of box
+
+color palette creation:
+
+  +pw  --write-ow
+         write Palette LUT as OW instead of US
+
+  +pe  --lut-entries-word
+         write Palette LUT with 16-bit entries
+
+  +pf  --floyd-steinberg
+         use Floyd-Steinberg error diffusion
+
+  +pc  --colors  number of colors: 2..65536 (default 256)
+         number of colors to quantize to
+
+SOP Class UID:
+
+  +cd  --class-default
+         keep SOP Class UID (default)
+
+  +cs  --class-sc
+         convert to Secondary Capture Image
+         (implies --uid-always)
+
+SOP Instance UID:
+
+  +ua  --uid-always
+         always assign new UID (default)
+
+  +un  --uid-never
+         never assign new UID
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+
+output file format:
+
+  +F   --write-file
+         write file format (default)
+
+  -F   --write-dataset
+         write data set without file meta information
+
+output transfer syntax:
+
+  +t=  --write-xfer-same
+         write with same TS as input (default)
+
+  +te  --write-xfer-little
+         write with explicit VR little endian TS
+
+  +tb  --write-xfer-big
+         write with explicit VR big endian TS
+
+  +ti  --write-xfer-implicit
+         write with implicit VR little endian TS
+
+post-1993 value representations:
+
+  +u   --enable-new-vr
+         enable support for new VRs (UN/UT) (default)
+
+  -u   --disable-new-vr
+         disable support for new VRs, convert to OB
+
+group length encoding:
+
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
+
+  +g   --group-length-create
+         always write with group length elements
+
+  -g   --group-length-remove
+         always write without group length elements
+
+length encoding in sequences and items:
+
+  +e   --length-explicit
+         write with explicit lengths (default)
+
+  -e   --length-undefined
+         write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p=  --padding-retain
+         do not change padding
+         (default if not --write-dataset)
+
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes and items on
+         multiple of i bytes
+.fi
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmquant\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2001-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 .SH "SYNOPSIS"
 .PP
 .PP

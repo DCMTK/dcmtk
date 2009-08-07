@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -92,6 +92,284 @@ input files:
 
   +r   --recurse
          recurse within specified directories
+
+parsing of file meta information:
+
+  +ml  --use-meta-length
+         use file meta information group length (default)
+
+  -ml  --ignore-meta-length
+         ignore file meta information group length
+
+parsing of odd-length attributes:
+
+  +ao  --accept-odd-length
+         accept odd length attributes (default)
+
+  +ae  --assume-even-length
+         assume real length is one byte larger
+
+handling of non-standard VR:
+
+  +vr  --treat-as-unknown
+         treat non-standard VR as unknown (default)
+
+  -vr  --assume-implicit
+         try to read with implicit VR little endian TS
+
+handling of undefined length UN elements:
+
+  +ui  --enable-cp246
+         read undefined len UN as implicit VR (default)
+
+  -ui  --disable-cp246
+         read undefined len UN as explicit VR
+
+handling of defined length UN elements:
+
+  -uc  --retain-un
+         retain elements as UN (default)
+
+  +uc  --convert-un
+         convert to real VR if known
+
+handling of private max-length elements (implicit VR):
+
+  -sq  --maxlength-dict
+         read as defined in dictionary (default)
+
+  +sq  --maxlength-seq
+         read as sequence with undefined length
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
+
+general handling of parser errors:
+
+  +Ep  --ignore-parse-errors
+         try to recover from parse errors
+
+  -Ep  --handle-parse-errors
+         handle parse errors and stop parsing (default)
+
+other parsing options:
+
+  +st  --stop-after-elem  [t]ag: "gggg,eeee" or a data dictionary
+         stop parsing after element specified by t
+
+bitstream format of deflated input:
+
+  +bd  --bitstream-deflated
+         expect deflated bitstream (default)
+
+  +bz  --bitstream-zlib
+         expect deflated zlib bitstream
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+loading:
+
+  +M   --load-all
+         load very long tag values (default)
+
+  -M   --load-short
+         do not load very long values (e.g. pixel data)
+
+  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+         set threshold for long values to k kbytes
+
+printing:
+
+  +L   --print-all
+         print long tag values completely
+
+  -L   --print-short
+         print long tag values shortened (default)
+
+  +T   --print-tree
+         print hierarchical structure as a simple tree
+
+  -T   --print-indented
+         print hierarchical structure indented (default)
+
+  +F   --print-filename
+         print header with filename for each input file
+
+  +Fs  --print-file-search
+         print header with filename only for those input files
+         that contain one of the searched tags
+
+  +Un  --map-uid-names
+         map well-known UID numbers to names (default)
+
+  -Un  --no-uid-names
+         do not map well-known UID numbers to names
+
+  +Qn  --quote-nonascii
+         quote non-ASCII and control chars as XML markup
+
+  -Qn  --print-nonascii
+         print non-ASCII and control chars (default)
+
+error handling:
+
+  -E   --stop-on-error
+         do not print if file is damaged (default)
+
+  +E   --ignore-errors
+         attempt to print even if file is damaged
+
+searching:
+
+  +P   --search  [t]ag: "gggg,eeee" or dictionary name
+         print the value of tag t this option can be specified
+         multiple times (default: the complete file is printed)
+
+  +s   --search-all
+         print all instances of searched tags (default)
+
+  -s   --search-first
+         only print first instance of searched tags
+
+  +p   --prepend
+         prepend sequence hierarchy to printed tag,
+         denoted by: (gggg,eeee).(gggg,eeee).*
+         (only with --search-all or --search-first)
+
+  -p   --no-prepend
+         do not prepend hierarchy to tag (default)
+
+writing:
+
+  +W   --write-pixel  [d]irectory: string
+         write pixel data to a .raw file stored in d
+         (little endian, filename created automatically)
+.fi
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmdump\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "SEE ALSO"
+.PP
+\fBdump2dcm\fP(1), \fBdcmconv\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1994-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmdump [options] dcmfile-in...
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square brackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage') unless this mapping would be explicitly switched off. Empty value fields are described as '(no value available)'.
+.PP
+If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcmdump\fP to read a dataset with a particular transfer syntax.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in  DICOM input file or directory to be dumped
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -q   --quiet
+         quiet mode, print no warnings and errors
+
+  -d   --debug
+         debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax:
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+
+input files:
+
+  +sd  --scan-directories
+         scan directories for input files (dcmfile-in)
+
+  +sp  --scan-pattern  [p]attern: string (only with --scan-directories)
+         pattern for filename matching (wildcards)
+
+         # possibly not available on all systems
+
+  -r   --no-recurse
+         do not recurse within directories (default)
+
+  +r   --recurse
+         recurse within specified directories
+
+parsing of file meta information:
+
+  +ml  --use-meta-length
+         use file meta information group length (default)
+
+  -ml  --ignore-meta-length
+         ignore file meta information group length
 
 parsing of odd-length attributes:
 

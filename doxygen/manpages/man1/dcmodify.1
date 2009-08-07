@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -255,7 +255,402 @@ data set trailing padding (not with --write-dataset):
 .PP
 There are some issues you have to consider when working with private tags. However, the insertion or modification of a reservation tag (gggg,00xx) should always work.
 .SS "Insertions"
-If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see \fI<docdir>/datadict.txt\fP for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN.
+If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see \fI<docdir>/datadict.txt\fP for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN. Also, for some cases insertion may even fail for some values.
+.PP
+If you've got your private tag in the dictionary, \fBdcmodify\fP acts as follows: When it finds a reservation in the tag's enclosing dataset, whose private creator matches, insertion is done with the VR found in the dictionary and the value given on command line. But if the private creator doesn't match or none is set, \fBdcmodify\fP will return with an error. If a private tag should be inserted regardless whether a reservation does not exist, the option \fI-nrc\fP can be used, forcing an insertion. However, the VR is set to UN then, because the tag then cannot be found in the dictionary.
+.PP
+See description above how inserting values into elements with unknown VR are handled.
+.SS "Modifications"
+If you modify a private tags value, \fBdcmodify\fP won't check its VR against the dictionary. So please be careful to enter only values that match the tag's VR.
+.PP
+If you wish to change a private tags value \fIand\fP VR, because you just added this tag to your dictionary, you can delete it with \fBdcmodify\fP and re-insert it. Then \fBdcmodify\fP uses your dicitionary entry to determine the right VR (also see subsection insertions).
+.PP
+Also, see description above how inserting values into elements with unknown VR are handled.
+.SS "Deletions"
+When you use \fBdcmodify\fP to delete a private reservation tag, please note that \fBdcmodify\fP won't touch the private tags that are under this reservation. The user is forced to handle the consistency between reservations and their pending private tags.
+.PP
+For the deletion of private non-reservation tags there are no special issues.
+.SH "CHANGING UIDs"
+.PP
+\fBdcmodify\fP will automatically correct 'Media Storage SOP Class UID' and 'Media Storage SOP Instance UID' in the metaheader, if you make changes to the related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via insert or modify mode options. You can disable this behaviour by using the \fI-nmu\fP option.
+.PP
+If you generate new UID's with \fI-gst\fP, \fI-gse\fP or \fI-gin\fP, this will only affect the UID you choosed to generate. So if you use \fI-gst\fP to generate a new 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID' will not be affected! This gives you the possibility to generate each value separately. Normally, you would also modify the 'underlying' UIDs. As a disadvantage of this flexibility, the user has to assure, that when creating 'new' DICOM files with new UIDs with \fBdcmodify\fP, other UIDs have to be updated by the user as necessary.
+.PP
+When choosing the \fI-gin\fP option, the related metaheader tag ('Media Storage SOP Instance UID') is updated automatically. This behaviour cannot be disabled.
+.SH "WILDCARDS"
+.PP
+\fBdcmodify\fP also permits the usage of a wildcard character '*' for item numbers in path expressions, e.g. 'ContentSequence[*].CodeValue' selects all 'Code Value' attributes in all items of the ContentSequence. Using a wildcard is possible for all basic operations, i.e . modifying \fI-m\fP, inserting \fI-i\fP and \fI-e\fP options which makes it, together with the automatic creation of intermediate path nodes a powerful tool for construction and processing complex datasets. The options \fI-ma\fP and \fI-ea\fP for modifying or deleting all occurences of a DICOM element based on its tag does not except any wildcards but only works on single elements (i.e. a single dictionary name or tag key).
+.SH "EXAMPLES"
+.PP
+.PP
+.nf
+
+-i   --insert:
+       dcmodify -i "(0010,0010)=A Name" file.dcm
+       Inserts the PatientsName tag into 'file.dcm' at 1st level.
+       If tag already exists, -i will overwrite it!  If you want to
+       insert an element with value multiplicity > 1 (e.g. 4) you
+       can do this with: dcmodify -i "(0018,1310)=1\\2\\3\\4"
+
+       dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
+       Inserts PatientsName tag into the first item of sequence
+       (0008,1111).  Note that the use of wildcards for files is
+       possible.  You can specify longer tag paths, too (e.g.
+       "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
+       If any part of the path, e.g. the sequence or the item "0"
+       does not exist, it is automatically inserted by dcmodify.
+
+       dcmodify -i "(0008,1111)[*].PatientsName=Another Name" *.dcm
+       Inserts PatientsName tag into the _every_ item of sequence
+       (0008,1111).  Note that the use of wildcards for files is
+       possible.  You can specify longer tag paths, too (e.g.
+       "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").
+
+-m   --modify:
+       dcmodify -m "(0010,0010)=A Name" file.dcm
+       Changes tag (0010,0010) on 1st level to "A Name".
+
+       This option also permits longer tag paths as demonstrated
+       above for -i. If the leaf element or any intermediate
+       part of the path does not exist, it is not inserted as it
+       would be if using the '-i' option.
+
+       dcmodify -m "(0010,0010)=A Name" -imt file.dcm
+       Changes tag (0010,0010) on 1st level to "A Name". Due to the
+       given option '-imt', success is returned instead of "tag not found",
+       if the element/item (or any intermediate node in a longer path) does
+       not exist.
+
+       Note that for the '-m' option the last node in the path must be
+       a leaf element, i.e. not a sequence or an item.
+
+-ma  --modify-all:
+       dcmodify -ma "(0010,0010)=New Name" file.dcm
+       Does the same as -m but works on all matching tags found in
+       'file.dcm'.  Therefore, it searches the whole dataset including
+       sequences for tag (0010,0010) and changes them to "New Name"
+
+-e   --erase:
+       dcmodify -e "(0010,0010)" *.dcm
+       Erases tag (0010,0010) in all *.dcm files at 1st level.
+
+       This option also allows longer tag paths as demonstrated
+       above for -i.
+
+       dcmodify -e "(0010,0010)" -imt *.dcm
+       Erases tag (0010,0010) in all *.dcm files at 1st level. Due to the
+       given option '-imt', success is returned instead of "tag not found",
+       if the element/item (or any intermediate node in a longer path) does
+       not exist.
+
+-ea  --erase-all:
+       dcmodify -ea "(0010,0010)" *.dcm
+       Same as -e, but also searches in sequences and items.
+
+-ep  --erase-private:
+       dcmodify -ep *.dcm
+       Deletes all private tags (i.e. tags having an odd group number) from
+       all files matching *.dcm in the current directory.
+
+-gst --gen-stud-uid:
+       dcmodify -gst file.dcm
+       This generates a new value for the StudyInstanceUID
+       (0020,000d).  Other UIDs are not modified!
+
+-gse --gen-ser-uid:
+       dcmodify -gse file.dcm
+       This generates a new value for the SeriesInstanceUID
+       (0020,000e).  Other UIDs are not modified!
+
+-gin --gen-inst-uid:
+       dcmodify -gin file.dcm
+       This command generates a new value for the SOPInstanceUID
+       (0008,0018).  The corresponding MediaStorageSOPInstanceUID
+       (0002,0003) is adjusted to the new value automatically.
+       Please note that it's not possible to avoid this metaheader
+       update via the -nmu option.
+
+-nmu --no-meta-uid:
+       dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
+       This will modify the SOPInstanceUID to the given [UID],
+       but -nmu avoids, that dcmodify adjusts the
+       MediaStorageSOPInstanceUID in the metaheader, too.
+.fi
+.PP
+.SH "ERROR HANDLING"
+.PP
+\fBdcmodify\fP tries executing each modify operation given on command line: If one returns an error, the others are being performed anyway. However in case of any error, the modified file is not saved, unless the \fI--ignore-errors\fP option is specified. If that option is selected, \fBdcmodify\fP also continues modifying further files specified on commandline; otherwise \fBdcmodify\fP exits after the first file that had modification errors.
+.PP
+If the \fI--ignore-missing-tags\fP option is enabled, any modify or erase operations (i.e. not \fI--insert\fP) that fails because of a non-existing tag is treated as being successful. That does make sense if someone wants to be sure that specific tags are not present in the file or that - if they exist - that they are set to a specific value.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2003-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmodify [options] dcmfile-in...
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+\fBdcmodify\fP is a tool that allows to modify, insert and delete tags and items in DICOM files. Sequences and tags with a value multiplicity > 1 are also supported. Metaheader information and the tag's VR can not be modified directly by \fBdcmodify\fP at this time. In addition to tag modifications, \fBdcmodify\fP makes available some input options - forcing \fBdcmodify\fP to handle its input files as the user specifies - and output options to control the output format of the resulting files.
+.PP
+In case multiple modifications have to be performed, \fBdcmodify\fP does the modifications in the same order as they appear on the command line. Please note that \fBdcmodify\fP does not check whether a given value matches its value representation (VR). Usually, an error message is printed but generally the user should take care of the right VR usage.
+.PP
+If \fBdcmodify\fP doesn't know the tag it should insert, then the tag's VR is set to UN and the value provided on commandline is interpreted as being a series of hexadecimal numbers (like they are provided for VR=OB). Please insert these tags into the dictionary to avoid this behaviour. Also, specifying the \fI-iun\fP option, it is possible to force \fBdcmodify\fP to leave UN values untouched. Using option \fI-u\fP lets \fBdcmodify\fP saving all VR=UN attributes as OB.
+.PP
+\fBdcmodify\fP is able to work with so-called tag paths to access tags in sequences. The (pseudo-formalized) syntax is
+.PP
+.PP
+.nf
+
+  {sequence[item-no].}*element
+.fi
+.PP
+.PP
+.fi
+.PP
+where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag. 'item-no' describes the item number to be accessed (counting from zero). 'element' defines the target tag to work on. A tag can either be specified directly as (0010,0010) or through the corresponding dictionary name 'PatientsName'. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section). For 'item-no', also a wildcard character '*' can be used selecting all items in surrounding sequence (see section WILDCARDS below).
+.PP
+When inserting tag paths consisting of multiple nodes (i.e. not a single element) using the \fI-i\fP option, any missing path elements (items, sequences, leaf elements) are inserted automatically when missing. That does not work for item wildcards: When no single item exists in the surrounding sequence \fBdcmodify\fP of course can't decide, how many items should be generated. However, if specifying an item number like '5', all 6 items (counted from zero) can be (and are) automatically generated in insert mode. If already 2 items would exist, the rest (4) would be inserted.
+.PP
+Please note that there are some issues concerning the modification of private tags (see PRIVATE TAGS section) and for changing UIDs (CHANGING UIDs section).
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in  DICOM input filename(s) to be modified
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -v    --verbose
+          verbose mode, print verbose output
+
+  -d    --debug
+          debug mode, print debug information
+
+  -ie   --ignore-errors
+          continue with file, if modify error occurs
+
+  -nb   --no-backup
+          don't backup files (DANGEROUS)
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input transfer syntax:
+
+  -t=   --read-xfer-auto
+          use TS recognition (default)
+
+  -td   --read-xfer-detect
+          ignore TS specified in the file meta header
+
+  -te   --read-xfer-little
+          read with explicit VR little endian TS
+
+  -tb   --read-xfer-big
+          read with explicit VR big endian TS
+
+  -ti   --read-xfer-implicit
+          read with implicit VR little endian TS
+
+parsing of odd-length attributes:
+
+  +ao   --accept-odd-length
+          accept odd length attributes (default)
+
+  +ae   --assume-even-length
+          assume real length is one byte larger
+
+automatic data correction:
+
+  +dc   --enable-correction
+          enable automatic data correction (default)
+
+  -dc   --disable-correction
+          disable automatic data correction
+
+bitstream format of deflated input:
+
+  +bd   --bitstream-deflated
+          expect deflated bitstream (default)
+
+  +bz   --bitstream-zlib
+          expect deflated zlib bitstream
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+insert mode:
+
+  -i    --insert  "[t]ag-path=[v]alue"
+          insert (or overwrite) path at position t with value v
+
+  -nrc  --no-reserv-check
+          do not check private reservations
+
+modify mode:
+
+  -m    --modify  "[t]ag-path=[v]alue"
+          modify tag at position t to value v
+
+  -ma   --modify-all  "[t]ag=[v]alue"
+          modify ALL matching tags t in file to value v
+
+erase mode:
+
+  -e    --erase  "[t]ag-path"
+          erase tag/item at position t
+
+  -ea   --erase-all  "[t]ag"
+          erase ALL matching tags t in file
+
+  -ep   --erase-private
+          erase ALL private data from file
+
+unique identifier:
+
+  -gst  --gen-stud-uid
+          generate new Study Instance UID
+
+  -gse  --gen-ser-uid
+          generate new Series Instance UID
+
+  -gin  --gen-inst-uid
+          generate new SOP Instance UID
+
+  -nmu  --no-meta-uid
+          don't update metaheader UIDs;
+          UIDs in the metaheader won't be changed, if related UIDs in
+          the dataset are modified via options -m, -i or -ma
+
+other processing options:
+
+  -imt  --ignore-missing-tags
+          treat 'tag not found' as success
+          when modifying or erasing in files
+
+  -iun  --ignore-un-values
+          do not try writing any values to
+          elements having VR of UN
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+output file format:
+
+  +F    --write-file
+          write file format (default)
+
+  -F    --write-dataset
+          write data set without file meta information
+
+output transfer syntax:
+
+  +t=   --write-xfer-same
+          write with same TS as input (default)
+
+  +te   --write-xfer-little
+          write with explicit VR little endian TS
+
+  +tb   --write-xfer-big
+          write with explicit VR big endian TS
+
+  +ti   --write-xfer-implicit
+          write with implicit VR little endian TS
+
+post-1993 value representations:
+
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
+
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
+
+group length encoding:
+
+  +g=   --group-length-recalc
+          recalculate group lengths if present (default)
+
+  +g    --group-length-create
+          always write with group length elements
+
+  -g    --group-length-remove
+          always write without group length elements
+
+length encoding in sequences and items:
+
+  +le   --length-explicit
+          write with explicit lengths (default)
+
+  -le   --length-undefined
+          write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p=   --padding-retain
+          do not change padding (default if not --write-dataset)
+
+  -p    --padding-off
+          no padding (implicit if --write-dataset)
+
+  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+          align file on multiple of f bytes and items on
+          multiple of i bytes
+.fi
+.PP
+.SH "PRIVATE TAGS"
+.PP
+There are some issues you have to consider when working with private tags. However, the insertion or modification of a reservation tag (gggg,00xx) should always work.
+.SS "Insertions"
+If you wish to insert a private tag (not a reservation with gggg,00xx), be sure, that you've listed it in your dictionary (see \fI<docdir>/datadict.txt\fP for details). If it's not listed, \fBdcmodify\fP will insert it with VR=UN. Also, for some cases insertion may even fail for some values.
 .PP
 If you've got your private tag in the dictionary, \fBdcmodify\fP acts as follows: When it finds a reservation in the tag's enclosing dataset, whose private creator matches, insertion is done with the VR found in the dictionary and the value given on command line. But if the private creator doesn't match or none is set, \fBdcmodify\fP will return with an error. If a private tag should be inserted regardless whether a reservation does not exist, the option \fI-nrc\fP can be used, forcing an insertion. However, the VR is set to UN then, because the tag then cannot be found in the dictionary.
 .PP

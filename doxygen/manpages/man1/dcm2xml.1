@@ -1,7 +1,247 @@
-.TH "dcm2xml" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2xml" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2xml \- Convert DICOM file and data set to XML
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcm2xml [options] dcmfile-in [xmlfile-out]
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcm2xml\fP utility converts the contents of a DICOM file (file format or raw data set) to XML (Extensible Markup Language). The DTD (Document Type Definition) is described in the file \fIdcm2xml.dtd\fP.
+.PP
+If \fBdcm2xml\fP reads a raw data set (DICOM data without a file format meta-header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcm2xml\fP to read a data set with a particular transfer syntax.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in   DICOM input filename to be converted
+
+xmlfile-out  XML output filename (default: stdout)
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+       --arguments
+         print expanded command line arguments
+
+  -q   --quiet
+         quiet mode, print no warnings and errors
+
+  -d   --debug
+         debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  +fo  --read-file-only
+         read file format only
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax:
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -td  --read-xfer-detect
+         ignore TS specified in the file meta header
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+
+long tag values:
+
+  +M   --load-all
+         load very long tag values (e.g. pixel data)
+
+  -M   --load-short
+         do not load very long values (default)
+
+  +R   --max-read-length  [k]bytes: integer (4..4194302, default: 4)
+         set threshold for long values to k kbytes
+.fi
+.PP
+.SS "processing options"
+.PP
+.nf
+
+character set:
+
+  +Cr  --charset-require
+         require declaration of extended charset (default)
+
+  +Ca  --charset-assume  [c]harset: string constant
+         (latin-1 to -5, cyrillic, arabic, greek, hebrew)
+         assume charset c if no extended charset declared
+
+  +Cc  --charset-check-all
+         check all data elements with string values
+         (default: only PN, LO, LT, SH, ST and UT)
+.fi
+.PP
+.SS "output options"
+.PP
+.nf
+
+XML structure:
+
+  +Xd  --add-dtd-reference
+         add reference to document type definition (DTD)
+
+  +Xe  --embed-dtd-content
+         embed document type definition into XML document
+
+  +Xf  --use-dtd-file   [f]ilename: string
+         use specified DTD file (only with +Xe)
+         (default: /usr/local/share/dcmtk/dcm2xml.dtd)
+
+  +Xn  --use-xml-namespace
+         add XML namespace declaration to root element
+
+DICOM data elements:
+
+  +Wn  --write-element-name
+         write name of the DICOM data elements (default)
+
+  -Wn  --no-element-name
+         do not write name of the DICOM data elements
+
+  +Wb  --write-binary-data
+         write binary data of OB and OW elements
+         (default: off, be careful with --load-all)
+
+  +Eh  --encode-hex
+         encode binary data as hex numbers (default)
+
+  +Eb  --encode-base64
+         encode binary data as Base64 (RFC 2045, MIME)
+.fi
+.PP
+.SH "NOTES"
+.PP
+The basic structure of the XML output created from a DICOM image file looks like the following:
+.PP
+.PP
+.nf
+
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
+<file-format xmlns="http://dicom.offis.de/dcmtk">
+  <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
+    <element tag="0002,0000" vr="UL" vm="1" len="4"
+             name="MetaElementGroupLength">
+      166
+    </element>
+    ...
+    <element tag="0002,0013" vr="SH" vm="1" len="16"
+             name="ImplementationVersionName">
+      OFFIS_DCMTK_353
+    </element>
+  </meta-header>
+  <data-set xfer="1.2.840.10008.1.2" name="LittleEndianImplicit">
+    <element tag="0008,0005" vr="CS" vm="1" len="10"
+             name="SpecificCharacterSet">
+      ISO_IR 100
+    </element>
+    ...
+    <sequence tag="0028,3010" vr="SQ" card="2" name="VOILUTSequence">
+      <item card="3">
+        <element tag="0028,3002" vr="xs" vm="3" len="6"
+                 name="LUTDescriptor">
+          256\\0\\8
+        </element>
+        ...
+      </item>
+      ...
+    </sequence>
+    ...
+    <element tag="7fe0,0010" vr="OW" vm="1" len="262144"
+             name="PixelData" loaded="no" binary="hidden">
+    </element>
+  </data-set>
+</file-format>
+.fi
+.PP
+.PP
+The 'file-format' and 'meta-header' tags are absent for DICOM data sets.
+.SS "Character Encoding"
+The XML encoding is determined automatically from the DICOM attribute (0008,0005) 'Specific Character Set' (if present) using the following mapping:
+.PP
+.PP
+.nf
+
+ASCII         "ISO_IR 6"    =>  "UTF-8"
+UTF-8         "ISO_IR 192"  =>  "UTF-8"
+ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
+ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
+ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"
+ISO Latin 4   "ISO_IR 110"  =>  "ISO-8859-4"
+ISO Latin 5   "ISO_IR 148"  =>  "ISO-8859-9"
+Cyrillic      "ISO_IR 144"  =>  "ISO-8859-5"
+Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
+Greek         "ISO_IR 126"  =>  "ISO-8859-7"
+Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
+.fi
+.PP
+.PP
+Multiple character sets are not supported (only the first attribute value is mapped in case of value multiplicity).
+.SS "XML Encoding"
+Attributes with very large value fields (e.g. pixel data) are not loaded by default. They can be identified by the additional attribute 'loaded' with a value of 'no' (see example above). The command line option \fI--load-all\fP forces to load all value fields including the very long ones.
+.PP
+Furthermore, binary information of OB and OW attributes are not written to the XML output file by default. These elements can be identified by the additional attribute 'binary' with a value of 'hidden' (default is 'no'). The command line option \fI--write-binary-data\fP causes also binary value fields to be printed (attribute value is 'yes' or 'base64'). But, be careful when using this option together with \fI--load-all\fP because of the large amounts of pixel data that might be printed to the output.
+.PP
+Multiple values (i.e. where the DICOM value multiplicity is greater than 1) are separated by a backslash '\\' (except for Base64 encoded data). The 'len' attribute indicates the number of bytes for the particular value field as stored in the DICOM data set, i.e. it might deviate from the XML encoded value length e.g. because of non-significant padding that has been removed. If this attribute is missing in 'sequence' or 'item' start tags, the corresponding DICOM element has been stored with undefined length.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcm2xml\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "FILES"
+.PP
+\fI<datadir>/dcm2xml.dtd\fP - Document Type Definition (DTD) file
+.SH "SEE ALSO"
+.PP
+\fBxml2dcm\fP(1), \fBdcmconv\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2002-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 .SH "SYNOPSIS"
 .PP
 .PP

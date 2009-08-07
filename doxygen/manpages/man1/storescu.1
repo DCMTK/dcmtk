@@ -1,7 +1,437 @@
-.TH "storescu" 1 "7 May 2009" "Version 3.5.4" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "storescu" 1 "7 Aug 2009" "Version 3.5.5" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 storescu \- DICOM storage (C-STORE) SCU
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+storescu [options] peer port dcmfile-in...
+.fi
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBstorescu\fP application implements a Service Class User (SCU) for the Storage Service Class. For each DICOM file on the command line it sends a C-STORE message to a Storage Service Class Provider (SCP) and waits for a response. The application can be used to transmit DICOM images and other DICOM composite objects.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+peer        hostname of DICOM peer
+
+port        tcp/ip port number of peer
+
+dcmfile-in  DICOM file or directory to be transmitted
+.fi
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h    --help
+          print this help text and exit
+
+        --version
+          print version information and exit
+
+        --arguments
+          print expanded command line arguments
+
+  -v    --verbose
+          verbose mode, print processing details
+
+  +v    --verbose-pc
+          verbose mode and show presentation contexts
+
+  -d    --debug
+          debug mode, print debug information
+.fi
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f    --read-file
+          read file format or data set (default)
+
+  +fo   --read-file-only
+          read file format only
+
+  -f    --read-dataset
+          read data set without file meta information
+
+input files:
+
+  +sd   --scan-directories
+          scan directories for input files (dcmfile-in)
+
+  +sp   --scan-pattern  [p]attern: string (only with --scan-directories)
+          pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
+
+  -r    --no-recurse
+          do not recurse within directories (default)
+
+  +r    --recurse
+          recurse within specified directories
+.fi
+.PP
+.SS "network options"
+.PP
+.nf
+
+application entity titles:
+
+  -aet  --aetitle  [a]etitle: string
+          set my calling AE title (default: STORESCU)
+
+  -aec  --call  [a]etitle: string
+          set called AE title of peer (default: ANY-SCP)
+
+association negotiation profile from configuration file:
+
+  -xf   --config-file  [f]ilename, [p]rofile: string
+          use profile p from config file f
+
+proposed transmission transfer syntaxes (not with --config-file):
+
+  -x=   --propose-uncompr
+          propose all uncompressed TS, explicit VR
+          with local byte ordering first (default)
+
+  -xe   --propose-little
+          propose all uncompressed TS, explicit VR little endian first
+
+  -xb   --propose-big
+          propose all uncompressed TS, explicit VR big endian first
+
+  -xi   --propose-implicit
+          propose implicit VR little endian TS only
+
+  -xs   --propose-lossless
+          propose default JPEG lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xy   --propose-jpeg8
+          propose default JPEG lossy TS for 8 bit data
+          and all uncompressed transfer syntaxes
+
+  -xx   --propose-jpeg12
+          propose default JPEG lossy TS for 12 bit data
+          and all uncompressed transfer syntaxes
+
+  -xv   --propose-j2k-lossless
+          propose JPEG 2000 lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xw   --propose-j2k-lossy
+          propose JPEG 2000 lossy TS
+          and all uncompressed transfer syntaxes
+
+  -xt   --propose-jls-lossless
+          propose JPEG-LS lossless TS
+          and all uncompressed transfer syntaxes
+
+  -xu   --propose-jls-lossy
+          propose JPEG-LS lossy TS
+          and all uncompressed transfer syntaxes
+
+  -xm   --propose-mpeg2
+          propose MPEG2 Main Profile @ Main Level TS only
+
+  -xr   --propose-rle
+          propose RLE lossless TS
+          and all uncompressed transfer syntaxes
+
+  -R    --required
+          propose only required presentation contexts
+          (default: propose all supported)
+
+  +C    --combine
+          combine proposed transfer syntaxes
+          (default: separate presentation context for each TS)
+
+post-1993 value representations:
+
+  +u    --enable-new-vr
+          enable support for new VRs (UN/UT) (default)
+
+  -u    --disable-new-vr
+          disable support for new VRs, convert to OB
+
+deflate compression level (only with --propose-deflated or --config-file):
+
+  +cl   --compression-level  [l]evel: integer (default: 6)
+          0=uncompressed, 1=fastest, 9=best compression
+
+user identity negotiation:
+
+  -usr  --user  [u]ser name: string
+          authenticate using user name u
+
+  -pwd  --password  [p]assword: string (only with --user)
+          authenticate using password p
+
+  -epw  --empty-password
+          send empty password (only with --user)
+
+  -kt   --kerberos  [f]ilename: string
+          read kerberos ticket from file f
+
+        --saml  [f]ilename: string
+          read SAML request from file f
+
+  -rsp  --pos-response
+          expect positive response
+
+other network options:
+
+  -to   --timeout  [s]econds: integer (default: unlimited)
+          timeout for connection requests
+
+  -ta   --acse-timeout  [s]econds: integer (default: 30)
+          timeout for ACSE messages
+
+  -td   --dimse-timeout  [s]econds: integer (default: unlimited)
+          timeout for DIMSE messages
+
+  -pdu  --max-pdu  [n]umber of bytes: integer (4096..131072)
+          set max receive pdu to n bytes (default: 16384)
+
+        --max-send-pdu  [n]umber of bytes: integer (4096..131072)
+          restrict max send pdu to n bytes
+
+        --repeat  [n]umber: integer
+          repeat n times
+
+        --abort
+          abort association instead of releasing it
+
+  -nh   --no-halt
+          do not halt if unsuccessful store encountered
+          (default: do halt)
+
+  -up   --uid-padding
+          silently correct space-padded UIDs
+
+  +II   --invent-instance
+          invent a new SOP instance UID for every image sent
+
+  +IR   --invent-series  [n]umber: integer (implies --invent-instance)
+          invent a new series UID after n images have been sent
+          (default: 100)
+
+  +IS   --invent-study  [n]umber: integer (implies --invent-instance)
+          invent a new study UID after n series have been sent
+          (default: 50)
+
+  +IP   --invent-patient  [n]umber: integer (implies --invent-instance)
+          invent a new patient ID and name after n studies have been sent
+          (default: 25)
+.fi
+.PP
+.SS "transport layer security (TLS) options"
+.PP
+.nf
+
+transport protocol stack:
+
+  -tls  --disable-tls
+          use normal TCP/IP connection (default)
+
+  +tls  --enable-tls  [p]rivate key file, [c]ertificate file: string
+          use authenticated secure TLS connection
+
+  +tla  --anonymous-tls
+          use secure TLS connection without certificate
+
+private key password (only with --enable-tls):
+
+  +ps   --std-passwd
+          prompt user to type password on stdin (default)
+
+  +pw   --use-passwd  [p]assword: string
+          use specified password
+
+  -pw   --null-passwd
+          use empty string as password
+
+key and certificate file format:
+
+  -pem  --pem-keys
+          read keys and certificates as PEM file (default)
+
+  -der  --der-keys
+          read keys and certificates as DER file
+
+certification authority:
+
+  +cf   --add-cert-file  [c]ertificate filename: string
+          add certificate file to list of certificates
+
+  +cd   --add-cert-dir  [c]ertificate directory: string
+          add certificates in d to list of certificates
+
+ciphersuite:
+
+  +cs   --cipher  [c]iphersuite name: string
+          add ciphersuite to list of negotiated suites
+
+  +dp   --dhparam  [f]ilename: string
+          read DH parameters for DH/DSS ciphersuites
+
+pseudo random generator:
+
+  +rs   --seed  [f]ilename: string
+          seed random generator with contents of f
+
+  +ws   --write-seed
+          write back modified seed (only with --seed)
+
+  +wf   --write-seed-file  [f]ilename: string (only with --seed)
+          write modified seed to file f
+
+peer authentication:
+
+  -rc   --require-peer-cert
+          verify peer certificate, fail if absent (default)
+
+  -vc   --verify-peer-cert
+          verify peer certificate if present
+
+  -ic   --ignore-peer-cert
+          don't verify peer certificate
+.fi
+.PP
+.SH "NOTES"
+.PP
+.SS "DICOM Conformance"
+The \fBstorescu\fP application supports the following Storage SOP Classes as an SCU:
+.PP
+.PP
+.nf
+
+ComputedRadiographyImageStorage                      1.2.840.10008.5.1.4.1.1.1
+DigitalXRayImageStorageForPresentation               1.2.840.10008.5.1.4.1.1.1.1
+DigitalXRayImageStorageForProcessing                 1.2.840.10008.5.1.4.1.1.1.1.1
+DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
+DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
+DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
+DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
+EncapsulatedPDFStorage                               1.2.840.10008.5.1.4.1.1.104.1
+GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
+ColorSoftcopyPresentationStateStorage                1.2.840.10008.5.1.4.1.1.11.2
+PseudoColorSoftcopyPresentationStateStorage          1.2.840.10008.5.1.4.1.1.11.3
+BlendingSoftcopyPresentationStateStorage             1.2.840.10008.5.1.4.1.1.11.4
+XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
+EnhancedXAImageStorage                               1.2.840.10008.5.1.4.1.1.12.1.1
+XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
+EnhancedXRFImageStorage                              1.2.840.10008.5.1.4.1.1.12.2.1
+PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
+PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
+CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
+EnhancedCTImageStorage                               1.2.840.10008.5.1.4.1.1.2.1
+NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
+UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
+MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
+EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
+MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
+RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
+RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
+RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
+RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481.4
+RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
+RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
+RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
+UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
+SpatialRegistrationStorage                           1.2.840.10008.5.1.4.1.1.66.1
+SpatialFiducialsStorage                              1.2.840.10008.5.1.4.1.1.66.2
+RealWorldValueMappingStorage                         1.2.840.10008.5.1.4.1.1.67
+SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
+VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
+VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
+VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
+VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
+OphthalmicPhotography8BitImageStorage                1.2.840.10008.5.1.4.1.1.77.1.5.1
+OphthalmicPhotography16BitImageStorage               1.2.840.10008.5.1.4.1.1.77.1.5.2
+StereometricRelationshipStorage                      1.2.840.10008.5.1.4.1.1.77.1.5.3
+BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLogStorage                                  1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
+XRayRadiationDoseSR                                  1.2.840.10008.5.1.4.1.1.88.67
+TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
+GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
+AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
+CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
+BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
+.fi
+.PP
+.PP
+The default behaviour of \fBstorescu\fP is to propose two presentation contexts for each supported SOP class (abstract syntax) - one with the preferred transfer syntax and one with all other uncompressed transfer syntaxes. The default preferred transfer syntax is explicit VR with byte ordering corresponding to the local byte ordering of the machine on which \fBstorescu\fP is running. This behaviour can be changed with the \fI--propose\fP, \fI--combine\fP and \fI--required\fP options, see above. Depending on these options, the following transfer syntaxes are supported:
+.PP
+.PP
+.nf
+
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+DeflatedExplicitVRLittleEndianTransferSyntax         1.2.840.10008.1.2.1.99
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
+JPEGProcess1TransferSyntax                           1.2.840.10008.1.2.4.50
+JPEGProcess2_4TransferSyntax                         1.2.840.10008.1.2.4.51
+JPEGProcess14SV1TransferSyntax                       1.2.840.10008.1.2.4.70
+JPEGLSLosslessTransferSyntax                         1.2.840.10008.1.2.4.80
+JPEGLSLossyTransferSyntax                            1.2.840.10008.1.2.4.81
+JPEG2000LosslessOnlyTransferSyntax                   1.2.840.10008.1.2.4.90
+JPEG2000TransferSyntax                               1.2.840.10008.1.2.4.91
+MPEG2MainProfileAtMainLevelTransferSyntax            1.2.840.10008.1.2.4.100
+RLELosslessTransferSyntax                            1.2.840.10008.1.2.5
+.fi
+.PP
+.PP
+Additional Storage SOP Classes and Transfer Syntaxes can be used with the so-called 'association negotiation profiles' (see below).
+.PP
+The \fBstorescu\fP application does not support extended negotiation by default. However, using an appropriate association negotiation profile (see below) the optional support for extended negotiation can be added to particular SOP classes.
+.SS "Association Negotiation Profiles and Configuration Files"
+\fBstorescu\fP supports a flexible mechanism for specifying the DICOM network association negotiation behaviour, based on so-called 'association negotiation profiles' which may be read from a configuration file. The format and semantics of this configuration file are documented in \fIasconfig.txt\fP.
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator unless they appear between two quotation marks) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fI<datadir>/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBstorescu\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<datadir>/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. On Windows systems, a semicolon (';') is used as a separator. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "FILES"
+.PP
+\fI<docdir>/asconfig.txt\fP - configuration file documentation 
+.br
+\fI<etcdir>/storescu.cfg\fP - example association negotiation profile
+.SH "SEE ALSO"
+.PP
+\fBstorescp\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1996-2009 by OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany.
 .SH "SYNOPSIS"
 .PP
 .PP
