@@ -9,6 +9,7 @@ Changes between releases are documented here.
   replaced by the current date for publicly available snapshots. From now on,
   official releases will always have an even number at the last position.
   Affects: CMakeLists.txt
+           INSTALL
            config/configure
            config/configure.in
 
