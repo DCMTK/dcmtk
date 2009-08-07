@@ -4,7 +4,8 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 ==================================
 
 Please note that most sections of this document refer to the official release
-DCMTK 3.5.4, i.e. they are not updated for the changes of the latest snapshot.
+DCMTK 3.5.4, i.e. they are not yet updated for the changes of the latest
+development snapshot (version 3.5.5).
 
 
 PRE-REQUISITES
@@ -586,4 +587,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Michael Onken
 OFFIS DICOM Team, Oldenburg, Germany.
 
-Last revised: 2009-01-13 (Riesmeier).
+Last revised: 2009-08-07 (Riesmeier).
