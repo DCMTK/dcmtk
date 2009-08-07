@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-30 13:30:26 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2009-08-07 14:37:33 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,11 +195,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define OFFIS_DCMTK_VERSION_STRING              PACKAGE_VERSION
 
 /// DCMTK version number suffix string for this release
-#ifdef DCMTK_BUILD_DATE
-#define OFFIS_DCMTK_VERSION_SUFFIX              PACKAGE_VERSION_SUFFIX "+"
-#else
 #define OFFIS_DCMTK_VERSION_SUFFIX              PACKAGE_VERSION_SUFFIX
-#endif
 
 /// DCMTK version number string including suffix
 #define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX
@@ -615,6 +611,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
+** Revision 1.76  2009-08-07 14:37:33  joergr
+** Removed package version suffix "+" from development snapshots.
+**
 ** Revision 1.75  2008-04-30 13:30:26  joergr
 ** Moved package information like version number and release date to a central
 ** configuration file (one for GNU autoconf and one for CMake systems).
