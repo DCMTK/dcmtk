@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmApplicationEntity
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:02:59 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@ DcmApplicationEntity::DcmApplicationEntity(const DcmTag &tag,
   : DcmByteString(tag, len)
 {
     setMaxLength(MAX_AE_LENGTH);
+    setNonSignificantChars(" \\");
 }
 
 
@@ -116,6 +117,10 @@ OFCondition DcmApplicationEntity::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrae.cc,v $
+** Revision 1.18  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.17  2009-08-03 09:02:59  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

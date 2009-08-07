@@ -22,9 +22,9 @@
  *  Purpose: class DcmCodeString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:02:59 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@ DcmCodeString::DcmCodeString(const DcmTag &tag,
   : DcmByteString(tag, len)
 {
     setMaxLength(MAX_CS_LENGTH);
+    setNonSignificantChars(" \\");
 }
 
 
@@ -146,6 +147,10 @@ OFCondition DcmCodeString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
+** Revision 1.19  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.18  2009-08-03 09:02:59  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

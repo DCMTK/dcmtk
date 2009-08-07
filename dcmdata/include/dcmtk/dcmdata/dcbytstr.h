@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:05:29 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2009-08-07 14:40:38 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,6 +226,12 @@ class DcmByteString: public DcmElement
      */
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
+    /** check if this object is empty
+     *  @param normalize normalize value before checking (ignore non-significant characters)
+     *  @return true if object is empty, i.e. has no value, false otherwise
+     */
+    virtual OFBool isEmpty(const OFBool normalize = OFTrue);
+
  protected:
 
     /** create a new value field (string buffer) of the previously defined size
@@ -271,6 +277,11 @@ class DcmByteString: public DcmElement
      */
     void setMaxLength(Uint32 val) { maxLength = val; }
 
+    /** set non-significant characters used to determine whether the value is empty
+     *  @param characters non-significant characters used to determine whether the value is empty
+     */
+    void setNonSignificantChars(const OFString &characters) { nonSignificantChars = characters; }
+
     /* --- static helper functions --- */
 
     /** check whether given string value conforms to a certain VR and VM.
@@ -290,6 +301,7 @@ class DcmByteString: public DcmElement
                                   const size_t maxLen = 0);
 
 private:
+
     /// padding character used to adjust odd value length (space)
     char paddingChar;
 
@@ -301,6 +313,9 @@ private:
 
     /// current representation of the string value
     E_StringMode fStringMode;
+
+    /// non significant characters used to determine whether the value is empty
+    OFString nonSignificantChars;
 };
 
 
@@ -351,6 +366,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
+** Revision 1.41  2009-08-07 14:40:38  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.40  2009-08-03 09:05:29  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

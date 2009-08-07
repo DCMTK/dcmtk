@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-15 09:20:09 $
- *  CVS/RCS Revision: $Revision: 1.136 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.137 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1669,7 +1669,7 @@ OFCondition DcmItem::clear()
 }
 
 
-OFBool DcmItem::isEmpty() const
+OFBool DcmItem::isEmpty(const OFBool /*normalize*/)
 {
     return elementList->empty();
 }
@@ -3648,6 +3648,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.137  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.136  2009-05-15 09:20:09  joergr
 ** Fixed wrong comments in print() method.
 **

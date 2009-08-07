@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-25 10:21:22 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1060,7 +1060,7 @@ OFCondition DcmSequenceOfItems::clear()
 }
 
 
-OFBool DcmSequenceOfItems::isEmpty() const
+OFBool DcmSequenceOfItems::isEmpty(const OFBool /*normalize*/)
 {
     return itemList->empty();
 }
@@ -1312,6 +1312,10 @@ OFCondition DcmSequenceOfItems::getPartialValue(void * /* targetBuffer */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
+** Revision 1.84  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.83  2009-03-25 10:21:22  joergr
 ** Added new method isEmpty() to DICOM object, item and sequence class.
 **

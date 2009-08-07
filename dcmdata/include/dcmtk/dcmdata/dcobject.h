@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 16:52:14 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2009-08-07 14:40:38 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -422,9 +422,10 @@ class DcmObject
     virtual OFBool isAffectedBySpecificCharacterSet() const;
 
     /** check if this object is empty
+     *  @param normalize normalize value before checking (ignore non-significant characters)
      *  @return true if object is empty, i.e. has no value, false otherwise
      */
-    virtual OFBool isEmpty() const;
+    virtual OFBool isEmpty(const OFBool normalize = OFTrue);
 
     /** clear (remove) attribute value
      *  @return EC_Normal if successful, an error code otherwise
@@ -663,6 +664,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.63  2009-08-07 14:40:38  joergr
+ * Enhanced isEmpty() method by checking whether the data element value consists
+ * of non-significant characters only.
+ *
  * Revision 1.62  2009-06-04 16:52:14  joergr
  * Added new parsing flag that allows for ignoring the value of File Meta
  * Information Group Length (0002,0000).

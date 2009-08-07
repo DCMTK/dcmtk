@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-25 10:22:09 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2009-08-07 14:40:38 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -345,9 +345,10 @@ class DcmItem
     virtual DcmElement *remove(const DcmTagKey &tag);
 
     /** check if this item is empty
+     *  @param normalize not used for this class
      *  @return true if item is empty, i.e. has no elements, false otherwise
      */
-    virtual OFBool isEmpty() const;
+    virtual OFBool isEmpty(const OFBool normalize = OFTrue);
 
     /** clear (remove) attribute value
      *  @return EC_Normal if successful, an error code otherwise
@@ -1144,6 +1145,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.77  2009-08-07 14:40:38  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.76  2009-03-25 10:22:09  joergr
 ** Added new method isEmpty() to DICOM object, item and sequence class.
 **

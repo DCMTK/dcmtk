@@ -24,8 +24,8 @@
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 16:52:53 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -472,7 +472,7 @@ OFBool DcmObject::isAffectedBySpecificCharacterSet() const
 }
 
 
-OFBool DcmObject::isEmpty() const
+OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 {
     return (Length == 0);
 }
@@ -481,6 +481,10 @@ OFBool DcmObject::isEmpty() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.63  2009-08-07 14:35:49  joergr
+ * Enhanced isEmpty() method by checking whether the data element value consists
+ * of non-significant characters only.
+ *
  * Revision 1.62  2009-06-04 16:52:53  joergr
  * Added new parsing flag that allows for ignoring the value of File Meta
  * Information Group Length (0002,0000).

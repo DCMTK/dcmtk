@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:02:59 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,8 @@ DcmByteString::DcmByteString(const DcmTag &tag,
     paddingChar(' '),
     maxLength(DCM_UndefinedLength),
     realLength(len),
-    fStringMode(DCM_UnknownString)
+    fStringMode(DCM_UnknownString),
+    nonSignificantChars()
 {
 }
 
@@ -553,6 +554,24 @@ OFBool DcmByteString::isAffectedBySpecificCharacterSet() const
 // ********************************
 
 
+OFBool DcmByteString::isEmpty(const OFBool normalize)
+{
+    OFBool result = OFFalse;
+    if (normalize && !nonSignificantChars.empty())
+    {
+        OFString value;
+        DcmByteString::getStringValue(value);
+        /* check whether string value consists of non-significant characters only */
+        result = (value.find_first_not_of(nonSignificantChars) == OFString_npos);
+    } else
+        result = DcmObject::isEmpty(normalize);
+    return result;
+}
+
+
+// ********************************
+
+
 // global function to get a particular component of a DICOM string
 OFCondition getStringPart(OFString &result,
                           const char *orgStr,
@@ -709,6 +728,10 @@ OFCondition DcmByteString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.54  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.53  2009-08-03 09:02:59  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

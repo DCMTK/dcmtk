@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:03:00 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@ DcmDateTime::DcmDateTime(const DcmTag &tag,
   : DcmByteString(tag, len)
 {
     setMaxLength(MAX_DT_LENGTH);
+    setNonSignificantChars(" \\");
 }
 
 DcmDateTime::DcmDateTime(const DcmDateTime &old)
@@ -388,6 +389,10 @@ OFCondition DcmDateTime::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
+** Revision 1.30  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.29  2009-08-03 09:03:00  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.

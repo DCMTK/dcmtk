@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmShortString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-03 09:03:00 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@ DcmShortString::DcmShortString(const DcmTag &tag,
   : DcmCharString(tag, len)
 {
     setMaxLength(16);
+    setNonSignificantChars(" \\");
 }
 
 
@@ -112,6 +113,10 @@ OFCondition DcmShortString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
+** Revision 1.18  2009-08-07 14:35:49  joergr
+** Enhanced isEmpty() method by checking whether the data element value consists
+** of non-significant characters only.
+**
 ** Revision 1.17  2009-08-03 09:03:00  joergr
 ** Added methods that check whether a given string value conforms to the VR and
 ** VM definitions of the DICOM standards.
