@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-07-27 15:31:55 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 2009-08-07 14:27:42 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -800,16 +800,14 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     DcmTag tag = delem.getTag();
     OFString message = tag.getTagName();
     OFString module = (moduleName == NULL) ? "SR document" : moduleName;
-    Uint32 lenNum;
     unsigned long vmNum;
     OFString vmText;
     /* special case: sequence of items */
     if (delem.getVR() == EVR_SQ)
     {
-        lenNum = vmNum = OFstatic_cast(DcmSequenceOfItems &, delem).card();
+        vmNum = OFstatic_cast(DcmSequenceOfItems &, delem).card();
         vmText = " #items";
     } else {
-        lenNum = delem.getLength();
         vmNum = delem.getVM();
         vmText = " VM";
     }
@@ -823,7 +821,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         message += ")";
         result = OFFalse;
     }
-    else if ((lenNum == 0) || (vmNum == 0))
+    else if (delem.isEmpty(OFTrue /*normalize*/))
     {
         /* however, type 1C should never be present with empty value */
         if (((type == "1") || (type == "1C")) && searchCond.good())
@@ -1496,6 +1494,10 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.58  2009-08-07 14:27:42  joergr
+ *  Use new isEmpty() method instead of length in order to determine whether the
+ *  element value is empty (e.g. for checking the presence of type 1 attributes).
+ *
  *  Revision 1.57  2009-07-27 15:31:55  joergr
  *  Fixed possible memory leak in method addElementToDataset().
  *
