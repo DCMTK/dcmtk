@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.07 (eichelberg)
+
+- Fixed some seek offset computations in SEEK_END tests
+  Affects: ofstd/tests/toffile.cc
+
 **** Changes from 2009.08.07 (riesmeier)
 
 - Changed package version scheme: development snapshots now receive an odd

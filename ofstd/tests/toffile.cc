@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2006, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           in class OFFile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-21 12:41:10 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-08-07 16:18:48 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 
 #define INCLUDE_CTIME
 #define INCLUDE_CSTDLIB
+#define INCLUDE_IOSTREAM
 #include "dcmtk/ofstd/ofstdinc.h"
 
 // size of block (Uint32 values, not bytes): 1 MByte
@@ -178,9 +179,10 @@ OFBool seekFile(OFFile &file)
        << "[0%------------25%-------------50%--------------75%----------100%]\n[" << STD_NAMESPACE flush;
 
   // fseek to each 4th block using SEEK_END
-  for (i=0; i <= FILESIZE; i += 4)
+  for (i=0; i < FILESIZE; i += 4)
   {
-    pos = (offile_off_t)-1 * i * BLOCKSIZE * sizeof(Uint32);
+    pos = (offile_off_t)-1 * (FILESIZE - i) * BLOCKSIZE * sizeof(Uint32);
+
     result = file.fseek(pos, SEEK_END);
     if (result)
     {
@@ -190,7 +192,7 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = ((offile_off_t)FILESIZE * BLOCKSIZE) + (pos / sizeof(Uint32));
+      expected = ((offile_off_t) BLOCKSIZE * i);
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << FILESIZE-i << ": expected " 
@@ -222,7 +224,7 @@ OFBool seekFile(OFFile &file)
   // fseek to random blocks using SEEK_END
   for (i=0; i < 1024; ++i)
   {
-    block = myRand(FILESIZE-1);
+    block = myRand(FILESIZE-2); // this avoids that pos can ever be 0, which would cause us to read after the end of file.
     offset = myRand(BLOCKSIZE-1);    
     pos = (offile_off_t)-1 * (FILESIZE - block - 1) * BLOCKSIZE * sizeof(Uint32) + offset * sizeof(Uint32);
     result = file.fseek(pos, SEEK_END);
@@ -234,7 +236,7 @@ OFBool seekFile(OFFile &file)
     if (1 == file.fread(&v, sizeof(Uint32), 1))
     {
       // successfully read value. Now check if the value is correct.
-      expected = ((offile_off_t)FILESIZE * BLOCKSIZE) + (pos / sizeof(Uint32));
+      expected = ((offile_off_t)FILESIZE * BLOCKSIZE * sizeof(Uint32) + pos) / sizeof(Uint32);
       if (v != expected)
       {
         COUT << "\nError: unexpected data read after fseek(SEEK_END) to block " << block 
@@ -408,7 +410,10 @@ int main()
 /*
  * CVS/RCS Log:
  * $Log: toffile.cc,v $
- * Revision 1.1  2006-08-21 12:41:10  meichel
+ * Revision 1.2  2009-08-07 16:18:48  meichel
+ * Fixed some seek offset computations in SEEK_END tests
+ *
+ * Revision 1.1  2006/08/21 12:41:10  meichel
  * Added test application that checks whether class OFFile can correctly
  *   process large files (> 4 GBytes), including emulations of fseek and ftell,
  *   which are non-trivial on certain platforms such as Win32.
