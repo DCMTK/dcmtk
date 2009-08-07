@@ -3,9 +3,51 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.07 (riesmeier)
 
+- Changed package version scheme: development snapshots now receive an odd
+  number at the last position of the version number, i.e. currently it is
+  "3.5.5". The macro PACKAGE_DATE is set to "CVS" by default but will be
+  replaced by the current date for publicly available snapshots. From now on,
+  official releases will always have an even number at the last position.
+  Affects: CMakeLists.txt
+           config/configure
+           config/configure.in
+
+- Removed package version suffix "+" from development snapshots.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcuid.h
+
 - Added missing relationship content constraint introduced with DICOM 2007.
   Affects: dcmsr/libsrc/dsrchecc.cc
            dcmsr/libsrc/dsrmamcc.cc
+
+- Use new isEmpty() method instead of length in order to determine whether the
+  element value is empty (e.g. for checking the presence of type 1 attributes).
+  Affects: dcmsr/libsrc/dsrtypes.cc
+
+- Fixed incorrect implementation of find_first_not_of() and find_last_not_of().
+  Affects: ofstd/include/dcmtk/ofstd/ofstring.h
+           ofstd/libsrc/ofstring.cc
+
+- Enhanced isEmpty() method by checking whether the data element value consists
+  of non-significant characters only.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcbytstr.h
+           dcmdata/include/dcmtk/dcmdata/dcitem.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcsequen.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmdata/libsrc/dcvrui.cc
 
 **** Changes from 2009.08.06 (eichelberg)
 
