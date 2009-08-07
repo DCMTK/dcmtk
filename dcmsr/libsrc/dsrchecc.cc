@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2007, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRChestCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-30 16:54:28 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-08-07 08:36:36 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,9 +112,10 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
         ((sourceValueType == VT_Text) || (sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
     {
         /* by-reference allowed */
-        result = (targetValueType == VT_Text) || (targetValueType == VT_Code) || (targetValueType == VT_Num) ||
-                 (targetValueType == VT_Date) || (targetValueType == VT_Image) || (targetValueType == VT_Waveform) ||
-                 (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) || (targetValueType == VT_UIDRef /* CP 767 */);
+        result = (targetValueType == VT_Container) || (targetValueType == VT_Text) || (targetValueType == VT_Code) ||
+                 (targetValueType == VT_Num) || (targetValueType == VT_Date) || (targetValueType == VT_Image) ||
+                 (targetValueType == VT_Waveform) || (targetValueType == VT_SCoord) || (targetValueType == VT_TCoord) ||
+                 (targetValueType == VT_UIDRef /* CP 767 */);
     }
     /* row 6 of the table */
     else if ((relationshipType == RT_inferredFrom) && ((sourceValueType == VT_Code) || (sourceValueType == VT_Num)))
@@ -143,6 +144,9 @@ OFBool DSRChestCadSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrchecc.cc,v $
+ *  Revision 1.6  2009-08-07 08:36:36  joergr
+ *  Added missing relationship content constraint introduced with DICOM 2007.
+ *
  *  Revision 1.5  2007-11-30 16:54:28  joergr
  *  Updated relationship content constraints according to CP 767.
  *

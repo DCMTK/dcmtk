@@ -1,29 +1,37 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.07 (riesmeier)
+
+- Added missing relationship content constraint introduced with DICOM 2007.
+  Affects: dcmsr/libsrc/dsrchecc.cc
+           dcmsr/libsrc/dsrmamcc.cc
+
 **** Changes from 2009.08.06 (eichelberg)
 
 - Fixed bug in DUL_ReceiveAssociationRQ() that under very rare circumstances
   caused ASC_receiveAssociation() to return successfully although no DICOM
   association request had been received.
-  Thanks to Markus Sabin for the bug report and bug fix.
-  Affects: dcmnet/libsrc/dul.cc  
-  
-- Use of std::nothrow delete now conditional on compiler support for this feature
+  Thanks to Markus Sabin <msabin@digithurst.de> for the bug report and bug fix.
+  Affects: dcmnet/libsrc/dul.cc
+
+- Use of std::nothrow delete now conditional on compiler support for this
+  feature
   Affects: dcmdata/libsrc/dcelem.cc
-    
-- Added configure test that checks for a std::nothrow version of operator delete.
-  VC6 has a std::nothrow version of operator new, but not of operator delete.
+
+- Added configure test that checks for a std::nothrow version of operator
+  delete. VC6 has a std::nothrow version of operator new, but not of operator
+  delete.
   Affects: config/aclocal.m4
            config/configure
            config/configure.in
            config/include/dcmtk/config/cfunix.h.in
            config/include/dcmtk/config/cfwin32.h.in
 
-- Fixed bug that caused TIFF export in dcm2pnm to fail on Win32
-  for newer releases of libtiff (3.7.4 and newer)
+- Fixed bug that caused TIFF export in dcm2pnm to fail on Win32 for newer
+  releases of libtiff (3.7.4 and newer)
   Affects: dcmimage/libsrc/dipitiff.cc
- 
+
 **** Changes from 2009.08.05 (eichelberg)
 
 - Added missing escape sequences in manpage text, updated copyright
@@ -74,10 +82,10 @@ Changes between releases are documented here.
            dcmsr/docs/dsr2xml.man
            dcmsr/docs/dsrdump.man
            dcmsr/docs/xml2dsr.man
-           dcmwlm/docs/wlmscpfs.man  
+           dcmwlm/docs/wlmscpfs.man
 
-- Fixed bug that caused dcmqrscp to accept image transmissions to read-only 
-  storage areas when multiple presentation contexts were proposed for a 
+- Fixed bug that caused dcmqrscp to accept image transmissions to read-only
+  storage areas when multiple presentation contexts were proposed for a
   single SOP class.
   Affects: dcmqrdb/libsrc/dcmqrsrv.cc
 
