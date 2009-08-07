@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-07 14:30:32 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -686,11 +685,8 @@ OFString::find_first_not_of (const OFString& str, size_t pos) const
         return OFString_npos;
     }
     for (size_t i=pos; i<this_size; i++) {
-        for (size_t j=0; j<str_size; j++) {
-            if (this->at(i) != str[j]) {
-                return i;
-            }
-        }
+        if (str.find(this->at(i)) == OFString_npos)
+            return i;
     }
     return OFString_npos;
 }
@@ -733,11 +729,8 @@ OFString::find_last_not_of (const OFString& str, size_t pos) const
         pos = this_size;
     }
     for (int i=OFstatic_cast(int, pos-1); i>=0; i--) {
-        for (size_t j=0; j<str_size; j++) {
-            if (this->at(i) != str[j]) {
-                return i;
-            }
-        }
+        if (str.find(this->at(i)) == OFString_npos)
+            return i;
     }
     return OFString_npos;
 }
@@ -1031,7 +1024,10 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.22  2006-08-14 16:42:46  meichel
+** Revision 1.23  2009-08-07 14:30:32  joergr
+** Fixed incorrect implementation of find_first_not_of() and find_last_not_of().
+**
+** Revision 1.22  2006/08/14 16:42:46  meichel
 ** Updated all code in module ofstd to correctly compile if the standard
 **   namespace has not included into the global one with a "using" directive.
 **

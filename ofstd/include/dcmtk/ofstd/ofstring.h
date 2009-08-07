@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2007, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-02-20 13:12:59 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2009-08-07 14:31:08 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -276,7 +276,7 @@ public:
      *  @param n number of characters to remove
      *  @return reference to this object
      */
-    OFString& erase (size_t pos = 0, size_t n = OFString_npos);
+    OFString& erase(size_t pos = 0, size_t n = OFString_npos);
 
     /** replaces a range of characters in the current string
      *  with a range of characters taken from the input string str. The
@@ -426,12 +426,12 @@ public:
      *  @param n length to truncate string to
      *  @param c character to pad extra locations with
      */
-    void resize (size_t n, char c = '\0');
+    void resize(size_t n, char c = '\0');
 
     /** returns the size of the allocated storage in the string.
      *  @return size of the allocated storage in the string
      */
-    size_t capacity () const
+    size_t capacity() const
     {
         return this->theCapacity;
     }
@@ -1075,7 +1075,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.22  2007-02-20 13:12:59  joergr
+** Revision 1.23  2009-08-07 14:31:08  joergr
+** Fixed incorrect implementation of find_first_not_of() and find_last_not_of().
+**
+** Revision 1.22  2007/02/20 13:12:59  joergr
 ** Fixed wrong comment in compare() method.
 **
 ** Revision 1.21  2006/08/14 16:42:26  meichel
