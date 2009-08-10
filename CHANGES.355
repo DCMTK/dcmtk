@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.10 (eichelberg)
+
+- Some modifications needed to make class OFFile compile on MinGW.
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+
 **** Changes from 2009.08.10 (riesmeier)
 
 - Added VERSION file. Current version number of the snapshot for internal

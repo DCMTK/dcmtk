@@ -21,9 +21,9 @@
  *
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-12 11:37:54 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-10 07:52:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,9 @@ END_EXTERN_C
 #endif
 #endif
 
-#ifdef _WIN32
-  // On Win32 systems, we use Win32 specific definitions
+#if defined(_WIN32) && !defined(__MINGW32__)
+  // On Win32 systems except MinGW (where Posix definitions are available)
+  // we use Win32 specific definitions
   typedef __int64 offile_off_t;
   typedef fpos_t offile_fpos_t;
 #else
@@ -210,7 +211,8 @@ public:
    */
   OFBool freopen(const char *filename, const char *modes)
   {
-#ifdef EXPLICIT_LFS_64
+#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__)
+    // MinGW has EXPLICIT_LFS_64 but no freopen64()
     file_ = :: freopen64(filename, modes, file_);
 #else
     file_ = STDIO_NAMESPACE freopen(filename, modes, file_);
@@ -227,7 +229,8 @@ public:
   OFBool tmpfile()
   {
     if (file_) fclose();
-#ifdef EXPLICIT_LFS_64
+#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__)
+    // MinGW has EXPLICIT_LFS_64 but no tmpfile64()
     file_ = :: tmpfile64();
 #else
     file_ = STDIO_NAMESPACE tmpfile();
@@ -385,10 +388,17 @@ public:
 #endif
   }
 
-  /** returns the low-level file descriptor associated with the stream
+  /** returns the low-level file descriptor associated with the stream.
+   *  The spelling of this member function is different from stdio fileno()
+   *  because on some systems (such as MinGW) fileno() is a macro
+   *  and, therefore, cannot be used as a method name.
    *  @return low-level file descriptor associated with stream
    */
-  int fileno() { return :: fileno(file_); }
+#ifdef fileno
+  int fileNo() { return fileno(file_); }
+#else
+  int fileNo() { return :: fileno(file_); }
+#endif
 
   /** The three types of buffering available are unbuffered, block buffered, and
    *  line buffered. When an output stream is unbuffered, information appears on
@@ -510,7 +520,11 @@ public:
         // Python implementation based on _lseeki64(). May be unsafe because
         // there is no guarantee that fflush also empties read buffers.
         STDIO_NAMESPACE fflush(file_);
+#ifdef fileno
+        if (_lseeki64(   fileno(file_), 0, 2) == -1)
+#else
         if (_lseeki64(:: fileno(file_), 0, 2) == -1)
+#endif
         {
           storeLastError();
           return -1;
@@ -518,7 +532,11 @@ public:
         // fall through
 #else
         // determine file size (using underlying file descriptor). This should be safe.
+#ifdef fileno
+        if (_fstati64(   fileno(file_), &buf) == -1)
+#else
         if (_fstati64(:: fileno(file_), &buf) == -1)
+#endif
         {
           storeLastError();
           return -1;
@@ -602,7 +620,8 @@ public:
   int fgetpos(offile_fpos_t *pos)
   {
     int result;
-#ifdef EXPLICIT_LFS_64
+#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__)
+    // MinGW has EXPLICIT_LFS_64 but no fgetpos64()
     result = :: fgetpos64(file_, pos);
 #else
     result = STDIO_NAMESPACE fgetpos(file_, pos);
@@ -621,7 +640,8 @@ public:
   int fsetpos(offile_fpos_t *pos)
   {
     int result;
-#ifdef EXPLICIT_LFS_64
+#if defined(EXPLICIT_LFS_64) && ! defined(__MINGW32__)
+    // MinGW has EXPLICIT_LFS_64 but no fsetpos64()
     result = :: fsetpos64(file_, pos);
 #else
     result = STDIO_NAMESPACE fsetpos(file_, pos);
@@ -833,6 +853,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.9  2009-08-10 07:52:09  meichel
+ * Some modifications needed to make class OFFile compile on MinGW.
+ *
  * Revision 1.8  2009-03-12 11:37:54  joergr
  * Fixed various Doxygen API documentation issues.
  *
