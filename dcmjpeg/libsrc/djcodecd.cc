@@ -21,9 +21,9 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-03-26 11:15:40 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-10 09:38:06 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,6 +99,7 @@ OFCondition DJCodecDecoder::decode(
     EP_Interpretation colorModel = EPI_Unknown;
     OFBool isSigned = OFFalse;
     Uint16 pixelRep = 0; // needed to decline color conversion of signed pixel data to RGB
+    OFBool numberOfFramesPresent = OFFalse;
 
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_Rows, imageRows);
@@ -107,8 +108,12 @@ OFCondition DJCodecDecoder::decode(
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_HighBit, imageHighBit);
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_PixelRepresentation, pixelRep);
     isSigned = (pixelRep == 0) ? OFFalse : OFTrue;
+
     // number of frames is an optional attribute - we don't mind if it isn't present.
-    if (result.good()) (void) ((DcmItem *)dataset)->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
+    if (result.good())
+    {
+      if (((DcmItem *)dataset)->findAndGetSint32(DCM_NumberOfFrames, imageFrames).good()) numberOfFramesPresent = OFTrue;
+    }
 
     // we consider SOP Class UID as optional since we only need it to determine SOP Class specific
     // encoding rules for planar configuration.
@@ -298,7 +303,7 @@ OFCondition DJCodecDecoder::decode(
                   }
 
                   // Number of Frames might have changed in case the previous value was wrong
-                  if (result.good() && (imageFrames > 1))
+                  if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
                   {
                     char numBuf[20];
                     sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
@@ -781,6 +786,10 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
+ * Revision 1.13  2009-08-10 09:38:06  meichel
+ * All decompression codecs now replace NumberOfFrames if larger than one
+ *   or present in the original image.
+ *
  * Revision 1.12  2009-03-26 11:15:40  joergr
  * Fixed CVS entry.
  *

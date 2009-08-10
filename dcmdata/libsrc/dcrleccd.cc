@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-08-15 09:18:13 $
+ *  Update Date:      $Date: 2009-08-10 09:38:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,8 @@ OFCondition DcmRLECodecDecoder::decode(
     Uint16 imagePlanarConfiguration = 0;
     Uint32 rleHeader[16];
     DcmItem *ditem = OFstatic_cast(DcmItem *, dataset);
-
+    OFBool numberOfFramesPresent = OFFalse;
+    
     if (result.good()) result = ditem->findAndGetUint16(DCM_SamplesPerPixel, imageSamplesPerPixel);
     if (result.good()) result = ditem->findAndGetUint16(DCM_Rows, imageRows);
     if (result.good()) result = ditem->findAndGetUint16(DCM_Columns, imageColumns);
@@ -115,7 +116,11 @@ OFCondition DcmRLECodecDecoder::decode(
     }
 
     // number of frames is an optional attribute - we don't mind if it isn't present.
-    if (result.good()) (void) ditem->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
+    if (result.good())
+    {
+      if (ditem->findAndGetSint32(DCM_NumberOfFrames, imageFrames).good()) numberOfFramesPresent = OFTrue;
+    }
+
     if (imageFrames >= OFstatic_cast(Sint32, pixSeq->card()))
       imageFrames = pixSeq->card() - 1; // limit number of frames to number of pixel items - 1
     if (imageFrames < 1)
@@ -371,7 +376,7 @@ OFCondition DcmRLECodecDecoder::decode(
           swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, imageData16, totalSize, sizeof(Uint16));
 
           // Number of Frames might have changed in case the previous value was wrong
-          if (result.good() && (imageFrames > 1))
+          if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
           {
             char numBuf[20];
             sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
@@ -442,6 +447,10 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.10  2009-08-10 09:38:06  meichel
+ * All decompression codecs now replace NumberOfFrames if larger than one
+ *   or present in the original image.
+ *
  * Revision 1.9  2008-08-15 09:18:13  meichel
  * Decoder now gracefully handles the case of faulty images where value of
  *   NumberOfFrames is larger than the number of compressed fragments, if and only

@@ -22,9 +22,9 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:05:43 $
+ *  Update Date:      $Date: 2009-08-10 09:38:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +102,7 @@ OFCondition DJLSDecoderBase::decode(
   DcmObject *dobject = localStack.pop(); // this is the item in which the pixel data is located
   if ((!dobject)||((dobject->ident()!= EVR_dataset) && (dobject->ident()!= EVR_item))) return EC_InvalidTag;
   DcmItem *dataset = OFstatic_cast(DcmItem *, dobject);
+  OFBool numberOfFramesPresent = OFFalse;
 
   // determine properties of uncompressed dataset  
   Uint16 imageSamplesPerPixel = 0;
@@ -117,8 +118,10 @@ OFCondition DJLSDecoderBase::decode(
   if (dataset->findAndGetUint16(DCM_Columns, imageColumns).bad()) return EC_TagNotFound;
   if (imageColumns < 1) return EC_InvalidTag;
 
+  // number of frames is an optional attribute - we don't mind if it isn't present.
   Sint32 imageFrames = 0;
-  dataset->findAndGetSint32(DCM_NumberOfFrames, imageFrames);
+  if (dataset->findAndGetSint32(DCM_NumberOfFrames, imageFrames).good()) numberOfFramesPresent = OFTrue;
+
   if (imageFrames >= OFstatic_cast(Sint32, pixSeq->card()))
     imageFrames = pixSeq->card() - 1; // limit number of frames to number of pixel items - 1
   if (imageFrames < 1)
@@ -327,7 +330,7 @@ OFCondition DJLSDecoderBase::decode(
   }
 
   // Number of Frames might have changed in case the previous value was wrong
-  if (result.good() && (imageFrames > 1))
+  if (result.good() && (numberOfFramesPresent || (imageFrames > 1)))
   {
     char numBuf[20];
     sprintf(numBuf, "%ld", OFstatic_cast(long, imageFrames));
@@ -653,6 +656,10 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.3  2009-08-10 09:38:06  meichel
+ * All decompression codecs now replace NumberOfFrames if larger than one
+ *   or present in the original image.
+ *
  * Revision 1.2  2009-07-31 09:05:43  meichel
  * Added more detailed error messages, minor code clean-up
  *

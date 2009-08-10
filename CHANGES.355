@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.10 (eichelberg)
 
+- All decompression codecs now replace NumberOfFrames if larger than one
+  or present in the original image.
+  Affects: dcmdata/libsrc/dcrleccd.cc
+           dcmjpeg/libsrc/djcodecd.cc
+
 - Cleaned up Makefile dependencies: Some files contained dependencies
   from the libxml include files which cause compilation to file when compiling
   without libxml support.

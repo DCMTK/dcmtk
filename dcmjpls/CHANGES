@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.10 (eichelberg)
+
+- All decompression codecs now replace NumberOfFrames if larger than one
+  or present in the original image.
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2009.08.05 (riesmeier)
 
 - Made syntax usage more consistent with other DCMTK compression tools.
