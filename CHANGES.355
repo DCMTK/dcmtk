@@ -29,6 +29,12 @@ Changes between releases are documented here.
   development purposes is "3.5.5_CVS" and "3.5.5_YYYYMMDD" (date) for publicly
   available snapshots.
   Added:   VERSION
+  Affects: CMakeLists.txt
+           Makefile
+           config/rootconf
+
+- Replaced '\n' by OFendl where appropriate.
+  Affects: dcmdata/apps/pdf2dcm.cc
 
 **** Changes from 2009.08.07 (eichelberg)
 
