@@ -22,8 +22,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-10 10:25:23 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2009-08-10 11:04:22 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -487,22 +487,22 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--patient-name"))
       {
         app.checkValue(cmd.getValue(opt_patientsName));
-        if (opt_seriesFile) app.printError("--patient-name not allowed with --study-from or --series-from");
+        app.checkConflict("--patient-name", "--study-from or --series-from", opt_seriesFile);
       }
       if (cmd.findOption("--patient-id"))
       {
         app.checkValue(cmd.getValue(opt_patientID));
-        if (opt_seriesFile) app.printError("--patient-id not allowed with --study-from or --series-from");
+        app.checkConflict("--patient-id", "--study-from or --series-from", opt_seriesFile);
       }
       if (cmd.findOption("--patient-birthdate"))
       {
         app.checkValue(cmd.getValue(opt_patientsBirthdate));
-        if (opt_seriesFile) app.printError("--patient-birthdate not allowed with --study-from or --series-from");
+        app.checkConflict("--patient-birthdate", "--study-from or --series-from", opt_seriesFile);
       }
       if (cmd.findOption("--patient-sex"))
       {
         app.checkValue(cmd.getValue(opt_patientsSex));
-        if (opt_seriesFile) app.printError("--patient-sex not allowed with --study-from or --series-from");
+        app.checkConflict("--patient-sex", "--study-from or --series-from", opt_seriesFile);
       }
 
       cmd.beginOptionBlock();
@@ -522,13 +522,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--instance-one"))
       {
-        if (opt_seriesFile && opt_readSeriesInfo) app.printError("--instance-one not allowed with --series-from");
+        app.checkConflict("--instance-one", "--series-from", opt_seriesFile && opt_readSeriesInfo);
         opt_increment = OFFalse;
         opt_instance = 1;
       }
       if (cmd.findOption("--instance-inc"))
       {
-        if (!opt_seriesFile || !opt_readSeriesInfo) app.printError("--instance-inc only allowed with --series-from");
+        app.checkDependence("--instance-inc", "--series-from", opt_seriesFile && opt_readSeriesInfo);
         opt_increment = OFTrue;
       }
       if (cmd.findOption("--instance-set"))
@@ -669,6 +669,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.12  2009-08-10 11:04:22  joergr
+** Use helper functions checkDependence() and checkConflict() where appropriate.
+**
 ** Revision 1.11  2009-08-10 10:25:23  joergr
 ** Replaced '\n' by OFendl where appropriate.
 **
