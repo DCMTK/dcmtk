@@ -22,8 +22,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-08-10 10:25:23 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,7 +219,7 @@ OFCondition insertPDFFile(
 
     if (opt_verbose)
     {
-      ofConsole.lockCout() << "file " << filename << ": PDF " << version << ", " << (fileSize+1023)/1024 << "kB" << OFendl;
+      ofConsole.lockCout() << "file " << filename << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB" << OFendl;
       ofConsole.unlockCout();
     }
 
@@ -242,7 +242,7 @@ OFCondition insertPDFFile(
       if (result.good())
       {
         // blank pad byte
-      	bytes[numBytes-1] = 0;
+      	bytes[numBytes - 1] = 0;
 
         // read PDF content
         if (fileSize != fread(bytes, 1, fileSize, pdffile))
@@ -617,7 +617,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-      ofConsole.lockCout() << "Check if new output transfer syntax is possible\n";
+      ofConsole.lockCout() << "Check if new output transfer syntax is possible" << OFendl;
       ofConsole.unlockCout();
     }
 
@@ -629,19 +629,19 @@ int main(int argc, char *argv[])
         if (opt_verbose)
         {
             ofConsole.lockCout() << "Output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written\n";
+                 << " can be written" << OFendl;
             ofConsole.unlockCout();
         }
     } else {
         ofConsole.lockCerr() << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!\n";
+             << " possible!" << OFendl;
         ofConsole.unlockCerr();
         return 1;
     }
 
     if (opt_verbose)
     {
-      ofConsole.lockCout() << "write converted DICOM file with metaheader\n";
+      ofConsole.lockCout() << "write converted DICOM file with metaheader" << OFendl;
       ofConsole.unlockCout();
     }
 
@@ -658,7 +658,7 @@ int main(int argc, char *argv[])
 
     if (opt_verbose)
     {
-        ofConsole.lockCout() << "conversion successful\n";
+        ofConsole.lockCout() << "conversion successful" << OFendl;
         ofConsole.unlockCout();
     }
 
@@ -669,6 +669,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.11  2009-08-10 10:25:23  joergr
+** Replaced '\n' by OFendl where appropriate.
+**
 ** Revision 1.10  2009-04-21 14:02:49  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **
