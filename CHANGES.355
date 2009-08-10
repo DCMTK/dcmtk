@@ -3,6 +3,13 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.10 (eichelberg)
 
+- Cleaned up Makefile dependencies: Some files contained dependencies
+  from the libxml include files which cause compilation to file when compiling
+  without libxml support.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+
 - Some modifications needed to make class OFFile compile on MinGW.
   Affects: ofstd/include/dcmtk/ofstd/offile.h
 
