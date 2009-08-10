@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.10 (eichelberg)
 
+- Added working implementation of DcmRLECodecDecoder::decodeFrame().
+  Thanks to Tom Clune for contributing this code.
+  Affects: dcmdata/libsrc/dcrleccd.cc
+
 - CMake now recognizes the compiler name when spelled in uppercase
   or lowercase (e.g. CL.EXE or cl.exe). Needed to make VC6 work.
   Also updated default for libtiff to v3.8.2.
