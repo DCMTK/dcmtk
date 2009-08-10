@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.10 (eichelberg)
 
+- CMake now recognizes the compiler name when spelled in uppercase
+  or lowercase (e.g. CL.EXE or cl.exe). Needed to make VC6 work.
+  Also updated default for libtiff to v3.8.2.
+  Affects: CMakeLists.txt
+
 - All decompression codecs now replace NumberOfFrames if larger than one
   or present in the original image.
   Affects: dcmdata/libsrc/dcrleccd.cc
