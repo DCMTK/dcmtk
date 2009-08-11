@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Slightly modified code in order to avoid warning messages on MSVC compiler.
   Affects: dcmdata/apps/pdf2dcm.cc
 
+- Updated man pages.
+  Affects: doxygen/manpages/man1/*
+
 **** Changes from 2009.08.10 (eichelberg)
 
 - Added working implementation of DcmRLECodecDecoder::decodeFrame().
