@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.11 (riesmeier)
+
+- Slightly modified code in order to avoid warning messages on MSVC compiler.
+  Affects: dcmdata/apps/pdf2dcm.cc
+
 **** Changes from 2009.08.10 (eichelberg)
 
 - Added working implementation of DcmRLECodecDecoder::decodeFrame().
