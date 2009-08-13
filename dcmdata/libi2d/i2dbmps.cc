@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:25:38 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-08-13 09:00:20 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
 
   Uint16 width, height;
   Uint16 bpp;
-  OFBool isTopDown = OFTrue; /* Most BMPs are stored top-down */
+  OFBool isTopDown = OFFalse; /* Most BMPs are stored bottom-up */
   cond = readBitmapHeader(width, height, bpp, isTopDown);
   if (cond.bad())
   {
@@ -171,7 +171,7 @@ OFCondition I2DBmpSource::readFileHeader(Uint32 &offset)
 }
 
 
-OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width, 
+OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
                                            Uint16 &height,
                                            Uint16 &bpp,
                                            OFBool &isTopDown)
@@ -192,11 +192,11 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
 
   if (tmp_height < 0) /* Is this a top down bitmap? */
   {
-    isTopDown = OFFalse;
+    isTopDown = OFTrue;
     tmp_height = -tmp_height;
   }
   else
-    isTopDown = OFTrue;
+    isTopDown = OFFalse;
   height = OFstatic_cast(Uint16, tmp_height);
   if (tmp_width < 0) /* Width also can be signed, but no semantic */
   {
@@ -262,7 +262,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
      row_length must be rounded *up* to a 4-byte boundary:
      row_length = (row_length + 3) & ~3
    */
-  
+
   const Uint32 row_length = (width * bpp / 8 + 3) & ~3;
   char *row_data;
   Uint32 y;
@@ -451,6 +451,10 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.2  2009-08-13 09:00:20  onken
+ * Fixed minor formatting issues and bug that caused some images being
+ * converted upside down.
+ *
  * Revision 1.1  2009-07-16 14:25:38  onken
  * Added img2dcm input plugin for the BMP graphics format (at the moment only
  * support for 24 Bit RGB).
