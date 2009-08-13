@@ -5,9 +5,6 @@ Changes between releases are documented here.
 - Fixed minor formatting issues and bug that caused some images being
   converted upside down.
   Affects: dcmdata/libi2d/i2dbmps.cc
-  
-- Fixed type of dummy argv argument in main() function.
-  Affects: dcmmisc/apps/wedge12.cc
 
 **** Changes from 2009.08.11 (riesmeier)
 
