@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: compression routines of the IJG JPEG library configured for 12 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-16 16:30:21 $
+ *  Update Date:      $Date: 2009-08-19 12:19:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,6 +63,12 @@ BEGIN_EXTERN_C
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
 #undef const
+#endif
+
+#ifdef USE_STD_CXX_INCLUDES
+// Solaris defines longjmp() in namespace std, other compilers don't...
+namespace std { }
+using namespace std;
 #endif
 
 // private error handler struct
@@ -548,6 +554,10 @@ void DJCompressIJG12Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg12.cc,v $
+ * Revision 1.10  2009-08-19 12:19:19  meichel
+ * Unlike some other compilers, Sun Studio 11 on Solaris
+ *   declares longjmp() in namespace std. Added code to handle this case.
+ *
  * Revision 1.9  2006-08-16 16:30:21  meichel
  * Updated all code in module dcmjpeg to correctly compile when
  *   all standard C++ classes remain in namespace std.

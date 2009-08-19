@@ -3,6 +3,16 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.19 (eichelberg)
 
+- Unlike some other compilers, Sun Studio 11 on Solaris 
+  declares longjmp() in namespace std. Added code to handle this case.
+  Affects: dcmjpeg/libsrc/dipijpeg.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+
 - Added additional includes needed for Sun Studio 11 on Solaris.
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
            dcmdata/libsrc/dcfilefo.cc

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2005, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-16 16:30:21 $
+ *  Update Date:      $Date: 2009-08-19 12:19:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,12 @@ BEGIN_EXTERN_C
 // disable any preprocessor magic the IJG library might be doing with the "const" keyword
 #ifdef const
 #undef const
+#endif
+
+#ifdef USE_STD_CXX_INCLUDES
+// Solaris defines longjmp() in namespace std, other compilers don't...
+namespace std { }
+using namespace std;
 #endif
 
 // private error handler struct
@@ -257,6 +263,10 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
+ * Revision 1.11  2009-08-19 12:19:19  meichel
+ * Unlike some other compilers, Sun Studio 11 on Solaris
+ *   declares longjmp() in namespace std. Added code to handle this case.
+ *
  * Revision 1.10  2006-08-16 16:30:21  meichel
  * Updated all code in module dcmjpeg to correctly compile when
  *   all standard C++ classes remain in namespace std.
