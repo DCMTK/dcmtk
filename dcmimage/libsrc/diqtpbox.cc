@@ -22,8 +22,8 @@
  *  Purpose: class DcmQuantPixelBoxArray
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:42:32 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-08-19 14:48:54 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,12 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/dcmimage/diqtpbox.h"   /* for DcmQuantPixelBoxArray */
+
+#ifdef USE_STD_CXX_INCLUDES
+// Solaris defines qsort() in namespace std, other compilers don't...
+namespace std { }
+using namespace std;
+#endif
 
 
 BEGIN_EXTERN_C
@@ -74,6 +80,10 @@ DcmQuantPixelBoxArray::~DcmQuantPixelBoxArray()
  *
  * CVS/RCS Log:
  * $Log: diqtpbox.cc,v $
+ * Revision 1.6  2009-08-19 14:48:54  meichel
+ * Unlike some other compilers, Sun Studio 11 on Solaris declares longjmp()
+ *   and qsort() in namespace std. Added code to handle this case.
+ *
  * Revision 1.5  2005-12-08 15:42:32  meichel
  * Changed include path schema for all DCMTK header files
  *
