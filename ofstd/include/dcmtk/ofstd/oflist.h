@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:58 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-19 10:44:36 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,6 +224,15 @@ public:
     {
         assert(!node->dummy);
         return (OFstatic_cast(OFListLink<T> *,node))->info;
+    }
+
+    /** dereferences the iterator. May only be called if iterator references
+     *  a valid element of a list.
+     *  @return reference to the element "pointed to" by the iterator.
+     */
+    T* operator->() const
+    {
+        return &(**this);
     }
 
     /** moves the iterator to the next element of the list.
@@ -555,7 +563,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.22  2005-12-08 16:05:58  meichel
+** Revision 1.23  2009-08-19 10:44:36  joergr
+** Added missing dereference operator.
+**
+** Revision 1.22  2005/12/08 16:05:58  meichel
 ** Changed include path schema for all DCMTK header files
 **
 ** Revision 1.21  2004/04/14 11:44:48  joergr
