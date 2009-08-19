@@ -22,9 +22,9 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:12:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:56:58 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,7 +346,7 @@ void DcmPathProcessor::setItemWildcardSupport(const OFBool& supported)
 // Permits finding and creating DICOM object hierarchies based on a path string
 OFCondition DcmPathProcessor::findOrCreatePath(DcmObject* obj,
                                                const OFString& path,
-                                               const OFBool createIfNecessary)
+                                               OFBool createIfNecessary)
 {
   // check input parameters
   if ( (obj == NULL) || path.empty())
@@ -924,6 +924,10 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.7  2009-08-19 11:56:58  meichel
+** Fixed parameter that was declared as const in the implementation and
+**   as non-const in the class declaration.
+**
 ** Revision 1.6  2009-07-10 13:12:16  onken
 ** Added override key functionality used by tools like findscu to the more
 ** central DcmPathProcessor class.

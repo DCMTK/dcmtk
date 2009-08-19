@@ -1,6 +1,29 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.19 (eichelberg)
+
+- Added additional includes needed for Sun Studio 11 on Solaris.
+  Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcfilefo.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/libsrc/dul.cc
+           dcmwlm/wwwapps/preplock.cc
+           ofstd/include/dcmtk/ofstd/oflist.h
+           ofstd/include/dcmtk/ofstd/oftime.h
+           ofstd/libsrc/ofdatime.cc
+           ofstd/libsrc/oftime.cc
+
+- Function passed as 4th parameter to qsort() now declared extern "C", 
+  needed for Sun Studio 11 on Solaris.
+  Affects: dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+
+- Fixed parameter that was declared as const in the implementation and
+  as non-const in the class declaration.
+  Affects: dcmdata/libsrc/dcpath.cc
+
 **** Changes from 2009.08.19 (riesmeier)
 
 - Added new string helper functions toUpper() and toLower().
