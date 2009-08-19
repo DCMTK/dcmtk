@@ -185,6 +185,9 @@ Changes between releases are documented here.
 - Added initial version of a module description for Doxygen documentation.
   Added:   oflog/docs/oflog.dox
 
+- Some minor fixes.
+  Affects: oflog/etc/logger.cfg
+
 **** Changes from 2009.08.12 (onken)
 
 - Fixed minor formatting issues and bug that caused some images being
