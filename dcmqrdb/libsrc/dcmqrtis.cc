@@ -22,9 +22,9 @@
  *  Purpose: class DcmQueryRetrieveOptions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 13:14:28 $
+ *  Update Date:      $Date: 2009-08-19 11:56:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,8 +55,8 @@ END_EXTERN_C
 OFBool TI_addStudyEntry(TI_DBEntry *db, DcmDataset *reply);
 OFBool TI_addSeriesEntry(TI_StudyEntry *study, DcmDataset *reply);
 OFBool TI_addImageEntry(TI_SeriesEntry *series, DcmDataset *reply);
-int TI_seriesCompare(const void *a, const void *b);
-int TI_imageCompare(const void *a, const void *b);
+extern "C" int TI_seriesCompare(const void *a, const void *b);
+extern "C" int TI_imageCompare(const void *a, const void *b);
 
 void
 TI_getInfoFromDataset(DcmDataset *dset, DIC_PN patientsName, DIC_CS studyId,
@@ -2235,6 +2235,10 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.10  2009-08-19 11:56:33  meichel
+ * Function passed as 4th parameter to qsort() now declared extern "C",
+ *   needed for Sun Studio 11 on Solaris.
+ *
  * Revision 1.9  2005-12-16 13:14:28  meichel
  * Simplified overly clever code producing undefined behaviour
  *

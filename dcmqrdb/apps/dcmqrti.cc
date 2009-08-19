@@ -21,10 +21,10 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:29:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:56:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,10 @@
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
+#endif
+#ifdef HAVE_SIGNAL_H
+// On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
+#include <signal.h>
 #endif
 END_EXTERN_C
 #include "dcmtk/dcmqrdb/dcmqrtis.h"
@@ -428,6 +432,10 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.14  2009-08-19 11:56:32  meichel
+ * Function passed as 4th parameter to qsort() now declared extern "C",
+ *   needed for Sun Studio 11 on Solaris.
+ *
  * Revision 1.13  2009-04-24 12:29:29  joergr
  * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
  *
