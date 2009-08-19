@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 17:00:13 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:55:44 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
 #define INCLUDE_CTIME
 #define INCLUDE_UNISTD
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -897,6 +898,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.51  2009-08-19 11:55:44  meichel
+** Added additional includes needed for Sun Studio 11 on Solaris.
+**
 ** Revision 1.50  2009-06-04 17:00:13  joergr
 ** Fixed typo.
 **

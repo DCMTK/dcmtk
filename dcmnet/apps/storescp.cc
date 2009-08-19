@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-04 10:08:42 $
- *  CVS/RCS Revision: $Revision: 1.113 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:55:44 $
+ *  CVS/RCS Revision: $Revision: 1.114 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,10 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>       /* needed on Solaris for O_RDONLY */
+#endif
+#ifdef HAVE_SIGNAL_H
+// On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
+#include <signal.h>
 #endif
 END_EXTERN_C
 
@@ -2724,6 +2728,9 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.114  2009-08-19 11:55:44  meichel
+** Added additional includes needed for Sun Studio 11 on Solaris.
+**
 ** Revision 1.113  2009-08-04 10:08:42  joergr
 ** Added output of Presentation Context ID of the C-STORE message in debug mode.
 **

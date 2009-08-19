@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:26 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-08-19 11:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,9 @@
 #define OFTIME_H
 
 #include "dcmtk/config/osconfig.h"
+
+#define INCLUDE_CTIME
+#include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -439,6 +442,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFTime &t
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
+ * Revision 1.10  2009-08-19 11:55:45  meichel
+ * Added additional includes needed for Sun Studio 11 on Solaris.
+ *
  * Revision 1.9  2006-08-14 16:42:26  meichel
  * Updated all code in module ofstd to correctly compile if the standard
  *   namespace has not included into the global one with a "using" directive.

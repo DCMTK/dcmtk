@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2005, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -40,9 +40,9 @@
  *   See perl man page for details. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:48:37 $
+ *  Update Date:      $Date: 2009-08-19 11:55:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/preplock.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,9 +50,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"
-
-#define INCLUDE_CSTDIO
-#include "dcmtk/ofstd/ofstdinc.h"
+#include "dcmtk/ofstd/ofstream.h"
 
 BEGIN_EXTERN_C
 #include <fcntl.h>
@@ -107,6 +105,9 @@ int main()
 /*
  * CVS/RCS Log
  *   $Log: preplock.cc,v $
+ *   Revision 1.4  2009-08-19 11:55:44  meichel
+ *   Added additional includes needed for Sun Studio 11 on Solaris.
+ *
  *   Revision 1.3  2005-12-08 15:48:37  meichel
  *   Changed include path schema for all DCMTK header files
  *

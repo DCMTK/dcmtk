@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for date and time functions (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-21 16:29:45 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 
 #define INCLUDE_CTIME
 #define INCLUDE_CCTYPE
+#define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -287,6 +288,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& stream, const OFDateTim
  *
  * CVS/RCS Log:
  * $Log: ofdatime.cc,v $
+ * Revision 1.12  2009-08-19 11:55:45  meichel
+ * Added additional includes needed for Sun Studio 11 on Solaris.
+ *
  * Revision 1.11  2008-05-21 16:29:45  joergr
  * Added new constructor and new setDateTime() method.
  *

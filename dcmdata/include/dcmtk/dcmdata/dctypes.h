@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:28:11 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:55:44 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,12 @@
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+/* needed e.g. on Solaris for definition of size_t */
+#include <sys/types.h>
+#endif
+END_EXTERN_C
 
 /*
 ** Macro Definitions
@@ -177,6 +183,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.28  2009-08-19 11:55:44  meichel
+ * Added additional includes needed for Sun Studio 11 on Solaris.
+ *
  * Revision 1.27  2009-01-06 16:28:11  joergr
  * Reworked print() output format for option PF_showTreeStructure.
  *

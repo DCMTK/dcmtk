@@ -22,9 +22,9 @@
  *  Purpose:
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 10:44:36 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-19 11:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,12 @@
 
 #define OFLIST_TYPENAME
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+/* needed e.g. on Solaris for definition of size_t */
+#include <sys/types.h>
+#endif
+END_EXTERN_C
 
 // OFListLinkBase, OFListLink and OFListBase are classes for internal
 // use only and shall not be used.
@@ -563,6 +569,9 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
+** Revision 1.24  2009-08-19 11:55:45  meichel
+** Added additional includes needed for Sun Studio 11 on Solaris.
+**
 ** Revision 1.23  2009-08-19 10:44:36  joergr
 ** Added missing dereference operator.
 **

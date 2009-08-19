@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2009-08-06 16:42:58 $
+** Last Update:         $Author: meichel $, $Date: 2009-08-19 11:55:44 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.81 $
+** Revision:            $Revision: 1.82 $
 ** Status:              $State: Exp $
 */
 
@@ -97,6 +97,10 @@ BEGIN_EXTERN_C
 #ifdef WITH_TCPWRAPPER
 #include <tcpd.h>               /* for hosts_ctl */
 #include <syslog.h>
+#endif
+#ifdef HAVE_SIGNAL_H
+// On Solaris with Sun Workshop 11, <signal.h> declares signal() but <csignal> does not
+#include <signal.h>
 #endif
 END_EXTERN_C
 
@@ -2637,6 +2641,9 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, STD_NAMESPACE
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
+** Revision 1.82  2009-08-19 11:55:44  meichel
+** Added additional includes needed for Sun Studio 11 on Solaris.
+**
 ** Revision 1.81  2009-08-06 16:42:58  meichel
 ** Fixed bug in DUL_ReceiveAssociationRQ() that under very rare circumstances
 **   caused ASC_receiveAssociation() to return successfully although no DICOM
