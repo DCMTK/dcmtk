@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.19 (eichelberg)
+
+- Removed trailing commata in lists to avoid warnings on Sun Studio 11.
+  Affects: dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/losslesstraits.h
+
+- Removed static string constant which causes a compile error on Sun Studio 11
+  due to the specific way template expansions are handled on this compiler.
+  Affects: dcmjpls/libcharls/header.cc
+
 **** Changes from 2009.08.10 (eichelberg)
 
 - All decompression codecs now replace NumberOfFrames if larger than one
