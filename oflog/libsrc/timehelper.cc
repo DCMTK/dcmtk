@@ -18,6 +18,7 @@
 //#include <vector>
 //#include <cassert>
 #define INCLUDE_CASSERT
+#define INCLUDE_CTIME
 #include "dcmtk/ofstd/ofstdinc.h"
 
 //#include <iomanip>
@@ -30,10 +31,6 @@
 
 #if defined(LOG4CPLUS_HAVE_GETTIMEOFDAY)
 #include <sys/time.h>
-#endif
-
-#if defined(LOG4CPLUS_HAVE_TIME_H)
-#include <time.h>
 #endif
 
 #if defined(LOG4CPLUS_HAVE_GMTIME_R) && !defined(LOG4CPLUS_SINGLE_THREADED)

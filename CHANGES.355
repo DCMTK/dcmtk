@@ -6,7 +6,7 @@ Changes between releases are documented here.
 - Fixed static/extern linkage declaration
   Affects: dcmqrdb/libsrc/dcmqrdbi.cc
 
-- Unlike some other compilers, Sun Studio 11 on Solaris declares longjmp() 
+- Unlike some other compilers, Sun Studio 11 on Solaris declares longjmp()
   and qsort() in namespace std. Added code to handle this case.
   Affects: dcmjpeg/libsrc/dipijpeg.cc
            dcmjpeg/libsrc/djdijg12.cc
@@ -204,6 +204,10 @@ Changes between releases are documented here.
            oflog/libsrc/threads.cc
            oflog/libsrc/timehelper.cc
            oflog/libsrc/win32debugappender.cc
+
+- Do not include <time.h> directly, use wrapper file "ofstdinc.h" instead.
+  Affects: oflog/include/dcmtk/oflog/config/win32.h
+           oflog/libsrc/timehelper.cc
 
 **** Changes from 2009.08.12 (onken)
 
