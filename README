@@ -19,6 +19,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
     dcmsr    - a structured report library and utility apps
     dcmtls   - security extensions for the network library
     dcmwlm   - a modality worklist database server
+    oflog    - a logging library based on log4cplus
     ofstd    - a library of general purpose classes
 
 Each sub-directory (except config) contains further sub-directories for
