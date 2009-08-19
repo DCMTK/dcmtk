@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.19 (eichelberg)
 
+- Fixed static/extern linkage declaration
+  Affects: dcmqrdb/libsrc/dcmqrdbi.cc
+
 - Unlike some other compilers, Sun Studio 11 on Solaris
   declares longjmp() in namespace std. Added code to handle this case.
   Affects: dcmjpeg/libsrc/dipijpeg.cc

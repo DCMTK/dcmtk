@@ -22,9 +22,9 @@
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:56:33 $
+ *  Update Date:      $Date: 2009-08-19 14:39:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -958,7 +958,7 @@ static void DB_DuplicateElement (DB_SmallDcmElmt *src, DB_SmallDcmElmt *dst)
  *    Compare two ImagesofStudyArray elements
  */
 
-extern "C" static int DB_Compare(const void *ve1, const void *ve2)
+extern "C" int DB_Compare(const void *ve1, const void *ve2)
 {
     ImagesofStudyArray *e1 = (ImagesofStudyArray *)ve1;
     ImagesofStudyArray *e2 = (ImagesofStudyArray *)ve2;
@@ -3470,6 +3470,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.15  2009-08-19 14:39:00  meichel
+ * Fixed static/extern linkage declaration
+ *
  * Revision 1.14  2009-08-19 11:56:33  meichel
  * Function passed as 4th parameter to qsort() now declared extern "C",
  *   needed for Sun Studio 11 on Solaris.
