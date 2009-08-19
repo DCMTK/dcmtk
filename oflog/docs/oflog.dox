@@ -1,0 +1,12 @@
+/*!
+
+\page mod_oflog oflog: a logging library based on log4cplus
+
+This module contains classes which are used for logging purposes.  This library
+is based on <a href="http://log4cplus.sourceforge.net/">log4cplus</a>.
+
+The main classes are (in alphabetical order):
+\li \b OFLog
+\li \b OFLogger
+
+*/

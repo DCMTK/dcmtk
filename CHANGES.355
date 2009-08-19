@@ -164,6 +164,7 @@ Changes between releases are documented here.
            oflog/libsrc/win32debugappender.cc
            oflog/tests/Makefile.in
   Affects: config/modules
+           doxygen/htmldocs.dox
            CMakeLists.txt
            COPYRIGHT
            Makefile
@@ -180,6 +181,9 @@ Changes between releases are documented here.
 
 - Added missing sub-directory for "ofstd" header files.
   Affects: oflog/CMakeLists.txt
+
+- Added initial version of a module description for Doxygen documentation.
+  Added:   oflog/docs/oflog.dox
 
 **** Changes from 2009.08.12 (onken)
 
