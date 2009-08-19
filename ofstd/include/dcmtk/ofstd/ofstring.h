@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:31:08 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2009-08-19 10:42:42 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@
 /** OFString_npos is a value larger than any "reasonable" string and is
  *  used to denote "until the end" when a length is required.
  *  Normally string::npos is defined as a static const member
- * but some C++ compilers are too primitive.
+ *  but some C++ compilers are too primitive.
  */
 static const size_t OFString_npos = (OFstatic_cast(size_t, -1));
 
@@ -797,6 +797,31 @@ public:
      */
     size_t find_last_not_of(char c, size_t pos = OFString_npos) const;
 
+    /** type that is used for lengths and offsets */
+    typedef size_t size_type;
+
+    /** type that is contained in this */
+    typedef char value_type;
+
+    /** this typedef can be used to iterate over an string.
+     *  Note: Normally you are allowed to modify items through an iterator,
+     *  we do not allow this!
+     */
+    typedef const char* iterator;
+
+    /** this is just an alias for iterator since iterator is already "const" */
+    typedef iterator const_iterator;
+
+    /** returns a constant iterator that points to the beginning of the string
+     *  @return iterator to the beginning of the string
+     */
+    iterator begin() const { return theCString; }
+
+    /** returns a constant iterator that points after the last element of the string
+     *  @return iterator after the last element of the string
+     */
+    iterator end() const { return begin() + length(); }
+
 private:
     /// the "C" string pointer
     char* theCString;
@@ -1075,6 +1100,9 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.24  2009-08-19 10:42:42  joergr
+** Added iterator declarations and required methods.
+**
 ** Revision 1.23  2009-08-07 14:31:08  joergr
 ** Fixed incorrect implementation of find_first_not_of() and find_last_not_of().
 **
