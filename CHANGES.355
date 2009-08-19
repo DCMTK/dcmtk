@@ -153,8 +153,10 @@ Changes between releases are documented here.
            oflog/libsrc/timehelper.cc
            oflog/libsrc/win32debugappender.cc
            oflog/tests/Makefile.in
-  Affects: COPYRIGHT
-           config/modules
+  Affects: config/modules
+           CMakeLists.txt
+           COPYRIGHT
+           Makefile
 
 - Added copyright note of new module "dcmjpls".
   Affects: COPYRIGHT
