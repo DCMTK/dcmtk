@@ -22,8 +22,8 @@
  *  Purpose: class DcmQuantPixelBoxArray
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:52 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-08-19 14:45:30 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,12 @@
 #define INCLUDE_CASSERT
 #include "dcmtk/ofstd/ofstdinc.h"
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+/* needed e.g. on Solaris for definition of size_t */
+#include <sys/types.h>
+#endif
+END_EXTERN_C
 
 /** helper structure for class DcmQuantPixelBoxArray.
  *  Each object of this class represents a pixel box used in the
@@ -122,6 +128,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: diqtpbox.h,v $
+ * Revision 1.5  2009-08-19 14:45:30  meichel
+ * Added additional includes needed for Sun Studio 11 on Solaris.
+ *
  * Revision 1.4  2005-12-08 16:01:52  meichel
  * Changed include path schema for all DCMTK header files
  *

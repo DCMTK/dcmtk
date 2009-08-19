@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2006, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Sample message server for class DVPSIPCClient
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
+ *  Update Date:      $Date: 2009-08-19 14:46:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/tests/msgserv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,18 +37,12 @@
 #include <GUSI.h>
 #endif
 
-#define INCLUDE_CSTDLIB
-#define INCLUDE_CSTDIO
-#define INCLUDE_CERRNO
-#define INCLUDE_CTIME
-#include "dcmtk/ofstd/ofstdinc.h"
-
 BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>   /* we have to include this before sys/time.h on Solaris */
+#endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>    /* for struct timeval on Linux */
-#endif
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -63,6 +57,12 @@ BEGIN_EXTERN_C
 #include <netdb.h>
 #endif
 END_EXTERN_C
+
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CERRNO
+#define INCLUDE_CTIME
+#include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/dcmpstat/dvpsmsg.h"     /* for class DVPSIPCMessage */
 #include "dcmtk/dcmdata/cmdlnarg.h"    /* for prepareCmdLineArgs */
@@ -377,7 +377,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: msgserv.cc,v $
- * Revision 1.13  2006-08-15 16:57:02  meichel
+ * Revision 1.14  2009-08-19 14:46:14  meichel
+ * Added additional includes needed for Sun Studio 11 on Solaris.
+ *
+ * Revision 1.13  2006/08/15 16:57:02  meichel
  * Updated the code in module dcmpstat to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

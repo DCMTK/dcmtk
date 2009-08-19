@@ -19,8 +19,10 @@ Changes between releases are documented here.
 - Added additional includes needed for Sun Studio 11 on Solaris.
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
            dcmdata/libsrc/dcfilefo.cc
+           dcmimage/include/dcmtk/dcmimage/diqtpbox.h
            dcmnet/apps/storescp.cc
            dcmnet/libsrc/dul.cc
+           dcmpstat/tests/msgserv.cc
            dcmwlm/wwwapps/preplock.cc
            ofstd/include/dcmtk/ofstd/oflist.h
            ofstd/include/dcmtk/ofstd/oftime.h
