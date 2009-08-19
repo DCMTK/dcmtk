@@ -5,6 +5,7 @@
 #ifndef CHARLS_DECODERSTATEGY
 #define CHARLS_DECODERSTATEGY
 
+#include <assert.h>
 #include "streams.h"
 #include "processline.h"
 
@@ -134,7 +135,7 @@ public:
 	  typedef size_t bufType;
 
 	  enum {
-		  bufferbits = sizeof( bufType ) * 8,
+		  bufferbits = sizeof( bufType ) * 8
 	  };
 
 	  void MakeValid()

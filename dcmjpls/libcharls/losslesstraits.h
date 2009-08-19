@@ -23,7 +23,7 @@ struct LosslessTraitsImplT
 		RANGE = (1 << bpp),
 		MAXVAL= (1 << bpp) - 1,
 		LIMIT = 2 * (bitsperpixel + MAX(8,bitsperpixel)),
-		RESET = BASIC_RESET,
+		RESET = BASIC_RESET
 	};
 
 	static inlinehint LONG ComputeErrVal(LONG d)
