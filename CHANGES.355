@@ -188,6 +188,17 @@ Changes between releases are documented here.
 - Some minor fixes.
   Affects: oflog/etc/logger.cfg
 
+- Removed unconditional "#define LOG4CPLUS_HAVE_GETTIMEOFDAY".
+  Affects: oflog/include/dcmtk/oflog/config/defines.h
+
+- Various fixes to make oflog compile on Windows (VisualStudio 2005).
+  Affects: oflog/include/dcmtk/oflog/config/win32.h
+           oflog/libsrc/nteventlogappender.cc
+           oflog/libsrc/socket-win32.cc
+           oflog/libsrc/threads.cc
+           oflog/libsrc/timehelper.cc
+           oflog/libsrc/win32debugappender.cc
+
 **** Changes from 2009.08.12 (onken)
 
 - Fixed minor formatting issues and bug that caused some images being
