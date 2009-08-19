@@ -20,6 +20,7 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 \li \ref mod_dcmtls
 \li \ref mod_dcmwlm
 \li \ref mod_dcmqrdb
+\li \ref mod_oflog
 \li \ref mod_ofstd
 
 \if MODULE_DCMJP2K
