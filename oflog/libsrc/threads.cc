@@ -28,7 +28,7 @@
 #  include <sched.h>
 #  include <signal.h>
 #elif defined (LOG4CPLUS_USE_WIN32_THREADS)
-#  include <process.h> 
+#  include <process.h>
 #endif
 
 #include "dcmtk/oflog/helpers/threads.h"
@@ -49,7 +49,7 @@ namespace log4cplus { namespace thread {
 // public methods
 ///////////////////////////////////////////////////////////////////////////////
 
-LOG4CPLUS_MUTEX_PTR_DECLARE 
+LOG4CPLUS_MUTEX_PTR_DECLARE
 createNewMutex()
 {
 #if defined(LOG4CPLUS_USE_PTHREADS)
@@ -63,7 +63,7 @@ createNewMutex()
 }
 
 
-void 
+void
 deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE m)
 {
 #if defined(LOG4CPLUS_USE_PTHREADS)
@@ -96,7 +96,7 @@ blockAllSignals()
     ::sigset_t signal_set;
     ::sigfillset (&signal_set);
     ::pthread_sigmask (SIG_BLOCK, &signal_set, 0);
-#endif    
+#endif
 }
 #endif // LOG4CPLUS_SINGLE_THREADED
 
@@ -123,7 +123,7 @@ getCurrentThreadName()
 
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
-    void* 
+    void*
     threadStartFunc(void* arg)
 #elif defined(LOG4CPLUS_USE_WIN32_THREADS)
     unsigned WINAPI
@@ -223,6 +223,8 @@ AbstractThread::start()
     if (! h)
     {
         removeReference ();
+        helpers::SharedObjectPtr<helpers::LogLog> loglog
+            = helpers::LogLog::getLogLog();
         loglog->error( LOG4CPLUS_TEXT("Thread creation was not successful") );
         //throw std::runtime_error("Thread creation was not successful");
         abort();

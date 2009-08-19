@@ -19,8 +19,13 @@
 #ifdef _WIN32
 #include <windows.h>
 
-/* Define if you have the ftime function.  */
+/* Define to 1 if you have the `ftime' function. */
 #define LOG4CPLUS_HAVE_FTIME 1
+/* Define to 1 if you have the <time.h> header file. */
+#define LOG4CPLUS_HAVE_TIME_H 1
+
+/* Use static linking. */
+#define LOG4CPLUS_STATIC
 
 #if defined (_WIN32_WCE)
 #  define LOG4CPLUS_DLLMAIN_HINSTANCE HANDLE

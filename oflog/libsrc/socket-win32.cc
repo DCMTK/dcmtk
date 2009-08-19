@@ -13,6 +13,7 @@
 
 #include <cassert>
 //#include <vector>
+#include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/oflog/helpers/socket.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
@@ -88,7 +89,7 @@ init_winsock ()
             case WS_INITIALIZING:
                 ::Sleep (0);
                 continue;
-        
+
             default:
                 assert (0);
                 throw std::runtime_error ("Unknown WinSock state.");
@@ -158,7 +159,7 @@ log4cplus::helpers::openSocket(unsigned short port, SocketState& state)
 
 
 SOCKET_TYPE
-log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn, 
+log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn,
                                   unsigned short port, SocketState& state)
 {
     init_winsock ();
@@ -199,7 +200,7 @@ log4cplus::helpers::connectSocket(const log4cplus::tstring& hostn,
 
     int enabled = 1;
     if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&enabled, sizeof(enabled)) != 0) {
-        ::closesocket(sock);    
+        ::closesocket(sock);
         return INVALID_SOCKET;
     }
 
@@ -230,11 +231,11 @@ long
 log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
     long res, read = 0;
- 
+
     do
-    { 
-        res = ::recv(sock, 
-                     buffer.getBuffer() + read, 
+    {
+        res = ::recv(sock,
+                     buffer.getBuffer() + read,
                      static_cast<int>(buffer.getMaxSize() - read),
                      0);
         if( res <= 0 ) {
@@ -242,7 +243,7 @@ log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
         }
         read += res;
     } while( read < static_cast<long>(buffer.getMaxSize()) );
- 
+
     return read;
 }
 
@@ -260,19 +261,20 @@ log4cplus::helpers::getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
     int ret;
-    std::vector<char> hn (1024, 0);
+    OFString buf(1024, 0);
 
     while (true)
     {
-        ret = ::gethostname (&hn[0], hn.size () - 1);
+        char *hn = OFconst_cast(char *, buf.c_str());
+        ret = ::gethostname (hn, buf.capacity () - 1);
         if (ret == 0)
         {
-            hostname = &hn[0];
+            hostname = hn;
             break;
         }
         else if (ret != 0 && WSAGetLastError () == WSAEFAULT)
             // Out buffer was too short. Retry with buffer twice the size.
-            hn.resize (hn.size () * 2, 0);
+            buf.resize (buf.capacity () * 2, 0);
         else
             break;
     }

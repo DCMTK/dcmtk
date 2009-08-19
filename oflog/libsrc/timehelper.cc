@@ -32,6 +32,10 @@
 #include <sys/time.h>
 #endif
 
+#if defined(LOG4CPLUS_HAVE_TIME_H)
+#include <time.h>
+#endif
+
 #if defined(LOG4CPLUS_HAVE_GMTIME_R) && !defined(LOG4CPLUS_SINGLE_THREADED)
 #define LOG4CPLUS_NEED_GMTIME_R
 #endif
@@ -141,7 +145,7 @@ Time::localtime(struct tm* t) const
 }
 
 
-namespace 
+namespace
 {
 
 static log4cplus::tstring const padding_zeros[4] =
@@ -173,7 +177,7 @@ Time::build_q_value (log4cplus::tstring & q_str) const
 }
 
 
-void 
+void
 Time::build_uc_q_value (log4cplus::tstring & uc_q_str) const
 {
     build_q_value (uc_q_str);
@@ -181,7 +185,7 @@ Time::build_uc_q_value (log4cplus::tstring & uc_q_str) const
 #if defined(LOG4CPLUS_HAVE_GETTIMEOFDAY)
     log4cplus::tstring usecs (convertIntegerToString(tv_usec % 1000));
     size_t usecs_len = usecs.length();
-    usecs.insert (0, usecs_len <= 3 
+    usecs.insert (0, usecs_len <= 3
                   ? uc_q_padding_zeros[usecs_len] : uc_q_padding_zeros[3]);
     uc_q_str.append (usecs);
 #else
@@ -198,23 +202,23 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
         return log4cplus::tstring ();
 
     struct tm time;
-    
+
     if(use_gmtime)
         gmtime(&time);
-    else 
+    else
         localtime(&time);
-    
+
     enum State
     {
         TEXT,
         PERCENT_SIGN
     };
-    
+
     log4cplus::tstring fmt (fmt_orig);
     log4cplus::tstring ret;
     ret.reserve (static_cast<size_t>(fmt.size () * 1.35));
     State state = TEXT;
-    
+
     log4cplus::tstring q_str;
     bool q_str_valid = false;
 
@@ -222,7 +226,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
     bool uc_q_str_valid = false;
 
     // Walk the format string and process all occurences of %q and %Q.
-    
+
     for (log4cplus::tstring::const_iterator fmt_it = fmt.begin ();
          fmt_it != fmt.end (); ++fmt_it)
     {
@@ -236,7 +240,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
                 ret.append (1, *fmt_it);
         }
         break;
-            
+
         case PERCENT_SIGN:
         {
             switch (*fmt_it)
@@ -252,7 +256,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
                 state = TEXT;
             }
             break;
-            
+
             case LOG4CPLUS_TEXT ('Q'):
             {
                 if (! uc_q_str_valid)
@@ -295,7 +299,7 @@ Time::getFormattedTime(const log4cplus::tstring& fmt_orig, bool use_gmtime) cons
             buffer_size *= 2;
             buffer = OFstatic_cast(char *, realloc(buffer, buffer_size));
         }
-    } 
+    }
     while (len == 0);
 
     ret.assign (&buffer[0], len);
@@ -340,7 +344,7 @@ Time::operator/=(long rhs)
 {
     long rem_secs = static_cast<long>(tv_sec % rhs);
     tv_sec /= rhs;
-    
+
     tv_usec /= rhs;
     tv_usec += static_cast<long>((rem_secs * ONE_SEC_IN_USEC) / rhs);
 
@@ -399,7 +403,7 @@ bool
 operator<(const Time& lhs, const Time& rhs)
 {
     return (   (lhs.sec() < rhs.sec())
-            || (   (lhs.sec() == rhs.sec()) 
+            || (   (lhs.sec() == rhs.sec())
                 && (lhs.usec() < rhs.usec())) );
 }
 
@@ -415,7 +419,7 @@ bool
 operator>(const Time& lhs, const Time& rhs)
 {
     return (   (lhs.sec() > rhs.sec())
-            || (   (lhs.sec() == rhs.sec()) 
+            || (   (lhs.sec() == rhs.sec())
                 && (lhs.usec() > rhs.usec())) );
 }
 
