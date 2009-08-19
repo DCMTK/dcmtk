@@ -26,7 +26,7 @@ dnl using config.guess and config.sub.
 dnl -------------------------------------------------------
 
 AC_CANONICAL_HOST
-AC_DEFINE_UNQUOTED(CANONICAL_HOST_TYPE, "${host}", [Define the canonical host system type as a string constant])
+AC_DEFINE_UNQUOTED(CANONICAL_HOST_TYPE, "${host}", [Define the canonical host system type as a string constant.])
 
 case "${host}" in
 	*-*-cygwin)
@@ -45,9 +45,9 @@ dnl Configuration Utilities
 dnl -------------------------------------------------------
 
 if test "x$prefix" = xNONE ; then
-AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}", [Define the DCMTK default path])
+AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${ac_default_prefix}", [Define the DCMTK default path.])
 else
-AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}", [Define the DCMTK default path])
+AC_DEFINE_UNQUOTED(DCMTK_PREFIX, "${prefix}", [Define the DCMTK default path.])
 fi
 
 DATA_DIR="${datadir}"
@@ -56,8 +56,8 @@ DATA_DIR=`(
 	test "$exec_prefix" = NONE && exec_prefix=${prefix}
 	eval eval echo "$DATA_DIR"
 )`
-AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic", [Define the default data dictionary path for the dcmdata library package])
-AC_DEFINE_UNQUOTED(DEFAULT_SUPPORT_DATA_DIR, "${DATA_DIR}/", [Define the default directory where support data files reside])
+AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic", [Define the default data dictionary path for the dcmdata library package.])
+AC_DEFINE_UNQUOTED(DEFAULT_SUPPORT_DATA_DIR, "${DATA_DIR}/", [Define the default directory where support data files reside.])
 
 CONF_DIR="${sysconfdir}"
 CONF_DIR=`(
@@ -65,17 +65,17 @@ CONF_DIR=`(
 	test "$exec_prefix" = NONE && exec_prefix=${prefix}
 	eval echo "$CONF_DIR"
 )`
-AC_DEFINE_UNQUOTED(DEFAULT_CONFIGURATION_DIR, "${CONF_DIR}/", [Define the default directory where configuration files reside])
+AC_DEFINE_UNQUOTED(DEFAULT_CONFIGURATION_DIR, "${CONF_DIR}/", [Define the default directory where configuration files reside.])
 
-AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator */
+AH_VERBATIM([PATH_SEPARATOR], [/* Define path separator. */
 #define PATH_SEPARATOR '/'])
 
-AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable path separator */
+AH_VERBATIM([ENVIRONMENT_PATH_SEPARATOR], [/* Define the environment variable path separator. */
 #ifndef ENVIRONMENT_PATH_SEPARATOR
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif])
 
-AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
+AH_VERBATIM([HAVE_EMPTY_ARGC_ARGV], [/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
 /* #undef HAVE_EMPTY_ARGC_ARGV */])
 
 AH_TOP([#ifndef CFUNIX_H
@@ -232,6 +232,34 @@ AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
 AC_FUNC_FSEEKO
+
+dnl -------------------------------------------------------
+dnl Checks for libcs library functions needed by oflog
+dnl -------------------------------------------------------
+
+AC_DEFUN([TYPE_SOCKLEN_T],
+[
+AH_TEMPLATE([socklen_t], [Define to int if undefined.])
+AC_CACHE_CHECK([for socklen_t], ac_cv_type_socklen_t,
+[
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
+   #include <sys/socket.h>]], [[socklen_t len = 42; return 0;]])],[ac_cv_type_socklen_t=yes],[ac_cv_type_socklen_t=no])
+])
+  if test $ac_cv_type_socklen_t != yes; then
+    AC_DEFINE(socklen_t, int)
+  fi
+])
+
+AC_CHECK_FUNCS(ftime gmtime_r localtime_r lstat)
+AC_CHECK_FUNCS(htons htonl ntohs ntohl)
+AC_CHECK_HEADERS(netinet/in.h)
+AC_CHECK_HEADERS(syslog.h)
+TYPE_SOCKLEN_T
+
+AH_TEMPLATE([HAVE_ENAMETOOLONG])
+AC_COMPILE_IFELSE(
+  [AC_LANG_PROGRAM([#include <errno.h>], [int value = ENAMETOOLONG;])],
+  [AC_DEFINE([HAVE_ENAMETOOLONG], , [Define if your system provides ENAMETOOLONG errno value.])])
 
 dnl -------------------------------------------------------
 dnl Checks for libm library functions.
@@ -550,7 +578,7 @@ if test $THREADSUPPORT = posix ; then
   dnl
   POSIXRWLOCKSAVAILABLE="no"
   AC_CHECK_LIB(pthread, pthread_rwlock_init, [
-    AC_DEFINE(HAVE_PTHREAD_RWLOCK, , [Define if your system supports POSIX read/write locks])
+    AC_DEFINE(HAVE_PTHREAD_RWLOCK, , [Define if your system supports POSIX read/write locks.])
     dnl
     dnl we're going to use POSIX threads with read/write locks.
     dnl Linux 2.2.x only declares all prototypes if _XOPEN_SOURCE=500 and _BSD_SOURCE
@@ -592,7 +620,7 @@ if test $THREADSUPPORT = posix ; then
     AC_TRY_LINK([extern "C" int pthread_rwlock_init(void *rwlock, void *attr);
       ] , [(void) pthread_rwlock_init(NULL, NULL);], [
     AC_MSG_RESULT(yes)
-    AC_DEFINE(HAVE_PTHREAD_RWLOCK, , [Define if your system supports POSIX read/write locks])
+    AC_DEFINE(HAVE_PTHREAD_RWLOCK, , [Define if your system supports POSIX read/write locks.])
     dnl
     dnl we're going to use POSIX threads with read/write locks.
     dnl Linux 2.2.x only declares all prototypes if _XOPEN_SOURCE=500 and _BSD_SOURCE
@@ -629,7 +657,7 @@ case "$THREADSUPPORT" in
     AC_MSG_RESULT([yes, solaris threads])
     CXXFLAGS="-D_REENTRANT $CXXFLAGS"
     CFLAGS="-D_REENTRANT $CFLAGS"
-    AC_DEFINE(WITH_THREADS, , [Define if we are compiling with any type of Multi-thread support])
+    AC_DEFINE(WITH_THREADS, , [Define if we are compiling with any type of multi-thread support.])
     ;;
   posix)
     if test $POSIXRWLOCKSAVAILABLE = yes ; then
@@ -639,7 +667,7 @@ case "$THREADSUPPORT" in
     fi
     CXXFLAGS="-D_REENTRANT $CXXFLAGS"
     CFLAGS="-D_REENTRANT $CFLAGS"
-    AC_DEFINE(WITH_THREADS, , [Define if we are compiling with any type of Multi-thread support])
+    AC_DEFINE(WITH_THREADS, , [Define if we are compiling with any type of multi-thread support.])
     ;;
   *)
     AC_MSG_RESULT(none)
@@ -767,12 +795,12 @@ fi
 
 if test "$ac_use_std_includes" = "yes"; then
    AC_MSG_RESULT(yes)
-   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used])
+   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used.])
 elif test "$ac_use_std_includes" = "no"; then
    AC_MSG_RESULT(no)
 elif test "$ac_have_std_includes" = "yes"; then
    AC_MSG_RESULT(yes)
-   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used])
+   AC_DEFINE(USE_STD_CXX_INCLUDES, , [Define if ANSI standard C++ includes are used.])
    ac_use_std_includes="yes"
 else
    AC_MSG_RESULT(no)
@@ -810,8 +838,8 @@ AC_ARG_WITH(private-tags,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_PRIVATE_TAGS, , [Define if we are compiling for built-in private tag dictionary])
-    AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic", [Define the default data dictionary path for the dcmdata library package])
+    AC_DEFINE(WITH_PRIVATE_TAGS, , [Define if we are compiling for built-in private tag dictionary.])
+    AC_DEFINE_UNQUOTED(DCM_DICT_DEFAULT_PATH, "${DATA_DIR}/dicom.dic:${DATA_DIR}/private.dic", [Define the default data dictionary path for the dcmdata library package.])
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -851,7 +879,7 @@ AC_ARG_WITH(openssl,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support])
+    AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support.])
     OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS"
     ;;
   *)
@@ -862,7 +890,7 @@ AC_ARG_WITH(openssl,
   LIBS="$LIBS -lssl -lcrypto"
   AC_TRY_LINK([#include <openssl/ssl.h>], [(void) TLSv1_method()],
     [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support])
+      AC_DEFINE(WITH_OPENSSL, , [Define if we are compiling with OpenSSL support.])
       OPENSSLLIBS="-lssl -lcrypto $OPENSSLLIBS" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
@@ -912,7 +940,7 @@ AC_ARG_WITH(zlib,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support])
+    AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support.])
     ZLIBLIBS="-lz"
     ;;
   *)
@@ -923,7 +951,7 @@ AC_ARG_WITH(zlib,
   LIBS="$LIBS -lz"
   AC_TRY_LINK([#include <zlib.h>], [(void) zlibVersion()],
     [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support])
+      AC_DEFINE(WITH_ZLIB, , [Define if we are compiling with zlib support.])
       ZLIBLIBS="-lz" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
@@ -959,7 +987,7 @@ AC_ARG_WITH(libtiff,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
+    AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support.])
     TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
     SAVELIBS="$LIBS"
     LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
@@ -974,7 +1002,7 @@ AC_ARG_WITH(libtiff,
   LIBS="$LIBS -ltiff $JPEGLIBS $ZLIBLIBS"
   AC_TRY_LINK([#include <tiffio.h>], [(void) TIFFGetVersion()],
     [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
+      AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support.])
       TIFFLIBS="-ltiff $JPEGLIBS $ZLIBLIBS"
       AC_LIBTIFF_LZW_COMPRESSION
     ],
@@ -1016,7 +1044,7 @@ AC_ARG_WITH(libpng,
   yes)
     if test "x$ZLIBLIBS" != x; then
         AC_MSG_RESULT(yes)
-        AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support])
+        AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support.])
         PNGLIBS="-lpng"
     else
         AC_MSG_RESULT(no because libpng requires zlib)
@@ -1036,7 +1064,7 @@ AC_ARG_WITH(libpng,
 #include <png.h>
 #endif], [(void) png_access_version_number()],
         [ AC_MSG_RESULT(yes)
-          AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support])
+          AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support.])
           PNGLIBS="-lpng" ],
         [AC_MSG_RESULT(no)])
 
@@ -1083,7 +1111,7 @@ AC_ARG_WITH(libxml,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support])
+    AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support.])
     XMLLIBS="-lxml2"
     ;;
   *)
@@ -1094,7 +1122,7 @@ AC_ARG_WITH(libxml,
   LIBS="$LIBS -lxml2 $ZLIBLIBS"
   AC_TRY_LINK([#include <libxml/parser.h>], [(void) xmlInitParser()],
     [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support])
+      AC_DEFINE(WITH_LIBXML, , [Define if we are compiling with libxml support.])
       XMLLIBS="-lxml2" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
@@ -1130,7 +1158,7 @@ AC_ARG_WITH(libwrap,
 [ case "$withval" in
   yes)
     AC_MSG_RESULT(yes)
-    AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support])
+    AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support.])
     TCPWRAPPERLIBS="-lwrap"
     ;;
   *)
@@ -1158,7 +1186,7 @@ AC_ARG_WITH(libwrap,
     int deny_severity = 0;
     int allow_severity = 0;], [struct request_info r; (void) hosts_access(&r)],
     [ AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support])
+      AC_DEFINE(WITH_TCPWRAPPER, , [Define if we are compiling with libwrap (TCP wrapper) support.])
     TCPWRAPPERLIBS="-lwrap" ],
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
@@ -1200,20 +1228,20 @@ AC_ARG_WITH(sndfile,
   [ case "$withval" in
     yes)
       AC_MSG_RESULT(yes)
-      AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support])
+      AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support.])
       SNDFILELIBS="-lsndfile"
       ;;
     *)
       AC_MSG_RESULT(no)
       ;;
     esac ],
-    
+
   [ SAVELIBS="$LIBS"
     LIBS="$LIBS -lsndfile"
     AC_TRY_LINK([#include <sndfile.h>], [char buffer [128];
     sf_command (NULL, SFC_GET_LIB_VERSION, buffer, sizeof (buffer));],
       [ AC_MSG_RESULT(yes)
-        AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support])
+        AC_DEFINE(WITH_SNDFILE, , [Define if we are compiling with sndfile support.])
         SNDFILELIBS="-lsndfile" ],
       [AC_MSG_RESULT(no)])
     LIBS="$SAVELIBS"]

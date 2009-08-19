@@ -23,6 +23,11 @@ Changes between releases are documented here.
   Added:   ofstd/include/dcmtk/ofstd/ofmap.h
   Affects: config/docs/macros.txt
 
+- Added new configure tests for upcoming module "oflog".
+  Affects: config/configure.in
+           config/include/dcmtk/config/cfunix.h.in
+           config/include/dcmtk/config/cfwin32.h.in
+
 **** Changes from 2009.08.12 (onken)
 
 - Fixed minor formatting issues and bug that caused some images being

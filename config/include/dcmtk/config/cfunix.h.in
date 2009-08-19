@@ -13,7 +13,7 @@
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 #endif
 
-/* Define the canonical host system type as a string constant */
+/* Define the canonical host system type as a string constant. */
 #undef CANONICAL_HOST_TYPE
 
 /* Define if char is unsigned on the C compiler */
@@ -26,19 +26,19 @@
 /* Define if >> is unsigned on the C compiler */
 #undef C_RIGHTSHIFT_UNSIGNED
 
-/* Define the DCMTK default path */
+/* Define the DCMTK default path. */
 #undef DCMTK_PREFIX
 
-/* Define the default data dictionary path for the dcmdata library package */
+/* Define the default data dictionary path for the dcmdata library package. */
 #undef DCM_DICT_DEFAULT_PATH
 
-/* Define the default directory where configuration files reside */
+/* Define the default directory where configuration files reside. */
 #undef DEFAULT_CONFIGURATION_DIR
 
-/* Define the default directory where support data files reside */
+/* Define the default directory where support data files reside. */
 #undef DEFAULT_SUPPORT_DATA_DIR
 
-/* Define the environment variable path separator */
+/* Define the environment variable path separator. */
 #ifndef ENVIRONMENT_PATH_SEPARATOR
 #define ENVIRONMENT_PATH_SEPARATOR ':'
 #endif
@@ -120,8 +120,11 @@
 /* define if the compiler supports dynamic_cast<> */
 #undef HAVE_DYNAMIC_CAST
 
-/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
+/* Define if your system cannot pass command line arguments into main() (e.g. Macintosh). */
 /* #undef HAVE_EMPTY_ARGC_ARGV */
+
+/* Define if your system provides ENAMETOOLONG errno value. */
+#undef HAVE_ENAMETOOLONG
 
 /* Define to 1 if you have the <errno.h> header file. */
 #undef HAVE_ERRNO_H
@@ -156,6 +159,9 @@
 
 /* Define to 1 if you have the <fstream.h> header file. */
 #undef HAVE_FSTREAM_H
+
+/* Define to 1 if you have the `ftime' function. */
+#undef HAVE_FTIME
 
 /* Define if your C++ compiler can work with function templates */
 #undef HAVE_FUNCTION_TEMPLATE
@@ -196,8 +202,17 @@
 /* Define to 1 if you have the `getuid' function. */
 #undef HAVE_GETUID
 
+/* Define to 1 if you have the `gmtime_r' function. */
+#undef HAVE_GMTIME_R
+
 /* Define to 1 if you have the <grp.h> header file. */
 #undef HAVE_GRP_H
+
+/* Define to 1 if you have the `htonl' function. */
+#undef HAVE_HTONL
+
+/* Define to 1 if you have the `htons' function. */
+#undef HAVE_HTONS
 
 /* Define to 1 if you have the <ieeefp.h> header file. */
 #undef HAVE_IEEEFP_H
@@ -283,6 +298,9 @@
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
 
+/* Define to 1 if you have the `localtime_r' function. */
+#undef HAVE_LOCALTIME_R
+
 /* Define to 1 if you have the `lockf' function. */
 #undef HAVE_LOCKF
 
@@ -291,6 +309,9 @@
 
 /* Define to 1 if you support file names longer than 14 characters. */
 #undef HAVE_LONG_FILE_NAMES
+
+/* Define to 1 if you have the `lstat' function. */
+#undef HAVE_LSTAT
 
 /* Define to 1 if you have the `malloc_debug' function. */
 #undef HAVE_MALLOC_DEBUG
@@ -387,6 +408,12 @@ typedef unsigned long ulong;
 #ifdef HAVE_NO_TYPEDEF_USHORT
 typedef unsigned short ushort;
 #endif
+
+/* Define to 1 if you have the `ntohl' function. */
+#undef HAVE_NTOHL
+
+/* Define to 1 if you have the `ntohs' function. */
+#undef HAVE_NTOHS
 
 /* Define if your system supports readdir_r with the obsolete Posix 1.c draft
    6 declaration (2 arguments) instead of the Posix 1.c declaration with 3
@@ -502,7 +529,7 @@ typedef unsigned short ushort;
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
 
-/* Define if your system supports POSIX read/write locks */
+/* Define if your system supports POSIX read/write locks. */
 #undef HAVE_PTHREAD_RWLOCK
 
 /* Define to 1 if you have the <pwd.h> header file. */
@@ -625,6 +652,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `sysinfo' function. */
 #undef HAVE_SYSINFO
+
+/* Define to 1 if you have the <syslog.h> header file. */
+#undef HAVE_SYSLOG_H
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
@@ -755,7 +785,7 @@ typedef unsigned short ushort;
 /* Define to the version suffix of this package. */
 #undef PACKAGE_VERSION_SUFFIX
 
-/* Define path separator */
+/* Define path separator. */
 #define PATH_SEPARATOR '/'
 
 /* Define as the return type of signal handlers (`int' or `void'). */
@@ -794,34 +824,34 @@ typedef unsigned short ushort;
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 #undef TM_IN_SYS_TIME
 
-/* Define if ANSI standard C++ includes are used */
+/* Define if ANSI standard C++ includes are used. */
 #undef USE_STD_CXX_INCLUDES
 
-/* Define if we are compiling with libpng support */
+/* Define if we are compiling with libpng support. */
 #undef WITH_LIBPNG
 
-/* Define if we are compiling with libtiff support */
+/* Define if we are compiling with libtiff support. */
 #undef WITH_LIBTIFF
 
-/* Define if we are compiling with libxml support */
+/* Define if we are compiling with libxml support. */
 #undef WITH_LIBXML
 
-/* Define if we are compiling with OpenSSL support */
+/* Define if we are compiling with OpenSSL support. */
 #undef WITH_OPENSSL
 
-/* Define if we are compiling for built-in private tag dictionary */
+/* Define if we are compiling for built-in private tag dictionary. */
 #undef WITH_PRIVATE_TAGS
 
-/* Define if we are compiling with sndfile support */
+/* Define if we are compiling with sndfile support. */
 #undef WITH_SNDFILE
 
-/* Define if we are compiling with libwrap (TCP wrapper) support */
+/* Define if we are compiling with libwrap (TCP wrapper) support. */
 #undef WITH_TCPWRAPPER
 
-/* Define if we are compiling with any type of Multi-thread support */
+/* Define if we are compiling with any type of multi-thread support. */
 #undef WITH_THREADS
 
-/* Define if we are compiling with zlib support */
+/* Define if we are compiling with zlib support. */
 #undef WITH_ZLIB
 
 /* Define to 1 if on AIX 3.
@@ -847,5 +877,8 @@ typedef unsigned short ushort;
 #ifndef __CHAR_UNSIGNED__
 # undef __CHAR_UNSIGNED__
 #endif
+
+/* Define to int if undefined. */
+#undef socklen_t
 
 #endif /* CFUNIX_H */
