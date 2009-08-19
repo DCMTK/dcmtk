@@ -22,8 +22,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-27 14:26:00 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2009-08-19 10:43:37 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,36 @@ class OFStandard
       return my_strlcat(dst, src, siz);
 #endif
     }
+
+    /** returns the upper-case version of a given string
+     *  @param result string variable in which the result is stored
+     *  @param value string value to be converted to upper case
+     *  @return reference to the resulting string (same as 'result')
+     */
+    static OFString &toUpper(OFString &result,
+                             const OFString &value);
+
+    /** returns the upper-case version of a given string.
+     *  NB: This function changes the parameter 'value'.
+     *  @param value string value to be converted to upper case
+     *  @return reference to the resulting string (same as 'value')
+     */
+    static OFString &toUpper(OFString &value);
+
+    /** returns the lower-case version of a given string
+     *  @param result string variable in which the result is stored
+     *  @param value string value to be converted to lower case
+     *  @return reference to the resulting string (same as 'result')
+     */
+    static OFString &toLower(OFString &result,
+                             const OFString &value);
+
+    /** returns the lower-case version of a given string.
+     *  NB: This function changes the parameter 'value'.
+     *  @param value string value to be converted to lower case
+     *  @return reference to the resulting string (same as 'value')
+     */
+    static OFString &toLower(OFString &value);
 
     // --- file system functions ---
 
@@ -505,6 +535,9 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
+ * Revision 1.35  2009-08-19 10:43:37  joergr
+ * Added new string helper functions toUpper() and toLower().
+ *
  * Revision 1.34  2009-04-27 14:26:00  joergr
  * Added comment on absolute path names e.g. in UNC syntax.
  *

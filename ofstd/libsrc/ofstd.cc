@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-27 14:25:31 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2009-08-19 10:40:54 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,6 +293,40 @@ size_t OFStandard::my_strlcat(char *dst, const char *src, size_t siz)
   return(dlen + (s - src));       /* count does not include NUL */
 }
 #endif /* HAVE_STRLCAT */
+
+
+OFString &OFStandard::toUpper(OFString &result,
+                              const OFString &value)
+{
+    result = value;
+    return OFStandard::toUpper(result);
+}
+
+
+OFString &OFStandard::toUpper(OFString &value)
+{
+    const size_t length = value.length();
+    for (size_t i = 0; i < length; i++)
+        value.at(i) = toupper(value.at(i));
+    return value;
+}
+
+
+OFString &OFStandard::toLower(OFString &result,
+                              const OFString &value)
+{
+    result = value;
+    return OFStandard::toLower(result);
+}
+
+
+OFString &OFStandard::toLower(OFString &value)
+{
+    const size_t length = value.length();
+    for (size_t i = 0; i < length; i++)
+        value.at(i) = tolower(value.at(i));
+    return value;
+}
 
 
 // --- file system functions ---
@@ -1788,6 +1822,9 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.51  2009-08-19 10:40:54  joergr
+ *  Added new string helper functions toUpper() and toLower().
+ *
  *  Revision 1.50  2009-04-27 14:25:31  joergr
  *  Added comment on absolute path names e.g. in UNC syntax.
  *
