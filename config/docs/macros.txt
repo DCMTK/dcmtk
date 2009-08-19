@@ -112,8 +112,8 @@ HAVE_STL
   Affected: ofstd
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
-    library) list and stack classes as well as the STL algorithms are
-    used instead of DCMTK's own implementations.
+    library) list, map and stack classes as well as the STL algorithms
+    are used instead of DCMTK's own implementations.
 
 HAVE_STL_ALGORITHMS
   Affected: ofstd
@@ -127,6 +127,13 @@ HAVE_STL_LIST
   Type of modification: Activates feature
   Explanation: When this macro is defined, the STL (standard template
     library) list class is used instead of DCMTK's own implementation.
+    Also see HAVE_STL.
+
+HAVE_STL_MAP
+  Affected: ofstd
+  Type of modification: Activates feature
+  Explanation: When this macro is defined, the STL (standard template
+    library) map class is used instead of DCMTK's own implementation.
     Also see HAVE_STL.
 
 HAVE_STL_STACK
