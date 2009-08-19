@@ -15,7 +15,6 @@ include $(configdir)/@common_makefile@
 all:
 
 install:
-	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk
 	$(configdir)/mkinstalldirs $(DESTDIR)$(includedir)/dcmtk/ofstd
 	for file in dcmtk/ofstd/*.h ; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(includedir)/dcmtk/ofstd ;\
