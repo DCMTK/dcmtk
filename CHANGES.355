@@ -1,6 +1,21 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.19 (riesmeier)
+
+- Added new string helper functions toUpper() and toLower().
+  Affects: ofstd/include/dcmtk/ofstd/ofstd.h
+           ofstd/libsrc/ofstd.cc
+
+- Added iterator declarations and required methods.
+  Affects: ofstd/include/dcmtk/ofstd/ofstring.h
+
+- Added missing dereference operator.
+  Affects: ofstd/include/dcmtk/ofstd/oflist.h
+
+- Removed redundant call to 'mkinstalldirs'.
+  Affects: ofstd/include/Makefile.in
+
 **** Changes from 2009.08.12 (onken)
 
 - Fixed minor formatting issues and bug that caused some images being
