@@ -16,6 +16,13 @@ Changes between releases are documented here.
 - Removed redundant call to 'mkinstalldirs'.
   Affects: ofstd/include/Makefile.in
 
+- Added new class OFauto_ptr required for upcoming module "oflog".
+  Added:   ofstd/include/dcmtk/ofstd/ofaptr.h
+
+- Added new class OFMap required for upcoming module "oflog".
+  Added:   ofstd/include/dcmtk/ofstd/ofmap.h
+  Affects: config/docs/macros.txt
+
 **** Changes from 2009.08.12 (onken)
 
 - Fixed minor formatting issues and bug that caused some images being
