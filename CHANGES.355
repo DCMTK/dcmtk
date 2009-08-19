@@ -178,6 +178,9 @@ Changes between releases are documented here.
   Affects: oflog/include/Makefile.in
            oflog/include/dcmtk/oflog/CMakeLists.txt
 
+- Added missing sub-directory for "ofstd" header files.
+  Affects: oflog/CMakeLists.txt
+
 **** Changes from 2009.08.12 (onken)
 
 - Fixed minor formatting issues and bug that caused some images being
