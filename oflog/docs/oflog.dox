@@ -9,4 +9,62 @@ The main classes are (in alphabetical order):
 \li \b OFLog
 \li \b OFLogger
 
+\section Examples
+
+The following example shows how to use oflog in a console application.
+
+\subsection actual_logging The actual logging
+
+First we need the necessary headers and definitions:
+
+\code
+// Naturally, we need the header for oflog
+#include "dcmtk/oflog/oflog.h"
+
+// Then we create our logger object. The argument is the name of the logger
+// which can be used to configure it from the config file
+OFLogger my_log = OFLog::getLogger("dcmtk.apps.sample");
+\endcode
+
+That is all that is necessary to create log statements. You can now use any of
+the following macros to generate log entries:
+
+\code
+OFLOG_FATAL(my_log, "This is a sample message of log level 'fatal'");
+OFLOG_ERROR(my_log, "There are six log levels and each provides a OFLOG_level() macro");
+OFLOG_WARN(my_log, "These macros are quite flexible");
+OFLOG_INFO(my_log, "To output numbers like " << 5 << " you can use any iostream operations");
+OFLOG_DEBUG(my_log, "Since iostreams are quite flexible themselves, a lot of stuff is possible");
+OFLOG_TRACE(my_log, "hex numbers? 0x" << STD_NAMESPACE hex << 0x1234 << " and decimal numbers "
+                 << STD_NAMESPACE dec << 0x1234 << " are no problem at all");
+\endcode
+
+\subsection configure_logging Configuring the logging
+
+While the above code works by itself, the result is not nice and flexible. To
+configure oflog with the help of OFCommandLine, you can do something like this:
+
+\code
+// This is just an example
+cmd.addGroup("general options:", LONGCOL, SHORTCOL);
+  // You own options here, e.g. --version
+  cmd.addOption("--version", "print version information and exit", OFCommandLine::AF_Exclusive);
+  // This call adds all of oflog's options, e.g. --debug and --quiet
+  OFLog::addOptions(cmd);
+\endcode
+
+After you called OFConsoleApplication::parseCommandLine(), oflog can be set up
+with one single call:
+
+\code
+OFLog::configureFromCommandLine(cmd, app);
+\endcode
+
+This is all that is necessary to configure the logger and have options like
+<code>--verbose</code> and <code>--log-config</code> available.
+
+Alternatively you can use OFLog::configure() and OFLog::toLogMode(), but this
+approach doesn't offer the flexibility of <code>--log-level</code> and
+<code>--log-config</code>.
+
 */
