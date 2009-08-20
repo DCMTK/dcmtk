@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 11:58:22 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-08-20 10:43:30 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,11 +159,28 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
         app.checkConflict("--log-config", "--log-level", level != log4cplus::NOT_SET_LOG_LEVEL);
 
         app.checkValue(cmd.getValue(logConfig));
-        // check whether config file exists at all
+
+        // check wether config file exists at all and is readable
         if (!OFStandard::fileExists(logConfig))
             app.printError("Specified --log-config file does not exist");
-        // there seems to be no way to get an error value here :(
-        log4cplus::PropertyConfigurator::doConfigure(logConfig);
+        if (!OFStandard::isReadable(logConfig))
+            app.printError("Specified --log-config file cannot be read");
+
+        // There seems to be no way to get an error value here :(
+        //log4cplus::PropertyConfigurator::doConfigure(logConfig);
+
+        // This does the same stuff that line above would have done, but it also
+        // does some sanity checks on the config file.
+        log4cplus::helpers::Properties props(logConfig);
+        if (props.size() == 0)
+            app.printError("Specified --log-config file does not contain any settings");
+        if (props.getPropertySubset("log4cplus.").size() == 0)
+            app.printError("Specified --log-config file does not contain any valid settings");
+        if (!props.exists("log4cplus.rootLogger"))
+            app.printError("Specified --log-config file does not set up log4cplus.rootLogger");
+
+        log4cplus::PropertyConfigurator conf(props);
+        conf.configure();
     }
     else
     {
@@ -198,6 +215,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.2  2009-08-20 10:43:30  joergr
+ * Added more checks when reading a log configuration from file.
+ *
  * Revision 1.1  2009-08-19 11:58:22  joergr
  * Added new module "oflog" which is based on log4cplus.
  *
