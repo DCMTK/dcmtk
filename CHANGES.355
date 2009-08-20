@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.20 (riesmeier)
 
+- Added more checks when reading a log configuration from file.
+  Affects: oflog/libsrc/oflog.cc
+
+- Enhanced comments in oflog sample config file.
+  Affects: oflog/etc/logger.cfg
+
 - Various minor fixes needed for Sun Studio 11 on Solaris.
   Affects: oflog/include/dcmtk/oflog/helpers/thread-config.h
            oflog/include/dcmtk/oflog/helpers/threads.h
