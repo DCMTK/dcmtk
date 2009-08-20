@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 11:54:00 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-08-20 12:08:02 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,11 +57,17 @@ public:
 
     /// these are the log levels that you can feed to isEnabledFor()
     enum LogLevel {
+        /// trace: used to "trace" entry and exiting of methods
         TRACE_LOG_LEVEL = log4cplus::TRACE_LOG_LEVEL,
+        /// debug: fine-grained informational events that are most useful to debug an application
         DEBUG_LOG_LEVEL = log4cplus::DEBUG_LOG_LEVEL,
+        /// info: informational messages that highlight the progress of the application at coarse-grained level
         INFO_LOG_LEVEL  = log4cplus::INFO_LOG_LEVEL,
+        /// warn: potentially harmful situations
         WARN_LOG_LEVEL  = log4cplus::WARN_LOG_LEVEL,
+        /// error: events that might still allow the application to continue running
         ERROR_LOG_LEVEL = log4cplus::ERROR_LOG_LEVEL,
+        /// fatal: very severe error events that will presumably lead the application to abort
         FATAL_LOG_LEVEL = log4cplus::FATAL_LOG_LEVEL
     };
 
@@ -86,9 +92,9 @@ class OFLog
 {
  private:
 
-     /** private constructor, don't create instances of this class
-      */
-     OFLog() { }
+    /** private constructor, don't create instances of this class
+     */
+    OFLog() { }
 
     /** set up the logging and enable it
      *  @param mode the verbosity that you want
@@ -132,6 +138,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.2  2009-08-20 12:08:02  joergr
+ * Added documentation on log level values.
+ *
  * Revision 1.1  2009-08-19 11:54:00  joergr
  * Added new module "oflog" which is based on log4cplus.
  *
