@@ -3,6 +3,12 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.20 (riesmeier)
 
+- Updated oflog module documention.
+  Affects: oflog/docs/oflog.dox
+
+- Added documentation on log level values.
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+
 - Added more checks when reading a log configuration from file.
   Affects: oflog/libsrc/oflog.cc
 
