@@ -6,6 +6,7 @@
 #ifndef CHARLS_UTIL
 #define CHARLS_UTIL
 
+#include "dcmtk/config/osconfig.h"
 
 #ifdef _DEBUG
 #include <assert.h>
@@ -30,14 +31,19 @@ typedef int LONG;
 #  endif
 #endif
 
-#else
+#else /* not defined(_WIN32) */
+
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
 
 // default signed int types (32 or 64 bit)
 typedef intptr_t LONG;
 #endif
-
-
 
 enum constants
 {
@@ -112,8 +118,6 @@ inline LONG BitWiseSign(LONG i)
 	{ return i >> (LONG_BITCOUNT-1); }
 
 
-#pragma pack(push, 1)
-
 template<class SAMPLE>
 struct Triplet
 {
@@ -163,9 +167,6 @@ struct Quad : public Triplet<sample>
 		sample A;
 	};
 };
-
-#pragma pack(pop)
-
 
 #include "interface.h"
 

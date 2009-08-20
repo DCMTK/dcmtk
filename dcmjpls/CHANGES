@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.20 (eichelberg)
+
+- Fixed include files needed on Solaris, removed unneeded compiler pragmas
+  Affects: dcmjpls/libcharls/util.h
+
 **** Changes from 2009.08.19 (eichelberg)
 
 - Removed trailing commata in lists to avoid warnings on Sun Studio 11.
