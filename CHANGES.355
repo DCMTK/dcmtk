@@ -9,6 +9,9 @@ Changes between releases are documented here.
 - Enhanced comments in oflog sample config file.
   Affects: oflog/etc/logger.cfg
 
+- Updated Makefile dependencies.
+  Affects: oflog/libsrc/Makefile.dep
+
 - Various minor fixes needed for Sun Studio 11 on Solaris.
   Affects: oflog/include/dcmtk/oflog/helpers/thread-config.h
            oflog/include/dcmtk/oflog/helpers/threads.h
