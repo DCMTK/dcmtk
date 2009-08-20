@@ -28,7 +28,7 @@ using namespace log4cplus::helpers;
 // public methods
 ///////////////////////////////////////////////////////////////////////////////
 
-NDC& 
+NDC&
 log4cplus::getNDC()
 {
     static NDC singleton;
@@ -43,8 +43,8 @@ log4cplus::getNDC()
 
 DiagnosticContext::DiagnosticContext(const log4cplus::tstring& message, DiagnosticContext* parent)
  : message(message),
-   fullMessage( (  (parent == NULL) 
-                 ? message 
+   fullMessage( (  (parent == NULL)
+                 ? message
                  : parent->fullMessage + LOG4CPLUS_TEXT(" ") + message) )
 {
 }
@@ -62,13 +62,13 @@ DiagnosticContext::DiagnosticContext(const log4cplus::tstring& message)
 // log4cplus::NDC ctor and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-NDC::NDC() 
- : threadLocal(LOG4CPLUS_THREAD_LOCAL_INIT (0))
+NDC::NDC()
+ : threadLocal(LOG4CPLUS_THREAD_LOCAL_INIT ())
 {
 }
 
 
-NDC::~NDC() 
+NDC::~NDC()
 {
     LOG4CPLUS_THREAD_LOCAL_CLEANUP( threadLocal );
 }
@@ -90,7 +90,7 @@ NDC::clear()
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::clear()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::clear()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -109,7 +109,7 @@ NDC::cloneStack()
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -120,7 +120,7 @@ NDC::cloneStack()
 }
 
 
-void 
+void
 NDC::inherit(const DiagnosticContextStack& stack)
 {
     try {
@@ -133,7 +133,7 @@ NDC::inherit(const DiagnosticContextStack& stack)
         LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::inherit()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::inherit()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -142,7 +142,7 @@ NDC::inherit(const DiagnosticContextStack& stack)
 }
 
 
-log4cplus::tstring 
+log4cplus::tstring
 NDC::get()
 {
     try {
@@ -152,7 +152,7 @@ NDC::get()
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::get()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::get()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -163,7 +163,7 @@ NDC::get()
 }
 
 
-size_t 
+size_t
 NDC::getDepth()
 {
     try {
@@ -173,7 +173,7 @@ NDC::getDepth()
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::getDepth()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::getDepth()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -184,7 +184,7 @@ NDC::getDepth()
 }
 
 
-log4cplus::tstring 
+log4cplus::tstring
 NDC::pop()
 {
     try {
@@ -202,7 +202,7 @@ NDC::pop()
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::pop()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::pop()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -213,7 +213,7 @@ NDC::pop()
 }
 
 
-log4cplus::tstring 
+log4cplus::tstring
 NDC::peek()
 {
     try {
@@ -223,7 +223,7 @@ NDC::peek()
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::peek()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::peek()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -234,7 +234,7 @@ NDC::peek()
 }
 
 
-void 
+void
 NDC::push(const log4cplus::tstring& message)
 {
     try {
@@ -253,7 +253,7 @@ NDC::push(const log4cplus::tstring& message)
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::push()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::push()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -262,7 +262,7 @@ NDC::push(const log4cplus::tstring& message)
 }
 
 
-void 
+void
 NDC::remove()
 {
     try {
@@ -273,7 +273,7 @@ NDC::remove()
         LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::remove()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::remove()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -282,7 +282,7 @@ NDC::remove()
 }
 
 
-void 
+void
 NDC::setMaxDepth(size_t maxDepth)
 {
     try {
@@ -294,7 +294,7 @@ NDC::setMaxDepth(size_t maxDepth)
         }
     }
     catch(std::exception& e) {
-        getLogLog().error(  LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured: ") 
+        getLogLog().error(  LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
     catch(...) {
@@ -304,9 +304,9 @@ NDC::setMaxDepth(size_t maxDepth)
 
 
 DiagnosticContextStack* NDC::getPtr()
-{ 
+{
     return static_cast<DiagnosticContextStack*>
-        (LOG4CPLUS_GET_THREAD_LOCAL_VALUE( threadLocal )); 
+        (LOG4CPLUS_GET_THREAD_LOCAL_VALUE( threadLocal ));
 }
 
 
@@ -314,13 +314,13 @@ DiagnosticContextStack* NDC::getPtr()
 //
 //
 
-NDCContextCreator::NDCContextCreator(const log4cplus::tstring& msg) 
-{ 
-    getNDC().push(msg); 
+NDCContextCreator::NDCContextCreator(const log4cplus::tstring& msg)
+{
+    getNDC().push(msg);
 }
 
 
-NDCContextCreator::~NDCContextCreator() 
-{ 
-    getNDC().pop(); 
+NDCContextCreator::~NDCContextCreator()
+{
+    getNDC().pop();
 }

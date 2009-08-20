@@ -78,10 +78,10 @@ deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE m)
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
 pthread_key_t*
-createPthreadKey(void (*cleanupfunc)(void *))
+createPthreadKey()
 {
     ::pthread_key_t* key = new ::pthread_key_t;
-    ::pthread_key_create(key, cleanupfunc);
+    ::pthread_key_create(key, NULL);
     return key;
 }
 #endif
@@ -123,6 +123,7 @@ getCurrentThreadName()
 
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
+extern "C"
     void*
     threadStartFunc(void* arg)
 #elif defined(LOG4CPLUS_USE_WIN32_THREADS)

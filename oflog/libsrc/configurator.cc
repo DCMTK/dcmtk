@@ -119,7 +119,7 @@ namespace
                 dest = val;
                 return false;
             }
-            
+
             key.assign (pattern, var_start + DELIM_START_LEN,
                 var_end - (var_start + DELIM_START_LEN));
             replacement.clear ();
@@ -132,7 +132,7 @@ namespace
                 if (env_var)
                     replacement = LOG4CPLUS_STRING_TO_TSTRING (env_var);
             }
-            
+
             if (empty_vars || ! replacement.empty ())
             {
                 // Substitute the variable with its value in place.
@@ -261,7 +261,7 @@ PropertyConfigurator::replaceEnvironVariables()
     OFListConstIterator(tstring) it = keys.begin();
     tstring val, subKey, subVal;
     bool changed;
-    do 
+    do
     {
         changed = false;
         for(; it != keys.end(); ++it)
@@ -275,7 +275,7 @@ PropertyConfigurator::replaceEnvironVariables()
                 properties.setProperty(subKey, val);
                 changed = true;
             }
-            
+
             subVal.clear ();
             if (substVars(subVal, val, properties, getLogLog(), flags))
             {
@@ -385,7 +385,7 @@ PropertyConfigurator::configureAppenders()
         if( (*it).find( LOG4CPLUS_TEXT('.') ) == OFString_npos )
         {
             factoryName = appenderProperties.getProperty(*it);
-            AppenderFactory* factory 
+            AppenderFactory* factory
                 = getAppenderFactoryRegistry().get(factoryName);
             if (factory == 0)
             {
@@ -396,12 +396,12 @@ PropertyConfigurator::configureAppenders()
                 continue;
             }
 
-            Properties properties
-                = appenderProperties.getPropertySubset((*it) 
+            Properties properties_
+                = appenderProperties.getPropertySubset((*it)
                     + LOG4CPLUS_TEXT("."));
             try
             {
-                SharedAppenderPtr appender = factory->createObject(properties);
+                SharedAppenderPtr appender = factory->createObject(properties_);
                 if (appender.get() == 0)
                 {
                     tstring err =
@@ -513,7 +513,7 @@ BasicConfigurator::doConfigure(Hierarchy& h)
 // ConfigurationWatchDogThread implementation
 //////////////////////////////////////////////////////////////////////////////
 
-class ConfigurationWatchDogThread 
+class ConfigurationWatchDogThread
     : public thread::AbstractThread,
       public PropertyConfigurator
 {
@@ -530,7 +530,7 @@ public:
 
     virtual ~ConfigurationWatchDogThread ()
     { }
-    
+
     void terminate ()
     {
         shouldTerminate.signal ();
@@ -541,10 +541,10 @@ protected:
     virtual void run();
     virtual Logger getLogger(const tstring& name);
     virtual void addAppender(Logger &logger, SharedAppenderPtr& appender);
-    
+
     bool checkForFileModification();
     void updateLastModTime();
-    
+
 private:
     unsigned int const waitMillis;
     thread::ManualResetEvent shouldTerminate;

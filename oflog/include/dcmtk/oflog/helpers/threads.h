@@ -58,7 +58,7 @@ private:
 LOG4CPLUS_EXPORT void blockAllSignals();
 
 #  ifdef LOG4CPLUS_USE_PTHREADS
-void* threadStartFunc(void*);
+extern "C" void* threadStartFunc(void*);
 #  elif defined(LOG4CPLUS_USE_WIN32_THREADS)
 unsigned WINAPI threadStartFunc(void *);
 #  endif
@@ -119,4 +119,3 @@ typedef helpers::SharedObjectPtr<AbstractThread> AbstractThreadPtr;
 
 
 #endif // _LOG4CPLUS_THREADS_HEADER_
-

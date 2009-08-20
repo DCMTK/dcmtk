@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.20 (riesmeier)
+
+- Various minor fixes needed for Sun Studio 11 on Solaris.
+  Affects: oflog/include/dcmtk/oflog/helpers/thread-config.h
+           oflog/include/dcmtk/oflog/helpers/threads.h
+           oflog/libsrc/appender.cc
+           oflog/libsrc/configurator.cc
+           oflog/libsrc/fileappender.cc
+           oflog/libsrc/logger.cc
+           oflog/libsrc/loggerimpl.cc
+           oflog/libsrc/ndc.cc
+           oflog/libsrc/patternlayout.cc
+           oflog/libsrc/rootlogger.cc
+           oflog/libsrc/socket.cc
+           oflog/libsrc/threads.cc
+
 **** Changes from 2009.08.19 (eichelberg)
 
 - Fixed static/extern linkage declaration

@@ -31,8 +31,8 @@
     ::log4cplus::thread::getCurrentThreadName()
 #   define LOG4CPLUS_GET_CURRENT_THREAD pthread_self()
 #   define LOG4CPLUS_THREAD_LOCAL_TYPE pthread_key_t*
-#   define LOG4CPLUS_THREAD_LOCAL_INIT(cleanup) \
-    ::log4cplus::thread::createPthreadKey(cleanup)
+#   define LOG4CPLUS_THREAD_LOCAL_INIT() \
+    ::log4cplus::thread::createPthreadKey()
 #   define LOG4CPLUS_GET_THREAD_LOCAL_VALUE(key) pthread_getspecific(*(key))
 #   define LOG4CPLUS_SET_THREAD_LOCAL_VALUE(key, value) \
     pthread_setspecific(*(key), value)
@@ -41,7 +41,7 @@ namespace log4cplus {
     namespace thread {
         LOG4CPLUS_EXPORT LOG4CPLUS_MUTEX_PTR_DECLARE createNewMutex();
         LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
-        LOG4CPLUS_EXPORT LOG4CPLUS_THREAD_LOCAL_TYPE createPthreadKey(void (*) (void *));
+        LOG4CPLUS_EXPORT LOG4CPLUS_THREAD_LOCAL_TYPE createPthreadKey();
     }
 }
 
@@ -62,7 +62,7 @@ namespace log4cplus {
 #   define LOG4CPLUS_GET_CURRENT_THREAD_NAME \
     ::log4cplus::thread::getCurrentThreadName()
 #   define LOG4CPLUS_THREAD_LOCAL_TYPE DWORD
-#   define LOG4CPLUS_THREAD_LOCAL_INIT(cleanup) TlsAlloc()
+#   define LOG4CPLUS_THREAD_LOCAL_INIT() TlsAlloc()
 #   define LOG4CPLUS_GET_THREAD_LOCAL_VALUE(key) TlsGetValue(key)
 #   define LOG4CPLUS_SET_THREAD_LOCAL_VALUE(key, value) \
     TlsSetValue(key, static_cast<LPVOID>(value))
@@ -83,7 +83,7 @@ namespace log4cplus { namespace thread {
 
 LOG4CPLUS_EXPORT LOG4CPLUS_MUTEX_PTR_DECLARE createNewMutex();
 LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
-    
+
 } } // namespace log4cplus { namespace thread {
 
 #elif defined(LOG4CPLUS_SINGLE_THREADED)
@@ -98,7 +98,7 @@ LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
 #   define LOG4CPLUS_GET_CURRENT_THREAD_NAME \
     LOG4CPLUS_C_STR_TO_TSTRING("single")
 #   define LOG4CPLUS_THREAD_LOCAL_TYPE void*
-#   define LOG4CPLUS_THREAD_LOCAL_INIT(cleanup) NULL
+#   define LOG4CPLUS_THREAD_LOCAL_INIT() NULL
 #   define LOG4CPLUS_GET_THREAD_LOCAL_VALUE(key) (key)
 #   define LOG4CPLUS_SET_THREAD_LOCAL_VALUE(key, value) \
     do { (key) = (value); } while (0)
@@ -132,4 +132,3 @@ LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
 
 
 #endif // LOG4CPLUS_HELPERS_THREAD_CONFIG_HEADER_
-

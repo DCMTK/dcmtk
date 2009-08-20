@@ -214,9 +214,7 @@ log4cplus::helpers::ServerSocket::~ServerSocket()
 log4cplus::helpers::Socket
 log4cplus::helpers::ServerSocket::accept()
 {
-    SocketState state;
-    SOCKET_TYPE clientSock = acceptSocket(sock, state);
-    return Socket(clientSock, state, 0);
+    SocketState state_;
+    SOCKET_TYPE clientSock = acceptSocket(sock, state_);
+    return Socket(clientSock, state_, 0);
 }
-
-

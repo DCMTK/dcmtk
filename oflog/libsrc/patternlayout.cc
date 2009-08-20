@@ -716,9 +716,9 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
 // PatternLayout methods:
 ////////////////////////////////////////////////
 
-PatternLayout::PatternLayout(const log4cplus::tstring& pattern)
+PatternLayout::PatternLayout(const log4cplus::tstring& pattern_)
 {
-    init(pattern);
+    init(pattern_);
 }
 
 
@@ -747,9 +747,9 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
 
 
 void
-PatternLayout::init(const log4cplus::tstring& pattern)
+PatternLayout::init(const log4cplus::tstring& pattern_)
 {
-    this->pattern = pattern;
+    this->pattern = pattern_;
     this->parsedPattern = PatternParser(pattern).parse();
 
     // Let's validate that our parser didn't give us any NULLs.  If it did,
@@ -799,5 +799,3 @@ PatternLayout::formatAndAppend(log4cplus::tostream& output,
         (*it)->formatAndAppend(output, event);
     }
 }
-
-
