@@ -32,7 +32,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-The current CharLS version used is revision 25004 dated 2009-06-10.
+The current CharLS version used is revision 26807 dated 2009-08-20.
 
 The following modifications have been applied to the library:
 - removed "test" directory

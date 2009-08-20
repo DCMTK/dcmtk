@@ -6,6 +6,21 @@ Changes between releases are documented here.
 - Fixed include files needed on Solaris, removed unneeded compiler pragmas
   Affects: dcmjpls/libcharls/util.h
 
+- Updated libcharls in module dcmjpls to CharLS revision 26807.
+  Added:   dcmjpls/libcharls/config.h
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/docs/charls.patch
+           dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/Makefile.dep
+
 **** Changes from 2009.08.19 (eichelberg)
 
 - Removed trailing commata in lists to avoid warnings on Sun Studio 11.

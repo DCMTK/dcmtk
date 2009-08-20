@@ -6,8 +6,9 @@
 #include "streams.h"
 #include "header.h"
 
+
 #include <math.h>
-#include <limits>
+
 #include <vector>
 #include <stdio.h>
 #include <iostream>
@@ -19,7 +20,6 @@
 #include "context.h"
 #include "contextrunmode.h"
 #include "lookuptable.h"
-
 
 
 signed char* JlsContext::_tableC = CreateTableC();

@@ -387,8 +387,7 @@ void JLSInputStream::ReadComment()
 //
 void JLSInputStream::ReadJfif()
 {
-        const BYTE jfifID[] = { 'J','F','I','F','\0' };
-
+	const BYTE jfifID[] = {'J','F','I','F','\0'};
 	for(int i = 0; i < (int)sizeof(jfifID); i++)
 	{
 		if(jfifID[i] != ReadByte())
@@ -416,8 +415,7 @@ void JLSInputStream::ReadJfif()
 //
 JpegMarkerSegment* CreateJFIF(const JfifParamaters* jfif)
 {
-        const BYTE jfifID[] = { 'J','F','I','F','\0' };
-
+	const BYTE jfifID[] = {'J','F','I','F','\0'};
 	std::vector<BYTE> rgbyte;
 	for(int i = 0; i < (int)sizeof(jfifID); i++)
 	{

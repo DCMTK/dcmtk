@@ -1,8 +1,18 @@
-header.o: header.cc stdafx.h util.h interface.h header.h streams.h \
-  decoderstrategy.h processline.h colortransform.h encoderstrategy.h
-interface.o: interface.cc stdafx.h util.h interface.h header.h streams.h
-jpegls.o: jpegls.cc stdafx.h util.h interface.h streams.h header.h \
-  decoderstrategy.h processline.h colortransform.h encoderstrategy.h \
-  context.h contextrunmode.h lookuptable.h losslesstraits.h \
-  defaulttraits.h scan.h
-stdafx.o: stdafx.cc stdafx.h util.h interface.h
+header.o: header.cc stdafx.h util.h config.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h interface.h header.h \
+  streams.h decoderstrategy.h processline.h colortransform.h \
+  encoderstrategy.h
+interface.o: interface.cc stdafx.h util.h config.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h interface.h header.h \
+  streams.h
+jpegls.o: jpegls.cc stdafx.h util.h config.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h interface.h streams.h \
+  header.h decoderstrategy.h processline.h colortransform.h \
+  encoderstrategy.h context.h contextrunmode.h lookuptable.h \
+  losslesstraits.h defaulttraits.h scan.h
+stdafx.o: stdafx.cc stdafx.h util.h config.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h interface.h

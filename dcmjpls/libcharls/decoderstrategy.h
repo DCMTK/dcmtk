@@ -9,82 +9,43 @@
 #include "streams.h"
 #include "processline.h"
 
-#if defined(i386) || defined(__i386__) || defined(_M_IX86) || defined(__amd64__) || defined(_M_X64)
-#define ARCH_HAS_UNALIGNED_MEM_ACCESS /* TODO define this symbol for more architectures */
-#define USE_X86_ASSEMBLY
-#endif
 
-#ifdef _MSC_VER
-#include <intrin.h>
-
-inline unsigned int byteswap(unsigned int x)
+template <class T>
+struct FromBigEndian
 {
-	return _byteswap_ulong(x);
-}
+};
 
-inline unsigned long long byteswap(unsigned long long x)
+template <>
+struct FromBigEndian<unsigned int>
 {
-	return _byteswap_uint64(x);
-}
-#elif defined(USE_X86_ASSEMBLY)
-// We can use x86 inline assembly!
-inline size_t byteswap(size_t x)
+	inlinehint static unsigned long Read(BYTE* pbyte)
+	{
+		return  (pbyte[0] << 24) + (pbyte[1] << 16) + (pbyte[2] << 8) + (pbyte[3] << 0);
+	}
+};
+
+template <>
+struct FromBigEndian<unsigned long>
 {
-	asm("bswap %0" : "=r" (x) : "0" (x));
-	return x;
-}
-#else
-// This function byteswaps a 4-byte unsigned integer
-inline unsigned int byteswap4(unsigned int x)
+	inlinehint static unsigned long Read(BYTE* pbyte)
+	{
+		return  (pbyte[0] << 24) + (pbyte[1] << 16) + (pbyte[2] << 8) + (pbyte[3] << 0);
+	}
+};
+
+template <>
+struct FromBigEndian<unsigned long long>
 {
-	return (((x & 0x000000ff) << 24) |
-		((x & 0x0000ff00) <<  8) |
-		((x & 0x00ff0000) >>  8) |
-		((x & 0xff000000) >> 24));
-}
+	typedef unsigned long long UINT64;
 
-inline size_t byteswap(size_t x)
-{
-	// The compiler should be able to optimize these ifs away
-	if (sizeof(size_t) == 4)
-		return byteswap4(x);
-	if (sizeof(size_t) != 8)
-		// This is not yet implemented!
-		assert(false);
+	inlinehint static UINT64 Read(BYTE* pbyte)
+	{
+		return  (UINT64(pbyte[0]) << 56) + (UINT64(pbyte[1]) << 48) + (UINT64(pbyte[2]) << 40) + (UINT64(pbyte[3]) << 32) +
+		  		(UINT64(pbyte[4]) << 24) + (UINT64(pbyte[5]) << 16) + (UINT64(pbyte[6]) <<  8) + (UINT64(pbyte[7]) << 0);
+	}
+};
 
-	// This variable should always be 32. The problem is that the following
-	// code would cause a warning on 32-bit arches, even though it is never
-	// executed. This is why we have to use this hack.
-	const unsigned int shift = sizeof(size_t) * 8 / 2;
 
-	unsigned int high = x >> shift;
-	unsigned int low = x & 0xffffffff;
-
-	size_t res = ((size_t) byteswap4(low)) << shift;
-	res |= byteswap4(high);
-
-	return res;
-}
-#endif
-
-inline int is_big_endian()
-{
-	int i = 1;
-	char *p = (char *) &i;
-
-	// Little endian stores the least significant byte first in memory
-	// (0x01 in our case), big endian stores it last.
-	return (*p == 0);
-}
-
-inline size_t big_to_native_endian(size_t x)
-{
-	if (is_big_endian())
-		// x already is in our current endian (=big)
-		return x;
-	// We are on little endian, we need to swap some bytes
-	return byteswap(x);
-}
 
 class DecoderStrategy
 {
@@ -129,7 +90,29 @@ public:
 
 	  void OnLineEnd(LONG cpixel, const void* ptypeBuffer, LONG pixelStride)
 	  {
-		  _processLine->NewLineDecoded(ptypeBuffer, cpixel, pixelStride);
+			_processLine->NewLineDecoded(ptypeBuffer, cpixel, pixelStride);
+	  }
+
+
+
+	  // optimized for intel compilers
+	  inlinehint bool OptimizedRead()
+	  {
+		  // Easy & fast: if there is no 0xFF byte in sight, we can read without bitstuffing
+		  if (_pbyteCompressed < _pbyteNextFF)
+		  {
+#ifdef ARCH_HAS_UNALIGNED_MEM_ACCESS
+			  _readCache		 |= byteswap(*((bufType*)_pbyteCompressed)) >> _validBits;
+#else
+			  _readCache		 |= FromBigEndian<bufType>::Read(_pbyteCompressed) >> _validBits;
+#endif
+			  int bytesToRead = (bufferbits - _validBits) >> 3;
+			  _pbyteCompressed += bytesToRead;
+			  _validBits += bytesToRead * 8;
+			  ASSERT(_validBits >= bufferbits - 8);
+			  return true;
+		  }
+		  return false;
 	  }
 
 	  typedef size_t bufType;
@@ -142,25 +125,8 @@ public:
 	  {
 		  ASSERT(_validBits <=bufferbits - 8);
 
-		  // Easy & fast: if there is no 0xFF byte in sight, we can read without bitstuffing
-#ifndef ARCH_HAS_UNALIGNED_MEM_ACCESS
-		  // We can only dereference properly aligned pointers. This
-		  // checks if the pointer is properly aligned, if not we have
-		  // to take the slow path.
-		  const bufType needed_alignment_mask = sizeof(bufType) - 1;
-#else
-		  const bufType needed_alignment_mask = 0;
-#endif
-		  if (_pbyteCompressed < _pbyteNextFF && (((intptr_t)_pbyteCompressed) & needed_alignment_mask) == 0)
-		  {
-			  _readCache		 |= big_to_native_endian(*((bufType*)_pbyteCompressed)) >> _validBits;
-
-			  int bytesToRead = (bufferbits - _validBits) >> 3;
-			  _pbyteCompressed += bytesToRead;
-			  _validBits += bytesToRead * 8;
-			  ASSERT(_validBits >= bufferbits - 8);
+		  if (OptimizedRead())
 			  return;
-		  }
 
 		  do
 		  {
@@ -180,7 +146,7 @@ public:
 				 if (_pbyteCompressed == _pbyteCompressedEnd - 1 || (_pbyteCompressed[1] & 0x80) != 0)
 				 {
 					 if (_validBits <= 0)
-						 throw JlsException(InvalidCompressedData);
+						throw JlsException(InvalidCompressedData);
 
 					 return;
 			     }
@@ -213,8 +179,9 @@ public:
 			  {
 				  break;
 			  }
-			  pbyteNextFF++;
+		  pbyteNextFF++;
 		  }
+
 
 		  return pbyteNextFF - (sizeof(bufType)-1);
 	  }

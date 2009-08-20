@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-05 10:24:54 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-08-20 14:45:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,7 +237,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          COUT << "- " << "CharLS, Revision 25004 (modified)" << OFendl;
+          COUT << "- " << "CharLS, Revision 26807 (modified)" << OFendl;
           return 0;
         }
       }
@@ -546,6 +546,9 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.5  2009-08-20 14:45:06  meichel
+ * Updated libcharls in module dcmjpls to CharLS revision 26807.
+ *
  * Revision 1.4  2009-08-05 10:24:54  joergr
  * Made syntax usage more consistent with other DCMTK compression tools.
  * Fixed wrong reference to JPEG-LS implementation and added revision number.
