@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.21 (riesmeier)
+
+- Added parameter 'writeMode' to save/write methods which allows for specifying
+  whether to write a dataset or fileformat as well as whether to update the
+  file meta information or to create a new file meta information header.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+
+- Added check making sure that a DICOMDIR file is never compressed.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+
+- Made error messages more consistent with other compression tools.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+
+- Use helper function checkConflict() where appropriate.
+  Affects: dcmjpls/apps/dcmdjpls.cc
+
 **** Changes from 2009.08.20 (eichelberg)
 
 - Fixed include files needed on Solaris, removed unneeded compiler pragmas
