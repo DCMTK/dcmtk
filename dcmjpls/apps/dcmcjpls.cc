@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-20 14:45:06 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 10:05:10 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,7 +201,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
     cmd.addSubGroup("SOP Instance UID:");
       cmd.addOption("--uid-default",            "+ud",    "assign new UID if lossy compression (default)");
       cmd.addOption("--uid-always",             "+ua",    "always assign new UID");
-       cmd.addOption("--uid-never",             "+un",    "never assign new UID");
+      cmd.addOption("--uid-never",             "+un",    "never assign new UID");
 
   cmd.addGroup("output options:");
     cmd.addSubGroup("post-1993 value representations:");
@@ -461,7 +461,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-      CERR << "invalid filename: <empty string>" << OFendl;
+      CERR << "Error: invalid filename: <empty string>" << OFendl;
       return 1;
     }
 
@@ -484,9 +484,20 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
         COUT << "DICOM file is already compressed, converting to uncompressed transfer syntax first" << OFendl;
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))
       {
-        CERR << "No conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
+        CERR << "Error: no conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
         return 1;
       }
+    }
+
+    OFString sopClass;
+    if (fileformat.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good())
+    {
+        /* check for DICOMDIR files */
+        if (sopClass == UID_MediaStorageDirectoryStorage)
+        {
+            CERR << "Error: DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!" << OFendl;
+            return 1;
+        }
     }
 
     if (opt_verbose)
@@ -508,24 +519,16 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       if (opt_verbose)
         COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written" << OFendl;
     } else {
-      CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
+      CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
       return 1;
-    }
-
-    // force meta-header to refresh SOP Class/Instance UIDs.
-    DcmItem *metaInfo = fileformat.getMetaInfo();
-    if (metaInfo)
-    {
-      delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-      delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
     }
 
     if (opt_verbose)
       COUT << "creating output file " << opt_ofname << OFendl;
 
     fileformat.loadAllDataIntoMemory();
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-      opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+      OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), EWM_updateMeta);
 
     if (error.bad())
     {
@@ -546,6 +549,13 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.6  2009-08-21 10:05:10  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ * Added check making sure that a DICOMDIR file is never compressed.
+ * Made error messages more consistent with other compression tools.
+ *
  * Revision 1.5  2009-08-20 14:45:06  meichel
  * Updated libcharls in module dcmjpls to CharLS revision 26807.
  *
