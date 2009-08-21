@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-04 10:08:42 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2009-08-21 09:47:34 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1238,7 +1238,8 @@ storeSCPCallback(
          if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
          OFCondition cond = cbdata->dcmff->saveFile(ofname.c_str(), xfer, opt_sequenceType, opt_groupLength,
-           opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
+           opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
+           (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
          if (cond.bad())
          {
            CERR << "Error: cannot write DICOM file: " << ofname << OFendl;
@@ -1569,6 +1570,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.76  2009-08-21 09:47:34  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.75  2009-08-04 10:08:42  joergr
 ** Added output of Presentation Context ID of the C-STORE message in debug mode.
 **

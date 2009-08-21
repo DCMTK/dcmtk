@@ -21,9 +21,9 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:55:44 $
- *  CVS/RCS Revision: $Revision: 1.114 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:47:34 $
+ *  CVS/RCS Revision: $Revision: 1.115 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2048,8 +2048,8 @@ storeSCPCallback(
 
       // store file either with meta header or as pure dataset
       OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
-          opt_paddingType, OFstatic_cast(Uint32, opt_filepad),
-          OFstatic_cast(Uint32, opt_itempad), !opt_useMetaheader);
+          opt_paddingType, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad),
+          (opt_useMetaheader) ? EWM_fileformat : EWM_dataset);
       if (cond.bad())
       {
         CERR << "Error: cannot write DICOM file: " << fileName << OFendl;
@@ -2728,6 +2728,11 @@ static int makeTempFile()
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
+** Revision 1.115  2009-08-21 09:47:34  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.114  2009-08-19 11:55:44  meichel
 ** Added additional includes needed for Sun Studio 11 on Solaris.
 **
