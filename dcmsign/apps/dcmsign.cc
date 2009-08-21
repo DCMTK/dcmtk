@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-29 13:05:57 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2009-08-21 09:55:49 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -712,7 +712,6 @@ int main(int argc, char *argv[])
   int                           opt_keyFileFormat = X509_FILETYPE_PEM; // file format for certificates and private keys
   const char *                  opt_location = NULL; // location (path) within dataset
   SiMAC *                       opt_mac = NULL;      // MAC object
-  OFBool                        opt_oDataset = OFFalse;
   E_EncodingType                opt_oenctype = EET_ExplicitLength;
   const char *                  opt_ofname = NULL;
   E_GrpLenEncoding              opt_oglenc = EGL_recalcGL;
@@ -1145,7 +1144,7 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
+    sicond = fileformat->saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
     if (sicond.bad())
     {
       CERR << "Error: " << sicond.text() << ": writing file: " <<  opt_ofname << OFendl;
@@ -1174,6 +1173,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.30  2009-08-21 09:55:49  joergr
+ *  Removed unused option 'opt_oDataset'.
+ *
  *  Revision 1.29  2009-04-29 13:05:57  joergr
  *  Load all data into memory before signing the document, otherwise the pixel
  *  data would be empty for compressed images.
