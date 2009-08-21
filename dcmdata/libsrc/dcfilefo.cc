@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:19:43 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2009-08-21 10:44:49 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -446,51 +446,57 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
     /* if there is meta header information and data set information, do something */
     if (metinf != NULL && datset != NULL)
     {
-        /* start with empty file meta information */
-        if (writeMode == EWM_createNewMeta)
-            metinf->clear();
-
-        /* in the following, we want to make sure all elements of the meta header */
-        /* are existent in metinf and contain correct values */
-        DcmStack stack;
-
-        /* DCM_FileMetaInformationGroupLength */
-        metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer, writeMode);
-
-        /* DCM_FileMetaInformationVersion */
-        metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer, writeMode);
-
-        /* DCM_MediaStorageSOPClassUID */
-        metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer, writeMode);
-
-        /* DCM_MediaStorageSOPInstanceUID */
-        metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer, writeMode);
-
-        /* DCM_TransferSyntaxUID */
-        metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer, writeMode);
-
-        /* DCM_ImplementationClassUID */
-        metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
-
-        /* DCM_ImplementationVersionName */
-        metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
-
-        /* dump some information if required */
-        DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo 'metinf'.", metinf->card()));
-
-        /* calculate new GroupLength for meta header */
-        if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
-            META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
+        if (writeMode == EWM_dontUpdateMeta)
         {
-            ofConsole.lockCerr() << "Error: DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted." << OFendl;
+            ofConsole.lockCerr() << "Warning: DcmFileFormat::validateMetaInfo(): Meta Information Header is not updated!" << OFendl;
             ofConsole.unlockCerr();
+        } else {
+            /* start with empty file meta information */
+            if (writeMode == EWM_createNewMeta)
+                metinf->clear();
+    
+            /* in the following, we want to make sure all elements of the meta header */
+            /* are existent in metinf and contain correct values */
+            DcmStack stack;
+    
+            /* DCM_FileMetaInformationGroupLength */
+            metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer, writeMode);
+    
+            /* DCM_FileMetaInformationVersion */
+            metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer, writeMode);
+    
+            /* DCM_MediaStorageSOPClassUID */
+            metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer, writeMode);
+    
+            /* DCM_MediaStorageSOPInstanceUID */
+            metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer, writeMode);
+    
+            /* DCM_TransferSyntaxUID */
+            metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer, writeMode);
+    
+            /* DCM_ImplementationClassUID */
+            metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
+    
+            /* DCM_ImplementationVersionName */
+            metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
+            checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
+    
+            /* dump some information if required */
+            DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo 'metinf'.", metinf->card()));
+    
+            /* calculate new GroupLength for meta header */
+            if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
+                META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
+            {
+                ofConsole.lockCerr() << "Error: DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted." << OFendl;
+                ofConsole.unlockCerr();
+            }
         }
     } else {
         /* (i.e. there is either no meta header information or no data set information, or both are missing) */
@@ -912,6 +918,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.53  2009-08-21 10:44:49  joergr
+** Added new 'writeMode' which does not update the the meta header. This could
+** be useful for tools like dump2dcm and xml2dcm.
+**
 ** Revision 1.52  2009-08-21 09:19:43  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the

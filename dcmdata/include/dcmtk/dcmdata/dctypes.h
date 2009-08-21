@@ -22,8 +22,8 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:17:16 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2009-08-21 10:45:06 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,9 @@ typedef enum {
     /// write as fileformat and update required information (e.g. SOP Class/Instance UID)
     EWM_updateMeta = 2,
     /// write as fileformat and create new meta header (do not retain existing information)
-    EWM_createNewMeta = 3
+    EWM_createNewMeta = 3,
+    /// write as fileformat but don't update the meta header (please be careful!)
+    EWM_dontUpdateMeta = 4
 } E_FileWriteMode;
 
 
@@ -195,6 +197,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.30  2009-08-21 10:45:06  joergr
+ * Added new 'writeMode' which does not update the the meta header. This could
+ * be useful for tools like dump2dcm and xml2dcm.
+ *
  * Revision 1.29  2009-08-21 09:17:16  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the
