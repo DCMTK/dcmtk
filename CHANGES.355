@@ -3,8 +3,8 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.21 (riesmeier)
 
-- Added new 'writeMode' which does not update the the meta header. This could
-  be useful for tools like dump2dcm and xml2dcm.
+- Added new 'writeMode' which does not update the meta header. This could be
+  useful for tools like dump2dcm and xml2dcm.
   Affects: dcmdata/include/dcmtk/dcmdata/dctypes.h
            dcmdata/libsrc/dcfilefo.cc
 
