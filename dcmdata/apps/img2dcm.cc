@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:26:25 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   // Item pad length for output DICOM file
   OFCmdUnsignedInt itempad = 0;
   // Write only pure dataset, i.e. without meta header
-  OFBool writeOnlyDataset = OFFalse;
+  E_FileWriteMode writeMode = EWM_fileformat;
   // Override keys are applied at the very end of the conversion "pipeline"
   OFList<OFString> overrideKeys;
   // The transfersytanx proposed to be written by output plugin
@@ -287,8 +287,8 @@ static OFCondition startConversion(OFCommandLine& cmd,
   outPlug->setLogStream(&ofConsole);
 
   cmd.beginOptionBlock();
-  if (cmd.findOption("--write-file"))    writeOnlyDataset = OFFalse;
-  if (cmd.findOption("--write-dataset")) writeOnlyDataset = OFTrue;
+  if (cmd.findOption("--write-file"))    writeMode = EWM_fileformat;
+  if (cmd.findOption("--write-dataset")) writeMode = EWM_dataset;
   cmd.endOptionBlock();
 
   cmd.beginOptionBlock();
@@ -417,7 +417,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
     if (vMode)
       COUT << OFFIS_CONSOLE_APPLICATION ": Saving output DICOM to file " << outputFile << OFendl;
     DcmFileFormat dcmff(resultObject);
-    cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeOnlyDataset);
+    cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeMode);
   }
 
   // Cleanup and return
@@ -455,6 +455,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.15  2009-08-21 09:25:13  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ *
  * Revision 1.14  2009-07-16 14:26:25  onken
  * Added img2dcm input plugin for the BMP graphics format (at the moment only
  * support for 24 Bit RGB).

@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-08 16:10:36 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -560,11 +560,11 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                  opt_padenc,
                                  OFstatic_cast(Uint32, opt_filepad),
                                  OFstatic_cast(Uint32, opt_itempad),
-                                 opt_dataset);
+                                 (opt_dataset) ? EWM_dataset : EWM_fileformat);
 
     } else {
         debugMsg(debug_option, "Error: no conversion to transfer syntax ",
-                 DcmXfer(opt_xfer).getXferName(), "possible! ");
+                 DcmXfer(opt_xfer).getXferName(), " possible! ");
         result = EC_CannotChangeRepresentation;
     }
     //save file
@@ -669,6 +669,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.25  2009-08-21 09:25:13  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.24  2009-07-08 16:10:36  onken
 ** Adapted dcmodify to changes in DcmPath API.
 **

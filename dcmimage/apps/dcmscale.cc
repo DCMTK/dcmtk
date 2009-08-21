@@ -22,8 +22,8 @@
  *  Purpose: Scale DICOM images
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:04:12 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2009-08-21 09:28:12 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,9 +86,9 @@ int main(int argc, char *argv[])
 
     OFBool opt_debug = OFFalse;
     OFBool opt_verbose = OFFalse;
-    OFBool opt_oDataset = OFFalse;
     OFBool opt_uidCreation = OFTrue;
     E_FileReadMode opt_readMode = ERM_autoDetect;
+    E_FileWriteMode opt_writeMode = EWM_fileformat;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -335,8 +335,8 @@ int main(int argc, char *argv[])
       /* output options */
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
-      if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -373,13 +373,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain"))
       {
-          app.checkConflict("--padding-retain", "--write-dataset", opt_oDataset);
+          app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
           opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-          app.checkConflict("--padding-create", "--write-dataset", opt_oDataset);
+          app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
           app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
           app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
           opt_opadenc = EPD_withPadding;
@@ -627,9 +627,8 @@ int main(int argc, char *argv[])
         char new_uid[100];
         dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(new_uid));
         // force meta-header to refresh SOP Instance UID
-        DcmItem *metaInfo = fileformat.getMetaInfo();
-        if (metaInfo != NULL)
-            delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+        if (opt_writeMode == EWM_fileformat)
+            opt_writeMode = EWM_updateMeta;
     }
 
     // ======================================================================
@@ -638,7 +637,9 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "create output file " << opt_ofname << OFendl;
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, opt_filepad, opt_itempad, opt_oDataset);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
+
     if (error.bad())
     {
         CERR << "Error: " << error.text()
@@ -663,6 +664,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.22  2009-08-21 09:28:12  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ *
  * Revision 1.21  2009-04-21 14:04:12  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

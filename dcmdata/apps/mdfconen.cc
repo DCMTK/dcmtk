@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 10:21:00 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2009-08-21 09:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -543,10 +543,10 @@ int MdfConsoleEngine::startProvidingService()
             //if there were no errors or user wants to override them, save:
             if (errors == 0 || ignore_errors_option)
             {
-                result=ds_man->saveFile(filename, output_xfer_option,
-                                        enctype_option, glenc_option,
-                                        padenc_option, filepad_option,
-                                        itempad_option, output_dataset_option);
+                result = ds_man->saveFile(filename, output_xfer_option,
+                                          enctype_option, glenc_option,
+                                          padenc_option, filepad_option,
+                                          itempad_option, output_dataset_option);
                 if (result.bad())
                 {
                     debugMsg(OFTrue, "Error: couldn't save file: ", result.text(),"");
@@ -689,6 +689,11 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.30  2009-08-21 09:25:13  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.29  2009-06-04 10:21:00  joergr
 ** Added new flag that can be used to avoid wrong warning messages (in debug
 ** mode) that an option has possibly never been checked.

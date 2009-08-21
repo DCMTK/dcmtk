@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-07 09:05:09 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2009-08-21 09:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -649,8 +649,6 @@ int main(int argc, char *argv[])
     int opt_debug = 0;
     OFBool opt_verbose = OFFalse;
     OFBool opt_metaInfo = OFTrue;
-    OFBool opt_dataset = OFFalse;
-    OFBool opt_updateMeta = OFFalse;
     OFBool opt_namespace = OFFalse;
     OFBool opt_validate = OFFalse;
     OFBool opt_generateUIDs = OFFalse;
@@ -659,6 +657,7 @@ int main(int argc, char *argv[])
     E_EncodingType opt_enctype = EET_ExplicitLength;
     E_GrpLenEncoding opt_glenc = EGL_recalcGL;
     E_PaddingEncoding opt_padenc = EPD_withoutPadding;
+    E_FileWriteMode opt_writeMode = EWM_fileformat;
     OFCmdUnsignedInt opt_filepad = 0;
     OFCmdUnsignedInt opt_itempad = 0;
 
@@ -788,15 +787,15 @@ int main(int argc, char *argv[])
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--write-file"))
-            opt_dataset = OFFalse;
+            opt_writeMode = EWM_fileformat;
         if (cmd.findOption("--write-dataset"))
-            opt_dataset = OFTrue;
+            opt_writeMode = EWM_dataset;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--update-meta-info"))
         {
-            app.checkConflict("--update-meta-info", "--write-dataset", opt_dataset);
-            opt_updateMeta = OFTrue;
+            app.checkConflict("--update-meta-info", "--write-dataset", opt_writeMode == EWM_dataset);
+            opt_writeMode = EWM_updateMeta;
         }
 
         cmd.beginOptionBlock();
@@ -846,14 +845,14 @@ int main(int argc, char *argv[])
         cmd.beginOptionBlock();
         if (cmd.findOption("--padding-retain"))
         {
-            app.checkConflict("--padding-retain", "--write-dataset", opt_dataset);
+            app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
             opt_padenc = EPD_noChange;
         }
         if (cmd.findOption("--padding-off"))
             opt_padenc = EPD_withoutPadding;
         if (cmd.findOption("--padding-create"))
         {
-            app.checkConflict("--padding-create", "--write-dataset", opt_dataset);
+            app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
             app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
             app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
             opt_padenc = EPD_withPadding;
@@ -930,7 +929,6 @@ int main(int argc, char *argv[])
         if (result.good())
         {
             DcmDataset *dataset = fileformat.getDataset();
-            DcmMetaInfo *metaInfo = (opt_metaInfo) ? fileformat.getMetaInfo() : NULL;
             /* generate new UIDs (if required) */
             if (opt_generateUIDs)
             {
@@ -952,19 +950,6 @@ int main(int argc, char *argv[])
                     if (opt_verbose)
                         COUT << "generating new SOP Instance UID" << OFendl;
                     dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
-                    if (metaInfo != NULL)
-                        delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
-                }
-            }
-            /* update particular file meta information */
-            if (opt_updateMeta && !opt_dataset)
-            {
-                if (metaInfo != NULL)
-                {
-                    if (opt_verbose)
-                        COUT << "updating file meta information" << OFendl;
-                    delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-                    delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
                 }
             }
             if (opt_verbose)
@@ -976,14 +961,14 @@ int main(int argc, char *argv[])
             if (fileformat.canWriteXfer(opt_xfer))
             {
                 /* check whether pixel data is compressed */
-                if (opt_dataset && DcmXfer(xfer).isEncapsulated())
+                if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).isEncapsulated())
                 {
                     CERR << "Warning: encapsulated pixel data require file format, ignoring --write-dataset" << OFendl;
-                    opt_dataset = OFFalse;
+                    opt_writeMode = EWM_fileformat;
                 }
                 /* write DICOM file */
                 result = fileformat.saveFile(opt_ofname, opt_xfer, opt_enctype, opt_glenc, opt_padenc,
-                    OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_dataset);
+                    OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
                 if (result.bad())
                     CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << OFendl;
             } else {
@@ -1017,6 +1002,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.27  2009-08-21 09:25:13  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ *
  * Revision 1.26  2009-05-07 09:05:09  joergr
  * Added new command line options that allow for generating new Study/Series/SOP
  * Instance UIDs (incl. an option for overwriting existing values).

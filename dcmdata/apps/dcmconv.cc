@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 17:22:17 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Update Date:      $Date: 2009-08-21 09:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,8 +105,8 @@ int main(int argc, char *argv[])
 
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
-  OFBool opt_oDataset = OFFalse;
   E_FileReadMode opt_readMode = ERM_autoDetect;
+  E_FileWriteMode opt_writeMode = EWM_fileformat;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
   E_TransferSyntax opt_oxfer = EXS_Unknown;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -382,8 +382,8 @@ int main(int argc, char *argv[])
 #endif
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
-      if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -421,20 +421,20 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-oversized"))  dcmWriteOversizedSeqsAndItemsUndefined.set(OFTrue);
+      if (cmd.findOption("--write-oversized")) dcmWriteOversizedSeqsAndItemsUndefined.set(OFTrue);
       if (cmd.findOption("--abort-oversized")) dcmWriteOversizedSeqsAndItemsUndefined.set(OFFalse);
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain"))
       {
-          app.checkConflict("--padding-retain", "--write-dataset", opt_oDataset);
+          app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
           opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-          app.checkConflict("--padding-create", "--write-dataset", opt_oDataset);
+          app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
           app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
           app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
           opt_opadenc = EPD_withPadding;
@@ -520,7 +520,7 @@ int main(int argc, char *argv[])
         COUT << "create output file " << opt_ofname << OFendl;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
-        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_oDataset);
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
 
     if (error.bad())
     {
@@ -539,6 +539,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.67  2009-08-21 09:25:13  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.66  2009-06-04 17:22:17  joergr
 ** Fixed wrong name of command line option: used --impl-oversized instead of
 ** --write-oversized.
