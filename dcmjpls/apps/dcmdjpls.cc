@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-20 14:45:06 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 10:04:45 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,6 @@ int main(int argc, char *argv[])
 
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
-  OFBool opt_oDataset = OFFalse;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -94,6 +93,7 @@ int main(int argc, char *argv[])
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
   E_FileReadMode opt_readMode = ERM_autoDetect;
+  E_FileWriteMode opt_writeMode = EWM_fileformat;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
 
   // parameter
@@ -239,8 +239,8 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
-      if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -276,13 +276,13 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain"))
       {
-        if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
+        app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
         opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-        if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
+        app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
         app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
         app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
         opt_opadenc = EPD_withPadding;
@@ -350,9 +350,13 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     if (opt_verbose)
       COUT << "creating output file " << opt_ofname << OFendl;
 
+    // update file meta information with new SOP Instance UID
+    if (opt_uidcreation && (opt_writeMode == EWM_fileformat))
+        opt_writeMode = EWM_updateMeta;
+
     fileformat.loadAllDataIntoMemory();
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-      opt_opadenc, OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_oDataset);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+      OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
 
     if (error != EC_Normal)
     {
@@ -373,6 +377,12 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpls.cc,v $
+ * Revision 1.4  2009-08-21 10:04:45  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ * Use helper function checkConflict() where appropriate.
+ *
  * Revision 1.3  2009-08-20 14:45:06  meichel
  * Updated libcharls in module dcmjpls to CharLS revision 26807.
  *
