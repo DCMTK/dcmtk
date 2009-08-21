@@ -1,6 +1,79 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.21 (riesmeier)
+
+- Added parameter 'writeMode' to save/write methods which allows for specifying
+  whether to write a dataset or fileformat as well as whether to update the
+  file meta information or to create a new file meta information header.
+  Affects: dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/libsrc/dcfilefo.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmqrdb/libsrc/dcmqrcbs.cc
+           dcmsr/apps/xml2dsr.cc
+
+- Removed unused option 'opt_oDataset'.
+  Affects: dcmpstat/apps/dcmpsmk.cc
+           dcmsign/apps/dcmsign.cc
+
+- Only update file meta information if required (use new file write mode).
+  Affects: dcmjpeg/apps/dcmdjpeg.cc
+
+- Added check making sure that a DICOMDIR file is never compressed.
+  Affects: dcmdata/apps/dcmcrle.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+
+- Use helper function checkDependence() and checkConflict() where appropriate.
+  Affects: dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmimage/apps/dcmquant.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+
+- Made error messages more consistent with other compression tools.
+  Affects: dcmdata/apps/dcmcrle.cc
+           dcmjpeg/apps/dcmcjpeg.cc
+
+- Replaced tabs by spaces and updated copyright date.
+  Affects: dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrti.cc
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbg.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbm.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbs.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbs.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrptb.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrsrv.h
+           dcmqrdb/include/dcmtk/dcmqrdb/dcmqrtis.h
+           dcmqrdb/libsrc/dcmqrcbf.cc
+           dcmqrdb/libsrc/dcmqrcbg.cc
+           dcmqrdb/libsrc/dcmqrcbm.cc
+           dcmqrdb/libsrc/dcmqrcnf.cc
+           dcmqrdb/libsrc/dcmqrdbi.cc
+           dcmqrdb/libsrc/dcmqrdbs.cc
+           dcmqrdb/libsrc/dcmqropt.cc
+           dcmqrdb/libsrc/dcmqrptb.cc
+           dcmqrdb/libsrc/dcmqrsrv.cc
+           dcmqrdb/libsrc/dcmqrtis.cc
+
 **** Changes from 2009.08.20 (riesmeier)
 
 - Updated oflog module documention.
