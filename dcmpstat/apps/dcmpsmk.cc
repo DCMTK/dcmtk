@@ -24,8 +24,8 @@
  *    a matching presentation state.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:10:54 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2009-08-21 09:48:48 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,6 @@ int main(int argc, char *argv[])
     const char* opt_ofname = NULL;
     OFBool verbosemode = OFFalse;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
-    OFBool opt_oDataset = OFFalse;                 // currently not available as command line option
     E_GrpLenEncoding oglenc = EGL_recalcGL;        // currently not available as command line option
     E_EncodingType oenctype = EET_ExplicitLength;  // currently not available as command line option
     E_PaddingEncoding opadenc = EPD_noChange;      // currently not available as command line option
@@ -417,7 +416,7 @@ int main(int argc, char *argv[])
     if (verbosemode)
         COUT << "write converted DICOM file\n";
 
-    error = fileformat2.saveFile(opt_ofname, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen, opt_oDataset);
+    error = fileformat2.saveFile(opt_ofname, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen);
     if (error.bad())
     {
         CERR << "Error: "
@@ -436,6 +435,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
+** Revision 1.27  2009-08-21 09:48:48  joergr
+** Removed unused option 'opt_oDataset'.
+**
 ** Revision 1.26  2009-04-21 14:10:54  joergr
 ** Fixed minor inconsistencies in manpage / syntax usage.
 **
