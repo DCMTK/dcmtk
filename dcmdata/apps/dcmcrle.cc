@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-05 10:52:49 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2009-08-21 09:24:07 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -294,7 +294,7 @@ int main(int argc, char *argv[])
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "invalid filename: <empty string>" << OFendl;
+        CERR << "Error: invalid filename: <empty string>" << OFendl;
         return 1;
     }
 
@@ -319,9 +319,20 @@ int main(int argc, char *argv[])
         COUT << "DICOM file is already compressed, converting to uncompressed transfer syntax first" << OFendl;
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))
       {
-        CERR << "No conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
+        CERR << "Error: no conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
         return 1;
       }
+    }
+    
+    OFString sopClass;
+    if (fileformat.getMetaInfo()->findAndGetOFString(DCM_MediaStorageSOPClassUID, sopClass).good())
+    {
+        /* check for DICOMDIR files */
+        if (sopClass == UID_MediaStorageDirectoryStorage)
+        {
+            CERR << "Error: DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!" << OFendl;
+            return 1;
+        }
     }
 
     if (opt_verbose)
@@ -335,16 +346,8 @@ int main(int argc, char *argv[])
         if (opt_verbose)
             COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written" << OFendl;
     } else {
-        CERR << "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
+        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
         return 1;
-    }
-
-    // force meta-header to refresh SOP Class/Instance UIDs.
-    DcmItem *metaInfo = fileformat.getMetaInfo();
-    if (metaInfo)
-    {
-      delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
-      delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
     }
 
     if (opt_verbose)
@@ -352,7 +355,7 @@ int main(int argc, char *argv[])
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
-        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), EWM_updateMeta);
 
     if (error.bad())
     {
@@ -373,6 +376,14 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
+ * Revision 1.19  2009-08-21 09:24:07  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ * Added check making sure that a DICOMDIR file is never compressed.
+ * Use helper function checkConflict() where appropriate.
+ * Made error messages more consistent with other compression tools.
+ *
  * Revision 1.18  2009-08-05 10:52:49  joergr
  * Fixed various issues with syntax usage (e.g. layout and formatting).
  *
