@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2009.08.21 (riesmeier)
 
+- Added type cast to integer variable in order to avoid compiler warnings
+  reported by MSVC.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+
 - Added parameter 'writeMode' to save/write methods which allows for specifying
   whether to write a dataset or fileformat as well as whether to update the
   file meta information or to create a new file meta information header.

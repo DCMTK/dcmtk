@@ -22,8 +22,8 @@
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 10:05:10 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-08-21 12:07:27 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -446,9 +446,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 
     // register global compression codecs
     DJLSEncoderRegistration::registerCodecs(opt_verbose, opt_use_custom_options,
-      opt_t1, opt_t2, opt_t3, opt_reset, opt_limit, opt_prefer_cooked,
-      opt_fragmentSize, opt_createOffsetTable, opt_uidcreation,
-      opt_secondarycapture, opt_interleaveMode);
+      OFstatic_cast(Uint16, opt_t1), OFstatic_cast(Uint16, opt_t2), OFstatic_cast(Uint16, opt_t3),
+      OFstatic_cast(Uint16, opt_reset), OFstatic_cast(Uint16, opt_limit),
+      opt_prefer_cooked, opt_fragmentSize, opt_createOffsetTable,
+      opt_uidcreation, opt_secondarycapture, opt_interleaveMode);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -504,7 +505,7 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       COUT << "Convert DICOM file to compressed transfer syntax" << OFendl;
 
     //create representation parameter
-    DJLSRepresentationParameter rp(opt_nearlossless_deviation, opt_useLosslessProcess);
+    DJLSRepresentationParameter rp(OFstatic_cast(Uint16, opt_nearlossless_deviation), opt_useLosslessProcess);
     DcmXfer opt_oxferSyn(opt_oxfer);
 
     // perform decoding process
@@ -549,6 +550,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.7  2009-08-21 12:07:27  joergr
+ * Added type cast to integer variable in order to avoid compiler warnings
+ * reported by MSVC.
+ *
  * Revision 1.6  2009-08-21 10:05:10  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the
