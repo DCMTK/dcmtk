@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 12:38:06 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcbs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-08-21 09:53:52 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,16 +72,16 @@ void DcmQueryRetrieveStoreContext::saveImageToDB(
 {
     OFCondition dbcond = EC_Normal;
     DcmQueryRetrieveDatabaseStatus dbStatus(STATUS_Success);
-    
+
     /* Store image */
     if (options_.ignoreStoreData_) {
         rsp->DimseStatus = STATUS_Success;
         *stDetail = NULL;
         return; /* nothing else to do */
     }
-    
+
     if (status == STATUS_Success)
-    {    
+    {
         dbcond = dbHandle.storeRequest(
             req->AffectedSOPClassUID, req->AffectedSOPInstanceUID,
             imageFileName, &dbStatus);
@@ -107,9 +106,9 @@ void DcmQueryRetrieveStoreContext::writeToFile(
     E_TransferSyntax xfer = options_.writeTransferSyntax_;
     if (xfer == EXS_Unknown) xfer = ff->getDataset()->getOriginalXfer();
 
-    OFCondition cond = ff->saveFile(fname, xfer, options_.sequenceType_, 
-        options_.groupLength_, options_.paddingType_, (Uint32)options_.filepad_, 
-        (Uint32)options_.itempad_, (!options_.useMetaheader_));
+    OFCondition cond = ff->saveFile(fname, xfer, options_.sequenceType_,
+        options_.groupLength_, options_.paddingType_, (Uint32)options_.filepad_,
+        (Uint32)options_.itempad_, (options_.useMetaheader_) ? EWM_fileformat : EWM_dataset);
 
     if (cond.bad())
     {
@@ -136,8 +135,8 @@ void DcmQueryRetrieveStoreContext::checkRequestAgainstDataset(
     /* which SOP class and SOP instance ? */
     DIC_UI sopClass;
     DIC_UI sopInstance;
-    
-    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, uidPadding)) 
+
+    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, uidPadding))
     {
         DcmQueryRetrieveOptions::errmsg("Bad image file: %s", fname);
         rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -152,7 +151,7 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
     /* in */
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName,       /* being received into */ 
+    char *imageFileName,       /* being received into */
     DcmDataset **imageDataSet, /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
@@ -194,7 +193,12 @@ void DcmQueryRetrieveStoreContext::callbackHandler(
 /*
  * CVS Log
  * $Log: dcmqrcbs.cc,v $
- * Revision 1.3  2005-12-15 12:38:06  joergr
+ * Revision 1.4  2009-08-21 09:53:52  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ *
+ * Revision 1.3  2005/12/15 12:38:06  joergr
  * Removed naming conflicts.
  *
  * Revision 1.2  2005/12/08 15:47:07  meichel
