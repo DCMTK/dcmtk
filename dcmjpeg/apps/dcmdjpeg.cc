@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-05 10:30:00 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2009-08-21 09:33:03 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
-  OFBool opt_oDataset = OFFalse;
   E_FileReadMode opt_readMode = ERM_autoDetect;
+  E_FileWriteMode opt_writeMode = EWM_updateMeta;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -237,8 +237,8 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
-      if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_updateMeta;
+      if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -274,16 +274,16 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain"))
       {
-        if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
+        app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
         opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-          if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
-          app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
-          app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
-          opt_opadenc = EPD_withPadding;
+        app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
+        app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
+        opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
 
@@ -360,7 +360,7 @@ int main(int argc, char *argv[])
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_oDataset);
+        opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_writeMode);
     if (error != EC_Normal)
     {
         CERR << "Error: " << error.text() << ": writing file: " <<  opt_ofname << OFendl;
@@ -380,6 +380,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.22  2009-08-21 09:33:03  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ * Use helper function checkDependence() and checkConflict() where appropriate.
+ *
  * Revision 1.21  2009-08-05 10:30:00  joergr
  * Fixed various issues with syntax usage (e.g. layout and formatting).
  *
