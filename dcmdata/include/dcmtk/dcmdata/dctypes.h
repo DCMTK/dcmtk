@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:55:44 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:17:16 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ typedef enum {
     ERW_notInitialized = 3
 } E_TransferState;
 
-/// read mode for file reading
+/// mode for file reading
 typedef enum {
     /// auto detect: fileformat or dataset
     ERM_autoDetect = 0,
@@ -121,6 +121,18 @@ typedef enum {
     /// read file format only, refuse if no meta-header
     ERM_fileOnly = 2
 } E_FileReadMode;
+
+/// mode for file writing
+typedef enum {
+    /// write as fileformat (update only missing information, this is the old behavior)
+    EWM_fileformat = 0,
+    /// write as dataset (without meta header)
+    EWM_dataset = 1,
+    /// write as fileformat and update required information (e.g. SOP Class/Instance UID)
+    EWM_updateMeta = 2,
+    /// write as fileformat and create new meta header (do not retain existing information)
+    EWM_createNewMeta = 3
+} E_FileWriteMode;
 
 
 /** General purpose class hiding constants from the global namespace.
@@ -183,6 +195,11 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.29  2009-08-21 09:17:16  joergr
+ * Added parameter 'writeMode' to save/write methods which allows for specifying
+ * whether to write a dataset or fileformat as well as whether to update the
+ * file meta information or to create a new file meta information header.
+ *
  * Revision 1.28  2009-08-19 11:55:44  meichel
  * Added additional includes needed for Sun Studio 11 on Solaris.
  *

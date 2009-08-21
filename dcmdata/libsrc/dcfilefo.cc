@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:55:44 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:19:43 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,19 +200,21 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                                       DcmDataset *dataset,
                                       const DcmTagKey &atagkey,
                                       DcmObject *obj,
-                                      const E_TransferSyntax oxfer)
+                                      const E_TransferSyntax oxfer,
+                                      const E_FileWriteMode writeMode)
     /*
      * This function checks if a particular data element of the meta header information is existent
      * in metainfo. If the element is not existent, it will be inserted. Additionally, this function
      * makes sure that the corresponding data element will contain a correct value.
      *
      * Parameters:
-     *   metainfo - [in] The meta header information.
-     *   dataset  - [in] The data set information.
-     *   atagkey  - [in] Tag of the data element which shall be checked.
-     *   obj      - [in] Data object from metainfo which represents the data element that shall be checked.
-     *                   Equals NULL, if this data element is not existent in the meta header information.
-     *   oxfer    - [in] The transfer syntax which shall be used.
+     *   metainfo  - [in] The meta header information.
+     *   dataset   - [in] The data set information.
+     *   atagkey   - [in] Tag of the data element which shall be checked.
+     *   obj       - [in] Data object from metainfo which represents the data element that shall be checked.
+     *                    Equals NULL, if this data element is not existent in the meta header information.
+     *   oxfer     - [in] The transfer syntax which shall be used.
+     *   writeMode - [in] Flag indicating whether to update the file meta information or not.
      */
 {
     /* initialize result value */
@@ -231,7 +233,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
         DcmElement *elem = OFstatic_cast(DcmElement *, obj);
 
         /* go ahaed and scrutinize one particular data element (depending on xtag) */
-        if (xtag == DCM_FileMetaInformationGroupLength)             // (0002,0000)
+        if (xtag == DCM_FileMetaInformationGroupLength)     // (0002,0000)
         {
             if (elem == NULL)
             {
@@ -283,15 +285,17 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            if (elem->getLength() == 0 && elem->ident() == EVR_UI) {
+            if (((writeMode == EWM_updateMeta) || (elem->getLength() == 0)) && (elem->ident() == EVR_UI))
+            {
                 if (dataset->search(DCM_SOPClassUID, stack).good())
                 {
                     char *uid = NULL;
                     l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
                     DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() use SOPClassUID [%s]", uid));
-
-                } else {
+                }
+                else if (elem->getLength() == 0)
+                {
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
                     DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass"));
                 }
@@ -304,15 +308,17 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            if (elem->getLength() == 0 && elem->ident() == EVR_UI)
+            if (((writeMode == EWM_updateMeta) || (elem->getLength() == 0)) && (elem->ident() == EVR_UI))
             {
                 if (dataset->search(DCM_SOPInstanceUID, stack).good())
                 {
                     char* uid = NULL;
-                    l_error =OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
+                    l_error = OFstatic_cast(DcmUniqueIdentifier *, stack.top())->getString(uid);
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
                     DCM_dcmdataDebug(2, ("DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid));
-                } else {
+                }
+                else if (elem->getLength() == 0)
+                {
                     char uid[128];
                     dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(uid);
@@ -332,7 +338,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
 #ifdef DEBUG
 char * uidtmp = NULL;
 OFstatic_cast(DcmUniqueIdentifier *, elem)->getString(uidtmp);
-DCM_dcmdataCDebug(2,  uidtmp != NULL,
+DCM_dcmdataCDebug(2, uidtmp != NULL,
        ("DcmFileFormat::checkValue() found old transfer-syntax: [%s]",uidtmp));
 #endif
                 DcmXfer dcXfer(oxfer);
@@ -421,13 +427,15 @@ DCM_dcmdataCDebug(2,  uidtmp != NULL,
 // ********************************
 
 
-OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
+OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
+                                            const E_FileWriteMode writeMode)
     /*
      * This function makes sure that all data elements of the meta header information are existent
      * in metainfo and contain correct values.
      *
      * Parameters:
-     *   oxfer          - [in] The transfer syntax which shall be used.
+     *   oxfer     - [in] The transfer syntax which shall be used.
+     *   writeMode - [in] Flag indicating whether to update the file meta information or not.
      */
 {
     /* initialize some variables */
@@ -438,38 +446,41 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
     /* if there is meta header information and data set information, do something */
     if (metinf != NULL && datset != NULL)
     {
-        DcmStack stack;
+        /* start with empty file meta information */
+        if (writeMode == EWM_createNewMeta)
+            metinf->clear();
 
         /* in the following, we want to make sure all elements of the meta header */
         /* are existent in metinf and contain correct values */
+        DcmStack stack;
 
         /* DCM_FileMetaInformationGroupLength */
         metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer, writeMode);
 
         /* DCM_FileMetaInformationVersion */
         metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer, writeMode);
 
         /* DCM_MediaStorageSOPClassUID */
         metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer, writeMode);
 
         /* DCM_MediaStorageSOPInstanceUID */
         metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer, writeMode);
 
         /* DCM_TransferSyntaxUID */
         metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer, writeMode);
 
         /* DCM_ImplementationClassUID */
         metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
 
         /* DCM_ImplementationVersionName */
         metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
-        checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer);
+        checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
 
         /* dump some information if required */
         DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo 'metinf'.", metinf->card()));
@@ -614,11 +625,10 @@ OFCondition DcmFileFormat::read(DcmInputStream &inStream,
 // ********************************
 
 
-OFCondition DcmFileFormat::write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache)
+OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
+                                 const E_TransferSyntax oxfer,
+                                 const E_EncodingType enctype,
+                                 DcmWriteCache *wcache)
 {
     return write(outStream, oxfer, enctype, wcache, EGL_recalcGL, EPD_noChange);
 }
@@ -632,7 +642,8 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
                                  const E_PaddingEncoding padenc,
                                  const Uint32 padlen,
                                  const Uint32 subPadlen,
-                                 Uint32 instanceLength)
+                                 Uint32 instanceLength,
+                                 const E_FileWriteMode writeMode)
     /*
      * This function writes data values which are contained in this to the stream which is
      * passed as first argument. With regard to the writing of information, the other parameters
@@ -652,6 +663,8 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
      *   instanceLength - [in] Number of extra bytes added to the item/dataset length used when computing the
      *                         padding. This parameter is for instance used to pass the length of the file meta
      *                         header from the DcmFileFormat to the DcmDataset object.
+     *   writeMode      - [in] Write file with or without meta header. Also allows for updating the information
+     *                         in the file meta information header.
      */
 {
     /* if the transfer state of this is not initialized, this is an illegal call */
@@ -685,7 +698,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
             /* item list pointer to the fist element and we need to set the transfer state to ERW_inWork. */
             if (getTransferState() == ERW_init)
             {
-                validateMetaInfo(outxfer);
+                validateMetaInfo(outxfer, writeMode);
                 itemList->seek(ELP_first);
                 setTransferState(ERW_inWork);
             }
@@ -768,10 +781,10 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
                                     const E_PaddingEncoding padEncoding,
                                     const Uint32 padLength,
                                     const Uint32 subPadLength,
-                                    const OFBool isDataset)
+                                    const E_FileWriteMode writeMode)
 {
 
-    if (isDataset)
+    if (writeMode == EWM_dataset)
     {
         return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
             padEncoding, padLength, subPadLength);
@@ -791,7 +804,8 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
         {
             /* write data to file */
             transferInit();
-            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength, padEncoding, padLength, subPadLength);
+            l_error = write(fileStream, writeXfer, encodingType, &wcache, groupLength,
+                padEncoding, padLength, subPadLength, 0 /*instanceLength*/, writeMode);
             transferEnd();
         }
     }
@@ -898,6 +912,11 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.52  2009-08-21 09:19:43  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.51  2009-08-19 11:55:44  meichel
 ** Added additional includes needed for Sun Studio 11 on Solaris.
 **

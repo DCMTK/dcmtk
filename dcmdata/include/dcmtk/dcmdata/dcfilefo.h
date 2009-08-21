@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmFileFormat
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:18:07 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,13 +122,19 @@ class DcmFileFormat
                        const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
 
-    virtual OFCondition validateMetaInfo(E_TransferSyntax oxfer);
+    /** make sure that all data elements of the meta header information are existent
+     *  in metainfo and contain correct values.
+     *  @param oxfer the transfer syntax which shall be used
+     *  @param writeMode flag indicating whether to update the file meta information or not
+     */
+    virtual OFCondition validateMetaInfo(const E_TransferSyntax oxfer,
+                                         const E_FileWriteMode writeMode = EWM_fileformat);
 
     DcmMetaInfo *getMetaInfo();
     DcmDataset  *getDataset();
     DcmDataset  *getAndRemoveDataset();
 
-    /** calculate the length of this DICOM element when encoded with the 
+    /** calculate the length of this DICOM element when encoded with the
      *  given transfer syntax and the given encoding type for sequences.
      *  For elements, the length includes the length of the tag, length field,
      *  VR field and the value itself, for items and sequences it returns
@@ -155,7 +161,7 @@ class DcmFileFormat
      *  @param glenc handling of group length parameters
      *  @param maxReadLength attribute values larger than this value are skipped
      *    while parsing and read later upon first access if the stream type supports
-     *    this. 
+     *    this.
      *  @return EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmInputStream &inStream,
@@ -170,11 +176,10 @@ class DcmFileFormat
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** write object to a stream (abstract)
      *  @param outStream DICOM output stream
@@ -185,10 +190,12 @@ class DcmFileFormat
      *  @param padenc dataset trailing padding encoding
      *  @param padlen padding structure size for complete file
      *  @param subPadlen padding structure set for sequence items
-     *  @param instanceLength Number of extra bytes added to the item/dataset 
-     *  length used when computing the padding. This parameter is for instance 
-     *  used to pass the length of the file meta header from the DcmFileFormat 
-     *  to the DcmDataset object.
+     *  @param instanceLength number of extra bytes added to the item/dataset
+     *    length used when computing the padding. This parameter is for instance
+     *    used to pass the length of the file meta header from the DcmFileFormat
+     *    to the DcmDataset object.
+     *  @param writeMode write file with or without meta header. Also allows for
+     *    updating the information in the file meta information header.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmOutputStream &outStream,
@@ -199,7 +206,8 @@ class DcmFileFormat
                               const E_PaddingEncoding padenc = EPD_noChange,
                               const Uint32 padlen = 0,
                               const Uint32 subPadlen = 0,
-                              Uint32 instanceLength = 0);
+                              Uint32 instanceLength = 0,
+                              const E_FileWriteMode writeMode = EWM_fileformat);
 
     /** write object in XML format.
      *  The XML declaration (e.g. <?xml version="1.0"?>) is not written by this function.
@@ -238,7 +246,8 @@ class DcmFileFormat
      *  @param padEncoding flag, specifying how to handle the padding tags
      *  @param padLength number of bytes used for the dataset padding (has to be an even number)
      *  @param subPadLength number of bytes used for the item padding (has to be an even number)
-     *  @param isDataset if true, file is stored without meta header, i.e. as pure dataset
+     *  @param writeMode write file with or without meta header. Also allows for updating the
+     *    information in the file meta information header.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition saveFile(const char *fileName,
@@ -248,7 +257,7 @@ class DcmFileFormat
                                  const E_PaddingEncoding padEncoding = EPD_noChange,
                                  const Uint32 padLength = 0,
                                  const Uint32 subPadLength = 0,
-                                 const OFBool isDataset = OFFalse);
+                                 const E_FileWriteMode writeMode = EWM_fileformat);
 
     // methods for different pixel representations
 
@@ -266,8 +275,8 @@ class DcmFileFormat
     }
 
     /** check if all PixelData elements in this dataset have a representation conforming
-     *  to the given transfer syntax and representation parameters (see dcpixel.h for 
-     *  definition of "conforming"). 
+     *  to the given transfer syntax and representation parameters (see dcpixel.h for
+     *  definition of "conforming").
      *  @param repType desired transfer syntax
      *  @param repParam desired representation parameter (e.g. quality factor for lossy compression)
      *  @return true if all pixel elements have the desired representation, false otherwise
@@ -346,19 +355,21 @@ class DcmFileFormat
     /** This function checks if a particular data element of the meta header information is existent
      *  in metainfo. If the element is not existent, it will be inserted. Additionally, this function
      *  makes sure that the corresponding data element will contain a correct value.
-     *  @param metainfo The meta header information.
-     *  @param dataset  The data set information.
-     *  @param atagkey  Tag of the data element which shall be checked.
-     *  @param obj      Data object from metainfo which represents the data element that shall be checked.
-     *                  Equals NULL if this data element is not existent in the meta header information.
-     *  @param oxfer    The transfer syntax which shall be used.
+     *  @param metainfo  the meta header information
+     *  @param dataset   the data set information
+     *  @param atagkey   tag of the data element which shall be checked
+     *  @param obj       data object from metainfo which represents the data element that shall be checked.
+     *                   Equals NULL if this data element is not existent in the meta header information.
+     *  @param oxfer     The transfer syntax which shall be used.
+     *  @param writeMode flag indicating whether to update the file meta information or not
      *  @return EC_Normal if successful, an error code otherwise
      */
     static OFCondition checkValue(DcmMetaInfo *metainfo,
                            DcmDataset *dataset,
                            const DcmTagKey &atagkey,
                            DcmObject *obj,
-                           const E_TransferSyntax oxfer);
+                           const E_TransferSyntax oxfer,
+                           const E_FileWriteMode writeMode);
 
     /** read DCM_TransferSyntaxUID from meta header dataset and return as
      *  E_TransferSyntax value
@@ -378,6 +389,11 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.31  2009-08-21 09:18:07  joergr
+** Added parameter 'writeMode' to save/write methods which allows for specifying
+** whether to write a dataset or fileformat as well as whether to update the
+** file meta information or to create a new file meta information header.
+**
 ** Revision 1.30  2008-07-17 11:19:48  onken
 ** Updated copyFrom() documentation.
 **
