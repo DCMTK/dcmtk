@@ -22,8 +22,8 @@
  *  Purpose: Decompress DICOM file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:33:03 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2009-08-21 09:37:16 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
   int opt_debugMode = 0;
   OFBool opt_verbose = OFFalse;
   E_FileReadMode opt_readMode = ERM_autoDetect;
-  E_FileWriteMode opt_writeMode = EWM_updateMeta;
+  E_FileWriteMode opt_writeMode = EWM_fileformat;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -237,7 +237,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-file")) opt_writeMode = EWM_updateMeta;
+      if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
       if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
@@ -358,6 +358,10 @@ int main(int argc, char *argv[])
     if (opt_verbose)
         COUT << "creating output file " << opt_ofname << OFendl;
 
+    // update file meta information with new SOP Instance UID
+    if ((opt_uidcreation == EUC_always) && (opt_writeMode == EWM_fileformat))
+        opt_writeMode = EWM_updateMeta;
+
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
         opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad, opt_writeMode);
@@ -380,6 +384,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpeg.cc,v $
+ * Revision 1.23  2009-08-21 09:37:16  joergr
+ * Only update file meta information if required (use new file write mode).
+ *
  * Revision 1.22  2009-08-21 09:33:03  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the
