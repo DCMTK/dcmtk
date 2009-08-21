@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveMoveContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-04-05 08:22:24 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,10 +41,10 @@ class DcmQueryRetrieveOptions;
 class DcmQueryRetrieveConfig;
 class DcmQueryRetrieveDatabaseStatus;
 
-/** this class maintains the context information that is passed to the 
+/** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_moveProvider.
  */
-class DcmQueryRetrieveMoveContext 
+class DcmQueryRetrieveMoveContext
 {
 public:
     /** constructor
@@ -90,7 +90,7 @@ public:
 
     /** callback handler called by the DIMSE_storeProvider callback function.
      *  @param cancelled (in) flag indicating whether a C-CANCEL was received
-     *  @param request original move request (in) 
+     *  @param request original move request (in)
      *  @param requestIdentifiers original move request identifiers (in)
      *  @param responseCount move response count (in)
      *  @param response move response (out)
@@ -98,12 +98,12 @@ public:
      *  @param responseIdentifiers move response identifiers (out)
      */
     void callbackHandler(
-	/* in */ 
-	OFBool cancelled, T_DIMSE_C_MoveRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,	
-	DcmDataset **responseIdentifiers);
+        /* in */
+        OFBool cancelled, T_DIMSE_C_MoveRQ *request,
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_MoveRSP *response, DcmDataset **stDetail,
+        DcmDataset **responseIdentifiers);
 
     /// check whether verbose mode is enabled
     OFBool isVerbose() const;
@@ -137,53 +137,53 @@ private:
     const DcmQueryRetrieveOptions& options_;
 
     /// prior DIMSE status
-    DIC_US	priorStatus;
+    DIC_US  priorStatus;
 
     /// pointer to original association on which the C-MOVE-RQ was received
-    T_ASC_Association   *origAssoc;	/* association of requestor */
+    T_ASC_Association   *origAssoc;     /* association of requestor */
 
     /// pointer to sub-association for outgoing C-STORE-RQ
-    T_ASC_Association   *subAssoc;	/* sub-association */
+    T_ASC_Association   *subAssoc;      /* sub-association */
 
     /// pointer to Q/R configuration
     const DcmQueryRetrieveConfig *config;
-    
-    /// true if the association was started 
+
+    /// true if the association was started
     OFBool assocStarted;
-    
+
     /// message id of request
     DIC_US origMsgId;
-    
+
     /// title of requestor
     DIC_AE origAETitle;
-    
+
     /// hostname of move requestor
     DIC_NODENAME origHostName;
-    
+
     /// priority of move request
     T_DIMSE_Priority priority;
-    
+
     /// our current title
     OFString ourAETitle;
-    
+
     /// destination title for move
     DIC_AE dstAETitle;
-    
+
     /// instance UIDs of failed store sub-ops
     char *failedUIDs;
-    
+
     /// number of remaining sub-operations
-    DIC_US nRemaining; 
-    
+    DIC_US nRemaining;
+
     /// number of completed sub-operations
-    DIC_US nCompleted; 
-    
+    DIC_US nCompleted;
+
     /// number of failed sub-operations
-    DIC_US nFailed; 
-    
+    DIC_US nFailed;
+
     /// number of completed sub-operations that causes warnings
     DIC_US nWarning;
-    
+
 };
 
 #endif
@@ -191,7 +191,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbm.h,v $
- * Revision 1.5  2006-04-05 08:22:24  joergr
+ * Revision 1.6  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.5  2006/04/05 08:22:24  joergr
  * Fixed issue with initialization of OFString member variables.
  *
  * Revision 1.4  2005/12/20 11:21:30  meichel

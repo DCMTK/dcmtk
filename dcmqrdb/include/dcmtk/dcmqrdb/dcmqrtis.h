@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: TI Common Constants, Types, Globals and Functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:28 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrtis.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,15 +141,15 @@ public:
      */
     OFBool addPeerName(const char *peerName, const char *configFileName);
 
-    /** print TI configuration to stdout 
+    /** print TI configuration to stdout
      */
     void printConfig();
 
     /** detach current association
-     *  @param abortFlag if true, abort association instead of releasing it 
+     *  @param abortFlag if true, abort association instead of releasing it
      */
     OFBool TI_detachAssociation(OFBool abortFlag);
-    
+
     /** set local aetitle
      *  @param ae aetitle
      */
@@ -158,7 +157,7 @@ public:
     {
       myAETitle = ae;
     }
-    
+
     /** set max receive PDU
      *  @param pdu max receive PDU size
      */
@@ -173,7 +172,7 @@ public:
     {
       peerHostName = peerNames[0];
     }
-    
+
     /** provide read/write access to network structure maintained by this object.
      *  Yes, this is ugly.
      *  @return pointer to pointer to network structure
@@ -182,7 +181,7 @@ public:
     {
       return &net;
     }
-    
+
     /// return number of databases
     int getdbCount() const
     {
@@ -203,7 +202,7 @@ public:
      *  @param xfer new network transfer syntax
      */
     void setXferSyntax(E_TransferSyntax xfer) { networkTransferSyntax = xfer; }
-   
+
     /** set verbose and debug mode
      *  @param is_verbose verbose mode flag
      *  @param is_debug debug mode flag
@@ -223,9 +222,9 @@ public:
       blockMode_ = blockMode;
       dimse_timeout_ = timeout;
     }
-    
+
 private:
-    
+
     OFBool TI_attachAssociation();
     OFBool TI_changeAssociation();
     OFBool TI_sendEcho();
@@ -263,18 +262,18 @@ private:
 
     OFBool findDBPeerTitles(
       const char *configFileName,
-      TI_DBEntry *dbEntry, 
+      TI_DBEntry *dbEntry,
       const char *peer);
-    
+
     /// the CTN databases we know
     TI_DBEntry **dbEntries;
-    
+
     /// number of entries in databases we know
     int dbCount;
-    
+
     /// current peer to talk to
     const char *peerHostName;
-    
+
     /// list of peer names
     const char *peerNames[TI_MAXPEERS];
 
@@ -295,7 +294,7 @@ private:
 
     /// current database index
     int currentdb;
-    
+
     /// current peer title
     const char *currentPeerTitle;
 
@@ -313,10 +312,10 @@ private:
 
     /// blocking mode for DIMSE operations
     T_DIMSE_BlockingMode blockMode_;
-    
+
     /// timeout for DIMSE operations
     int dimse_timeout_;
-    
+
 };
 
 
@@ -325,7 +324,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrtis.h,v $
- * Revision 1.4  2005-12-08 16:04:28  meichel
+ * Revision 1.5  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.4  2005/12/08 16:04:28  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.3  2005/11/17 13:44:37  meichel

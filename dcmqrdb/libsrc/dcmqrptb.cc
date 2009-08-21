@@ -21,10 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveProcessSlot, DcmQueryRetrieveProcessTable
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:09:34 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrptb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,16 +98,16 @@ DcmQueryRetrieveProcessSlot::DcmQueryRetrieveProcessSlot(
       int processId,
       time_t startTime,
       OFBool hasStorageAbility)
-: peerName_()        
+: peerName_()
 , callingAETitle_()
-, calledAETitle_()    
+, calledAETitle_()
 , processId_(processId)
 , startTime_(startTime)
 , hasStorageAbility_(hasStorageAbility)
 {
   if (peerName) peerName_ = peerName;
-  if (callingAETitle) callingAETitle_ = callingAETitle; 
-  if (calledAETitle) calledAETitle_ = calledAETitle; 
+  if (callingAETitle) callingAETitle_ = callingAETitle;
+  if (calledAETitle) calledAETitle_ = calledAETitle;
 }
 
 
@@ -138,7 +137,7 @@ void DcmQueryRetrieveProcessTable::addProcessToTable(int pid, T_ASC_Association 
     DIC_AE       callingAETitle;
     DIC_AE       calledAETitle;
     OFBool hasStorageAbility = OFFalse;
-    
+
     ASC_getPresentationAddresses(assoc->params, peerName, NULL);
     ASC_getAPTitles(assoc->params, callingAETitle, calledAETitle, NULL);
 
@@ -216,13 +215,13 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
           if (errno == ECHILD)
           {
             /* no children so don't complain */
-          } 
+          }
           else if (errno != 0)
           {
             ofConsole.lockCerr() << "error: wait for child process failed: " << strerror(errno) << OFendl;
             ofConsole.unlockCerr();
           }
-      } 
+      }
       else if (child > 0)
       {
           if (verbose)
@@ -245,7 +244,10 @@ void DcmQueryRetrieveProcessTable::cleanChildren(OFBool verbose)
 /*
  * CVS Log
  * $Log: dcmqrptb.cc,v $
- * Revision 1.5  2006-08-15 16:09:34  meichel
+ * Revision 1.6  2009-08-21 09:54:11  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.5  2006/08/15 16:09:34  meichel
  * Updated the code in module dcmqrdb to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

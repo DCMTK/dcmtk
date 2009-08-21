@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2006, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: class DcmQueryRetrieveGetContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2006-04-05 08:22:24 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@ class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
 class DcmQueryRetrieveDatabaseStatus;
 
-/** this class maintains the context information that is passed to the 
+/** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_getProvider.
  */
 class DcmQueryRetrieveGetContext
@@ -93,10 +93,10 @@ public:
     {
       if (ae) ourAETitle = ae; else ourAETitle.clear();
     }
-    
+
     /** callback handler called by the DIMSE_storeProvider callback function.
      *  @param cancelled (in) flag indicating whether a C-CANCEL was received
-     *  @param request original get request (in) 
+     *  @param request original get request (in)
      *  @param requestIdentifiers original get request identifiers (in)
      *  @param responseCount get response count (in)
      *  @param response get response (out)
@@ -104,12 +104,12 @@ public:
      *  @param responseIdentifiers get response identifiers (out)
      */
     void callbackHandler(
-	/* in */ 
-	OFBool cancelled, T_DIMSE_C_GetRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	/* out */
-	T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,	
-	DcmDataset **responseIdentifiers);
+        /* in */
+        OFBool cancelled, T_DIMSE_C_GetRQ *request,
+        DcmDataset *requestIdentifiers, int responseCount,
+        /* out */
+        T_DIMSE_C_GetRSP *response, DcmDataset **stDetail,
+        DcmDataset **responseIdentifiers);
 
 private:
 
@@ -125,14 +125,14 @@ private:
     const DcmQueryRetrieveOptions& options_;
 
     /// prior DIMSE status
-    DIC_US	priorStatus;
+    DIC_US  priorStatus;
 
     /// pointer to association on which the C-GET-RQ was received
     T_ASC_Association   *origAssoc;
 
-    /// true if the association was started 
+    /// true if the association was started
     OFBool assocStarted;
-    
+
     /// presentation context id of request
     T_ASC_PresentationContextID origPresId;
 
@@ -150,19 +150,19 @@ private:
     T_DIMSE_Priority priority;
 
     /// our current title
-    OFString ourAETitle; 
+    OFString ourAETitle;
 
     /// instance UIDs of failed store sub-ops
     char *failedUIDs;
 
     /// number of remaining sub-operations
-    DIC_US nRemaining; 
+    DIC_US nRemaining;
 
     /// number of completed sub-operations
-    DIC_US nCompleted; 
+    DIC_US nCompleted;
 
     /// number of failed sub-operations
-    DIC_US nFailed; 
+    DIC_US nFailed;
 
     /// number of completed sub-operations that causes warnings
     DIC_US nWarning;
@@ -177,7 +177,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbg.h,v $
- * Revision 1.4  2006-04-05 08:22:24  joergr
+ * Revision 1.5  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.4  2006/04/05 08:22:24  joergr
  * Fixed issue with initialization of OFString member variables.
  *
  * Revision 1.3  2005/12/15 08:32:49  joergr

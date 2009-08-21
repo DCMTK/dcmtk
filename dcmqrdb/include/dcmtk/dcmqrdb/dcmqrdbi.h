@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2008, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveIndexDatabaseHandle
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-15 15:43:37 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +33,7 @@
 #ifndef DCMQRDBI_H
 #define DCMQRDBI_H
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/config/osconfig.h"     /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmqrdb/dcmqrdba.h"    /* for class DcmQueryRetrieveDatabaseHandle */
 
 #include "dcmtk/dcmnet/dicom.h"
@@ -447,6 +446,9 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrdbi.h,v $
+ * Revision 1.6  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
  * Revision 1.5  2008-04-15 15:43:37  meichel
  * Fixed endless recursion bug in the index file handling code when
  *   the index file does not exist

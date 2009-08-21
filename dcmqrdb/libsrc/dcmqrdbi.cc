@@ -21,10 +21,9 @@
  *
  *  Purpose: classes DcmQueryRetrieveIndexDatabaseHandle, DcmQueryRetrieveIndexDatabaseHandleFactory
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 14:39:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3470,6 +3469,9 @@ DcmQueryRetrieveDatabaseHandle *DcmQueryRetrieveIndexDatabaseHandleFactory::crea
 /*
  * CVS Log
  * $Log: dcmqrdbi.cc,v $
+ * Revision 1.16  2009-08-21 09:54:11  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
  * Revision 1.15  2009-08-19 14:39:00  meichel
  * Fixed static/extern linkage declaration
  *

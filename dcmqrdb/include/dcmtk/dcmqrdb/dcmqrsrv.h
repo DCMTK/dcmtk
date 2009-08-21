@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmQueryRetrieveSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-16 12:42:50 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrsrv.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,7 +182,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrsrv.h,v $
- * Revision 1.1  2005-12-16 12:42:50  joergr
+ * Revision 1.2  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.1  2005/12/16 12:42:50  joergr
  * Renamed file to avoid naming conflicts when linking on SunOS 5.5.1 with
  * Sun CC 2.0.1.
  *

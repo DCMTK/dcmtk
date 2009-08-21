@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:25 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqropt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +51,7 @@ extern const OFCondition APP_INVALIDPEER;
  */
 class DcmQueryRetrieveOptions
 {
-public:  
+public:
   /// default constructor
   DcmQueryRetrieveOptions();
 
@@ -65,105 +64,105 @@ public:
   // these member variables should be private but are public for now
 
   /// enable negotiation of private shutdown SOP class
-  OFBool      		allowShutdown_;
+  OFBool            allowShutdown_;
 
   /// bit preserving mode for incoming storage requests.
-  OFBool      		bitPreserving_;
+  OFBool            bitPreserving_;
 
   /// silently correct space-padded UIDs
-  OFBool             	correctUIDPadding_;
+  OFBool            correctUIDPadding_;
 
   /// debug mode
-  OFBool      		debug_;
+  OFBool            debug_;
 
   /// enable/disable C-GET support
-  OFBool      		disableGetSupport_;
+  OFBool            disableGetSupport_;
 
   /// block size for file padding, pad DICOM files to multiple of this value
-  OFCmdUnsignedInt  	filepad_;
+  OFCmdUnsignedInt  filepad_;
 
   /// group length encoding when writing DICOM files
-  E_GrpLenEncoding  	groupLength_;
+  E_GrpLenEncoding  groupLength_;
 
   /// ignore incoming data, receive but do not store (for debugging)
-  OFBool      		ignoreStoreData_;
+  OFBool            ignoreStoreData_;
 
   /// block size for item padding, pad DICOM files to multiple of this value
-  OFCmdUnsignedInt  	itempad_; 
+  OFCmdUnsignedInt  itempad_;
 
   /// maximum number of parallel associations accepted
-  int         		maxAssociations_;
+  int               maxAssociations_;
 
   /// maximum PDU size
-  OFCmdUnsignedInt   	maxPDU_;
+  OFCmdUnsignedInt  maxPDU_;
 
   /// pointer to network structure used for requesting C-STORE sub-associations
-  T_ASC_Network *	net_;
+  T_ASC_Network *   net_;
 
   /// preferred transfer syntax for incoming associations
-  E_TransferSyntax  	networkTransferSyntax_;
+  E_TransferSyntax  networkTransferSyntax_;
 
 #ifndef DISABLE_COMPRESSION_EXTENSION
   /// preferred transfer syntax for outgoing associations
-  E_TransferSyntax      networkTransferSyntaxOut_;
+  E_TransferSyntax  networkTransferSyntaxOut_;
 #endif
 
   /// padding algorithm for writing DICOM files
-  E_PaddingEncoding 	paddingType_;
+  E_PaddingEncoding paddingType_;
 
   /* refuse storage presentation contexts in incoming associations
    * if a storage presentation context for the application entity already exists
    */
-  OFBool      		refuseMultipleStorageAssociations_;
+  OFBool            refuseMultipleStorageAssociations_;
 
   /// refuse all incoming associations
-  OFBool      		refuse_;
+  OFBool            refuse_;
 
   /// reject associations if implementatino class UID is missing
-  OFBool      		rejectWhenNoImplementationClassUID_;
+  OFBool            rejectWhenNoImplementationClassUID_;
 
   /// refuse MOVE context if no corresponding FIND context is present
-  OFBool      		requireFindForMove_;
+  OFBool            requireFindForMove_;
 
   /// restrict MOVE operations to same Application Entity
-  OFBool      		restrictMoveToSameAE_;
+  OFBool            restrictMoveToSameAE_;
 
   /// restrict MOVE operations to same host
-  OFBool      		restrictMoveToSameHost_;
+  OFBool            restrictMoveToSameHost_;
 
   /// restrict MOVE operations to same vendor according to vendor table
-  OFBool      		restrictMoveToSameVendor_;
+  OFBool            restrictMoveToSameVendor_;
 
   /// sequence encoding when writing DICOM files
-  E_EncodingType    	sequenceType_;
+  E_EncodingType    sequenceType_;
 
   /// single process mode
-  OFBool      		singleProcess_;
+  OFBool            singleProcess_;
 
   /// support for patient root q/r model
-  OFBool      		supportPatientRoot_;
+  OFBool            supportPatientRoot_;
 
   /// support for patient/study only q/r model
-  OFBool      		supportPatientStudyOnly_;
+  OFBool            supportPatientStudyOnly_;
 
   /// support for study root q/r model
-  OFBool      		supportStudyRoot_;
+  OFBool            supportStudyRoot_;
 
   /// write DICOM files with DICOM metaheader
-  OFBool      		useMetaheader_;
+  OFBool            useMetaheader_;
 
   /** keep DB handle open for the complete lifetime of an association.
    *  If false, the DB handle is created and released for each incoming
    *  DIMSE message that is processed.
    */
-  OFBool                keepDBHandleDuringAssociation_;
+  OFBool            keepDBHandleDuringAssociation_;
 
   /// verbose mode
-  int         		verbose_;
+  int               verbose_;
 
   /// transfer syntax for writing
-  E_TransferSyntax  	writeTransferSyntax_;
-  
+  E_TransferSyntax  writeTransferSyntax_;
+
   /// blocking mode for DIMSE operations
   T_DIMSE_BlockingMode blockMode_;
 
@@ -172,8 +171,8 @@ public:
 
   /// timeout for ACSE operations
   int acse_timeout_;
-  
-};            		
+
+};
 
 
 #endif
@@ -181,7 +180,10 @@ public:
 /*
  * CVS Log
  * $Log: dcmqropt.h,v $
- * Revision 1.5  2005-12-08 16:04:25  meichel
+ * Revision 1.6  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.5  2005/12/08 16:04:25  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.4  2005/11/29 11:27:18  meichel

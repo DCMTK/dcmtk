@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:11 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqropt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,7 +48,7 @@ DcmQueryRetrieveOptions::DcmQueryRetrieveOptions()
 , filepad_(0)
 , groupLength_(EGL_recalcGL)
 , ignoreStoreData_(OFFalse)
-, itempad_(0) 
+, itempad_(0)
 , maxAssociations_(20)
 , maxPDU_(ASC_DEFAULTMAXPDU)
 , net_(NULL)
@@ -106,7 +105,10 @@ void DcmQueryRetrieveOptions::errmsg(const char* msg, ...)
 /*
  * CVS Log
  * $Log: dcmqropt.cc,v $
- * Revision 1.5  2005-12-08 15:47:11  meichel
+ * Revision 1.6  2009-08-21 09:54:11  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.5  2005/12/08 15:47:11  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.4  2005/11/29 11:27:20  meichel

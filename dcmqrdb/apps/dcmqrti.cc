@@ -21,10 +21,9 @@
  *
  *  Purpose: Telnet Initiator (ti) Main Program
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:56:32 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqrti.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:49:41 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,7 +217,7 @@ int main( int argc, char *argv[] )
     const char *myAE = NULL;
     if( cmd.findOption("--aetitle") )
     {
-    	app.checkValue( cmd.getValue( myAE ) );
+        app.checkValue( cmd.getValue( myAE ) );
         conf.setAETitle(myAE);
     }
     if( cmd.findOption("--max-pdu") )
@@ -432,6 +431,9 @@ int main( int argc, char *argv[] )
 /*
  * CVS Log
  * $Log: dcmqrti.cc,v $
+ * Revision 1.15  2009-08-21 09:49:41  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
  * Revision 1.14  2009-08-19 11:56:32  meichel
  * Function passed as 4th parameter to qsort() now declared extern "C",
  *   needed for Sun Studio 11 on Solaris.

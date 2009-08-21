@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-16 13:10:24 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrcnf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +184,7 @@ int DcmQueryRetrieveConfig::countCtnTitles() const
 }
 
 
-void DcmQueryRetrieveConfig::initConfigStruct() 
+void DcmQueryRetrieveConfig::initConfigStruct()
 {
    applicationTitle_ = "CTN";
    applicationContext_ = "1.2.840.10008.3.1.1.1";
@@ -224,7 +223,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
         value[256],       /* parameter value */
         *valueptr;        /* pointer to value list */
    char *c;
-   
+
    while (!feof(cnffp)) {
       fgets(rcline, sizeof(rcline), cnffp); /* read line in configuration file */
       lineno++;
@@ -276,7 +275,7 @@ int DcmQueryRetrieveConfig::readConfigLines(FILE *cnffp)
          sscanf(valueptr, "%d", &networkTCPPort_);
       }
       else if (!strcmp("MaxPDUSize", mnemonic)) {
-      	 unsigned long ul = 0;
+         unsigned long ul = 0;
          sscanf(valueptr, "%lu", &ul);
          maxPDUSize_ = OFstatic_cast(Uint32, ul);
       }
@@ -1035,7 +1034,10 @@ const char *DcmQueryRetrieveConfig::getGroupName() const
 /*
  * CVS Log
  * $Log: dcmqrcnf.cc,v $
- * Revision 1.6  2005-12-16 13:10:24  meichel
+ * Revision 1.7  2009-08-21 09:54:11  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.6  2005/12/16 13:10:24  meichel
  * Added type safety code for 64bit platforms
  *
  * Revision 1.5  2005/12/14 14:29:42  joergr

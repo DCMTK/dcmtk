@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2008, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 15:34:37 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/dcmqridx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-08-21 09:49:41 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,6 +213,9 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
+ * Revision 1.10  2009-08-21 09:49:41  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
  * Revision 1.9  2008-09-25 15:34:37  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveFindContext
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:16 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbf.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +39,7 @@
 class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
 
-/** this class maintains the context information that is passed to the 
+/** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_findProvider.
  */
 class DcmQueryRetrieveFindContext
@@ -69,10 +68,10 @@ public:
     {
       if (ae) ourAETitle = ae; else ourAETitle.clear();
     }
-    
+
     /** callback handler called by the DIMSE_storeProvider callback function.
      *  @param cancelled (in) flag indicating whether a C-CANCEL was received
-     *  @param request original find request (in) 
+     *  @param request original find request (in)
      *  @param requestIdentifiers original find request identifiers (in)
      *  @param responseCount find response count (in)
      *  @param response find response (out)
@@ -80,11 +79,11 @@ public:
      *  @param stDetail status detail for find response (out)
      */
     void callbackHandler(
-	OFBool cancelled, T_DIMSE_C_FindRQ *request, 
-	DcmDataset *requestIdentifiers, int responseCount,
-	T_DIMSE_C_FindRSP *response,
-	DcmDataset **responseIdentifiers,
-	DcmDataset **stDetail);
+        OFBool cancelled, T_DIMSE_C_FindRQ *request,
+        DcmDataset *requestIdentifiers, int responseCount,
+        T_DIMSE_C_FindRSP *response,
+        DcmDataset **responseIdentifiers,
+        DcmDataset **stDetail);
 
 private:
 
@@ -107,7 +106,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbf.h,v $
- * Revision 1.2  2005-12-08 16:04:16  meichel
+ * Revision 1.3  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.2  2005/12/08 16:04:16  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:50  meichel

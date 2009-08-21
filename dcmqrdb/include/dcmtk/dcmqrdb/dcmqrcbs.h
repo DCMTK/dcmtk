@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: class DcmQueryRetrieveStoreContext
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-12-15 12:38:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcbs.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +40,7 @@ class DcmQueryRetrieveDatabaseHandle;
 class DcmQueryRetrieveOptions;
 class DcmFileFormat;
 
-/** this class maintains the context information that is passed to the 
+/** this class maintains the context information that is passed to the
  *  callback function called by DIMSE_storeProvider.
  */
 class DcmQueryRetrieveStoreContext
@@ -59,7 +58,7 @@ public:
       const DcmQueryRetrieveOptions& options,
       DIC_US s,
       DcmFileFormat *ff,
-      OFBool correctuidpadding)         
+      OFBool correctuidpadding)
     : dbHandle(handle)
     , options_(options)
     , status(s)
@@ -138,7 +137,7 @@ private:
 
     /// flag indicating whether space padded UIDs should be silently corrected
     OFBool correctUIDPadding;
-    
+
 };
 
 #endif
@@ -146,7 +145,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcbs.h,v $
- * Revision 1.3  2005-12-15 12:38:00  joergr
+ * Revision 1.4  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.3  2005/12/15 12:38:00  joergr
  * Removed naming conflicts.
  *
  * Revision 1.2  2005/12/08 16:04:19  meichel

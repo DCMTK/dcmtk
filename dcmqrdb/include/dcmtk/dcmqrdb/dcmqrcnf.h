@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveConfig
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:20 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/include/dcmtk/dcmqrdb/dcmqrcnf.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:50:07 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +56,7 @@ struct DcmQueryRetrieveConfigPeer
     /// remote peer AE title
     const char *ApplicationTitle;
 
-    /// remote peer host name 
+    /// remote peer host name
     const char *HostName;
 
     /// remote peer port number
@@ -71,11 +70,11 @@ struct DcmQueryRetrieveConfigAEEntry
     /// application entity title
     const char *ApplicationTitle;
 
-    /// name of storage area  
+    /// name of storage area
     const char *StorageArea;
 
     /// access type (read-only, read/write)
-    const char *Access;        
+    const char *Access;
 
     /// quota setting for this storage area
     DcmQueryRetrieveConfigQuota *StorageQuota;
@@ -90,7 +89,7 @@ struct DcmQueryRetrieveConfigAEEntry
 /** this class describes configuration settings for a list of storage areas
  */
 struct DcmQueryRetrieveConfigConfiguration
-{    
+{
     /// number of storage areas (aetitles)
     int noOfAEEntries;
 
@@ -338,9 +337,9 @@ private:
    */
   const char *getNetworkType() const;
 
-  const char* vendorForPeerAETitle(const char *peerAETitle) const;  
+  const char* vendorForPeerAETitle(const char *peerAETitle) const;
 
-  int countCtnTitles() const;  
+  int countCtnTitles() const;
 
 
   /*
@@ -427,7 +426,7 @@ private:
    *  Input : variable
    */
   static void panic(const char *fmt, ...);
-  
+
   /*
    *  convert string to long
    *  Input : parameter string value
@@ -473,7 +472,10 @@ private:
 /*
  * CVS Log
  * $Log: dcmqrcnf.h,v $
- * Revision 1.3  2005-12-08 16:04:20  meichel
+ * Revision 1.4  2009-08-21 09:50:07  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.3  2005/12/08 16:04:20  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.2  2005/04/04 13:15:13  meichel

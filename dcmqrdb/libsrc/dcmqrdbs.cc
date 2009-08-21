@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveDatabaseStatus
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:47:10 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrdbs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,13 +80,16 @@ DcmDataset *DcmQueryRetrieveDatabaseStatus::extractStatusDetail()
 {
   DcmDataset *result = statusDetail_;
   statusDetail_ = NULL;
-  return result;  
+  return result;
 }
 
 /*
  * CVS Log
  * $Log: dcmqrdbs.cc,v $
- * Revision 1.2  2005-12-08 15:47:10  meichel
+ * Revision 1.3  2009-08-21 09:54:11  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
+ * Revision 1.2  2005/12/08 15:47:10  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.1  2005/03/30 13:34:53  meichel

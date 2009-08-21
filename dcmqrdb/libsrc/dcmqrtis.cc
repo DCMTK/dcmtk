@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1993-2005, OFFIS
+ *  Copyright (C) 1993-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: class DcmQueryRetrieveOptions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:56:33 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/libsrc/dcmqrtis.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-21 09:54:11 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -231,7 +230,7 @@ static OFBool TI_detachDB(TI_DBEntry *db)
     TI_destroyStudyEntries(db);
 
     if (!db->isRemoteDB && db->dbHandle != NULL) {
-    	delete db->dbHandle;
+        delete db->dbHandle;
         db->dbHandle = NULL;
     } else {
 
@@ -678,14 +677,14 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
     if (cond.bad()) {
         if (cond == DUL_ASSOCIATIONREJECTED) {
             T_ASC_RejectParameters rej;
-      
+
             ASC_getRejectParameters(params, &rej);
             DcmQueryRetrieveOptions::errmsg("Association Rejected:");
             ASC_printRejectParameters(stderr, &rej);
             fprintf(stderr, "\n");
             ASC_dropAssociation(assoc);
             ASC_destroyAssociation(&assoc);
-      
+
             return OFFalse;
         } else {
             DcmQueryRetrieveOptions::errmsg("Association Request Failed: Peer (%s, %s)",
@@ -693,7 +692,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
             DimseCondition::dump(cond);
             ASC_dropAssociation(assoc);
             ASC_destroyAssociation(&assoc);
-      
+
             return OFFalse;
         }
     }
@@ -709,7 +708,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachAssociation()
         ASC_abortAssociation(assoc);
         ASC_dropAssociation(assoc);
         ASC_destroyAssociation(&assoc);
-      
+
         return OFFalse;
     }
 
@@ -1042,7 +1041,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_attachDB(TI_DBEntry *db)
     if (!db->isRemoteDB && db->dbHandle == NULL) {
         /* Create a database handle */
         db->dbHandle = new DcmQueryRetrieveIndexDatabaseHandle(
-            config.getStorageArea(db->title), 
+            config.getStorageArea(db->title),
             config.getMaxStudies(db->title),
             config.getMaxBytesPerStudy(db->title), dbcond);
         if (dbcond.bad()) {
@@ -1850,7 +1849,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildStudies(TI_DBEntry *db)
         delete query;
         return OFFalse;
     }
-    
+
     dbStatus.deleteStatusDetail();
 
     while (dbStatus.status() == STATUS_Pending) {
@@ -1929,7 +1928,7 @@ OFBool DcmQueryRetrieveTelnetInitiator::TI_buildSeries(TI_DBEntry *db, TI_StudyE
         delete query; query = NULL;
         return OFFalse;
     }
-    
+
     dbStatus.deleteStatusDetail();
 
     while (dbStatus.status() == STATUS_Pending) {
@@ -2097,7 +2096,7 @@ void DcmQueryRetrieveTelnetInitiator::printConfig()
 
 OFBool DcmQueryRetrieveTelnetInitiator::findDBPeerTitles(
   const char *configFileName,
-  TI_DBEntry *dbEntry, 
+  TI_DBEntry *dbEntry,
   const char *peer)
 {
   const char **peerTitles = NULL;
@@ -2235,6 +2234,9 @@ void DcmQueryRetrieveTelnetInitiator::createConfigEntries(
 /*
  * CVS Log
  * $Log: dcmqrtis.cc,v $
+ * Revision 1.11  2009-08-21 09:54:11  joergr
+ * Replaced tabs by spaces and updated copyright date.
+ *
  * Revision 1.10  2009-08-19 11:56:33  meichel
  * Function passed as 4th parameter to qsort() now declared extern "C",
  *   needed for Sun Studio 11 on Solaris.
