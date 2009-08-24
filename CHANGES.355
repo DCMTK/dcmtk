@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.24 (riesmeier)
+
+- Fixed wrong/misleading comments.
+  Affects: dcmsr/include/dcmtk/dcmsr/dsrtypes.h
+
 **** Changes from 2009.08.21 (riesmeier)
 
 - Added new 'writeMode' which does not update the meta header. This could be

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-07-27 15:32:29 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2009-08-24 13:43:11 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -358,7 +358,7 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         DT_invalid,
-        /// internal type used to indicate an unknown document type (defined term)
+        /// internal type used to indicate an unknown/unsupported document type
         DT_unknown = DT_invalid,
         /// DICOM SOP Class: Basic Text SR
         DT_BasicTextSR,
@@ -454,7 +454,7 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         GT_invalid,
-        /// internal type used to indicate an unknown value type (defined term)
+        /// internal type used to indicate an unknown graphic type (defined term)
         GT_unknown = GT_invalid,
         /// DICOM Graphic Type: POINT
         GT_Point,
@@ -476,7 +476,7 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         TRT_invalid,
-        /// internal type used to indicate an unknown value type (defined term)
+        /// internal type used to indicate an unknown range type (defined term)
         TRT_unknown = TRT_invalid,
         /// DICOM Temporal Range Type: POINT
         TRT_Point,
@@ -542,7 +542,7 @@ class DSRTypes
     {
         /// internal type used to indicate an error
         CS_invalid,
-        /// internal type used to indicate an unknown value type (defined term)
+        /// internal type used to indicate an unknown/unsupported character set
         CS_unknown = CS_invalid,
         /// ISO 646 (ISO-IR 6): ASCII
         CS_ASCII,
@@ -1237,6 +1237,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.56  2009-08-24 13:43:11  joergr
+ *  Fixed wrong/misleading comments.
+ *
  *  Revision 1.55  2009-07-27 15:32:29  joergr
  *  Fixed possible memory leak in method addElementToDataset().
  *
