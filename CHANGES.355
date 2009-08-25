@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.25 (riesmeier)
+
+- Added new methods which remove all data elements with an invalid group number
+  from the meta information header, dataset and/or fileformat.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcdatset.h
+           dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+           dcmdata/include/dcmtk/dcmdata/dcmetinf.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcmetinf.cc
+
+- Fixed wrong comment on clear() method.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcfilefo.h
+
 **** Changes from 2009.08.24 (riesmeier)
 
 - Fixed wrong/misleading comments.

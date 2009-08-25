@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:18:07 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2009-08-25 13:00:23 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,6 +108,16 @@ class DcmFileFormat
      *  @return type identifier of this class (EVR_fileFormat)
      */
     virtual DcmEVR ident() const;
+
+    /** clear file meta information header and dataset
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition clear();
+
+    /** remove all elements with an invalid group number from the meta information header
+     *  and dataset 
+     */
+    virtual void removeInvalidGroups();
 
     /** print meta header and dataset to a stream
      *  @param out output stream
@@ -344,12 +354,6 @@ class DcmFileFormat
      */
     virtual DcmItem *remove(DcmItem *item);
 
-    /** method inherited from base class that shall not be used for instances of this class.
-     *  Method immediately returns with error code.
-     *  @return always returns EC_IllegalCall.
-     */
-    virtual OFCondition clear();
-
   private:
 
     /** This function checks if a particular data element of the meta header information is existent
@@ -389,6 +393,11 @@ class DcmFileFormat
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
+** Revision 1.32  2009-08-25 13:00:23  joergr
+** Added new methods which remove all data elements with an invalid group number
+** from the meta information header, dataset and/or fileformat.
+** Fixed wrong comment on clear() method.
+**
 ** Revision 1.31  2009-08-21 09:18:07  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the
