@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:48 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-25 13:00:52 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,6 +101,16 @@ class DcmDataset
      */
     virtual DcmEVR ident() const;
 
+    /** clear (remove) attribute value
+     *  @return EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition clear();
+
+    /** remove all elements with an invalid group number, i.e. 0x0000 to 0x0003,
+     *  0x0005, 0x0007 and 0xFFFF
+     */
+    virtual void removeInvalidGroups();
+
     /** return the transfer syntax in which this dataset was originally read.
      *  @return transfer syntax in which this dataset was originally read, EXS_Unknown if the dataset was created in memory
      */
@@ -167,11 +177,10 @@ class DcmDataset
      *  @param wcache pointer to write cache object, may be NULL
      *  @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(
-      DcmOutputStream &outStream,
-      const E_TransferSyntax oxfer,
-      const E_EncodingType enctype,
-      DcmWriteCache *wcache);
+    virtual OFCondition write(DcmOutputStream &outStream,
+                              const E_TransferSyntax oxfer,
+                              const E_EncodingType enctype,
+                              DcmWriteCache *wcache);
 
     /** This function writes data values which are contained in this
      *  DcmDataset object to the stream which is passed as first argument.
@@ -232,11 +241,6 @@ class DcmDataset
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream&out,
                                  const size_t flags = 0);
-
-    /** clear (remove) attribute value
-     *  @return EC_Normal if successful, an error code otherwise
-     */
-    virtual OFCondition clear();
 
     /** load object from a DICOM file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
@@ -319,6 +323,10 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
+** Revision 1.31  2009-08-25 13:00:52  joergr
+** Added new methods which remove all data elements with an invalid group number
+** from the meta information header, dataset and/or fileformat.
+**
 ** Revision 1.30  2008-07-17 11:19:48  onken
 ** Updated copyFrom() documentation.
 **
