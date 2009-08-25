@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 16:58:24 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2009-08-25 12:54:57 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,25 @@ DcmEVR DcmMetaInfo::ident() const
 E_TransferSyntax DcmMetaInfo::getOriginalXfer() const
 {
     return Xfer;
+}
+
+
+void DcmMetaInfo::removeInvalidGroups()
+{
+    DcmStack stack;
+    DcmObject *object = NULL;
+    /* iterate over all elements */
+    while (nextObject(stack, OFTrue).good())
+    {
+        object = stack.top();
+        /* delete invalid elements */
+        if (object->getTag().getGroup() != 0x0002)
+        {
+            stack.pop();
+            /* remove element from meta information header and free memory */
+            delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
+        }
+    }
 }
 
 
@@ -571,6 +590,10 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.47  2009-08-25 12:54:57  joergr
+** Added new methods which remove all data elements with an invalid group number
+** from the meta information header, dataset and/or fileformat.
+**
 ** Revision 1.46  2009-06-04 16:58:24  joergr
 ** Added new parsing flag that allows for ignoring the value of File Meta
 ** Information Group Length (0002,0000).

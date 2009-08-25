@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:31 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-25 12:54:57 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,9 @@ DcmDataset::~DcmDataset()
 {
 }
 
+
 // ********************************
+
 
 OFCondition DcmDataset::clear()
 {
@@ -118,6 +120,25 @@ DcmEVR DcmDataset::ident() const
 E_TransferSyntax DcmDataset::getOriginalXfer() const
 {
     return Xfer;
+}
+
+
+void DcmDataset::removeInvalidGroups()
+{
+    DcmStack stack;
+    DcmObject *object = NULL;
+    /* iterate over all elements */
+    while (nextObject(stack, OFTrue).good())
+    {
+        object = stack.top();
+        /* delete invalid elements */
+        if ((object->getTag().getGroup() == 0x0002) || !object->getTag().hasValidGroup())
+        {
+            stack.pop();
+            /* remove element from dataset and free memory */
+            delete OFstatic_cast(DcmItem *, stack.top())->remove(object);
+        }
+    }
 }
 
 
@@ -420,7 +441,7 @@ OFCondition DcmDataset::write(DcmOutputStream &outStream,
 
 OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream &outStream,
                                              const E_TransferSyntax oxfer,
-                                             const E_EncodingType enctype,      
+                                             const E_EncodingType enctype,
                                              DcmWriteCache *wcache)
 {
   if (getTransferState() == ERW_notInitialized)
@@ -625,6 +646,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.45  2009-08-25 12:54:57  joergr
+** Added new methods which remove all data elements with an invalid group number
+** from the meta information header, dataset and/or fileformat.
+**
 ** Revision 1.44  2008-07-17 10:31:31  onken
 ** Implemented copyFrom() method for complete DcmObject class hierarchy, which
 ** permits setting an instance's value from an existing object. Implemented

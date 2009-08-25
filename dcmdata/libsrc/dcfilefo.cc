@@ -22,8 +22,8 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 10:44:49 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2009-08-25 12:54:57 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -454,42 +454,42 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
             /* start with empty file meta information */
             if (writeMode == EWM_createNewMeta)
                 metinf->clear();
-    
+
             /* in the following, we want to make sure all elements of the meta header */
             /* are existent in metinf and contain correct values */
             DcmStack stack;
-    
+
             /* DCM_FileMetaInformationGroupLength */
             metinf->search(DCM_FileMetaInformationGroupLength, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_FileMetaInformationGroupLength, stack.top(), oxfer, writeMode);
-    
+
             /* DCM_FileMetaInformationVersion */
             metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer, writeMode);
-    
+
             /* DCM_MediaStorageSOPClassUID */
             metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer, writeMode);
-    
+
             /* DCM_MediaStorageSOPInstanceUID */
             metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer, writeMode);
-    
+
             /* DCM_TransferSyntaxUID */
             metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer, writeMode);
-    
+
             /* DCM_ImplementationClassUID */
             metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer, writeMode);
-    
+
             /* DCM_ImplementationVersionName */
             metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
             checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
-    
+
             /* dump some information if required */
             DCM_dcmdataDebug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo 'metinf'.", metinf->card()));
-    
+
             /* calculate new GroupLength for meta header */
             if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
                 META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
@@ -835,6 +835,16 @@ OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
 // ********************************
 
 
+void DcmFileFormat::removeInvalidGroups()
+{
+    getMetaInfo()->removeInvalidGroups();
+    getDataset()->removeInvalidGroups();
+}
+
+
+// ********************************
+
+
 DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << OFendl;
@@ -918,6 +928,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.54  2009-08-25 12:54:57  joergr
+** Added new methods which remove all data elements with an invalid group number
+** from the meta information header, dataset and/or fileformat.
+**
 ** Revision 1.53  2009-08-21 10:44:49  joergr
 ** Added new 'writeMode' which does not update the the meta header. This could
 ** be useful for tools like dump2dcm and xml2dcm.
