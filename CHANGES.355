@@ -1,6 +1,31 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.26 (riesmeier)
+
+- Added parentheses around && within || in order to avoid warnings reported by
+  gcc 4.3.2.
+  Affects: oflog/libsrc/configurator.cc
+           oflog/libsrc/socket-unix.cc
+           ofstd/libsrc/ofstd.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+- Added suffix "L" to large integer constants in order to avoid warnings
+  reported by gcc 4.3.2.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+
+- Added check on size of long in order to avoid warnings reported by gcc 4.3.2.
+  Affects: dcmdata/libsrc/dcpath.cc
+
+- Added parentheses around + or - in operand of & in order to avoid warnings
+  reported by gcc 4.3.2.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+           dcmimage/include/dcmtk/dcmimage/dicopxt.h
+
+- Added explicit braces to avoid ambiguous else (reported by gcc 4.3.2).
+  Affects: dcmpstat/libsrc/dvpsrs.cc
+
 **** Changes from 2009.08.25 (riesmeier)
 
 - Added new methods which remove all data elements with an invalid group number
