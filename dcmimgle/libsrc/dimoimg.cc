@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 12:22:42 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Update Date:      $Date: 2009-08-26 07:48:48 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1662,7 +1662,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
             if (bits == 8)                                  // -- for idx color model (byte)
             {
                 // each line has to start at 32-bit-address, if 'padding' is true
-                const int gap = (padding) ? (4 - Columns & 0x3) & 0x3 : 0;
+                const int gap = (padding) ? (4 - (Columns & 0x3)) & 0x3 : 0;
                 const unsigned long count = OFstatic_cast(unsigned long, Columns + gap) * OFstatic_cast(unsigned long, Rows);
                 if ((gap > 0) || (nextRow != 0) || (data != NULL))
                 {
@@ -1695,7 +1695,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
             {
                 const unsigned long col3 = OFstatic_cast(unsigned long, Columns) * 3;
                 // each line has to start at 32-bit-address, if 'padding' is true
-                const int gap = (padding) ? OFstatic_cast(int, (4 - col3 & 0x3) & 0x3) : 0;
+                const int gap = (padding) ? OFstatic_cast(int, (4 - (col3 & 0x3)) & 0x3) : 0;
                 const unsigned long count = (col3 + gap) * OFstatic_cast(unsigned long, Rows);
                 if ((data == NULL) || (size >= count))
                 {
@@ -2153,6 +2153,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.76  2009-08-26 07:48:48  joergr
+ * Added parentheses around + or - in operand of & in order to avoid warnings
+ * reported by gcc 4.3.2.
+ *
  * Revision 1.75  2009-04-20 12:22:42  joergr
  * Fixed issue with wrong BitsStored value in writeImageToDataset().
  *

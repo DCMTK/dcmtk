@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-13 10:03:34 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2009-08-26 07:51:31 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -280,7 +280,7 @@ class DiColorPixelTemplate
             {
                 const unsigned long wid3 = OFstatic_cast(unsigned long, width) * 3;
                 // each line has to start at 32-bit-address, if 'padding' is true
-                const int gap = (padding) ? OFstatic_cast(int, (4 - wid3 & 0x3) & 0x3) : 0;
+                const int gap = (padding) ? OFstatic_cast(int, (4 - (wid3 & 0x3)) & 0x3) : 0;
                 unsigned long fsize = (wid3 + gap) * OFstatic_cast(unsigned long, height);
                 if ((data == NULL) || (size >= fsize))
                 {
@@ -595,6 +595,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
+ * Revision 1.28  2009-08-26 07:51:31  joergr
+ * Added parentheses around + or - in operand of & in order to avoid warnings
+ * reported by gcc 4.3.2.
+ *
  * Revision 1.27  2008-05-13 10:03:34  joergr
  * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
  * format for color-by-plane output.
