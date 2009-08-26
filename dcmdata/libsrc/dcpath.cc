@@ -22,9 +22,9 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 11:56:58 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-26 07:47:34 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,7 +132,11 @@ OFString DcmPath::toString() const
     }
     else if ( (vr == EVR_item) || (vr == EVR_dataset) )
     {
+#if SIZEOF_LONG == 8
       sprintf(buf, "[%u]", (*it)->m_itemNo);
+#else
+      sprintf(buf, "[%lu]", (*it)->m_itemNo);
+#endif
       pathStr.append(buf);
       it++;
       if (it != endOfList) pathStr.append(".");
@@ -292,7 +296,11 @@ OFCondition DcmPath::separatePathNodes(const OFString& path,
         result.push_back("[*]");
       else
       {
+#if SIZEOF_LONG == 8
         if (sprintf(buf, "[%u]", itemNo) < 2) return EC_IllegalParameter;
+#else
+        if (sprintf(buf, "[%lu]", itemNo) < 2) return EC_IllegalParameter;
+#endif
         result.push_back(buf);
       }
       nextIsItem = OFFalse;
@@ -361,7 +369,7 @@ OFCondition DcmPathProcessor::findOrCreatePath(DcmObject* obj,
   }
   clear();
   m_createIfNecessary = createIfNecessary;
-  
+
   // do real work in private member functions
   OFString pathCopy = path;
   if ((obj->ident() == EVR_item) || (obj->ident() == EVR_dataset))
@@ -453,7 +461,7 @@ Uint32 DcmPathProcessor::getResults(OFList<DcmPath*>& searchResults)
 }
 
 // applies a string path (optionally with value) to a dataset
-OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset, 
+OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
                                                  const OFString& overrideKey)
 {
   if (dataset == NULL) return EC_IllegalCall;
@@ -484,7 +492,7 @@ OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
   {
     if (value.empty())
       return EC_Normal;
-    else 
+    else
       return makeOFCondition(OFM_dcmdata, 25, OF_error, "Cannot insert value into path ending with item or sequence");
   }
   // insert value into each element affected by path
@@ -924,6 +932,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.8  2009-08-26 07:47:34  joergr
+** Added check on size of long in order to avoid warnings reported by gcc 4.3.2.
+**
 ** Revision 1.7  2009-08-19 11:56:58  meichel
 ** Fixed parameter that was declared as const in the implementation and
 **   as non-const in the class declaration.
