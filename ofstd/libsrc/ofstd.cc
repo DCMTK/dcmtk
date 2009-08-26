@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 10:40:54 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2009-08-26 07:44:31 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1596,7 +1596,7 @@ eformat:
        * conversion is less than -4 or greater than the precision.''
        *      -- ANSI X3J11
        */
-      if (expcnt > prec || !expcnt && fract && fract < .0001)
+      if (expcnt > prec || (!expcnt && fract && fract < .0001))
       {
         /*
          * g/G format counts "significant digits, not digits of
@@ -1725,7 +1725,7 @@ void OFStandard::ftoa(
   // so buffer size stays rational.
   if (prec > FTOA_MAXFRACT)
   {
-    if (fmtch != 'g' && fmtch != 'G' || (flags&FTOA_ALTERNATE_FORM)) fpprec = prec - FTOA_MAXFRACT;
+    if ((fmtch != 'g' && fmtch != 'G') || (flags&FTOA_ALTERNATE_FORM)) fpprec = prec - FTOA_MAXFRACT;
     prec = FTOA_MAXFRACT;
   }
   else if (prec == -1) prec = FTOA_DEFPREC;
@@ -1822,6 +1822,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.52  2009-08-26 07:44:31  joergr
+ *  Added parentheses around && within || in order to avoid warnings reported by
+ *  gcc 4.3.2.
+ *
  *  Revision 1.51  2009-08-19 10:40:54  joergr
  *  Added new string helper functions toUpper() and toLower().
  *

@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-23 13:28:16 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2009-08-26 07:46:22 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1852,7 +1852,7 @@ OFCondition DicomDirInterface::checkDentalRadiographAttributes(DcmItem *dataset,
         }
         long ba;
         dataset->findAndGetLongInt(DCM_BitsAllocated, ba);
-        if (((bs == 8) && (ba != 8)) || (bs != 8) && (ba != 16))
+        if (((bs == 8) && (ba != 8)) || ((bs != 8) && (ba != 16)))
         {
             /* report an error or a warning */
             printUnexpectedValueMessage(DCM_BitsAllocated, filename, EncodingCheck);
@@ -5096,6 +5096,10 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.30  2009-08-26 07:46:22  joergr
+ *  Added parentheses around && within || in order to avoid warnings reported by
+ *  gcc 4.3.2.
+ *
  *  Revision 1.29  2009-02-23 13:28:16  joergr
  *  Fixed issue with checking of DICOM input files (wrong handling of OFCondition
  *  return value).
