@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-26 07:52:21 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1131,7 +1131,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
   }
 
   if ((numberOfEntries > 0) && (numberOfEntries <= 65536) &&
-     ((firstMapped >= -32768) && (firstMapped <= 32767)) || (firstMapped >= 0) && (firstMapped <= 65535))
+     ((firstMapped >= -32768) && (firstMapped <= 32767)) || ((firstMapped >= 0) && (firstMapped <= 65535)))
   {
     Uint16 *data = new Uint16[numberOfEntries];
     if (data != NULL)
@@ -2224,7 +2224,11 @@ OFCondition DVPresentationState::createFromImage(
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.82  2006-08-15 16:57:02  meichel
+ *  Revision 1.83  2009-08-26 07:52:21  joergr
+ *  Added parentheses around && within || in order to avoid warnings reported by
+ *  gcc 4.3.2.
+ *
+ *  Revision 1.82  2006/08/15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
