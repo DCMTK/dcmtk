@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 16:02:35 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2009-08-26 07:45:52 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -425,7 +425,7 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
 
   // Only pixel data up to 2^32 bytes is supported (DICOM) and maximum size for "new" operator = size_t
 
-  if (  ((unsigned long)filesize > (unsigned long)4294967294) || ( (unsigned long)filesize > (unsigned long)((size_t)-1) ) )
+  if (  ((unsigned long)filesize > (unsigned long)4294967294L) || ( (unsigned long)filesize > (unsigned long)((size_t)-1) ) )
   {
     printMessage(m_logStream, "I2DJpegSource: JPEG file length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
@@ -545,7 +545,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
 
   // Allocate buffer for raw JPEG data
   // Only pixel data up to 2^32 bytes is supported (DICOM)
-  if (  ((unsigned long)rawStreamSize > (unsigned long)4294967294) || ( (unsigned long)rawStreamSize > (unsigned long)((size_t)-1) ) )
+  if ( ((unsigned long)rawStreamSize > (unsigned long)4294967294L) || ( (unsigned long)rawStreamSize > (unsigned long)((size_t)-1) ) )
   {
     printMessage(m_logStream, "I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
@@ -893,9 +893,9 @@ void I2DJpegSource::debugDumpJPEGFileMap() const
   {
     if (m_logStream)
     {
-      m_logStream->lockCerr() 
-		  << "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8) 
-		  << STD_NAMESPACE setfill('0') 
+      m_logStream->lockCerr()
+		  << "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8)
+		  << STD_NAMESPACE setfill('0')
 		  /* need to cast bytePos to unsigned long to keep VC6 happy */
 		  << OFstatic_cast(unsigned long, (*it)->bytePos)
 		  <<" | Marker: " << jpegMarkerToString( (*it)->marker) << OFendl << STD_NAMESPACE dec;
@@ -936,6 +936,10 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.9  2009-08-26 07:45:52  joergr
+ * Added suffix "L" to large integer constants in order to avoid warnings
+ * reported by gcc 4.3.2.
+ *
  * Revision 1.8  2009-04-20 16:02:35  joergr
  * Fixed typo.
  *
