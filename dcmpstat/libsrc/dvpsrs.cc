@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-08-26 08:15:30 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmpstat/dvpsrs.h"
-#include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
-#include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
+#include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants and macros */
+#include "dcmtk/dcmpstat/dvpsri.h"    /* for DVPSReferencedImage, needed by MSVC5 with STL */
 
 /* --------------- class DVPSReferencedSeries --------------- */
 
@@ -77,7 +77,7 @@ OFCondition DVPSReferencedSeries::read(DcmItem &dset)
   READ_FROM_DATASET(DcmShortString, storageMediaFileSetID)
   READ_FROM_DATASET(DcmUniqueIdentifier, storageMediaFileSetUID)
   if (result==EC_Normal) result = referencedImageList.read(dset);
-  
+
   /* Now perform basic sanity checks */
 
   if (seriesInstanceUID.getLength() == 0)
@@ -133,7 +133,7 @@ OFCondition DVPSReferencedSeries::write(DcmItem &dset)
 {
   OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
-  
+
   ADD_TO_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
   if (retrieveAETitle.getLength() > 0)
   {
@@ -180,7 +180,7 @@ void DVPSReferencedSeries::removeImageReference(const char *sopinstanceuid)
 
 OFCondition DVPSReferencedSeries::addImageReference(
     const char *sopclassUID,
-    const char *instanceUID, 
+    const char *instanceUID,
     const char *frames)
 {
   return referencedImageList.addImageReference(sopclassUID, instanceUID, frames);
@@ -222,7 +222,7 @@ OFCondition DVPSReferencedSeries::getImageReference(
     size_t idx,
     OFString& seriesUID,
     OFString& sopclassUID,
-    OFString& instanceUID, 
+    OFString& instanceUID,
     OFString& frames,
     OFString& aetitle,
     OFString& filesetID,
@@ -230,9 +230,27 @@ OFCondition DVPSReferencedSeries::getImageReference(
 {
   OFCondition result = referencedImageList.getImageReference(idx, sopclassUID, instanceUID, frames);
   if (EC_Normal == result) result = seriesInstanceUID.getOFString(seriesUID,0); // must not be empty string
-  if (EC_Normal == result) if (retrieveAETitle.getLength() == 0) aetitle.clear(); else result = retrieveAETitle.getOFString(aetitle,0);
-  if (EC_Normal == result) if (storageMediaFileSetID.getLength() == 0) filesetID.clear(); else result = storageMediaFileSetID.getOFString(filesetID,0);
-  if (EC_Normal == result) if (storageMediaFileSetUID.getLength() == 0) filesetUID.clear(); else result = storageMediaFileSetUID.getOFString(filesetUID,0);
+  if (EC_Normal == result)
+  {
+    if (retrieveAETitle.getLength() == 0)
+      aetitle.clear();
+    else
+      result = retrieveAETitle.getOFString(aetitle,0);
+  }
+  if (EC_Normal == result)
+  {
+    if (storageMediaFileSetID.getLength() == 0)
+      filesetID.clear();
+    else
+      result = storageMediaFileSetID.getOFString(filesetID,0);
+  }
+  if (EC_Normal == result)
+  {
+    if (storageMediaFileSetUID.getLength() == 0)
+      filesetUID.clear();
+    else
+      result = storageMediaFileSetUID.getOFString(filesetUID,0);
+  }
   return result;
 }
 
@@ -246,7 +264,10 @@ void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpsrs.cc,v $
- *  Revision 1.14  2006-08-15 16:57:02  meichel
+ *  Revision 1.15  2009-08-26 08:15:30  joergr
+ *  Added explicit braces to avoid ambiguous else (reported by gcc 4.3.2).
+ *
+ *  Revision 1.14  2006/08/15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.
  *
@@ -295,4 +316,3 @@ void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
  *
  *
  */
-
