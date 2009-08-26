@@ -24,7 +24,7 @@
 # endif
 # include <arpa/inet.h>
 #endif
- 
+
 
 #if defined(__APPLE__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__hpux__) || defined (__CYGWIN__)
 #include <netinet/in.h>
@@ -146,16 +146,16 @@ long
 log4cplus::helpers::read(SOCKET_TYPE sock, SocketBuffer& buffer)
 {
     long res, read = 0;
- 
+
     do
-    { 
+    {
         res = ::read(sock, buffer.getBuffer() + read, buffer.getMaxSize() - read);
         if( res <= 0 ) {
             return res;
         }
         read += res;
     } while( read < static_cast<long>(buffer.getMaxSize()) );
- 
+
     return read;
 }
 
@@ -202,7 +202,7 @@ log4cplus::helpers::getHostname (bool fqdn)
             break;
     }
 
-    if (ret != 0 || ret == 0 && ! fqdn)
+    if (ret != 0 || (ret == 0 && ! fqdn))
     {
         free(hn);
         return LOG4CPLUS_STRING_TO_TSTRING (hostname);
@@ -216,4 +216,3 @@ log4cplus::helpers::getHostname (bool fqdn)
     free(hn);
     return res;
 }
-

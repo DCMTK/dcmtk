@@ -125,7 +125,7 @@ namespace
             replacement.clear ();
             if (shadow_env)
                 replacement = props.getProperty (key);
-            if (! shadow_env || ! empty_vars && replacement.empty ())
+            if (! shadow_env || (! empty_vars && replacement.empty ()))
             {
                 char const * env_var
                     = std::getenv(LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
