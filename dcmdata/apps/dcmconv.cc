@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:25:13 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Update Date:      $Date: 2009-08-26 10:12:42 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,6 +117,7 @@ int main(int argc, char *argv[])
 #ifdef WITH_ZLIB
   OFCmdUnsignedInt opt_compressionLevel = 0;
 #endif
+  OFBool opt_noInvalidGroups = OFFalse;
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
   OFCommandLine cmd;
@@ -166,7 +167,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--ignore-parse-errors", "+Ep",    "try to recover from parse errors");
       cmd.addOption("--handle-parse-errors", "-Ep",    "handle parse errors and stop parsing (default)");
     cmd.addSubGroup("other parsing options:");
-        cmd.addOption("--stop-after-elem",   "+st", 1, "[t]ag: \"gggg,eeee\" or dictionary name",
+      cmd.addOption("--stop-after-elem",     "+st", 1, "[t]ag: \"gggg,eeee\" or dictionary name",
                                                        "stop parsing after element specified by t");
     cmd.addSubGroup("automatic data correction:");
       cmd.addOption("--enable-correction",   "+dc",    "enable automatic data correction (default)");
@@ -180,6 +181,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("output options:");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",          "+F",     "write file format (default)");
+      cmd.addOption("--write-new-meta-info", "+Fm",    "write file format with new meta information");
       cmd.addOption("--write-dataset",       "-F",     "write data set without file meta information");
     cmd.addSubGroup("output transfer syntax:");
       cmd.addOption("--write-xfer-same",     "+t=",    "write with same TS as input (default)");
@@ -211,6 +213,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--compression-level",   "+cl", 1, "[l]evel: integer (default: 6)",
                                                        "0=uncompressed, 1=fastest, 9=best compression");
 #endif
+
+    cmd.addSubGroup("other output options:");
+      cmd.addOption("--no-invalid-groups",   "-ig",    "don't write elements with invalid group number");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -252,23 +257,23 @@ int main(int argc, char *argv[])
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
-          opt_ixfer = EXS_Unknown;
+        opt_ixfer = EXS_Unknown;
       if (cmd.findOption("--read-xfer-detect"))
-          dcmAutoDetectDatasetXfer.set(OFTrue);
+        dcmAutoDetectDatasetXfer.set(OFTrue);
       if (cmd.findOption("--read-xfer-little"))
       {
-          app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
-          opt_ixfer = EXS_LittleEndianExplicit;
+        app.checkDependence("--read-xfer-little", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-          app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
-          opt_ixfer = EXS_BigEndianExplicit;
+        app.checkDependence("--read-xfer-big", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
-          opt_ixfer = EXS_LittleEndianImplicit;
+        app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_readMode == ERM_dataset);
+        opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -383,6 +388,7 @@ int main(int argc, char *argv[])
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--write-file")) opt_writeMode = EWM_fileformat;
+      if (cmd.findOption("--write-new-meta-info")) opt_writeMode = EWM_createNewMeta;
       if (cmd.findOption("--write-dataset")) opt_writeMode = EWM_dataset;
       cmd.endOptionBlock();
 
@@ -399,13 +405,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--enable-new-vr"))
       {
-          dcmEnableUnknownVRGeneration.set(OFTrue);
-          dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
+        dcmEnableUnknownVRGeneration.set(OFTrue);
+        dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
-          dcmEnableUnknownVRGeneration.set(OFFalse);
-          dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
+        dcmEnableUnknownVRGeneration.set(OFFalse);
+        dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
@@ -428,28 +434,29 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain"))
       {
-          app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
-          opt_opadenc = EPD_noChange;
+        app.checkConflict("--padding-retain", "--write-dataset", opt_writeMode == EWM_dataset);
+        opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-          app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
-          app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
-          app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
-          opt_opadenc = EPD_withPadding;
+        app.checkConflict("--padding-create", "--write-dataset", opt_writeMode == EWM_dataset);
+        app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
+        opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
 
 #ifdef WITH_ZLIB
       if (cmd.findOption("--compression-level"))
       {
-          app.checkDependence("--compression-level", "--write-xfer-deflated", opt_oxfer == EXS_DeflatedLittleEndianExplicit);
-          app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
-          dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
+        app.checkDependence("--compression-level", "--write-xfer-deflated", opt_oxfer == EXS_DeflatedLittleEndianExplicit);
+        app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
+        dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
       }
 #endif
 
+      if (cmd.findOption("--no-invalid-groups")) opt_noInvalidGroups = OFTrue;
     }
 
     if (opt_debugMode)
@@ -472,7 +479,7 @@ int main(int argc, char *argv[])
     }
 
     DcmFileFormat fileformat;
-    DcmDataset * dataset = fileformat.getDataset();
+    DcmDataset *dataset = fileformat.getDataset();
 
     if (opt_verbose)
         COUT << "open input file " << opt_ifname << OFendl;
@@ -490,6 +497,12 @@ int main(int argc, char *argv[])
         COUT << "load all data into memory" << OFendl;
     /* make sure that pixel data is loaded before output file is created */
     dataset->loadAllDataIntoMemory();
+
+    if (opt_noInvalidGroups)
+    {
+        COUT << "remove all elements with an invalid group number" << OFendl;
+        fileformat.removeInvalidGroups();
+    }
 
     if (opt_oxfer == EXS_Unknown)
     {
@@ -539,6 +552,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.68  2009-08-26 10:12:42  joergr
+** Added new command line options --write-new-meta-info and --no-invalid-groups.
+**
 ** Revision 1.67  2009-08-21 09:25:13  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the

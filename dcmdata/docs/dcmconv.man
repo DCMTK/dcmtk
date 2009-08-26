@@ -160,6 +160,9 @@ output file format:
   +F   --write-file
          write file format (default)
 
+  +Fm  --write-new-meta-info
+         write file format with new meta information
+
   -F   --write-dataset
          write data set without file meta information
 
@@ -230,6 +233,11 @@ deflate compression level (only with --write-xfer-deflated):
 
   +cl  --compression-level  [l]evel: integer (default: 6)
          0=uncompressed, 1=fastest, 9=best compression
+
+other output options:
+
+  -ig  --no-invalid-groups
+         don't write elements with invalid group number
 \endverbatim
 
 \section command_line COMMAND LINE

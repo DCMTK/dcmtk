@@ -26,6 +26,10 @@ Changes between releases are documented here.
 - Added explicit braces to avoid ambiguous else (reported by gcc 4.3.2).
   Affects: dcmpstat/libsrc/dvpsrs.cc
 
+- Added new command line options --write-new-meta-info and --no-invalid-groups.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.man
+
 **** Changes from 2009.08.25 (riesmeier)
 
 - Added new methods which remove all data elements with an invalid group number
