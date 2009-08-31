@@ -1,6 +1,14 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.08.31 (riesmeier)
+
+- Fixed bug in group length computation which could cause a segmentation fault
+  for incorrectly encoded DICOM datasets (with illegal group length elements).
+  Thank to Evgeny Sabelskiy <evgeny.sabelskiy@gmail.com> for the original
+  report.
+  Affects: dcmdata/libsrc/dcitem.cc
+
 **** Changes from 2009.08.26 (riesmeier)
 
 - Added parentheses around && within || in order to avoid warnings reported by

@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.137 $
+ *  Update Date:      $Date: 2009-08-31 15:21:57 $
+ *  CVS/RCS Revision: $Revision: 1.138 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -594,7 +594,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
 
                     /* and if the group number is different from the last remembered group number or */
                     /* if this id the very first element that is treated then we've found a new group */
-                    if (actGrp!=lastGrp || beginning) // new Group found
+                    if (actGrp != lastGrp || beginning) // new Group found
                     {
                         /* set beginning to false in order to specify that the */
                         /* very first element has already been treated */
@@ -631,7 +631,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         if (padenc == EPD_withPadding && actGrp == 0xfffc)
                             paddingGL = OFstatic_cast(DcmUnsignedLong *, dO);
 
-                        /* if actGLElem conatins a valid pointer it was set in one of the last iterations */
+                        /* if actGLElem contains a valid pointer it was set in one of the last iterations */
                         /* to the group lenght element of the last group. We need to write the current computed */
                         /* group length value to this element. Exception: If group length exceeds maximum possible */
                         /* value, than remove group length element instead of setting it */
@@ -639,7 +639,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding(const E_GrpLenEncoding glenc,
                         {
                             if (!groupLengthExceeded)
                             {
-                              actGLElem->putUint32(grplen);
+                              // do not use putUint32() in order to make sure that the resulting VM is really 1
+                              actGLElem->putUint32Array(&grplen, 1);
                               DCM_dcmdataDebug(2, ("DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen));
                             }
                             else
@@ -3648,6 +3649,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.138  2009-08-31 15:21:57  joergr
+** Fixed bug in group length computation which could cause a segmentation fault
+** for incorrectly encoded DICOM datasets (with illegal group length elements).
+**
 ** Revision 1.137  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.
