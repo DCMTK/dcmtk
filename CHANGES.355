@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.02 (riesmeier)
+
+- Revised documentation of parameter "pos" for some putAndInsertXXX() functions
+  in order to make clear what the possible range of values is.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcitem.h
+
 **** Changes from 2009.08.31 (riesmeier)
 
 - Fixed bug in group length computation which could cause a segmentation fault

@@ -22,8 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:40:38 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2009-09-02 09:58:21 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ class DcmItem
 
     /** calculate the value length (without attribute tag, VR and length field)
      *  of this DICOM element when encoded with the given transfer syntax and
-     *  the given encoding type for sequences. 
+     *  the given encoding type for sequences.
      *  If length encodig is set to be explicit and the item content is larger
      *  than the available 32-bit length field, then undefined length is
      *  returned. If "dcmWriteOversizedSeqsAndItemsUndefined" is disabled,
@@ -858,7 +858,8 @@ class DcmItem
      *  Applicable to the following VRs: US, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -884,7 +885,8 @@ class DcmItem
      *  Applicable to the following VRs: SS, xs (US or SS)
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -910,7 +912,8 @@ class DcmItem
      *  Applicable to the following VRs: UL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -923,7 +926,8 @@ class DcmItem
      *  Applicable to the following VRs: SL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -936,7 +940,8 @@ class DcmItem
      *  Applicable to the following VRs: FL, OF
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -949,7 +954,8 @@ class DcmItem
      *  Applicable to the following VRs: FD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
-     *  @param pos index of the value to be set (0..vm-1)
+     *  @param pos index of the value to be set (0..vm). A value can be appended to
+     *    the end of or inserted within the existing value field.
      *  @param replaceOld flag indicating whether to replace an existing element or not
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -1145,6 +1151,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
+** Revision 1.78  2009-09-02 09:58:21  joergr
+** Revised documentation of parameter "pos" for some putAndInsertXXX() functions
+** in order to make clear what the possible range of values is.
+**
 ** Revision 1.77  2009-08-07 14:40:38  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.
