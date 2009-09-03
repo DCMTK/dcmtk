@@ -138,7 +138,7 @@ Logger::swap (Logger & other)
     spi::LoggerImpl* tmp = value;
     value = other.value;
     other.value = tmp;
-    //std::swap (value, other.value);
+    //STD_NAMESPACE swap (value, other.value);
 }
 
 

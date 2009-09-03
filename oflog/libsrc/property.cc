@@ -41,9 +41,9 @@ int
 is_space (tchar ch)
 {
 #if defined (UNICODE)
-    return std::iswspace (ch);
+    return STD_NAMESPACE iswspace (ch);
 #else
-    return std::isspace (ch);
+    return STD_NAMESPACE isspace (ch);
 #endif
 }
 
@@ -96,7 +96,7 @@ namespace helpers
 // Properties ctors and dtor
 ///////////////////////////////////////////////////////////////////////////////
 
-Properties::Properties() 
+Properties::Properties()
 {
 }
 
@@ -120,21 +120,21 @@ Properties::Properties(const tstring& inputFile)
 
 
 
-void 
-Properties::init(tistream& input) 
+void
+Properties::init(tistream& input)
 {
     if (! input)
         return;
 
     // FIXME
     //tstring buffer;
-    std::string _buffer;
-    while (std::getline (input, _buffer))
+    STD_NAMESPACE string _buffer;
+    while (STD_NAMESPACE getline (input, _buffer))
     {
         tstring buffer(_buffer.c_str());
         trim_leading_ws (buffer);
 
-        // Check if we have a trailing \r because we are 
+        // Check if we have a trailing \r because we are
         // reading a properties file produced on Windows.
         tstring::size_type const buffLen = buffer.size ();
 
@@ -158,7 +158,7 @@ Properties::init(tistream& input)
 
 
 
-Properties::~Properties() 
+Properties::~Properties()
 {
 }
 
@@ -169,7 +169,7 @@ Properties::~Properties()
 ///////////////////////////////////////////////////////////////////////////////
 
 tstring
-Properties::getProperty(const tstring& key) const 
+Properties::getProperty(const tstring& key) const
 {
     StringMap::const_iterator it (data.find(key));
     if (it == data.end())
@@ -193,7 +193,7 @@ Properties::getProperty(const tstring& key,
 
 
 OFList<tstring>
-Properties::propertyNames() const 
+Properties::propertyNames() const
 {
     OFList<tstring> tmp;
     for (StringMap::const_iterator it=data.begin(); it!=data.end(); ++it)
@@ -218,7 +218,7 @@ Properties::removeProperty(const tstring& key)
 }
 
 
-Properties 
+Properties
 Properties::getPropertySubset(
     const tstring& prefix) const
 {

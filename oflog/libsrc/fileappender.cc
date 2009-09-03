@@ -59,7 +59,7 @@ file_rename (tstring const & src, tstring const & target)
 #if defined (UNICODE) && defined (WIN32)
     return _wrename (src.c_str (), target.c_str ()) == 0 ? 0 : -1;
 #else
-    return std::rename (LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
+    return STD_NAMESPACE rename (LOG4CPLUS_TSTRING_TO_STRING (src).c_str (),
         LOG4CPLUS_TSTRING_TO_STRING (target).c_str ()) == 0 ? 0 : -1;
 #endif
 }
@@ -72,7 +72,7 @@ file_remove (tstring const & src)
 #if defined (UNICODE) && defined (WIN32)
     return _wremove (src.c_str ()) == 0 ? 0 : -1;
 #else
-    return std::remove (LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
+    return STD_NAMESPACE remove (LOG4CPLUS_TSTRING_TO_STRING (src).c_str ()) == 0
         ? 0 : -1;
 #endif
 }
@@ -175,7 +175,7 @@ FileAppender::FileAppender(const Properties& properties,
     : Appender(properties)
     , immediateFlush(true)
 {
-    bool append = (mode == std::ios::app);
+    bool append = (mode == STD_NAMESPACE ios::app);
     tstring filename_ = properties.getProperty( LOG4CPLUS_TEXT("File") );
     if (filename_.empty())
     {
@@ -191,7 +191,7 @@ FileAppender::FileAppender(const Properties& properties,
         append = (helpers::toLower(tmp) == LOG4CPLUS_TEXT("true"));
     }
 
-    init(filename_, (append ? std::ios::app : std::ios::trunc));
+    init(filename_, (append ? STD_NAMESPACE ios::app : STD_NAMESPACE ios::trunc));
 }
 
 
@@ -263,21 +263,21 @@ FileAppender::append(const spi::InternalLoggingEvent& event)
 
 RollingFileAppender::RollingFileAppender(const tstring& filename,
     long maxFileSize_, int maxBackupIndex_, bool immediateFlush)
-    : FileAppender(filename, std::ios::app, immediateFlush)
+    : FileAppender(filename, STD_NAMESPACE ios::app, immediateFlush)
 {
     init(maxFileSize_, maxBackupIndex_);
 }
 
 
 RollingFileAppender::RollingFileAppender(const Properties& properties)
-    : FileAppender(properties, std::ios::app)
+    : FileAppender(properties, STD_NAMESPACE ios::app)
 {
     int maxFileSize_ = 10*1024*1024;
     int maxBackupIndex_ = 1;
     if(properties.exists( LOG4CPLUS_TEXT("MaxFileSize") )) {
         tstring tmp = properties.getProperty( LOG4CPLUS_TEXT("MaxFileSize") );
         tmp = helpers::toUpper(tmp);
-        maxFileSize_ = std::atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        maxFileSize_ = STD_NAMESPACE atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
         if(tmp.find( LOG4CPLUS_TEXT("MB") ) == (tmp.length() - 2)) {
             maxFileSize_ *= (1024 * 1024); // convert to megabytes
         }
@@ -288,7 +288,7 @@ RollingFileAppender::RollingFileAppender(const Properties& properties)
 
     if(properties.exists( LOG4CPLUS_TEXT("MaxBackupIndex") )) {
         tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("MaxBackupIndex"));
-        maxBackupIndex_ = std::atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        maxBackupIndex_ = STD_NAMESPACE atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(maxFileSize_, maxBackupIndex_);
@@ -379,7 +379,7 @@ RollingFileAppender::rollover()
 
     // Open it up again in truncation mode
     out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(),
-        std::ios::out | std::ios::trunc);
+        STD_NAMESPACE ios::out | STD_NAMESPACE ios::trunc);
     loglog_opening_result (loglog, out, filename);
 }
 
@@ -391,7 +391,7 @@ RollingFileAppender::rollover()
 DailyRollingFileAppender::DailyRollingFileAppender(
     const tstring& filename, DailyRollingFileSchedule schedule_,
     bool immediateFlush, int maxBackupIndex)
-    : FileAppender(filename, std::ios::app, immediateFlush)
+    : FileAppender(filename, STD_NAMESPACE ios::app, immediateFlush)
     , maxBackupIndex(maxBackupIndex)
 {
     init(schedule_);
@@ -401,7 +401,7 @@ DailyRollingFileAppender::DailyRollingFileAppender(
 
 DailyRollingFileAppender::DailyRollingFileAppender(
     const Properties& properties)
-    : FileAppender(properties, std::ios::app)
+    : FileAppender(properties, STD_NAMESPACE ios::app)
     , maxBackupIndex(10)
 {
     DailyRollingFileSchedule theSchedule = DAILY;
@@ -428,7 +428,7 @@ DailyRollingFileAppender::DailyRollingFileAppender(
 
     if(properties.exists( LOG4CPLUS_TEXT("MaxBackupIndex") )) {
         tstring tmp = properties.getProperty(LOG4CPLUS_TEXT("MaxBackupIndex"));
-        maxBackupIndex = std::atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
+        maxBackupIndex = STD_NAMESPACE atoi(LOG4CPLUS_TSTRING_TO_STRING(tmp).c_str());
     }
 
     init(theSchedule);
@@ -577,7 +577,7 @@ DailyRollingFileAppender::rollover()
 
     // Open a new file
     out.open(LOG4CPLUS_TSTRING_TO_STRING(filename).c_str(),
-        std::ios::out | std::ios::trunc);
+        STD_NAMESPACE ios::out | STD_NAMESPACE ios::trunc);
     loglog_opening_result (loglog, out, filename);
 
     // Calculate the next rollover time

@@ -113,7 +113,7 @@ LoggerImpl::getChainedLogLevel() const
     }
 
     getLogLog().error( LOG4CPLUS_TEXT("LoggerImpl::getChainedLogLevel()- No valid LogLevel found") );
-    //throw std::runtime_error("No valid LogLevel found");
+    //throw STD_NAMESPACE runtime_error("No valid LogLevel found");
     abort();
 }
 

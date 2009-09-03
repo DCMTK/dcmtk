@@ -249,7 +249,7 @@ Hierarchy::getInstanceImpl(const log4cplus::tstring& name, spi::LoggerFactory& f
          bool inserted = loggerPtrs.insert(OFMake_pair(name, logger)).second;
          if(!inserted) {
              getLogLog().error(LOG4CPLUS_TEXT("Hierarchy::getInstanceImpl()- Insert failed"));
-             //throw std::runtime_error("Hierarchy::getInstanceImpl()- Insert failed");
+             //throw STD_NAMESPACE runtime_error("Hierarchy::getInstanceImpl()- Insert failed");
              abort();
          }
 
@@ -259,7 +259,7 @@ Hierarchy::getInstanceImpl(const log4cplus::tstring& name, spi::LoggerFactory& f
              bool deleted = (provisionNodes.erase(name) > 0);
              if(!deleted) {
                  getLogLog().error(LOG4CPLUS_TEXT("Hierarchy::getInstanceImpl()- Delete failed"));
-                 //throw std::runtime_error("Hierarchy::getInstanceImpl()- Delete failed");
+                 //throw STD_NAMESPACE runtime_error("Hierarchy::getInstanceImpl()- Delete failed");
                  abort();
              }
          }
@@ -312,10 +312,10 @@ Hierarchy::updateParents(Logger logger)
                 node.push_back(logger);
                 OFPair<ProvisionNodeMap::iterator, bool> tmp =
                     provisionNodes.insert(OFMake_pair(substr, node));
-                //bool inserted = provisionNodes.insert(std::make_pair(substr, node)).second;
+                //bool inserted = provisionNodes.insert(STD_NAMESPACE make_pair(substr, node)).second;
                 if(!tmp.second) {
                     getLogLog().error(LOG4CPLUS_TEXT("Hierarchy::updateParents()- Insert failed"));
-                    //throw std::runtime_error("Hierarchy::updateParents()- Insert failed");
+                    //throw STD_NAMESPACE runtime_error("Hierarchy::updateParents()- Insert failed");
                     abort();
                 }
             }
@@ -342,4 +342,3 @@ Hierarchy::updateChildren(ProvisionNode& pn, Logger logger)
         }
     }
 }
-

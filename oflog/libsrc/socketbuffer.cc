@@ -64,7 +64,7 @@ log4cplus::helpers::SocketBuffer::~SocketBuffer()
 
 
 
-SocketBuffer& 
+SocketBuffer&
 log4cplus::helpers::SocketBuffer::operator=(const SocketBuffer& rhs)
 {
     if(&rhs != this) {
@@ -132,7 +132,7 @@ log4cplus::helpers::SocketBuffer::readShort()
     }
 
     unsigned short ret;
-    std::memcpy(&ret, buffer + pos, sizeof(ret));
+    STD_NAMESPACE memcpy(&ret, buffer + pos, sizeof(ret));
     ret = ntohs(ret);
     pos += sizeof(unsigned short);
 
@@ -154,10 +154,10 @@ log4cplus::helpers::SocketBuffer::readInt()
     }
 
     unsigned int ret;
-    std::memcpy (&ret, buffer + pos, sizeof(ret));
+    STD_NAMESPACE memcpy (&ret, buffer + pos, sizeof(ret));
     ret = ntohl(ret);
     pos += sizeof(unsigned int);
-    
+
     return ret;
 }
 
@@ -202,7 +202,7 @@ log4cplus::helpers::SocketBuffer::readString(unsigned char sizeOfChar)
 
 #else /* UNICODE */
     if(sizeOfChar == 1) {
-        std::string ret(&buffer[pos], strlen);
+        STD_NAMESPACE string ret(&buffer[pos], strlen);
         pos += strlen;
         return towstring(ret);
     }
@@ -247,7 +247,7 @@ log4cplus::helpers::SocketBuffer::appendShort(unsigned short val)
     }
 
     unsigned short s = htons(val);
-    std::memcpy(buffer + pos, &s, sizeof (s));
+    STD_NAMESPACE memcpy(buffer + pos, &s, sizeof (s));
     pos += sizeof(s);
     size = pos;
 }
@@ -263,7 +263,7 @@ log4cplus::helpers::SocketBuffer::appendInt(unsigned int val)
     }
 
     int i = htonl(val);
-    std::memcpy(buffer + pos, &i, sizeof (i));
+    STD_NAMESPACE memcpy(buffer + pos, &i, sizeof (i));
     pos += sizeof(i);
     size = pos;
 }
@@ -279,18 +279,18 @@ log4cplus::helpers::SocketBuffer::appendSize_t(size_t val)
             LOG4CPLUS_TEXT("Attempt to write beyond end of buffer"));
         return;
     }
-    //if (val > (std::numeric_limits<unsigned>::max) ())
+    //if (val > (STD_NAMESPACE numeric_limits<unsigned>::max) ())
     // htonl expects a 32 bit value
     if (val > UINT_MAX)
     {
         getLogLog().error(LOG4CPLUS_TEXT("SocketBuffer::appendInt(size_t)-")
             LOG4CPLUS_TEXT(" Attempt to write value greater than")
-            LOG4CPLUS_TEXT(" std::numeric_limits<unsigned>::max"));
+            LOG4CPLUS_TEXT(" STD_NAMESPACE numeric_limits<unsigned>::max"));
         return;
     }
 
     unsigned st = htonl(static_cast<unsigned>(val));
-    std::memcpy(buffer + pos, &st, sizeof(st));
+    STD_NAMESPACE memcpy(buffer + pos, &st, sizeof(st));
     pos += sizeof(st);
     size = pos;
 }
@@ -308,7 +308,7 @@ log4cplus::helpers::SocketBuffer::appendString(const tstring& str)
     }
 
     appendInt(strlen);
-    std::memcpy(&buffer[pos], str.data(), strlen);
+    STD_NAMESPACE memcpy(&buffer[pos], str.data(), strlen);
     pos += strlen;
     size = pos;
 #else
@@ -336,10 +336,7 @@ log4cplus::helpers::SocketBuffer::appendBuffer(const SocketBuffer& buf)
         return;
     }
 
-    std::memcpy(&buffer[pos], buf.buffer, buf.getSize());
+    STD_NAMESPACE memcpy(&buffer[pos], buf.buffer, buf.getSize());
     pos += buf.getSize();
     size = pos;
 }
-
-
-

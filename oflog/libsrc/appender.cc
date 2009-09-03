@@ -113,7 +113,7 @@ Appender::Appender(const log4cplus::helpers::Properties properties)
                 layout = newLayout;
             }
         }
-        catch(std::exception& e) {
+        catch(STD_NAMESPACE exception& e) {
             getLogLog().error(  LOG4CPLUS_TEXT("Error while creating Layout: ")
                               + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
             return;

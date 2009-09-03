@@ -11,7 +11,6 @@
 // distribution in the LICENSE.APL file.
 //
 
-#ifndef LOG4CPLUS_SINGLE_THREADED
 
 //#include <cassert>
 #define INCLUDE_CASSERT
@@ -23,6 +22,8 @@
 #include "dcmtk/ofstd/ofstdinc.h"
 
 #include "dcmtk/oflog/config.h"
+
+#ifndef LOG4CPLUS_SINGLE_THREADED
 
 #if defined(LOG4CPLUS_USE_PTHREADS)
 #  include <sched.h>
@@ -148,7 +149,7 @@ extern "C"
         {
             thread->run();
         }
-        catch(std::exception& e)
+        catch(STD_NAMESPACE exception& e)
         {
             tstring err = LOG4CPLUS_TEXT("threadStartFunc()- run() terminated with an exception: ");
             err += LOG4CPLUS_C_STR_TO_TSTRING(e.what());
@@ -211,7 +212,7 @@ AbstractThread::start()
         helpers::SharedObjectPtr<helpers::LogLog> loglog
             = helpers::LogLog::getLogLog();
         loglog->error( LOG4CPLUS_TEXT("Thread creation was not successful") );
-        //throw std::runtime_error("Thread creation was not successful");
+        //throw STD_NAMESPACE runtime_error("Thread creation was not successful");
         abort();
     }
 #elif defined(LOG4CPLUS_USE_WIN32_THREADS)
@@ -227,7 +228,7 @@ AbstractThread::start()
         helpers::SharedObjectPtr<helpers::LogLog> loglog
             = helpers::LogLog::getLogLog();
         loglog->error( LOG4CPLUS_TEXT("Thread creation was not successful") );
-        //throw std::runtime_error("Thread creation was not successful");
+        //throw STD_NAMESPACE runtime_error("Thread creation was not successful");
         abort();
     }
     h = InterlockedExchangePointer (&handle, h);

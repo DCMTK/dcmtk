@@ -739,7 +739,7 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
     }
     else {
         error = LOG4CPLUS_TEXT("ConversionPattern not specified in properties");
-        //throw std::runtime_error("ConversionPattern not specified in properties");
+        //throw STD_NAMESPACE runtime_error("ConversionPattern not specified in properties");
         return;
     }
     error.clear();

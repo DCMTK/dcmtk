@@ -66,7 +66,7 @@ init_winsock ()
                 const_cast<LPLONG>(&winsock_state), WS_UNINITIALIZED,
                 WS_INITIALIZING);
             assert (val == WS_INITIALIZING);
-            throw std::runtime_error ("Could not initialize WinSock.");
+            throw STD_NAMESPACE runtime_error ("Could not initialize WinSock.");
         }
 
         // WinSock is initialized, change the state to WS_INITIALIZED.
@@ -92,7 +92,7 @@ init_winsock ()
 
             default:
                 assert (0);
-                throw std::runtime_error ("Unknown WinSock state.");
+                throw STD_NAMESPACE runtime_error ("Unknown WinSock state.");
             }
         }
 
@@ -102,7 +102,7 @@ init_winsock ()
 
     default:
         assert (0);
-        throw std::runtime_error ("Unknown WinSock state.");
+        throw STD_NAMESPACE runtime_error ("Unknown WinSock state.");
     }
 }
 

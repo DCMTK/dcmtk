@@ -89,7 +89,7 @@ NDC::clear()
             LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::clear()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -108,7 +108,7 @@ NDC::cloneStack()
             return DiagnosticContextStack(*ptr);
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::cloneStack()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -132,7 +132,7 @@ NDC::inherit(const DiagnosticContextStack& stack)
         ptr = new DiagnosticContextStack(stack);
         LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, ptr );
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::inherit()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -151,7 +151,7 @@ NDC::get()
             return ptr->top().fullMessage;
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::get()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -172,7 +172,7 @@ NDC::getDepth()
             return ptr->size();
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::getDepth()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -201,7 +201,7 @@ NDC::pop()
             return dc.message;
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::pop()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -222,7 +222,7 @@ NDC::peek()
             return ptr->top().message;
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::peek()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -252,7 +252,7 @@ NDC::push(const log4cplus::tstring& message)
             ptr->push( DiagnosticContext(message, &dc) );
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::push()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -272,7 +272,7 @@ NDC::remove()
         }
         LOG4CPLUS_SET_THREAD_LOCAL_VALUE( threadLocal, NULL );
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::remove()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }
@@ -293,7 +293,7 @@ NDC::setMaxDepth(size_t maxDepth)
             }
         }
     }
-    catch(std::exception& e) {
+    catch(STD_NAMESPACE exception& e) {
         getLogLog().error(  LOG4CPLUS_TEXT("NDC::setMaxDepth()- exception occured: ")
                           + LOG4CPLUS_C_STR_TO_TSTRING(e.what()));
     }

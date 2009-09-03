@@ -11,9 +11,9 @@ void
 syncprims_throw_exception (char const * const msg, char const * const file,
     int line)
 {
-    //std::ostringstream oss;
+    //STD_NAMESPACE ostringstream oss;
     CERR << file << ":" << line << msg;
-    //throw std::runtime_error (oss.str ());
+    //throw STD_NAMESPACE runtime_error (oss.str ());
     abort();
 }
 

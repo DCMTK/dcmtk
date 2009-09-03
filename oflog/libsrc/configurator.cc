@@ -128,7 +128,7 @@ namespace
             if (! shadow_env || (! empty_vars && replacement.empty ()))
             {
                 char const * env_var
-                    = std::getenv(LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
+                    = STD_NAMESPACE getenv(LOG4CPLUS_TSTRING_TO_STRING(key).c_str());
                 if (env_var)
                     replacement = LOG4CPLUS_STRING_TO_TSTRING (env_var);
             }
@@ -319,7 +319,7 @@ PropertyConfigurator::configureLogger(Logger logger, const tstring& config)
     tstring configString;
 //    remove_copy_if(config.begin(), config.end(),
 //        string_append_iterator<tstring>(configString),
-//        std::bind1st(std::equal_to<tchar>(), LOG4CPLUS_TEXT(' ')));
+//        STD_NAMESPACE bind1st(STD_NAMESPACE equal_to<tchar>(), LOG4CPLUS_TEXT(' ')));
     for (size_t i = 0; i < config.length(); i++)
     {
         if (config[i] != ' ')
@@ -416,7 +416,7 @@ PropertyConfigurator::configureAppenders()
                     appenders[*it] = appender;
                 }
             }
-            catch(std::exception& e)
+            catch(STD_NAMESPACE exception& e)
             {
                 tstring err =
                     LOG4CPLUS_TEXT("PropertyConfigurator::")
