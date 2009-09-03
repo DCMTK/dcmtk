@@ -39,7 +39,7 @@ namespace log4cplus {
          * the string "log4clus: ".
          */
         class LOG4CPLUS_EXPORT LogLog
-            : public virtual log4cplus::helpers::SharedObject 
+            : public virtual log4cplus::helpers::SharedObject
         {
         public:
           // Static methods
@@ -56,7 +56,7 @@ namespace log4cplus {
 
             /**
              * In quite mode no LogLog generates strictly no output, not even
-             * for errors. 
+             * for errors.
              *
              * @param quietMode A true for not
              */
@@ -64,21 +64,21 @@ namespace log4cplus {
 
             /**
              * This method is used to output log4cplus internal debug
-             * statements. Output goes to <code>std::cout</code>.
+             * statements. Output goes to <code>STD_NAMESPACE cout</code>.
              */
             void debug(const log4cplus::tstring& msg);
 
             /**
              * This method is used to output log4cplus internal error
              * statements. There is no way to disable error statements.
-             * Output goes to <code>std::cerr</code>.
+             * Output goes to <code>STD_NAMESPACE cerr</code>.
              */
             void error(const log4cplus::tstring& msg);
 
             /**
              * This method is used to output log4cplus internal warning
              * statements. There is no way to disable warning statements.
-             * Output goes to <code>std::cerr</code>.
+             * Output goes to <code>STD_NAMESPACE cerr</code>.
              */
             void warn(const log4cplus::tstring& msg);
 
@@ -103,4 +103,3 @@ namespace log4cplus {
 
 
 #endif // _LOG4CPLUS_HELPERS_LOGLOG
-

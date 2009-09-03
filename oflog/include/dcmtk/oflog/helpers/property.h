@@ -25,7 +25,7 @@
 //#include <vector>
 
 #if (defined(__MWERKS__) && defined(__MACOS__))
-using std::size_t;
+using STD_NAMESPACE size_t;
 #endif
 
 
@@ -61,7 +61,7 @@ namespace log4cplus {
             /**
              * Searches for the property with the specified key in this property
              * list. If the key is not found in this property list, the default
-             * property list, and its defaults, recursively, are then checked. 
+             * property list, and its defaults, recursively, are then checked.
              * The method returns <code>null</code> if the property is not found.
              */
             log4cplus::tstring getProperty(const log4cplus::tstring& key) const;
@@ -69,8 +69,8 @@ namespace log4cplus {
             /**
              * Searches for the property with the specified key in this property
              * list. If the key is not found in this property list, the default
-             * property list, and its defaults, recursively, are then checked. 
-             * The method returns the default value argument if the property is 
+             * property list, and its defaults, recursively, are then checked.
+             * The method returns the default value argument if the property is
              * not found.
              */
             log4cplus::tstring getProperty(const log4cplus::tstring& key,
@@ -100,7 +100,7 @@ namespace log4cplus {
 
         protected:
           // Types
-//            LOG4CPLUS_EXPIMP_TEMPLATE template class LOG4CPLUS_EXPORT std::map<log4cplus::tstring, log4cplus::tstring>;
+//            LOG4CPLUS_EXPIMP_TEMPLATE template class LOG4CPLUS_EXPORT STD_NAMESPACE map<log4cplus::tstring, log4cplus::tstring>;
             typedef OFMap<log4cplus::tstring, log4cplus::tstring> StringMap;
 
           // Methods
@@ -115,4 +115,3 @@ namespace log4cplus {
 
 
 #endif // LOG4CPLUS_HELPERS_PROPERTY_HEADER_
-

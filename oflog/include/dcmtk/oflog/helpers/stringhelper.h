@@ -42,10 +42,10 @@ namespace log4cplus {
 
         /**
          * Tokenize <code>s</code> using <code>c</code> as the delimiter and
-         * put the resulting tokens in <code>_result</code>.  If 
+         * put the resulting tokens in <code>_result</code>.  If
          * <code>collapseTokens</code> is false, multiple adjacent delimiters
          * will result in zero length tokens.
-         * 
+         *
          * <b>Example:</b>
          * <pre>
          *   string s = // Set string with '.' as delimiters
@@ -74,21 +74,21 @@ namespace log4cplus {
             if (first != i)
                 result.push_back(StringType (s, first, i - first));
         }
-        
+
 
         template<class intType>
         inline
-        tstring 
-        convertIntegerToString (intType value) 
+        tstring
+        convertIntegerToString (intType value)
         {
             if (value == 0)
                 return LOG4CPLUS_TEXT("0");
             bool const negative = value < 0;
 
             static const size_t buffer_size
-                //= std::numeric_limits<intType>::digits10 + 2;
+                //= STD_NAMESPACE numeric_limits<intType>::digits10 + 2;
                 = 30; // More than enough space, even for 64 bit integers
-            tchar buffer[buffer_size];           
+            tchar buffer[buffer_size];
             tchar * it = &buffer[buffer_size];
             tchar const * const buf_end = it;
 
@@ -99,8 +99,8 @@ namespace log4cplus {
             // That's why we handle the case of value == min() specially here.
             if (negative)
             {
-                // The modulo operator on 
-                //if (value == (std::numeric_limits<intType>::min) ())
+                // The modulo operator on
+                //if (value == (STD_NAMESPACE numeric_limits<intType>::min) ())
 
                 // This code assumes two-compliments'. The problem here is that
                 // integer overflow of an signed type is undefined behavior :(
@@ -154,12 +154,12 @@ namespace log4cplus {
 
         /**
          * This iterator can be used in place of the back_insert_iterator
-         * for compilers that don't have a std::basic_string class that
+         * for compilers that don't have a STD_NAMESPACE basic_string class that
          * has the <code>push_back</code> method.
          */
         template <class Container>
         class string_append_iterator
-            : public std::iterator<std::output_iterator_tag, void, void, void,
+            : public STD_NAMESPACE iterator<STD_NAMESPACE output_iterator_tag, void, void, void,
                 void>
         {
         public:
@@ -181,7 +181,7 @@ namespace log4cplus {
             {
                 return *this;
             }
-            
+
             string_append_iterator<container_type> &
             operator ++ ()
             {

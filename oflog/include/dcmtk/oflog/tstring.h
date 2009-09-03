@@ -33,27 +33,27 @@
 #ifdef UNICODE
 namespace log4cplus {
     typedef wchar_t tchar;
-    typedef std::wstring tstring;
+    typedef STD_NAMESPACE wstring tstring;
 
     namespace helpers {
 #ifdef LOG4CPLUS_WORKING_LOCALE
-        LOG4CPLUS_EXPORT std::string tostring(const std::wstring&,
-            std::locale const & = std::locale ());
+        LOG4CPLUS_EXPORT STD_NAMESPACE string tostring(const STD_NAMESPACE wstring&,
+            STD_NAMESPACE locale const & = STD_NAMESPACE locale ());
 
-        LOG4CPLUS_EXPORT std::string tostring (wchar_t const *,
-            std::locale const & = std::locale ());
+        LOG4CPLUS_EXPORT STD_NAMESPACE string tostring (wchar_t const *,
+            STD_NAMESPACE locale const & = STD_NAMESPACE locale ());
 
-        LOG4CPLUS_EXPORT std::wstring towstring(const std::string&,
-            std::locale const & = std::locale ());
+        LOG4CPLUS_EXPORT STD_NAMESPACE wstring towstring(const STD_NAMESPACE string&,
+            STD_NAMESPACE locale const & = STD_NAMESPACE locale ());
 
-        LOG4CPLUS_EXPORT std::wstring towstring(char const *,
-            std::locale const & = std::locale ());
+        LOG4CPLUS_EXPORT STD_NAMESPACE wstring towstring(char const *,
+            STD_NAMESPACE locale const & = STD_NAMESPACE locale ());
 
 #else // LOG4CPLUS_WORKING_LOCALE
-        LOG4CPLUS_EXPORT std::string tostring(const std::wstring&);
-        LOG4CPLUS_EXPORT std::string tostring(wchar_t const *);
-        LOG4CPLUS_EXPORT std::wstring towstring(const std::string&);
-        LOG4CPLUS_EXPORT std::wstring towstring(char const *);
+        LOG4CPLUS_EXPORT STD_NAMESPACE string tostring(const STD_NAMESPACE wstring&);
+        LOG4CPLUS_EXPORT STD_NAMESPACE string tostring(wchar_t const *);
+        LOG4CPLUS_EXPORT STD_NAMESPACE wstring towstring(const STD_NAMESPACE string&);
+        LOG4CPLUS_EXPORT STD_NAMESPACE wstring towstring(char const *);
 #endif // LOG4CPLUS_WORKING_LOCALE
     }
 

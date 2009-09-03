@@ -11,7 +11,7 @@
 // distribution in the LICENSE.APL file.
 //
 
-/** @file 
+/** @file
  * This header defined the NDC class.
  */
 
@@ -28,7 +28,7 @@
 #include "dcmtk/ofstd/ofstack.h"
 
 #if (defined(__MWERKS__) && defined(__MACOS__))
-using std::size_t;
+using STD_NAMESPACE size_t;
 #endif
 
 
@@ -80,9 +80,9 @@ namespace log4cplus {
      *   <li>When leaving a context, call <code>getNDC().pop()</code>.
      *
      *   <li><b>When exiting a thread make sure to call {@link #remove
-     *   NDC.remove()}</b>.  
+     *   NDC.remove()}</b>.
      * </ul>
-     *                                          
+     *
      * There is no penalty for forgetting to match each
      * <code>push</code> operation with a corresponding <code>pop</code>,
      * except the obvious mismatch between the real application context
@@ -129,7 +129,7 @@ namespace log4cplus {
          *
          * The child thread uses the {@link #inherit inherit} method to
          * inherit the parent's diagnostic context.
-         *                                        
+         *
          * @return Stack A clone of the current thread's  diagnostic context.
          */
         DiagnosticContextStack cloneStack();
@@ -181,7 +181,7 @@ namespace log4cplus {
          *
          * The returned value is the value that was pushed last. If no
          * context is available, then the empty string "" is returned.
-         *                          
+         *
          * @return String The innermost diagnostic context.
          */
         log4cplus::tstring peek();
@@ -190,7 +190,7 @@ namespace log4cplus {
          * Push new diagnostic context information for the current thread.
          *
          * The contents of the <code>message</code> parameter is
-         * determined solely by the client.  
+         * determined solely by the client.
          *
          * @param message The new diagnostic context information.
          *
@@ -231,7 +231,7 @@ namespace log4cplus {
          *
          * ensures that between the entry and exit of foo the depth of the
          * diagnostic stack is conserved.
-         * 
+         *
          * <b>Note:</b>  Use of the {@link NDCContextCreator} class will solve
          * this particular problem.
          *

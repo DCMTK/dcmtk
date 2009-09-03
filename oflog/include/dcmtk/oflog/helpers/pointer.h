@@ -125,7 +125,7 @@ namespace log4cplus {
                 T* tmp = pointee;
                 pointee = other.pointee;
                 other.pointee = tmp;
-                //std::swap (pointee, other.pointee);
+                //STD_NAMESPACE swap (pointee, other.pointee);
             }
 
             typedef T * (SharedObjectPtr:: * unspec_bool_type) () const;
