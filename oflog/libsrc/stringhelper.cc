@@ -37,6 +37,8 @@
 
 using namespace log4cplus;
 
+// We don't use this code since our stringstream doesn't have the necessary
+// support (see loggingmacros.h)
 #if defined (LOG4CPLUS_SINGLE_THREADED)
 
 namespace log4cplus
@@ -48,20 +50,20 @@ namespace
 {
 
 static tostringstream const _macros_oss_defaults;
-static tstring const _empty_str;
+//static tstring const _empty_str;
 
 } // namespace
 
 void _clear_tostringstream (tostringstream & os)
 {
     os.clear ();
-    os.str (_empty_str);
+    os.str ("");
     os.setf (_macros_oss_defaults.flags ());
     os.fill (_macros_oss_defaults.fill ());
     os.precision (_macros_oss_defaults.precision ());
     os.width (_macros_oss_defaults.width ());
 #if defined (LOG4CPLUS_WORKING_LOCALE)
-    std::locale glocale = std::locale ();
+    STD_NAMESPACE locale glocale = STD_NAMESPACE locale ();
     if (os.getloc () != glocale)
         os.imbue (glocale);
 #endif // defined (LOG4CPLUS_WORKING_LOCALE)
@@ -77,7 +79,7 @@ void _clear_tostringstream (tostringstream & os)
 //////////////////////////////////////////////////////////////////////////////
 
 #ifdef UNICODE
-log4cplus::tostream& 
+log4cplus::tostream&
 operator <<(log4cplus::tostream& stream, const char* str)
 {
     return (stream << log4cplus::helpers::towstring(str));
@@ -88,25 +90,25 @@ operator <<(log4cplus::tostream& stream, const char* str)
 
 static
 void
-clear_mbstate (std::mbstate_t & mbs)
+clear_mbstate (STD_NAMESPACE mbstate_t & mbs)
 {
     // Initialize/clear mbstate_t type.
     // XXX: This is just a hack that works. The shape of mbstate_t varies
     // from single unsigned to char[128]. Without some sort of initialization
     // the codecvt::in/out methods randomly fail because the initial state is
     // random/invalid.
-    ::memset (&mbs, 0, sizeof (std::mbstate_t));
+    ::memset (&mbs, 0, sizeof (STD_NAMESPACE mbstate_t));
 }
 
 
 static
 void
-towstring_internal (std::wstring & outstr, const char * src, size_t size,
-    std::locale const & loc)
+towstring_internal (STD_NAMESPACE wstring & outstr, const char * src, size_t size,
+    STD_NAMESPACE locale const & loc)
 {
-    typedef std::codecvt<wchar_t, char, std::mbstate_t> CodeCvt;
-    const CodeCvt & cdcvt = std::use_facet<CodeCvt>(loc);
-    std::mbstate_t state;
+    typedef STD_NAMESPACE codecvt<wchar_t, char, STD_NAMESPACE mbstate_t> CodeCvt;
+    const CodeCvt & cdcvt = STD_NAMESPACE use_facet<CodeCvt>(loc);
+    STD_NAMESPACE mbstate_t state;
     clear_mbstate (state);
 
     char const * from_first = src;
@@ -114,7 +116,7 @@ towstring_internal (std::wstring & outstr, const char * src, size_t size,
     char const * const from_last = from_first + from_size;
     char const * from_next = from_first;
 
-    std::vector<wchar_t> dest (from_size);
+    STD_NAMESPACE vector<wchar_t> dest (from_size);
 
     wchar_t * to_first = &dest.front ();
     size_t to_size = dest.size ();
@@ -164,32 +166,32 @@ towstring_internal (std::wstring & outstr, const char * src, size_t size,
 }
 
 
-std::wstring 
-log4cplus::helpers::towstring(const std::string& src, std::locale const & loc)
+STD_NAMESPACE wstring
+log4cplus::helpers::towstring(const STD_NAMESPACE string& src, STD_NAMESPACE locale const & loc)
 {
-    std::wstring ret;
+    STD_NAMESPACE wstring ret;
     towstring_internal (ret, src.c_str (), src.size (), loc);
     return ret;
 }
 
 
-std::wstring 
-log4cplus::helpers::towstring(char const * src, std::locale const & loc)
+STD_NAMESPACE wstring
+log4cplus::helpers::towstring(char const * src, STD_NAMESPACE locale const & loc)
 {
-    std::wstring ret;
-    towstring_internal (ret, src, std::strlen (src), loc);
+    STD_NAMESPACE wstring ret;
+    towstring_internal (ret, src, STD_NAMESPACE strlen (src), loc);
     return ret;
 }
 
 
 static
 void
-tostring_internal (std::string & outstr, const wchar_t * src, size_t size,
-    std::locale const & loc)
+tostring_internal (STD_NAMESPACE string & outstr, const wchar_t * src, size_t size,
+    STD_NAMESPACE locale const & loc)
 {
-    typedef std::codecvt<wchar_t, char, std::mbstate_t> CodeCvt;
-    const CodeCvt & cdcvt = std::use_facet<CodeCvt>(loc);
-    std::mbstate_t state;
+    typedef STD_NAMESPACE codecvt<wchar_t, char, STD_NAMESPACE mbstate_t> CodeCvt;
+    const CodeCvt & cdcvt = STD_NAMESPACE use_facet<CodeCvt>(loc);
+    STD_NAMESPACE mbstate_t state;
     clear_mbstate (state);
 
     wchar_t const * from_first = src;
@@ -197,7 +199,7 @@ tostring_internal (std::string & outstr, const wchar_t * src, size_t size,
     wchar_t const * const from_last = from_first + from_size;
     wchar_t const * from_next = from_first;
 
-    std::vector<char> dest (from_size);
+    STD_NAMESPACE vector<char> dest (from_size);
 
     char * to_first = &dest.front ();
     size_t to_size = dest.size ();
@@ -246,20 +248,20 @@ tostring_internal (std::string & outstr, const wchar_t * src, size_t size,
 }
 
 
-std::string 
-log4cplus::helpers::tostring(const std::wstring& src, std::locale const & loc)
+STD_NAMESPACE string
+log4cplus::helpers::tostring(const STD_NAMESPACE wstring& src, STD_NAMESPACE locale const & loc)
 {
-    std::string ret;
+    STD_NAMESPACE string ret;
     tostring_internal (ret, src.c_str (), src.size (), loc);
     return ret;
 }
 
 
-std::string 
-log4cplus::helpers::tostring(wchar_t const * src, std::locale const & loc)
+STD_NAMESPACE string
+log4cplus::helpers::tostring(wchar_t const * src, STD_NAMESPACE locale const & loc)
 {
-    std::string ret;
-    tostring_internal (ret, src, std::wcslen (src), loc);
+    STD_NAMESPACE string ret;
+    tostring_internal (ret, src, STD_NAMESPACE wcslen (src), loc);
     return ret;
 }
 
@@ -269,7 +271,7 @@ log4cplus::helpers::tostring(wchar_t const * src, std::locale const & loc)
 
 static
 void
-tostring_internal (std::string & ret, wchar_t const * src, size_t size)
+tostring_internal (STD_NAMESPACE string & ret, wchar_t const * src, size_t size)
 {
     ret.resize(size);
     for (size_t i = 0; i < size; ++i)
@@ -280,27 +282,27 @@ tostring_internal (std::string & ret, wchar_t const * src, size_t size)
 }
 
 
-std::string 
-log4cplus::helpers::tostring(const std::wstring& src)
+STD_NAMESPACE string
+log4cplus::helpers::tostring(const STD_NAMESPACE wstring& src)
 {
-    std::string ret;
+    STD_NAMESPACE string ret;
     tostring_internal (ret, src.c_str (), src.size ());
     return ret;
 }
 
 
-std::string 
+STD_NAMESPACE string
 log4cplus::helpers::tostring(wchar_t const * src)
 {
-    std::string ret;
-    tostring_internal (ret, src, std::wcslen (src));
+    STD_NAMESPACE string ret;
+    tostring_internal (ret, src, STD_NAMESPACE wcslen (src));
     return ret;
 }
 
 
 static
 void
-towstring_internal (std::wstring & ret, char const * src, size_t size)
+towstring_internal (STD_NAMESPACE wstring & ret, char const * src, size_t size)
 {
     ret.resize(size);
     for (size_t i = 0; i < size; ++i)
@@ -311,20 +313,20 @@ towstring_internal (std::wstring & ret, char const * src, size_t size)
 }
 
 
-std::wstring 
-log4cplus::helpers::towstring(const std::string& src)
+STD_NAMESPACE wstring
+log4cplus::helpers::towstring(const STD_NAMESPACE string& src)
 {
-    std::wstring ret;
+    STD_NAMESPACE wstring ret;
     towstring_internal (ret, src.c_str (), src.size ());
     return ret;
 }
 
 
-std::wstring 
+STD_NAMESPACE wstring
 log4cplus::helpers::towstring(char const * src)
 {
-    std::wstring ret;
-    towstring_internal (ret, src, std::strlen (src));
+    STD_NAMESPACE wstring ret;
+    towstring_internal (ret, src, STD_NAMESPACE strlen (src));
     return ret;
 }
 
