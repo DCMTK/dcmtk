@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.03 (riesmeier)
+
+- Updated reference to DICOM standard, fixed typo and minor formatting issues.
+  Affects: dcmnet/docs/asconfig.txt
+
 **** Changes from 2009.09.02 (riesmeier)
 
 - Revised documentation of parameter "pos" for some putAndInsertXXX() functions
