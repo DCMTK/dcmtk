@@ -69,4 +69,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // LOG4CPLUS_HELPERS_SOCKET_HEADER_
-

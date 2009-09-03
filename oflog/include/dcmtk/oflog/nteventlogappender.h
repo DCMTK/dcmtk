@@ -27,13 +27,13 @@
 namespace log4cplus {
 
     /**
-     * Appends log events to NT EventLog. 
+     * Appends log events to NT EventLog.
      */
     class LOG4CPLUS_EXPORT NTEventLogAppender : public Appender {
     public:
       // ctors
-        NTEventLogAppender(const log4cplus::tstring& server, 
-                           const log4cplus::tstring& log, 
+        NTEventLogAppender(const log4cplus::tstring& server,
+                           const log4cplus::tstring& log,
                            const log4cplus::tstring& source);
         NTEventLogAppender(const log4cplus::helpers::Properties properties);
 

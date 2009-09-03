@@ -30,7 +30,7 @@ namespace log4cplus {
                            not_opened,
                            bad_address,
                            connection_failed,
-                           broken_pipe, 
+                           broken_pipe,
                            invalid_access_mode,
                            message_truncated
                          };

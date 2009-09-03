@@ -30,11 +30,11 @@
 
 namespace log4cplus {
     namespace helpers {
- 
+
         /**
          * This Interface is for attaching Appenders to objects.
          */
-        class LOG4CPLUS_EXPORT AppenderAttachableImpl 
+        class LOG4CPLUS_EXPORT AppenderAttachableImpl
                                    : public log4cplus::spi::AppenderAttachable,
                                      protected log4cplus::helpers::LogLogUser
         {
@@ -64,7 +64,7 @@ namespace log4cplus {
              * Look for an attached appender named as <code>name</code>.
              *
              * Return the appender with that name if in the list. Return null
-             * otherwise.  
+             * otherwise.
              */
             virtual SharedAppenderPtr getAppender(const log4cplus::tstring& name);
 
@@ -80,12 +80,12 @@ namespace log4cplus {
 
             /**
              * Remove the appender with the name passed as parameter from the
-             * list of appenders.  
+             * list of appenders.
              */
             virtual void removeAppender(const log4cplus::tstring& name);
 
             /**
-             * Call the <code>doAppend</code> method on all attached appenders.  
+             * Call the <code>doAppend</code> method on all attached appenders.
              */
             int appendLoopOnAppenders(const spi::InternalLoggingEvent& event) const;
 
@@ -104,4 +104,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_HELPERS_APPENDER_ATTACHABLE_IMPL_HEADER_
-

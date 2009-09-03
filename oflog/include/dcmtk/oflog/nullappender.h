@@ -24,7 +24,7 @@
 namespace log4cplus {
 
     /**
-     * Appends log events to a file. 
+     * Appends log events to a file.
      */
     class LOG4CPLUS_EXPORT NullAppender : public Appender {
     public:
@@ -50,4 +50,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_NULL_APPENDER_HEADER_
-

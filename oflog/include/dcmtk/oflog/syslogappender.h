@@ -24,7 +24,7 @@
 namespace log4cplus {
 
     /**
-     * Appends log events to a file. 
+     * Appends log events to a file.
      */
     class LOG4CPLUS_EXPORT SysLogAppender : public Appender {
     public:
@@ -56,4 +56,3 @@ namespace log4cplus {
 #endif // defined(HAVE_SYSLOG_H)
 
 #endif // _LOG4CPLUS_SYSLOG_APPENDER_HEADER_
-

@@ -41,7 +41,7 @@ public:
 
     /**
      * Returns the current time using the <code>gettimeofday()</code>
-     * method if it is available on the current platform.  (Not on 
+     * method if it is available on the current platform.  (Not on
      * WIN32.)
      */
     static Time gettimeofday();
@@ -92,14 +92,14 @@ public:
     /**
      * Returns a string with a "formatted time" specified by
      * <code>fmt</code>.  It used the <code>strftime()</code>
-     * function to do this.  
-     * 
+     * function to do this.
+     *
      * Look at your platform's <code>strftime()</code> documentation
      * for the formatting options available.
-     * 
+     *
      * The following additional options are provided:<br>
      * <code>%q</code> - 3 character field that provides milliseconds
-     * <code>%Q</code> - 7 character field that provides fractional 
+     * <code>%Q</code> - 7 character field that provides fractional
      * milliseconds.
      */
     log4cplus::tstring getFormattedTime(const log4cplus::tstring& fmt,
@@ -155,4 +155,3 @@ LOG4CPLUS_EXPORT bool operator!=(const log4cplus::helpers::Time& lhs,
 
 
 #endif // _LOG4CPLUS_HELPERS_TIME_HELPER_HEADER_
-

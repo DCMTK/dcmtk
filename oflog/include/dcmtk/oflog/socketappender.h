@@ -61,7 +61,7 @@ namespace log4cplus {
      *   then the rate of event production, then the client can only
      *   progress at the network rate. In particular, if the network link
      *   to the the server is down, the client will be blocked.
-     * 
+     *
      *   <li>On the other hand, if the network link is up, but the server
      *   is down, the client will not be blocked when making log requests
      *   but the log events will be lost due to server unavailability.
@@ -70,7 +70,7 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT SocketAppender : public Appender {
     public:
       // Ctors
-        SocketAppender(const log4cplus::tstring& host, int port, 
+        SocketAppender(const log4cplus::tstring& host, int port,
                        const log4cplus::tstring& serverName = tstring());
         SocketAppender(const log4cplus::helpers::Properties properties);
 
@@ -108,4 +108,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SOCKET_APPENDER_HEADER_
-

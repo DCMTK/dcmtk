@@ -70,23 +70,23 @@ namespace log4cplus {
          * This call will clear all logger definitions from the internal
          * hashtable. Invoking this method will irrevocably mess up the
          * logger hierarchy.
-         *                     
+         *
          * You should <em>really</em> know what you are doing before
          * invoking this method.
          */
         virtual void clear();
 
         /**
-         * Returns <code>true </code>if the named logger exists 
+         * Returns <code>true </code>if the named logger exists
          * (in the default hierarchy).
-         *                
+         *
          * @param name The name of the logger to search for.
          */
         virtual bool exists(const log4cplus::tstring& name);
 
         /**
          * Similar to {@link #disable(LogLevel)} except that the LogLevel
-         * argument is given as a log4cplus::tstring.  
+         * argument is given as a log4cplus::tstring.
          */
         virtual void disable(const log4cplus::tstring& loglevelStr);
 
@@ -143,12 +143,12 @@ namespace log4cplus {
 
         /**
          * Return a new logger instance named as the first parameter using
-         * the default factory. 
-         *                
+         * the default factory.
+         *
          * If a logger of that name already exists, then it will be
          * returned.  Otherwise, a new logger will be instantiated and
          * then linked with its existing ancestors as well as children.
-         *                                    
+         *
          * @param name The name of the logger to retrieve.
          */
         virtual Logger getInstance(const log4cplus::tstring& name);
@@ -156,12 +156,12 @@ namespace log4cplus {
         /**
          * Return a new logger instance named as the first parameter using
          * <code>factory</code>.
-         *                
+         *
          * If a logger of that name already exists, then it will be
          * returned.  Otherwise, a new logger will be instantiated by the
          * <code>factory</code> parameter and linked with its existing
          * ancestors as well as children.
-         *                                         
+         *
          * @param name The name of the logger to retrieve.
          * @param factory The factory that will make the new logger instance.
          */
@@ -170,12 +170,12 @@ namespace log4cplus {
         /**
          * Returns all the currently defined loggers in this hierarchy.
          *
-         * The root logger is <em>not</em> included in the returned list. 
+         * The root logger is <em>not</em> included in the returned list.
          */
         virtual LoggerList getCurrentLoggers();
 
-        /** 
-         * Is the LogLevel specified by <code>level</code> enabled? 
+        /**
+         * Is the LogLevel specified by <code>level</code> enabled?
          */
         virtual bool isDisabled(int level);
 
@@ -197,13 +197,13 @@ namespace log4cplus {
          * This method should be used sparingly and with care as it will
          * block all logging until it is completed.</p>
          */
-        virtual void resetConfiguration(); 
+        virtual void resetConfiguration();
 
         /**
          * Set the default LoggerFactory instance.
          */
         virtual void setLoggerFactory(OFauto_ptr<spi::LoggerFactory> factory);
-        
+
         /**
          * Returns the default LoggerFactory instance.
          */
@@ -212,7 +212,7 @@ namespace log4cplus {
         /**
          * Shutting down a hierarchy will <em>safely</em> close and remove
          * all appenders in all loggers including the root logger.
-         *                
+         *
          * Some appenders such as SocketAppender need to be closed before the
          * application exits. Otherwise, pending logging events might be
          * lost.
@@ -236,15 +236,15 @@ namespace log4cplus {
          * This is the implementation of the <code>getInstance()</code> method.
          * NOTE: This method does not lock the <code>hashtable_mutex</code>.
          */
-        virtual Logger getInstanceImpl(const log4cplus::tstring& name, 
+        virtual Logger getInstanceImpl(const log4cplus::tstring& name,
                                        spi::LoggerFactory& factory);
-        
+
         /**
          * This is the implementation of the <code>getCurrentLoggers()</code>.
          * NOTE: This method does not lock the <code>hashtable_mutex</code>.
          */
         virtual void initializeLoggerList(LoggerList& list) const;
-        
+
         /**
          * This method loops through all the *potential* parents of
          * logger'. There 3 possible cases:
@@ -307,4 +307,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_HIERARCHY_HEADER_
-

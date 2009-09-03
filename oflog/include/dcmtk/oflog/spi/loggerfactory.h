@@ -37,7 +37,7 @@ namespace log4cplus {
              * Creates a new <code>Logger</code> object.
              */
             virtual Logger makeNewLoggerInstance(const log4cplus::tstring& name,
-                                                 Hierarchy& h) = 0; 
+                                                 Hierarchy& h) = 0;
             virtual ~LoggerFactory() = 0;
         };
 
@@ -45,4 +45,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SPI_LOGGER_FACTORY_HEADER
-

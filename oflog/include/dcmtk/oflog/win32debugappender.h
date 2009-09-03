@@ -26,7 +26,7 @@
 namespace log4cplus {
 
     /**
-     * Appends log events to a file. 
+     * Appends log events to a file.
      */
     class LOG4CPLUS_EXPORT Win32DebugAppender
         : public Appender
@@ -55,4 +55,3 @@ namespace log4cplus {
 
 #endif // _WIN32
 #endif // _LOG4CPLUS_WIN32DEBUG_APPENDER_HEADER_
-

@@ -111,11 +111,11 @@ namespace log4cplus {
 
         /**
          * This template class is used as a "Factory Registry".  Objects are
-         * "entered" into the registry with a "name" using the 
-         * <code>put()</code> method.  (The registry then owns the object.)  
-         * These object can then be retrieved using the <code>get()</code> 
+         * "entered" into the registry with a "name" using the
+         * <code>put()</code> method.  (The registry then owns the object.)
+         * These object can then be retrieved using the <code>get()</code>
          * method.
-         * 
+         *
          * <b>Note:</b>  This class is Thread-safe.
          */
         template<class T>
@@ -135,7 +135,7 @@ namespace log4cplus {
             bool put(OFauto_ptr<T> object) {
                  bool putValResult = putVal(object->getTypeName(), object.get());
                  object.release();
-                 return putValResult; 
+                 return putValResult;
             }
 
             /**
@@ -178,4 +178,3 @@ namespace log4cplus {
 
 
 #endif // LOG4CPLUS_SPI_FACTORY_HEADER_
-

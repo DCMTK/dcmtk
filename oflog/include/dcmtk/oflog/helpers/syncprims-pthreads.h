@@ -1,15 +1,15 @@
 //   Copyright (C) 2009, Vaclav Haisman. All rights reserved.
-//   
+//
 //   Redistribution and use in source and binary forms, with or without modifica-
 //   tion, are permitted provided that the following conditions are met:
-//   
+//
 //   1. Redistributions of  source code must  retain the above copyright  notice,
 //      this list of conditions and the following disclaimer.
-//   
+//
 //   2. Redistributions in binary form must reproduce the above copyright notice,
 //      this list of conditions and the following disclaimer in the documentation
 //      and/or other materials provided with the distribution.
-//   
+//
 //   THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
 //   INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
 //   FITNESS  FOR A PARTICULAR  PURPOSE ARE  DISCLAIMED.  IN NO  EVENT SHALL  THE
@@ -192,7 +192,7 @@ ManualResetEvent::timed_wait (unsigned long msec) const
     MutexGuard mguard (mtx);
 
     if (! signaled)
-    {       
+    {
         helpers::Time const wakeup_time (helpers::Time::gettimeofday ()
             + helpers::Time (msec / 1000, (msec % 1000) * 1000));
         struct timespec const ts = {wakeup_time.sec (),

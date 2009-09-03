@@ -53,4 +53,3 @@ LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const ch
 #endif // UNICODE
 
 #endif // LOG4CPLUS_STREAMS_HEADER_
-

@@ -36,7 +36,7 @@ namespace log4cplus {
          * evaluation.
          *
          * See the <a href="../../../../manual.html">user manual</a> for an
-         * introduction on this class. 
+         * introduction on this class.
          */
         class LOG4CPLUS_EXPORT LoggerImpl
             : public virtual log4cplus::helpers::SharedObject,
@@ -51,23 +51,23 @@ namespace log4cplus {
              * Call the appenders in the hierrachy starting at
              * <code>this</code>.  If no appenders could be found, emit a
              * warning.
-             * 
+             *
              * This method calls all the appenders inherited from the
              * hierarchy circumventing any evaluation of whether to log or not
              * to log the particular log request.
-             *                                   
-             * @param event The event to log. 
+             *
+             * @param event The event to log.
              */
             virtual void callAppenders(const InternalLoggingEvent& event);
 
             /**
              * Close all attached appenders implementing the AppenderAttachable
-             * interface.  
+             * interface.
              */
             virtual void closeNestedAppenders();
 
             /**
-             * Check whether this logger is enabled for a given LogLevel passed 
+             * Check whether this logger is enabled for a given LogLevel passed
              * as parameter.
              *
              * @return boolean True if this logger is enabled for <code>ll</code>.
@@ -75,7 +75,7 @@ namespace log4cplus {
             virtual bool isEnabledFor(LogLevel ll) const;
 
             /**
-             * This generic form is intended to be used by wrappers. 
+             * This generic form is intended to be used by wrappers.
              */
             virtual void log(LogLevel ll, const log4cplus::tstring& message,
                              const char* file=NULL, int line=-1);
@@ -84,15 +84,15 @@ namespace log4cplus {
              * Starting from this logger, search the logger hierarchy for a
              * "set" LogLevel and return it. Otherwise, return the LogLevel of the
              * root logger.
-             *                     
+             *
              * The Logger class is designed so that this method executes as
              * quickly as possible.
              */
             virtual LogLevel getChainedLogLevel() const;
 
             /**
-             * Returns the assigned LogLevel, if any, for this Logger.  
-             *           
+             * Returns the assigned LogLevel, if any, for this Logger.
+             *
              * @return LogLevel - the assigned LogLevel.
              */
             LogLevel getLogLevel() const { return this->ll; }
@@ -109,7 +109,7 @@ namespace log4cplus {
             virtual Hierarchy& getHierarchy() const;
 
             /**
-             * Return the logger name.  
+             * Return the logger name.
              */
             log4cplus::tstring getName() const { return name; }
 
@@ -134,7 +134,7 @@ namespace log4cplus {
              * It is intended to be used by sub-classes only. You should not
              * create loggers directly.
              *
-             * @param name The name of the logger.  
+             * @param name The name of the logger.
              * @param h Hierarchy
              */
             LoggerImpl(const log4cplus::tstring& name, Hierarchy& h);
@@ -143,11 +143,11 @@ namespace log4cplus {
           // Methods
             /**
              * This method creates a new logging event and logs the event
-             * without further checks.  
+             * without further checks.
              */
             virtual void forcedLog(LogLevel ll,
                                    const log4cplus::tstring& message,
-                                   const char* file=NULL, 
+                                   const char* file=NULL,
                                    int line=-1);
 
 
@@ -162,18 +162,18 @@ namespace log4cplus {
 
             /**
              * The parent of this logger. All loggers have at least one
-             * ancestor which is the root logger. 
-             */ 
+             * ancestor which is the root logger.
+             */
             SharedLoggerImplPtr parent;
 
-            /** 
+            /**
              * Additivity is set to true by default, that is children inherit
              * the appenders of their ancestors by default. If this variable is
              * set to <code>false</code> then the appenders found in the
              * ancestors of this logger are not used. However, the children
              * of this logger will inherit its appenders, unless the children
              * have their additivity flag set to <code>false</code> too. See
-             * the user manual for more details. 
+             * the user manual for more details.
              */
             bool additive;
 
@@ -198,5 +198,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SPI_LOGGER_HEADER_
-
-

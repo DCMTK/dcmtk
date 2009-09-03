@@ -29,24 +29,24 @@ namespace log4cplus {
       // ctor & dtor
         HierarchyLocker(Hierarchy& h);
         ~HierarchyLocker();
-        
+
         /**
          * Calls the <code>resetConfiguration()</code> method on the locked Hierarchy.
          */
-        void resetConfiguration(); 
-        
+        void resetConfiguration();
+
         /**
          * Calls the <code>getInstance()</code> method on the locked Hierarchy.
          */
         Logger getInstance(const log4cplus::tstring& name);
-        
+
         /**
          * Calls the <code>getInstance()</code> method on the locked Hierarchy.
          */
         Logger getInstance(const log4cplus::tstring& name, spi::LoggerFactory& factory);
-        
+
         void addAppender(Logger &logger, log4cplus::SharedAppenderPtr& appender);
-        
+
     private:
       // Data
         Hierarchy& h;
@@ -57,4 +57,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_HIERARCHY_LOCKER_HEADER_
-

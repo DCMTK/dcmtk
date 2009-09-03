@@ -33,13 +33,13 @@ namespace log4cplus
     /**
      * Provides configuration from an external file.  See configure() for
      * the expected format.
-     * 
+     *
      * <em>All option values admit variable substitution.</em> For
      * example, if <code>userhome</code> environment property is set to
      * <code>/home/xyz</code> and the File option is set to the string
      * <code>${userhome}/test.log</code>, then File option will be
      * interpreted as the string <code>/home/xyz/test.log</code>.
-     * 
+     *
      * The syntax of variable substitution is similar to that of UNIX
      * shells. The string between an opening <b>&quot;${&quot;</b> and
      * closing <b>&quot;}&quot;</b> is interpreted as a key. Its value is
@@ -56,7 +56,7 @@ namespace log4cplus
             fShadowEnvironment  = 0x0002,
             fAllowEmptyVars     = 0x0004
         };
-        
+
         // ctor and dtor
         PropertyConfigurator(const log4cplus::tstring& propertyFile,
             Hierarchy& h = Logger::getDefaultHierarchy(), unsigned flags = 0);
@@ -234,7 +234,7 @@ namespace log4cplus
         void configureLogger(log4cplus::Logger logger, const log4cplus::tstring& config);
         void configureAppenders();
         void configureAdditivity();
-        
+
         virtual Logger getLogger(const log4cplus::tstring& name);
         virtual void addAppender(Logger &logger, log4cplus::SharedAppenderPtr& appender);
 
@@ -244,10 +244,10 @@ namespace log4cplus
       // Data
         Hierarchy& h;
         log4cplus::tstring propertyFilename;
-        log4cplus::helpers::Properties properties; 
+        log4cplus::helpers::Properties properties;
         AppenderMap appenders;
         unsigned flags;
-        
+
     private:
       // Disable copy
         PropertyConfigurator(const PropertyConfigurator&);
@@ -257,7 +257,7 @@ namespace log4cplus
 
 
     /**
-     * Use this class to quickly configure the package. For file based 
+     * Use this class to quickly configure the package. For file based
      * configuration see PropertyConfigurator.
      */
     class LOG4CPLUS_EXPORT BasicConfigurator : public PropertyConfigurator {
@@ -276,19 +276,19 @@ namespace log4cplus
          * </code>
          */
         static void doConfigure(Hierarchy& h = Logger::getDefaultHierarchy());
-        
+
     private:
       // Disable copy
         BasicConfigurator(const BasicConfigurator&);
         BasicConfigurator& operator=(BasicConfigurator&);
     };
-   
+
 
 #if !defined(LOG4CPLUS_SINGLE_THREADED)
     // Forward Declarations
     class ConfigurationWatchDogThread;
-    
-    
+
+
     class LOG4CPLUS_EXPORT ConfigureAndWatchThread {
     public:
       // ctor and dtor
@@ -300,7 +300,7 @@ namespace log4cplus
       // Disallow copying of instances of this class
        ConfigureAndWatchThread(const ConfigureAndWatchThread&);
        ConfigureAndWatchThread& operator=(const ConfigureAndWatchThread&);
-       
+
       // Data
        ConfigurationWatchDogThread * watchDogThread;
     };
@@ -309,4 +309,3 @@ namespace log4cplus
 } // end namespace log4cplus
 
 #endif // _CONFIGURATOR_HEADER_
-

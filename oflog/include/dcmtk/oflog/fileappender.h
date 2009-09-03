@@ -30,12 +30,12 @@
 namespace log4cplus {
 
     /**
-     * Appends log events to a file. 
+     * Appends log events to a file.
      */
     class LOG4CPLUS_EXPORT FileAppender : public Appender {
     public:
       // Ctors
-        FileAppender(const log4cplus::tstring& filename, 
+        FileAppender(const log4cplus::tstring& filename,
                      LOG4CPLUS_OPEN_MODE_TYPE mode = LOG4CPLUS_FSTREAM_NAMESPACE::ios::trunc,
                      bool immediateFlush = true);
         FileAppender(const log4cplus::helpers::Properties& properties,
@@ -59,7 +59,7 @@ namespace log4cplus {
          * <code>false</code>, then there is a good chance that the last few
          * logs events are not actually written to persistent media if and
          * when the application crashes.
-         *  
+         *
          * The <code>immediateFlush</code> variable is set to
          * <code>true</code> by default.
          */
@@ -80,8 +80,8 @@ namespace log4cplus {
 
 
     /**
-     * RollingFileAppender extends FileAppender to backup the log files when 
-     * they reach a certain size. 
+     * RollingFileAppender extends FileAppender to backup the log files when
+     * they reach a certain size.
      */
     class LOG4CPLUS_EXPORT RollingFileAppender : public FileAppender {
     public:
@@ -128,7 +128,7 @@ namespace log4cplus {
 
       // Dtor
         virtual ~DailyRollingFileAppender();
-        
+
       // Methods
         virtual void close();
 
@@ -151,4 +151,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_FILE_APPENDER_HEADER_
-

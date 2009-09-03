@@ -37,7 +37,7 @@ namespace log4cplus {
           // Ctors
             /**
              * The root logger names itself as "root". However, the root
-             * logger cannot be retrieved by name.  
+             * logger cannot be retrieved by name.
              */
             RootLogger(Hierarchy& h, LogLevel ll);
 
@@ -49,7 +49,7 @@ namespace log4cplus {
             virtual LogLevel getChainedLogLevel() const;
 
             /**
-             * Setting a NOT_SET_LOG_LEVEL value to the LogLevel of the root logger 
+             * Setting a NOT_SET_LOG_LEVEL value to the LogLevel of the root logger
              * may have catastrophic results. We prevent this here.
              */
             void setLogLevel(LogLevel ll);
@@ -60,4 +60,3 @@ namespace log4cplus {
 } // end namespace log4cplus
 
 #endif // _LOG4CPLUS_SPI_ROOT_LOGGER_HEADER_
-
