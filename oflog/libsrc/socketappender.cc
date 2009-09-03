@@ -69,7 +69,7 @@ log4cplus::SocketAppender::~SocketAppender()
 // log4cplus::SocketAppender public methods
 //////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 log4cplus::SocketAppender::close()
 {
     getLogLog().debug(LOG4CPLUS_TEXT("Entering SocketAppender::close()..."));
@@ -187,5 +187,3 @@ log4cplus::helpers::readFromBuffer(SocketBuffer& buffer)
                                                 file,
                                                 line);
 }
-
-

@@ -39,7 +39,7 @@ using namespace log4cplus::spi;
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace log4cplus {
-    
+
 namespace spi {
 
     BaseFactory::~BaseFactory()
@@ -59,7 +59,7 @@ namespace spi {
     LayoutFactory::~LayoutFactory()
     { }
 
-    
+
     FilterFactory::FilterFactory()
     { }
 
@@ -83,8 +83,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::ConsoleAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::ConsoleAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::ConsoleAppender");
         }
     };
 
@@ -97,8 +97,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::NullAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::NullAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::NullAppender");
         }
     };
 
@@ -111,8 +111,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::FileAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::FileAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::FileAppender");
         }
     };
 
@@ -125,8 +125,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::RollingFileAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::RollingFileAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::RollingFileAppender");
         }
     };
 
@@ -138,8 +138,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::DailyRollingFileAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::DailyRollingFileAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::DailyRollingFileAppender");
         }
     };
 
@@ -151,8 +151,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::SocketAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::SocketAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::SocketAppender");
         }
     };
 
@@ -166,8 +166,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::NTEventLogAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::NTEventLogAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::NTEventLogAppender");
         }
     };
 #  endif
@@ -179,8 +179,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::Win32DebugAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::Win32DebugAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::Win32DebugAppender");
         }
     };
 
@@ -192,8 +192,8 @@ namespace {
             return SharedAppenderPtr(new log4cplus::SysLogAppender(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::SysLogAppender"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::SysLogAppender");
         }
     };
 #endif
@@ -207,8 +207,8 @@ namespace {
              return tmp;
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::SimpleLayout"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::SimpleLayout");
         }
     };
 
@@ -222,8 +222,8 @@ namespace {
             return tmp;
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::TTCCLayout"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::TTCCLayout");
         }
     };
 
@@ -238,8 +238,8 @@ namespace {
             return tmp;
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::PatternLayout"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::PatternLayout");
         }
     };
 
@@ -252,8 +252,8 @@ namespace {
             return FilterPtr(new log4cplus::spi::DenyAllFilter());
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::spi::DenyAllFilter");
         }
     };
 
@@ -265,8 +265,8 @@ namespace {
             return FilterPtr(new log4cplus::spi::LogLevelMatchFilter(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::spi::LogLevelMatchFilter"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::spi::LogLevelMatchFilter");
         }
     };
 
@@ -278,8 +278,8 @@ namespace {
             return FilterPtr(new log4cplus::spi::LogLevelRangeFilter(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::spi::LogLevelRangeFilter"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::spi::LogLevelRangeFilter");
         }
     };
 
@@ -291,8 +291,8 @@ namespace {
             return FilterPtr(new log4cplus::spi::StringMatchFilter(props));
         }
 
-        tstring getTypeName() { 
-            return LOG4CPLUS_TEXT("log4cplus::spi::StringMatchFilter"); 
+        tstring getTypeName() {
+            return LOG4CPLUS_TEXT("log4cplus::spi::StringMatchFilter");
         }
     };
 
@@ -300,8 +300,8 @@ namespace {
 
 
 ///////////////////////////////////////////////////////////////////////////////
-// LOCAL file methods 
-/////////////////////////////////////////////////////////////////////////////// 
+// LOCAL file methods
+///////////////////////////////////////////////////////////////////////////////
 
 namespace
 {

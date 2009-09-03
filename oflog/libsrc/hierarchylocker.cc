@@ -45,7 +45,7 @@ HierarchyLocker::HierarchyLocker(Hierarchy& _h)
         throw;
     }
 }
- 
+
 
 HierarchyLocker::~HierarchyLocker()
 {
@@ -60,7 +60,7 @@ HierarchyLocker::~HierarchyLocker()
     }
 }
 
-void 
+void
 HierarchyLocker::resetConfiguration()
 {
     Logger root = h.getRoot();
@@ -84,21 +84,21 @@ HierarchyLocker::resetConfiguration()
 }
 
 
-Logger 
+Logger
 HierarchyLocker::getInstance(const log4cplus::tstring& name)
 {
     return h.getInstanceImpl(name, *h.getLoggerFactory());
 }
 
 
-Logger 
+Logger
 HierarchyLocker::getInstance(const log4cplus::tstring& name, spi::LoggerFactory& factory)
 {
     return h.getInstanceImpl(name, factory);
 }
 
 
-void 
+void
 HierarchyLocker::addAppender(Logger& logger, log4cplus::SharedAppenderPtr& appender)
 {
     for(LoggerListIterator it=loggerList.begin(); it!=loggerList.end(); ++it) {
@@ -109,9 +109,7 @@ HierarchyLocker::addAppender(Logger& logger, log4cplus::SharedAppenderPtr& appen
             return;
         }
     }
-    
+
     // I don't have this Logger locked
     logger.addAppender(appender);
 }
-
-

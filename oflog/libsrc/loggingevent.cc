@@ -47,7 +47,7 @@ InternalLoggingEvent::getDefaultType()
 // InternalLoggingEvent implementation
 ///////////////////////////////////////////////////////////////////////////////
 
-const log4cplus::tstring& 
+const log4cplus::tstring&
 InternalLoggingEvent::getMessage() const
 {
     return message;
@@ -89,5 +89,3 @@ InternalLoggingEvent::operator=(const log4cplus::spi::InternalLoggingEvent& rhs)
 
     return *this;
 }
-
-

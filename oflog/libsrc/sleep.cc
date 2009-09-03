@@ -38,13 +38,13 @@ log4cplus::helpers::sleep(unsigned long secs, unsigned long nanosecs)
         Sleep((secs * SEC_TO_MILLIS) + nano_millis);
         return;
     }
-        
+
     DWORD no_of_max_sleeps = secs / MAX_SLEEP_SECONDS;
-            
+
     for(DWORD i = 0; i < no_of_max_sleeps; i++) {
         Sleep(MAX_SLEEP_SECONDS * SEC_TO_MILLIS);
     }
-               
+
     Sleep((secs % MAX_SLEEP_SECONDS) * SEC_TO_MILLIS + nano_millis);
 #else
     timespec sleep_time = { secs, nanosecs };
@@ -52,7 +52,7 @@ log4cplus::helpers::sleep(unsigned long secs, unsigned long nanosecs)
     while (nanosleep(&sleep_time, &remain)) {
         if (errno == EINTR) {
             sleep_time.tv_sec  = remain.tv_sec;
-            sleep_time.tv_nsec = remain.tv_nsec;               
+            sleep_time.tv_nsec = remain.tv_nsec;
             continue;
         }
         else {
@@ -70,4 +70,3 @@ log4cplus::helpers::sleepmillis(unsigned long millis)
     unsigned long nanosecs = (millis % SEC_TO_MILLIS) * MILLIS_TO_NANOS;
     sleep(secs, nanosecs);
 }
-

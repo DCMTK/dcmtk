@@ -54,7 +54,7 @@ log4cplus::SysLogAppender::~SysLogAppender()
 // log4cplus::SysLogAppender public methods
 ///////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 log4cplus::SysLogAppender::close()
 {
     getLogLog().debug(LOG4CPLUS_TEXT("Entering SysLogAppender::close()..."));
@@ -110,4 +110,3 @@ log4cplus::SysLogAppender::append(const spi::InternalLoggingEvent& event)
 }
 
 #endif // defined(LOG4CPLUS_HAVE_SYSLOG_H)
-

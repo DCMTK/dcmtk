@@ -95,7 +95,7 @@ AppenderAttachableImpl::getAllAppenders()
 
 
 
-SharedAppenderPtr 
+SharedAppenderPtr
 AppenderAttachableImpl::getAppender(const log4cplus::tstring& name)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( appender_list_mutex )
@@ -124,7 +124,7 @@ AppenderAttachableImpl::removeAllAppenders()
 
 
 
-void 
+void
 AppenderAttachableImpl::removeAppender(SharedAppenderPtr appender)
 {
     if(appender == NULL) {
@@ -150,7 +150,7 @@ AppenderAttachableImpl::removeAppender(SharedAppenderPtr appender)
 
 
 
-void 
+void
 AppenderAttachableImpl::removeAppender(const log4cplus::tstring& name)
 {
     removeAppender(getAppender(name));
@@ -158,7 +158,7 @@ AppenderAttachableImpl::removeAppender(const log4cplus::tstring& name)
 
 
 
-int 
+int
 AppenderAttachableImpl::appendLoopOnAppenders(const spi::InternalLoggingEvent& event) const
 {
     int count = 0;

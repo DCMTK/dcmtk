@@ -25,7 +25,7 @@ using namespace log4cplus::helpers;
 ///////////////////////////////////////////////////////////////////////////////
 
 FilterResult
-log4cplus::spi::checkFilter(const Filter* filter, 
+log4cplus::spi::checkFilter(const Filter* filter,
                             const InternalLoggingEvent& event)
 {
     const Filter* currentFilter = filter;
@@ -121,7 +121,7 @@ LogLevelMatchFilter::decide(const InternalLoggingEvent& event) const
     }
 
     bool matchOccured = (logLevelToMatch == event.getLogLevel());
-       
+
     if(matchOccured) {
         return (acceptOnMatch ? ACCEPT : DENY);
     }
@@ -238,4 +238,3 @@ StringMatchFilter::decide(const InternalLoggingEvent& event) const
         return (acceptOnMatch ? ACCEPT : DENY);
     }
 }
-

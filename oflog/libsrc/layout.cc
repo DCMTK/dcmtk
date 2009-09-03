@@ -28,12 +28,12 @@ using namespace log4cplus::spi;
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-SimpleLayout::formatAndAppend(log4cplus::tostream& output, 
+SimpleLayout::formatAndAppend(log4cplus::tostream& output,
                               const log4cplus::spi::InternalLoggingEvent& event)
 {
-    output << llmCache.toString(event.getLogLevel()) 
+    output << llmCache.toString(event.getLogLevel())
            << LOG4CPLUS_TEXT(" - ")
-           << event.getMessage() 
+           << event.getMessage()
            << LOG4CPLUS_TEXT("\n");
 }
 
@@ -75,23 +75,19 @@ TTCCLayout::~TTCCLayout()
 ///////////////////////////////////////////////////////////////////////////////
 
 void
-TTCCLayout::formatAndAppend(log4cplus::tostream& output, 
+TTCCLayout::formatAndAppend(log4cplus::tostream& output,
                             const log4cplus::spi::InternalLoggingEvent& event)
 {
-    output << event.getTimestamp().getFormattedTime(dateFormat, use_gmtime) 
+    output << event.getTimestamp().getFormattedTime(dateFormat, use_gmtime)
            << LOG4CPLUS_TEXT(" [")
            << event.getThread()
            << LOG4CPLUS_TEXT("] ")
-           << llmCache.toString(event.getLogLevel()) 
+           << llmCache.toString(event.getLogLevel())
            << LOG4CPLUS_TEXT(" ")
            << event.getLoggerName()
            << LOG4CPLUS_TEXT(" <")
-           << event.getNDC() 
+           << event.getNDC()
            << LOG4CPLUS_TEXT("> - ")
            << event.getMessage()
            << LOG4CPLUS_TEXT("\n");
 }
-
-
-
-

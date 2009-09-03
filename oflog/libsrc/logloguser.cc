@@ -64,10 +64,9 @@ LogLogUser::operator=(const LogLogUser& rhs)
     if(this == &rhs) {
         return *this;
     }
-    
+
     delete static_cast<LogLogPtr*>(loglogRef);
     loglogRef = new SharedObjectPtr<LogLog>(*static_cast<LogLogPtr*>(rhs.loglogRef));
-    
+
     return *this;
 }
-

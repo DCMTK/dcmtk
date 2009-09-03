@@ -51,8 +51,8 @@ BOOL WINAPI DllMain(LOG4CPLUS_DLLMAIN_HINSTANCE hinstDLL,  // handle to DLL modu
                     LPVOID lpReserved )  // reserved
 {
     // Perform actions based on the reason for calling.
-    switch( fdwReason ) 
-    { 
+    switch( fdwReason )
+    {
         case DLL_PROCESS_ATTACH:
             log4cplus::initializeLog4cplus();
             break;
@@ -72,7 +72,7 @@ BOOL WINAPI DllMain(LOG4CPLUS_DLLMAIN_HINSTANCE hinstDLL,  // handle to DLL modu
 
     return TRUE;  // Successful DLL_PROCESS_ATTACH.
 }
- 
+
 #else
 
 namespace {

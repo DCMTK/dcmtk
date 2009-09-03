@@ -63,5 +63,3 @@ void
 log4cplus::NullAppender::append(const spi::InternalLoggingEvent&)
 {
 }
-
-

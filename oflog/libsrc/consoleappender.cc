@@ -90,5 +90,3 @@ log4cplus::ConsoleAppender::append(const spi::InternalLoggingEvent& event)
         }
     LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }
-
-
