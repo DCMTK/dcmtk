@@ -87,8 +87,8 @@ LOG4CPLUS_EXPORT void deleteMutex(LOG4CPLUS_MUTEX_PTR_DECLARE);
 } } // namespace log4cplus { namespace thread {
 
 #elif defined(LOG4CPLUS_SINGLE_THREADED)
-#   define LOG4CPLUS_MUTEX_PTR_DECLARE int*
-#   define LOG4CPLUS_MUTEX_CREATE NULL
+#   define LOG4CPLUS_MUTEX_PTR_DECLARE int
+#   define LOG4CPLUS_MUTEX_CREATE 0
 #   define LOG4CPLUS_MUTEX_LOCK(mutex)
 #   define LOG4CPLUS_MUTEX_UNLOCK(mutex)
 #   define LOG4CPLUS_MUTEX_FREE(mutex)
