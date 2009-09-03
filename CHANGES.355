@@ -6,6 +6,10 @@ Changes between releases are documented here.
 - Updated reference to DICOM standard, fixed typo and minor formatting issues.
   Affects: dcmnet/docs/asconfig.txt
 
+- Updated copyright date and made .cc and .nul files more consistent.
+  Affects: dcmdata/libsrc/dcdictbi.cc
+           dcmdata/libsrc/dcdictbi.nul
+
 **** Changes from 2009.09.02 (riesmeier)
 
 - Revised documentation of parameter "pos" for some putAndInsertXXX() functions
