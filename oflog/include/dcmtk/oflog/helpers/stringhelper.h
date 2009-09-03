@@ -19,6 +19,7 @@
 #include "dcmtk/oflog/config.h"
 #include "dcmtk/oflog/tstring.h"
 #include "dcmtk/ofstd/oflist.h"
+#include "dcmtk/ofstd/ofstdinc.h"
 
 //#include <algorithm>
 //#include <limits>

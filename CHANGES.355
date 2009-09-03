@@ -88,6 +88,9 @@ Changes between releases are documented here.
            oflog/libsrc/socketappender.cc
            oflog/libsrc/syslogappender.cc
 
+- Added missing include for the definition of STD_NAMESPACE.
+  Affects: oflog/include/dcmtk/oflog/helpers/stringhelper.h
+
 **** Changes from 2009.09.02 (riesmeier)
 
 - Revised documentation of parameter "pos" for some putAndInsertXXX() functions
