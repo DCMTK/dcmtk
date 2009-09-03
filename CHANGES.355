@@ -10,6 +10,84 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcdictbi.cc
            dcmdata/libsrc/dcdictbi.nul
 
+- Fixed various issues when compiled with configure --disable-threads.
+  Affects: oflog/include/dcmtk/oflog/helpers/thread-config.h
+           oflog/libsrc/stringhelper.cc
+
+- Replaced "std::" by "STD_NAMESPACE ".
+  Affects: oflog/include/dcmtk/oflog/ndc.h
+           oflog/include/dcmtk/oflog/tstring.h
+           oflog/include/dcmtk/oflog/helpers/loglog.h
+           oflog/include/dcmtk/oflog/helpers/pointer.h
+           oflog/include/dcmtk/oflog/helpers/property.h
+           oflog/include/dcmtk/oflog/helpers/stringhelper.h
+           oflog/libsrc/appender.cc
+           oflog/libsrc/configurator.cc
+           oflog/libsrc/fileappender.cc
+           oflog/libsrc/hierarchy.cc
+           oflog/libsrc/logger.cc
+           oflog/libsrc/loggerimpl.cc
+           oflog/libsrc/ndc.cc
+           oflog/libsrc/patternlayout.cc
+           oflog/libsrc/property.cc
+           oflog/libsrc/socket-unix.cc
+           oflog/libsrc/socket-win32.cc
+           oflog/libsrc/socketbuffer.cc
+           oflog/libsrc/stringhelper.cc
+           oflog/libsrc/syncprims.cc
+           oflog/libsrc/threads.cc
+
+- Removed trailing spaces and empty lines at the end of the file.
+  Affects: oflog/include/dcmtk/oflog/appender.h
+           oflog/include/dcmtk/oflog/configurator.h
+           oflog/include/dcmtk/oflog/consoleappender.h
+           oflog/include/dcmtk/oflog/fileappender.h
+           oflog/include/dcmtk/oflog/fstreams.h
+           oflog/include/dcmtk/oflog/hierarchy.h
+           oflog/include/dcmtk/oflog/hierarchylocker.h
+           oflog/include/dcmtk/oflog/layout.h
+           oflog/include/dcmtk/oflog/logger.h
+           oflog/include/dcmtk/oflog/loggingmacros.h
+           oflog/include/dcmtk/oflog/loglevel.h
+           oflog/include/dcmtk/oflog/nteventlogappender.h
+           oflog/include/dcmtk/oflog/nullappender.h
+           oflog/include/dcmtk/oflog/socketappender.h
+           oflog/include/dcmtk/oflog/streams.h
+           oflog/include/dcmtk/oflog/syslogappender.h
+           oflog/include/dcmtk/oflog/win32debugappender.h
+           oflog/include/dcmtk/oflog/config/win32.h
+           oflog/include/dcmtk/oflog/helpers/appenderattachableimpl.h
+           oflog/include/dcmtk/oflog/helpers/logloguser.h
+           oflog/include/dcmtk/oflog/helpers/sleep.h
+           oflog/include/dcmtk/oflog/helpers/socket.h
+           oflog/include/dcmtk/oflog/helpers/socketbuffer.h
+           oflog/include/dcmtk/oflog/helpers/syncprims-pthreads.h
+           oflog/include/dcmtk/oflog/helpers/syncprims-win32.h
+           oflog/include/dcmtk/oflog/helpers/syncprims.h
+           oflog/include/dcmtk/oflog/helpers/timehelper.h
+           oflog/include/dcmtk/oflog/spi/appenderattachable.h
+           oflog/include/dcmtk/oflog/spi/factory.h
+           oflog/include/dcmtk/oflog/spi/filter.h
+           oflog/include/dcmtk/oflog/spi/loggerfactory.h
+           oflog/include/dcmtk/oflog/spi/loggerimpl.h
+           oflog/include/dcmtk/oflog/spi/loggingevent.h
+           oflog/include/dcmtk/oflog/spi/objectregistry.h
+           oflog/include/dcmtk/oflog/spi/rootlogger.h
+           oflog/libsrc/appenderattachableimpl.cc
+           oflog/libsrc/consoleappender.cc
+           oflog/libsrc/factory.cc
+           oflog/libsrc/filter.cc
+           oflog/libsrc/global-init.cc
+           oflog/libsrc/hierarchylocker.cc
+           oflog/libsrc/layout.cc
+           oflog/libsrc/loggingevent.cc
+           oflog/libsrc/loglevel.cc
+           oflog/libsrc/logloguser.cc
+           oflog/libsrc/nullappender.cc
+           oflog/libsrc/sleep.cc
+           oflog/libsrc/socketappender.cc
+           oflog/libsrc/syslogappender.cc
+
 **** Changes from 2009.09.02 (riesmeier)
 
 - Revised documentation of parameter "pos" for some putAndInsertXXX() functions
