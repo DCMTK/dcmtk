@@ -2,7 +2,6 @@
 // (C) Jan de Vaan 2007-2009, all rights reserved. See the accompanying "License.txt" for licensed use.
 //
 
-#include "util.h"
 
 #ifndef JLS_INTERFACE
 #define JLS_INTERFACE
@@ -19,15 +18,6 @@ enum JLS_ERROR
 	ImageTypeNotSupported,
 	UnsupportedBitDepthForTransform,
 	UnsupportedColorTransform
-};
-
-class JlsException
-{
-public:
-	JlsException(JLS_ERROR error) : _error(error)
-		{ }
-
-	JLS_ERROR _error;
 };
 
 enum interleavemode

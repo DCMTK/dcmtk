@@ -34,13 +34,13 @@ public:
 	{
 	}
 
-	void NewLineRequested(void* pDst, int pixelCount, int byteStride)
+	void NewLineRequested(void* pDst, int pixelCount, int /*byteStride*/)
 	{
 		::memcpy(pDst, _pbyteOutput, pixelCount * _bytesPerPixel);
 		_pbyteOutput += _info.bytesperline;
 	}
 
-	void NewLineDecoded(const void* pSrc, int pixelCount, int byteStride)
+	void NewLineDecoded(const void* pSrc, int pixelCount, int /*byteStride*/)
 	{
 		::memcpy(_pbyteOutput, pSrc, pixelCount * _bytesPerPixel);
 		_pbyteOutput += _info.bytesperline;
@@ -102,7 +102,7 @@ void TransformLine(Triplet<SAMPLE>* pDest, const Triplet<SAMPLE>* pSrc, int pixe
 	{
 		pDest[i] = transform(pSrc[i].v1, pSrc[i].v2, pSrc[i].v3);
 	}
-};
+}
 
 
 template<class TRANSFORM, class SAMPLE>

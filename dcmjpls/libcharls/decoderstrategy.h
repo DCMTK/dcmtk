@@ -5,45 +5,12 @@
 #ifndef CHARLS_DECODERSTATEGY
 #define CHARLS_DECODERSTATEGY
 
-#include <assert.h>
 #include "streams.h"
 #include "processline.h"
+#include "config.h"
+#include "util.h"
 
-
-template <class T>
-struct FromBigEndian
-{
-};
-
-template <>
-struct FromBigEndian<unsigned int>
-{
-	inlinehint static unsigned long Read(BYTE* pbyte)
-	{
-		return  (pbyte[0] << 24) + (pbyte[1] << 16) + (pbyte[2] << 8) + (pbyte[3] << 0);
-	}
-};
-
-template <>
-struct FromBigEndian<unsigned long>
-{
-	inlinehint static unsigned long Read(BYTE* pbyte)
-	{
-		return  (pbyte[0] << 24) + (pbyte[1] << 16) + (pbyte[2] << 8) + (pbyte[3] << 0);
-	}
-};
-
-template <>
-struct FromBigEndian<unsigned long long>
-{
-	typedef unsigned long long UINT64;
-
-	inlinehint static UINT64 Read(BYTE* pbyte)
-	{
-		return  (UINT64(pbyte[0]) << 56) + (UINT64(pbyte[1]) << 48) + (UINT64(pbyte[2]) << 40) + (UINT64(pbyte[3]) << 32) +
-		  		(UINT64(pbyte[4]) << 24) + (UINT64(pbyte[5]) << 16) + (UINT64(pbyte[6]) <<  8) + (UINT64(pbyte[7]) << 0);
-	}
-};
+// Implements encoding to stream of bits. In encoding mode JpegLsCodec inherits from EncoderStrategy
 
 
 
@@ -84,28 +51,22 @@ public:
 	  }
 
 
-	  void OnLineBegin(LONG cpixel, void* ptypeBuffer, LONG pixelStride)
+	  void OnLineBegin(LONG /*cpixel*/, void* /*ptypeBuffer*/, LONG /*pixelStride*/)
 	  {}
 
 
 	  void OnLineEnd(LONG cpixel, const void* ptypeBuffer, LONG pixelStride)
 	  {
-			_processLine->NewLineDecoded(ptypeBuffer, cpixel, pixelStride);
+	  		_processLine->NewLineDecoded(ptypeBuffer, cpixel, pixelStride);
 	  }
 
 
-
-	  // optimized for intel compilers
 	  inlinehint bool OptimizedRead()
 	  {
 		  // Easy & fast: if there is no 0xFF byte in sight, we can read without bitstuffing
 		  if (_pbyteCompressed < _pbyteNextFF)
 		  {
-#ifdef ARCH_HAS_UNALIGNED_MEM_ACCESS
-			  _readCache		 |= byteswap(*((bufType*)_pbyteCompressed)) >> _validBits;
-#else
-			  _readCache		 |= FromBigEndian<bufType>::Read(_pbyteCompressed) >> _validBits;
-#endif
+			  _readCache		 |= FromBigEndian<sizeof(bufType)>::Read(_pbyteCompressed) >> _validBits;
 			  int bytesToRead = (bufferbits - _validBits) >> 3;
 			  _pbyteCompressed += bytesToRead;
 			  _validBits += bytesToRead * 8;
@@ -146,7 +107,7 @@ public:
 				 if (_pbyteCompressed == _pbyteCompressedEnd - 1 || (_pbyteCompressed[1] & 0x80) != 0)
 				 {
 					 if (_validBits <= 0)
-						throw JlsException(InvalidCompressedData);
+					 	throw JlsException(InvalidCompressedData);
 
 					 return;
 			     }
@@ -179,7 +140,7 @@ public:
 			  {
 				  break;
 			  }
-		  pbyteNextFF++;
+    		  pbyteNextFF++;
 		  }
 
 

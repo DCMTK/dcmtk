@@ -6,6 +6,9 @@
 #ifndef CHARLS_CONTEXTRUNMODE
 #define CHARLS_CONTEXTRUNMODE
 
+// Implements statistical modelling for the run mode context.
+// Computes model dependent parameters like the golomb code lengths
+
 struct CContextRunMode
 {
 	CContextRunMode(LONG a, LONG nRItype, LONG nReset) :

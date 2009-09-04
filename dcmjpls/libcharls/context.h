@@ -7,10 +7,6 @@
 #define CHARLS_CONTEXT
 
 
-#define MIN_C -128
-#define MAX_C 127
-
-
 //
 // JlsContext: a JPEG-LS context with it's current statistics.
 //
@@ -20,7 +16,7 @@ public:
 	JlsContext()
 	{}
 
-	JlsContext(LONG a) :
+ 	JlsContext(LONG a) :
 		A(a),
 		B(0),
 		C(0),

@@ -32,7 +32,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -------------------------------------------------------------------------------
 
-The current CharLS version used is revision 26807 dated 2009-08-20.
+The current CharLS version used is revision 27770 dated 2009-09-04.
 
 The following modifications have been applied to the library:
 - removed "test" directory
@@ -51,5 +51,6 @@ in this directory. This patch was generated on Linux using the following command
   rm -r test CharLS.sln CharLS.vcproj
   <rename files from .cpp to .cc>
   cd ..
-  diff -Nurpw libcharls.orig/ libcharls > docs/charls.patch
+  LC_ALL=C diff -Nurpw --exclude=CMakeLists.txt --exclude=libcharls.a \
+    --exclude=*.o --exclude=Makefile* libcharls.orig/ libcharls > docs/charls.patch
 

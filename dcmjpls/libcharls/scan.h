@@ -243,6 +243,7 @@ protected:
 };
 
 
+// Encode/decode a single sample. Performancewise the #1 important functions
 
 template<class TRAITS, class STRATEGY>
 typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DoRegular(LONG Qs, LONG, LONG pred, DecoderStrategy*)
@@ -290,6 +291,7 @@ typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DoRegular(LONG Qs, LONG x, LO
 }
 
 
+// Functions to build tables used to decode short golomb codes.
 
 inlinehint std::pair<LONG, LONG> CreateEncodedValue(LONG k, LONG mappederval)
 {
@@ -329,6 +331,7 @@ CTable InitTable(LONG k)
 }
 
 
+// Encoding/decoding of golomb codes
 
 template<class TRAITS, class STRATEGY>
 LONG JlsCodec<TRAITS,STRATEGY>::DecodeValue(LONG k, LONG limit, LONG qbpp)
@@ -376,6 +379,8 @@ inlinehint void JlsCodec<TRAITS,STRATEGY>::EncodeMappedValue(LONG k, LONG mapped
 }
 
 
+// Sets up a lookup table to "Quantize" sample difference.
+
 template<class TRAITS, class STRATEGY>
 void JlsCodec<TRAITS,STRATEGY>::InitQuantizationLUT()
 {
@@ -417,9 +422,7 @@ void JlsCodec<TRAITS,STRATEGY>::InitQuantizationLUT()
 	{
 		_pquant[i] = QuantizeGratientOrg(i);
 	}
-
 }
-
 
 
 template<class TRAITS, class STRATEGY>
@@ -439,65 +442,7 @@ signed char JlsCodec<TRAITS,STRATEGY>::QuantizeGratientOrg(LONG Di)
 
 
 
-template<class TRAITS, class STRATEGY>
-void JlsCodec<TRAITS,STRATEGY>::EncodeRunPixels(LONG runLength, bool bEndofline)
-{
-	while (runLength >= LONG(1 << J[RUNindex]))
-	{
-		STRATEGY::AppendOnesToBitStream(1);
-		runLength = runLength - LONG(1 << J[RUNindex]);
-		IncrementRunIndex();
-	}
-
-	if (bEndofline)
-	{
-		if (runLength != 0)
-		{
-			STRATEGY::AppendOnesToBitStream(1);
-		}
-	}
-	else
-	{
-		STRATEGY::AppendToBitStream(runLength, J[RUNindex] + 1);	// leading 0 + actual remaining length
-	}
-}
-
-
-
-template<class TRAITS, class STRATEGY>
-LONG JlsCodec<TRAITS,STRATEGY>::DecodeRunPixels(PIXEL Ra, PIXEL* ptype, LONG cpixelMac)
-{
-	LONG ipixel = 0;
-	while (STRATEGY::ReadBit())
-	{
-		int cpixel = MIN(1 << J[RUNindex], int(cpixelMac - ipixel));
-		ipixel += cpixel;
-		ASSERT(ipixel <= cpixelMac);
-
-		if (cpixel == (1 << J[RUNindex]))
-		{
-			IncrementRunIndex();
-		}
-
-		if (ipixel == cpixelMac)
-			break;
-	}
-
-
-	if (ipixel != cpixelMac)
-	{
-		// incomplete run
-		ipixel += (J[RUNindex] > 0) ? STRATEGY::ReadValue(J[RUNindex]) : 0;
-	}
-
-	for (LONG i = 0; i < ipixel; ++i)
-	{
-		ptype[i] = Ra;
-	}
-
-	return ipixel;
-}
-
+// RI = Run interruption: functions that handle the sample terminating a run.
 
 template<class TRAITS, class STRATEGY>
 LONG JlsCodec<TRAITS,STRATEGY>::DecodeRIError(CContextRunMode& ctx)
@@ -574,7 +519,6 @@ typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::DecodeRIPixel(LONG Ra, LONG R
 }
 
 
-
 template<class TRAITS, class STRATEGY>
 typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::EncodeRIPixel(LONG x, LONG Ra, LONG Rb)
 {
@@ -593,7 +537,65 @@ typename TRAITS::SAMPLE JlsCodec<TRAITS,STRATEGY>::EncodeRIPixel(LONG x, LONG Ra
 }
 
 
+// RunMode: Functions that handle run-length encoding
 
+template<class TRAITS, class STRATEGY>
+void JlsCodec<TRAITS,STRATEGY>::EncodeRunPixels(LONG runLength, bool bEndofline)
+{
+	while (runLength >= LONG(1 << J[RUNindex]))
+	{
+		STRATEGY::AppendOnesToBitStream(1);
+		runLength = runLength - LONG(1 << J[RUNindex]);
+		IncrementRunIndex();
+	}
+
+	if (bEndofline)
+	{
+		if (runLength != 0)
+		{
+			STRATEGY::AppendOnesToBitStream(1);
+		}
+	}
+	else
+	{
+		STRATEGY::AppendToBitStream(runLength, J[RUNindex] + 1);	// leading 0 + actual remaining length
+	}
+}
+
+
+template<class TRAITS, class STRATEGY>
+LONG JlsCodec<TRAITS,STRATEGY>::DecodeRunPixels(PIXEL Ra, PIXEL* ptype, LONG cpixelMac)
+{
+	LONG ipixel = 0;
+	while (STRATEGY::ReadBit())
+	{
+		int cpixel = MIN(1 << J[RUNindex], int(cpixelMac - ipixel));
+		ipixel += cpixel;
+		ASSERT(ipixel <= cpixelMac);
+
+		if (cpixel == (1 << J[RUNindex]))
+		{
+			IncrementRunIndex();
+		}
+
+		if (ipixel == cpixelMac)
+			break;
+	}
+
+
+	if (ipixel != cpixelMac)
+	{
+		// incomplete run
+		ipixel += (J[RUNindex] > 0) ? STRATEGY::ReadValue(J[RUNindex]) : 0;
+	}
+
+	for (LONG i = 0; i < ipixel; ++i)
+	{
+		ptype[i] = Ra;
+	}
+
+	return ipixel;
+}
 
 template<class TRAITS, class STRATEGY>
 LONG JlsCodec<TRAITS,STRATEGY>::DoRunMode(LONG ipixel, EncoderStrategy*)
@@ -647,6 +649,7 @@ LONG JlsCodec<TRAITS,STRATEGY>::DoRunMode(LONG ipixelStart, DecoderStrategy*)
 }
 
 
+// DoLine: Encodes/Decodes a scanline of samples
 
 template<class TRAITS, class STRATEGY>
 void JlsCodec<TRAITS,STRATEGY>::DoLine(SAMPLE*)
@@ -679,6 +682,7 @@ void JlsCodec<TRAITS,STRATEGY>::DoLine(SAMPLE*)
 }
 
 
+// DoLine: Encodes/Decodes a scanline of triplets in ILV_SAMPLE mode
 
 template<class TRAITS, class STRATEGY>
 void JlsCodec<TRAITS,STRATEGY>::DoLine(Triplet<SAMPLE>*)
@@ -710,9 +714,13 @@ void JlsCodec<TRAITS,STRATEGY>::DoLine(Triplet<SAMPLE>*)
 			ipixel++;
 		}
 	}
-};
+}
 
 
+// DoScan: Encodes or decodes a scan.
+// In ILV_SAMPLE mode, multiple components are handled in DoLine
+// In ILV_LINE mode, a call do DoLine is made for every component
+// In ILV_NONE mode, DoScan is called for each component
 
 template<class TRAITS, class STRATEGY>
 void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* pbyteCompressed, size_t cbyteCompressed)
@@ -722,6 +730,7 @@ void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* pbyteCompressed, size_t cbyteCompre
 	LONG pixelstride = _size.cx + 4;
 
 	int components = STRATEGY::_info.ilv == ILV_LINE ? STRATEGY::_info.components : 1;
+
 	std::vector<PIXEL> vectmp;
 	vectmp.resize((components*2) * pixelstride);
 
@@ -748,7 +757,6 @@ void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* pbyteCompressed, size_t cbyteCompre
 			ptypeCur[-1]		= ptypePrev[0];
 			DoLine((PIXEL*) NULL); // dummy arg for overload resolution
 
-
 			rgRUNindex[component] = RUNindex;
 			ptypePrev += pixelstride;
 			ptypeCur += pixelstride;
@@ -759,6 +767,7 @@ void JlsCodec<TRAITS,STRATEGY>::DoScan(BYTE* pbyteCompressed, size_t cbyteCompre
 }
 
 
+// Setup codec for encoding and calls DoScan
 
 template<class TRAITS, class STRATEGY>
 size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* pvoid, const Size& size, void* pvoidOut, size_t cbyte, void* pvoidCompare)
@@ -786,7 +795,7 @@ size_t JlsCodec<TRAITS,STRATEGY>::EncodeScan(const void* pvoid, const Size& size
 
 }
 
-
+// Factory function for ProcessLine objects to copy/transform unencoded pixels to/from our scanline buffers.
 
 template<class TRAITS, class STRATEGY>
 ProcessLine* JlsCodec<TRAITS,STRATEGY>::InitProcess(void* pvoidOut)
@@ -822,6 +831,8 @@ ProcessLine* JlsCodec<TRAITS,STRATEGY>::InitProcess(void* pvoidOut)
 }
 
 
+// Setup codec for decoding and calls DoScan
+
 template<class TRAITS, class STRATEGY>
 size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* pvoidOut, const Size& size, const void* pvoidIn, size_t cbyte, bool bCompare)
 {
@@ -850,10 +861,7 @@ size_t JlsCodec<TRAITS,STRATEGY>::DecodeScan(void* pvoidOut, const Size& size, c
 	return STRATEGY::GetCurBytePos() - pbyteCompressed;
 }
 
-
-
-
-
+// Initialize the codec data structures. Depends on JPEG-LS parameters like T1-T3.
 
 template<class TRAITS, class STRATEGY>
 void JlsCodec<TRAITS,STRATEGY>::InitParams(LONG t1, LONG t2, LONG t3, LONG nReset)

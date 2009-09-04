@@ -9,20 +9,6 @@
 #include "encoderstrategy.h"
 #include <memory>
 
-//
-//DRI: Define Restart Interval:
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-//  - $ff, $dd (DRI)
-//  - length (high byte, low byte), must be = 4
-//  - restart interval (high byte, low byte) in units of MCU blocks,
-//    meaning that every n MCU blocks a RSTn marker can be found.
-//    The first marker will be RST0, then RST1 etc, after RST7
-//    repeating from RST0.
-
-
-
-
 bool IsDefault(const JlsCustomParameters* pcustom)
 {
 	if (pcustom->MAXVAL != 0)
@@ -100,7 +86,7 @@ JpegSegment* CreateMarkerStartOfFrame(Size size, LONG cbpp, LONG ccomp)
 	}
 
 	return new JpegMarkerSegment(JPEG_SOF, vec);
-};
+}
 
 
 
@@ -382,6 +368,7 @@ void JLSInputStream::ReadStartOfScan()
 void JLSInputStream::ReadComment()
 {}
 
+
 //
 // ReadJfif()
 //
@@ -485,7 +472,7 @@ void JLSInputStream::ReadScan(void* pvout)
 	std::auto_ptr<DecoderStrategy> qcodec(JlsCodecFactory<DecoderStrategy>().GetCodec(_info, _info.custom));
 	Size size = Size(_info.width,_info.height);
 	_cbyteOffset += qcodec->DecodeScan(pvout, size, _pdata + _cbyteOffset, _cbyteLength - _cbyteOffset, _bCompare);
-};
+}
 
 
 class JpegImageDataSegment: public JpegSegment

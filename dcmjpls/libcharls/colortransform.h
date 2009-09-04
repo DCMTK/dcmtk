@@ -128,7 +128,7 @@ struct TransformShifted
 		INVERSE(const TransformShifted& transform) :
 			_shift(transform._shift),
 			_inverseTransform(transform._colortransform)
-		{};
+		{}
 
 		inlinehint Triplet<SAMPLE> operator() (int v1, int v2, int v3)
 		{

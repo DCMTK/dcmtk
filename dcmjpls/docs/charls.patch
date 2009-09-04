@@ -1,216 +1,19 @@
-diff -Nurpw libcharls.orig/CMakeLists.txt libcharls/CMakeLists.txt
---- libcharls.orig/CMakeLists.txt	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/CMakeLists.txt	2009-08-20 14:09:06.000000000 +0200
-@@ -1,25 +1,8 @@
--project(charls)
--cmake_minimum_required(VERSION 2.6)
-+# declare additional include directories
-+INCLUDE_DIRECTORIES(${dcmjpls_SOURCE_DIR}/libcharls)
- 
-+# create library from source files
-+ADD_LIBRARY(charls header interface jpegls stdafx)
- 
--# When user specify build type do not override settings:
--IF(NOT CMAKE_BUILD_TYPE)
--# The following compiler option are only meant for GCC:
--IF(CMAKE_COMPILER_IS_GNUCC)
--SET(CMAKE_CXX_FLAGS "-O3 -fvisibility=hidden -fomit-frame-pointer -momit-leaf-frame-pointer -march=i686  -fweb  -ftracer" )
--ENDIF(CMAKE_COMPILER_IS_GNUCC)
--ENDIF(NOT CMAKE_BUILD_TYPE)
--
--OPTION(charls_BUILD_SHARED_LIBS "Build CharLS with shared libraries." OFF)
--SET(BUILD_SHARED_LIBS ${charls_BUILD_SHARED_LIBS})
--
--add_library(CharLS header.cpp  interface.cpp  jpegls.cpp  
--  stdafx.cpp
--  )
--
--
--add_executable(charlstest test/test.cpp test/time.cpp)
--target_link_libraries (charlstest CharLS)
--
--include(CTest)
--add_test(charlstest charlstest)
-\ No newline at end of file
-+# declare installation files
-+INSTALL_TARGETS(${INSTALL_LIBDIR} charls)
-diff -Nurpw libcharls.orig/Makefile libcharls/Makefile
---- libcharls.orig/Makefile	1970-01-01 01:00:00.000000000 +0100
-+++ libcharls/Makefile	2009-08-20 14:08:00.000000000 +0200
-@@ -0,0 +1,43 @@
-+#
-+#	Makefile for dcmjpls/libcharls
-+#
-+
-+
-+
-+SHELL = /bin/sh
-+VPATH = ../include:../../config/include
-+srcdir = .
-+top_srcdir = ..
-+configdir = ../../config
-+
-+include $(configdir)/Makefile.def
-+
-+LOCALINCLUDES =
-+LOCALDEFS =
-+
-+objs = header.o interface.o jpegls.o stdafx.o
-+
-+library = libcharls.$(LIBEXT)
-+
-+all: $(library)
-+
-+install: all
-+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
-+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
-+	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-+
-+$(library): $(objs)
-+	$(AR) $(ARFLAGS) $@ $(objs)
-+	$(RANLIB) $@
-+
-+clean:
-+	rm -f $(objs) $(library) $(TRASH)
-+
-+distclean:
-+	rm -f $(objs) $(library) $(DISTTRASH)
-+
-+
-+dependencies:
-+	$(CC) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-+
-+include $(DEP)
-diff -Nurpw libcharls.orig/Makefile.dep libcharls/Makefile.dep
---- libcharls.orig/Makefile.dep	1970-01-01 01:00:00.000000000 +0100
-+++ libcharls/Makefile.dep	2009-08-20 14:08:18.000000000 +0200
-@@ -0,0 +1,8 @@
-+header.o: header.cc stdafx.h util.h interface.h header.h streams.h \
-+  decoderstrategy.h processline.h colortransform.h encoderstrategy.h
-+interface.o: interface.cc stdafx.h util.h interface.h header.h streams.h
-+jpegls.o: jpegls.cc stdafx.h util.h interface.h streams.h header.h \
-+  decoderstrategy.h processline.h colortransform.h encoderstrategy.h \
-+  context.h contextrunmode.h lookuptable.h losslesstraits.h \
-+  defaulttraits.h scan.h
-+stdafx.o: stdafx.cc stdafx.h util.h interface.h
-diff -Nurpw libcharls.orig/Makefile.in libcharls/Makefile.in
---- libcharls.orig/Makefile.in	1970-01-01 01:00:00.000000000 +0100
-+++ libcharls/Makefile.in	2009-08-20 14:08:15.000000000 +0200
-@@ -0,0 +1,43 @@
-+#
-+#	Makefile for dcmjpls/libcharls
-+#
-+
-+@SET_MAKE@
-+
-+SHELL = /bin/sh
-+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-+srcdir = @srcdir@
-+top_srcdir = @top_srcdir@
-+configdir = @top_srcdir@/@configdir@
-+
-+include $(configdir)/@common_makefile@
-+
-+LOCALINCLUDES =
-+LOCALDEFS =
-+
-+objs = header.o interface.o jpegls.o stdafx.o
-+
-+library = libcharls.$(LIBEXT)
-+
-+all: $(library)
-+
-+install: all
-+	$(configdir)/mkinstalldirs $(DESTDIR)$(libdir)
-+	$(INSTALL_DATA) $(library) $(DESTDIR)$(libdir)/$(library)
-+	$(RANLIB) $(DESTDIR)$(libdir)/$(library)
-+
-+$(library): $(objs)
-+	$(AR) $(ARFLAGS) $@ $(objs)
-+	$(RANLIB) $@
-+
-+clean:
-+	rm -f $(objs) $(library) $(TRASH)
-+
-+distclean:
-+	rm -f $(objs) $(library) $(DISTTRASH)
-+
-+
-+dependencies:
-+	$(CC) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-+
-+include $(DEP)
-diff -Nurpw libcharls.orig/config.h libcharls/config.h
---- libcharls.orig/config.h	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/config.h	2009-08-20 14:29:07.000000000 +0200
-@@ -2,7 +2,7 @@
- #ifndef CHARLS_CONFIG
- #define CHARLS_CONFIG
+diff -Nurpw --exclude=CMakeLists.txt --exclude=libcharls.a --exclude='*.o' --exclude='Makefile*' libcharls.orig/header.cc libcharls/header.cc
+--- libcharls.orig/header.cc	2009-09-04 01:12:42.000000000 +0200
++++ libcharls/header.cc	2009-09-04 10:21:20.000000000 +0200
+@@ -9,11 +9,6 @@
+ #include "encoderstrategy.h"
+ #include <memory>
  
 -
-+#include "dcmtk/config/osconfig.h"
- 
- #ifdef _DEBUG
- #include <assert.h>
-@@ -13,7 +13,7 @@
- #  endif
- #endif
- 
--#if defined(WIN32)
-+#if defined(_WIN32)
- #ifndef CHARLS_IMEXPORT
- #  define CHARLS_IMEXPORT __declspec(dllexport) 
- #endif
-@@ -28,8 +28,15 @@ typedef int LONG;
- #  endif
- #endif
- 
--#else
-+#else /* not defined(_WIN32) */
-+
-+#ifdef HAVE_STDINT_H
- #include <stdint.h>
-+#endif
-+
-+#ifdef HAVE_SYS_TYPES_H
-+#include <sys/types.h>
-+#endif
- 
- // default signed int types (32 or 64 bit)
- typedef intptr_t LONG;
-diff -Nurpw libcharls.orig/decoderstrategy.h libcharls/decoderstrategy.h
---- libcharls.orig/decoderstrategy.h	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/decoderstrategy.h	2009-08-20 14:25:49.000000000 +0200
-@@ -5,9 +5,9 @@
- #ifndef CHARLS_DECODERSTATEGY
- #define CHARLS_DECODERSTATEGY
- 
-+#include <assert.h>
- #include "streams.h"
- #include "processline.h"
--#include "config.h"
- 
- 
- template <class T>
-@@ -118,7 +118,7 @@ public:
- 	  typedef size_t bufType;
- 
- 	  enum { 
--		  bufferbits = sizeof( bufType ) * 8,
-+		  bufferbits = sizeof( bufType ) * 8
- 	  };
- 		
- 	  void MakeValid()
-diff -Nurpw libcharls.orig/header.cc libcharls/header.cc
---- libcharls.orig/header.cc	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/header.cc	2009-08-20 14:26:42.000000000 +0200
-@@ -382,12 +382,12 @@ void JLSInputStream::ReadStartOfScan()
- void JLSInputStream::ReadComment()
- {}
- 
--static BYTE jfifID[] = {'J','F','I','F','\0'};// JFIF\0
- //
- // ReadJfif()
+-// JFIF\0
+-BYTE jfifID[] = {'J','F','I','F','\0'};
+-
+-
+ bool IsDefault(const JlsCustomParameters* pcustom)
+ {
+ 	if (pcustom->MAXVAL != 0)
+@@ -379,6 +374,7 @@ void JLSInputStream::ReadComment()
  //
  void JLSInputStream::ReadJfif()
  {
@@ -218,7 +21,7 @@ diff -Nurpw libcharls.orig/header.cc libcharls/header.cc
  	for(int i = 0; i < (int)sizeof(jfifID); i++)
  	{
  		if(jfifID[i] != ReadByte())
-@@ -415,6 +415,7 @@ void JLSInputStream::ReadJfif()
+@@ -406,6 +402,7 @@ void JLSInputStream::ReadJfif()
  //
  JpegMarkerSegment* CreateJFIF(const JfifParamaters* jfif)
  {
@@ -226,7 +29,7 @@ diff -Nurpw libcharls.orig/header.cc libcharls/header.cc
  	std::vector<BYTE> rgbyte;
  	for(int i = 0; i < (int)sizeof(jfifID); i++)
  	{
-@@ -533,7 +534,6 @@ void JLSOutputStream::AddScan(const void
+@@ -524,7 +521,6 @@ void JLSOutputStream::AddScan(const void
  	_icompLast += 1;
  	_segments.push_back(EncodeStartOfScan(pparams,pparams->ilv == ILV_NONE ? _icompLast : -1));
  
@@ -234,78 +37,3 @@ diff -Nurpw libcharls.orig/header.cc libcharls/header.cc
  	int ccomp = pparams->ilv == ILV_NONE ? 1 : pparams->components;
  		_segments.push_back(new JpegImageDataSegment(pbyteComp, *pparams, _icompLast, ccomp));
  }
-diff -Nurpw libcharls.orig/interface.h libcharls/interface.h
---- libcharls.orig/interface.h	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/interface.h	2009-08-20 14:22:19.000000000 +0200
-@@ -34,7 +34,7 @@ enum interleavemode
- {
- 	ILV_NONE = 0,
- 	ILV_LINE = 1,
--	ILV_SAMPLE = 2,
-+	ILV_SAMPLE = 2
- };
- 
- 
-@@ -75,7 +75,7 @@ struct JlsParamaters
- };
- 
- 
--#if defined(WIN32)
-+#if defined(_WIN32)
- #ifndef CHARLS_IMEXPORT
- #define CHARLS_IMEXPORT __declspec(dllimport) 
- #pragma comment (lib,"charls.lib")
-@@ -84,7 +84,7 @@ struct JlsParamaters
- #ifndef CHARLS_IMEXPORT
- #define CHARLS_IMEXPORT
- #endif
--#endif /* WIN32 */
-+#endif /* _WIN32 */
- 
- 
- extern "C"
-diff -Nurpw libcharls.orig/losslesstraits.h libcharls/losslesstraits.h
---- libcharls.orig/losslesstraits.h	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/losslesstraits.h	2009-08-20 14:22:52.000000000 +0200
-@@ -23,7 +23,7 @@ struct LosslessTraitsImplT 
- 		RANGE = (1 << bpp),
- 		MAXVAL= (1 << bpp) - 1,
- 		LIMIT = 2 * (bitsperpixel + MAX(8,bitsperpixel)),
--		RESET = BASIC_RESET,
-+		RESET = BASIC_RESET
- 	};
- 
- 	static inlinehint LONG ComputeErrVal(LONG d)
-diff -Nurpw libcharls.orig/stdafx.h libcharls/stdafx.h
---- libcharls.orig/stdafx.h	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/stdafx.h	2009-08-20 14:19:15.000000000 +0200
-@@ -6,7 +6,7 @@
- #ifndef STDAFX
- #define STDAFX
- 
--#if defined(WIN32)
-+#if defined(_WIN32)
- #define CHARLS_IMEXPORT __declspec(dllexport) 
- #if defined(_MSC_VER)
- #pragma warning (disable:4100)
-diff -Nurpw libcharls.orig/util.h libcharls/util.h
---- libcharls.orig/util.h	2009-08-20 05:03:50.000000000 +0200
-+++ libcharls/util.h	2009-08-20 14:23:36.000000000 +0200
-@@ -55,8 +55,6 @@ inline LONG BitWiseSign(LONG i)
- 	{ return i >> (LONG_BITCOUNT-1); }	
- 
- 
--#pragma pack(push, 1)
--
- template<class SAMPLE>
- struct Triplet
- { 
-@@ -107,8 +105,6 @@ struct Quad : public Triplet<sample>
- 	};
- };
- 
--#pragma pack(pop)
--
- 
- #include "interface.h"
- 

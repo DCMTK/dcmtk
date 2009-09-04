@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 10:04:45 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          COUT << "- " << "CharLS, Revision 26807 (modified)" << OFendl;
+          COUT << "- " << "CharLS, Revision 27770 (modified)" << OFendl;
           return 0;
         }
       }
@@ -377,6 +377,9 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmdjpls.cc,v $
+ * Revision 1.5  2009-09-04 13:37:00  meichel
+ * Updated libcharls in module dcmjpls to CharLS revision 27770.
+ *
  * Revision 1.4  2009-08-21 10:04:45  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

@@ -6,6 +6,7 @@
 #ifndef CHARLS_LOOKUPTABLE
 #define CHARLS_LOOKUPTABLE
 
+// Tables for fast decoding of short Golomb Codes.
 
 struct Code
 {

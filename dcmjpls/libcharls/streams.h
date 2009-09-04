@@ -55,7 +55,7 @@ public:
 	size_t Write(BYTE* pdata, size_t cbyteLength);
 
 	void EnableCompare(bool bCompare)
-	{ _bCompare = bCompare; };
+	{ _bCompare = bCompare; }
 private:
 	BYTE* GetPos() const
 		{ return _pdata + _cbyteOffset; }
@@ -107,7 +107,7 @@ public:
 		T2 = 0;
 		T3 = 0;
 		RESET = 0;
-	};
+	}
 };
 
 

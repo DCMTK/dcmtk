@@ -1,6 +1,32 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.04 (eichelberg)
+
+- Updated libcharls in module dcmjpls to CharLS revision 27770.
+  Affects: dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/docs/charls-readme.txt
+           dcmjpls/docs/charls.patch
+           dcmjpls/libcharls/colortransform.h
+           dcmjpls/libcharls/config.h
+           dcmjpls/libcharls/context.h
+           dcmjpls/libcharls/contextrunmode.h
+           dcmjpls/libcharls/decoderstrategy.h
+           dcmjpls/libcharls/encoderstrategy.h
+           dcmjpls/libcharls/header.cc
+           dcmjpls/libcharls/interface.cc
+           dcmjpls/libcharls/interface.h
+           dcmjpls/libcharls/jpegls.cc
+           dcmjpls/libcharls/lookuptable.h
+           dcmjpls/libcharls/losslesstraits.h
+           dcmjpls/libcharls/processline.h
+           dcmjpls/libcharls/scan.h
+           dcmjpls/libcharls/stdafx.h
+           dcmjpls/libcharls/streams.h
+           dcmjpls/libcharls/util.h
+           dcmjpls/libsrc/djcodece.cc
+
 **** Changes from 2009.08.21 (riesmeier)
 
 - Added type cast to integer variable in order to avoid compiler warnings

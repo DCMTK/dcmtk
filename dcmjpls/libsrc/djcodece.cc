@@ -22,9 +22,9 @@
  *  Purpose: codec classes for JPEG-LS encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 10:18:37 $
+ *  Update Date:      $Date: 2009-09-04 13:37:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -628,6 +628,14 @@ OFCondition DJLSEncoderBase::compressRawFrame(
       break;
   }
 
+  // Special case: one component images are always ILV_NONE (Standard requires this)
+  if (jls_params.components == 1)
+  {
+    jls_params.ilv = ILV_NONE;
+    // Don't try to convert to another interleave mode, not necessary
+    ilv = ILV_NONE;
+  }
+
   // Do we have to convert the image to some other interleave mode?
   if ((jls_params.ilv == ILV_NONE && (ilv == ILV_SAMPLE || ilv == ILV_LINE)) ||
       (ilv == ILV_NONE && (jls_params.ilv == ILV_SAMPLE || jls_params.ilv == ILV_LINE)))
@@ -1033,10 +1041,16 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
       break;
   }
 
+  // Special case: one component images are always ILV_NONE (Standard requires this)
+  if (jls_params.components == 1)
+  {
+    jls_params.ilv = ILV_NONE;
+  }
+
   Uint8 *frameBuffer = NULL;
   Uint8 *framePointer = buffer;
   // Do we have to convert the image to color-by-plane now?
-  if (jls_params.ilv == ILV_NONE)
+  if (jls_params.ilv == ILV_NONE && jls_params.components != 1)
   {
     if (djcp->isVerbose())
     {
@@ -1131,6 +1145,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.5  2009-09-04 13:37:00  meichel
+ * Updated libcharls in module dcmjpls to CharLS revision 27770.
+ *
  * Revision 1.4  2009-07-31 10:18:37  meichel
  * Line interleaved JPEG-LS mode now default. This mode works correctly
  *   when decompressing images with the LOCO-I reference implementation.

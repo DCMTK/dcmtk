@@ -8,6 +8,8 @@
 #include "processline.h"
 #include "decoderstrategy.h"
 
+// Implements encoding to stream of bits. In encoding mode JpegLsCodec inherits from EncoderStrategy
+
 class EncoderStrategy
 {
 
@@ -16,16 +18,17 @@ public:
 		 _qdecoder(0),
 		 _info(info),
 		 _processLine(0),
-		 valcurrent(0),
+ 		 valcurrent(0),
 		 bitpos(0),
 		 _bFFWritten(false),
 		 _cbyteWritten(0)
 
 	{
-	};
+	}
 
 	virtual ~EncoderStrategy()
 	{
+		delete _qdecoder;
 	    delete _processLine;
 	}
 
@@ -36,7 +39,7 @@ public:
 		_processLine->NewLineRequested(ptypeBuffer, cpixel, pixelStride);
 	}
 
-	void OnLineEnd(LONG cpixel, void* ptypeBuffer, LONG pixelStride) {};
+	void OnLineEnd(LONG /*cpixel*/, void* /*ptypeBuffer*/, LONG /*pixelStride*/) {}
 
     virtual void SetPresets(const JlsCustomParameters& presets) = 0;
 
@@ -49,7 +52,7 @@ protected:
 		bitpos = 32;
 		valcurrent = 0;
 		_pbyteCompressed = pbyteCompressed;
-		_cbyteCompressed = cbyte;
+   		_cbyteCompressed = cbyte;
 	}
 
 
@@ -129,7 +132,7 @@ protected:
 	size_t GetLength()
 	{
 		return _cbyteWritten - (bitpos -32)/8;
-	};
+	}
 
 
 	inlinehint void AppendOnesToBitStream(LONG length)

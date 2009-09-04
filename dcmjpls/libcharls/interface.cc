@@ -39,8 +39,9 @@ JLS_ERROR CheckInput(const void* pdataCompressed, size_t cbyteCompressed, const 
 	{
 		case 4: return pparams->ilv == ILV_SAMPLE ? ParameterValueNotSupported : OK;
 		case 3: return OK;
-		case 1: return OK;
+		case 1: return pparams->ilv != ILV_NONE ? ParameterValueNotSupported : OK;
 		case 0: return InvalidJlsParameters;
+
 		default: return pparams->ilv != ILV_NONE ? ParameterValueNotSupported : OK;
 	}
 }
@@ -124,7 +125,7 @@ CHARLS_IMEXPORT JLS_ERROR JpegLsDecode(void* pdataUncompressed, size_t cbyteUnco
 
 CHARLS_IMEXPORT JLS_ERROR JpegLsVerifyEncode(const void* pdataUncompressed, size_t cbyteUncompressed, const void* pdataCompressed, size_t cbyteBuffer)
 {
-	JlsParamaters params = {0};
+	JlsParamaters params = JlsParamaters();
 
 	JLS_ERROR error = JpegLsReadHeader(pdataCompressed, cbyteBuffer, &params);
 	if (error != OK)

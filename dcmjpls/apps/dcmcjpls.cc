@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 12:07:27 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,7 +237,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
 #ifdef WITH_ZLIB
           COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
-          COUT << "- " << "CharLS, Revision 26807 (modified)" << OFendl;
+          COUT << "- " << "CharLS, Revision 27770 (modified)" << OFendl;
           return 0;
         }
       }
@@ -550,6 +550,9 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.8  2009-09-04 13:37:00  meichel
+ * Updated libcharls in module dcmjpls to CharLS revision 27770.
+ *
  * Revision 1.7  2009-08-21 12:07:27  joergr
  * Added type cast to integer variable in order to avoid compiler warnings
  * reported by MSVC.

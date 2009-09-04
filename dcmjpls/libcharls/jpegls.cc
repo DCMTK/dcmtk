@@ -73,6 +73,7 @@ CTable rgtableShared[16] = { InitTable(0), InitTable(1), InitTable(2), InitTable
 							 InitTable(8), InitTable(9), InitTable(10), InitTable(11),
 							 InitTable(12), InitTable(13), InitTable(14),InitTable(15) };
 
+
 std::vector<signed char> rgquant8Ll = CreateQLutLossless(8);
 std::vector<signed char> rgquant10Ll = CreateQLutLossless(10);
 std::vector<signed char> rgquant12Ll = CreateQLutLossless(12);
@@ -102,50 +103,58 @@ STRATEGY* JlsCodecFactory<STRATEGY>::GetCodec(const JlsParamaters& _info, const 
 	return pstrategy;
 }
 
+
+
 template<class STRATEGY>
 STRATEGY* JlsCodecFactory<STRATEGY>::GetCodecImpl(const JlsParamaters& _info)
 {
-	if (_info.components != 1 && _info.ilv == ILV_SAMPLE)
-	{
-		if (_info.components == 3 && _info.bitspersample == 8)
-		{
-			if (_info.allowedlossyerror == 0)
-				return new JlsCodec<LosslessTraitsT<Triplet<BYTE>,8>, STRATEGY>(LosslessTraitsT<Triplet<BYTE>,8>(), _info);
-
-			DefaultTraitsT<BYTE,Triplet<BYTE> > traits((1 << _info.bitspersample) - 1, _info.allowedlossyerror);
-			return new JlsCodec<DefaultTraitsT<BYTE,Triplet<BYTE> >, STRATEGY>(traits, _info);
-		}
-
-		if (_info.components == 3 && 8 < _info.bitspersample && _info.bitspersample <= 16)
-		{
-			DefaultTraitsT<USHORT,Triplet<USHORT> > traits((1 << _info.bitspersample) - 1, _info.allowedlossyerror);
-			return new JlsCodec<DefaultTraitsT<USHORT,Triplet<USHORT> >, STRATEGY>(traits, _info);
-		}
+	if (_info.ilv == ILV_SAMPLE && _info.components != 3)
 		return NULL;
-	}
 
-	// optimized lossless versions common monochrome formats (lossless)
+#ifndef DISABLE_SPECIALIZATIONS
+
+	// optimized lossless versions common formats
 	if (_info.allowedlossyerror == 0)
 	{
-		switch (_info.bitspersample)
+		if (_info.ilv == ILV_SAMPLE)
 		{
-			case  8: return new JlsCodec<LosslessTraitsT<BYTE,   8>, STRATEGY>(LosslessTraitsT<BYTE,   8>(), _info);
-			case 10: return new JlsCodec<LosslessTraitsT<USHORT,10>, STRATEGY>(LosslessTraitsT<USHORT,  10>(), _info);
-			case 12: return new JlsCodec<LosslessTraitsT<USHORT,12>, STRATEGY>(LosslessTraitsT<USHORT,  12>(), _info);
-			case 16: return new JlsCodec<LosslessTraitsT<USHORT,16>, STRATEGY>(LosslessTraitsT<USHORT,  16>(), _info);
+			if (_info.bitspersample == 8)
+				return new JlsCodec<LosslessTraitsT<Triplet<BYTE>,8>, STRATEGY>(LosslessTraitsT<Triplet<BYTE>,8>(), _info);
+		}
+		else
+		{
+			switch (_info.bitspersample)
+			{
+				case  8: return new JlsCodec<LosslessTraitsT<BYTE,   8>, STRATEGY>(LosslessTraitsT<BYTE,   8>(), _info);
+				case 12: return new JlsCodec<LosslessTraitsT<USHORT,12>, STRATEGY>(LosslessTraitsT<USHORT,  12>(), _info);
+				case 16: return new JlsCodec<LosslessTraitsT<USHORT,16>, STRATEGY>(LosslessTraitsT<USHORT,  16>(), _info);
+			}
 		}
 	}
 
+#endif
+
+	int maxval = (1 << _info.bitspersample) - 1;
 
 	if (_info.bitspersample <= 8)
 	{
+		if (_info.ilv == ILV_SAMPLE)
+		{
+			DefaultTraitsT<BYTE,Triplet<BYTE> > traits(maxval, _info.allowedlossyerror);
+			return new JlsCodec<DefaultTraitsT<BYTE,Triplet<BYTE> >, STRATEGY>(traits, _info);
+		}
 		DefaultTraitsT<BYTE, BYTE> traits((1 << _info.bitspersample) - 1, _info.allowedlossyerror);
 		return new JlsCodec<DefaultTraitsT<BYTE, BYTE>, STRATEGY>(traits, _info);
 	}
-
-	if (_info.bitspersample <= 16)
+	else if (_info.bitspersample <= 16)
 	{
-		DefaultTraitsT<USHORT, USHORT> traits((1 << _info.bitspersample) - 1, _info.allowedlossyerror);
+		if (_info.ilv == ILV_SAMPLE)
+		{
+			DefaultTraitsT<USHORT,Triplet<USHORT> > traits(maxval, _info.allowedlossyerror);
+			return new JlsCodec<DefaultTraitsT<USHORT,Triplet<USHORT> >, STRATEGY>(traits, _info);
+		}
+
+		DefaultTraitsT<USHORT, USHORT> traits(maxval, _info.allowedlossyerror);
 		return new JlsCodec<DefaultTraitsT<USHORT, USHORT>, STRATEGY>(traits, _info);
 	}
 	return NULL;
