@@ -114,7 +114,10 @@ LoggerImpl::getChainedLogLevel() const
 
     getLogLog().error( LOG4CPLUS_TEXT("LoggerImpl::getChainedLogLevel()- No valid LogLevel found") );
     //throw STD_NAMESPACE runtime_error("No valid LogLevel found");
-    abort();
+
+    // This can only happen if the root logger is set to NOT_SET_LOG_LEVEL which
+    // should *never* happen. Let's just invent something in this case.
+    return TRACE_LOG_LEVEL;
 }
 
 
