@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2008, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:53:10 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ DSRSOPInstanceReferenceList::SeriesStruct::SeriesStruct(const OFString &seriesUI
 DSRSOPInstanceReferenceList::SeriesStruct::~SeriesStruct()
 {
     Iterator = InstanceList.begin();
-    const OFListConstIterator(InstanceStruct *) last = InstanceList.end();
+    const OFListIterator(InstanceStruct *) last = InstanceList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
@@ -296,7 +296,7 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::Series
     {
         /* start with the first list item */
         Iterator = InstanceList.begin();
-        const OFListConstIterator(InstanceStruct *) last = InstanceList.end();
+        const OFListIterator(InstanceStruct *) last = InstanceList.end();
         /* search for given SOP instance UID */
         while ((Iterator != last) && ((*Iterator == NULL) || ((*Iterator)->InstanceUID != instanceUID)))
             Iterator++;
@@ -400,7 +400,7 @@ DSRSOPInstanceReferenceList::StudyStruct::StudyStruct(const OFString &studyUID)
 DSRSOPInstanceReferenceList::StudyStruct::~StudyStruct()
 {
     Iterator = SeriesList.begin();
-    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
+    const OFListIterator(SeriesStruct *) last = SeriesList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
@@ -595,7 +595,7 @@ DSRSOPInstanceReferenceList::SeriesStruct *DSRSOPInstanceReferenceList::StudyStr
     {
         /* start with the first list item */
         Iterator = SeriesList.begin();
-        const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
+        const OFListIterator(SeriesStruct *) last = SeriesList.end();
         /* search for given series UID */
         while ((Iterator != last) && ((*Iterator == NULL) || (OFstatic_cast(SeriesStruct *, *Iterator)->SeriesUID != seriesUID)))
             Iterator++;
@@ -612,7 +612,7 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::StudyS
     InstanceStruct *instance = NULL;
     /* start with the first list item */
     Iterator = SeriesList.begin();
-    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
+    const OFListIterator(SeriesStruct *) last = SeriesList.end();
     /* search for given series UID */
     while ((Iterator != last) && (instance == NULL))
     {
@@ -729,7 +729,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::removeItem()
 void DSRSOPInstanceReferenceList::StudyStruct::removeIncompleteItems()
 {
     Iterator = SeriesList.begin();
-    const OFListConstIterator(SeriesStruct *) last = SeriesList.end();
+    const OFListIterator(SeriesStruct *) last = SeriesList.end();
     /* for all series in the list */
     while (Iterator != last)
     {
@@ -773,7 +773,7 @@ DSRSOPInstanceReferenceList::~DSRSOPInstanceReferenceList()
 void DSRSOPInstanceReferenceList::clear()
 {
     Iterator = StudyList.begin();
-    const OFListConstIterator(StudyStruct *) last = StudyList.end();
+    const OFListIterator(StudyStruct *) last = StudyList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
@@ -970,7 +970,7 @@ DSRSOPInstanceReferenceList::StudyStruct *DSRSOPInstanceReferenceList::gotoStudy
     {
         /* start with the first list item */
         Iterator = StudyList.begin();
-        const OFListConstIterator(StudyStruct *) last = StudyList.end();
+        const OFListIterator(StudyStruct *) last = StudyList.end();
         /* search for given study UID */
         while ((Iterator != last) && ((*Iterator == NULL) || (OFstatic_cast(StudyStruct *, *Iterator)->StudyUID != studyUID)))
             Iterator++;
@@ -1079,7 +1079,7 @@ OFCondition DSRSOPInstanceReferenceList::removeItem(const OFString &studyUID,
 void DSRSOPInstanceReferenceList::removeIncompleteItems()
 {
     Iterator = StudyList.begin();
-    const OFListConstIterator(StudyStruct *) last = StudyList.end();
+    const OFListIterator(StudyStruct *) last = StudyList.end();
     /* for all studies in the list */
     while (Iterator != last)
     {
@@ -1114,7 +1114,7 @@ OFCondition DSRSOPInstanceReferenceList::gotoItem(const OFString &sopClassUID,
         result = SR_EC_SOPInstanceNotFound;
         /* start with first study */
         Iterator = StudyList.begin();
-        const OFListConstIterator(StudyStruct *) last = StudyList.end();
+        const OFListIterator(StudyStruct *) last = StudyList.end();
         /* iterate over all studies */
         while ((Iterator != last) && result.bad())
         {
@@ -1219,7 +1219,8 @@ DSRSOPInstanceReferenceList::StudyStruct *DSRSOPInstanceReferenceList::getCurren
 {
     StudyStruct *study = NULL;
     /* check whether current study is valid */
-    if (Iterator != StudyList.end())
+    OFListConstIterator(StudyStruct *) it = Iterator;
+    if (it != StudyList.end())
         study = OFstatic_cast(StudyStruct *, *Iterator);
     return study;
 }
@@ -1386,6 +1387,9 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.15  2009-09-04 13:53:10  meichel
+ *  Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+ *
  *  Revision 1.14  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *

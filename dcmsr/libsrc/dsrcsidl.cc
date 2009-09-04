@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ DSRCodingSchemeIdentificationList::~DSRCodingSchemeIdentificationList()
 void DSRCodingSchemeIdentificationList::clear()
 {
     Iterator = ItemList.begin();
-    const OFListConstIterator(ItemStruct *) last = ItemList.end();
+    const OFListIterator(ItemStruct *) last = ItemList.end();
     /* delete all items and free memory */
     while (Iterator != last)
     {
@@ -337,7 +337,7 @@ OFCondition DSRCodingSchemeIdentificationList::gotoItem(const OFString &codingSc
         result = SR_EC_CodingSchemeNotFound;
         /* start with first item */
         Iterator = ItemList.begin();
-        const OFListConstIterator(ItemStruct *) last = ItemList.end();
+        const OFListIterator(ItemStruct *) last = ItemList.end();
         /* search for given item */
         while ((Iterator != last) && result.bad())
         {
@@ -385,7 +385,9 @@ DSRCodingSchemeIdentificationList::ItemStruct *DSRCodingSchemeIdentificationList
 {
     ItemStruct *item = NULL;
     /* check whether current item is valid */
-    if (Iterator != ItemList.end())
+    OFListConstIterator(ItemStruct *) it = Iterator;
+
+    if (it != ItemList.end())
         item = OFstatic_cast(ItemStruct *, *Iterator);
     return item;
 }
@@ -575,6 +577,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.13  2009-09-04 13:53:09  meichel
+ *  Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+ *
  *  Revision 1.12  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *

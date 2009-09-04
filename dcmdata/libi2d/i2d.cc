@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-05 08:51:02 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -633,7 +633,7 @@ OFCondition Image2Dcm::applyOverrideKeys(DcmDataset *outputDset)
 
 {
   /* replace specific keys by those in overrideKeys, copied from findscu */
-  OFListIterator(OFString) path = m_overrideKeys.begin();
+  OFListConstIterator(OFString) path = m_overrideKeys.begin();
   OFListConstIterator(OFString) endOfList = m_overrideKeys.end();
   OFCondition cond;
   DcmPathProcessor proc;
@@ -736,6 +736,9 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.9  2009-09-04 13:53:09  meichel
+ * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+ *
  * Revision 1.8  2009-08-05 08:51:02  joergr
  * Replaced numeric tag by pre-defined tag name (DCM_PixelDataProviderURL).
  * Fixed various inconsistencies in condition text values and log messages.

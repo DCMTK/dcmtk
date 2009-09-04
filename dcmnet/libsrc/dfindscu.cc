@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Classes for Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-13 09:44:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dfindscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,7 +484,7 @@ OFCondition DcmFindSCU::findSCU(
     }
 
     /* replace specific keys by those in overrideKeys */
-    OFListIterator(OFString) path = overrideKeys->begin();
+    OFListConstIterator(OFString) path = overrideKeys->begin();
     OFListConstIterator(OFString) endOfList = overrideKeys->end();
     DcmDataset* dset = dcmff.getDataset();
     DcmPathProcessor proc;
@@ -593,6 +593,9 @@ OFCondition DcmFindSCU::findSCU(
 /*
  * CVS Log
  * $Log: dfindscu.cc,v $
+ * Revision 1.7  2009-09-04 13:53:09  meichel
+ * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+ *
  * Revision 1.6  2009-07-13 09:44:26  onken
  * Removed misleading comment about dcmnet DIMSE return code and changed
  * corresponding OFCondition check from EC_Normal to .good().

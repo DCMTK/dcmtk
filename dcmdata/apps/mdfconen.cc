@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:25:13 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -521,9 +521,9 @@ int MdfConsoleEngine::startProvidingService()
     parseCommandLine();
     //iterators for job and file loops
     OFListIterator(MdfJob) job_it;
-    OFListConstIterator(MdfJob) job_last = jobs->end();;
+    OFListIterator(MdfJob) job_last = jobs->end();;
     OFListIterator(OFString) file_it = files->begin();
-    OFListConstIterator(OFString) file_last = files->end();;
+    OFListIterator(OFString) file_last = files->end();;
     // outer loop: iterate over all files
     while (file_it != file_last)
     {
@@ -689,6 +689,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.31  2009-09-04 13:53:09  meichel
+** Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+**
 ** Revision 1.30  2009-08-21 09:25:13  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the

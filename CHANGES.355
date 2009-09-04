@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.04 (eichelberg)
+
+- Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+  Affects: dcmdata/apps/mdfconen.cc
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libsrc/dcpath.cc
+           dcmnet/libsrc/dfindscu.cc
+           dcmnet/libsrc/lst.cc
+           dcmpstat/include/dcmtk/dcmpstat/dvcache.h
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrsoprf.cc
+
 **** Changes from 2009.09.04 (riesmeier)
 
 - Avoid starting configure recursively for all modules when using exclusive

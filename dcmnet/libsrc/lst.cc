@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: List class with procedural API compatible to MIR CTN
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:44:55 $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/lst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,8 @@ void *LST_HEAD::next()
 void *LST_HEAD::current() const
 {
   if (theList.size() == 0) return NULL;
-  if (theIterator == theList.end()) return NULL;
+  OFListConstIterator(void *) it = theIterator;
+  if (it == theList.end()) return NULL;
   return *theIterator;  
 }
 
@@ -164,6 +165,9 @@ void *LST_Position(LST_HEAD ** lst, void *node)
 /*
  * CVS Log
  * $Log: lst.cc,v $
+ * Revision 1.7  2009-09-04 13:53:09  meichel
+ * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+ *
  * Revision 1.6  2005-12-08 15:44:55  meichel
  * Changed include path schema for all DCMTK header files
  *

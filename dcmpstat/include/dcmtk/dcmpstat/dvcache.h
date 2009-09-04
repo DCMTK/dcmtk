@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2005, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:30 $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/dcmtk/dcmpstat/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -329,7 +329,8 @@ class DVInstanceCache
      */
     inline ItemStruct *getItem() const
     {
-        return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
+		OFListConstIterator(ItemStruct *) it = Iterator;
+        return (it != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
     /** adds a new item to the cache list.
@@ -613,7 +614,8 @@ class DVSeriesCache
      */
     inline ItemStruct *getItem() const
     {
-        return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
+		OFListConstIterator(ItemStruct *) it = Iterator;
+        return (it != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
     /** adds a new item to the cache list.
@@ -858,7 +860,8 @@ class DVStudyCache
      */
     inline ItemStruct *getItem() const
     {
-        return (Iterator != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
+		OFListConstIterator(ItemStruct *) it = Iterator;
+        return (it != List.end()) ? (*Iterator) : (ItemStruct *)NULL;
     }
 
     /** adds a new item to the cache list.
@@ -909,6 +912,9 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
+ * Revision 1.17  2009-09-04 13:53:09  meichel
+ * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+ *
  * Revision 1.16  2005-12-08 16:03:30  meichel
  * Changed include path schema for all DCMTK header files
  *

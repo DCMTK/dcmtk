@@ -22,9 +22,9 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 07:47:34 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2009-09-04 13:53:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -483,7 +483,7 @@ OFCondition DcmPathProcessor::applyPathWithValue(DcmDataset *dataset,
     return result;
 
   // prepare for value insertion
-  OFListIterator(DcmPath*) it = m_results.begin();
+  OFListConstIterator(DcmPath*) it = m_results.begin();
   OFListConstIterator(DcmPath*) endList = m_results.end();
   DcmPathNode *last = (*it)->back();
   if (last == NULL) return EC_IllegalCall;
@@ -932,6 +932,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.9  2009-09-04 13:53:09  meichel
+** Minor const iterator related changes needed to compile with VC6 with HAVE_STL
+**
 ** Revision 1.8  2009-08-26 07:47:34  joergr
 ** Added check on size of long in order to avoid warnings reported by gcc 4.3.2.
 **
