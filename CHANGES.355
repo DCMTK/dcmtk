@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.04 (riesmeier)
+
+- Avoid starting configure recursively for all modules when using exclusive
+  commandline options like --help=short or --version.
+  Affects: configure
+           config/rootconf
+
 **** Changes from 2009.09.03 (riesmeier)
 
 - Updated reference to DICOM standard, fixed typo and minor formatting issues.

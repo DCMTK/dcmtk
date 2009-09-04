@@ -18,6 +18,12 @@ else
 fi
 if test "x--help" = "x$*"; then
 	config/configure --help
+elif test "x--help=short" = "x$*"; then
+	config/configure --help=short
+elif test "x--help=recursive" = "x$*"; then
+	config/configure --help=recursive
+elif test "x--version" = "x$*"; then
+	config/configure --version
 else
 	for module in $modules ; do
 		echo "Running configure for module $module."
