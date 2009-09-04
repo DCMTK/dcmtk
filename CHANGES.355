@@ -91,6 +91,9 @@ Changes between releases are documented here.
 - Added missing include for the definition of STD_NAMESPACE.
   Affects: oflog/include/dcmtk/oflog/helpers/stringhelper.h
 
+- Fixed issue with getOFStringArray() when using standard C++ string class.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2009.09.02 (riesmeier)
 
 - Revised documentation of parameter "pos" for some putAndInsertXXX() functions
