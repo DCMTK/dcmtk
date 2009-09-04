@@ -36,6 +36,12 @@ Changes between releases are documented here.
            dcmqrdb/apps/dcmqridx.cc
            dcmqrdb/apps/dcmqrscp.cc
 
+- Adapted module for DCMTK's new unified logging support.
+  Affects: dcmsign/apps/CMakeLists.txt
+           dcmsign/apps/Makefile.in
+           dcmsign/apps/dcmsign.cc
+           dcmsign/docs/dcmsign.man
+
 **** Changes from 2009.09.03 (riesmeier)
 
 - Updated reference to DICOM standard, fixed typo and minor formatting issues.
