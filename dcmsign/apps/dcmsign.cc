@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-04 15:42:31 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2009-09-04 16:08:05 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1050,7 +1050,7 @@ int main(int argc, char *argv[])
       return 1;
   }
 
-  OFLOG_WARN(dcmsignLogger, "open input file " << opt_ifname);
+  OFLOG_INFO(dcmsignLogger, "open input file " << opt_ifname);
 
   DcmFileFormat *fileformat = new DcmFileFormat;
 
@@ -1180,6 +1180,9 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.32  2009-09-04 16:08:05  joergr
+ *  Changed warning message into an informational message (as it was before).
+ *
  *  Revision 1.31  2009-09-04 15:42:31  joergr
  *  Adapted module for DCMTK's new unified logging support.
  *

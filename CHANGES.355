@@ -42,6 +42,9 @@ Changes between releases are documented here.
            dcmsign/apps/dcmsign.cc
            dcmsign/docs/dcmsign.man
 
+- Changed warning message into an informational message (as it was before).
+  Affects: dcmsign/apps/dcmsign.cc
+
 **** Changes from 2009.09.03 (riesmeier)
 
 - Updated reference to DICOM standard, fixed typo and minor formatting issues.
