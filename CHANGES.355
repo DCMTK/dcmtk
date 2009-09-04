@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2009.09.04 (eichelberg)
 
+- Disabled warning C4284 on VC6, needed for recent additions to class OFList.
+  Affects: config/include/dcmtk/config/cfwin32.h.in
+
 - Minor const iterator related changes needed to compile with VC6 with HAVE_STL
   Affects: dcmdata/apps/mdfconen.cc
            dcmdata/libi2d/i2d.cc
