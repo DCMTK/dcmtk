@@ -22,8 +22,8 @@
  *  Purpose: This test program registers image files in the image database.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:49:41 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-09-04 14:38:02 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ int main (int argc, char *argv[])
             if (cmd.findOption("--version"))
             {
                 app.printHeader(OFTrue /*print host identifier*/);
-                CERR << OFendl << "External libraries used:";
+                COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
                 COUT << " none" << OFendl;
 #else
@@ -213,6 +213,9 @@ int main (int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqridx.cc,v $
+ * Revision 1.11  2009-09-04 14:38:02  joergr
+ * Output all --version information to COUT (and not to CERR).
+ *
  * Revision 1.10  2009-08-21 09:49:41  joergr
  * Replaced tabs by spaces and updated copyright date.
  *

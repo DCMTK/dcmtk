@@ -21,9 +21,9 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-13 09:44:18 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-04 14:36:42 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,7 +278,7 @@ main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
           app.printHeader(OFTrue /*print host identifier*/);
-          CERR << OFendl << "External libraries used:";
+          COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
           COUT << " none" << OFendl;
 #else
@@ -793,6 +793,9 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
+** Revision 1.47  2009-09-04 14:36:42  joergr
+** Output all --version information to COUT (and not to CERR).
+**
 ** Revision 1.46  2009-07-13 09:44:18  onken
 ** Removed misleading comment about dcmnet DIMSE return code and changed
 ** corresponding OFCondition check from EC_Normal to .good().

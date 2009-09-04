@@ -22,8 +22,8 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:29:17 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-09-04 14:38:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -325,17 +325,17 @@ main(int argc, char *argv[])
         if (cmd.findOption("--version"))
         {
           app.printHeader(OFTrue /*print host identifier*/);
-          CERR << OFendl << "External libraries used:";
+          COUT << OFendl << "External libraries used:";
 #if !defined(WITH_ZLIB) && !defined(WITH_TCPWRAPPER)
-              COUT << " none" << OFendl;
+          COUT << " none" << OFendl;
 #else
-              COUT << OFendl;
+          COUT << OFendl;
 #endif
 #ifdef WITH_ZLIB
-              COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
+          COUT << "- ZLIB, Version " << zlibVersion() << OFendl;
 #endif
 #ifdef WITH_TCPWRAPPER
-              COUT << "- LIBWRAP" << OFendl;
+          COUT << "- LIBWRAP" << OFendl;
 #endif
           return 0;
         }
@@ -763,6 +763,9 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrscp.cc,v $
+ * Revision 1.18  2009-09-04 14:38:02  joergr
+ * Output all --version information to COUT (and not to CERR).
+ *
  * Revision 1.17  2009-04-24 12:29:17  joergr
  * Added new command line option --fork in order to explicitly indicate what
  * the default behavior is (= multi-processing).

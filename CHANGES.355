@@ -28,6 +28,11 @@ Changes between releases are documented here.
 - Replaced abort() by a more "friendly" return statement.
   Affects: oflog/libsrc/loggerimpl.cc
 
+- Output all --version information to COUT (and not to CERR).
+  Affects: dcmnet/apps/echoscu.cc
+           dcmqrdb/apps/dcmqridx.cc
+           dcmqrdb/apps/dcmqrscp.cc
+
 **** Changes from 2009.09.03 (riesmeier)
 
 - Updated reference to DICOM standard, fixed typo and minor formatting issues.
