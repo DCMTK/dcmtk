@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-20 10:43:30 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-09-04 12:45:41 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@ OFLogger::OFLogger(log4cplus::Logger base)
 {
 }
 
-void OFLog_init()
+static void OFLog_init()
 {
     // we don't have to protect against threads here, this function is guaranteed
     // to be called at least once before main() starts -> no threads yet
@@ -52,11 +52,10 @@ void OFLog_init()
         return;
     initialized = 1;
 
-    // until someone properly configures us, we will allow most log messages and
-    // make it clear that we weren't properly initialized yet ("EARLY STARTUP")
-    const char *pattern = "EARLY STARTUP: %p: %m%n";
+    // we default to a really simple pattern: message\n
+    const char *pattern = "%m%n";
     OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
-    log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender);
+    log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender(true /* logToStrErr */, true /* immediateFlush */));
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
 
     console->setLayout(layout);
@@ -83,18 +82,9 @@ class static_OFLog_initializer
 
 void OFLog::configureLogger(log4cplus::LogLevel level)
 {
-    // we default to a really simple pattern: message\n
-    const char *pattern = "%m%n";
-    OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
-    log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender(false, true));
+    // This assumes that OFLog_init() was already called. We keep using its
+    // setup and just change the log level.
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
-
-    console->setLayout(layout);
-
-    // if the rootLogger is configured multiple times, don't recursively add
-    // appenders to it
-    rootLogger.removeAllAppenders();
-    rootLogger.addAppender(console);
     rootLogger.setLogLevel(level);
 
     // are we in "quiet-mode"?
@@ -215,6 +205,11 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.3  2009-09-04 12:45:41  joergr
+ * Changed default behavior of the logger: output log messages to stderr (not
+ * stdout) and flush stream immediately; removed "EARLY STARTUP" prefix from
+ * messages which was only used for testing purposes.
+ *
  * Revision 1.2  2009-08-20 10:43:30  joergr
  * Added more checks when reading a log configuration from file.
  *
