@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-04 12:45:41 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-09-07 10:02:20 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,16 +182,34 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     }
 
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
-    // if --debug or something equivalent was used
-    if (rootLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
-        app.printIdentifier();
     // if --quiet or something equivalent was used
-    if (!rootLogger.isEnabledFor(OFLogger::WARN_LOG_LEVEL))
+    if (!rootLogger.isEnabledFor(OFLogger::ERROR_LOG_LEVEL))
         app.setQuietMode();
+
+    // print command line arguments
+    if (cmd.findOption("--arguments"))
+    {
+        OFStringStream stream;
+        stream << "expanded command line to " << cmd.getArgCount() << " arguments:" << OFendl;
+        const char *arg;
+        // iterate over all command line arguments
+        if (cmd.gotoFirstArg())
+        {
+            do {
+                if (cmd.getCurrentArg(arg))
+                    stream << "'" << arg << "' ";
+            } while (cmd.gotoNextArg());
+        }
+        stream << OFendl << OFendl;
+        OFSTRINGSTREAM_GETOFSTRING(stream, tmpString)
+        // always output this message, i.e. without checking the log level
+        rootLogger.forcedLog(OFLogger::INFO_LOG_LEVEL, tmpString);
+    }
 }
 
 void OFLog::addOptions(OFCommandLine &cmd)
 {
+    cmd.addOption("--arguments",            "print expanded command line arguments");
     cmd.addOption("--quiet",      "-q",     "quiet mode, print no warnings and errors");
     cmd.addOption("--verbose",    "-v",     "verbose mode, print processing details");
     cmd.addOption("--debug",      "-d",     "debug mode, print debug information");
@@ -205,6 +223,11 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.4  2009-09-07 10:02:20  joergr
+ * Moved --arguments option and corresponding output to oflog module in order
+ * to use the correct output stream. Fixed issue with --quiet mode.
+ * Moved output of resource identifier back from oflog to the application.
+ *
  * Revision 1.3  2009-09-04 12:45:41  joergr
  * Changed default behavior of the logger: output log messages to stderr (not
  * stdout) and flush stream immediately; removed "EARLY STARTUP" prefix from
