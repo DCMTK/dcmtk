@@ -21,10 +21,9 @@
  *
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:53:09 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/dcmtk/dcmpstat/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-07 12:51:40 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +39,7 @@
 #include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/dcmqrdb/dcmqrdbi.h"  /* for DVIFhierarchyStatus */
+
 
 /*--------------------*
  *  type definitions  *
@@ -107,7 +107,7 @@ class DVInstanceCache
             Label(),
             List()
         {}
-    
+
         /// instance UID
         OFString UID;
         /// position in the index file
@@ -155,7 +155,7 @@ class DVInstanceCache
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
-        {     
+        {
             delete (*Iterator);
             Iterator = List.erase(Iterator);
         }
@@ -204,7 +204,7 @@ class DVInstanceCache
         }
         return result;
     }
-    
+
     /** sets internal cursor to first position in cache list
      *
      ** @return OFTrue if successful, OFFalse if list is empty
@@ -215,7 +215,7 @@ class DVInstanceCache
         Iterator = List.begin();
         return (Iterator != List.end());
     }
-    
+
     /** sets internal cursor to next position in cache list
      *
      ** @return OFTrue if successful, OFFalse if new position is invalid
@@ -227,7 +227,7 @@ class DVInstanceCache
             Iterator++;
         return (Iterator != last);
     }
-    
+
     /** sets internal cursor to last visited position in cache list
      *
      ** @return OFTrue if successful,
@@ -245,7 +245,7 @@ class DVInstanceCache
         }
         return result;
     }
-    
+
     /** checks whether an item with the specified UID exists in the cache list
      *
      ** @param  uid  UID which should be checked
@@ -434,7 +434,7 @@ class DVSeriesCache
             Type(type),
             List()
         {}
-    
+
         /// instance UID
         OFString UID;
         /// review status for the series
@@ -470,7 +470,7 @@ class DVSeriesCache
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
-        {     
+        {
             delete (*Iterator);
             Iterator = List.erase(Iterator);
         }
@@ -519,7 +519,7 @@ class DVSeriesCache
         }
         return result;
     }
-    
+
     /** sets internal cursor to first position in cache list
      *
      ** @return OFTrue if successful, OFFalse if list is empty
@@ -530,7 +530,7 @@ class DVSeriesCache
         Iterator = List.begin();
         return (Iterator != List.end());
     }
-    
+
     /** sets internal cursor to next position in cache list
      *
      ** @return OFTrue if successful, OFFalse if new position is invalid
@@ -542,7 +542,7 @@ class DVSeriesCache
             Iterator++;
         return (Iterator != last);
     }
-    
+
     /** sets internal cursor to last visited position in cache list
      *
      ** @return OFTrue if successful,
@@ -560,7 +560,7 @@ class DVSeriesCache
         }
         return result;
     }
-    
+
     /** checks whether an item with the specified UID exists in the cache list
      *
      ** @param  uid  UID which should be checked
@@ -711,7 +711,7 @@ class DVStudyCache
             Status(status),
             List()
         {}
-    
+
         /// instance UID
         OFString UID;
         /// review status for the series
@@ -744,7 +744,7 @@ class DVStudyCache
         Iterator = List.begin();
         OFListIterator(ItemStruct *) last = List.end();
         while (Iterator != last)
-        {     
+        {
             delete (*Iterator);
             Iterator = List.erase(Iterator);
         }
@@ -793,7 +793,7 @@ class DVStudyCache
         }
         return result;
     }
-    
+
     /** sets internal cursor to first position in cache list
      *
      ** @return OFTrue if successful, OFFalse if list is empty
@@ -804,7 +804,7 @@ class DVStudyCache
         Iterator = List.begin();
         return (Iterator != List.end());
     }
-    
+
     /** sets internal cursor to next position in cache list
      *
      ** @return OFTrue if successful, OFFalse if new position is invalid
@@ -816,7 +816,7 @@ class DVStudyCache
             Iterator++;
         return (Iterator != last);
     }
-    
+
     /** checks whether an item with the specified UID exists in the cache list
      *
      ** @param  uid  UID which should be checked
@@ -912,6 +912,9 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
+ * Revision 1.18  2009-09-07 12:51:40  joergr
+ * Converted Windows line breaks to Unix format.
+ *
  * Revision 1.17  2009-09-04 13:53:09  meichel
  * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
  *

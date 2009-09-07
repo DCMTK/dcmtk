@@ -2,7 +2,7 @@
 
 \page mod_dcmjpeg dcmjpeg: a compression/decompression library and utility apps
 
-This module contains classes that convert between uncompressed and JPEG 
+This module contains classes that convert between uncompressed and JPEG
 compressed representations (transfer syntaxes) of a DICOM image object.
 Both lossless and lossy JPEG processes are supported. This module implements
 a family of codecs that are derived from class DcmCodec and can be registered
@@ -41,15 +41,15 @@ if (fileformat.loadFile("test.dcm").good())
   // check if everything went well
   if (dataset->canWriteXfer(EXS_JPEGProcess14SV1TransferSyntax))
   {
-    // force the meta-header UIDs to be re-generated when storing the file 
-    // since the UIDs in the data set may have changed 
+    // force the meta-header UIDs to be re-generated when storing the file
+    // since the UIDs in the data set may have changed
     delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
     delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
 
     // store in lossless JPEG format
     fileformat.saveFile("test_jpeg.dcm", EXS_JPEGProcess14SV1TransferSyntax);
   }
-}    
+}
 DJEncoderRegistration::cleanup(); // deregister JPEG codecs
 \endcode
 
@@ -70,7 +70,7 @@ if (fileformat.loadFile("test_jpeg.dcm").good())
   {
     fileformat.saveFile("test_decompressed.dcm", EXS_LittleEndianExplicit);
   }
-}    
+}
 DJDecoderRegistration::cleanup(); // deregister JPEG codecs
 \endcode
 

@@ -2,7 +2,7 @@
 
 \page mod_dcmpstat dcmpstat: a presentation state library and utility apps
 
-This module contains classes that implement a high-level API for the DICOM 
+This module contains classes that implement a high-level API for the DICOM
 Softcopy Grayscale Presentation State Storage SOP Class. It also contains various
 support classes that are used by DICOMscope, a free DICOM viewer that has been
 developed as a demonstrator for presentation states. See http://dicom.offis.de/dscope
@@ -42,19 +42,19 @@ if (infile.loadFile("image.dcm").good())
     if (pstate.write(*outfile.getDataset(), OFFalse).good())
     {
       // and write to file
-      outfile.saveFile("gsps.dcm", EXS_LittleEndianExplicit);      
+      outfile.saveFile("gsps.dcm", EXS_LittleEndianExplicit);
     }
   }
 }
 \endcode
 
-The following example shows how to apply the grayscale transformation pipeline 
+The following example shows how to apply the grayscale transformation pipeline
 from a presentation state to a DICOM image:
 
 \code
 DcmFileFormat imagefile;
 DcmFileFormat gspsfile;
-if (imagefile.loadFile("image.dcm").good() && 
+if (imagefile.loadFile("image.dcm").good() &&
     gspsfile.loadFile("gsps.dcm").good())
 {
   DVPresentationState pstate; // presentation state handler

@@ -2,9 +2,9 @@
 
 \page mod_dcmsign dcmsign: a digital signature library and utility apps
 
-This module contains classes to create digital signatures in DICOM data sets, to 
-verify and to remove signatures. Signatures are conforming to the DICOM "Digital 
-Signatures" extension (formerly Supplement 41). This module requires the 
+This module contains classes to create digital signatures in DICOM data sets, to
+verify and to remove signatures. Signatures are conforming to the DICOM "Digital
+Signatures" extension (formerly Supplement 41). This module requires the
 external OpenSSL library.
 
 The main interface classes are:
@@ -49,10 +49,10 @@ if (fileformat.loadFile("test.dcm").good())
     signer.detach();
     sigItem = DcmSignature::findNextSignatureItem(*dataset, stack);
   }
-  if (counter == 0) 
+  if (counter == 0)
       cerr << "no signatures found in dataset." << endl;
-  else 
-      cerr << counter << " signatures verified in dataset, " 
+  else
+      cerr << counter << " signatures verified in dataset, "
            << corrupt_counter << " corrupted." << endl;
 }
 \endcode
