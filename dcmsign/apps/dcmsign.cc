@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-04 16:08:05 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-09-07 10:05:38 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -749,7 +749,6 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                      "-h",        "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                                "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                              "print expanded command line arguments");
       OFLog::addOptions(cmd);
 
   cmd.addGroup("input options:");
@@ -815,10 +814,6 @@ int main(int argc, char *argv[])
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
-    /* check whether to print the command line arguments */
-    if (cmd.findOption("--arguments"))
-        app.printArguments();
-
     /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
@@ -914,17 +909,17 @@ int main(int argc, char *argv[])
     cmd.beginOptionBlock();
     if (cmd.findOption("--std-passwd"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--std-passwd only with --sign or --sign-item");
+      app.checkDependence("--std-passwd", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_passwd = NULL;
     }
     if (cmd.findOption("--use-passwd"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--use-passwd only with --sign or --sign-item");
+      app.checkDependence("--use-passwd", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       app.checkValue(cmd.getValue(opt_passwd));
     }
     if (cmd.findOption("--null-passwd"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--null-passwd only with --sign or --sign-item");
+      app.checkDependence("--null-passwd", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_passwd = "";
     }
     cmd.endOptionBlock();
@@ -937,22 +932,22 @@ int main(int argc, char *argv[])
     cmd.beginOptionBlock();
     if (cmd.findOption("--profile-none"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-none only with --sign or --sign-item");
+      app.checkDependence("--profile-none", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_profile = new SiNullProfile();
     }
     if (cmd.findOption("--profile-base"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-base only with --sign or --sign-item");
+      app.checkDependence("--profile-base", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_profile = new SiBaseRSAProfile();
     }
     if (cmd.findOption("--profile-creator"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-creator only with --sign or --sign-item");
+      app.checkDependence("--profile-creator", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_profile = new SiCreatorProfile();
     }
     if (cmd.findOption("--profile-auth"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--profile-auth only with --sign or --sign-item");
+      app.checkDependence("--profile-auth", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_profile = new SiAuthorizationProfile();
     }
     cmd.endOptionBlock();
@@ -961,17 +956,17 @@ int main(int argc, char *argv[])
     cmd.beginOptionBlock();
     if (cmd.findOption("--mac-ripemd160"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--mac-ripemd160 only with --sign or --sign-item");
+      app.checkDependence("--mac-ripemd160", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_mac = new SiRIPEMD160();
     }
     if (cmd.findOption("--mac-sha1"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--mac-sha1 only with --sign or --sign-item");
+      app.checkDependence("--mac-sha1", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_mac = new SiSHA1();
     }
     if (cmd.findOption("--mac-md5"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--mac-md5 only with --sign or --sign-item");
+      app.checkDependence("--mac-md5", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       opt_mac = new SiMD5();
     }
     cmd.endOptionBlock();
@@ -1023,7 +1018,7 @@ int main(int argc, char *argv[])
 
     if (cmd.findOption("--dump"))
     {
-      if ((opt_operation != DSO_sign)&&(opt_operation != DSO_signItem)) app.printError("--dump only with --sign or --sign-item");
+      app.checkDependence("--dump", "--sign or --sign-item", (opt_operation == DSO_sign) || (opt_operation == DSO_signItem));
       const char *fileName = NULL;
       app.checkValue(cmd.getValue(fileName));
       opt_dumpFile = fopen(fileName, "wb");
@@ -1035,19 +1030,21 @@ int main(int argc, char *argv[])
     }
   }
 
+  /* print resource identifier */
+  OFLOG_DEBUG(dcmsignLogger, rcsid << OFendl);
+
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
     OFLOG_WARN(dcmsignLogger, "Warning: no data dictionary loaded, "
-         << "check environment variable: "
-         << DCM_DICT_ENVIRONMENT_VARIABLE);
+      << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   // open inputfile
   if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
   {
-      OFLOG_FATAL(dcmsignLogger, "invalid filename: <empty string>");
-      return 1;
+    OFLOG_FATAL(dcmsignLogger, "invalid filename: <empty string>");
+    return 1;
   }
 
   OFLOG_INFO(dcmsignLogger, "open input file " << opt_ifname);
@@ -1180,6 +1177,12 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
+ *  Revision 1.33  2009-09-07 10:05:38  joergr
+ *  Moved --arguments option and corresponding output to oflog module in order
+ *  to use the correct output stream.
+ *  Moved output of resource identifier back from oflog to the application.
+ *  Use helper function checkDependence() where appropriate.
+ *
  *  Revision 1.32  2009-09-04 16:08:05  joergr
  *  Changed warning message into an informational message (as it was before).
  *
