@@ -6,17 +6,23 @@ Changes between releases are documented here.
 - Moved --arguments option and corresponding output to oflog module in order
   to use the correct output stream.
   Affects: dcmsign/apps/dcmsign.cc
-           oflog/libsrc/oflog.cc          
-  
+           oflog/libsrc/oflog.cc
+
 - Moved output of resource identifier back from oflog to the application.
   Affects: dcmsign/apps/dcmsign.cc
            oflog/libsrc/oflog.cc
-  
+
 - Fixed issue with --quiet mode.
   Affects: oflog/libsrc/oflog.cc
 
 - Use helper function checkDependence() where appropriate.
   Affects: dcmsign/apps/dcmsign.cc
+
+- Converted Windows line breaks to Unix format.
+  Affects: dcmjpeg/docs/dcmjpeg.dox
+           dcmpstat/docs/dcmpstat.dox
+           dcmpstat/include/dcmtk/dcmpstat/dvcache.h
+           dcmsign/docs/dcmsign.dox
 
 **** Changes from 2009.09.04 (eichelberg)
 
