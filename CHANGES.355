@@ -1,6 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.07 (riesmeier)
+
+- Moved --arguments option and corresponding output to oflog module in order
+  to use the correct output stream.
+  Affects: dcmsign/apps/dcmsign.cc
+           oflog/libsrc/oflog.cc          
+  
+- Moved output of resource identifier back from oflog to the application.
+  Affects: dcmsign/apps/dcmsign.cc
+           oflog/libsrc/oflog.cc
+  
+- Fixed issue with --quiet mode.
+  Affects: oflog/libsrc/oflog.cc
+
+- Use helper function checkDependence() where appropriate.
+  Affects: dcmsign/apps/dcmsign.cc
+
 **** Changes from 2009.09.04 (eichelberg)
 
 - Disabled warning C4284 on VC6, needed for recent additions to class OFList.
