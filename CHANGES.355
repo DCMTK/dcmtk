@@ -19,10 +19,17 @@ Changes between releases are documented here.
   Affects: dcmsign/apps/dcmsign.cc
 
 - Converted Windows line breaks to Unix format.
-  Affects: dcmjpeg/docs/dcmjpeg.dox
+  Affects: dcmimgle/data/monitor.lut
+           dcmimgle/data/scanner.lut
+           dcmjpeg/docs/dcmjpeg.dox
            dcmpstat/docs/dcmpstat.dox
            dcmpstat/include/dcmtk/dcmpstat/dvcache.h
            dcmsign/docs/dcmsign.dox
+           dcmsr/data/report.css
+           dcmsr/data/reportx.css
+           dcmtls/docs/ciphers.txt
+           dcmtls/docs/randseed.txt
+           oflog/docs/LICENSE
 
 **** Changes from 2009.09.04 (eichelberg)
 
