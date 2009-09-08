@@ -22,9 +22,9 @@
  *  Purpose: codec classes for JPEG-LS decoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-10 09:38:06 $
+ *  Update Date:      $Date: 2009-09-08 11:19:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -317,6 +317,16 @@ OFCondition DJLSDecoderBase::decode(
               else
                 result = createPlanarConfiguration0Word(OFreinterpret_cast(Uint16*, pixeldata8), imageColumns, imageRows);
             }
+          }
+
+          if (result.good())
+          {
+              // decompression is complete, finally adjust byte order if necessary
+              if (bytesPerSample == 1) // we're writing bytes into words
+              {
+                  result = swapIfNecessary(gLocalByteOrder, EBO_LittleEndian, pixeldata8,
+                          totalSize, sizeof(Uint16));
+              }
           }
 
           if (result.good())
@@ -656,6 +666,10 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.4  2009-09-08 11:19:45  meichel
+ * Fixed bug affecting decompression of images with 8 bits/sample on big
+ *   endian machines
+ *
  * Revision 1.3  2009-08-10 09:38:06  meichel
  * All decompression codecs now replace NumberOfFrames if larger than one
  *   or present in the original image.

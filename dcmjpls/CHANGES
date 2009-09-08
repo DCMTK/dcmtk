@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.08 (eichelberg)
+
+- Fixed bug affecting decompression of images with 8 bits/sample on big 
+  endian machines
+  Affects: dcmjpls/libsrc/djcodecd.cc
+
 **** Changes from 2009.09.04 (eichelberg)
 
 - Updated libcharls in module dcmjpls to CharLS revision 27770.
