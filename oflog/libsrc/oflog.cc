@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-07 10:02:20 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-09-14 10:52:31 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,8 @@ static void OFLog_init()
         return;
     initialized = 1;
 
-    // we default to a really simple pattern: message\n
-    const char *pattern = "%m%n";
+    // we default to a really simple pattern: loglevel_prefix: message\n
+    const char *pattern = "%P: %m%n";
     OFauto_ptr<log4cplus::Layout> layout(new log4cplus::PatternLayout(pattern));
     log4cplus::SharedAppenderPtr console(new log4cplus::ConsoleAppender(true /* logToStrErr */, true /* immediateFlush */));
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
@@ -101,17 +101,6 @@ OFLogger OFLog::getLogger(const char *loggerName)
     return log4cplus::Logger::getInstance(loggerName);
 }
 
-OFLogger::LogLevel OFLog::toLogMode(OFBool debug, OFBool verbose, OFBool quiet)
-{
-    if (debug)
-        return OFLogger::DEBUG_LOG_LEVEL;
-    if (verbose)
-        return OFLogger::INFO_LOG_LEVEL;
-    if (quiet)
-        return OFLogger::FATAL_LOG_LEVEL;
-    return OFLogger::WARN_LOG_LEVEL;
-}
-
 void OFLog::configure(OFLogger::LogLevel level)
 {
     configureLogger(level);
@@ -124,16 +113,17 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     log4cplus::LogLevel level = log4cplus::NOT_SET_LOG_LEVEL;
 
     cmd.beginOptionBlock();
-    OFBool debug = cmd.findOption("--debug");
-    OFBool verbose = cmd.findOption("--verbose");
-    OFBool quiet = cmd.findOption("--quiet");
+    if (cmd.findOption("--debug"))
+        level = OFLogger::DEBUG_LOG_LEVEL;
+    if (cmd.findOption("--verbose"))
+        level = OFLogger::INFO_LOG_LEVEL;
+    if (cmd.findOption("--quiet"))
+        level = OFLogger::FATAL_LOG_LEVEL;
     cmd.endOptionBlock();
 
     if (cmd.findOption("--log-level"))
     {
-        app.checkConflict("--log-level", "--debug", debug);
-        app.checkConflict("--log-level", "--verbose", verbose);
-        app.checkConflict("--log-level", "--quiet", quiet);
+        app.checkConflict("--log-level", "--verbose, --debug or --quiet", level != log4cplus::NOT_SET_LOG_LEVEL);
 
         app.checkValue(cmd.getValue(logLevel));
         level = log4cplus::getLogLevelManager().fromString(logLevel);
@@ -143,10 +133,8 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
 
     if (cmd.findOption("--log-config"))
     {
-        app.checkConflict("--log-config", "--debug", debug);
-        app.checkConflict("--log-config", "--verbose", verbose);
-        app.checkConflict("--log-config", "--quiet", quiet);
-        app.checkConflict("--log-config", "--log-level", level != log4cplus::NOT_SET_LOG_LEVEL);
+        app.checkConflict("--log-config", "--log-level", !logLevel.empty());
+        app.checkConflict("--log-config", "--verbose, --debug or --quiet", level != log4cplus::NOT_SET_LOG_LEVEL);
 
         app.checkValue(cmd.getValue(logConfig));
 
@@ -176,7 +164,7 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     {
         // if --log-level was not used...
         if (level == log4cplus::NOT_SET_LOG_LEVEL)
-            level = toLogMode(debug, verbose, quiet);
+            level = OFLogger::WARN_LOG_LEVEL;
 
         configureLogger(level);
     }
@@ -223,6 +211,12 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.5  2009-09-14 10:52:31  joergr
+ * Introduced new placeholder for the pattern layout: %P can be used to output
+ * only the first character of the log level. Used for the default layout.
+ * Slightly changed evaluation of log-related command line options.
+ * Removed (now) unused helper function toLogMode().
+ *
  * Revision 1.4  2009-09-07 10:02:20  joergr
  * Moved --arguments option and corresponding output to oflog module in order
  * to use the correct output stream. Fixed issue with --quiet mode.
