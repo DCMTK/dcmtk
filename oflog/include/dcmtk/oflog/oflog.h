@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-20 12:08:02 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-09-14 10:51:05 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,14 +111,6 @@ class OFLog
      */
     static void configure(OFLogger::LogLevel level = OFLogger::WARN_LOG_LEVEL);
 
-    /** turn a list of flags into a logging verbosity
-     *  @param debug should debug output and all higher levels be enabled?
-     *  @param verbose should verbose output and all higher levels be enabled?
-     *  @param quiet should quiet mode be enabled?
-     *  @return the highest logging verbosity that was asked for
-     */
-    static OFLogger::LogLevel toLogMode(OFBool debug = false, OFBool verbose = false, OFBool quiet = false);
-
     /** handle the command line options used for logging
      *  @param cmd the command line whose options are handled
      *  @param app for debug mode, OFConsoleApplication::printIdentifier() is called
@@ -138,6 +130,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.3  2009-09-14 10:51:05  joergr
+ * Removed (now) unused helper function toLogMode().
+ *
  * Revision 1.2  2009-08-20 12:08:02  joergr
  * Added documentation on log level values.
  *
