@@ -100,6 +100,7 @@ namespace log4cplus {
         public:
             enum Type { THREAD_CONVERTER,
                         LOGLEVEL_CONVERTER,
+                        LOGLEVEL_PREFIX_CONVERTER,
                         NDC_CONVERTER,
                         MESSAGE_CONVERTER,
                         NEWLINE_CONVERTER,
@@ -306,12 +307,13 @@ log4cplus::pattern::BasicPatternConverter::convert
                                             (const InternalLoggingEvent& event)
 {
     switch(type) {
-    case LOGLEVEL_CONVERTER: return llmCache.toString(event.getLogLevel());
-    case NDC_CONVERTER:      return event.getNDC();
-    case MESSAGE_CONVERTER:  return event.getMessage();
-    case NEWLINE_CONVERTER:  return LOG4CPLUS_TEXT("\n");
-    case FILE_CONVERTER:     return event.getFile();
-    case THREAD_CONVERTER:   return event.getThread();
+    case LOGLEVEL_CONVERTER:        return llmCache.toString(event.getLogLevel());
+    case LOGLEVEL_PREFIX_CONVERTER: return llmCache.toString(event.getLogLevel()).substr(0, 1);
+    case NDC_CONVERTER:             return event.getNDC();
+    case MESSAGE_CONVERTER:         return event.getMessage();
+    case NEWLINE_CONVERTER:         return LOG4CPLUS_TEXT("\n");
+    case FILE_CONVERTER:            return event.getFile();
+    case THREAD_CONVERTER:          return event.getThread();
 
     case LINE_CONVERTER:
         {
@@ -675,6 +677,14 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             //formattingInfo.dump(getLogLog());
             break;
 
+        case LOG4CPLUS_TEXT('P'):
+            pc = new BasicPatternConverter
+                          (formattingInfo,
+                           BasicPatternConverter::LOGLEVEL_PREFIX_CONVERTER);
+            //getLogLog().debug("LOGLEVEL converter.");
+            //formattingInfo.dump(getLogLog());
+            break;
+
         case LOG4CPLUS_TEXT('t'):
             pc = new BasicPatternConverter
                           (formattingInfo,
@@ -696,7 +706,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
                 << c
                 << LOG4CPLUS_TEXT("] at position ")
                 << pos
-                << LOG4CPLUS_TEXT(" in conversion patterrn.");
+                << LOG4CPLUS_TEXT(" in conversion pattern.");
             OFSTRINGSTREAM_GETOFSTRING(buf, str);
             getLogLog().error(str);
             pc = new LiteralPatternConverter(currentLiteral);
@@ -716,9 +726,9 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
 // PatternLayout methods:
 ////////////////////////////////////////////////
 
-PatternLayout::PatternLayout(const log4cplus::tstring& pattern_)
+PatternLayout::PatternLayout(const log4cplus::tstring& pattern_, bool formatEachLine)
 {
-    init(pattern_);
+    init(pattern_, formatEachLine);
 }
 
 
@@ -726,16 +736,25 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
 {
     bool hasPattern = properties.exists( LOG4CPLUS_TEXT("Pattern") );
     bool hasConversionPattern = properties.exists( LOG4CPLUS_TEXT("ConversionPattern") );
+    log4cplus::tstring eachLine = properties.getProperty( LOG4CPLUS_TEXT("FormatEachLine"), "yes");
+    bool formatEachLine = true;
+
+    if (eachLine == LOG4CPLUS_TEXT("yes"))
+        formatEachLine = true;
+    else if (eachLine == LOG4CPLUS_TEXT("no"))
+        formatEachLine = false;
+    else
+        getLogLog().warn( LOG4CPLUS_TEXT("PatternLayout- the \"FormatEachLine\" property has an invalid value, assuming \"yes\""));
 
     if(hasPattern) {
         getLogLog().warn( LOG4CPLUS_TEXT("PatternLayout- the \"Pattern\" property has been deprecated.  Use \"ConversionPattern\" instead."));
     }
 
     if(hasConversionPattern) {
-        init(properties.getProperty( LOG4CPLUS_TEXT("ConversionPattern") ));
+        init(properties.getProperty( LOG4CPLUS_TEXT("ConversionPattern") ), formatEachLine);
     }
     else if(hasPattern) {
-        init(properties.getProperty( LOG4CPLUS_TEXT("Pattern") ));
+        init(properties.getProperty( LOG4CPLUS_TEXT("Pattern") ), formatEachLine);
     }
     else {
         error = LOG4CPLUS_TEXT("ConversionPattern not specified in properties");
@@ -747,9 +766,10 @@ PatternLayout::PatternLayout(const log4cplus::helpers::Properties& properties, l
 
 
 void
-PatternLayout::init(const log4cplus::tstring& pattern_)
+PatternLayout::init(const log4cplus::tstring& pattern_, bool formatEachLine)
 {
     this->pattern = pattern_;
+    this->formatEachLine = formatEachLine;
     this->parsedPattern = PatternParser(pattern).parse();
 
     // Let's validate that our parser didn't give us any NULLs.  If it did,
@@ -792,10 +812,36 @@ void
 PatternLayout::formatAndAppend(log4cplus::tostream& output,
                                const InternalLoggingEvent& event)
 {
-    for(PatternConverterListIterator it=parsedPattern->begin();
-        it!=parsedPattern->end();
-        ++it)
+    if (formatEachLine && event.getMessage().find('\n') != OFString_npos)
     {
-        (*it)->formatAndAppend(output, event);
+        size_t pos = 0;
+        size_t last_pos = 0;
+
+        while (pos != OFString_npos)
+        {
+            pos = event.getMessage().find('\n', last_pos);
+
+            // Create a substring from just this single line
+            log4cplus::tstring tmp_message(event.getMessage().substr(last_pos, (pos == OFString_npos) ? pos : pos - last_pos));
+
+            // Then create a temporary InternalLoggingEvent for this one line
+            InternalLoggingEvent tmp_event(event.getLoggerName(), event.getLogLevel(),
+                event.getNDC(), tmp_message, event.getThread(), event.getTimestamp(),
+                event.getFile(), event.getLine());
+            // And finally, log this single line
+            formatAndAppend(output, tmp_event);
+
+            // Skip the "\n"
+            last_pos = pos + 1;
+        }
+    }
+    else
+    {
+        for(PatternConverterListIterator it=parsedPattern->begin();
+            it!=parsedPattern->end();
+            ++it)
+        {
+            (*it)->formatAndAppend(output, event);
+        }
     }
 }
