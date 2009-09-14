@@ -484,7 +484,7 @@ namespace log4cplus {
     class LOG4CPLUS_EXPORT PatternLayout : public Layout {
     public:
       // Ctors and dtor
-        PatternLayout(const log4cplus::tstring& pattern);
+        PatternLayout(const log4cplus::tstring& pattern, bool formatEachLine = true);
         PatternLayout(const log4cplus::helpers::Properties& properties, log4cplus::tstring& error);
         virtual ~PatternLayout();
 
@@ -492,11 +492,12 @@ namespace log4cplus {
                                      const log4cplus::spi::InternalLoggingEvent& event);
 
     protected:
-        void init(const log4cplus::tstring& pattern);
+        void init(const log4cplus::tstring& pattern, bool formatEachLine);
 
       // Data
         log4cplus::tstring pattern;
         OFauto_ptr<OFList<pattern::PatternConverter*> > parsedPattern;
+        bool formatEachLine;
 
     private:
       // Disallow copying of instances of this class
