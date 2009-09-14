@@ -5,7 +5,8 @@ Changes between releases are documented here.
 
 - Introduced new placeholder for the pattern layout: %P can be used to output
   only the first character of the log level. Used for the default layout.
-  Affects: oflog/docs/oflog.dox
+  Affects: oflog/etc/logger.cfg
+           oflog/docs/oflog.dox
            oflog/libsrc/oflog.cc
            oflog/libsrc/patternlayout.cc
 
