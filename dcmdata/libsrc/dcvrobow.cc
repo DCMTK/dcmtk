@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-03 17:22:26 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2009-09-15 10:30:31 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -526,7 +526,6 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
         const size_t count = OFstatic_cast(size_t, getLength() / sizeof(Uint16));
         if ((uint16Vals != NULL) && (count > 0))
         {
-#ifdef HAVE_STD_STRING
             OFStringStream stream;
             /* output first value in hexadecimal format */
             stream << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
@@ -539,20 +538,6 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
             OFSTRINGSTREAM_GETSTR(stream, buffer_str)
             stringVal.assign(buffer_str);
             OFSTRINGSTREAM_FREESTR(buffer_str)
-#else
-            /* reserve number of bytes expected */
-            stringVal.reserve(5 * count);
-            char *bufPtr = OFconst_cast(char *, stringVal.c_str());
-            /* for all array elements ... */
-            for (size_t i = 0; i < count; i++)
-            {
-                /* ... convert numeric value to hexadecimal string representation */
-                sprintf(bufPtr, "%4.4hx\\", *(uint16Vals++));
-                bufPtr += 5;
-            }
-            /* remove last '\' */
-            *(--bufPtr) = '\0';
-#endif
             errorFlag = EC_Normal;
         } else
             errorFlag = EC_IllegalCall;
@@ -562,7 +547,6 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
         const size_t count = OFstatic_cast(size_t, getLength());
         if ((uint8Vals != NULL) && (count > 0))
         {
-#ifdef HAVE_STD_STRING
             OFStringStream stream;
             /* output first value in hexadecimal format */
             stream << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
@@ -575,20 +559,6 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
             OFSTRINGSTREAM_GETSTR(stream, buffer_str)
             stringVal.assign(buffer_str);
             OFSTRINGSTREAM_FREESTR(buffer_str)
-#else
-            /* reserve number of bytes expected */
-            stringVal.reserve(3 * count);
-            char *bufPtr = OFconst_cast(char *, stringVal.c_str());
-            /* for all array elements ... */
-            for (size_t i = 0; i < count; i++)
-            {
-                /* ... convert numeric value to hexadecimal string representation */
-                sprintf(bufPtr, "%2.2hx\\", *(uint8Vals++));
-                bufPtr += 3;
-            }
-            /* remove last '\' */
-            *(--bufPtr) = '\0';
-#endif
             errorFlag = EC_Normal;
         } else
             errorFlag = EC_IllegalCall;
@@ -736,6 +706,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.56  2009-09-15 10:30:31  joergr
+** Removed alternative implementation of getOFStringArray(). Now, always the
+** OFStringStream approach is used.
+**
 ** Revision 1.55  2009-09-03 17:22:26  joergr
 ** Fixed issue with getOFStringArray() when using standard C++ string class.
 **
