@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 07:44:31 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Update Date:      $Date: 2009-09-15 10:48:37 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -853,70 +853,16 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
                                          OFString &result,
                                          const size_t width)
 {
-    result.clear();
-    /* check data buffer to be encoded */
-    if (data != NULL)
+    OFStringStream stream;
+    /* call stream variant of base64 encoder */
+    if (OFStandard::encodeBase64(stream, data, length, width).good())
     {
-        unsigned char c;
-        size_t w = 0;
-        /* reserve expected output size: +33%, even multiple of 4 */
-        result.reserve(((length + 2) / 3) * 4);
-        char *bufPtr = OFconst_cast(char *, result.c_str());
-        /* iterate over all data elements */
-        for (size_t i = 0; i < length; i++)
-        {
-            /* encode first 6 bits */
-            *(bufPtr++) = enc_base64[(data[i] >> 2) & 0x3f];
-            /* insert line break (if width > 0) */
-            if (++w == width)
-            {
-                *(bufPtr++) = '\n';
-                w = 0;
-            }
-            /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
-            c = (data[i] << 4) & 0x3f;
-            if (++i < length)
-                c |= (data[i] >> 4) & 0x0f;
-            *(bufPtr++) = enc_base64[c];
-            /* insert line break (if width > 0) */
-            if (++w == width)
-            {
-                *(bufPtr++) = '\n';
-                w = 0;
-            }
-            /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
-            if (i < length)
-            {
-                c = (data[i] << 2) & 0x3f;
-                if (++i < length)
-                    c |= (data[i] >> 6) & 0x03;
-                *(bufPtr++) = enc_base64[c];
-            } else {
-                i++;
-                /* append fill char */
-                *(bufPtr++) = '=';
-            }
-            /* insert line break (if width > 0) */
-            if (++w == width)
-            {
-                *(bufPtr++) = '\n';
-                w = 0;
-            }
-            /* encode remaining 6 bits of the third byte */
-            if (i < length)
-                *(bufPtr++) = enc_base64[data[i] & 0x3f];
-            else /* append fill char */
-                *(bufPtr++) = '=';
-            /* insert line break (if width > 0) */
-            if (++w == width)
-            {
-                *(bufPtr++) = '\n';
-                w = 0;
-            }
-        }
-        /* append trailing 0 byte (probably not required) */
-        *bufPtr = '\0';
-    }
+        /* convert string stream into a character string */
+        OFSTRINGSTREAM_GETSTR(stream, buffer_str)
+        result.assign(buffer_str);
+        OFSTRINGSTREAM_FREESTR(buffer_str)
+    } else
+        result.clear();
     return result;
 }
 
@@ -1822,6 +1768,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
+ *  Revision 1.53  2009-09-15 10:48:37  joergr
+ *  Changed implementation of string variant of encodeBase64(). This helper
+ *  function is now based on the stream variant of encodeBase64() because the
+ *  previous implementation had an issue with HAVE_STD_STRING defined.
+ *
  *  Revision 1.52  2009-08-26 07:44:31  joergr
  *  Added parentheses around && within || in order to avoid warnings reported by
  *  gcc 4.3.2.
