@@ -19,6 +19,9 @@ Changes between releases are documented here.
   previous implementation had an issue with HAVE_STD_STRING defined.
   Affects: ofstd/libsrc/ofstd.cc
 
+- Added missing oflog include directory.
+  Affects: dcmsign/CMakeLists.txt
+
 **** Changes from 2009.09.14 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %P can be used to output
