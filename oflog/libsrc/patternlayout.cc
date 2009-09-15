@@ -178,7 +178,7 @@ namespace log4cplus {
         class PatternParser : protected log4cplus::helpers::LogLogUser {
         public:
             PatternParser(const log4cplus::tstring& pattern);
-            OFList<PatternConverter*>* parse();
+            OFauto_ptr<OFList<PatternConverter*> > parse();
 
         private:
           // Types
@@ -475,7 +475,7 @@ log4cplus::pattern::PatternParser::extractPrecisionOption()
 
 
 
-PatternConverterList*
+OFauto_ptr<PatternConverterList>
 log4cplus::pattern::PatternParser::parse()
 {
     tchar c;
@@ -583,7 +583,7 @@ log4cplus::pattern::PatternParser::parse()
       //getLogLog().debug("Parsed LITERAL converter: \""+currentLiteral+"\".");
     }
 
-    return list.release();
+    return list;
 }
 
 

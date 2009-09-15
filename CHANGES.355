@@ -34,6 +34,11 @@ Changes between releases are documented here.
   Affects: dcmdata/libsrc/dcpxitem.cc
            dcmdata/libsrc/dcvrobow.cc
 
+- Fixed issue with class OFauto_ptr: Default copy constructor and assignment
+  operator could lead to double deletion of objects.
+  Affects: oflog/libsrc/patternlayout.cc
+           ofstd/include/dcmtk/ofstd/ofaptr.h
+
 **** Changes from 2009.09.14 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %P can be used to output
