@@ -39,6 +39,15 @@ Changes between releases are documented here.
   Affects: oflog/libsrc/patternlayout.cc
            ofstd/include/dcmtk/ofstd/ofaptr.h
 
+- Removed redundant output of log message prefix "Error: " and "Warning: ".
+  Affects: dcmsign/apps/dcmsign.cc
+
+- Fixed incorrect output of public key bits (expected string instead of int).
+  Affects: dcmsign/apps/dcmsign.cc
+
+- Updated Makefile dependencies.
+  Affects: dcmsign/apps/Makefile.dep
+
 **** Changes from 2009.09.14 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %P can be used to output
