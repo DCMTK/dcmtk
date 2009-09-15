@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-05-04 14:29:02 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-15 15:02:43 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,10 +194,19 @@ OFCondition DcmPixelItem::writeXML(STD_NAMESPACE ostream&out,
             /* pixel items always contain 8 bit data, therefore, byte swapping not required */
             OFStandard::encodeBase64(out, OFstatic_cast(Uint8 *, getValue()), OFstatic_cast(size_t, getLengthField()));
         } else {
-            OFString value;
-            /* encode as sequence of hexadecimal numbers */
-            if (getOFStringArray(value).good())
-                out << value;
+            /* get and check 8 bit data */
+            Uint8 *byteValues = NULL;            
+            if (getUint8Array(byteValues).good() && (byteValues != NULL))
+            {
+                const unsigned long count = getLengthField();
+                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                /* print byte values in hex mode */
+                out << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                for (unsigned long i = 1; i < count; i++)
+                    out << "\\" << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                /* reset i/o manipulators */
+                out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+            }
         }
     }
     /* XML end tag for "item" */
@@ -373,6 +382,10 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.38  2009-09-15 15:02:43  joergr
+** Enhanced implementation of writeXML() by writing hex numbers directly to the
+** output stream instead of creating a temporary string first.
+**
 ** Revision 1.37  2009-05-04 14:29:02  meichel
 ** Fixed bug in DcmPixelItem::writeSignatureFormat() that caused pixel data
 **   to be removed from the dataset when a digital signature was generated

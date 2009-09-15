@@ -29,6 +29,11 @@ Changes between releases are documented here.
   using the corresponding functions.
   Affects: oflog/libsrc/socket-unix.cc
 
+- Enhanced implementation of writeXML() by writing hex numbers directly to the
+  output stream instead of creating a temporary string first.
+  Affects: dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcvrobow.cc
+
 **** Changes from 2009.09.14 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %P can be used to output

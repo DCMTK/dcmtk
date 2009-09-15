@@ -22,8 +22,8 @@
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 10:30:31 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2009-09-15 15:02:31 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -677,11 +677,12 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
     /* write element value (if loaded) */
     if (valueLoaded() && (flags & DCMTypes::XF_writeBinaryData))
     {
+        const DcmEVR evr = getTag().getEVR();
         /* encode binary data as Base64 */
         if (flags & DCMTypes::XF_encodeBase64)
         {
             Uint8 *byteValues = OFstatic_cast(Uint8 *, getValue());
-            if (getTag().getEVR() == EVR_OW || getTag().getEVR() == EVR_lt)
+            if ((evr == EVR_OW) || (evr == EVR_lt))
             {
                 /* Base64 encoder requires big endian input data */
                 swapIfNecessary(EBO_BigEndian, gLocalByteOrder, byteValues, getLengthField(), sizeof(Uint16));
@@ -690,10 +691,36 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
             }
             OFStandard::encodeBase64(out, byteValues, OFstatic_cast(size_t, getLengthField()));
         } else {
-            OFString value;
-            /* encode as sequence of hexadecimal numbers */
-            if (getOFStringArray(value).good())
-                out << value;
+            if ((evr == EVR_OW) || (evr == EVR_lt))
+            {
+                /* get and check 16 bit data */
+                Uint16 *wordValues = NULL;
+                if (getUint16Array(wordValues).good() && (wordValues != NULL))
+                {
+                    const unsigned long count = getLengthField() / 2;
+                    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                    /* print word values in hex mode */
+                    out << STD_NAMESPACE setw(4) << (*(wordValues++));
+                    for (unsigned long i = 1; i < count; i++)
+                        out << "\\" << STD_NAMESPACE setw(4) << (*(wordValues++));
+                    /* reset i/o manipulators */
+                    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                }
+            } else {
+                /* get and check 8 bit data */
+                Uint8 *byteValues = NULL;
+                if (getUint8Array(byteValues).good() && (byteValues != NULL))
+                {
+                    const unsigned long count = getLengthField();
+                    out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0');
+                    /* print byte values in hex mode */
+                    out << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                    for (unsigned long i = 1; i < count; i++)
+                        out << "\\" << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(byteValues++));
+                    /* reset i/o manipulators */
+                    out << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                }
+            }
         }
     }
     /* XML end tag: </element> */
@@ -706,6 +733,10 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.57  2009-09-15 15:02:31  joergr
+** Enhanced implementation of writeXML() by writing hex numbers directly to the
+** output stream instead of creating a temporary string first.
+**
 ** Revision 1.56  2009-09-15 10:30:31  joergr
 ** Removed alternative implementation of getOFStringArray(). Now, always the
 ** OFStringStream approach is used.
