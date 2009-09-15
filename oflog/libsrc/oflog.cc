@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-14 10:52:31 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2009-09-15 13:02:04 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,14 @@ static void OFLog_init()
     if (initialized)
         return;
     initialized = 1;
+
+#ifdef HAVE_WINSOCK_H
+    // initialize Winsock DLL in order to use gethostname() and the like
+    WSAData winSockData;
+    // we need at least version 1.1
+    WORD winSockVersionNeeded = MAKEWORD(1, 1);
+    WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
 
     // we default to a really simple pattern: loglevel_prefix: message\n
     const char *pattern = "%P: %m%n";
@@ -211,6 +219,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.6  2009-09-15 13:02:04  joergr
+ * Added initialization of Winsock DLL in order to use gethostname() et al.
+ *
  * Revision 1.5  2009-09-14 10:52:31  joergr
  * Introduced new placeholder for the pattern layout: %P can be used to output
  * only the first character of the log level. Used for the default layout.
