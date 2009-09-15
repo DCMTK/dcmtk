@@ -178,6 +178,8 @@ tstring
 log4cplus::helpers::getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
+
+#if defined (HAVE_GETHOSTNAME)
     int ret;
     size_t hn_size = 1024;
     char *hn = OFstatic_cast(char *, malloc(hn_size));
@@ -208,10 +210,13 @@ log4cplus::helpers::getHostname (bool fqdn)
         free(hn);
         return res;
     }
+#endif
 
+#if defined (HAVE_GETHOSTBYNAME)
     struct ::hostent * hp = ::gethostbyname (hostname);
     if (hp)
         hostname = hp->h_name;
+#endif
 
     tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
     free(hn);

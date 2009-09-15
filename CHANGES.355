@@ -25,6 +25,10 @@ Changes between releases are documented here.
 - Added initialization of Winsock DLL in order to use gethostname() et al.
   Affects: oflog/libsrc/oflog.cc
 
+- Check whether HAVE_GETHOSTNAME and HAVE_GETHOSTBYNAME are defined before
+  using the corresponding functions.
+  Affects: oflog/libsrc/socket-unix.cc
+
 **** Changes from 2009.09.14 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %P can be used to output
