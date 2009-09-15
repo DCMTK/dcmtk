@@ -261,30 +261,39 @@ log4cplus::helpers::getHostname (bool fqdn)
 {
     char const * hostname = "unknown";
     int ret;
-    OFString buf(1024, 0);
+    size_t hn_size = 1024;
+    char *hn = OFstatic_cast(char *, malloc(hn_size));
 
     while (true)
     {
-        char *hn = OFconst_cast(char *, buf.c_str());
-        ret = ::gethostname (hn, buf.capacity () - 1);
+        ret = ::gethostname (hn, hn_size - 1);
         if (ret == 0)
         {
             hostname = hn;
             break;
         }
         else if (ret != 0 && WSAGetLastError () == WSAEFAULT)
-            // Out buffer was too short. Retry with buffer twice the size.
-            buf.resize (buf.capacity () * 2, 0);
+        {
+            // Our buffer was too short. Retry with buffer twice the size.
+            hn_size *= 2;
+            hn = OFstatic_cast(char *, realloc(hn, hn_size));
+        }
         else
             break;
     }
 
-    if (ret != 0 || ret == 0 && ! fqdn)
-        return LOG4CPLUS_STRING_TO_TSTRING (hostname);
+    if (ret != 0 || (ret == 0 && ! fqdn))
+    {
+        tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
+        free(hn);
+        return res;
+    }
 
     struct ::hostent * hp = ::gethostbyname (hostname);
     if (hp)
         hostname = hp->h_name;
 
-    return LOG4CPLUS_STRING_TO_TSTRING (hostname);
+    tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
+    free(hn);
+    return res;
 }
