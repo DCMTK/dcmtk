@@ -1,6 +1,24 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.15 (riesmeier)
+
+- Removed alternative implementation of getOFStringArray(). Now, always the
+  OFStringStream approach is used.
+  Affects: dcmdata/libsrc/dcvrobow.cc
+
+- Fixed issue with dangling character pointer (memory freed before copied).
+  Affects: oflog/libsrc/socket-unix.cc
+
+- Changed implementation of getHostname() in order to be more consistent with
+  the Unix version.
+  Affects: oflog/libsrc/socket-win32.cc
+
+- Changed implementation of string variant of encodeBase64(). This helper
+  function is now based on the stream variant of encodeBase64() because the
+  previous implementation had an issue with HAVE_STD_STRING defined.
+  Affects: ofstd/libsrc/ofstd.cc
+
 **** Changes from 2009.09.14 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %P can be used to output
