@@ -193,7 +193,7 @@ log4cplus::helpers::getHostname (bool fqdn)
 #if defined (LOG4CPLUS_HAVE_ENAMETOOLONG)
         else if (ret != 0 && errno == ENAMETOOLONG)
         {
-            // Out buffer was too short. Retry with buffer twice the size.
+            // Our buffer was too short. Retry with buffer twice the size.
             hn_size *= 2;
             hn = OFstatic_cast(char *, realloc(hn, hn_size));
         }
@@ -204,8 +204,9 @@ log4cplus::helpers::getHostname (bool fqdn)
 
     if (ret != 0 || (ret == 0 && ! fqdn))
     {
+        tstring res = LOG4CPLUS_STRING_TO_TSTRING (hostname);
         free(hn);
-        return LOG4CPLUS_STRING_TO_TSTRING (hostname);
+        return res;
     }
 
     struct ::hostent * hp = ::gethostbyname (hostname);
