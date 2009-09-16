@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 13:02:04 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-09-16 10:01:06 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "dcmtk/oflog/consoleappender.h"
 #include "dcmtk/oflog/helpers/loglog.h"
 
-OFLogger::OFLogger(log4cplus::Logger base)
+OFLogger::OFLogger(const log4cplus::Logger &base)
     : log4cplus::Logger(base)
 {
 }
@@ -219,6 +219,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.7  2009-09-16 10:01:06  joergr
+ * Changed OFLogger's copy constructor: use "const &" for the parameter.
+ *
  * Revision 1.6  2009-09-15 13:02:04  joergr
  * Added initialization of Winsock DLL in order to use gethostname() et al.
  *
