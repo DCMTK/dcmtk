@@ -646,7 +646,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             {
                 bool fqdn = (c == LOG4CPLUS_TEXT('H'));
                 pc = new HostnamePatternConverter(formattingInfo, fqdn);
-                // getLogLog().debug( LOG4CPLUS_TEXT("HOSTNAME converter.") );
+                // getLogLog().debug("HOSTNAME converter.");
                 // formattingInfo.dump(getLogLog());
             }
             break;
@@ -679,7 +679,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             pc = new BasicPatternConverter
                           (formattingInfo,
                            BasicPatternConverter::NEWLINE_CONVERTER);
-            //getLogLog().debug("MESSAGE converter.");
+            //getLogLog().debug("NEWLINE converter.");
             //formattingInfo.dump(getLogLog());
             break;
 
@@ -695,7 +695,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             pc = new BasicPatternConverter
                           (formattingInfo,
                            BasicPatternConverter::LOGLEVEL_PREFIX_CONVERTER);
-            //getLogLog().debug("LOGLEVEL converter.");
+            //getLogLog().debug("LOGLEVEL PREFIX converter.");
             //formattingInfo.dump(getLogLog());
             break;
 
@@ -718,7 +718,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
             pc = new BasicPatternConverter
                           (formattingInfo,
                            BasicPatternConverter::PROCESS_ID_CONVERTER);
-            //getLogLog().debug("pid converter.");
+            //getLogLog().debug("PID converter.");
             //formattingInfo.dump(getLogLog());
             break;
 
