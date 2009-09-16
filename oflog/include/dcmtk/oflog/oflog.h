@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-14 10:51:05 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-09-16 10:04:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +53,10 @@
 class OFLogger : private log4cplus::Logger
 {
 public:
-    OFLogger(log4cplus::Logger);
+    /** copy constructor
+     *  @param base object to be copied
+     */
+    OFLogger(const log4cplus::Logger &base);
 
     /// these are the log levels that you can feed to isEnabledFor()
     enum LogLevel {
@@ -82,7 +85,7 @@ public:
      */
     using log4cplus::Logger::isEnabledFor;
 
-    /** this function is only used internally by OFLOG_FATAL and friends */
+    /// this function is only used internally by OFLOG_FATAL and friends
     using log4cplus::Logger::forcedLog;
 };
 
@@ -97,23 +100,25 @@ class OFLog
     OFLog() { }
 
     /** set up the logging and enable it
-     *  @param mode the verbosity that you want
+     *  @param level the verbosity that you want
      */
     static void configureLogger(log4cplus::LogLevel level);
 
  public:
 
-    /// create a new Logger object
+    /** create a new Logger object
+     *  @param name the name of the logger
+     */
     static OFLogger getLogger(const char *name);
 
     /** set up the logging and enable it
-     *  @param mode the verbosity that you want
+     *  @param level the verbosity that you want
      */
     static void configure(OFLogger::LogLevel level = OFLogger::WARN_LOG_LEVEL);
 
     /** handle the command line options used for logging
      *  @param cmd the command line whose options are handled
-     *  @param app for debug mode, OFConsoleApplication::printIdentifier() is called
+     *  @param app the console application which is used for console output and error checking
      */
     static void configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &app);
 
@@ -130,6 +135,10 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.4  2009-09-16 10:04:26  joergr
+ * Changed OFLogger's copy constructor: use "const &" for the parameter.
+ * Added missing documentation on parameters.
+ *
  * Revision 1.3  2009-09-14 10:51:05  joergr
  * Removed (now) unused helper function toLogMode().
  *

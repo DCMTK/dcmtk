@@ -16,8 +16,16 @@ Changes between releases are documented here.
 - Added reference to sample configuration file to oflog documentation.
   Affects: oflog/docs/oflog.dox
 
+- Added missing documentation on parameters.
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+
+- Changed OFLogger's copy constructor: use "const &" for the parameter.
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+           oflog/libsrc/oflog.cc
+
 - Minor fixes in comments.
-  Affects: oflog/libsrc/patternlayout.cc
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+           oflog/libsrc/patternlayout.cc
 
 **** Changes from 2009.09.15 (riesmeier)
 
