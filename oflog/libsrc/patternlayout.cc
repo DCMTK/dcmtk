@@ -21,8 +21,20 @@
 //#include <exception>
 //#include <stdlib.h>
 #define INCLUDE_CSTDLIB
+#define INCLUDE_UNISTD              /* needed for declaration of getpid() */
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#ifdef _WIN32
+#include <process.h>                /* needed for declaration of getpid() */
+#endif
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>              /* needed for declaration of getpid() */
+#endif
+
+#ifndef HAVE_GETPID
+static int getpid(void) { return 0; }   // workaround for MAC
+#endif // !HAVE_GETPID
 
 using namespace std;
 using namespace log4cplus;
@@ -106,7 +118,8 @@ namespace log4cplus {
                         NEWLINE_CONVERTER,
                         FILE_CONVERTER,
                         LINE_CONVERTER,
-                        FULL_LOCATION_CONVERTER };
+                        FULL_LOCATION_CONVERTER,
+                        PROCESS_ID_CONVERTER };
             BasicPatternConverter(const FormattingInfo& info, Type type);
             virtual log4cplus::tstring convert(const InternalLoggingEvent& event);
 
@@ -314,6 +327,7 @@ log4cplus::pattern::BasicPatternConverter::convert
     case NEWLINE_CONVERTER:         return LOG4CPLUS_TEXT("\n");
     case FILE_CONVERTER:            return event.getFile();
     case THREAD_CONVERTER:          return event.getThread();
+    case PROCESS_ID_CONVERTER:      return convertIntegerToString(getpid());
 
     case LINE_CONVERTER:
         {
@@ -698,6 +712,14 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
                           (formattingInfo,
                            BasicPatternConverter::NDC_CONVERTER);
             //getLogLog().debug("NDC converter.");
+            break;
+
+        case LOG4CPLUS_TEXT('i'):
+            pc = new BasicPatternConverter
+                          (formattingInfo,
+                           BasicPatternConverter::PROCESS_ID_CONVERTER);
+            //getLogLog().debug("pid converter.");
+            //formattingInfo.dump(getLogLog());
             break;
 
         default:
