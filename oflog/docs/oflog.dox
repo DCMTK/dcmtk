@@ -9,6 +9,11 @@ The main classes are (in alphabetical order):
 \li \b OFLog
 \li \b OFLogger
 
+\section Files
+
+The following file provides a sample configuration and further documentation:
+\li \ref file_logger
+
 \section Examples
 
 The following example shows how to use oflog in a console application.
@@ -70,4 +75,9 @@ The default pattern for the log messages is "%P: %m%n", i.e. first character of
 the log level (e.g. "D" for debug or "E" for error), a colon, the message and
 a line break.
 
+*/
+
+/*!
+    \page file_logger logger.cfg file
+    \verbinclude ../etc/logger.cfg
 */

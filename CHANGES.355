@@ -13,6 +13,12 @@ Changes between releases are documented here.
 - Added missing documentation on placeholders %P and %i.
   Affects: oflog/include/dcmtk/oflog/layout.h
 
+- Added reference to sample configuration file to oflog documentation.
+  Affects: oflog/docs/oflog.dox
+
+- Minor fixes in comments.
+  Affects: oflog/libsrc/patternlayout.cc
+
 **** Changes from 2009.09.15 (riesmeier)
 
 - Removed alternative implementation of getOFStringArray(). Now, always the
