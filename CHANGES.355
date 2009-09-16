@@ -1,6 +1,18 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.16 (riesmeier)
+
+- Introduced new placeholder for the pattern layout: %i can be used to output
+  the process ID of the process generating the log entry.
+  Affects: oflog/libsrc/patternlayout.cc
+
+- Added documentation on placeholders %h, %H, %P and %i.
+  Affects: oflog/etc/logger.cfg
+
+- Added missing documentation on placeholders %P and %i.
+  Affects: oflog/include/dcmtk/oflog/layout.h
+
 **** Changes from 2009.09.15 (riesmeier)
 
 - Removed alternative implementation of getOFStringArray(). Now, always the
