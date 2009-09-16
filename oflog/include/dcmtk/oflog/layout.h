@@ -276,7 +276,7 @@ namespace log4cplus {
      *
      *   <b>NOTE</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     *
+     * </td>
      * </tr>
      *
      * <tr>
@@ -287,7 +287,6 @@ namespace log4cplus {
      *
      *   <b>NOTE</b> The hostname is only retrieved once at
      *   initialization.
-     *
      * </td>
      * </tr>
      *
@@ -300,7 +299,15 @@ namespace log4cplus {
      *
      *   <b>NOTE</b> The hostname is only retrieved once at
      *   initialization.
+     * </td>
+     * </tr>
      *
+     * <tr>
+     *   <td align=center><b>i</b></td>
+     *
+     *   <td>The process ID of the process generating the log entry.
+     *
+     *   <b>NOTE:</b> This pattern has been added to log4cplus.
      * </td>
      * </tr>
      *
@@ -311,7 +318,6 @@ namespace log4cplus {
      *
      *   <b>NOTE:</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     *
      * </td>
      * </tr>
      *
@@ -323,12 +329,13 @@ namespace log4cplus {
      *
      *   <b>NOTE:</b> Unlike log4j, there is no performance penalty for
      *   calling this method.
-     *
+     * </td>
      * </tr>
      *
      *
      * <tr>
      *   <td align=center><b>m</b></td>
+     *
      *   <td>Used to output the application supplied message associated with
      *   the logging event.</td>
      * </tr>
@@ -337,12 +344,22 @@ namespace log4cplus {
      *   <td align=center><b>n</b></td>
      *
      *   <td>Outputs the platform dependent line separator character or
-     *   characters.
+     *   characters.</td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>p</b></td>
+     *
      *   <td>Used to output the LogLevel of the logging event.</td>
+     * </tr>
+     *
+     * <tr>
+     *   <td align=center><b>P</b></td>
+     *
+     *   <td>Used to output the first character of the LogLevel only.
+     *
+     *   <b>NOTE:</b> This pattern has been added to log4cplus.
+     * </td>
      * </tr>
      *
      * <tr>
@@ -357,14 +374,13 @@ namespace log4cplus {
      *   <td align=center><b>x</b></td>
      *
      *   <td>Used to output the NDC (nested diagnostic context) associated
-     *   with the thread that generated the logging event.
-     *   </td>
+     *   with the thread that generated the logging event.</td>
      * </tr>
      *
      * <tr>
      *   <td align=center><b>"%%"</b></td>
-     *   <td>The sequence "%%" outputs a single percent sign.
-     *   </td>
+     *
+     *   <td>The sequence "%%" outputs a single percent sign.</td>
      * </tr>
      *
      * </table>
