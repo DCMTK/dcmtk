@@ -62,7 +62,7 @@ log4cplus::ConsoleAppender::~ConsoleAppender()
 // log4cplus::ConsoleAppender public methods
 //////////////////////////////////////////////////////////////////////////////
 
-void 
+void
 log4cplus::ConsoleAppender::close()
 {
     getLogLog().debug(LOG4CPLUS_TEXT("Entering ConsoleAppender::close().."));
@@ -75,18 +75,19 @@ log4cplus::ConsoleAppender::close()
 // log4cplus::ConsoleAppender protected methods
 //////////////////////////////////////////////////////////////////////////////
 
-// Normally, append() methods do not need to be locked since they are
-// called by doAppend() which performs the locking.  However, this locks
-// on the LogLog instance, so we don't have multiple threads writing to
-// tcout and tcerr
 void
 log4cplus::ConsoleAppender::append(const spi::InternalLoggingEvent& event)
 {
     LOG4CPLUS_BEGIN_SYNCHRONIZE_ON_MUTEX( getLogLog().mutex )
-        log4cplus::tostream& output = (logToStdErr ? tcerr : tcout);
+        log4cplus::tostream& output = (logToStdErr ? ofConsole.lockCerr() : ofConsole.lockCout());
         layout->formatAndAppend(output, event);
         if(immediateFlush) {
             output.flush();
+        }
+        if (logToStdErr) {
+            ofConsole.unlockCerr();
+        } else {
+            ofConsole.unlockCout();
         }
     LOG4CPLUS_END_SYNCHRONIZE_ON_MUTEX;
 }

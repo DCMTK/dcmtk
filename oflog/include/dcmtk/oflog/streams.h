@@ -27,8 +27,8 @@
         typedef LOG4CPLUS_STREAM_NAMESPACE::wostream tostream;
         typedef LOG4CPLUS_STREAM_NAMESPACE::wistream tistream;
         typedef LOG4CPLUS_STREAM_NAMESPACE::wostringstream tostringstream;
-        static tostream &tcout = LOG4CPLUS_STREAM_NAMESPACE::wcout;
-        static tostream &tcerr = LOG4CPLUS_STREAM_NAMESPACE::wcerr;
+        //static tostream &tcout = LOG4CPLUS_STREAM_NAMESPACE::wcout;
+        //static tostream &tcerr = LOG4CPLUS_STREAM_NAMESPACE::wcerr;
     }
 
 LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const char* psz );
@@ -36,6 +36,7 @@ LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const ch
 #else
     namespace log4cplus {
 #if 0
+/* this block contains the original log4cplus definitions */
         typedef LOG4CPLUS_STREAM_NAMESPACE::ostream tostream;
         typedef LOG4CPLUS_STREAM_NAMESPACE::istream tistream;
         static tostream &tcout = LOG4CPLUS_STREAM_NAMESPACE::cout;
@@ -45,9 +46,6 @@ LOG4CPLUS_EXPORT log4cplus::tostream& operator <<(log4cplus::tostream&, const ch
         typedef STD_NAMESPACE ostream tostream;
         typedef STD_NAMESPACE istream tistream;
         typedef OFStringStream        tostringstream;
-
-#define tcout ofConsole.getCout()
-#define tcerr ofConsole.getCerr()
 #endif
     }
 #endif // UNICODE
