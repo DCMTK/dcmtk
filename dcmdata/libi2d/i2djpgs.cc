@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 07:45:52 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-09-17 06:55:10 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -317,7 +317,7 @@ OFCondition I2DJpegSource::getSOFImageParameters( const JPEGFileMapEntry& entry,
     printMessage(m_logStream, "I2DJpegSource:   Data Precision: ", buf);
   }
 
-  if (length != (unsigned int) (8 + num_components * 3))
+  if (length != OFstatic_cast(unsigned int, 8 + num_components * 3))
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Bogus SOF marker length");
 
   return EC_Normal;
@@ -425,7 +425,8 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
 
   // Only pixel data up to 2^32 bytes is supported (DICOM) and maximum size for "new" operator = size_t
 
-  if (  ((unsigned long)filesize > (unsigned long)4294967294L) || ( (unsigned long)filesize > (unsigned long)((size_t)-1) ) )
+  if ( ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, 4294967294UL) ) ||
+       ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, OFstatic_cast(size_t, -1) ) ) )
   {
     printMessage(m_logStream, "I2DJpegSource: JPEG file length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
@@ -464,7 +465,7 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
     currBufferPos += 2;
     // read from end of JFIF to end of file
     jpegFile.fseek(bytePosAfterJFIF - 1, SEEK_SET); // -1 because offsets start with 0
-    result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, (filesize - bytePosAfterJFIF + 1)));
+    result = jpegFile.fread (currBufferPos, 1, OFstatic_cast(size_t, filesize - bytePosAfterJFIF + 1));
     if (result != filesize - bytePosAfterJFIF + 1)
       return EC_IllegalCall;
   }
@@ -545,7 +546,8 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
 
   // Allocate buffer for raw JPEG data
   // Only pixel data up to 2^32 bytes is supported (DICOM)
-  if ( ((unsigned long)rawStreamSize > (unsigned long)4294967294L) || ( (unsigned long)rawStreamSize > (unsigned long)((size_t)-1) ) )
+  if ( ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, 4294967294UL) ) ||
+       ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, OFstatic_cast(size_t, -1) ) ) )
   {
     printMessage(m_logStream, "I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
@@ -936,6 +938,10 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.10  2009-09-17 06:55:10  joergr
+ * Used static cast operator where appropriate and changed suffix from "L" to
+ * "UL" for large integer constants.
+ *
  * Revision 1.9  2009-08-26 07:45:52  joergr
  * Added suffix "L" to large integer constants in order to avoid warnings
  * reported by gcc 4.3.2.
