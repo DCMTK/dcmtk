@@ -1,6 +1,15 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.17 (riesmeier)
+
+- Added parentheses around && within || in order to avoid compiler warnings.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+- Used static cast operator where appropriate and changed suffix from "L" to
+  "UL" for large integer constants.
+  Affects: dcmdata/libi2d/i2djpgs.cc
+
 **** Changes from 2009.09.16 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %i can be used to output
