@@ -15,6 +15,9 @@ Changes between releases are documented here.
            oflog/libsrc/consoleappender.cc
            oflog/libsrc/loglog.cc
 
+- Made sure that log4cplus' internal quiet mode is always set appropriately.
+  Affects: oflog/libsrc/oflog.cc
+
 - Fixed typo in comment.
   Affects: oflog/etc/logger.cfg
 

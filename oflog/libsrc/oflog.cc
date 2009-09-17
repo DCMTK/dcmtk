@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-16 10:01:06 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-09-17 14:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,12 +94,6 @@ void OFLog::configureLogger(log4cplus::LogLevel level)
     // setup and just change the log level.
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
     rootLogger.setLogLevel(level);
-
-    // are we in "quiet-mode"?
-    if (level >= OFLogger::ERROR_LOG_LEVEL)
-        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(true);
-    else
-        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(false);
 }
 
 OFLogger OFLog::getLogger(const char *loggerName)
@@ -180,7 +174,14 @@ void OFLog::configureFromCommandLine(OFCommandLine &cmd, OFConsoleApplication &a
     log4cplus::Logger rootLogger = log4cplus::Logger::getRoot();
     // if --quiet or something equivalent was used
     if (!rootLogger.isEnabledFor(OFLogger::ERROR_LOG_LEVEL))
+    {
         app.setQuietMode();
+        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(true);
+    }
+    else
+    {
+        log4cplus::helpers::LogLog::getLogLog()->setQuietMode(false);
+    }
 
     // print command line arguments
     if (cmd.findOption("--arguments"))
@@ -219,6 +220,9 @@ void OFLog::addOptions(OFCommandLine &cmd)
  *
  * CVS/RCS Log:
  * $Log: oflog.cc,v $
+ * Revision 1.8  2009-09-17 14:33:57  joergr
+ * Made sure that log4cplus' internal quiet mode is always set appropriately.
+ *
  * Revision 1.7  2009-09-16 10:01:06  joergr
  * Changed OFLogger's copy constructor: use "const &" for the parameter.
  *
