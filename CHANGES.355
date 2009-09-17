@@ -15,6 +15,9 @@ Changes between releases are documented here.
            oflog/libsrc/consoleappender.cc
            oflog/libsrc/loglog.cc
 
+- Fixed typo in comment.
+  Affects: oflog/etc/logger.cfg
+
 **** Changes from 2009.09.16 (riesmeier)
 
 - Introduced new placeholder for the pattern layout: %i can be used to output
