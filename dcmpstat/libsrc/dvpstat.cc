@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 07:52:21 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Update Date:      $Date: 2009-09-17 06:56:54 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1131,7 +1131,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
   }
 
   if ((numberOfEntries > 0) && (numberOfEntries <= 65536) &&
-     ((firstMapped >= -32768) && (firstMapped <= 32767)) || ((firstMapped >= 0) && (firstMapped <= 65535)))
+     (((firstMapped >= -32768) && (firstMapped <= 32767)) || ((firstMapped >= 0) && (firstMapped <= 65535))))
   {
     Uint16 *data = new Uint16[numberOfEntries];
     if (data != NULL)
@@ -2224,6 +2224,9 @@ OFCondition DVPresentationState::createFromImage(
 
 /*
  *  $Log: dvpstat.cc,v $
+ *  Revision 1.84  2009-09-17 06:56:54  joergr
+ *  Added parentheses around && within || in order to avoid compiler warnings.
+ *
  *  Revision 1.83  2009-08-26 07:52:21  joergr
  *  Added parentheses around && within || in order to avoid warnings reported by
  *  gcc 4.3.2.
