@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.18 (riesmeier)
+
+- Added private tags from Circle Cardiovascular Imaging cmr42 3.0 and SonoWand
+  Invite 2.1.1 confomance statement.
+  Affects: dcmdata/data/private.dic
+           dcmdata/libsrc/dcdictzz.cc
+
 **** Changes from 2009.09.17 (riesmeier)
 
 - Added parentheses around && within || in order to avoid compiler warnings.

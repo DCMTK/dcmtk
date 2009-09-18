@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2009-05-14 15:59:19
+**   Date: 2009-09-18 12:56:17
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdictbi
 **
 **   From: ../data/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2009-05-14 15:59:19";
+const char* dcmBuiltinDictBuildDate = "2009-09-18 12:56:17";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -11661,6 +11661,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS SMS-AX  ORIGINAL IMAGE INFO 1.0" }
   , { 0x0025, 0x0010, 0x0025, 0x0010,
+      EVR_LO, "WorkspaceID", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CMR42 CIRCLECVI" }
+  , { 0x0025, 0x0010, 0x0025, 0x0010,
       EVR_US, "RelativeLightEmissionAmountSk", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
@@ -11733,6 +11737,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "GEMS_SERS_01" }
   , { 0x0025, 0x0020, 0x0025, 0x0020,
+      EVR_LO, "WorkspaceTimeString", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CMR42 CIRCLECVI" }
+  , { 0x0025, 0x0020, 0x0025, 0x0020,
       EVR_US, "Unknown", 2, 2, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "FDMS 1.0" }
@@ -11748,6 +11756,10 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_UI, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SVISION" }
+  , { 0x0025, 0x0030, 0x0025, 0x0030,
+      EVR_OB, "WorkspaceStream", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "CMR42 CIRCLECVI" }
   , { 0x0025, 0x0030, 0x0025, 0x0030,
       EVR_US, "Unknown", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
@@ -17914,6 +17926,18 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
 #ifdef WITH_PRIVATE_TAGS
+  , { 0x0135, 0x0010, 0x0135, 0x0010,
+      EVR_LO, "UltrasoundScannerName", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SONOWAND AS" }
+  , { 0x0135, 0x0011, 0x0135, 0x0011,
+      EVR_LO, "TransducerSerial", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SONOWAND AS" }
+  , { 0x0135, 0x0012, 0x0135, 0x0012,
+      EVR_LO, "ProbeApplication", 1, 1, "DICOM",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified,
+      "SONOWAND AS" }
   , { 0x0193, 0x0002, 0x0193, 0x0002,
       EVR_DS, "RISKey", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
