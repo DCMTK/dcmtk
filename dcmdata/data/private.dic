@@ -22,8 +22,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2009-09-18 10:59:21 $
-#  CVS/RCS Revision: $Revision: 1.2 $
+#  Update Date:      $Date: 2009-09-18 16:10:02 $
+#  CVS/RCS Revision: $Revision: 1.3 $
 #  Status:           $State: Exp $
 #
 #
@@ -31,7 +31,7 @@
 #
 #  This dictionary contains the private tags defined in the following
 #  reference documents (in alphabetical order):
-#   - Circle Cardiovascular Imaging cmr42 3.0 confomance statement
+#   - Circle Cardiovascular Imaging cmr42 3.0 conformance statement
 #   - David Clunie's dicom3tools package, 2002-04-20 snapshot
 #   - Fuji CR console, 3rd release
 #   - Intelerad Medical Systems Inc., Image Server
@@ -40,7 +40,7 @@
 #   - Philips Intera Achieva Conformance Statement
 #   - Siemens Somatom syngo VA40B conformance statement
 #   - Siemens AXIOM Artis VB30 conformance statement
-#   - SonoWand Invite 2.1.1 confomance statement
+#   - SonoWand Invite 2.1.1 conformance statement
 #   - Swissvision TR4000 conformance statement
 #   - private tags for DCMTK anonymizer tool
 #
