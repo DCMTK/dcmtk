@@ -126,7 +126,7 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
     // Delete the oldest file
     tostringstream buffer;
     buffer << filename << LOG4CPLUS_TEXT(".") << maxBackupIndex;
-    OFSTRINGSTREAM_GETOFSTRING(buffer, buffer_str);
+    OFSTRINGSTREAM_GETOFSTRING(buffer, buffer_str)
     int ret = file_remove (buffer_str);
 
     tostringstream source_oss;
@@ -141,8 +141,8 @@ rolloverFiles(const tstring& filename, unsigned int maxBackupIndex)
         source_oss << filename << LOG4CPLUS_TEXT(".") << i;
         target_oss << filename << LOG4CPLUS_TEXT(".") << (i+1);
 
-        OFSTRINGSTREAM_GETOFSTRING(source_oss, source);
-        OFSTRINGSTREAM_GETOFSTRING(target_oss, target);
+        OFSTRINGSTREAM_GETOFSTRING(source_oss, source)
+        OFSTRINGSTREAM_GETOFSTRING(target_oss, target)
 
 #if defined (WIN32)
         // Try to remove the target first. It seems it is not
@@ -552,7 +552,7 @@ DailyRollingFileAppender::rollover()
     rolloverFiles(scheduledFilename, maxBackupIndex);
     tostringstream backup_target_oss;
     backup_target_oss << scheduledFilename << LOG4CPLUS_TEXT(".") << 1;
-    OFSTRINGSTREAM_GETOFSTRING(backup_target_oss, backupTarget);
+    OFSTRINGSTREAM_GETOFSTRING(backup_target_oss, backupTarget)
 
     helpers::LogLog & loglog = getLogLog();
     int ret;

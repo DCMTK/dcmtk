@@ -118,7 +118,7 @@ getCurrentThreadName()
 {
     tostringstream tmp;
     tmp << LOG4CPLUS_GET_CURRENT_THREAD;
-    OFSTRINGSTREAM_GETOFSTRING(tmp, str);
+    OFSTRINGSTREAM_GETOFSTRING(tmp, str)
     return str;
 }
 

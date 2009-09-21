@@ -36,7 +36,7 @@ namespace {
     log4cplus::tstring asString(int i) {
         log4cplus::tostringstream tmp;
         tmp << i;
-        OFSTRINGSTREAM_GETOFSTRING(tmp, ret);
+        OFSTRINGSTREAM_GETOFSTRING(tmp, ret)
         return ret;
     }
 }

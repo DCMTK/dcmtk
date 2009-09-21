@@ -241,7 +241,7 @@ log4cplus::pattern::FormattingInfo::dump(log4cplus::helpers::LogLog& loglog) {
         << LOG4CPLUS_TEXT(", max=") << maxLen
         << LOG4CPLUS_TEXT(", leftAlign=")
         << (buf ? LOG4CPLUS_TEXT("true") : LOG4CPLUS_TEXT("false"));
-    OFSTRINGSTREAM_GETOFSTRING(buf, str);
+    OFSTRINGSTREAM_GETOFSTRING(buf, str)
     loglog.debug(str);
 }
 
@@ -574,7 +574,7 @@ log4cplus::pattern::PatternParser::parse()
                     << LOG4CPLUS_TEXT(".\n Was expecting digit, instead got char \"")
                     << c
                     << LOG4CPLUS_TEXT("\".");
-                OFSTRINGSTREAM_GETOFSTRING(buf, str);
+                OFSTRINGSTREAM_GETOFSTRING(buf, str)
                 getLogLog().error(str);
                 state = LITERAL_STATE;
             }
@@ -729,7 +729,7 @@ log4cplus::pattern::PatternParser::finalizeConverter(log4cplus::tchar c)
                 << LOG4CPLUS_TEXT("] at position ")
                 << pos
                 << LOG4CPLUS_TEXT(" in conversion pattern.");
-            OFSTRINGSTREAM_GETOFSTRING(buf, str);
+            OFSTRINGSTREAM_GETOFSTRING(buf, str)
             getLogLog().error(str);
             pc = new LiteralPatternConverter(currentLiteral);
     }

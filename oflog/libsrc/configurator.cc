@@ -114,7 +114,7 @@ namespace
                 buffer << '"' << pattern
                        << "\" has no closing brace. "
                        << "Opening brace at position " << var_start << ".";
-                OFSTRINGSTREAM_GETOFSTRING(buffer, str);
+                OFSTRINGSTREAM_GETOFSTRING(buffer, str)
                 loglog.error(str);
                 dest = val;
                 return false;
