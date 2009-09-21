@@ -1,6 +1,20 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.21 (riesmeier)
+
+- Fixed issue when compiled with configure --disable-threads.
+  Affects: oflog/include/dcmtk/oflog/loggingmacros.h
+           oflog/libsrc/stringhelper.cc
+
+- Removed superfluous semicolon after calling OFSTRINGSTREAM_GETOFSTRING etc.
+  Affects: oflog/include/dcmtk/oflog/loggingmacros.h
+           oflog/libsrc/appender.cc
+           oflog/libsrc/configurator.cc
+           oflog/libsrc/fileappender.cc
+           oflog/libsrc/patternlayout.cc
+           oflog/libsrc/threads.cc
+
 **** Changes from 2009.09.18 (riesmeier)
 
 - Added private tags from Circle Cardiovascular Imaging cmr42 3.0 and SonoWand

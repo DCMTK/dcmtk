@@ -37,8 +37,6 @@
 
 using namespace log4cplus;
 
-// We don't use this code since our stringstream doesn't have the necessary
-// support (see loggingmacros.h)
 #if defined (LOG4CPLUS_SINGLE_THREADED)
 
 namespace log4cplus
