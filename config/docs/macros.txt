@@ -249,7 +249,7 @@ REJECT_FILE_IF_META_GROUP_LENGTH_ABSENT
     retained.
 
 RETAIN_ASSOCIATION
-  Affected: ti
+  Affected: dcmqrti
   Type of modification: Activates experimental or rarely used feature
   Explanation: Keeps association to remote Query SCP open after
     study/series/image listing.  Default behaviour is to open new

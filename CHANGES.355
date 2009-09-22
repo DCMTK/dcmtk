@@ -6,6 +6,9 @@ Changes between releases are documented here.
 - Added documentation on supported query keys.
   Affects: dcmqrdb/docs/dcmqrscp.man
 
+- Renamed "ti" to "dcmqrti".
+  Affects: config/docs/macros.txt
+
 **** Changes from 2009.09.21 (riesmeier)
 
 - Fixed issue when compiled with configure --disable-threads.
