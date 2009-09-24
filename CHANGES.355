@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.24 (eichelberg)
+
+- Fixed bug in class OFFile that caused undefined behaviour 
+  once fclose() failed
+  Affects: ofstd/include/dcmtk/ofstd/offile.h
+  
 **** Changes from 2009.09.22 (riesmeier)
 
 - Added documentation on supported query keys.

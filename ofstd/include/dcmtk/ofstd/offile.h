@@ -22,8 +22,8 @@
  *  Purpose: C++ wrapper class for stdio FILE functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-10 07:52:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-09-24 07:10:52 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,7 +263,8 @@ public:
       {
         result = STDIO_NAMESPACE fclose(file_);
       }
-      if (result == 0) file_ = NULL;
+      // After calling fclose() once, the FILE* is gone even if fclose() failed.
+      file_ = NULL;
     }
     if (result) storeLastError();
     return result;
@@ -853,6 +854,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: offile.h,v $
+ * Revision 1.10  2009-09-24 07:10:52  meichel
+ * Fixed bug in class OFFile that caused undefined behaviour
+ *   once fclose() failed
+ *
  * Revision 1.9  2009-08-10 07:52:09  meichel
  * Some modifications needed to make class OFFile compile on MinGW.
  *
