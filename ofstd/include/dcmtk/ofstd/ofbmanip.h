@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2005, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Template class for bit manipulations (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:46 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-25 09:42:52 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,9 @@ class OFBitmanipTemplate
 
  public:
 
-    /** copies specified number of elements from source to destination
+    /** copies specified number of elements from source to destination.
+     *  Both src and dest must be aligned according to T's align requirements.
+     *  These memory areas must not overlap!
      *
      ** @param  src    pointer to source memory
      *  @param  dest   pointer to destination memory
@@ -75,7 +77,7 @@ class OFBitmanipTemplate
     {
 #ifdef HAVE_MEMCPY
         memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
-#elif HAVE_BCOPY
+#elif defined(HAVE_BCOPY)
         bcopy(OFstatic_cast(const void *, src), OFstatic_cast(void *, dest), OFstatic_cast(size_t, count) * sizeof(T));
 #else
         register unsigned long i;
@@ -87,7 +89,49 @@ class OFBitmanipTemplate
     }
 
 
-    /** sets specified number of elements in destination memory to defined value
+    /** moves specified number of elements from source to destination.
+     *  Both src and dest must be aligned according to T's align requirements.
+     *  If src and dest are not equal, they must be at least sizeof(T) bytes
+     *  apart. These memory areas may overlap.
+     *
+     ** @param  src    pointer to source memory
+     *  @param  dest   pointer to destination memory
+     *  @param  count  number of elements to be moved
+     */
+    static void moveMem(const T *src,
+                        T *dest,
+                        unsigned long count)
+    {
+#ifdef HAVE_MEMMOVE
+        memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
+#elif defined(HAVE_BCOPY)
+        bcopy(OFstatic_cast(const void *, src), OFstatic_cast(void *, dest), OFstatic_cast(size_t, count) * sizeof(T));
+#else
+        if (src == dest)
+            return;
+
+        register unsigned long i;
+        register const T *p = src;
+        register T *q = dest;
+        if (src > dest)
+        {
+            // src is above dest in memory, we start copying from the start
+            for (i = count; i != 0; --i)
+                *q++ = *p++;
+        }
+        else
+        {
+            // src is below dest in memory, we start copying from the end
+            q += count - 1;
+            p += count - 1;
+            for (i = count; i != 0; --i)
+                *q-- = *p--;
+        }
+#endif
+    }
+
+
+    /** sets specified number of elements in destination memory to a defined value
      *
      ** @param  dest   pointer to destination memory
      *  @param  value  value to be set
@@ -143,6 +187,10 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
+ * Revision 1.17  2009-09-25 09:42:52  joergr
+ * Introduced new general helper function moveMem() which allows for copying
+ * overlapping memory areas.
+ *
  * Revision 1.16  2005-12-08 16:05:46  meichel
  * Changed include path schema for all DCMTK header files
  *
