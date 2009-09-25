@@ -1,12 +1,23 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.25 (riesmeier)
+
+- Introduced new general helper function moveMem() which allows for copying
+  overlapping memory areas.
+  Affects: ofstd/include/dcmtk/ofstd/ofbmanip.h
+
+- Fixed issue in assign() method with overlapping memory areas (e.g. when using
+  self-assignment of a string or copying a sub-string to itself).
+  Affects: ofstd/libsrc/Makefile.dep
+           ofstd/libsrc/ofstring.cc
+
 **** Changes from 2009.09.24 (eichelberg)
 
-- Fixed bug in class OFFile that caused undefined behaviour 
+- Fixed bug in class OFFile that caused undefined behaviour
   once fclose() failed
   Affects: ofstd/include/dcmtk/ofstd/offile.h
-  
+
 **** Changes from 2009.09.22 (riesmeier)
 
 - Added documentation on supported query keys.
