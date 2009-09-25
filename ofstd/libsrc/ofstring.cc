@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:30:32 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2009-09-25 09:46:52 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofbmanip.h"
 
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -208,7 +209,9 @@ OFString::assign (const OFString& str, size_t pos, size_t n)
     }
     if (n > 0) {
         this->reserve(n);
-        strncpy(this->theCString, str.theCString + pos, n);
+        // Someone could try to assign a string to itself, but strncpy() must
+        // not be called on overlapping memory areas, therefore, we use moveMem().
+        OFBitmanipTemplate<char>::moveMem(str.theCString + pos, this->theCString, n);
         this->theCString[n] = '\0';
     } else {
         this->reserve(1);
@@ -1024,6 +1027,10 @@ int ofstring_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
+** Revision 1.24  2009-09-25 09:46:52  joergr
+** Fixed issue in assign() method with overlapping memory areas (e.g. when using
+** self-assignment of a string or copying a sub-string to itself).
+**
 ** Revision 1.23  2009-08-07 14:30:32  joergr
 ** Fixed incorrect implementation of find_first_not_of() and find_last_not_of().
 **
