@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-04 06:54:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 09:12:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,22 +39,22 @@
 #include "dcmtk/ofstd/ofstd.h"
 
 // dcmdata includes
-#include "dcmtk/dcmdata/dcdatset.h"  /* for class DcmDataset */
-#include "dcmtk/dcmdata/dcdeftag.h"  /* for tag constants */
-#include "dcmtk/dcmdata/dcovlay.h"   /* for class DcmOverlayData */
-#include "dcmtk/dcmdata/dcpixseq.h"  /* for class DcmPixelSequence */
-#include "dcmtk/dcmdata/dcpxitem.h"  /* for class DcmPixelItem */
-#include "dcmtk/dcmdata/dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
-#include "dcmtk/dcmdata/dcvrcs.h"    /* for class DcmCodeString */
-#include "dcmtk/dcmdata/dcvrds.h"    /* for class DcmDecimalString */
-#include "dcmtk/dcmdata/dcvrlt.h"    /* for class DcmLongText */
-#include "dcmtk/dcmdata/dcvrst.h"    /* for class DcmShortText */
-#include "dcmtk/dcmdata/dcvrus.h"    /* for class DcmUnsignedShort */
-#include "dcmtk/dcmdata/dcswap.h"    /* for swapIfNecessary */
-
-// dcmjpeg includes
-#include "dcmtk/dcmjpeg/djcparam.h"  /* for class DJCodecParameter */
-#include "dcmtk/dcmjpeg/djencabs.h"  /* for class DJEncoder */
+#include "dcmtk/dcmdata/dcdatset.h"   /* for class DcmDataset */
+#include "dcmtk/dcmdata/dcdeftag.h"   /* for tag constants */
+#include "dcmtk/dcmdata/dcovlay.h"    /* for class DcmOverlayData */
+#include "dcmtk/dcmdata/dcpixseq.h"   /* for class DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpxitem.h"   /* for class DcmPixelItem */
+#include "dcmtk/dcmdata/dcuid.h"      /* for dcmGenerateUniqueIdentifer()*/
+#include "dcmtk/dcmdata/dcvrcs.h"     /* for class DcmCodeString */
+#include "dcmtk/dcmdata/dcvrds.h"     /* for class DcmDecimalString */
+#include "dcmtk/dcmdata/dcvrlt.h"     /* for class DcmLongText */
+#include "dcmtk/dcmdata/dcvrst.h"     /* for class DcmShortText */
+#include "dcmtk/dcmdata/dcvrus.h"     /* for class DcmUnsignedShort */
+#include "dcmtk/dcmdata/dcswap.h"     /* for swapIfNecessary */
+                                      
+// dcmjpeg includes                   
+#include "dcmtk/dcmjpeg/djcparam.h"   /* for class DJCodecParameter */
+#include "dcmtk/dcmjpeg/djencabs.h"   /* for class DJEncoder */
 
 // dcmimgle includes
 #include "dcmtk/dcmimgle/dcmimage.h"  /* for class DicomImage */
@@ -75,25 +75,25 @@ DJCodecEncoder::~DJCodecEncoder()
 
 
 OFBool DJCodecEncoder::canChangeCoding(
-    const E_TransferSyntax oldRepType,
-    const E_TransferSyntax newRepType) const
+  const E_TransferSyntax oldRepType,
+  const E_TransferSyntax newRepType) const
 {
   E_TransferSyntax myXfer = supportedTransferSyntax();
   DcmXfer newRep(newRepType);
   DcmXfer oldRep(oldRepType);
   if (oldRep.isNotEncapsulated() && (newRepType == myXfer)) return OFTrue; // compress requested
 
-  // we don't support re-coding for now.
+  // we don't support re-coding for now
   return OFFalse;
 }
 
 
 OFCondition DJCodecEncoder::decode(
-    const DcmRepresentationParameter * /* fromRepParam */,
-    DcmPixelSequence * /* pixSeq */,
-    DcmPolymorphOBOW& /* uncompressedPixelData */,
-    const DcmCodecParameter * /* cp */,
-    const DcmStack& /* objStack */) const
+  const DcmRepresentationParameter * /* fromRepParam */,
+  DcmPixelSequence * /* pixSeq */,
+  DcmPolymorphOBOW& /* uncompressedPixelData */,
+  const DcmCodecParameter * /* cp */,
+  const DcmStack& /* objStack */) const
 {
   // we are an encoder only
   return EC_IllegalCall;
@@ -101,41 +101,42 @@ OFCondition DJCodecEncoder::decode(
 
 
 OFCondition DJCodecEncoder::decodeFrame(
-    const DcmRepresentationParameter * /* fromParam */ ,
-    DcmPixelSequence * /* fromPixSeq */ ,
-    const DcmCodecParameter * /* cp */ ,
-    DcmItem * /* dataset */ ,
-    Uint32 /* frameNo */ ,
-    Uint32& /* startFragment */ ,
-    void * /* buffer */ ,
-    Uint32 /* bufSize */ ,
-    OFString& /* decompressedColorModel */ ) const
+  const DcmRepresentationParameter * /* fromParam */ ,
+  DcmPixelSequence * /* fromPixSeq */ ,
+  const DcmCodecParameter * /* cp */ ,
+  DcmItem * /* dataset */ ,
+  Uint32 /* frameNo */ ,
+  Uint32& /* startFragment */ ,
+  void * /* buffer */ ,
+  Uint32 /* bufSize */ ,
+  OFString& /* decompressedColorModel */ ) const
 {
   // we are an encoder only
   return EC_IllegalCall;
-}    
+}
 
 
 OFCondition DJCodecEncoder::encode(
-    const E_TransferSyntax /* fromRepType */,
-    const DcmRepresentationParameter * /* fromRepParam */,
-    DcmPixelSequence * /* fromPixSeq */,
-    const DcmRepresentationParameter * /* toRepParam */,
-    DcmPixelSequence * & /* toPixSeq */,
-    const DcmCodecParameter * /* cp */,
-    DcmStack & /* objStack */) const
+  const E_TransferSyntax /* fromRepType */,
+  const DcmRepresentationParameter * /* fromRepParam */,
+  DcmPixelSequence * /* fromPixSeq */,
+  const DcmRepresentationParameter * /* toRepParam */,
+  DcmPixelSequence * & /* toPixSeq */,
+  const DcmCodecParameter * /* cp */,
+  DcmStack & /* objStack */) const
 {
-  // we don't support re-coding for now.
+  // we don't support re-coding for now
   return EC_IllegalCall;
 }
 
+
 OFCondition DJCodecEncoder::encode(
-        const Uint16 * /* pixelData */,
-        const Uint32 /* length */,
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DcmCodecParameter *cp,
-        DcmStack & objStack) const
+  const Uint16 * /* pixelData */,
+  const Uint32 /* length */,
+  const DcmRepresentationParameter * toRepParam,
+  DcmPixelSequence * & pixSeq,
+  const DcmCodecParameter *cp,
+  DcmStack & objStack) const
 {
   OFCondition result = EC_Normal;
   // assume we can cast the codec parameter to what we need
@@ -147,7 +148,7 @@ OFCondition DJCodecEncoder::encode(
     return encodeTrueLossless(toRepParam, pixSeq, cp, objStack);
 
   DcmStack localStack(objStack);
-  (void)localStack.pop();             // pop pixel data element from stack
+  (void)localStack.pop();                // pop pixel data element from stack
   DcmObject *dataset = localStack.pop(); // this is the item in which the pixel data is located
 
   if ((!dataset)||((dataset->ident()!= EVR_dataset) && (dataset->ident()!= EVR_item))) result = EC_InvalidTag;
@@ -236,12 +237,12 @@ OFCondition DJCodecEncoder::encode(
 
 
 OFCondition DJCodecEncoder::encodeColorImage(
-        OFBool YBRmode,
-        DcmItem *dataset,
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DJCodecParameter *cp,
-        double& compressionRatio) const
+  OFBool YBRmode,
+  DcmItem *dataset,
+  const DcmRepresentationParameter * toRepParam,
+  DcmPixelSequence * & pixSeq,
+  const DJCodecParameter *cp,
+  double& compressionRatio) const
 {
   OFCondition result = EC_Normal;
   DcmOffsetList offsetList;
@@ -441,10 +442,10 @@ OFCondition DJCodecEncoder::encodeColorImage(
 
 
 OFCondition DJCodecEncoder::encodeTrueLossless(
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DcmCodecParameter *cp,
-        DcmStack & objStack) const
+  const DcmRepresentationParameter * toRepParam,
+  DcmPixelSequence * & pixSeq,
+  const DcmCodecParameter *cp,
+  DcmStack & objStack) const
 {
   OFCondition result = EC_Normal;
   // assume we can cast the codec parameter to what we need
@@ -562,10 +563,10 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         return result;
     }
 
-    //check whether enough raw data is available for encoding
+    // check whether enough raw data is available for encoding
     if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned long,numberOfFrames) > length)
     {
-      CERR << "True lossless encoder: Can not change representation, not enough data" << OFendl;
+      CERR << "True lossless encoder: Cannot change representation, not enough data" << OFendl;
       return EC_CannotChangeRepresentation;
     }
 
@@ -693,12 +694,16 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
   return result;
 }
 
-void DJCodecEncoder::appendCompressionRatio(OFString& arg, double ratio)
+
+void DJCodecEncoder::appendCompressionRatio(
+  OFString& arg,
+  double ratio)
 {
   char buf[64];
   OFStandard::ftoa(buf, sizeof(buf), ratio, OFStandard::ftoa_uppercase, 0, 5);
   arg += buf;
 }
+
 
 OFCondition DJCodecEncoder::updateLossyCompressionRatio(
   DcmItem *dataset,
@@ -751,6 +756,7 @@ OFCondition DJCodecEncoder::updateLossyCompressionRatio(
   m += "ISO_10918_1";
   return dataset->putAndInsertString(DCM_LossyImageCompressionMethod, m.c_str());
 }
+
 
 OFCondition DJCodecEncoder::updateDerivationDescription(
   DcmItem *dataset,
@@ -859,11 +865,11 @@ OFCondition DJCodecEncoder::adjustOverlays(
 
 
 OFCondition DJCodecEncoder::encodeMonochromeImage(
-        DcmItem *dataset,
-        const DcmRepresentationParameter * toRepParam,
-        DcmPixelSequence * & pixSeq,
-        const DJCodecParameter *cp,
-        double& compressionRatio) const
+  DcmItem *dataset,
+  const DcmRepresentationParameter * toRepParam,
+  DcmPixelSequence * & pixSeq,
+  const DJCodecParameter *cp,
+  double& compressionRatio) const
 {
   OFCondition result = EC_Normal;
   DcmOffsetList offsetList;
@@ -1299,9 +1305,9 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
 
 
 OFCondition DJCodecEncoder::correctVOIWindows(
-        DcmItem *dataset,
-        double voiOffset,
-        double voiFactor)
+  DcmItem *dataset,
+  double voiOffset,
+  double voiFactor)
 {
   if (voiOffset == 0.0 && voiFactor == 1.0) return EC_Normal;
 
@@ -1383,11 +1389,12 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   return result;
 }
 
+
 OFCondition DJCodecEncoder::togglePlanarConfiguration8(
-    Uint8 *pixelData,
-    const unsigned long numValues,
-    const Uint16 samplesPerPixel,
-    const Uint16 oldPlanarConfig)
+  Uint8 *pixelData,
+  const unsigned long numValues,
+  const Uint16 samplesPerPixel,
+  const Uint16 oldPlanarConfig)
 {
   if ( (pixelData == NULL) || (numValues%samplesPerPixel != 0) )
     return EC_IllegalParameter;
@@ -1420,10 +1427,10 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration8(
 
 
 OFCondition DJCodecEncoder::togglePlanarConfiguration16(
-    Uint16 *pixelData,
-    const unsigned long numValues, //number of 16-bit components
-    const Uint16 samplesPerPixel,
-    const Uint16 oldPlanarConfig)
+  Uint16 *pixelData,
+  const unsigned long numValues, //number of 16-bit components
+  const Uint16 samplesPerPixel,
+  const Uint16 oldPlanarConfig)
 {
   if ( (pixelData == NULL) || (numValues%samplesPerPixel != 0) )
     return EC_IllegalParameter;
@@ -1456,8 +1463,8 @@ OFCondition DJCodecEncoder::togglePlanarConfiguration16(
 
 
 OFCondition DJCodecEncoder::updatePlanarConfiguration(
-    DcmItem *item,
-    const Uint16 newPlanConf) const
+  DcmItem *item,
+  const Uint16 newPlanConf) const
 {
   if ( (item == NULL) || (newPlanConf) > 1)
     return EC_IllegalParameter;
@@ -1467,6 +1474,9 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.28  2009-09-28 09:12:46  joergr
+ * Fixed typo in error message. Reformatted source code.
+ *
  * Revision 1.27  2009-08-04 06:54:47  meichel
  * Fixed incorrect code meaning string.
  *

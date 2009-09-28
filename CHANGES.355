@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.28 (riesmeier)
+
+- Fixed typo in error message. Reformatted source code.
+  Affects: dcmjpeg/libsrc/djcodece.cc
+
 **** Changes from 2009.09.25 (riesmeier)
 
 - Introduced new general helper function moveMem() which allows for copying
