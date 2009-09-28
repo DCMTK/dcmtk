@@ -6,6 +6,42 @@ Changes between releases are documented here.
 - Fixed typo in error message. Reformatted source code.
   Affects: dcmjpeg/libsrc/djcodece.cc
 
+- Moved general purpose definition file from module dcmdata to ofstd, and
+  added new defines in order to make the usage easier.
+  Added:   ofstd/include/dcmtk/ofstd/ofdefine.h
+  Removed: dcmdata/include/dcmtk/dcmdata/dcdefine.h
+  Affecte: dcmdata/apps/Makefile.dep
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/tests/Makefile.dep
+           dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsr/apps/Makefile.dep
+           dcmsr/libsrc/Makefile.dep
+           dcmsr/tests/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+           ofstd/tests/Makefile.dep
+
+- Simplified code based on the new header file "ofdefine.h".
+  Affects: ofstd/include/dcmtk/ofstd/ofbmanip.h
+
 **** Changes from 2009.09.25 (riesmeier)
 
 - Introduced new general helper function moveMem() which allows for copying
