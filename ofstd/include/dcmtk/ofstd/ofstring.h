@@ -22,8 +22,8 @@
  *  Purpose: A simple string class
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 10:42:42 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2009-09-28 14:07:34 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #define OFSTRING_H
 
 #include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
+
 #include "dcmtk/ofstd/oftypes.h"       /* for OFBool */
 #include "dcmtk/ofstd/ofcast.h"
 
@@ -243,7 +244,7 @@ public:
      *  @return reference to this object
      */
     OFString& insert(size_t pos1, const OFString& str,
-              size_t pos2 = 0, size_t n = OFString_npos);
+                     size_t pos2 = 0, size_t n = OFString_npos);
 
     /** constructs a temporary string from the input and inserts
      *  it into the current string.
@@ -294,7 +295,7 @@ public:
      *  @return reference to this object
      */
     OFString& replace(size_t pos1, size_t n1, const OFString& str,
-               size_t pos2 = 0, size_t n2 = OFString_npos);
+                      size_t pos2 = 0, size_t n2 = OFString_npos);
 
     /** constructs a temporary string from the input and replaces the range [pos, n]
      *  in the current string with the constructed string.
@@ -401,7 +402,7 @@ public:
      */
     size_t size() const
     {
-        return (this->theCString)?(strlen(this->theCString)):(0);
+        return this->theSize;
     }
 
     /** returns a count of the number of char-like objects currently in
@@ -826,6 +827,9 @@ private:
     /// the "C" string pointer
     char* theCString;
 
+    /// the length of theCString
+    size_t theSize;
+
     /// the capacity of str
     size_t theCapacity;
 
@@ -1100,6 +1104,11 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
+** Revision 1.25  2009-09-28 14:07:34  joergr
+** Introduced new member variable that stores the current length of the string.
+** This yields in a significant performance improvement when compiled in debug
+** mode.
+**
 ** Revision 1.24  2009-08-19 10:42:42  joergr
 ** Added iterator declarations and required methods.
 **
