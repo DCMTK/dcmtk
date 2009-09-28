@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: include most dcmdata files that are usually required
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dctk.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 13:29:38 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +44,7 @@
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcvm.h"
-#include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/ofstd/ofdefine.h"
 
 // tags and dictionary
 #include "dcmtk/dcmdata/dctagkey.h"
@@ -113,7 +112,11 @@
 /*
  * CVS/RCS Log:
  * $Log: dctk.h,v $
- * Revision 1.15  2005-12-08 16:28:46  meichel
+ * Revision 1.16  2009-09-28 13:29:38  joergr
+ * Moved general purpose definition file from module dcmdata to ofstd, and
+ * added new defines in order to make the usage easier.
+ *
+ * Revision 1.15  2005/12/08 16:28:46  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.14  2005/11/28 15:28:56  meichel

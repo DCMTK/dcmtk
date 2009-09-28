@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-05 13:15:17 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2009-09-28 13:31:29 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcdict.h"
-#include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcdicent.h"
 #include "dcmtk/dcmdata/dcdebug.h"
 
@@ -852,6 +852,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.40  2009-09-28 13:31:29  joergr
+** Moved general purpose definition file from module dcmdata to ofstd, and
+** added new defines in order to make the usage easier.
+**
 ** Revision 1.39  2009-02-05 13:15:17  joergr
 ** Added reload method to data dictionary class.
 ** Added re-initialization of missing member variables in clear() method.

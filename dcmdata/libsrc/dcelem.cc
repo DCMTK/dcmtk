@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-06 15:57:17 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 13:34:08 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,11 +38,12 @@
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#include "dcmtk/ofstd/ofdefine.h"
+
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/dcmdata/dcobject.h"
-#include "dcmtk/dcmdata/dcdefine.h"
 #include "dcmtk/dcmdata/dcswap.h"
 #include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
@@ -1675,6 +1676,10 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.75  2009-09-28 13:34:08  joergr
+** Moved general purpose definition file from module dcmdata to ofstd, and
+** added new defines in order to make the usage easier.
+**
 ** Revision 1.74  2009-08-06 15:57:17  meichel
 ** Use of std::nothrow delete now conditional on compiler support for this feature
 **

@@ -22,8 +22,8 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-25 13:10:56 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2009-09-28 13:30:59 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ int mkstemp(char *);
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcdicdir.h"
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdirrec.h"
@@ -1333,6 +1333,10 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.54  2009-09-28 13:30:59  joergr
+** Moved general purpose definition file from module dcmdata to ofstd, and
+** added new defines in order to make the usage easier.
+**
 ** Revision 1.53  2009-02-25 13:10:56  joergr
 ** Fixed file locking issue that prevented DICOMDIR files with large element
 ** values (e.g. pixel data inside an IconImageSequence) from being renamed.

@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-03 16:01:41 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 13:30:59 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ END_EXTERN_C
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/ofstd/ofthread.h"
 #include "dcmtk/ofstd/ofcrc32.h"
-#include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconsol.h"
 
@@ -1432,6 +1432,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.71  2009-09-28 13:30:59  joergr
+** Moved general purpose definition file from module dcmdata to ofstd, and
+** added new defines in order to make the usage easier.
+**
 ** Revision 1.70  2009-08-03 16:01:41  meichel
 ** In order to reduce the probability of generating duplicate UIDs when one
 **   process is spawned immediately after termination of another one, and both

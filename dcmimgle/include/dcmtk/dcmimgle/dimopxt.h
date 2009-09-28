@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 13:27:30 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 #include "dcmtk/ofstd/ofcast.h"
 
 #include "dcmtk/dcmdata/dctypes.h"
-#include "dcmtk/dcmdata/dcdefine.h"
+#include "dcmtk/ofstd/ofdefine.h"
 
 #include "dcmtk/dcmimgle/dimopx.h"
 #include "dcmtk/dcmimgle/dipxrept.h"
@@ -439,7 +439,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.28  2006-08-15 16:30:11  meichel
+ * Revision 1.29  2009-09-28 13:27:30  joergr
+ * Moved general purpose definition file from module dcmdata to ofstd, and
+ * added new defines in order to make the usage easier.
+ *
+ * Revision 1.28  2006/08/15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

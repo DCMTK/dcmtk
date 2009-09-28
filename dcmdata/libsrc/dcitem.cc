@@ -22,8 +22,8 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-31 15:21:57 $
- *  CVS/RCS Revision: $Revision: 1.138 $
+ *  Update Date:      $Date: 2009-09-28 13:30:59 $
+ *  CVS/RCS Revision: $Revision: 1.139 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcdebug.h"
-#include "dcmtk/dcmdata/dcdefine.h"   /* for memzero() */
+#include "dcmtk/ofstd/ofdefine.h"     /* for memzero() */
 #include "dcmtk/dcmdata/dcdeftag.h"   /* for name constants */
 #include "dcmtk/dcmdata/dcistrma.h"   /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcobject.h"
@@ -3649,6 +3649,10 @@ OFBool DcmItem::isAffectedBySpecificCharacterSet() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
+** Revision 1.139  2009-09-28 13:30:59  joergr
+** Moved general purpose definition file from module dcmdata to ofstd, and
+** added new defines in order to make the usage easier.
+**
 ** Revision 1.138  2009-08-31 15:21:57  joergr
 ** Fixed bug in group length computation which could cause a segmentation fault
 ** for incorrectly encoded DICOM datasets (with illegal group length elements).
