@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -37,17 +37,17 @@
  *  Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-14 16:42:48 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 14:08:32 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"     /* include OS specific configuration first */
+
 #include "dcmtk/ofstd/ofstring.h"
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -57,7 +57,8 @@
 
 
 OFString X = "Hello";
-OFString Y = "world";
+#define Y_str "world\0How are you?"
+OFString Y(Y_str, sizeof(Y_str)/sizeof(char) - 1);
 OFString N = "123";
 OFString c;
 const char *s = ",";
@@ -105,43 +106,47 @@ void decltest()
 
 void cattest()
 {
+#define assert_eq(ofstr, c_str) \
+  assert(ofstr == OFString(c_str, sizeof(c_str)/sizeof(char) - 1))
+
   OFString x = X;
   OFString y = Y;
   OFString z = x + y;
   COUT << "z = x + y = " << z << "\n";
-  assert(z == "Helloworld");
+  assert_eq(z, "Helloworld\0How are you?");
 
   x += y;
   COUT << "x += y; x = " << x << "\n";
-  assert(x == "Helloworld");
+  assert_eq(x, "Helloworld\0How are you?");
 
   y = Y;
   x = X;
   y.insert (0, x);
   COUT << "y.insert (0, x); y = " << y << "\n";
-  assert(y == "Helloworld");
+  assert_eq(y, "Helloworld\0How are you?");
 
   y = Y;
   x = X;
   x = x + y + x;
   COUT << "x = x + y + x; x = " << x << "\n";
-  assert(x == "HelloworldHello");
+  assert_eq(x, "Helloworld\0How are you?Hello");
 
   y = Y;
   x = X;
   x = y + x + x;
   COUT << "x = y + x + x; x = " << x << "\n";
-  assert(x == "worldHelloHello");
+  assert_eq(x, "world\0How are you?HelloHello");
 
   x = X;
   y = Y;
-  z = x + s + ' ' + y.substr (y.find ('w'), 1) + y.substr (y.find ('w') + 1) + ".";
-  COUT << "z = x + s +  + y.substr (y.find (w), 1) + y.substr (y.find (w) + 1) + . = " << z << "\n";
-  assert(z == "Hello, world.");
+  z = x + s + ' ' + y.substr (y.find ('w'), 1) + y.substr (y.find ('w') + 1, y.find('\0') - y.find('w')) + ".";
+  COUT << "z = x + s +  + y.substr (y.find (w), 1) + y.substr (y.find (w) + 1, y.find('\\0') - y.find('w')) + . = " << z << "\n";
+  assert_eq(z, "Hello, world\0.");
+#undef assert_eq
 }
 
 void comparetest()
-{  
+{
   OFString x = X;
   OFString y = Y;
   OFString n = N;
@@ -183,10 +188,34 @@ void substrtest()
 void iotest()
 {
   OFString z;
-  COUT << "enter a word:";
+  COUT << "enter a word: ";
   STD_NAMESPACE cin >> z;
-  COUT << "word =" << z << " ";
+  COUT << "word = " << z << " ";
   COUT << "length = " << z.length() << "\n";
+}
+
+void reservetest()
+{
+  OFString z;
+
+  z.reserve(5);
+  assert(z.length() == 0);
+  assert(z.capacity() >= 5);
+
+  z.assign(20, 'z');
+  assert(z == "zzzzzzzzzzzzzzzzzzzz");
+  assert(z.length() == 20);
+  assert(z.capacity() >= 20);
+
+  z.reserve(5);
+  assert(z == "zzzzzzzzzzzzzzzzzzzz");
+  assert(z.length() == 20);
+  assert(z.capacity() >= 20);
+
+  z.resize(5);
+  assert(z == "zzzzz");
+  assert(z.length() == 5);
+  assert(z.capacity() >= 5);
 }
 
 void identitytest(OFString a, OFString b)
@@ -198,7 +227,7 @@ void identitytest(OFString a, OFString b)
   assert((a + b) == x);
   assert((a + b) == y);
   assert(x == y);
-  
+
   assert((a + b + a) == (a + (b + a)));
 
   x.erase (x.rfind (b));
@@ -216,6 +245,7 @@ int main()
   cattest();
   comparetest();
   substrtest();
+  reservetest();
   identitytest(X, X);
   identitytest(X, Y);
   identitytest(X+Y+N+X+Y+N, "A string that will be used in identitytest but is otherwise just another useless string.");
@@ -229,6 +259,10 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tstring.cc,v $
+** Revision 1.9  2009-09-28 14:08:32  joergr
+** Added support for strings that contain null bytes ('\0') in order to be more
+** compliant with the standard C++ string class.
+**
 ** Revision 1.8  2006-08-14 16:42:48  meichel
 ** Updated all code in module ofstd to correctly compile if the standard
 **   namespace has not included into the global one with a "using" directive.
