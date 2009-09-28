@@ -22,8 +22,8 @@
  *  Purpose: Template class for bit manipulations (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-25 09:42:52 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2009-09-28 12:19:37 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,19 +36,10 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcast.h"
+#include "dcmtk/ofstd/ofdefine.h"
 
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
-
-
-#ifdef HAVE_BZERO
-#ifndef HAVE_PROTOTYPE_BZERO
-BEGIN_EXTERN_C
-extern void bzero(char* s, int len);
-END_EXTERN_C
-#endif
-#endif
-
 
 /*---------------------*
  *  class declaration  *
@@ -77,8 +68,6 @@ class OFBitmanipTemplate
     {
 #ifdef HAVE_MEMCPY
         memcpy(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
-#elif defined(HAVE_BCOPY)
-        bcopy(OFstatic_cast(const void *, src), OFstatic_cast(void *, dest), OFstatic_cast(size_t, count) * sizeof(T));
 #else
         register unsigned long i;
         register const T *p = src;
@@ -104,8 +93,6 @@ class OFBitmanipTemplate
     {
 #ifdef HAVE_MEMMOVE
         memmove(OFstatic_cast(void *, dest), OFstatic_cast(const void *, src), OFstatic_cast(size_t, count) * sizeof(T));
-#elif defined(HAVE_BCOPY)
-        bcopy(OFstatic_cast(const void *, src), OFstatic_cast(void *, dest), OFstatic_cast(size_t, count) * sizeof(T));
 #else
         if (src == dest)
             return;
@@ -163,18 +150,13 @@ class OFBitmanipTemplate
     static void zeroMem(T *dest,
                         const unsigned long count)
     {
-#ifdef HAVE_BZERO
-        // some platforms, e.g. OSF1, require the first parameter to be char *.
-        bzero(OFreinterpret_cast(char *, dest), OFstatic_cast(size_t, count) * sizeof(T));
-#else
-#ifdef HAVE_MEMSET
-        memset(OFstatic_cast(void *, dest), 0, OFstatic_cast(size_t, count) * sizeof(T));
+#ifdef HAVE_MEMZERO
+        memzero(dest, OFstatic_cast(size_t, count) * sizeof(T));
 #else
         register unsigned long i;
         register T *q = dest;
         for (i = count; i != 0; --i)
             *q++ = 0;
-#endif
 #endif
     }
 };
@@ -187,6 +169,9 @@ class OFBitmanipTemplate
  *
  * CVS/RCS Log:
  * $Log: ofbmanip.h,v $
+ * Revision 1.18  2009-09-28 12:19:37  joergr
+ * Simplified code based on the new header file "ofdefine.h".
+ *
  * Revision 1.17  2009-09-25 09:42:52  joergr
  * Introduced new general helper function moveMem() which allows for copying
  * overlapping memory areas.
