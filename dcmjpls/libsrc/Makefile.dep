@@ -53,10 +53,7 @@ djcodecd.o: djcodecd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
   ../include/dcmtk/dcmjpls/djcparam.h ../include/dcmtk/dcmjpls/djlsutil.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h djerror.h \
-  ../include/dcmtk/dcmjpls/djlsutil.h ../../dcmjpls/libcharls/interface.h \
-  ../../dcmjpls/libcharls/util.h ../../dcmjpls/libcharls/config.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpls/libcharls/interface.h
+  ../include/dcmtk/dcmjpls/djlsutil.h ../../dcmjpls/libcharls/interface.h
 djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmjpls/djcodece.h \
@@ -124,9 +121,6 @@ djcodece.o: djcodece.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmjpls/djrparam.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h djerror.h \
   ../include/dcmtk/dcmjpls/djlsutil.h ../../dcmjpls/libcharls/interface.h \
-  ../../dcmjpls/libcharls/util.h ../../dcmjpls/libcharls/config.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmjpls/libcharls/interface.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dcmimage.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
