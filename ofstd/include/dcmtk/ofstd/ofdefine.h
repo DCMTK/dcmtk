@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -15,38 +15,51 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- *  Module:  dcmdata
+ *  Module:  ofstd
  *
  *  Author:  Andreas Barth
  *
  *  Purpose: common defines for configuration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:05 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/Attic/dcdefine.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-09-28 12:19:02 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#ifndef DCDEFINE_H
-#define DCDEFINE_H
+#ifndef OFDEFINE_H
+#define OFDEFINE_H
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/ofstd/ofcast.h"
 
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
+
+
+#ifdef HAVE_BZERO
+#ifndef HAVE_PROTOTYPE_BZERO
+BEGIN_EXTERN_C
+extern void bzero(char* s, int len);
+END_EXTERN_C
+#endif
+#endif
+
 
 /* memzero */
 #ifdef HAVE_MEMSET
 #  undef memzero
 #  define memzero(d, n) memset((d), 0, (n))
+#  define HAVE_MEMZERO /* This makes using this easier */
 #else
 #  ifdef HAVE_BZERO
 #    undef memzero
-#    define memzero(d, n) bzero((d), (n))
+// some platforms, e.g. OSF1, require the first parameter to be char *.
+#    define memzero(d, n) bzero(OFstatic_cast(char *, d), (n))
+#    define HAVE_MEMZERO /* This makes using this easier */
 #  endif
 #endif
 
@@ -55,6 +68,7 @@
 #  ifdef HAVE_BCOPY
 #    undef memcpy
 #    define memcpy(d, s, n) bcopy((s), (d), (n))
+#    define HAVE_MEMCPY /* This makes using this easier */
 #  endif
 #endif
 
@@ -63,6 +77,7 @@
 #  ifdef HAVE_BCOPY
 #    undef memmove
 #    define memmove(d, s, n) bcopy ((s), (d), (n))
+#    define HAVE_MEMMOVE /* This makes using this easier */
 #  endif
 #endif
 
@@ -71,6 +86,7 @@
 #  ifdef HAVE_BCMP
 #    undef memcmp
 #    define memcmp(d, s, n) bcmp((s), (d), (n))
+#    define HAVE_MEMCMP /* This makes using this easier */
 #  endif
 #endif
 
@@ -81,6 +97,8 @@
 #    define strchr index
 #    undef strrchr
 #    define strrchr rindex
+#    define HAVE_STRCHR  /* This makes using this easier */
+#    define HAVE_STRRCHR /* This makes using this easier */
 #  endif
 #endif
 
@@ -88,8 +106,12 @@
 
 /*
  * CVS/RCS Log:
- * $Log: dcdefine.h,v $
- * Revision 1.8  2005-12-08 16:28:05  meichel
+ * $Log: ofdefine.h,v $
+ * Revision 1.1  2009-09-28 12:19:02  joergr
+ * Moved general purpose definition file from module dcmdata to ofstd, and
+ * added new defines in order to make the usage easier.
+ *
+ * Revision 1.8  2005/12/08 16:28:05  meichel
  * Changed include path schema for all DCMTK header files
  *
  * Revision 1.7  2002/11/27 12:07:21  meichel

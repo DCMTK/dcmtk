@@ -21,7 +21,8 @@ i2dbmps.o: i2dbmps.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -84,7 +85,8 @@ i2d.o: i2d.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -153,7 +155,8 @@ i2djpgs.o: i2djpgs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -216,7 +219,8 @@ i2dplnsc.o: i2dplnsc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -279,7 +283,8 @@ i2dplsc.o: i2dplsc.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -342,7 +347,8 @@ i2dplvlp.o: i2dplvlp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \

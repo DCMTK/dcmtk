@@ -20,7 +20,8 @@ dcm2pdf.o: dcm2pdf.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -88,7 +89,8 @@ dcm2xml.o: dcm2xml.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -157,7 +159,8 @@ dcmconv.o: dcmconv.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -225,7 +228,8 @@ dcmcrle.o: dcmcrle.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -292,7 +296,8 @@ dcmdrle.o: dcmdrle.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -359,7 +364,8 @@ dcmdump.o: dcmdump.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -463,7 +469,8 @@ dcmgpdir.o: dcmgpdir.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -554,7 +561,8 @@ dcmodify.o: dcmodify.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcpath.h ../include/dcmtk/dcmdata/dctk.h \
   ../include/dcmtk/dcmdata/dcswap.h ../include/dcmtk/dcmdata/dcistrma.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
   ../include/dcmtk/dcmdata/dcdict.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
@@ -611,7 +619,8 @@ dump2dcm.o: dump2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -679,7 +688,8 @@ img2dcm.o: img2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -771,8 +781,9 @@ mdfconen.o: mdfconen.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dcswap.h \
   ../include/dcmtk/dcmdata/dcistrma.h ../include/dcmtk/dcmdata/dcostrma.h \
   ../include/dcmtk/dcmdata/dcuid.h ../include/dcmtk/dcmdata/dcvm.h \
-  ../include/dcmtk/dcmdata/dcdefine.h ../include/dcmtk/dcmdata/dcdicent.h \
-  ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
+  ../include/dcmtk/dcmdata/dcdict.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcmetinf.h \
   ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
@@ -846,8 +857,9 @@ mdfdsman.o: mdfdsman.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dctk.h ../include/dcmtk/dcmdata/dcswap.h \
   ../include/dcmtk/dcmdata/dcistrma.h ../include/dcmtk/dcmdata/dcostrma.h \
   ../include/dcmtk/dcmdata/dcuid.h ../include/dcmtk/dcmdata/dcvm.h \
-  ../include/dcmtk/dcmdata/dcdefine.h ../include/dcmtk/dcmdata/dcdicent.h \
-  ../include/dcmtk/dcmdata/dchashdi.h ../include/dcmtk/dcmdata/dcdict.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../include/dcmtk/dcmdata/dcdicent.h ../include/dcmtk/dcmdata/dchashdi.h \
+  ../include/dcmtk/dcmdata/dcdict.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../include/dcmtk/dcmdata/dcdeftag.h ../include/dcmtk/dcmdata/dcmetinf.h \
   ../include/dcmtk/dcmdata/dcfilefo.h ../include/dcmtk/dcmdata/dcdicdir.h \
@@ -897,7 +909,8 @@ pdf2dcm.o: pdf2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -966,7 +979,8 @@ xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../include/dcmtk/dcmdata/dcostrma.h ../include/dcmtk/dcmdata/dcuid.h \
-  ../include/dcmtk/dcmdata/dcvm.h ../include/dcmtk/dcmdata/dcdefine.h \
+  ../include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
   ../include/dcmtk/dcmdata/dctagkey.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
@@ -1013,4 +1027,4 @@ xml2dcm.o: xml2dcm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/dcmdata/dcostrmz.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h 
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h
