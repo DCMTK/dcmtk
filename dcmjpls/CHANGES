@@ -1,9 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.28 (Riesmeier)
+
+- Moved general purpose definition file from module dcmdata to ofstd, and
+  added new defines in order to make the usage easier.
+  Affects: dcmjpls/apps/Makefile.dep
+
+- Updated makefile dependencies.
+  Affects: dcmjpls/libcharls/Makefile.dep
+           dcmjpls/libsrc/Makefile.dep
+
 **** Changes from 2009.09.08 (eichelberg)
 
-- Fixed bug affecting decompression of images with 8 bits/sample on big 
+- Fixed bug affecting decompression of images with 8 bits/sample on big
   endian machines
   Affects: dcmjpls/libsrc/djcodecd.cc
 
