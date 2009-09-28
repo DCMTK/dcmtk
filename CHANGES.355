@@ -3,6 +3,18 @@ Changes between releases are documented here.
 
 **** Changes from 2009.09.28 (riesmeier)
 
+- Introduced new member variable that stores the current length of the string.
+  This yields in a significant performance improvement when compiled in debug
+  mode.
+  Affects: ofstd/include/dcmtk/ofstd/ofstring.h
+           ofstd/libsrc/ofstring.cc
+
+- Added support for strings that contain null bytes ('\0') in order to be more
+  compliant with the standard C++ string class.
+  Affects: ofstd/libsrc/ofstring.cc
+           ofstd/tests/tstring.cc
+           ofstd/tests/tstring.exp
+
 - Fixed typo in error message. Reformatted source code.
   Affects: dcmjpeg/libsrc/djcodece.cc
 
@@ -11,16 +23,25 @@ Changes between releases are documented here.
   Added:   ofstd/include/dcmtk/ofstd/ofdefine.h
   Removed: dcmdata/include/dcmtk/dcmdata/dcdefine.h
   Affecte: dcmdata/apps/Makefile.dep
+           dcmdata/include/dcmtk/dcmdata/dctk.h
            dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcuid.cc
            dcmdata/libsrc/Makefile.dep
            dcmdata/tests/Makefile.dep
            dcmimage/apps/Makefile.dep
            dcmimage/libsrc/Makefile.dep
            dcmimgle/apps/Makefile.dep
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
            dcmimgle/libsrc/Makefile.dep
            dcmjpeg/apps/Makefile.dep
            dcmjpeg/libsrc/Makefile.dep
            dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/dccfenmp.cc
            dcmnet/libsrc/Makefile.dep
            dcmpstat/apps/Makefile.dep
            dcmpstat/libsrc/Makefile.dep
