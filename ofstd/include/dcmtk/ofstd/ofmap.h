@@ -22,10 +22,10 @@
  *  Purpose: Defines a template map class with interfaces similar to the C++
  *           Standard
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-19 10:52:08 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-29 13:59:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/dcmtk/ofstd/ofmap.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -215,17 +215,19 @@ public:
 
     /** removes all elements in the given range from this map
      *  @param first the first element to remove
-     *  @param last the first lement NOT to remove
+     *  @param last the first element NOT to remove
      */
     void erase(const iterator& first, const iterator& last)
     {
-        iterator it = first;
-        // last is not removed!
-        while (it != last)
-        {
-            values_.erase(it);
-            ++it;
-        }
+        values_.erase(first, last);
+    }
+
+    /** removes the element to which the given iterator points to
+     *  @param elem the element to remove
+     */
+    void erase(const iterator& elem)
+    {
+        values_.erase(elem);
     }
 
     /** removes the element with the given key from this map
@@ -254,7 +256,7 @@ public:
         if (it != end())
             return OFMake_pair(it, false);
 
-        it = values_.insert(values_.begin(), val);
+        it = values_.insert(values_.end(), val);
         return OFMake_pair(it, true);
     }
 };
@@ -266,6 +268,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofmap.h,v $
+** Revision 1.2  2009-09-29 13:59:34  uli
+** Fix an invalid iterator use in OFMap. A iterator was used after it was passed
+** to erase().
+** Add a test case which verifies some of OFMap's implementation.
+**
 ** Revision 1.1  2009-08-19 10:52:08  joergr
 ** Added new class OFMap required for upcoming module "oflog".
 **

@@ -18,8 +18,8 @@ LOCALLIBS = -lofstd
 LOCALTRASH = *.out
 
 objs = tststack.o tstlist.o tlist.o tstring.o tstthred.o tofstd.o tofdatim.o \
-       tstatof.o tstftoa.o toffile.o
-progs = tststack tstlist tlist tstring tstthred tofstd tofdatim tstatof tstftoa toffile
+       tstatof.o tstftoa.o toffile.o tmap.o
+progs = tststack tstlist tlist tstring tstthred tofstd tofdatim tstatof tstftoa toffile tmap
 
 
 all: $(progs)
@@ -31,6 +31,9 @@ tstlist: tstlist.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 tlist: tlist.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+
+tmap: tmap.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 tstring: tstring.o

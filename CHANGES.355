@@ -3,6 +3,14 @@ Changes between releases are documented here.
 
 **** Changes from 2009.09.29 (schlachter)
 
+- Fix an invalid iterator use in OFMap. A iterator was used after it was passed
+  to erase().
+  Affects: ofstd/include/dcmtk/ofstd/ofmap.h
+
+- Add a test case which verifies some of OFMap's implementation.
+  Added:   ofstd/tests/tmap.cc
+  Affects: ofstd/tests/Makefile.in
+
 - Include only the needed headers in dcpath.h and dcpath.cc.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/include/dcmtk/dcmdata/dcpath.h
