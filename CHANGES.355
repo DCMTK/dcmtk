@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.29 (riesmeier)
+
+- Updated Makefile dependencies.
+  Affects: dcmdata/libsrc/Makefile.dep
+           oflog/libsrc/Makefile.dep
+           ofstd/libsrc/Makefile.dep
+
+- Removed superfluous empty line.
+  Affects: dcmdata/include/dcmtk/dcmdata/CMakeLists.txt
+
 **** Changes from 2009.09.28 (riesmeier)
 
 - Introduced new member variable that stores the current length of the string.
