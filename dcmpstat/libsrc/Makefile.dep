@@ -250,7 +250,6 @@ dviface.o: dviface.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../../ofstd/include/dcmtk/ofstd/offname.h \
@@ -1267,7 +1266,6 @@ dvpsfs.o: dvpsfs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h \
@@ -2083,7 +2081,6 @@ dvpsib.o: dvpsib.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpsdef.h ../include/dcmtk/dcmpstat/dvpspll.h \
@@ -2207,7 +2204,6 @@ dvpsibl.o: dvpsibl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpshlp.h
@@ -2570,7 +2566,6 @@ dvpspl2.o: dvpspl2.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h
 dvpspl.o: dvpspl.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2689,7 +2684,6 @@ dvpspl.o: dvpspl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h
 dvpspll.o: dvpspll.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -2806,7 +2800,6 @@ dvpspll.o: dvpspll.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpspl.h \
@@ -2938,7 +2931,6 @@ dvpspr.o: dvpspr.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h
 dvpsprt.o: dvpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
@@ -3059,7 +3051,6 @@ dvpsprt.o: dvpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpsspl.h \
@@ -3597,7 +3588,6 @@ dvpssp.o: dvpssp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpsibl.h ../include/dcmtk/dcmpstat/dvpsabl.h \
@@ -3766,7 +3756,6 @@ dvpsspl.o: dvpsspl.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/extneg.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \

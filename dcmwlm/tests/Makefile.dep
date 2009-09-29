@@ -33,36 +33,44 @@ wltest.o: wltest.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmnet/include/dcmtk/dcmnet/dicom.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcuserid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../include/dcmtk/dcmwlm/wltypdef.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
-  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlds.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvm.h \
   ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
   ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
@@ -87,7 +95,6 @@ wltest.o: wltest.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
   ../../ofstd/include/dcmtk/ofstd/oftime.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
@@ -106,13 +113,6 @@ wltest.o: wltest.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../include/dcmtk/dcmwlm/wltypdef.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
-  ../include/dcmtk/dcmwlm/wldsfs.h ../include/dcmtk/dcmwlm/wlds.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
   ../include/dcmtk/dcmwlm/wlfsim.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \

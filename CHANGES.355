@@ -3,6 +3,19 @@ Changes between releases are documented here.
 
 **** Changes from 2009.09.29 (schlachter)
 
+- Include only the needed headers in dcuserid.h and not dctk.h.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/include/dcmtk/dcmnet/dcuserid.h
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+
 - Fix an invalid iterator use in OFMap. A iterator was used after it was passed
   to erase().
   Affects: ofstd/include/dcmtk/ofstd/ofmap.h
