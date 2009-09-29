@@ -10,6 +10,7 @@ Changes between releases are documented here.
 - Add a test case which verifies some of OFMap's implementation.
   Added:   ofstd/tests/tmap.cc
   Affects: ofstd/tests/Makefile.in
+           ofstd/tests/Makefile.dep
 
 - Include only the needed headers in dcpath.h and dcpath.cc.
   Affects: dcmdata/apps/Makefile.dep
