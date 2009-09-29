@@ -130,8 +130,7 @@ i2d.o: i2d.cc ../../config/include/dcmtk/config/osconfig.h \
   ../include/dcmtk/dcmdata/libi2d/i2dplsc.h \
   ../include/dcmtk/dcmdata/libi2d/i2djpgs.h \
   ../include/dcmtk/dcmdata/libi2d/i2dimgs.h \
-  ../include/dcmtk/dcmdata/dcpxitem.h ../include/dcmtk/dcmdata/dcpath.h \
-  ../include/dcmtk/dcmdata/dctk.h
+  ../include/dcmtk/dcmdata/dcpxitem.h ../include/dcmtk/dcmdata/dcpath.h
 i2djpgs.o: i2djpgs.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../include/dcmtk/dcmdata/libi2d/i2djpgs.h \

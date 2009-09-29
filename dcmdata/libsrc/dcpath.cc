@@ -22,18 +22,20 @@
  *  Purpose: Class definitions for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:53:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-29 12:55:25 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/dcpath.h"
-#include "dcmtk/ofstd/ofstd.h"
+#include "dcmtk/dcmdata/dcsequen.h"
+
 
 /*******************************************************************/
 /*              Implementation of class DcmPath                    */
@@ -932,6 +934,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.10  2009-09-29 12:55:25  uli
+** Include only the needed headers in dcpath.h and dcpath.cc
+**
 ** Revision 1.9  2009-09-04 13:53:09  meichel
 ** Minor const iterator related changes needed to compile with VC6 with HAVE_STL
 **

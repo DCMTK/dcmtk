@@ -1,6 +1,17 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.29 (schlachter)
+
+- Include only the needed headers in dcpath.h and dcpath.cc.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcpath.cc
+           dcmdata/tests/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+
 **** Changes from 2009.09.29 (riesmeier)
 
 - Updated Makefile dependencies.

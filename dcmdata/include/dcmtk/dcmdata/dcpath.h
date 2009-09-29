@@ -22,9 +22,9 @@
  *  Purpose: Class declarations for accessing DICOM dataset structures (items,
  *           sequences and leaf elements via string-based path access.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-10 13:12:30 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-29 12:55:17 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,9 @@
 #ifndef DCPATH_H
 #define DCPATH_H
 
-#include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/dcmdata/dcdatset.h"
 
 
 /** Class representing a node in DcmPath. A node contains just
@@ -517,6 +518,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.7  2009-09-29 12:55:17  uli
+** Include only the needed headers in dcpath.h and dcpath.cc
+**
 ** Revision 1.6  2009-07-10 13:12:30  onken
 ** Added override key functionality used by tools like findscu to the more
 ** central DcmPathProcessor class.

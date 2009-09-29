@@ -124,8 +124,7 @@ tstpath.o: tstpath.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../include/dcmtk/dcmdata/dcdebug.h ../include/dcmtk/dcmdata/dcpath.h \
-  ../include/dcmtk/dcmdata/dctk.h
+  ../include/dcmtk/dcmdata/dcdebug.h ../include/dcmtk/dcmdata/dcpath.h
 tstpread.o: tstpread.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/cfunix.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
