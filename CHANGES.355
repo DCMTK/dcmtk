@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.30 (riesmeier)
+
+- Minor fixes to the comments.
+  Affects: oflog/etc/logger.cfg
+
 **** Changes from 2009.09.30 (schlachter)
 
 - Improve oflog's sample configuration file to be a usable default. You now get
