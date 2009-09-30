@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2009.09.30 (schlachter)
 
+- Improve oflog's sample configuration file to be a usable default. You now get
+  "--verbose"-like output on the console and a log file "dcmtk.log" containing
+  complete debug output. Timestamps are included.
+  Affects: oflog/etc/logger.cfg
+
 - Make dcmpstat's include headers self-sufficient by including all
   needed headers directly and stop using dctk.h
   Affects: dcmpstat/apps/Makefile.dep
