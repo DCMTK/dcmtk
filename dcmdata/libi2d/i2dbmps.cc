@@ -22,9 +22,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-08-13 09:00:20 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2dbmps.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 
 I2DBmpSource::I2DBmpSource() : bmpFile()
@@ -451,6 +452,9 @@ I2DBmpSource::~I2DBmpSource()
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.3  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.2  2009-08-13 09:00:20  onken
  * Fixed minor formatting issues and bug that caused some images being
  * converted upside down.

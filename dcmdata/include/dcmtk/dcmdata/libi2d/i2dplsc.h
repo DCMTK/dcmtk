@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for conversion of image file into DICOM SC Image Storage
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-16 09:51:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #define I2DPLSC_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
 class I2DOutputPlugSC : public I2DOutputPlug
@@ -85,6 +84,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.h,v $
+ * Revision 1.3  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.2  2009-01-16 09:51:55  onken
  * Completed doxygen documentation for libi2d.
  *

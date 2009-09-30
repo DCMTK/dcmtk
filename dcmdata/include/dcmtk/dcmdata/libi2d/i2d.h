@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to control conversion of image format to DICOM
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:23:37 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #define I2D_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 #include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
 #include "dcmtk/dcmdata/libi2d/i2dplsc.h"
@@ -315,6 +314,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.9  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.8  2009-07-16 14:23:37  onken
  * Extended Image2Dcm engine to also work for uncompressed pixel data input.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-17 06:55:10 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/dcerror.h"
 
 
 I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(),
@@ -938,6 +939,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.11  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.10  2009-09-17 06:55:10  joergr
  * Used static cast operator where appropriate and changed suffix from "L" to
  * "UL" for large integer constants.

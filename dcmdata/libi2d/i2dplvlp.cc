@@ -21,17 +21,20 @@
  *
  *  Purpose: Implements conversion from image into DICOM Visible Light Photography IOD
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-01-16 16:32:31 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:26 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/libi2d/i2dplvlp.h"
+#include "dcmtk/dcmdata/dcdeftag.h"        /* for DCM_ defines */
+#include "dcmtk/dcmdata/dcuid.h"           /* for UID_ defines */
 
 
 I2DOutputPlugVLP::I2DOutputPlugVLP()
@@ -99,6 +102,9 @@ I2DOutputPlugVLP::~I2DOutputPlugVLP()
 /*
  * CVS/RCS Log:
  * $Log: i2dplvlp.cc,v $
+ * Revision 1.3  2009-09-30 08:05:26  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.2  2008-01-16 16:32:31  onken
  * Fixed some empty or doubled log messages in libi2d files.
  *

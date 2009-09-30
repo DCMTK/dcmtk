@@ -22,9 +22,9 @@
  *  Purpose: Base Class for plugins extracting pixel data from standard
  *           image files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:22:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,11 @@
 #ifndef I2DIMGS_H
 #define I2DIMGS_H
 
-#include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dcxfer.h"
 
 class I2DImgSource
 {
@@ -169,6 +172,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
+ * Revision 1.6  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.5  2009-07-16 14:22:19  onken
  * Changed comment (and thus semantic of parameter for output transfer syntax).
  *

@@ -1,6 +1,26 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.09.30 (schlachter)
+- Stop including dctk.h in libi2d's header files.
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/apps/img2dcm.cc
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplnsc.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplsc.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplvlp.h
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2dbmps.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libi2d/i2dplnsc.cc
+           dcmdata/libi2d/i2dplsc.cc
+           dcmdata/libi2d/i2dplvlp.cc
+
 **** Changes from 2009.09.29 (schlachter)
 
 - Include only the needed headers in dcuserid.h and not dctk.h.

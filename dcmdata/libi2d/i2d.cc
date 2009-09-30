@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:53:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -31,10 +31,15 @@
  */
 
 
-#include "dcmtk/config/osconfig.h"
+#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "dcmtk/dcmdata/libi2d/i2d.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
-#include "dcmtk/dcmdata/dcpath.h" /* for override keys */
+#include "dcmtk/dcmdata/dcfilefo.h"  /* for DcmFileFormat */
+#include "dcmtk/dcmdata/dcdeftag.h"  /* for DCM_ defines */
+#include "dcmtk/dcmdata/dcuid.h"     /* for SITE_SERIES_UID_ROOT */
+#include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
+#include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
 
 
 Image2Dcm::Image2Dcm() : m_overrideKeys(), m_templateFile(""),
@@ -736,6 +741,9 @@ Image2Dcm::~Image2Dcm()
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.10  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.9  2009-09-04 13:53:09  meichel
  * Minor const iterator related changes needed to compile with VC6 with HAVE_STL
  *

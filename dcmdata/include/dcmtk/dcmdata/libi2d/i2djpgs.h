@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:22:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,8 @@
 #define I2DJPGS_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
+#include "dcmtk/ofstd/offile.h"
+#include "dcmtk/ofstd/oflist.h"
 #include "dcmtk/dcmdata/libi2d/i2dimgs.h"
 
 /**
@@ -355,6 +356,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.h,v $
+ * Revision 1.6  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.5  2009-07-16 14:22:19  onken
  * Changed comment (and thus semantic of parameter for output transfer syntax).
  *

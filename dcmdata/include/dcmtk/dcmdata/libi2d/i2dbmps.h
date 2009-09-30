@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-07-16 14:25:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:05:25 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #define I2DBMPS_H
 
 #include "dcmtk/config/osconfig.h"
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/libi2d/i2dimgs.h"
+#include "dcmtk/ofstd/offile.h"
 
 class I2DBmpSource : public I2DImgSource
 {
@@ -199,6 +199,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.2  2009-09-30 08:05:25  uli
+ * Stop including dctk.h in libi2d's header files.
+ *
  * Revision 1.1  2009-07-16 14:25:28  onken
  * Added img2dcm input plugin for the BMP graphics format (at the moment only
  * support for 24 Bit RGB).
