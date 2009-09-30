@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class provider engines.
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2006-12-15 14:49:21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:40:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,10 @@
 #define WlmActivityManager_h
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofcmdln.h"   /* for OFCmdUnsignedInt */
+#include "dcmtk/dcmdata/dcxfer.h"  /* for E_TransferSyntax */
+#include "dcmtk/dcmnet/dimse.h"    /* for T_DIMSE_BlockingMode */
+#include "dcmtk/dcmwlm/wltypdef.h" /* for WlmRefuseReasonType */
 
 class WlmDataSource;
 class OFCondition;
@@ -246,6 +250,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
+** Revision 1.16  2009-09-30 08:40:34  uli
+** Make dcmwlm's include headers self-sufficient by including all
+** needed headers directly.
+**
 ** Revision 1.15  2006-12-15 14:49:21  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.

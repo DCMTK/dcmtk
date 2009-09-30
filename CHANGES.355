@@ -2,6 +2,17 @@
 Changes between releases are documented here.
 
 **** Changes from 2009.09.30 (schlachter)
+
+- Make dcmwlm's include headers self-sufficient by including all
+  needed headers directly.
+  Affects: dcmwlm/apps/Makefile.dep
+           dcmwlm/include/dcmtk/dcmwlm/wlds.h
+           dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+           dcmwlm/include/dcmtk/dcmwlm/wlmactmg.h
+           dcmwlm/include/dcmtk/dcmwlm/wltypdef.h
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+
 - Stop including dctk.h in libi2d's header files.
   Affects: dcmdata/apps/Makefile.dep
            dcmdata/apps/img2dcm.cc

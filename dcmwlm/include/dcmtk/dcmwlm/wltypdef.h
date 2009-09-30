@@ -21,10 +21,10 @@
  *
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-08-10 14:25:21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 08:40:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dctagkey.h"
+#include "dcmtk/dcmnet/dicom.h"     /* for DIC_AE and DIC_NODENAME */
 
   /// Data source status types
 enum WlmDataSourceStatusType
@@ -145,6 +146,10 @@ struct WlmSuperiorSequenceInfoType
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
+** Revision 1.14  2009-09-30 08:40:34  uli
+** Make dcmwlm's include headers self-sufficient by including all
+** needed headers directly.
+**
 ** Revision 1.13  2007-08-10 14:25:21  meichel
 ** Added new command line option --keep-char-set that returns
 **   any specific character set as encoded in the worklist file.

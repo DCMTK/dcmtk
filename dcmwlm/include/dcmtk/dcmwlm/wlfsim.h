@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: onken $
-*  Update Date:      $Date: 2006-12-15 14:49:21 $
+*  Last Update:      $Author: uli $
+*  Update Date:      $Date: 2009-09-30 08:40:34 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.13 $
+*  CVS/RCS Revision: $Revision: 1.14 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -35,8 +35,12 @@
 #define WlmFileSystemInteractionManager_h
 
 #include "dcmtk/config/osconfig.h"
+#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
 
 template <class T> class OFOrderedSet;
+class WlmSuperiorSequenceInfoType;
+class DcmDataset;
 class DcmTagKey;
 class OFConsole;
 class OFCondition;
@@ -481,6 +485,10 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.14  2009-09-30 08:40:34  uli
+** Make dcmwlm's include headers self-sufficient by including all
+** needed headers directly.
+**
 ** Revision 1.13  2006-12-15 14:49:21  onken
 ** Removed excessive use char* and C-array in favour of OFString and
 ** OFList. Simplified some implementation details.
