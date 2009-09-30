@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSHelper
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:49 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,9 @@
 #define DVPSHLP_H
 
 #include "dcmtk/config/osconfig.h"   /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/ofstd/ofstring.h"   /* for class OFString */
+#include "dcmtk/dcmdata/dcsequen.h"
+
+class DcmFileFormat;
 
 /** this class contains a collection of static helper methods.
  */
@@ -133,6 +134,10 @@ class DVPSHelper
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.h,v $
+ *  Revision 1.7  2009-09-30 10:42:38  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.6  2005-12-08 16:03:49  meichel
  *  Changed include path schema for all DCMTK header files
  *

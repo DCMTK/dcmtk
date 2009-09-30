@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:04:03 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,6 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmpstat/dvpstyp.h"         /* for enum types */
 #include "dcmtk/dcmpstat/dvpspll.h"         /* for class DVPSPresentationLUT_PList */
 #include "dcmtk/dcmpstat/dvpsibl.h"         /* for class DVPSImageBoxContent_PList */
@@ -1149,6 +1148,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
+ *  Revision 1.39  2009-09-30 10:42:38  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.38  2005-12-08 16:04:03  meichel
  *  Changed include path schema for all DCMTK header files
  *

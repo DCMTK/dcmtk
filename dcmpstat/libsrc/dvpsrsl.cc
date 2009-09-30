@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:39 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,8 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmpstat/dvpsrsl.h"
 #include "dcmtk/dcmpstat/dvpsrs.h"      /* for DVPSReferencedSeries */
 #include "dcmtk/dcmpstat/dvpsri.h"      /* for DVPSReferencedImage, needed by MSVC5 with STL */
@@ -307,6 +308,10 @@ void DVPSReferencedSeries_PList::setLog(OFConsole *stream, OFBool verbMode, OFBo
 
 /*
  *  $Log: dvpsrsl.cc,v $
+ *  Revision 1.19  2009-09-30 10:42:39  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.18  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

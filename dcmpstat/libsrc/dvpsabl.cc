@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSAnnotationContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmpstat/dvpsabl.h"
 #include "dcmtk/dcmpstat/dvpsab.h"      /* for DVPSAnnotationContent */
 #include "dcmtk/dcmpstat/dvpshlp.h"     /* for class DVPSHelper */
@@ -244,6 +245,10 @@ void DVPSAnnotationContent_PList::clearAnnotationSOPInstanceUIDs()
 
 /*
  *  $Log: dvpsabl.cc,v $
+ *  Revision 1.13  2009-09-30 10:42:38  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.12  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

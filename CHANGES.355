@@ -3,6 +3,53 @@ Changes between releases are documented here.
 
 **** Changes from 2009.09.30 (schlachter)
 
+- Make dcmpstat's include headers self-sufficient by including all
+  needed headers directly and stop using dctk.h
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/include/dcmtk/dcmpstat/dviface.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsab.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsabl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsal.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsall.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpscul.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsdal.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsga.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgal.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgll.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsgrl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpshlp.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsibl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsovl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpspl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpspll.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpspr.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsprt.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsri.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsril.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsrs.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsrsl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpssp.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsspl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpssv.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpssvl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpstxl.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsvll.h
+           dcmpstat/include/dcmtk/dcmpstat/dvpsvwl.h
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/dvpsab.cc
+           dcmpstat/libsrc/dvpsabl.cc
+           dcmpstat/libsrc/dvpsal.cc
+           dcmpstat/libsrc/dvpshlp.cc
+           dcmpstat/libsrc/dvpspl.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpssv.cc
+           dcmpstat/libsrc/dvpssvl.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+
 - Make dcmwlm's include headers self-sufficient by including all
   needed headers directly.
   Affects: dcmwlm/apps/Makefile.dep

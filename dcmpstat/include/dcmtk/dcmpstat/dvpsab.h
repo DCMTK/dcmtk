@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSAnnotationContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:03:32 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,10 @@
 #define __DVPSAB_H__
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofstring.h"
-#include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmpstat/dvpstyp.h"     /* for enum types */
+#include "dcmtk/dcmdata/dcvrus.h"     /* for class DcmUnsignedShort */
+#include "dcmtk/dcmdata/dcvrlo.h"     /* for class DcmLongString */
+#include "dcmtk/dcmdata/dcvrui.h"     /* for class DcmUniqueIdentifier */
+#include "dcmtk/dcmpstat/dvpstyp.h"   /* for enum types */
 
 /** the representation of a Annotation Content SQ item for Stored Print
  */  
@@ -152,6 +153,10 @@ private:
 
 /*
  *  $Log: dvpsab.h,v $
+ *  Revision 1.7  2009-09-30 10:42:38  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.6  2005-12-08 16:03:32  meichel
  *  Changed include path schema for all DCMTK header files
  *

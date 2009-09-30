@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:46:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:39 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,8 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcsequen.h"
 #include "dcmtk/dcmpstat/dvpssvl.h"
 #include "dcmtk/dcmpstat/dvpssv.h"      /* for DVPSSoftcopyVOI */
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
@@ -344,6 +346,10 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpssvl.cc,v $
+ *  Revision 1.14  2009-09-30 10:42:39  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.13  2005-12-08 15:46:50  meichel
  *  Changed include path schema for all DCMTK header files
  *

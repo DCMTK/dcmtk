@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:37 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,8 @@ END_EXTERN_C
 #include "dcmtk/dcmpstat/dvpscf.h"      /* for class DVConfiguration */
 #include "dcmtk/ofstd/ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
+#include "dcmtk/dcmdata/dcdeftag.h"
+#include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/dcmnet/diutil.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -1023,6 +1025,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
+ * Revision 1.42  2009-09-30 10:42:37  uli
+ * Make dcmpstat's include headers self-sufficient by including all
+ * needed headers directly and stop using dctk.h
+ *
  * Revision 1.41  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

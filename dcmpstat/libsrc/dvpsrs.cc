@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedSeries
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 08:15:30 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:39 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofstring.h"
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmpstat/dvpsrs.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"   /* for constants and macros */
 #include "dcmtk/dcmpstat/dvpsri.h"    /* for DVPSReferencedImage, needed by MSVC5 with STL */
@@ -264,6 +264,10 @@ void DVPSReferencedSeries::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpsrs.cc,v $
+ *  Revision 1.16  2009-09-30 10:42:39  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.15  2009-08-26 08:15:30  joergr
  *  Added explicit braces to avoid ambiguous else (reported by gcc 4.3.2).
  *

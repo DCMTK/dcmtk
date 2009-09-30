@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlayCurveActivationLayer
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:02 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
  */
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmpstat/dvpsal.h"
 #include "dcmtk/dcmpstat/dvpsdef.h"     /* for constants and macros */
 
@@ -130,6 +131,10 @@ void DVPSOverlayCurveActivationLayer::setLog(OFConsole *stream, OFBool verbMode,
 
 /*
  *  $Log: dvpsal.cc,v $
+ *  Revision 1.10  2009-09-30 10:42:38  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.9  2006-08-15 16:57:02  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

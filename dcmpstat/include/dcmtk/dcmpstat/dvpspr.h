@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:57:01 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:38 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #define __DVPSPR_H__
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmnet/dimse.h"
 
 /** pure abstract event handler class for N-EVENT-REPORT.
@@ -334,6 +333,10 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
+ *  Revision 1.14  2009-09-30 10:42:38  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.13  2006-08-15 16:57:01  meichel
  *  Updated the code in module dcmpstat to correctly compile when
  *    all standard C++ classes remain in namespace std.

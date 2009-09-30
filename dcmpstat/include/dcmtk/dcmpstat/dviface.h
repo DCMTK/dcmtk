@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-05-28 10:55:38 $
- *  CVS/RCS Revision: $Revision: 1.92 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-09-30 10:42:37 $
+ *  CVS/RCS Revision: $Revision: 1.93 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,6 @@
 
 
 #include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmpstat/dvpscf.h"     /* for class DVConfiguration */
 #include "dcmtk/dcmpstat/dvpstat.h"    /* for class DVPresentationState */
 #include "dcmtk/dcmqrdb/dcmqridx.h"    /* for struct IdxRecord */
@@ -1887,6 +1886,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
+ *  Revision 1.93  2009-09-30 10:42:37  uli
+ *  Make dcmpstat's include headers self-sufficient by including all
+ *  needed headers directly and stop using dctk.h
+ *
  *  Revision 1.92  2009-05-28 10:55:38  joergr
  *  Fixed various Doxygen API documentation issues.
  *
