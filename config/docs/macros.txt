@@ -149,6 +149,13 @@ LOCK_IMAGE_FILES
   Explanation: When this macro is defined, the DICOM image file to be
     send or received/created is locked exclusively.
 
+LOG4CPLUS_DISABLE_xxx
+(where xxx is one of TRACE, DEBUG, INFO, WARN, ERROR and FATAL)
+  Affected: oflog
+  Type of modification: Disables feature
+  Explanation: When one of these macros is defined all log message of
+    this type and lower are disabled and optimized away.
+
 NO_GET_SUPPORT
   Affected: dcmqrdb
   Type of modification: Disables feature

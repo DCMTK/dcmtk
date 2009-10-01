@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.01 (schlachter)
+
+- Documented LOG4CPLUS_DISABLE_TRACE and other similar macros.
+  Affects: config/docs/macros.txt
+
 **** Changes from 2009.09.30 (riesmeier)
 
 - Minor fixes to the comments.
