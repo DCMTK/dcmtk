@@ -1,7 +1,7 @@
 
 Changes between releases are documented here.
 
-**** Changes from 2009.09.28 (Riesmeier)
+**** Changes from 2009.09.28 (riesmeier)
 
 - Moved general purpose definition file from module dcmdata to ofstd, and
   added new defines in order to make the usage easier.
