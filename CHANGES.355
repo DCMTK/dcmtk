@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.07 (riesmeier)
+
+- Fixed typo.
+  Affects: dcmdata/docs/dcmgpdir.man
+           dcmjpeg/docs/dcmmkdir.man
+
 **** Changes from 2009.10.01 (schlachter)
 
 - Documented LOG4CPLUS_DISABLE_TRACE and other similar macros.

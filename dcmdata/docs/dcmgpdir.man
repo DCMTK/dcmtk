@@ -200,7 +200,7 @@ existing entries in a \e DICOMDIR file.  Using option \e +A new entries are
 only appended to the DICOMDIR, i.e. existing records like the ones for PATIENT
 information are not updated.  Using option \e +U also existing records are
 updated according to the information found in the referenced DICOM files.
-Please note that this update process might be slower that just appending new
+Please note that this update process might be slower than just appending new
 entries.  However, it makes sure that additional information that is required
 for the selected application profile is also added to existing records.
 
