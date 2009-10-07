@@ -1,6 +1,31 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.07 (schlachter)
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmjpls/apps/Makefile.dep
+           dcmjpls/apps/Makefile.in
+           dcmjpls/apps/dcmcjpls.cc
+           dcmjpls/apps/dcmdjpls.cc
+           dcmjpls/include/dcmtk/dcmjpls/djcodecd.h
+           dcmjpls/include/dcmtk/dcmjpls/djcodece.h
+           dcmjpls/include/dcmtk/dcmjpls/djcparam.h
+           dcmjpls/include/dcmtk/dcmjpls/djdecode.h
+           dcmjpls/include/dcmtk/dcmjpls/djencode.h
+           dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
+           dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libsrc/Makefile.dep
+           dcmjpls/libsrc/Makefile.in
+           dcmjpls/libsrc/djcodecd.cc
+           dcmjpls/libsrc/djcodece.cc
+           dcmjpls/libsrc/djcparam.cc
+           dcmjpls/libsrc/djdecode.cc
+           dcmjpls/libsrc/djencode.cc
+           dcmjpls/libsrc/djerror.h
+           dcmjpls/libsrc/djrparam.cc
+           dcmjpls/libsrc/djutils.cc
+
 **** Changes from 2009.09.28 (riesmeier)
 
 - Moved general purpose definition file from module dcmdata to ofstd, and
