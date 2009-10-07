@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:46:52 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #endif
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
@@ -58,6 +57,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmcjpeg"
+
+static OFLogger dcmcjpegLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -76,13 +77,9 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  SetDebugLevel(( 0 ));
-
   const char *opt_ifname = NULL;
   const char *opt_ofname = NULL;
 
-  int opt_debugMode = 0;
-  OFBool opt_verbose = OFFalse;
   E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
   E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
@@ -129,9 +126,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                        "print expanded command line arguments");
-   cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+   OFLog::addOptions(cmd);
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
@@ -264,10 +259,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -290,8 +281,7 @@ int main(int argc, char *argv[])
 
       /* options */
 
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      OFLog::configureFromCommandLine(cmd, app);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -597,22 +587,18 @@ int main(int argc, char *argv[])
 
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmcjpegLogger, rcsid << OFendl);
 
     // register global decompression codecs
     DJDecoderRegistration::registerCodecs(
       opt_decompCSconversion,
-      opt_uidcreation,
-      EPC_default,
-      opt_verbose);
+      opt_uidcreation);
 
     // register global compression codecs
     DJEncoderRegistration::registerCodecs(
       opt_compCSconversion,
       opt_uidcreation,
-      opt_verbose,
       opt_huffmanOptimize,
       (int) opt_smoothing,
       opt_compressedBits,
@@ -638,26 +624,25 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-      CERR << "Warning: no data dictionary loaded, "
+      OFLOG_WARN(dcmcjpegLogger, "no data dictionary loaded, "
            << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+           << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-      CERR << "Error: invalid filename: <empty string>" << OFendl;
+      OFLOG_FATAL(dcmcjpegLogger, "invalid filename: <empty string>");
       return 1;
     }
 
-    if (opt_verbose)
-      COUT << "reading input file " << opt_ifname << OFendl;
+    OFLOG_INFO(dcmcjpegLogger, "reading input file " << opt_ifname);
 
     DcmFileFormat fileformat;
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-      CERR << "Error: " << error.text() << ": reading file: " <<  opt_ifname << OFendl;
+      OFLOG_FATAL(dcmcjpegLogger, error.text() << ": reading file: " <<  opt_ifname);
       return 1;
     }
     DcmDataset *dataset = fileformat.getDataset();
@@ -665,11 +650,10 @@ int main(int argc, char *argv[])
     DcmXfer original_xfer(dataset->getOriginalXfer());
     if (original_xfer.isEncapsulated())
     {
-      if (opt_verbose)
-        COUT << "DICOM file is already compressed, converting to uncompressed transfer syntax first" << OFendl;
+      OFLOG_INFO(dcmcjpegLogger, "DICOM file is already compressed, converting to uncompressed transfer syntax first");
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))
       {
-        CERR << "Error: no conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
+        OFLOG_FATAL(dcmcjpegLogger, "no conversion from compressed original to uncompressed transfer syntax possible!");
         return 1;
       }
     }
@@ -680,13 +664,12 @@ int main(int argc, char *argv[])
         /* check for DICOMDIR files */
         if (sopClass == UID_MediaStorageDirectoryStorage)
         {
-            CERR << "Error: DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!" << OFendl;
+            OFLOG_FATAL(dcmcjpegLogger, "DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!");
             return 1;
         }
     }
 
-    if (opt_verbose)
-      COUT << "Convert DICOM file to compressed transfer syntax" << OFendl;
+    OFLOG_INFO(dcmcjpegLogger, "Convert DICOM file to compressed transfer syntax");
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
@@ -702,15 +685,13 @@ int main(int argc, char *argv[])
     dataset->chooseRepresentation(opt_oxfer, rp);
     if (dataset->canWriteXfer(opt_oxfer))
     {
-      if (opt_verbose)
-          COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written" << OFendl;
+      OFLOG_INFO(dcmcjpegLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
-      CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
+      OFLOG_FATAL(dcmcjpegLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
       return 1;
     }
 
-    if (opt_verbose)
-      COUT << "creating output file " << opt_ofname << OFendl;
+    OFLOG_INFO(dcmcjpegLogger, "creating output file " << opt_ofname);
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
@@ -718,12 +699,11 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-      CERR << "Error: " << error.text() << ": writing file: " <<  opt_ofname << OFendl;
+      OFLOG_FATAL(dcmcjpegLogger, error.text() << ": writing file: " <<  opt_ofname);
       return 1;
     }
 
-    if (opt_verbose)
-      COUT << "conversion successful" << OFendl;
+    OFLOG_INFO(dcmcjpegLogger, "conversion successful");
 
     // deregister global codecs
     DJDecoderRegistration::cleanup();
@@ -736,6 +716,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
+ * Revision 1.26  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.25  2009-08-21 09:46:52  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

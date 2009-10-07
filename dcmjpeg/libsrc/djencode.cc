@@ -21,10 +21,10 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-03-29 15:58:52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,6 @@ DJEncoderLossless *DJEncoderRegistration::enclol          = NULL;
 void DJEncoderRegistration::registerCodecs(
     E_CompressionColorSpaceConversion pCompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
-    OFBool pVerbose,
     OFBool pOptimizeHuffman,
     int pSmoothingFactor,
     int pForcedBitDepth,
@@ -86,7 +85,6 @@ void DJEncoderRegistration::registerCodecs(
       EDC_photometricInterpretation,  // not relevant, used for decompression only
       pCreateSOPInstanceUID,
       EPC_default, // not relevant, used for decompression only
-      pVerbose,
       OFFalse, // not relevant, used for decompression only
       pOptimizeHuffman,
       pSmoothingFactor,
@@ -176,6 +174,9 @@ void DJEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djencode.cc,v $
+ * Revision 1.9  2009-10-07 12:44:34  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.8  2006-03-29 15:58:52  meichel
  * Added support for decompressing images with 16 bits/pixel compressed with
  *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.

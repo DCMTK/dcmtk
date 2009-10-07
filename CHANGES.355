@@ -1,6 +1,38 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.07 (schlachter)
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmjpeg/apps/CMakeLists.txt
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/apps/Makefile.in
+           dcmjpeg/apps/dcmcjpeg.cc
+           dcmjpeg/apps/dcmdjpeg.cc
+           dcmjpeg/docs/dcmcjpeg.man
+           dcmjpeg/docs/dcmdjpeg.man
+           dcmjpeg/docs/dcmj2pnm.man
+           dcmjpeg/docs/dcmmkdir.man
+           dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djdecode.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djencode.h
+           dcmjpeg/include/dcmtk/dcmjpeg/djutils.h
+           dcmjpeg/libsrc/CMakeLists.txt
+           dcmjpeg/libsrc/Makefile.dep
+           dcmjpeg/libsrc/Makefile.in
+           dcmjpeg/libsrc/dipijpeg.cc
+           dcmjpeg/libsrc/djcodece.cc
+           dcmjpeg/libsrc/djcparam.cc
+           dcmjpeg/libsrc/djdecode.cc
+           dcmjpeg/libsrc/djdijg12.cc
+           dcmjpeg/libsrc/djdijg16.cc
+           dcmjpeg/libsrc/djdijg8.cc
+           dcmjpeg/libsrc/djeijg12.cc
+           dcmjpeg/libsrc/djeijg16.cc
+           dcmjpeg/libsrc/djeijg8.cc
+           dcmjpeg/libsrc/djencode.cc
+           dcmjpeg/libsrc/djutils.cc
+
 **** Changes from 2009.10.07 (riesmeier)
 
 - Fixed typo.

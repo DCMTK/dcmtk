@@ -21,10 +21,10 @@
  *
  *  Purpose: compression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 12:19:20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djeijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -543,12 +543,11 @@ void DJCompressIJG8Bit::cleanup()
 void DJCompressIJG8Bit::outputMessage(void *arg) const
 {
   jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
-  if (cinfo && cparam->isVerbose())
+  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
     char buffer[JMSG_LENGTH_MAX];    
     (*cinfo->err->format_message)(cinfo, buffer); /* Create the message */
-    ofConsole.lockCerr() << buffer << OFendl;
-    ofConsole.unlockCerr();
+    DCMJPEG_INFO(buffer);
   }
 }
 
@@ -556,6 +555,9 @@ void DJCompressIJG8Bit::outputMessage(void *arg) const
 /*
  * CVS/RCS Log
  * $Log: djeijg8.cc,v $
+ * Revision 1.10  2009-10-07 12:44:34  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.9  2009-08-19 12:19:20  meichel
  * Unlike some other compilers, Sun Studio 11 on Solaris
  *   declares longjmp() in namespace std. Added code to handle this case.

@@ -21,10 +21,10 @@
  *
  *  Purpose: enumerations, error constants and helper functions for dcmjpeg
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:59:38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,20 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/ofstd/ofcond.h"   /* for class OFCondition */
 #include "dcmtk/dcmimgle/diutils.h"  /* for EP_Interpretation */
+#include "dcmtk/oflog/oflog.h"
+
+
+// global definitions for logging mechanism provided by the oflog module
+
+OFLogger DCM_dcmjpegGetLogger();
+
+#define DCMJPEG_TRACE(msg) OFLOG_TRACE(DCM_dcmjpegGetLogger(), msg)
+#define DCMJPEG_DEBUG(msg) OFLOG_DEBUG(DCM_dcmjpegGetLogger(), msg)
+#define DCMJPEG_INFO(msg)  OFLOG_INFO(DCM_dcmjpegGetLogger(), msg)
+#define DCMJPEG_WARN(msg)  OFLOG_WARN(DCM_dcmjpegGetLogger(), msg)
+#define DCMJPEG_ERROR(msg) OFLOG_ERROR(DCM_dcmjpegGetLogger(), msg)
+#define DCMJPEG_FATAL(msg) OFLOG_FATAL(DCM_dcmjpegGetLogger(), msg)
+
 
 class DcmItem;
 
@@ -199,6 +213,9 @@ public:
 /*
  * CVS/RCS Log
  * $Log: djutils.h,v $
+ * Revision 1.4  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.3  2005-12-08 16:59:38  meichel
  * Changed include path schema for all DCMTK header files
  *

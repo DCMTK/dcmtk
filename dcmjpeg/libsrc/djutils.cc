@@ -21,10 +21,10 @@
  *
  *  Purpose: (STATUS: OK)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:43:51 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,15 @@
 
 #define INCLUDE_CCTYPE
 #include "dcmtk/ofstd/ofstdinc.h"
+
+OFLogger DCM_dcmjpegGetLogger()
+{
+    // We don't just use a global variable, because constructors of globals are
+    // executed in random order. This guarantees that the OFLogger is constructed
+    // before first use.
+    static OFLogger DCM_dcmjpegLogger = OFLog::getLogger("dcmtk.dcmjpeg");
+    return DCM_dcmjpegLogger;
+}
 
 const OFConditionConst EJC_Suspension(                           OFM_dcmjpeg,  1, OF_error, "IJG codec suspension return"  );
 const OFConditionConst EJC_IJG8_FrameBufferTooSmall(             OFM_dcmjpeg,  2, OF_error, "Buffer for decompressed image (8 bits/sample) too small"  );
@@ -87,6 +96,9 @@ EP_Interpretation DcmJpegHelper::getPhotometricInterpretation(DcmItem *item)
 /*
  * CVS/RCS Log
  * $Log: djutils.cc,v $
+ * Revision 1.5  2009-10-07 12:44:34  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.4  2005-12-08 15:43:51  meichel
  * Changed include path schema for all DCMTK header files
  *

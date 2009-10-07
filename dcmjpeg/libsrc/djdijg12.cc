@@ -21,10 +21,10 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 12 bits/sample.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 12:19:19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg12.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -437,12 +437,11 @@ OFCondition DJDecompressIJG12Bit::decode(
 
 void DJDecompressIJG12Bit::outputMessage() const
 {
-  if (cinfo && cparam->isVerbose())
+  if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(OFLogger::INFO_LOG_LEVEL))
   {
     char buffer[JMSG_LENGTH_MAX];
     (*cinfo->err->format_message)((jpeg_common_struct *)cinfo, buffer); /* Create the message */
-    ofConsole.lockCerr() << buffer << OFendl;
-    ofConsole.unlockCerr();
+    DCMJPEG_INFO(buffer);
   }
 }
 
@@ -450,6 +449,9 @@ void DJDecompressIJG12Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg12.cc,v $
+ * Revision 1.15  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.14  2009-08-19 12:19:19  meichel
  * Unlike some other compilers, Sun Studio 11 on Solaris
  *   declares longjmp() in namespace std. Added code to handle this case.

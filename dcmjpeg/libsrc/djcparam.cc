@@ -21,10 +21,10 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-03-29 15:58:52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,6 @@ DJCodecParameter::DJCodecParameter(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
-    OFBool pVerbose,
     OFBool predictor6WorkaroundEnable,
     OFBool pOptimizeHuffman,
     int pSmoothingFactor,
@@ -88,7 +87,6 @@ DJCodecParameter::DJCodecParameter(
 , acceptWrongPaletteTags(pAcceptWrongPaletteTags)
 , acrNemaCompatibility(pAcrNemaCompatibility)
 , trueLosslessMode(pTrueLosslessMode)
-, verboseMode(pVerbose)
 , predictor6WorkaroundEnabled_(predictor6WorkaroundEnable)
 {
 }
@@ -119,7 +117,6 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , usePixelValues(arg.usePixelValues)
 , useModalityRescale(arg.useModalityRescale)
 , trueLosslessMode(arg.trueLosslessMode)
-, verboseMode(arg.verboseMode)
 , predictor6WorkaroundEnabled_(arg.predictor6WorkaroundEnabled_)
 {
 }
@@ -142,6 +139,9 @@ const char *DJCodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: djcparam.cc,v $
+ * Revision 1.9  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.8  2006-03-29 15:58:52  meichel
  * Added support for decompressing images with 16 bits/pixel compressed with
  *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.

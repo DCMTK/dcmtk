@@ -21,10 +21,10 @@
  *
  *  Purpose: singleton class that registers decoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-03-29 15:58:52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdecode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,6 @@ void DJDecoderRegistration::registerCodecs(
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
-    OFBool pVerbose,
     OFBool predictor6WorkaroundEnable)
 {
   if (! registered)
@@ -67,7 +66,6 @@ void DJDecoderRegistration::registerCodecs(
       pDecompressionCSConversion, 
       pCreateSOPInstanceUID, 
       pPlanarConfiguration,
-      pVerbose,
       predictor6WorkaroundEnable);
     if (cp)
     {
@@ -136,6 +134,9 @@ void DJDecoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: djdecode.cc,v $
+ * Revision 1.6  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.5  2006-03-29 15:58:52  meichel
  * Added support for decompressing images with 16 bits/pixel compressed with
  *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.

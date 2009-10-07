@@ -18,6 +18,11 @@ ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
+oflogdir = $(top_srcdir)/../oflog
+ofloginc = -I$(oflogdir)/include
+ofloglibdir = -L$(oflogdir)/libsrc
+ofloglib = -loflog
+
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
@@ -39,10 +44,10 @@ dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/l
 	-L$(dcmjpegdir)/libijg16
 dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
 
-LOCALINCLUDES = $(dcmjpeginc) $(ofstdinc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
+LOCALINCLUDES = $(dcmjpeginc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjpeglibdir) $(dcmimagelibdir) $(dcmimglelibdir) \
-	$(dcmdatalibdir) $(ofstdlibdir)
-LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofstdlib) \
+	$(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
+LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
 
 objs = dcmdjpeg.o dcmcjpeg.o dcmj2pnm.o dcmmkdir.o

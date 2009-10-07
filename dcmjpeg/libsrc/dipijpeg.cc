@@ -21,10 +21,10 @@
  *
  *  Purpose: Implements JPEG interface for plugable image formats
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-19 12:19:19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,12 +136,11 @@ void DiJPEGPlugin::setSampling(const E_SubSampling sampling)
 void DiJPEGPlugin::outputMessage(void *arg) const
 {
     jpeg_common_struct *cinfo = (jpeg_common_struct *)arg;
-    if (cinfo && DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+    if (cinfo && DCM_dcmjpegGetLogger().isEnabledFor(OFLogger::WARN_LOG_LEVEL))
     {
         char buffer[JMSG_LENGTH_MAX];
         (*cinfo->err->format_message)(cinfo, buffer); /* Create the message */
-        ofConsole.lockCerr() << buffer << OFendl;
-        ofConsole.unlockCerr();
+        DCMJPEG_WARN(buffer);
     }
 }
 
@@ -263,6 +262,9 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
+ * Revision 1.12  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.11  2009-08-19 12:19:19  meichel
  * Unlike some other compilers, Sun Studio 11 on Solaris
  *   declares longjmp() in namespace std. Added code to handle this case.

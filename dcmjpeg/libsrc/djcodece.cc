@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 09:12:46 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -499,7 +499,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.bad())
     {
-      CERR << "True lossless encoder: Unable to get relevant attributes from dataset" << OFendl;
+      DCMJPEG_ERROR("True lossless encoder: Unable to get relevant attributes from dataset");
       return result;
     }
 
@@ -510,14 +510,14 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       bytesAllocated = 2;
     else
     {
-      CERR << "True lossless encoder: Only 8 or 16 bits allocated supported" << OFendl;
+      DCMJPEG_ERROR("True lossless encoder: Only 8 or 16 bits allocated supported");
       return EC_IllegalParameter;
     }
 
     // make sure that all the descriptive attributes have sensible values
     if ((columns < 1)||(rows < 1)||(samplesPerPixel < 1))
     {
-      CERR << "True lossless encoder: Invalid attribute values in pixel module" << OFendl;
+      DCMJPEG_ERROR("True lossless encoder: Invalid attribute values in pixel module");
       return EC_CannotChangeRepresentation;
     }
 
@@ -538,7 +538,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
               (photometricInterpretation == "YBR_ICT")         ||
               (photometricInterpretation == "YBR_RCT") )
     {
-      CERR << "True lossless encoder: Photometric interpretation not supported: " << photometricInterpretation << OFendl;
+      DCMJPEG_ERROR("True lossless encoder: Photometric interpretation not supported: " << photometricInterpretation);
       return EC_IllegalParameter;
     }
     else    // Palette, HSV, ARGB, CMYK
@@ -559,14 +559,14 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     if (result.bad())
     {
-        CERR << "True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding" << OFendl;
+        DCMJPEG_ERROR("True lossless encoder: Unable to change Planar Configuration from 'by plane' to 'by pixel' for encoding");
         return result;
     }
 
     // check whether enough raw data is available for encoding
     if (bytesAllocated * samplesPerPixel * columns * rows * OFstatic_cast(unsigned long,numberOfFrames) > length)
     {
-      CERR << "True lossless encoder: Cannot change representation, not enough data" << OFendl;
+      DCMJPEG_ERROR("True lossless encoder: Cannot change representation, not enough data");
       return EC_CannotChangeRepresentation;
     }
 
@@ -576,7 +576,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, OFstatic_cast(void *, OFconst_cast(Uint16 *, pixelData)), length, sizeof(Uint16));
       if ( result.bad() )
       {
-        CERR << "True lossless encoder: Unable to swap bytes to respect local byte ordering";
+        DCMJPEG_ERROR("True lossless encoder: Unable to swap bytes to respect local byte ordering");
         return EC_CannotChangeRepresentation;
       }
       byteSwapped = OFTrue;
@@ -624,7 +624,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
         framePointer+=frameSize;
         if (jpegLen == 0)
         {
-          CERR << "True lossless encoder: Error encoding frame" << OFendl;
+          DCMJPEG_ERROR("True lossless encoder: Error encoding frame");
           result = EC_CannotChangeRepresentation;
         }
         else
@@ -637,7 +637,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
     }
     else
     {
-      CERR << "True lossless encoder: Cannot allocate encoder instance" << OFendl;
+      DCMJPEG_ERROR("True lossless encoder: Cannot allocate encoder instance");
       result = EC_IllegalCall;
     }
     if (result.good())
@@ -683,7 +683,7 @@ OFCondition DJCodecEncoder::encodeTrueLossless(
       }
       else
       {
-        CERR << "True lossless encoder: Error switching back original pixeldata's planar configuration" << OFendl;
+        DCMJPEG_ERROR("True lossless encoder: Error switching back original pixeldata's planar configuration");
         result = EC_CannotChangeRepresentation;
       }
     }
@@ -1474,6 +1474,9 @@ OFCondition DJCodecEncoder::updatePlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
+ * Revision 1.29  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.28  2009-09-28 09:12:46  joergr
  * Fixed typo in error message. Reformatted source code.
  *

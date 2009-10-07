@@ -41,14 +41,21 @@ bitmap-out  output filename to be written (default: stdout)
         --arguments
           print expanded command line arguments
 
-  -v    --verbose
-          verbose mode, print processing details
-
   -q    --quiet
           quiet mode, print no warnings and errors
 
+  -v    --verbose
+          verbose mode, print processing details
+
   -d    --debug
           debug mode, print debug information
+
+  -ll   --log-level  [l]evel: string constant
+          (fatal, error, warn, info, debug, trace)
+          use level l for the logger
+
+  -lc   --log-config  [f]ilename: string
+          use config file f for the logger
 
   -im   --image-info
           info mode, print image details
@@ -402,6 +409,25 @@ The \e --write-png option is only available when DCMTK has been configured
 and compiled with support for the external \b libpng PNG library.  Option
 \e --interlace enables progressive image view while loading the PNG file.
 Only a few applications take care of the meta info (TEXT) in a PNG file.
+
+\section logging LOGGING
+
+The level of logging output of the various command line tools and underlying
+libraries can be specified by the user.  By default, only errors and warnings
+are written to the standard error stream.  Using option \e --verbose also
+informational messages like processing details are reported.  Option
+\e --debug can be used to get more details on the internal activity, e.g. for
+debugging purposes.  Other logging levels can be selected using option
+\e --log-level.  In \e --quiet mode only fatal errors are reported.  In such
+very severe error events, the application will usually terminate.  For more
+details on the different logging levels, see documentation of module "oflog".
+
+In case the logging output should be written to file (optionally with logfile
+rotation), to syslog (Unix) or the event log (Windows) option \e --log-config
+can be used.  This configuration file also allows for directing only certain
+messages to a particular output stream and for filtering certain messages
+based on the module or application where they are generated.  An example
+configuration file is provided in <em>\<etcdir\>/logger.cfg</em>).
 
 \section command_line COMMAND LINE
 

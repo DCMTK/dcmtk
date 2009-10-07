@@ -21,10 +21,10 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-03-29 15:58:52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,6 @@ public:
    *  @param pCreateSOPInstanceUID mode for SOP Instance UID creation
    *  @param pPlanarConfiguration flag describing how planar configuration of
    *    decompressed color images should be handled
-   *  @param pVerbose verbose mode flag
    *  @param predictor6WorkaroundEnable enable workaround for buggy lossless compressed images with
    *           overflow in predictor 6 for images with 16 bits/pixel
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
@@ -83,7 +82,6 @@ public:
     E_DecompressionColorSpaceConversion pDecompressionCSConversion,
     E_UIDCreation pCreateSOPInstanceUID,
     E_PlanarConfiguration pPlanarConfiguration,
-    OFBool pVerbose = OFFalse,
     OFBool predictor6WorkaroundEnable = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
@@ -307,14 +305,6 @@ public:
     return trueLosslessMode;
   }
 
-  /** returns verbose mode flag
-   *  @return verbose mode flag
-   */
-  OFBool isVerbose() const
-  {
-    return verboseMode;
-  }
-
   /** returns flag indicating whether the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
    *  @return flag indicating whether the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
    */
@@ -405,9 +395,6 @@ private:
   /// True losless mode, replaces old "pseudo" lossless encoders, when true (default)
   OFBool trueLosslessMode;
 
-  /// verbose mode flag. If true, warning messages are printed to console
-  OFBool verboseMode;
-
   /// flag indicating that the workaround for buggy JPEG lossless images with incorrect predictor 6 is enabled
   OFBool predictor6WorkaroundEnabled_;
 
@@ -419,6 +406,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
+ * Revision 1.9  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.8  2006-03-29 15:58:52  meichel
  * Added support for decompressing images with 16 bits/pixel compressed with
  *   a faulty lossless JPEG encoder that produces integer overflows in predictor 6.

@@ -21,10 +21,10 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:45:52 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 12:44:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/dcmtk/dcmjpeg/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,6 @@ public:
    *  been performed before.
    *  @param pCompressionCSConversion color conversion mode for compression
    *  @param pCreateSOPInstanceUID mode for SOP Instance UID creation
-   *  @param pVerbose verbose mode flag
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
    *  @param pSmoothingFactor smoothing factor for image compression, 0..100
    *  @param pForcedBitDepth forced bit depth for image compression, 0 (auto) or 8/12/16
@@ -87,7 +86,6 @@ public:
   static void registerCodecs(
     E_CompressionColorSpaceConversion pCompressionCSConversion = ECC_lossyYCbCr,
     E_UIDCreation pCreateSOPInstanceUID = EUC_default,
-    OFBool pVerbose = OFFalse,
     OFBool pOptimizeHuffman = OFFalse,
     int pSmoothingFactor = 0,
     int pForcedBitDepth = 0,
@@ -150,6 +148,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djencode.h,v $
+ * Revision 1.8  2009-10-07 12:44:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.7  2008-04-30 12:45:52  meichel
  * DJEncoderRegistration::registerCodecs now by default enables the
  *   true lossless codec instead of pseudo-lossless.
