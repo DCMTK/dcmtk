@@ -4,7 +4,8 @@ Changes between releases are documented here.
 **** Changes from 2009.10.07 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.
-  Affects: dcmjpls/apps/Makefile.dep
+  Affects: dcmjpls/apps/CMakeLists.txt
+           dcmjpls/apps/Makefile.dep
            dcmjpls/apps/Makefile.in
            dcmjpls/apps/dcmcjpls.cc
            dcmjpls/apps/dcmdjpls.cc
@@ -15,6 +16,7 @@ Changes between releases are documented here.
            dcmjpls/include/dcmtk/dcmjpls/djencode.h
            dcmjpls/include/dcmtk/dcmjpls/djlsutil.h
            dcmjpls/include/dcmtk/dcmjpls/djrparam.h
+           dcmjpls/libsrc/CMakeLists.txt
            dcmjpls/libsrc/Makefile.dep
            dcmjpls/libsrc/Makefile.in
            dcmjpls/libsrc/djcodecd.cc

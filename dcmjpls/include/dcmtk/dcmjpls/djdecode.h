@@ -21,10 +21,9 @@
  *
  *  Purpose: singleton class that registers the decoder for all supported JPEG-LS processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djdecode.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +50,6 @@ public:
   /** registers decoder for all supported JPEG-LS processes.
    *  If already registered, call is ignored unless cleanup() has
    *  been performed before.
-   *  @param verbose verbose mode flag
    *  @param uidcreation flag indicating whether or not
    *    a new SOP Instance UID should be assigned upon decompression.
    *  @param planarconfig flag indicating how planar configuration
@@ -59,7 +57,6 @@ public:
    *  @param ignoreOffsetTable flag indicating whether to ignore the offset table when decompressing multiframe images
    */
   static void registerCodecs(
-    OFBool verbose = OFFalse,
     JLS_UIDCreation uidcreation = EJLSUC_default,
     JLS_PlanarConfiguration planarconfig = EJLSPC_restore,
     OFBool ignoreOffsetTable = OFFalse);
@@ -92,6 +89,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djdecode.h,v $
+ * Revision 1.2  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

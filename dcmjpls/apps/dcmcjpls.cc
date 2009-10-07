@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with JPEG-LS transfer syntax
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:37:00 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #endif
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"      /* for dcmtk version name */
@@ -63,6 +62,8 @@
 #define OFFIS_CONSOLE_APPLICATION "dcmcjpls"
 #endif
 
+static OFLogger dcmcjplsLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -80,14 +81,8 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  SetDebugLevel(( 0 ));
-
   const char *opt_ifname = NULL;
   const char *opt_ofname = NULL;
-
-  // general options
-  int opt_debugMode = 0;
-  OFBool opt_verbose = OFFalse;
 
   // input options
   E_FileReadMode opt_readMode = ERM_autoDetect;
@@ -139,9 +134,7 @@ LICENSE_FILE_DECLARATIONS
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--arguments",                          "print expanded command line arguments");
-    cmd.addOption("--verbose",                  "-v",     "verbose mode, print processing details");
-    cmd.addOption("--debug",                    "-d",     "debug mode, print debug information");
+    OFLog::addOptions(cmd);
 
 #ifdef USE_LICENSE_FILE
 LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
@@ -223,10 +216,6 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -248,8 +237,7 @@ LICENSE_FILE_DECLARE_COMMAND_LINE_OPTIONS
       cmd.getParam(2, opt_ofname);
 
       // general options
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      OFLog::configureFromCommandLine(cmd, app);
 
 #ifdef USE_LICENSE_FILE
 LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
@@ -440,12 +428,11 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
       cmd.endOptionBlock();
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmcjplsLogger, rcsid << OFendl);
 
     // register global compression codecs
-    DJLSEncoderRegistration::registerCodecs(opt_verbose, opt_use_custom_options,
+    DJLSEncoderRegistration::registerCodecs(opt_use_custom_options,
       OFstatic_cast(Uint16, opt_t1), OFstatic_cast(Uint16, opt_t2), OFstatic_cast(Uint16, opt_t3),
       OFstatic_cast(Uint16, opt_reset), OFstatic_cast(Uint16, opt_limit),
       opt_prefer_cooked, opt_fragmentSize, opt_createOffsetTable,
@@ -454,26 +441,25 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-      CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcmcjplsLogger, "no data dictionary loaded, "
            << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+           << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-      CERR << "Error: invalid filename: <empty string>" << OFendl;
+      OFLOG_FATAL(dcmcjplsLogger, "invalid filename: <empty string>");
       return 1;
     }
 
-    if (opt_verbose)
-      COUT << "reading input file " << opt_ifname << OFendl;
+    OFLOG_INFO(dcmcjplsLogger, "reading input file " << opt_ifname);
 
     DcmFileFormat fileformat;
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-      CERR << "Error: " << error.text() << ": reading file: " <<  opt_ifname << OFendl;
+      OFLOG_FATAL(dcmcjplsLogger, error.text() << ": reading file: " <<  opt_ifname);
       return 1;
     }
     DcmDataset *dataset = fileformat.getDataset();
@@ -481,11 +467,10 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     DcmXfer original_xfer(dataset->getOriginalXfer());
     if (original_xfer.isEncapsulated())
     {
-      if (opt_verbose)
-        COUT << "DICOM file is already compressed, converting to uncompressed transfer syntax first" << OFendl;
+      OFLOG_INFO(dcmcjplsLogger, "DICOM file is already compressed, converting to uncompressed transfer syntax first");
       if (EC_Normal != dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL))
       {
-        CERR << "Error: no conversion from compressed original to uncompressed transfer syntax possible!" << OFendl;
+        OFLOG_FATAL(dcmcjplsLogger, "No conversion from compressed original to uncompressed transfer syntax possible!");
         return 1;
       }
     }
@@ -496,13 +481,12 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
         /* check for DICOMDIR files */
         if (sopClass == UID_MediaStorageDirectoryStorage)
         {
-            CERR << "Error: DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!" << OFendl;
+            OFLOG_FATAL(dcmcjplsLogger, "DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!");
             return 1;
         }
     }
 
-    if (opt_verbose)
-      COUT << "Convert DICOM file to compressed transfer syntax" << OFendl;
+    OFLOG_INFO(dcmcjplsLogger, "Convert DICOM file to compressed transfer syntax");
 
     //create representation parameter
     DJLSRepresentationParameter rp(OFstatic_cast(Uint16, opt_nearlossless_deviation), opt_useLosslessProcess);
@@ -512,20 +496,18 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
     OFCondition result = dataset->chooseRepresentation(opt_oxfer, &rp);
     if (result.bad())
     {
-      CERR << "Error: " << result.text() << ": encoding file: " << opt_ifname << OFendl;
+      OFLOG_FATAL(dcmcjplsLogger, result.text() << ": encoding file: " << opt_ifname);
       return 1;
     }
     if (dataset->canWriteXfer(opt_oxfer))
     {
-      if (opt_verbose)
-        COUT << "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written" << OFendl;
+      OFLOG_INFO(dcmcjplsLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
-      CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!" << OFendl;
+      OFLOG_FATAL(dcmcjplsLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
       return 1;
     }
 
-    if (opt_verbose)
-      COUT << "creating output file " << opt_ofname << OFendl;
+    OFLOG_INFO(dcmcjplsLogger, "creating output file " << opt_ofname);
 
     fileformat.loadAllDataIntoMemory();
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
@@ -533,12 +515,11 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 
     if (error.bad())
     {
-      CERR << "Error: " << error.text() << ": writing file: " <<  opt_ofname << OFendl;
+      OFLOG_FATAL(dcmcjplsLogger, error.text() << ": writing file: " <<  opt_ofname);
       return 1;
     }
 
-    if (opt_verbose)
-      COUT << "conversion successful" << OFendl;
+    OFLOG_INFO(dcmcjplsLogger, "conversion successful");
 
     // deregister global codecs
     DJLSEncoderRegistration::cleanup();
@@ -550,6 +531,9 @@ LICENSE_FILE_EVALUATE_COMMAND_LINE_OPTIONS
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpls.cc,v $
+ * Revision 1.9  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.8  2009-09-04 13:37:00  meichel
  * Updated libcharls in module dcmjpls to CharLS revision 27770.
  *

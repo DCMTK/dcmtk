@@ -21,10 +21,9 @@
  *
  *  Purpose: representation parameters for JPEG-LS
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djrparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,6 +109,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djrparam.h,v $
+ * Revision 1.2  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.1  2009-07-29 14:46:46  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

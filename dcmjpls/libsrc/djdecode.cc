@@ -21,10 +21,9 @@
  *
  *  Purpose: singleton class that registers decoders for all supported JPEG-LS processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-29 14:46:47 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djdecode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,14 +43,13 @@ DJLSLosslessDecoder *DJLSDecoderRegistration::losslessdecoder_         = NULL;
 DJLSNearLosslessDecoder *DJLSDecoderRegistration::nearlosslessdecoder_ = NULL;
 
 void DJLSDecoderRegistration::registerCodecs(
-    OFBool verbose,
     JLS_UIDCreation uidcreation,
     JLS_PlanarConfiguration planarconfig,
     OFBool ignoreOffsetTable)
 {
   if (! registered_)
   {
-    cp_ = new DJLSCodecParameter(verbose, uidcreation, planarconfig, ignoreOffsetTable);
+    cp_ = new DJLSCodecParameter(uidcreation, planarconfig, ignoreOffsetTable);
     if (cp_)
     {
       losslessdecoder_ = new DJLSLosslessDecoder();
@@ -87,6 +85,9 @@ void DJLSDecoderRegistration::cleanup()
 /*
  * CVS/RCS Log:
  * $Log: djdecode.cc,v $
+ * Revision 1.2  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.1  2009-07-29 14:46:47  meichel
  * Initial release of module dcmjpls, a JPEG-LS codec for DCMTK based on CharLS
  *

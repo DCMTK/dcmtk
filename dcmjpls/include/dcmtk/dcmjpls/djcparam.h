@@ -21,10 +21,9 @@
  *
  *  Purpose: codec parameter class JPEG-LS codecs
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 10:18:37 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +59,6 @@ public:
   };
 
   /** constructor, for use with encoders.
-   *  @param verboseMode               verboseMode
    *  @param jpls_optionsEnabled       enable/disable use of all five JPEG-LS parameters
    *  @param jpls_t1                   JPEG-LS parameter "Threshold 1" (used for quantization)
    *  @param jpls_t2                   JPEG-LS parameter "Threshold 2"
@@ -77,7 +75,6 @@ public:
    *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
    */
    DJLSCodecParameter(
-     OFBool verboseMode,
      OFBool jpls_optionsEnabled,
      Uint16 jpls_t1 = 3, // these are the defaults for 8bpp in lossless mode
      Uint16 jpls_t2 = 7,
@@ -94,13 +91,11 @@ public:
      interleaveMode jplsInterleaveMode = interleaveLine);
 
   /** constructor, for use with decoders. Initializes all encoder options to defaults.
-   *  @param verboseMode               verbose mode
    *  @param uidCreation               mode for SOP Instance UID creation (used both for encoding and decoding)
    *  @param planarConfiguration       flag describing how planar configuration of decompressed color images should be handled
    *  @param ignoreOffsetTable         flag indicating whether to ignore the offset table when decompressing multiframe images
    */
   DJLSCodecParameter(
-    OFBool verboseMode = OFFalse,
     JLS_UIDCreation uidCreation = EJLSUC_default,
     JLS_PlanarConfiguration planarConfiguration = EJLSPC_restore,
     OFBool ignoreOffsetTable = OFFalse);
@@ -149,14 +144,6 @@ public:
   JLS_PlanarConfiguration getPlanarConfiguration() const
   {
     return planarConfiguration_;
-  }
-
-  /** returns verbose mode flag
-   *  @return verbose mode flag
-   */
-  OFBool isVerbose() const
-  {
-    return verboseMode_;
   }
 
   /** returns flag indicating whether or not the "cooked" lossless encoder
@@ -245,9 +232,6 @@ private:
   /// private undefined copy assignment operator
   DJLSCodecParameter& operator=(const DJLSCodecParameter&);
 
-  /// verbose mode flag. If true, warning messages are printed to console
-  OFBool verboseMode_;
-
   // ****************************************************
   // **** Parameters describing the encoding process ****
 
@@ -304,6 +288,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djcparam.h,v $
+ * Revision 1.4  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.3  2009-07-31 10:18:37  meichel
  * Line interleaved JPEG-LS mode now default. This mode works correctly
  *   when decompressing images with the LOCO-I reference implementation.

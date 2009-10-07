@@ -21,10 +21,9 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:53 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djencode.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +44,6 @@ DJLSNearLosslessEncoder *DJLSEncoderRegistration::nearlosslessencoder_  = NULL;
 
 
 void DJLSEncoderRegistration::registerCodecs(
-    OFBool verboseMode,
     OFBool jpls_optionsEnabled,
     Uint16 jpls_t1,
     Uint16 jpls_t2,
@@ -61,7 +59,7 @@ void DJLSEncoderRegistration::registerCodecs(
 {
   if (! registered_)
   {
-    cp_ = new DJLSCodecParameter(verboseMode, jpls_optionsEnabled, jpls_t1, jpls_t2, jpls_t3, jpls_reset, 
+    cp_ = new DJLSCodecParameter(jpls_optionsEnabled, jpls_t1, jpls_t2, jpls_t3, jpls_reset,
       jpls_limit, preferCookedEncoding, fragmentSize, createOffsetTable, uidCreation, 
       convertToSC, EJLSPC_restore, OFFalse, jplsInterleaveMode);
 
@@ -98,6 +96,9 @@ void DJLSEncoderRegistration::cleanup()
 /*
  * CVS/RCS Log:
  * $Log: djencode.cc,v $
+ * Revision 1.3  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.2  2009-07-31 09:14:53  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing

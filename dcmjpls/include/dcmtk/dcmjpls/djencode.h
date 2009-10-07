@@ -21,10 +21,9 @@
  *
  *  Purpose: singleton class that registers encoders for all supported JPEG-LS processes.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:53 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djencode.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,7 +52,6 @@ public:
   /** registers encoders for all supported JPEG-LS processes. 
    *  If already registered, call is ignored unless cleanup() has
    *  been performed before.
-   *  @param verboseMode               verbose mode
    *  @param jpls_optionsEnabled       enable/disable use of all five JPEG-LS parameters
    *  @param jpls_t1                   JPEG-LS parameter "Threshold 1" (used for quantization)
    *  @param jpls_t2                   JPEG-LS parameter "Threshold 2"
@@ -68,7 +66,6 @@ public:
    *  @param jplsInterleaveMode        flag describing which interleave the JPEG-LS datastream should use
    */
   static void registerCodecs(
-    OFBool verboseMode = OFFalse,
     OFBool jpls_optionsEnabled = OFFalse,
     Uint16 jpls_t1 = 3,
     Uint16 jpls_t2 = 7,
@@ -110,6 +107,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: djencode.h,v $
+ * Revision 1.3  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.2  2009-07-31 09:14:53  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing

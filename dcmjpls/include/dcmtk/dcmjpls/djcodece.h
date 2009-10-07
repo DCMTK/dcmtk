@@ -21,10 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/include/dcmtk/dcmjpls/djcodece.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -368,6 +367,9 @@ class DJLSNearLosslessEncoder : public DJLSEncoderBase
 /*
  * CVS/RCS Log:
  * $Log: djcodece.h,v $
+ * Revision 1.3  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.2  2009-07-31 09:14:52  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing

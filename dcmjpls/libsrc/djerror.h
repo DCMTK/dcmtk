@@ -21,10 +21,9 @@
  *
  *  Purpose: Helper function than converts between CharLS and dcmjpgls errors
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:05:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +84,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: djerror.h,v $
+ * Revision 1.2  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.1  2009-07-31 09:05:43  meichel
  * Added more detailed error messages, minor code clean-up
  *

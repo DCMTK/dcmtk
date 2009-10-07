@@ -21,10 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS decoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-08 11:19:45 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +153,6 @@ OFCondition DJLSDecoderBase::decode(
   // assume we can cast the codec parameter to what we need
   const DJLSCodecParameter *djcp = OFreinterpret_cast(const DJLSCodecParameter *, cp);
 
-  OFBool verboseMode = djcp->isVerbose();
   OFBool ignoreOffsetTable = djcp->ignoreOffsetTable();
 
   // determine planar configuration for uncompressed data
@@ -208,11 +206,7 @@ OFCondition DJLSDecoderBase::decode(
 
   while (result.good() && !done)  
   {
-      if (verboseMode)
-      {
-          ofConsole.lockCout() << "Current Frame Number: " << currentFrame+1 << OFendl;
-          ofConsole.unlockCout();
-      }
+      DCMJPLS_INFO("Current Frame Number: " << currentFrame+1);
 
       // compute the number of JPEG-LS fragments we need in order to decode the next frame
       fragmentsForThisFrame = computeNumberOfFragments(imageFrames, currentFrame, currentItem, ignoreOffsetTable, pixSeq);
@@ -293,11 +287,7 @@ OFCondition DJLSDecoderBase::decode(
             {
               // The dataset says this should be planarConfiguration == 1, but
               // it isn't -> convert it.
-              if (verboseMode)
-              {
-                ofConsole.lockCout() << "different planar configuration in JPEG stream, converting to \"1\"" << OFendl;
-                ofConsole.unlockCout();
-              }
+              DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"1\"");
               if (bytesPerSample == 1)
                 result = createPlanarConfiguration1Byte(pixeldata8, imageColumns, imageRows);
               else
@@ -307,11 +297,7 @@ OFCondition DJLSDecoderBase::decode(
             {
               // The dataset says this should be planarConfiguration == 0, but
               // it isn't -> convert it.
-              if (verboseMode)
-              {
-                ofConsole.lockCout() << "different planar configuration in JPEG stream, converting to \"0\"" << OFendl;
-                ofConsole.unlockCout();
-              }
+              DCMJPLS_INFO("different planar configuration in JPEG stream, converting to \"0\"");
               if (bytesPerSample == 1)
                 result = createPlanarConfiguration0Byte(pixeldata8, imageColumns, imageRows);
               else
@@ -666,6 +652,9 @@ OFCondition DJLSDecoderBase::createPlanarConfiguration0Word(
 /*
  * CVS/RCS Log:
  * $Log: djcodecd.cc,v $
+ * Revision 1.5  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.4  2009-09-08 11:19:45  meichel
  * Fixed bug affecting decompression of images with 8 bits/sample on big
  *   endian machines

@@ -21,10 +21,9 @@
  *
  *  Purpose: Support code for dcmjpls
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:05:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +33,8 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmjpls/djlsutil.h"
 #include "dcmtk/dcmdata/dcerror.h"
+
+OFLogger DCM_dcmjplsLogger = OFLog::getLogger("dcmtk.dcmjpls");
 
 #define MAKE_DCMJPLS_ERROR(number, name, description)  \
 const OFConditionConst ECC_ ## name (OFM_dcmjpls, number, OF_error, description); \
@@ -57,6 +58,9 @@ MAKE_DCMJPLS_ERROR(14, JLSUnsupportedImageType, "Unsupported type of image for J
 /*
  * CVS/RCS Log:
  * $Log: djutils.cc,v $
+ * Revision 1.3  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.2  2009-07-31 09:05:43  meichel
  * Added more detailed error messages, minor code clean-up
  *

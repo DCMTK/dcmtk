@@ -21,10 +21,9 @@
  *
  *  Purpose: codec classes for JPEG-LS encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:37:00 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -506,11 +505,7 @@ OFCondition DJLSEncoderBase::losslessRawEncode(
     for (unsigned long i=0; (i<frameCount) && (result.good()); ++i)
     {
       // compress frame
-      if (djcp->isVerbose())
-      {
-          ofConsole.lockCout() << "Encoding frame " << (i+1) << " of " << frameCount << OFendl;
-          ofConsole.unlockCout();
-      }
+      DCMJPLS_INFO("Encoding frame " << (i+1) << " of " << frameCount);
       result = compressRawFrame(framePointer, bitsAllocated, columns, rows,
           samplesPerPixel, planarConfiguration, photometricInterpretation,
           pixelSequence, offsetList, compressedFrameSize, djcp);
@@ -640,12 +635,8 @@ OFCondition DJLSEncoderBase::compressRawFrame(
   if ((jls_params.ilv == ILV_NONE && (ilv == ILV_SAMPLE || ilv == ILV_LINE)) ||
       (ilv == ILV_NONE && (jls_params.ilv == ILV_SAMPLE || jls_params.ilv == ILV_LINE)))
   {
-    if (djcp->isVerbose())
-    {
-        ofConsole.lockCout() << "Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
-          << " to " << (jls_params.ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel") << OFendl;
-        ofConsole.unlockCout();
-    }
+    DCMJPLS_INFO("Converting image from " << (ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel")
+          << " to " << (jls_params.ilv == ILV_NONE ? "color-by-plane" : "color-by-pixel"));
 
     frameBuffer = new Uint8[frameSize];
     if (jls_params.ilv == ILV_NONE)
@@ -799,11 +790,7 @@ OFCondition DJLSEncoderBase::losslessCookedEncode(
     for (unsigned long i=0; (i<frameCount) && (result.good()); ++i)
     {
       // compress frame
-      if (djcp->isVerbose())
-      {
-          ofConsole.lockCout() << "Encoding frame " << (i+1) << " of " << frameCount << OFendl;
-          ofConsole.unlockCout();
-      }
+      DCMJPLS_INFO("Encoding frame " << (i+1) << " of " << frameCount);
       result = compressCookedFrame(pixelSequence, dimage,
           photometricInterpretation, offsetList, compressedFrameSize, djcp, i, nearLosslessDeviation);
 
@@ -1052,11 +1039,7 @@ OFCondition DJLSEncoderBase::compressCookedFrame(
   // Do we have to convert the image to color-by-plane now?
   if (jls_params.ilv == ILV_NONE && jls_params.components != 1)
   {
-    if (djcp->isVerbose())
-    {
-        ofConsole.lockCout() << "Converting image from color-by-pixel to color-by-plane" << OFendl;
-        ofConsole.unlockCout();
-    }
+    DCMJPLS_INFO("Converting image from color-by-pixel to color-by-plane");
 
     frameBuffer = new Uint8[buffer_size];
     framePointer = frameBuffer;
@@ -1145,6 +1128,9 @@ OFCondition DJLSEncoderBase::convertToSampleInterleaved(
 /*
  * CVS/RCS Log:
  * $Log: djcodece.cc,v $
+ * Revision 1.6  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.5  2009-09-04 13:37:00  meichel
  * Updated libcharls in module dcmjpls to CharLS revision 27770.
  *

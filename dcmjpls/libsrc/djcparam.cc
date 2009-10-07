@@ -21,10 +21,9 @@
  *
  *  Purpose: codec parameter class for JPEG-LS codecs
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-07-31 09:14:53 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpls/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-07 13:16:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +35,6 @@
 #include "dcmtk/ofstd/ofstd.h"
 
 DJLSCodecParameter::DJLSCodecParameter(
-     OFBool verboseMode,
      OFBool jpls_optionsEnabled,
      Uint16 jpls_t1, // these are the defaults for 8bpp in lossless mode
      Uint16 jpls_t2,
@@ -52,7 +50,6 @@ DJLSCodecParameter::DJLSCodecParameter(
      OFBool ignoreOffsetTable,
      interleaveMode jplsInterleaveMode)
 : DcmCodecParameter()
-, verboseMode_(verboseMode)
 , jpls_optionsEnabled_(jpls_optionsEnabled)
 , jpls_t1_(jpls_t1)
 , jpls_t2_(jpls_t2)
@@ -72,12 +69,10 @@ DJLSCodecParameter::DJLSCodecParameter(
 
 
 DJLSCodecParameter::DJLSCodecParameter(
-    OFBool verboseMode,
     JLS_UIDCreation uidCreation,
     JLS_PlanarConfiguration planarConfiguration,
     OFBool ignoreOffsetTable)
 : DcmCodecParameter()
-, verboseMode_(verboseMode)
 , jpls_optionsEnabled_(OFFalse)
 , jpls_t1_(3)
 , jpls_t2_(7)
@@ -98,7 +93,6 @@ DJLSCodecParameter::DJLSCodecParameter(
 DJLSCodecParameter::DJLSCodecParameter(const DJLSCodecParameter& arg)
 : DcmCodecParameter(arg)
 
-, verboseMode_(arg.verboseMode_)
 , jpls_optionsEnabled_(arg.jpls_optionsEnabled_)
 , jpls_t1_(arg.jpls_t1_)
 , jpls_t2_(arg.jpls_t2_)
@@ -133,6 +127,9 @@ const char *DJLSCodecParameter::className() const
 /*
  * CVS/RCS Log:
  * $Log: djcparam.cc,v $
+ * Revision 1.3  2009-10-07 13:16:47  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.2  2009-07-31 09:14:53  meichel
  * Added codec parameter and command line options that allow to control
  *   the interleave mode used in the JPEG-LS bitstream when compressing

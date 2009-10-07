@@ -17,6 +17,11 @@ ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
+oflogdir = $(top_srcdir)/../oflog
+ofloginc = -I$(oflogdir)/include
+ofloglibdir = -L$(oflogdir)/libsrc
+ofloglib = -loflog
+
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
@@ -41,10 +46,10 @@ libcharlsdir = $(dcmjplsdir)
 libcharlslibdir = -L$(dcmjplsdir)/libcharls
 libcharlslib = -lcharls
 
-LOCALINCLUDES = $(dcmjplsinc) $(ofstdinc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
+LOCALINCLUDES = $(dcmjplsinc) $(ofstdinc) $(ofloginc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjplslibdir) $(libcharlslibdir) $(dcmimagelibdir) \
-	$(dcmimglelibdir) $(dcmdatalibdir) $(ofstdlibdir)
-LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofstdlib) \
+	$(dcmimglelibdir) $(dcmdatalibdir) $(ofloglibdir) $(ofstdlibdir)
+LOCALLIBS = $(dcmjplslib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofloglib) $(ofstdlib) \
 	$(libcharlslib) $(ZLIBLIBS)
 
 objs = dcmdjpls.o dcmcjpls.o
