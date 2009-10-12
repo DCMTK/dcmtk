@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.12 (riesmeier)
+
+- Changed prefix of UIDs created for series and studies (now using constants
+  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+  in these cases).
+  Affects: dcmdata/apps/pdf2dcm.cc
+
 **** Changes from 2009.10.07 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.

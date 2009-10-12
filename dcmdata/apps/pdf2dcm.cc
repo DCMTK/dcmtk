@@ -22,8 +22,8 @@
  *  Purpose: Convert PDF file to DICOM format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-11 08:13:35 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2009-10-12 09:35:43 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ OFCondition createHeader(
     sprintf(buf, "%ld", OFstatic_cast(long, opt_instanceNumber));
     if (result.good()) result = dataset->putAndInsertString(DCM_InstanceNumber,       buf);
 
-    dcmGenerateUniqueIdentifier(buf);
+    dcmGenerateUniqueIdentifier(buf, SITE_INSTANCE_UID_ROOT);
     if (result.good()) result = dataset->putAndInsertString(DCM_StudyInstanceUID,     opt_studyUID);
     if (result.good()) result = dataset->putAndInsertString(DCM_SeriesInstanceUID,    opt_seriesUID);
     if (result.good()) result = dataset->putAndInsertString(DCM_SOPInstanceUID,       buf);
@@ -317,12 +317,12 @@ void createIdentifiers(
   }
   if (studyUID.length() == 0)
   {
-    dcmGenerateUniqueIdentifier(buf);
+    dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
     studyUID = buf;
   }
   if (seriesUID.length() == 0)
   {
-    dcmGenerateUniqueIdentifier(buf);
+    dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
     seriesUID = buf;
   }
 }
@@ -669,6 +669,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.14  2009-10-12 09:35:43  joergr
+** Changed prefix of UIDs created for series and studies (now using constants
+** SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+** in these cases).
+**
 ** Revision 1.13  2009-08-11 08:13:35  joergr
 ** Slightly modified code in order to avoid warning messages on MSVC compiler.
 **
