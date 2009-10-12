@@ -353,7 +353,7 @@ possible for all basic operations, i.e . modifying \e -m, inserting \e -i and
 \e -e options which makes it, together with the automatic creation of
 intermediate path nodes a powerful tool for construction and processing complex
 datasets.  The options \e -ma and \e -ea for modifying or deleting all
-occurences of a DICOM element based on its tag does not except any wildcards
+occurences of a DICOM element based on its tag does not accept any wildcards
 but only works on single elements (i.e. a single dictionary name or tag key).
 
 \section examples EXAMPLES
@@ -375,7 +375,7 @@ but only works on single elements (i.e. a single dictionary name or tag key).
        does not exist, it is automatically inserted by dcmodify.
 
        dcmodify -i "(0008,1111)[*].PatientsName=Another Name" *.dcm
-       Inserts PatientsName tag into the _every_ item of sequence
+       Inserts PatientsName tag into _every_ item of sequence
        (0008,1111).  Note that the use of wildcards for files is
        possible.  You can specify longer tag paths, too (e.g.
        "(0008,1111)[*].(0008,1111)[*].(0010,0010)=A Third One").

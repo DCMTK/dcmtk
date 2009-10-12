@@ -316,9 +316,9 @@ The desired output SOP Class can be selected on the command line. Currently,
 an export plugin for the Secondary Capture Image SOP class (default, option
 \e -sc), the new Secondary Capture Image SOP classes (option \e -nsc) and
 Visible Light Photographic Image SOP class (option \e -vl) are available.
-Please note that the first one is retired in the DICOM standard but is
-selected as default because it is widely supported. Future versions of
-\b img2dcm might provide further output plugins for other SOP Classes.
+Please note that the first one is deprecated according to the DICOM standard
+but is selected as a default because it is widely supported. Future versions
+of \b img2dcm might provide further output plugins for other SOP Classes.
 
 For the new Secondary Capture SOP classes, it is not possible to specifiy which
 specific SOP class should be used for output. That is because these new SOP

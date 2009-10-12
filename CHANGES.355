@@ -8,6 +8,10 @@ Changes between releases are documented here.
   in these cases).
   Affects: dcmdata/apps/pdf2dcm.cc
 
+- Fixed wrong wording.
+  Affects: dcmdata/docs/dcmodify.man
+           dcmdata/docs/img2dcm.man
+
 **** Changes from 2009.10.07 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.
