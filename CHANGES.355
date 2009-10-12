@@ -10,7 +10,6 @@ Changes between releases are documented here.
 
 - Fixed wrong wording.
   Affects: dcmdata/docs/dcmodify.man
-           dcmdata/docs/img2dcm.man
 
 **** Changes from 2009.10.07 (schlachter)
 
