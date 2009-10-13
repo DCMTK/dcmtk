@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 08:31:29 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,18 +105,16 @@ OFCondition DSRDocumentTreeNode::print(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRDocumentTreeNode::read(DcmItem &dataset,
                                       const DSRIODConstraintChecker *constraintChecker,
-                                      const size_t flags,
-                                      OFConsole *logStream)
+                                      const size_t flags)
 {
-    return readSRDocumentContentModule(dataset, constraintChecker, flags, logStream);
+    return readSRDocumentContentModule(dataset, constraintChecker, flags);
 }
 
 
 OFCondition DSRDocumentTreeNode::write(DcmItem &dataset,
-                                       DcmStack *markedItems,
-                                       OFConsole *logStream)
+                                       DcmStack *markedItems)
 {
-    return writeSRDocumentContentModule(dataset, markedItems, logStream);
+    return writeSRDocumentContentModule(dataset, markedItems);
 }
 
 
@@ -137,11 +135,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
             (stringToNumber(idAttr.c_str()) != Ident))
         {
             /* create warning message */
-            OFOStringStream oss;
-            oss << "XML attribute 'id' (" << idAttr << ") deviates from current node number (" << Ident << ")";
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printWarningMessage(doc.getLogStream(), tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMSR_WARN("XML attribute 'id' (" << idAttr << ") deviates from current node number (" << Ident << ")");
         }
         /* template identification information expected "inside" content item */
         if (!(flags & XF_templateElementEnclosesItems))
@@ -160,7 +154,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     doc.getStringFromNodeContent(doc.getNamedNode(childCursor.getChild(), "id"), templateIdentifier);
                 }
                 if (setTemplateIdentification(templateIdentifier, mappingResource).bad())
-                    printWarningMessage(doc.getLogStream(), "Content item has invalid/incomplete template identification");
+                    DCMSR_WARN("Content item has invalid/incomplete template identification");
             }
         }
         /* read concept name (not required in some cases) */
@@ -203,7 +197,7 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     {
                         /* set template identification (if any) */
                         if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
-                            printWarningMessage(doc.getLogStream(), "Content item has invalid/incomplete template identification");
+                            DCMSR_WARN("Content item has invalid/incomplete template identification");
                     }
                     /* proceed with reading child nodes */
                     result = node->readXML(doc, cursor, documentType, flags);
@@ -211,15 +205,10 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                     doc.printGeneralNodeError(cursor, result);
                 } else {
                     /* create new node failed */
-                    OFString message = "Cannot add \"";
-                    message += relationshipTypeToReadableName(relationshipType);
-                    message += " ";
-                    message += valueTypeToDefinedTerm(valueType /*target item*/);
-                    message += "\" to ";
-                    message += valueTypeToDefinedTerm(ValueType /*source item*/);
-                    message += " in ";
-                    message += documentTypeToReadableName(documentType);
-                    printErrorMessage(doc.getLogStream(), message.c_str());
+                    DCMSR_ERROR("Cannot add \"" << relationshipTypeToReadableName(relationshipType) << " "
+                            << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
+                            << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
+                            << documentTypeToReadableName(documentType));
                 }
             }
             /* proceed with next node */
@@ -238,13 +227,12 @@ OFCondition DSRDocumentTreeNode::readXMLContentItem(const DSRXMLDocument & /*doc
 
 
 OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                          const size_t flags,
-                                          OFConsole *logStream) const
+                                          const size_t flags) const
 {
     OFCondition result = EC_Normal;
     /* check for validity */
     if (!isValid())
-        printInvalidContentItemMessage(logStream, "Writing to XML", this);
+        printInvalidContentItemMessage("Writing to XML", this);
     /* write optional template identification */
     if ((flags & XF_writeTemplateIdentification) && !(flags & XF_templateElementEnclosesItems))
     {
@@ -271,7 +259,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
             stream << "<concept";     // bracket ">" is closed in the next writeXML() routine
         else
             stream << "<concept>" << OFendl;
-        ConceptName.writeXML(stream, flags, logStream);
+        ConceptName.writeXML(stream, flags);
         stream << "</concept>" << OFendl;
     }
     /* observation datetime (optional) */
@@ -292,7 +280,7 @@ OFCondition DSRDocumentTreeNode::writeXML(STD_NAMESPACE ostream &stream,
         do {    /* for all child nodes */
             node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
-                result = node->writeXML(stream, flags, logStream);
+                result = node->writeXML(stream, flags);
             else
                 result = SR_EC_InvalidDocumentTree;
         } while (result.good() && cursor.gotoNext());
@@ -349,12 +337,11 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
                                             STD_NAMESPACE ostream &annexStream,
                                             const size_t nestingLevel,
                                             size_t &annexNumber,
-                                            const size_t flags,
-                                            OFConsole *logStream) const
+                                            const size_t flags) const
 {
     /* check for validity */
     if (!isValid())
-        printInvalidContentItemMessage(logStream, "Rendering", this);
+        printInvalidContentItemMessage("Rendering", this);
     /* declare hyperlink target */
     if (ReferenceTarget)
     {
@@ -363,12 +350,12 @@ OFCondition DSRDocumentTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
         docStream << "<a " << attrName << "=\"content_item_" << getNodeID() << "\"" << closeElm << ">" << OFendl;
     }
     /* render content item */
-    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
+    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags);
     /* render child nodes */
     if (result.good())
-        result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, logStream);
+        result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately);
     else
-        printContentItemErrorMessage(logStream, "Rendering", result, this);
+        printContentItemErrorMessage("Rendering", result, this);
     return result;
 }
 
@@ -440,16 +427,14 @@ void DSRDocumentTreeNode::removeSignatures()
 }
 
 
-OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /*dataset*/,
-                                                 OFConsole * /*logStream*/)
+OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /*dataset*/)
 {
     /* no content to read */
     return EC_Normal;
 }
 
 
-OFCondition DSRDocumentTreeNode::writeContentItem(DcmItem & /*dataset*/,
-                                                  OFConsole * /*logStream*/) const
+OFCondition DSRDocumentTreeNode::writeContentItem(DcmItem & /*dataset*/) const
 {
     /* no content to insert */
     return EC_Normal;
@@ -460,8 +445,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream & /
                                                        STD_NAMESPACE ostream & /*annexStream*/,
                                                        const size_t /*nestingLevel*/,
                                                        size_t & /*annexNumber*/,
-                                                       const size_t /*flags*/,
-                                                       OFConsole * /*logStream*/) const
+                                                       const size_t /*flags*/) const
 {
     /* no content to render */
     return EC_Normal;
@@ -470,29 +454,27 @@ OFCondition DSRDocumentTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream & /
 
 OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
                                                              const DSRIODConstraintChecker *constraintChecker,
-                                                             const size_t flags,
-                                                             OFConsole *logStream)
+                                                             const size_t flags)
 {
     OFCondition result = EC_Normal;
     /* read DocumentRelationshipMacro */
-    result = readDocumentRelationshipMacro(dataset, constraintChecker, "1" /*posString*/, flags, logStream);
+    result = readDocumentRelationshipMacro(dataset, constraintChecker, "1" /*posString*/, flags);
     /* read DocumentContentMacro */
     if (result.good())
-        result = readDocumentContentMacro(dataset, "1" /*posString*/, flags, logStream);
+        result = readDocumentContentMacro(dataset, "1" /*posString*/, flags);
     return result;
 }
 
 
 OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
-                                                              DcmStack *markedItems,
-                                                              OFConsole *logStream)
+                                                              DcmStack *markedItems)
 {
     OFCondition result = EC_Normal;
     /* write DocumentRelationshipMacro */
-    result = writeDocumentRelationshipMacro(dataset, markedItems, logStream);
+    result = writeDocumentRelationshipMacro(dataset, markedItems);
     /* write DocumentContentMacro */
     if (result.good())
-        result = writeDocumentContentMacro(dataset, logStream);
+        result = writeDocumentContentMacro(dataset);
     return result;
 }
 
@@ -500,8 +482,7 @@ OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
 OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                                                                const DSRIODConstraintChecker *constraintChecker,
                                                                const OFString &posString,
-                                                               const size_t flags,
-                                                               OFConsole *logStream)
+                                                               const size_t flags)
 {
     OFCondition result = EC_Normal;
     /* read digital signatures sequences (optional) */
@@ -511,15 +492,15 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         getElementFromDataset(dataset, DigitalSignatures);
     }
     /* read ObservationDateTime (conditional) */
-    getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C", logStream);
+    getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C");
     /* determine template identifier expected for this document */
     const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? constraintChecker->getRootTemplateIdentifier() : "";
     /* read ContentTemplateSequence (conditional) */
     DcmItem *ditem = NULL;
     if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
     {
-        getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", logStream, "ContentTemplateSequence");
-        getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", logStream, "ContentTemplateSequence");
+        getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, MappingResource, "1", "1", "ContentTemplateSequence");
+        getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, TemplateIdentifier, "1", "1", "ContentTemplateSequence");
         if (!expectedTemplateIdentifier.empty())
         {
             /* check for DICOM Content Mapping Resource */
@@ -528,39 +509,31 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                 /* compare with expected TID */
                 if (TemplateIdentifier != expectedTemplateIdentifier)
                 {
-                    OFString message = "Incorrect value for TemplateIdentifier (";
-                    if (TemplateIdentifier.empty())
-                        message += "<empty>";
-                    else
-                        message += TemplateIdentifier;
-                    message += "), ";
-                    message += expectedTemplateIdentifier;
-                    message += " expected";
-                    printWarningMessage(logStream, message.c_str());
+                    DCMSR_WARN("Incorrect value for TemplateIdentifier ("
+                            << ((TemplateIdentifier.empty()) ? "<empty>" : TemplateIdentifier) << "), "
+                            << expectedTemplateIdentifier << " expected");
                 }
             } else if (!MappingResource.empty())
-                printUnknownValueWarningMessage(logStream, "MappingResource", MappingResource.c_str());
+                printUnknownValueWarningMessage("MappingResource", MappingResource.c_str());
         }
     }
     /* only check template identifier on dataset level (root node) */
     else if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
     {
-        OFString message = "ContentTemplateSequence missing or empty, TemplateIdentifier ";
-        message += expectedTemplateIdentifier;
-        /* DICOM Content Mapping Resource is currently hard-coded (see above) */
-        message += " (DCMR) expected";
-        printWarningMessage(logStream, message.c_str());
+        DCMSR_WARN("ContentTemplateSequence missing or empty, TemplateIdentifier "
+                << expectedTemplateIdentifier
+                /* DICOM Content Mapping Resource is currently hard-coded (see above) */
+               <<  " (DCMR) expected");
     }
     /* read ContentSequence */
     if (result.good())
-        result = readContentSequence(dataset, constraintChecker, posString, flags, logStream);
+        result = readContentSequence(dataset, constraintChecker, posString, flags);
     return result;
 }
 
 
 OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset,
-                                                                DcmStack *markedItems,
-                                                                OFConsole *logStream)
+                                                                DcmStack *markedItems)
 {
     OFCondition result = EC_Normal;
     /* write digital signatures sequences (optional) */
@@ -569,7 +542,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     if (DigitalSignatures.card() > 0)
     {
         addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures));
-        printWarningMessage(logStream, "Writing possibly incorrect digital signature - same as read from dataset.");
+        DCMSR_WARN("Writing possibly incorrect digital signature - same as read from dataset.");
     }
     /* add to mark stack */
     if (MarkFlag && (markedItems != NULL))
@@ -594,27 +567,26 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     }
     /* write ContentSequence */
     if (result.good())
-        result = writeContentSequence(dataset, markedItems, logStream);
+        result = writeContentSequence(dataset, markedItems);
     return result;
 }
 
 
 OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
                                                           const OFString &posString,
-                                                          const size_t flags,
-                                                          OFConsole *logStream)
+                                                          const size_t flags)
 {
     OFCondition result = EC_Normal;
     /* skip reading ValueType, already done somewhere else */
 
     /* read ConceptNameCodeSequence (might be empty) */
-    ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/, logStream);
+    ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/);
     /* read ContentItem (depending on ValueType) */
-    result = readContentItem(dataset, logStream);
+    result = readContentItem(dataset);
     /* check for validity, after reading */
     if (result.bad() || !isValid())
     {
-        printInvalidContentItemMessage(logStream, "Reading", this, posString.c_str());
+        printInvalidContentItemMessage("Reading", this, posString.c_str());
         /* ignore content item reading/parsing error if flag is set */
         if (flags & RF_ignoreContentItemErrors)
            result = EC_Normal;
@@ -626,8 +598,7 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
 }
 
 
-OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
-                                                           OFConsole *logStream) const
+OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     /* write ValueType */
@@ -636,15 +607,15 @@ OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
     if (result.good())
     {
         if (ConceptName.isValid())
-            result = ConceptName.writeSequence(dataset, DCM_ConceptNameCodeSequence, logStream);
+            result = ConceptName.writeSequence(dataset, DCM_ConceptNameCodeSequence);
     }
     if (result.good())
     {
         /* check for validity, before writing */
         if (!isValid())
-            printInvalidContentItemMessage(logStream, "Writing", this);
+            printInvalidContentItemMessage("Writing", this);
         /* write ContentItem (depending on ValueType) */
-        result = writeContentItem(dataset, logStream);
+        result = writeContentItem(dataset);
     }
     return result;
 }
@@ -696,8 +667,7 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                                      const DSRIODConstraintChecker *constraintChecker,
                                                      const OFString &posString,
-                                                     const size_t flags,
-                                                     OFConsole *logStream)
+                                                     const size_t flags)
 {
     OFCondition result = EC_Normal;
     DcmStack stack;
@@ -728,26 +698,25 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     if (!location.empty())
                         location += ".";
                     location += numberToString(OFstatic_cast(size_t, i + 1), buffer);
-                    if ((logStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
+                    if (flags & RF_showCurrentlyProcessedItem)
                     {
-                        logStream->lockCerr() << "Processing content item " << location << OFendl;
-                        logStream->unlockCerr();
+                        DCMSR_INFO("Processing content item " << location);
                     }
                     /* read RelationshipType */
-                    result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1", logStream);
+                    result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1");
                     if (result.good() || (flags & RF_acceptUnknownRelationshipType))
                     {
                         relationshipType = definedTermToRelationshipType(tmpString);
                         /* check relationship type */
                         if (relationshipType == RT_invalid)
                         {
-                            printUnknownValueWarningMessage(logStream, "RelationshipType", tmpString.c_str());
+                            printUnknownValueWarningMessage("RelationshipType", tmpString.c_str());
                             if (flags & RF_acceptUnknownRelationshipType)
                                 relationshipType = RT_unknown;
                         }
                         /* check for by-reference relationship */
                         DcmUnsignedLong referencedContentItemIdentifier(DCM_ReferencedContentItemIdentifier);
-                        if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", logStream).good())
+                        if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C").good())
                         {
                             /* create new node (by-reference, no constraint checker required) */
                             result = createAndAppendNewNode(node, relationshipType, VT_byReference);
@@ -755,11 +724,11 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                             if (result.good())
                             {
                                 newNode = node;
-                                result = node->readContentItem(*ditem, logStream);
+                                result = node->readContentItem(*ditem);
                             }
                         } else {
                             /* read ValueType (from DocumentContentMacro) - required to create new node */
-                            result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1", logStream);
+                            result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, tmpString, "1", "1");
                             if (result.good())
                             {
                                 /* read by-value relationship */
@@ -773,27 +742,23 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                     if (result.good())
                                     {
                                         newNode = node;
-                                        result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags, logStream);
+                                        result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags);
                                         /* read DocumentContentMacro */
                                         if (result.good())
-                                            result = node->readDocumentContentMacro(*ditem, location.c_str(), flags, logStream);
+                                            result = node->readDocumentContentMacro(*ditem, location.c_str(), flags);
                                     } else {
                                         /* create new node failed */
-                                        OFString message = "Cannot add \"";
-                                        message += relationshipTypeToReadableName(relationshipType);
-                                        message += " ";
-                                        message += valueTypeToDefinedTerm(valueType /*target item*/);
-                                        message += "\" to ";
-                                        message += valueTypeToDefinedTerm(ValueType /*source item*/);
-                                        message += " in ";
+
                                         /* determine document type */
                                         const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
-                                        message += documentTypeToReadableName(documentType);
-                                        printErrorMessage(logStream, message.c_str());
+                                        DCMSR_ERROR("Cannot add \"" << relationshipTypeToReadableName(relationshipType) << " "
+                                                << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
+                                                << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
+                                                << documentTypeToReadableName(documentType));
                                     }
                                 } else {
                                     /* unknown/unsupported value type */
-                                    printUnknownValueWarningMessage(logStream, "ValueType", tmpString.c_str());
+                                    printUnknownValueWarningMessage("ValueType", tmpString.c_str());
                                     result = SR_EC_UnknownValueType;
                                 }
                             }
@@ -802,15 +767,10 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     /* check for any errors */
                     if (result.bad())
                     {
-                        printContentItemErrorMessage(logStream, "Reading", result, newNode, location.c_str());
+                        printContentItemErrorMessage("Reading", result, newNode, location.c_str());
                         /* print current data set (item) that caused the error */
-                        if ((logStream != NULL) && (flags & RF_verboseDebugMode))
-                        {
-                            logStream->lockCerr() << OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl;
-                            ditem->print(logStream->getCerr(), 0 /*flags*/, 1 /*level*/);
-                            logStream->getCerr() << OFString(78, '-') << OFendl;
-                            logStream->unlockCerr();
-                        }
+                        DCMSR_DEBUG(OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl
+                                << DcmObject::PrintHelper(*ditem, 0, 1) << OFString(78, '-'));
                     }
                 } else
                     result = SR_EC_InvalidDocumentTree;
@@ -819,7 +779,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
             /* skipping complete sub-tree if flag is set */
             if (result.bad() && (flags & RF_skipInvalidContentItems))
             {
-                printInvalidContentItemMessage(logStream, "Skipping", node);
+                printInvalidContentItemMessage("Skipping", node);
                 result = EC_Normal;
             }
         }
@@ -829,8 +789,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
 
 
 OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
-                                                      DcmStack *markedItems,
-                                                      OFConsole *logStream) const
+                                                      DcmStack *markedItems) const
 {
     OFCondition result = EC_Normal;
     /* goto first child of current node */
@@ -857,18 +816,18 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                         {
                             /* write ReferencedContentItemIdentifier */
                             if (result.good())
-                                result = node->writeContentItem(*ditem, logStream);
+                                result = node->writeContentItem(*ditem);
                         } else {    // by-value
                             /* write RelationshipMacro */
                             if (result.good())
-                                result = node->writeDocumentRelationshipMacro(*ditem, markedItems, logStream);
+                                result = node->writeDocumentRelationshipMacro(*ditem, markedItems);
                             /* write DocumentContentMacro */
                             if (result.good())
-                                node->writeDocumentContentMacro(*ditem, logStream);
+                                node->writeDocumentContentMacro(*ditem);
                         }
                         /* check for any errors */
                         if (result.bad())
-                            printContentItemErrorMessage(logStream, "Writing", result, node);
+                            printContentItemErrorMessage("Writing", result, node);
                         /* insert item into sequence */
                         if (result.good())
                             dseq->insert(ditem);
@@ -891,8 +850,7 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
 
 
 OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream &docStream,
-                                                       const size_t flags,
-                                                       OFConsole *logStream) const
+                                                       const size_t flags) const
 {
     if (!(flags & HF_renderItemInline) && (flags & HF_renderItemsSeparately))
     {
@@ -904,7 +862,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLConceptName(STD_NAMESPACE ostream &do
         {
             docStream << "<b>";
             /* render ConceptName & Code (if valid) */
-            ConceptName.renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /*fullCode*/);
+            ConceptName.renderHTML(docStream, flags, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /*fullCode*/);
             docStream << ":</b>";
             writeLine = OFTrue;
         }
@@ -944,8 +902,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                                                       STD_NAMESPACE ostream &annexStream,
                                                       const size_t nestingLevel,
                                                       size_t &annexNumber,
-                                                      const size_t flags,
-                                                      OFConsole *logStream) const
+                                                      const size_t flags) const
 {
     OFCondition result = EC_Normal;
     /* goto first child of current node */
@@ -1008,11 +965,11 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                             if (node->getConceptName().getCodeMeaning().empty())
                                 docStream << valueTypeToReadableName(node->getValueType());
                             else
-                                node->getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /*fullCode*/);
+                                node->getConceptName().renderHTML(docStream, flags, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /*fullCode*/);
                             docStream << " = ";
                         }
                         /* render HTML code (directly to the reference text) */
-                        result = node->renderHTML(docStream, annexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_renderItemInline, logStream);
+                        result = node->renderHTML(docStream, annexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_renderItemInline);
                     } else {
                         /* render concept name or value type */
                         if (node->getConceptName().getCodeMeaning().empty())
@@ -1028,7 +985,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                         /* create memory output stream for the temporal annex */
                         OFOStringStream tempAnnexStream;
                         /* render HTML code (directly to the annex) */
-                        result = node->renderHTML(annexStream, tempAnnexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_currentlyInsideAnnex, logStream);
+                        result = node->renderHTML(annexStream, tempAnnexStream, 0 /*nesting level*/, annexNumber, newFlags | HF_currentlyInsideAnnex);
                         annexStream << "</div>" << OFendl;
                         /* use empty paragraph for bottom margin */
                         if (!(flags & HF_XHTML11Compatibility))
@@ -1063,7 +1020,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                     if (newFlags & HF_createFootnoteReferences)
                     {
                         /* render HTML code (without child nodes) */
-                        result = node->renderHTMLContentItem(docStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags, logStream);
+                        result = node->renderHTMLContentItem(docStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags);
                         /* create footnote numbers (individually for each child?) */
                         if (result.good())
                         {
@@ -1079,11 +1036,11 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(STD_NAMESPACE ostream &doc
                             /* render footnote text and reference */
                             createHTMLFootnote(docStream, tempDocStream, footnoteNumber, node->getNodeID(), flags);
                             /* render child nodes to temporary stream */
-                            result = node->renderHTMLChildNodes(tempDocStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags, logStream);
+                            result = node->renderHTMLChildNodes(tempDocStream, annexStream, 0 /*nestingLevel*/, annexNumber, newFlags);
                         }
                     } else {
                         /* render HTML code (incl. child nodes)*/
-                        result = node->renderHTML(docStream, annexStream, nestingLevel + 1, annexNumber, newFlags, logStream);
+                        result = node->renderHTML(docStream, annexStream, nestingLevel + 1, annexNumber, newFlags);
                     }
                     /* end paragraph */
                     if (flags & HF_renderItemsSeparately)
@@ -1158,6 +1115,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.49  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.48  2009-04-21 08:31:29  joergr
  *  Fixed typo.
  *

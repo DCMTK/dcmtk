@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:05:36 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,26 +92,10 @@ class DSRXMLDocument
      */
     OFBool valid() const;
 
-    /** get the current log stream.
-     *  See setLogStream() for details.
-     *  @return pointer to the log stream (might be NULL = no messages)
-     */
-    OFConsole *getLogStream() const;
-
-    /** set the log stream.
-     *  The log stream is used to report warning and error messages.  Unfortunately, the
-     *  stream cannot be used for 'libxml' messages.  Therefore, the error output of 'libxml'
-     *  is disabled by default (see read() for details).
-     ** @param  stream  pointer to the log stream (might be NULL = no messages)
-     */
-    void setLogStream(OFConsole *stream);
-
-
   // --- input and output ---
 
     /** read XML document from file.
      *  In order to enable the optional Schema validation the flag XF_validateSchema has to be set.
-     *  XF_enableLibxmlErrorOutput enables the debug output from 'libxml'.
      ** @param  filename  name of the file from which the XML document is read ("-" for stdin)
      *  @param  flags     optional flag used to customize the reading process (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -149,8 +133,7 @@ class DSRXMLDocument
      ** @param  cursor    cursor pointing to the node where to start from
      *  @param  name      name of the node (XML element) to be searched for
      *  @param  required  flag specifying whether the node is required or not.  If the node
-     *                    is required to be present an error message is reported to the
-     *                    log stream in case it is not found.
+     *                    is required to be present an error message is reported.
      ** @return cursor pointing to the named node if successful, invalid cursor otherwise
      */
     DSRXMLCursor getNamedNode(const DSRXMLCursor &cursor,
@@ -192,7 +175,7 @@ class DSRXMLDocument
      *  @param  encoding     use encoding handler if OFTrue, ignore character set otherwise
      *  @param  required     flag specifying whether the attribute is required or not.  If the
      *                       attribute is required to be present an error message is reported
-     *                       to the log stream in case it is not found.
+     *                       in case it is not found.
      ** @return reference to string object (might be empty)
      */
     OFString &getStringFromAttribute(const DSRXMLCursor &cursor,
@@ -208,7 +191,7 @@ class DSRXMLDocument
      *  @param  encoding  use encoding handler if OFTrue, ignore character set otherwise
      *  @param  required  flag specifying whether the attribute is required or not.  If the
      *                    attribute is required to be present an error message is reported
-     *                    to the log stream in case it is not found.
+     *                    in case it is not found.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition getElementFromAttribute(const DSRXMLCursor &cursor,
@@ -312,9 +295,6 @@ class DSRXMLDocument
     /// pointer to the currently selected character encoding handler (libxml)
     xmlCharEncodingHandlerPtr EncodingHandler;
 
-    /// output stream for error messages, NULL for no messages
-    OFConsole *LogStream;
-
 // --- declaration copy constructor and assignment operator
 
     DSRXMLDocument(const DSRXMLDocument &);
@@ -328,6 +308,9 @@ class DSRXMLDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.h,v $
+ *  Revision 1.6  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.5  2005-12-08 16:05:36  meichel
  *  Changed include path schema for all DCMTK header files
  *

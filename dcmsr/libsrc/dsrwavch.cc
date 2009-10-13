@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:52 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,12 +99,11 @@ OFCondition DSRWaveformChannelList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
-                                         OFConsole *logStream)
+OFCondition DSRWaveformChannelList::read(DcmItem &dataset)
 {
     /* get integer string from dataset */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
-    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", logStream, "WAVEFORM content item");
+    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", "WAVEFORM content item");
     if (result.good())
     {
         /* clear internal list */
@@ -129,8 +128,7 @@ OFCondition DSRWaveformChannelList::read(DcmItem &dataset,
 }
 
 
-OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
-                                          OFConsole * /*logStream*/) const
+OFCondition DSRWaveformChannelList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
@@ -210,6 +208,9 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
+ *  Revision 1.24  2009-10-13 14:57:52  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.23  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

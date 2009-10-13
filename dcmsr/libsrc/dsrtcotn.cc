@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTCoordTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,33 +84,30 @@ OFCondition DSRTCoordTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRTCoordTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                        const size_t flags,
-                                        OFConsole *logStream) const
+                                        const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " type=\"" << temporalRangeTypeToEnumeratedValue(getTemporalRangeType()) << "\"";
     stream << ">" << OFendl;
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    DSRTemporalCoordinatesValue::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
+    DSRTemporalCoordinatesValue::writeXML(stream, flags);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRTCoordTreeNode::readContentItem(DcmItem &dataset,
-                                               OFConsole *logStream)
+OFCondition DSRTCoordTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read TemporalCoordinates */
-    return DSRTemporalCoordinatesValue::read(dataset, logStream);
+    return DSRTemporalCoordinatesValue::read(dataset);
 }
 
 
-OFCondition DSRTCoordTreeNode::writeContentItem(DcmItem &dataset,
-                                                OFConsole *logStream) const
+OFCondition DSRTCoordTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write TemporalCoordinates */
-    return DSRTemporalCoordinatesValue::write(dataset, logStream);
+    return DSRTemporalCoordinatesValue::write(dataset);
 }
 
 
@@ -128,7 +125,7 @@ OFCondition DSRTCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
             /* proceed reading the temporal coordinates */
             result = DSRTemporalCoordinatesValue::readXML(doc, cursor);
         } else
-            printUnknownValueWarningMessage(doc.getLogStream(), "TCOORD type", tmpString.c_str());
+            printUnknownValueWarningMessage("TCOORD type", tmpString.c_str());
     }
     return result;
 }
@@ -138,15 +135,14 @@ OFCondition DSRTCoordTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
                                                      STD_NAMESPACE ostream &annexStream,
                                                      const size_t /*nestingLevel*/,
                                                      size_t &annexNumber,
-                                                     const size_t flags,
-                                                     OFConsole *logStream) const
+                                                     const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render TemporalCoordinates */
     if (result.good())
     {
-        result = DSRTemporalCoordinatesValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        result = DSRTemporalCoordinatesValue::renderHTML(docStream, annexStream, annexNumber, flags);
         docStream << OFendl;
     }
     return result;
@@ -156,6 +152,9 @@ OFCondition DSRTCoordTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcotn.cc,v $
+ *  Revision 1.16  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.15  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

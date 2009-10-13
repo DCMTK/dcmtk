@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDateTimeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,13 +87,12 @@ OFCondition DSRDateTimeTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRDateTimeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                          const size_t flags,
-                                          OFConsole *logStream) const
+                                          const size_t flags) const
 {
     OFString tmpString;
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     /* output time in ISO 8601 format */
     DcmDateTime::getISOFormattedDateTimeFromString(getValue(), tmpString, OFTrue /*seconds*/, OFFalse /*fraction*/,
         OFFalse /*timeZone*/, OFFalse /*createMissingPart*/, "T" /*dateTimeSeparator*/);
@@ -103,19 +102,17 @@ OFCondition DSRDateTimeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRDateTimeTreeNode::readContentItem(DcmItem &dataset,
-                                                 OFConsole *logStream)
+OFCondition DSRDateTimeTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read DateTime */
-    return DSRStringValue::read(dataset, DCM_DateTime, logStream);
+    return DSRStringValue::read(dataset, DCM_DateTime);
 }
 
 
-OFCondition DSRDateTimeTreeNode::writeContentItem(DcmItem &dataset,
-                                                  OFConsole *logStream) const
+OFCondition DSRDateTimeTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write DateTime */
-    return DSRStringValue::write(dataset, DCM_DateTime, logStream);
+    return DSRStringValue::write(dataset, DCM_DateTime);
 }
 
 
@@ -159,11 +156,10 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &do
                                                        STD_NAMESPACE ostream & /*annexStream*/,
                                                        const size_t /*nestingLevel*/,
                                                        size_t & /*annexNumber*/,
-                                                       const size_t flags,
-                                                       OFConsole *logStream) const
+                                                       const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render DateTime */
     if (result.good())
     {
@@ -194,6 +190,9 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &do
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
+ *  Revision 1.23  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.22  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

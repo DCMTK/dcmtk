@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:42 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,7 +149,7 @@ OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
                 /* put value to the datetime list (tbd: convert from ISO 8601 format?) */
                 result = DatetimeList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
             } else {
-                DSRTypes::printUnknownValueWarningMessage(doc.getLogStream(), "TCOORD data type", typeString.c_str());
+                DSRTypes::printUnknownValueWarningMessage("TCOORD data type", typeString.c_str());
                 result = SR_EC_InvalidValue;
             }
         }
@@ -159,8 +159,7 @@ OFCondition DSRTemporalCoordinatesValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
-                                                  const size_t flags,
-                                                  OFConsole * /*logStream*/) const
+                                                  const size_t flags) const
 {
     /* TemporalRangeType is written in TreeNode class */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !SamplePositionList.isEmpty() ||
@@ -188,32 +187,30 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
-                                              OFConsole *logStream)
+OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset)
 {
     /* read TemporalRangeType */
     OFString tmpString;
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, tmpString, "1", "1", logStream, "TCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_TemporalRangeType, tmpString, "1", "1", "TCOORD content item");
     if (result.good())
     {
         TemporalRangeType = DSRTypes::enumeratedValueToTemporalRangeType(tmpString);
         /* check TemporalRangeType */
         if (TemporalRangeType == DSRTypes::TRT_invalid)
-            DSRTypes::printUnknownValueWarningMessage(logStream, "TemporalRangeType", tmpString.c_str());
+            DSRTypes::printUnknownValueWarningMessage("TemporalRangeType", tmpString.c_str());
         /* first read data (all three lists) */
-        SamplePositionList.read(dataset, logStream);
-        TimeOffsetList.read(dataset, logStream);
-        DatetimeList.read(dataset, logStream);
+        SamplePositionList.read(dataset);
+        TimeOffsetList.read(dataset);
+        DatetimeList.read(dataset);
         /* then check data and report warnings if any */
-        if (!checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList, logStream))
+        if (!checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList))
             result = SR_EC_InvalidValue;
     }
     return result;
 }
 
 
-OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
-                                               OFConsole *logStream) const
+OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset) const
 {
     /* write TemporalRangeType */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_TemporalRangeType, DSRTypes::temporalRangeTypeToEnumeratedValue(TemporalRangeType));
@@ -221,14 +218,14 @@ OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
     {
         /* write data (only one list) */
         if (!SamplePositionList.isEmpty())
-            SamplePositionList.write(dataset, logStream);
+            SamplePositionList.write(dataset);
         else if (!TimeOffsetList.isEmpty())
-            TimeOffsetList.write(dataset, logStream);
+            TimeOffsetList.write(dataset);
         else
-            DatetimeList.write(dataset, logStream);
+            DatetimeList.write(dataset);
     }
     /* check data and report warnings if any */
-    checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList, logStream);
+    checkData(TemporalRangeType, SamplePositionList, TimeOffsetList, DatetimeList);
     return result;
 }
 
@@ -236,8 +233,7 @@ OFCondition DSRTemporalCoordinatesValue::write(DcmItem &dataset,
 OFCondition DSRTemporalCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                     STD_NAMESPACE ostream &annexStream,
                                                     size_t &annexNumber,
-                                                    const size_t flags,
-                                                    OFConsole * /*logStream*/) const
+                                                    const size_t flags) const
 {
     /* render TemporalRangeType */
     docStream << DSRTypes::temporalRangeTypeToReadableName(TemporalRangeType);
@@ -326,26 +322,25 @@ OFCondition DSRTemporalCoordinatesValue::setTemporalRangeType(const DSRTypes::E_
 OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
                                               const DSRReferencedSamplePositionList &samplePositionList,
                                               const DSRReferencedTimeOffsetList &timeOffsetList,
-                                              const DSRReferencedDatetimeList &datetimeList,
-                                              OFConsole *logStream) const
+                                              const DSRReferencedDatetimeList &datetimeList) const
 {
     OFBool result = OFTrue;
     if (temporalRangeType == DSRTypes::TRT_invalid)
-        DSRTypes::printWarningMessage(logStream, "Invalid TemporalRangeType for TCOORD content item");
+        DCMSR_WARN("Invalid TemporalRangeType for TCOORD content item");
     const OFBool list1 = !samplePositionList.isEmpty();
     const OFBool list2 = !timeOffsetList.isEmpty();
     const OFBool list3 = !datetimeList.isEmpty();
     if (list1 && list2 && list3)
-        DSRTypes::printWarningMessage(logStream, "ReferencedSamplePositions/TimeOffsets/Datetime present in TCOORD content item");
+        DCMSR_WARN("ReferencedSamplePositions/TimeOffsets/Datetime present in TCOORD content item");
     else if (list1 && list2)
-        DSRTypes::printWarningMessage(logStream, "ReferencedSamplePositions/TimeOffsets present in TCOORD content item");
+        DCMSR_WARN("ReferencedSamplePositions/TimeOffsets present in TCOORD content item");
     else if (list1 && list3)
-        DSRTypes::printWarningMessage(logStream, "ReferencedSamplePositions/Datetime present in TCOORD content item");
+        DCMSR_WARN("ReferencedSamplePositions/Datetime present in TCOORD content item");
     else if (list2 && list3)
-        DSRTypes::printWarningMessage(logStream, "ReferencedTimeOffsets/Datetime present in TCOORD content item");
+        DCMSR_WARN("ReferencedTimeOffsets/Datetime present in TCOORD content item");
     else if (!list1 && !list2 && !list3)
     {
-        DSRTypes::printWarningMessage(logStream, "ReferencedSamplePositions/TimeOffsets/Datetime empty in TCOORD content item");
+        DCMSR_WARN("ReferencedSamplePositions/TimeOffsets/Datetime empty in TCOORD content item");
         /* invalid: all lists are empty (type 1C) */
         result= OFFalse;
     }
@@ -356,6 +351,9 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
+ *  Revision 1.16  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.15  2007-11-15 16:45:42  joergr
  *  Added support for output in XHTML 1.1 format.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.156 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.157 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -216,8 +216,6 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 
     if (pPrint) pPrint->setLog(logstream, verboseMode, debugMode);
     if (pState) pState->setLog(logstream, verboseMode, debugMode);
-    if (pReport && debugMode)
-        pReport->setLogStream(logstream);
 
     referenceTime = OFstatic_cast(unsigned long, time(NULL));
     /* initialize printJobIdentifier with a string comprising the current time */
@@ -582,8 +580,6 @@ OFCondition DVInterface::loadStructuredReport(const char *filename)
         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from file failed: memory exhausted.");
         return EC_MemoryExhausted;
     }
-    if (debugMode)
-        newReport->setLogStream(logstream);
 
     if ((status = DVPSHelper::loadFileFormat(filename, fileformat)) == EC_Normal)
     {
@@ -4050,8 +4046,6 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
   DVConfiguration::setLog(stream, verbMode, dbgMode);
   if (pPrint) pPrint->setLog(stream, verbMode, dbgMode);
-  if (pReport && dbgMode)
-      pReport->setLogStream(stream);
 }
 
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
@@ -4388,6 +4382,9 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
+ *  Revision 1.157  2009-10-13 14:57:49  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.156  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

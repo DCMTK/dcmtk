@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,12 +120,10 @@ class DSRWaveformReferenceValue
     /** write waveform reference in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
+                                 const size_t flags) const;
 
     /** render waveform reference value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
@@ -133,14 +131,12 @@ class DSRWaveformReferenceValue
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
+                                   const size_t flags) const;
 
     /** get reference to waveform reference value
      ** @return reference to waveform reference value
@@ -195,19 +191,15 @@ class DSRWaveformReferenceValue
 
     /** read waveform reference value from dataset
      ** @param  dataset    DICOM dataset from which the value should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readItem(DcmItem &dataset,
-                                 OFConsole *logStream);
+    virtual OFCondition readItem(DcmItem &dataset);
 
     /** write waveform reference value to dataset
      ** @param  dataset    DICOM dataset to which the value should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeItem(DcmItem &dataset,
-                                  OFConsole *logStream) const;
+    virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
      *  Currently all waveform SOP classes that are defined in DICOM PS 3.x 2003 are allowed.
@@ -230,6 +222,9 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
+ *  Revision 1.16  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.15  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

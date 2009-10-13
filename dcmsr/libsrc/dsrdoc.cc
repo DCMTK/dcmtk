@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-12-19 11:10:52 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,6 @@
 
 DSRDocument::DSRDocument(const E_DocumentType documentType)
   : DocumentTree(documentType),
-    LogStream(NULL),
     FinalizedFlag(OFFalse),
     CompletionFlagEnum(CF_invalid),
     VerificationFlagEnum(VF_invalid),
@@ -276,18 +275,18 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
     DcmUniqueIdentifier sopClassUID(DCM_SOPClassUID);
     DcmCodeString modality(DCM_Modality);
     /* check SOP class UID */
-    result = getAndCheckElementFromDataset(dataset, sopClassUID, "1", "1", LogStream);
+    result = getAndCheckElementFromDataset(dataset, sopClassUID, "1", "1");
     if (result.good())
     {
         documentType = sopClassUIDToDocumentType(getStringValueFromElement(sopClassUID, tmpString));
         if (documentType == DT_invalid)
         {
-            printErrorMessage(LogStream, "SOP Class UID does not match one of the known SR document classes");
+            DCMSR_ERROR("SOP Class UID does not match one of the known SR document classes");
             result = SR_EC_UnknownDocumentType;
         }
         else if (!isDocumentTypeSupported(documentType))
         {
-            printErrorMessage(LogStream, "Unsupported SOP Class UID (not yet implemented)");
+            DCMSR_ERROR("Unsupported SOP Class UID (not yet implemented)");
             result = SR_EC_UnsupportedValue;
         }
     } else {
@@ -297,17 +296,13 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
     /* check modality */
     if (result.good())
     {
-        result = getAndCheckElementFromDataset(dataset, modality, "1", "1", LogStream);
+        result = getAndCheckElementFromDataset(dataset, modality, "1", "1");
         if (result.good())
         {
             if (getStringValueFromElement(modality, tmpString) != documentTypeToModality(documentType))
             {
-                OFString message = "Modality does not match '";
-                message += documentTypeToModality(documentType);
-                message += "' for ";
-                message += documentTypeToReadableName(documentType);
-                printErrorMessage(LogStream, message.c_str());
-                result = SR_EC_InvalidValue;
+                DCMSR_ERROR("Modality does not match '" << documentTypeToModality(documentType) << "' for "
+                        << documentTypeToReadableName(documentType));
             }
         }
     }
@@ -334,66 +329,66 @@ OFCondition DSRDocument::read(DcmItem &dataset,
 
         // --- SOP Common Module ---
         getElementFromDataset(dataset, SOPClassUID);   /* already checked */
-        getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1", LogStream);
-        getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", LogStream);
+        getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1");
+        getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C");
         if (SpecificCharacterSet.getVM() > 1)
-            printWarningMessage(LogStream, "Multiple values for 'SpecificCharacterSet' are not supported");
-        getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", LogStream);
-        getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", LogStream);
-        getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", LogStream);
-        CodingSchemeIdentification.read(dataset, LogStream);
+            DCMSR_WARN("Multiple values for 'SpecificCharacterSet' are not supported");
+        getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3");
+        getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3");
+        getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3");
+        CodingSchemeIdentification.read(dataset);
 
         // --- General Study Module ---
-        getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", LogStream);
-        getAndCheckElementFromDataset(dataset, StudyDate, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, StudyTime, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, ReferringPhysiciansName, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, StudyID, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", LogStream);
+        getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1");
+        getAndCheckElementFromDataset(dataset, StudyDate, "1", "2");
+        getAndCheckElementFromDataset(dataset, StudyTime, "1", "2");
+        getAndCheckElementFromDataset(dataset, ReferringPhysiciansName, "1", "2");
+        getAndCheckElementFromDataset(dataset, StudyID, "1", "2");
+        getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2");
+        getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3");
 
         // --- General series Module ---
-        getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", LogStream);
+        getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3");
 
         // --- Patient Module ---
-        getAndCheckElementFromDataset(dataset, PatientsName, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, PatientID, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, PatientsBirthDate, "1", "2", LogStream);
-        getAndCheckElementFromDataset(dataset, PatientsSex, "1", "2", LogStream);
+        getAndCheckElementFromDataset(dataset, PatientsName, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientID, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientsBirthDate, "1", "2");
+        getAndCheckElementFromDataset(dataset, PatientsSex, "1", "2");
 
         // --- General Equipment Module ---
-        getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2", LogStream);
+        getAndCheckElementFromDataset(dataset, Manufacturer, "1", "2");
 
         // --- SR Document Series Module ---
         getElementFromDataset(dataset, Modality);   /* already checked */
-        getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", LogStream);
-        getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", LogStream);
+        getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1");
+        getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1");
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
         searchCond = getElementFromDataset(dataset, ReferencedPerformedProcedureStep);
-        checkElementValue(ReferencedPerformedProcedureStep, "1", "2", LogStream, searchCond);
+        checkElementValue(ReferencedPerformedProcedureStep, "1", "2", searchCond);
         /* remove possible signature sequences */
         removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_MACParametersSequence);
         removeAttributeFromSequence(ReferencedPerformedProcedureStep, DCM_DigitalSignaturesSequence);
 
         // --- SR Document General Module (M) ---
-        getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", LogStream);
-        getAndCheckElementFromDataset(dataset, ContentDate, "1", "1", LogStream);
-        getAndCheckElementFromDataset(dataset, ContentTime, "1", "1", LogStream);
+        getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1");
+        getAndCheckElementFromDataset(dataset, ContentDate, "1", "1");
+        getAndCheckElementFromDataset(dataset, ContentTime, "1", "1");
         /* Key Object Selection Documents do not contain the SR Document General Module */
         if (documentType != DT_KeyObjectDoc)
         {
-            getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1", LogStream);
-            getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", LogStream);
-            getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", LogStream);
+            getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1");
+            getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3");
+            getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1");
             obsSearchCond = getElementFromDataset(dataset, VerifyingObserver);
-            PredecessorDocuments.read(dataset, LogStream);
+            PredecessorDocuments.read(dataset);
             /* need to check sequence in two steps (avoids additional getAndCheck... method) */
             searchCond = getElementFromDataset(dataset, PerformedProcedureCode);
-            checkElementValue(PerformedProcedureCode, "1", "2", LogStream, searchCond);
-            PertinentOtherEvidence.read(dataset, LogStream);
+            checkElementValue(PerformedProcedureCode, "1", "2", searchCond);
+            PertinentOtherEvidence.read(dataset);
         }
-        IdenticalDocuments.read(dataset, LogStream);
-        CurrentRequestedProcedureEvidence.read(dataset, LogStream);
+        IdenticalDocuments.read(dataset);
+        CurrentRequestedProcedureEvidence.read(dataset);
         /* remove possible signature sequences */
         removeAttributeFromSequence(VerifyingObserver, DCM_MACParametersSequence);
         removeAttributeFromSequence(VerifyingObserver, DCM_DigitalSignaturesSequence);
@@ -408,18 +403,18 @@ OFCondition DSRDocument::read(DcmItem &dataset,
             CompletionFlagEnum = enumeratedValueToCompletionFlag(getStringValueFromElement(CompletionFlag, tmpString));
             /* check CompletionFlag */
             if (CompletionFlagEnum == CF_invalid)
-                printUnknownValueWarningMessage(LogStream, "CompletionFlag", tmpString.c_str());
+                printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
             VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, tmpString));
             /* check VerificationFlag and VerifyingObserverSequence */
             if (VerificationFlagEnum == VF_invalid)
-                printUnknownValueWarningMessage(LogStream, "VerificationFlag", tmpString.c_str());
+                printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             else if (VerificationFlagEnum == VF_Verified)
-                checkElementValue(VerifyingObserver, "1-n", "1", LogStream, obsSearchCond);
+                checkElementValue(VerifyingObserver, "1-n", "1", obsSearchCond);
         }
         SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, tmpString));
         /* check SpecificCharacterSet */
         if ((SpecificCharacterSetEnum == CS_invalid) && !tmpString.empty())
-            printUnknownValueWarningMessage(LogStream, "SpecificCharacterSet", tmpString.c_str());
+            printUnknownValueWarningMessage("SpecificCharacterSet", tmpString.c_str());
 
         /* read SR document tree */
         if (result.good())
@@ -452,7 +447,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime));
         if (InstanceCreatorUID.getLength() > 0)      /* optional */
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID));
-        CodingSchemeIdentification.write(dataset, LogStream);
+        CodingSchemeIdentification.write(dataset);
 
         // --- General Study Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(StudyInstanceUID));
@@ -498,17 +493,17 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag));
             if (VerifyingObserver.card() > 0)                /* optional */
                 addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
-            PredecessorDocuments.write(dataset, LogStream);  /* optional */
+            PredecessorDocuments.write(dataset);  /* optional */
             /* always write empty sequence since not yet fully supported */
             PerformedProcedureCode.clear();
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
             if (result.good())
-                result = PertinentOtherEvidence.write(dataset, LogStream);
+                result = PertinentOtherEvidence.write(dataset);
         }
         if (result.good())
-            IdenticalDocuments.write(dataset, LogStream);    /* optional */
+            IdenticalDocuments.write(dataset);    /* optional */
         if (result.good())
-            result = CurrentRequestedProcedureEvidence.write(dataset, LogStream);
+            result = CurrentRequestedProcedureEvidence.write(dataset);
 
         /* write SR document tree */
         if (result.good())
@@ -523,7 +518,6 @@ OFCondition DSRDocument::readXML(const OFString &filename,
                                  const size_t flags)
 {
     DSRXMLDocument doc;
-    doc.setLogStream(LogStream);
     /* read, parse and validate XML document */
     OFCondition result = doc.read(filename, flags);
     if (result.good())
@@ -551,7 +545,7 @@ OFCondition DSRDocument::readXML(const OFString &filename,
                         /* proceed with document header */
                         result = readXMLDocumentHeader(doc, cursor.gotoNext(), flags);
                     } else
-                        printErrorMessage(LogStream, "Unknown/Unsupported SOP Class UID");
+                        DCMSR_ERROR("Unknown/Unsupported SOP Class UID");
                 }
             }
         }
@@ -583,10 +577,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
                     if ((strcmp(encString, "?") == 0) || doc.setEncodingHandler(encString).bad())
                     {
-                        OFString message = "Character set '";
-                        message += tmpString;
-                        message += "' not supported";
-                        printWarningMessage(LogStream, message.c_str());
+                        DCMSR_WARN("Character set '" << tmpString << "' not supported");
                     }
                 } else {
                     /* only one "charset" node allowed */
@@ -598,7 +589,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                 OFString tmpString;
                 /* compare the XML node content */
                 if (doc.getStringFromNodeContent(cursor, tmpString) != documentTypeToModality(getDocumentType()))
-                    printWarningMessage(LogStream, "Invalid value for 'modality' ... ignoring");
+                    DCMSR_WARN("Invalid value for 'modality' ... ignoring");
             }
             else if (doc.matchNode(cursor, "referringphysician"))
             {
@@ -639,7 +630,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     else
                         doc.printUnexpectedNodeWarning(cursor);
                 } else // none of the standard defined evidence types
-                    printUnknownValueWarningMessage(LogStream, "Evidence type", typeString.c_str());
+                    printUnknownValueWarningMessage("Evidence type", typeString.c_str());
             }
             else if (doc.matchNode(cursor, "document"))
                 result = readXMLDocumentData(doc, cursor.getChild(), flags);
@@ -733,7 +724,7 @@ OFCondition DSRDocument::readXMLStudyData(const DSRXMLDocument &doc,
             cursor.gotoNext();
         }
         /* check required element values */
-        checkElementValue(StudyInstanceUID, "1", "1", LogStream);
+        checkElementValue(StudyInstanceUID, "1", "1");
     }
     return result;
 }
@@ -763,8 +754,8 @@ OFCondition DSRDocument::readXMLSeriesData(const DSRXMLDocument &doc,
             cursor.gotoNext();
         }
         /* check required element values */
-        checkElementValue(SeriesInstanceUID, "1", "1", LogStream);
-        checkElementValue(SeriesNumber, "1", "1", LogStream);
+        checkElementValue(SeriesInstanceUID, "1", "1");
+        checkElementValue(SeriesNumber, "1", "1");
     }
     return result;
 }
@@ -801,7 +792,7 @@ OFCondition DSRDocument::readXMLInstanceData(const DSRXMLDocument &doc,
             cursor.gotoNext();
         }
         /* check required element values */
-        checkElementValue(SOPInstanceUID, "1", "1", LogStream);
+        checkElementValue(SOPInstanceUID, "1", "1");
     }
     return result;
 }
@@ -833,7 +824,7 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                     if (childCursor.valid())
                         doc.getElementFromNodeContent(childCursor, CompletionFlagDescription, NULL /*name*/, OFTrue /*encoding*/);
                 } else
-                    printUnknownValueWarningMessage(LogStream, "CompletionFlag", tmpString.c_str());
+                    printUnknownValueWarningMessage("CompletionFlag", tmpString.c_str());
             }
             else if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "verification"))
             {
@@ -847,7 +838,7 @@ OFCondition DSRDocument::readXMLDocumentData(const DSRXMLDocument &doc,
                     if (VerificationFlagEnum == VF_Unverified)
                         result = EC_Normal;
                 } else
-                    printUnknownValueWarningMessage(LogStream, "VerificationFlag", tmpString.c_str());
+                    printUnknownValueWarningMessage("VerificationFlag", tmpString.c_str());
             }
             else if ((documentType != DT_KeyObjectDoc) && doc.matchNode(cursor, "predecessor"))
             {
@@ -932,7 +923,7 @@ OFCondition DSRDocument::readXMLVerifyingObserverData(const DSRXMLDocument &doc,
                     putStringValueToDataset(*ditem, DCM_VerifyingObserverName, nameString);
                     putStringValueToDataset(*ditem, DCM_VerifyingOrganization, orgaString);
                     /* write code value to sequence item (might be empty, type 2) */
-                    codeValue.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
+                    codeValue.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence);
                     /* insert items into sequence */
                     VerifyingObserver.insert(ditem);
                 }
@@ -968,7 +959,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
             if (tmpString != "?")
                 stream << " encoding=\"" << tmpString << "\"";
             else
-                printWarningMessage(LogStream, "Cannot map SpecificCharacterSet to equivalent XML encoding");
+                DCMSR_WARN("Cannot map SpecificCharacterSet to equivalent XML encoding");
         }
         stream << "?>" << OFendl;
 
@@ -1104,7 +1095,7 @@ OFCondition DSRDocument::writeXML(STD_NAMESPACE ostream &stream,
                             stream << "<code";     // bracket ">" is closed in next writeXML() call
                         else
                             stream << "<code>" << OFendl;
-                        obsCode.writeXML(stream, flags, LogStream);
+                        obsCode.writeXML(stream, flags);
                         stream << "</code>" << OFendl;
                     }
                     writeStringValueToXML(stream, organization, "organization", (flags & XF_writeEmptyTags) > 0);
@@ -1255,7 +1246,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                 if (tmpString != "?")
                     stream << " encoding=\"" << tmpString << "\"";
                 else
-                    printWarningMessage(LogStream, "Cannot map SpecificCharacterSet to equivalent XML encoding");
+                    DCMSR_WARN("Cannot map SpecificCharacterSet to equivalent XML encoding");
             }
             stream << "?>" << OFendl;
         }
@@ -1309,10 +1300,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                         stream << "//-->" << OFendl;
                         stream << "</style>" << OFendl;
                     } else {
-                        OFString message = "Could not open CSS file \"";
-                        message += styleSheet;
-                        message += "\" ... ignoring";
-                        printWarningMessage(LogStream, message.c_str());
+                        DCMSR_WARN("Could not open CSS file \"" << styleSheet << "\" ... ignoring");
                     }
                 } else {
                     /* just add a reference to the CSS file (might be an URL) */
@@ -1333,7 +1321,7 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                         stream << " /";
                     stream << ">" << OFendl;
                 } else
-                    printWarningMessage(LogStream, "Cannot map SpecificCharacterSet to equivalent HTML charset");
+                    DCMSR_WARN("Cannot map SpecificCharacterSet to equivalent HTML charset");
             }
         }
         /* generator meta element referring to the DCMTK */
@@ -1625,7 +1613,7 @@ OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
             if (result.good())
             {
                 /* code is optional (type 2) */
-                observerCode.readSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, "2" /*type*/, LogStream);
+                observerCode.readSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, "2" /*type*/);
                 result = getStringValueFromDataset(*ditem, DCM_VerifyingOrganization, organization);
             }
             if (result.good())
@@ -2257,7 +2245,7 @@ OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                 /* write VerifyingObserverName */
                 putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
                 /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
-                observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
+                observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence);
                 /* write VerifyingOrganization */
                 putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
                 /* write VerificationDateTime */
@@ -2305,15 +2293,6 @@ OFCondition DSRDocument::finalizeDocument()
         result = EC_Normal;
     }
     return result;
-}
-
-
-void DSRDocument::setLogStream(OFConsole *stream)
-{
-    /* store log stream */
-    LogStream = stream;
-    /* propagate to document tree and XML document */
-    DocumentTree.setLogStream(stream);
 }
 
 
@@ -2377,6 +2356,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.64  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.63  2008-12-19 11:10:52  joergr
  *  Fixed wrong string comparison which caused a compiler error on openSUSE 11.1.
  *

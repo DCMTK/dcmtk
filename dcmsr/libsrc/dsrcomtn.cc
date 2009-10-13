@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,33 +80,30 @@ OFCondition DSRCompositeTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRCompositeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                           const size_t flags,
-                                           OFConsole *logStream) const
+                                           const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     stream << "<value>" << OFendl;
-    DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    DSRCompositeReferenceValue::writeXML(stream, flags);
     stream << "</value>" << OFendl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRCompositeTreeNode::readContentItem(DcmItem &dataset,
-                                                  OFConsole *logStream)
+OFCondition DSRCompositeTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read ReferencedSOPSequence */
-    return DSRCompositeReferenceValue::readSequence(dataset, "1" /* type */, logStream);
+    return DSRCompositeReferenceValue::readSequence(dataset, "1" /* type */);
 }
 
 
-OFCondition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset,
-                                                   OFConsole *logStream) const
+OFCondition DSRCompositeTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write ReferencedSOPSequence */
-    return DSRCompositeReferenceValue::writeSequence(dataset, logStream);
+    return DSRCompositeReferenceValue::writeSequence(dataset);
 }
 
 
@@ -122,15 +119,14 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
                                                         STD_NAMESPACE ostream &annexStream,
                                                         const size_t /* nestingLevel */,
                                                         size_t &annexNumber,
-                                                        const size_t flags,
-                                                        OFConsole *logStream) const
+                                                        const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Reference */
     if (result.good())
     {
-        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        result = DSRCompositeReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags);
         docStream << OFendl;
     }
     return result;
@@ -140,6 +136,9 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
+ *  Revision 1.20  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

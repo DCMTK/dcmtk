@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:42 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,8 +127,7 @@ OFCondition DSRSpatialCoordinatesValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRSpatialCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
-                                                 const size_t flags,
-                                                 OFConsole * /*logStream*/) const
+                                                 const size_t flags) const
 {
     /* GraphicType is written in TreeNode class */
     if ((flags & DSRTypes::XF_writeEmptyTags) || !GraphicDataList.isEmpty())
@@ -141,29 +140,27 @@ OFCondition DSRSpatialCoordinatesValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
-                                             OFConsole *logStream)
+OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset)
 {
     /* read GraphicType */
     OFString tmpString;
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, tmpString, "1", "1", logStream, "SCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_GraphicType, tmpString, "1", "1", "SCOORD content item");
     if (result.good())
     {
         GraphicType = DSRTypes::enumeratedValueToGraphicType(tmpString);
         /* check GraphicType */
         if (GraphicType == DSRTypes::GT_invalid)
-            DSRTypes::printUnknownValueWarningMessage(logStream, "GraphicType", tmpString.c_str());
+            DSRTypes::printUnknownValueWarningMessage("GraphicType", tmpString.c_str());
         /* read GraphicData */
-        result = GraphicDataList.read(dataset, logStream);
+        result = GraphicDataList.read(dataset);
         /* check GraphicData and report warnings if any */
-        checkData(GraphicType, GraphicDataList, logStream);
+        checkData(GraphicType, GraphicDataList);
     }
     return result;
 }
 
 
-OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
-                                              OFConsole *logStream) const
+OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset) const
 {
     /* write GraphicType */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_GraphicType, DSRTypes::graphicTypeToEnumeratedValue(GraphicType));
@@ -171,10 +168,10 @@ OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
     if (result.good())
     {
         if (!GraphicDataList.isEmpty())
-            result = GraphicDataList.write(dataset, logStream);
+            result = GraphicDataList.write(dataset);
     }
     /* check GraphicData and report warnings if any */
-    checkData(GraphicType, GraphicDataList, logStream);
+    checkData(GraphicType, GraphicDataList);
     return result;
 }
 
@@ -182,8 +179,7 @@ OFCondition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
 OFCondition DSRSpatialCoordinatesValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                    STD_NAMESPACE ostream &annexStream,
                                                    size_t &annexNumber,
-                                                   const size_t flags,
-                                                   OFConsole * /*logStream*/) const
+                                                   const size_t flags) const
 {
     /* render GraphicType */
     docStream << DSRTypes::graphicTypeToReadableName(GraphicType);
@@ -245,14 +241,13 @@ OFCondition DSRSpatialCoordinatesValue::setValue(const DSRSpatialCoordinatesValu
 
 
 OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graphicType,
-                                             const DSRGraphicDataList &graphicDataList,
-                                             OFConsole *logStream) const
+                                             const DSRGraphicDataList &graphicDataList) const
 {
     OFBool result = OFFalse;
     if (graphicType == DSRTypes::GT_invalid)
-        DSRTypes::printWarningMessage(logStream, "Invalid GraphicType for SCOORD content item");
+        DCMSR_WARN("Invalid GraphicType for SCOORD content item");
     else if (graphicDataList.isEmpty())
-        DSRTypes::printWarningMessage(logStream, "No GraphicData for SCOORD content item");
+        DCMSR_WARN("No GraphicData for SCOORD content item");
     else
     {
         const size_t count = graphicDataList.getNumberOfItems();
@@ -260,38 +255,38 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
         {
             case DSRTypes::GT_Point:
                 if (count > 1)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too many entries, only a single entry expected");
+                    DCMSR_WARN("GraphicData has too many entries, only a single entry expected");
                 result = OFTrue;
                 break;
             case DSRTypes::GT_Multipoint:
                 if (count < 1)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too few entries, at least one entry expected");
+                    DCMSR_WARN("GraphicData has too few entries, at least one entry expected");
                 result = OFTrue;
                 break;
             case DSRTypes::GT_Polyline:
 /*              // not required any more according to CP-233
                 if (!(graphicDataList.getItem(1) == graphicDataList.getItem(count)))
-                    DSRTypes::printWarningMessage(logStream, "First and last entry in GraphicData are not equal (POLYLINE)");
+                    DCMSR_WARN("First and last entry in GraphicData are not equal (POLYLINE)");
 */
                 result = OFTrue;
                 break;
             case DSRTypes::GT_Circle:
                 if (count < 2)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too few entries, exactly two entries expected");
+                    DCMSR_WARN("GraphicData has too few entries, exactly two entries expected");
                 else
                 {
                     if (count > 2)
-                        DSRTypes::printWarningMessage(logStream, "GraphicData has too many entries, exactly two entries expected");
+                        DCMSR_WARN("GraphicData has too many entries, exactly two entries expected");
                     result = OFTrue;
                 }
                 break;
             case DSRTypes::GT_Ellipse:
                 if (count < 4)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too few entries, exactly four entries expected");
+                    DCMSR_WARN("GraphicData has too few entries, exactly four entries expected");
                 else
                 {
                     if (count > 4)
-                        DSRTypes::printWarningMessage(logStream, "GraphicData has too many entries, exactly four entries expected");
+                        DCMSR_WARN("GraphicData has too many entries, exactly four entries expected");
                     result = OFTrue;
                 }
                 break;
@@ -307,6 +302,9 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
+ *  Revision 1.20  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2007-11-15 16:45:42  joergr
  *  Added support for output in XHTML 1.1 format.
  *

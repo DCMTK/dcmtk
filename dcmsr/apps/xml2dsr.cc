@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of an XML document to a DICOM structured
  *            reporting file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:56:28 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrdoc.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -48,6 +47,8 @@
 
 #define OFFIS_CONSOLE_APPLICATION "xml2dsr"
 #define OFFIS_CONSOLE_DESCRIPTION "Convert XML document to DICOM SR file"
+
+static OFLogger xml2dsrLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -67,8 +68,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    int opt_debug = 0;
-    OFBool opt_verbose = OFFalse;
     OFBool opt_generateUIDs = OFFalse;
     OFBool opt_overwriteUIDs = OFFalse;
     size_t opt_readFlags = 0;
@@ -79,8 +78,6 @@ int main(int argc, char *argv[])
     E_FileWriteMode opt_writeMode = EWM_fileformat;
     OFCmdUnsignedInt opt_filepad = 0;
     OFCmdUnsignedInt opt_itempad = 0;
-
-    SetDebugLevel(( 0 ));
 
     /* set-up command line parameters and options */
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
@@ -94,9 +91,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                       "print expanded command line arguments");
-      cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
-      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("encoding:");
@@ -149,10 +144,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -172,13 +163,7 @@ int main(int argc, char *argv[])
         }
 
         /* general options */
-        if (cmd.findOption("--verbose"))
-            opt_verbose = OFTrue;
-        if (cmd.findOption("--debug"))
-        {
-            opt_debug = 5;
-            opt_readFlags |= DSRTypes::XF_enableLibxmlErrorOutput;
-        }
+        OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
         if (cmd.findOption("--template-envelope"))
@@ -284,16 +269,14 @@ int main(int argc, char *argv[])
             app.checkConflict("--validate-schema", "--template-envelope", (opt_readFlags & DSRTypes::XF_templateElementEnclosesItems) > 0);
     }
 
-    if (opt_debug)
-        app.printIdentifier();
-    SetDebugLevel((opt_debug));
+    /* print resource identifier */
+    OFLOG_DEBUG(xml2dsrLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+        OFLOG_WARN(xml2dsrLogger, "no data dictionary loaded, "
+             << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* check for compatible libxml version */
@@ -310,12 +293,12 @@ int main(int argc, char *argv[])
     /* check filenames */
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>" << OFendl;
+        OFLOG_FATAL(xml2dsrLogger, OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>");
         result = EC_IllegalParameter;
     }
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>" << OFendl;
+        OFLOG_FATAL(xml2dsrLogger, OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>");
         result = EC_IllegalParameter;
     }
 
@@ -326,24 +309,17 @@ int main(int argc, char *argv[])
         if (dsrdoc != NULL)
         {
             DcmFileFormat fileformat;
-            if (opt_debug)
-                dsrdoc->setLogStream(&ofConsole);
-            if (opt_verbose)
-            {
-                COUT << "reading ";
+            OFLOG_INFO(xml2dsrLogger, "reading "
 #ifdef LIBXML_SCHEMAS_ENABLED
-                if (opt_readFlags & DSRTypes::XF_validateSchema)
-                    COUT << "and validating ";
+                << ((opt_readFlags & DSRTypes::XF_validateSchema) ? "and validating " : "")
 #endif
-                COUT << "XML input file: " << opt_ifname << OFendl;
-            }
+                << "XML input file: " << opt_ifname);
             /* read XML file and feed data into DICOM fileformat */
             result = dsrdoc->readXML(opt_ifname, opt_readFlags);
             if (result.good())
             {
                 DcmDataset *dataset = fileformat.getDataset();
-                if (opt_verbose)
-                    COUT << "writing DICOM SR output file: " << opt_ofname << OFendl;
+                OFLOG_INFO(xml2dsrLogger, "writing DICOM SR output file: " << opt_ofname);
                 /* write SR document to dataset */
                 result = dsrdoc->write(*dataset);
                 /* generate new UIDs (if required) */
@@ -352,20 +328,17 @@ int main(int argc, char *argv[])
                     char uid[100];
                     if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
                     {
-                        if (opt_verbose)
-                            COUT << "generating new Study Instance UID" << OFendl;
+                        OFLOG_INFO(xml2dsrLogger, "generating new Study Instance UID");
                         dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
                     }
                     if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
                     {
-                        if (opt_verbose)
-                            COUT << "generating new Series Instance UID" << OFendl;
+                        OFLOG_INFO(xml2dsrLogger, "generating new Series Instance UID");
                         dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
                     }
                     if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
                     {
-                        if (opt_verbose)
-                            COUT << "generating new SOP Instance UID" << OFendl;
+                        OFLOG_INFO(xml2dsrLogger, "generating new SOP Instance UID");
                         dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
                     }
                 }
@@ -376,9 +349,9 @@ int main(int argc, char *argv[])
                         OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
                 }
                 if (result.bad())
-                    CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << OFendl;
+                    OFLOG_FATAL(xml2dsrLogger, result.text() << ": writing file: "  << opt_ofname);
             } else
-                CERR << "Error: " << result.text() << ": reading file: "  << opt_ifname << OFendl;
+                OFLOG_FATAL(xml2dsrLogger, result.text() << ": reading file: "  << opt_ifname);
         }
         delete dsrdoc;
     }
@@ -406,6 +379,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.13  2009-10-13 14:57:50  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.12  2009-08-21 09:56:28  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

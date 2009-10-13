@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,12 +87,11 @@ OFCondition DSRPNameTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRPNameTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                       const size_t flags,
-                                       OFConsole *logStream) const
+                                       const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     if (!getValue().empty() || (flags & XF_writeEmptyTags))
     {
         OFString tmpString;
@@ -103,19 +102,17 @@ OFCondition DSRPNameTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRPNameTreeNode::readContentItem(DcmItem &dataset,
-                                              OFConsole *logStream)
+OFCondition DSRPNameTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read PName */
-    return DSRStringValue::read(dataset, DCM_PersonName, logStream);
+    return DSRStringValue::read(dataset, DCM_PersonName);
 }
 
 
-OFCondition DSRPNameTreeNode::writeContentItem(DcmItem &dataset,
-                                               OFConsole *logStream) const
+OFCondition DSRPNameTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write PName */
-    return DSRStringValue::write(dataset, DCM_PersonName, logStream);
+    return DSRStringValue::write(dataset, DCM_PersonName);
 }
 
 
@@ -172,11 +169,10 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
                                                     STD_NAMESPACE ostream & /*annexStream*/,
                                                     const size_t /*nestingLevel*/,
                                                     size_t & /*annexNumber*/,
-                                                    const size_t flags,
-                                                    OFConsole *logStream) const
+                                                    const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render PName */
     if (result.good())
     {
@@ -207,6 +203,9 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
+ *  Revision 1.26  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.25  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:53:09 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,13 +82,12 @@ size_t DSRCodingSchemeIdentificationList::getNumberOfItems() const
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset,
-                                                    OFConsole *logStream)
+OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset)
 {
     /* first, check whether sequence is present and non-empty */
     DcmSequenceOfItems sequence(DCM_CodingSchemeIdentificationSequence);
     OFCondition result = getElementFromDataset(dataset, sequence);
-    checkElementValue(sequence, "1-n", "3", logStream, result);
+    checkElementValue(sequence, "1-n", "3", result);
     if (result.good())
     {
         ItemStruct *item = NULL;
@@ -100,18 +99,18 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset,
             if (ditem != NULL)
             {
                 /* get the coding scheme designator */
-                if (getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeDesignator, codingSchemeDesignator, "1", "1", logStream).good())
+                if (getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeDesignator, codingSchemeDesignator, "1", "1").good())
                 {
                     /* add new item to the list */
-                    if (addItem(codingSchemeDesignator, item, logStream).good())
+                    if (addItem(codingSchemeDesignator, item).good())
                     {
                         /* read additional information */
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeRegistry, item->CodingSchemeRegistry, "1", "1C", logStream);
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeUID, item->CodingSchemeUID, "1", "1C", logStream);
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "", "2C", logStream);
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3", logStream);
-                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3", logStream);
-                        getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3", logStream);
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeRegistry, item->CodingSchemeRegistry, "1", "1C");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeUID, item->CodingSchemeUID, "1", "1C");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, "", "2C");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, "1", "3");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, "1", "3");
+                        getAndCheckStringValueFromDataset(*ditem, DCM_ResponsibleOrganization, item->ResponsibleOrganization, "1", "3");
                     }
                 }
             }
@@ -121,8 +120,7 @@ OFCondition DSRCodingSchemeIdentificationList::read(DcmItem &dataset,
 }
 
 
-OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset,
-                                                     OFConsole *logStream) const
+OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     /* iterate over all list items */
@@ -147,10 +145,8 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset,
                     putStringValueToDataset(*ditem, DCM_CodingSchemeExternalID, item->CodingSchemeExternalID, OFFalse /*allowEmpty*/);
                 else if (!item->CodingSchemeExternalID.empty())
                 {
-                    OFString message = "Both CodingSchemeUID and CodingSchemeExternalID present for \"";
-                    message += item->CodingSchemeDesignator;
-                    message += "\", the latter will be ignored";
-                    printWarningMessage(logStream, message.c_str());
+                    DCMSR_WARN("Both CodingSchemeUID and CodingSchemeExternalID present for \""
+                            << item->CodingSchemeDesignator << "\", the latter will be ignored");
                 }
                 putStringValueToDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, OFFalse /*allowEmpty*/);
                 putStringValueToDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, OFFalse /*allowEmpty*/);
@@ -179,7 +175,7 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
             /* retrieve coding scheme designator */
             if (!doc.getStringFromAttribute(cursor, codingSchemeDesignator, "designator", OFTrue /*encoding*/).empty())
             {
-                result = addItem(codingSchemeDesignator, item, doc.getLogStream());
+                result = addItem(codingSchemeDesignator, item);
                 if (result.good())
                 {
                     DSRXMLCursor childCursor = cursor.getChild();
@@ -255,8 +251,7 @@ OFCondition DSRCodingSchemeIdentificationList::addPrivateDcmtkCodingScheme()
 
 
 OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSchemeDesignator,
-                                                       ItemStruct *&item,
-                                                       OFConsole *logStream)
+                                                       ItemStruct *&item)
 {
     OFCondition result = EC_IllegalParameter;
     /* check parameter first */
@@ -280,10 +275,8 @@ OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSch
                 result = EC_MemoryExhausted;
             }
         } else {
-            OFString message = "CodingSchemeDesignator \"";
-            message += codingSchemeDesignator;
-            message += "\" already exists in CodingSchemeIdentificationSequence ... overwriting";
-            printWarningMessage(logStream, message.c_str());
+            DCMSR_WARN("CodingSchemeDesignator \"" << codingSchemeDesignator
+                    << "\" already exists in CodingSchemeIdentificationSequence ... overwriting");
             /* gotoItem() was successful, set item pointer */
             item = OFstatic_cast(ItemStruct *, *Iterator);
         }
@@ -577,6 +570,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.14  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.13  2009-09-04 13:53:09  meichel
  *  Minor const iterator related changes needed to compile with VC6 with HAVE_STL
  *

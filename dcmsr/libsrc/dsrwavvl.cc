@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:52 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,10 +134,9 @@ OFCondition DSRWaveformReferenceValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRWaveformReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
-                                                const size_t flags,
-                                                OFConsole *logStream) const
+                                                const size_t flags) const
 {
-    OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags);
     if ((flags & DSRTypes::XF_writeEmptyTags) || !ChannelList.isEmpty())
     {
         stream << "<channels>";
@@ -148,28 +147,26 @@ OFCondition DSRWaveformReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
-                                                OFConsole *logStream)
+OFCondition DSRWaveformReferenceValue::readItem(DcmItem &dataset)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    OFCondition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::readItem(dataset);
     /* read ReferencedWaveformChannels (conditional) */
     if (result.good())
-        ChannelList.read(dataset, logStream);
+        ChannelList.read(dataset);
     return result;
 }
 
 
-OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
-                                                 OFConsole *logStream) const
+OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset) const
 {
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    OFCondition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeItem(dataset);
     /* write ReferencedWaveformChannels (conditional) */
     if (result.good())
     {
         if (!ChannelList.isEmpty())
-            result = ChannelList.write(dataset, logStream);
+            result = ChannelList.write(dataset);
     }
     return result;
 }
@@ -178,8 +175,7 @@ OFCondition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
 OFCondition DSRWaveformReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                   STD_NAMESPACE ostream &annexStream,
                                                   size_t &annexNumber,
-                                                  const size_t flags,
-                                                  OFConsole * /*logStream*/) const
+                                                  const size_t flags) const
 {
     /* render reference */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
@@ -271,6 +267,9 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
+ *  Revision 1.20  2009-10-13 14:57:52  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

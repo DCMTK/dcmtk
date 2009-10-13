@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:46:40 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,12 +84,6 @@ class DSRDocumentTree
      ** @return OFTrue if valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
-
-    /** set the log stream.
-     *  The log stream is used to report any warnings and error messages.
-     ** @param  stream  pointer to the log stream (might be NULL = no messages)
-     */
-    void setLogStream(OFConsole *stream);
 
     /** print current SR document tree to specified output stream
      ** @param  stream  output stream
@@ -333,8 +327,6 @@ class DSRDocumentTree
 
     /// document type of the associated SR document
     E_DocumentType DocumentType;
-    /// output stream for error messages, NULL for no messages
-    OFConsole     *LogStream;
     /// current content item.  Introduced to avoid the external use of pointers.
     DSRContentItem CurrentContentItem;
     /// check relationship content constraints of the associated IOD
@@ -355,6 +347,9 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
+ *  Revision 1.22  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.21  2008-05-19 09:46:40  joergr
  *  Reset flag for all content items whether they are target of a by-reference
  *  relationship (required for an reproducible behavior).

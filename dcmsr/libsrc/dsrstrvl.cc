@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,17 +96,15 @@ void DSRStringValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRStringValue::read(DcmItem &dataset,
-                                 const DcmTagKey &tagKey,
-                                 OFConsole *logStream)
+                                 const DcmTagKey &tagKey)
 {
     /* tbd: check value */
-    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", logStream, "content item");
+    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", "content item");
 }
 
 
 OFCondition DSRStringValue::write(DcmItem &dataset,
-                                  const DcmTagKey &tagKey,
-                                  OFConsole * /*logStream*/) const
+                                  const DcmTagKey &tagKey) const
 {
     /* write Value */
     return DSRTypes::putStringValueToDataset(dataset, tagKey, Value);
@@ -130,8 +128,7 @@ OFCondition DSRStringValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRStringValue::renderHTML(STD_NAMESPACE ostream &docStream,
-                                       const size_t flags,
-                                       OFConsole * /*logStream*/) const
+                                       const size_t flags) const
 {
     OFString htmlString;
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
@@ -176,6 +173,9 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
+ *  Revision 1.17  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.16  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

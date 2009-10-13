@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,29 +79,26 @@ OFCondition DSRNumTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRNumTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                     const size_t flags,
-                                     OFConsole *logStream) const
+                                     const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    DSRNumericMeasurementValue::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
+    DSRNumericMeasurementValue::writeXML(stream, flags);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRNumTreeNode::readContentItem(DcmItem &dataset,
-                                            OFConsole *logStream)
+OFCondition DSRNumTreeNode::readContentItem(DcmItem &dataset)
 {
-    return DSRNumericMeasurementValue::readSequence(dataset, logStream);
+    return DSRNumericMeasurementValue::readSequence(dataset);
 }
 
 
-OFCondition DSRNumTreeNode::writeContentItem(DcmItem &dataset,
-                                             OFConsole *logStream) const
+OFCondition DSRNumTreeNode::writeContentItem(DcmItem &dataset) const
 {
-    return DSRNumericMeasurementValue::writeSequence(dataset, logStream);
+    return DSRNumericMeasurementValue::writeSequence(dataset);
 }
 
 
@@ -116,15 +113,14 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStre
                                                   STD_NAMESPACE ostream &annexStream,
                                                   const size_t /*nestingLevel*/,
                                                   size_t &annexNumber,
-                                                  const size_t flags,
-                                                  OFConsole *logStream) const
+                                                  const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Num */
     if (result.good())
     {
-        result = DSRNumericMeasurementValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        result = DSRNumericMeasurementValue::renderHTML(docStream, annexStream, annexNumber, flags);
         docStream << OFendl;
     }
     return result;
@@ -134,6 +130,9 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStre
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
+ *  Revision 1.22  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.21  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

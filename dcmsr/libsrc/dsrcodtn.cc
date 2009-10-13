@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,37 +100,34 @@ OFCondition DSRCodeTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 
 
 OFCondition DSRCodeTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                      const size_t flags,
-                                      OFConsole *logStream) const
+                                      const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
     {
         stream << "<value";     // bracket ">" is closed in next the writeXML() routine
-        DSRCodedEntryValue::writeXML(stream, flags, logStream);
+        DSRCodedEntryValue::writeXML(stream, flags);
         stream << "</value>" << OFendl;
     } else
-        DSRCodedEntryValue::writeXML(stream, flags, logStream);
+        DSRCodedEntryValue::writeXML(stream, flags);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
-                                             OFConsole *logStream)
+OFCondition DSRCodeTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read ConceptCodeSequence */
-    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /*type*/, logStream);
+    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /*type*/);
 }
 
 
-OFCondition DSRCodeTreeNode::writeContentItem(DcmItem &dataset,
-                                              OFConsole *logStream) const
+OFCondition DSRCodeTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write ConceptCodeSequence */
-    return DSRCodedEntryValue::writeSequence(dataset, DCM_ConceptCodeSequence, logStream);
+    return DSRCodedEntryValue::writeSequence(dataset, DCM_ConceptCodeSequence);
 }
 
 
@@ -138,11 +135,10 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
                                                    STD_NAMESPACE ostream & /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
-                                                   const size_t flags,
-                                                   OFConsole *logStream) const
+                                                   const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Code */
     if (result.good())
     {
@@ -156,7 +152,7 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
             else /* HTML 4.01 */
                 docStream << "<span class=\"under\">";
         }
-        result = DSRCodedEntryValue::renderHTML(docStream, flags, logStream, fullCode);
+        result = DSRCodedEntryValue::renderHTML(docStream, flags, fullCode);
         if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
         {
             if (flags & DSRTypes::HF_HTML32Compatibility)
@@ -173,6 +169,9 @@ OFCondition DSRCodeTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
+ *  Revision 1.25  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.24  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,33 +134,27 @@ class DSRNumericMeasurementValue
     /** write numeric measurement value in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
+                                 const size_t flags) const;
 
     /** read measured value sequence and numeric value qualifier code sequence from dataset.
      *  The number of items within the sequences is checked.  If error/warning output are
      *  enabled a warning message is printed if a sequence is absent or contains more than
      *  one item.
      ** @param  dataset    DICOM dataset from which the sequences should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readSequence(DcmItem &dataset,
-                                     OFConsole *logStream);
+    virtual OFCondition readSequence(DcmItem &dataset);
 
     /** write measured value sequence and numeric value qualifier code sequence to dataset.
      *  The measured value sequence is always written (might be empty, though).  The numeric
      *  value qualifier code sequence is optional and, therefore, only written if non-empty.
      ** @param  dataset    DICOM dataset to which the sequences should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSequence(DcmItem &dataset,
-                                      OFConsole *logStream) const;
+    virtual OFCondition writeSequence(DcmItem &dataset) const;
 
     /** render numeric measurement value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
@@ -168,14 +162,12 @@ class DSRNumericMeasurementValue
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
+                                   const size_t flags) const;
 
     /** get reference to numeric measurement value
      ** @return reference to numeric measurement value
@@ -291,19 +283,15 @@ class DSRNumericMeasurementValue
 
     /** read numeric measurement value from dataset
      ** @param  dataset    DICOM dataset from which the value should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readItem(DcmItem &dataset,
-                                 OFConsole *logStream);
+    virtual OFCondition readItem(DcmItem &dataset);
 
     /** write numeric measurement value to dataset
      ** @param  dataset    DICOM dataset to which the value should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeItem(DcmItem &dataset,
-                                  OFConsole *logStream) const;
+    virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified numeric value for validity.
      *  Currently the only check that is performed is that the string is not empty.  Later
@@ -347,6 +335,9 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
+ *  Revision 1.14  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.13  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

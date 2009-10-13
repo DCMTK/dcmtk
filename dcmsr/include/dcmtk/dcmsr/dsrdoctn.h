@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:48:32 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,13 +118,11 @@ class DSRDocumentTreeNode
      ** @param  dataset            DICOM dataset from which the content item should be read
      *  @param  constraintChecker  checks relationship content constraints of the associated IOD
      *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmItem &dataset,
                              const DSRIODConstraintChecker *constraintChecker,
-                             const size_t flags,
-                             OFConsole *logStream = NULL);
+                             const size_t flags);
 
     /** write content item to dataset.
      *  A number of writeXXX() methods are called (see "protected" part) in order to write all
@@ -133,12 +131,10 @@ class DSRDocumentTreeNode
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
      *                       Can be used to digitally sign parts of the document tree.
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition write(DcmItem &dataset,
-                              DcmStack *markedItems = NULL,
-                              OFConsole *logStream = NULL);
+                              DcmStack *markedItems = NULL);
 
     /** read general XML document tree node data
      ** @param  doc           document containing the XML file content
@@ -156,12 +152,10 @@ class DSRDocumentTreeNode
     /** write content item in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream = NULL) const;
+                                 const size_t flags) const;
 
     /** render content item in HTML/XHTML format.
      *  After rendering the current content item all child nodes (if any) are also rendered (see
@@ -172,15 +166,13 @@ class DSRDocumentTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    const size_t nestingLevel,
                                    size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream = NULL) const;
+                                   const size_t flags) const;
 
     /** check whether content item is digitally signed.
      *  A content item is signed if the DigitalSignaturesSequence exists.  This sequence is read
@@ -377,21 +369,17 @@ class DSRDocumentTreeNode
      *  This method does nothing for this base class, but derived classes overwrite it to read
      *  the contents according to their value type.
      ** @param  dataset    DICOM dataset from which the content item should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readContentItem(DcmItem &dataset,
-                                        OFConsole *logStream);
+    virtual OFCondition readContentItem(DcmItem &dataset);
 
     /** write content item (value) to dataset.
      *  This method does nothing for this base class, but derived classes overwrite it to write
      *  the contents according to their value type.
      ** @param  dataset    DICOM dataset to which the content item should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeContentItem(DcmItem &dataset,
-                                         OFConsole *logStream) const;
+    virtual OFCondition writeContentItem(DcmItem &dataset) const;
 
     /** read content item specific XML data.
      *  This method does nothing for this base class, but derived classes overwrite it to read
@@ -412,15 +400,13 @@ class DSRDocumentTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
                                               STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
-                                              const size_t flags,
-                                              OFConsole *logStream) const;
+                                              const size_t flags) const;
 
     /** write common item start (XML tag)
      ** @param  stream          output stream to which the XML document is written
@@ -443,105 +429,87 @@ class DSRDocumentTreeNode
      ** @param  dataset            DICOM dataset from which the data should be read
      *  @param  constraintChecker  checks relationship content constraints of the associated IOD
      *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readSRDocumentContentModule(DcmItem &dataset,
                                             const DSRIODConstraintChecker *constraintChecker,
-                                            const size_t flags,
-                                            OFConsole *logStream);
+                                            const size_t flags);
 
     /** write SR document content module
      ** @param  dataset      DICOM dataset to which the data should be written
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeSRDocumentContentModule(DcmItem &dataset,
-                                             DcmStack *markedItems,
-                                             OFConsole *logStream);
+                                             DcmStack *markedItems);
 
     /** read document relationship macro
      ** @param  dataset            DICOM dataset from which the data should be read
      *  @param  constraintChecker  checks relationship content constraints of the associated IOD
      *  @param  posString          location of the current content item (e.g. "1.2.3")
      *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readDocumentRelationshipMacro(DcmItem &dataset,
                                               const DSRIODConstraintChecker *constraintChecker,
                                               const OFString &posString,
-                                              const size_t flags,
-                                              OFConsole *logStream);
+                                              const size_t flags);
 
     /** write document relationship macro
      ** @param  dataset      DICOM dataset to which the data should be written
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeDocumentRelationshipMacro(DcmItem &dataset,
-                                               DcmStack *markedItems,
-                                               OFConsole *logStream);
+                                               DcmStack *markedItems);
 
     /** read document content macro
      ** @param  dataset    DICOM dataset from which the data should be read
      *  @param  posString  location of the current content item (e.g. "1.2.3")
      *  @param  flags      flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readDocumentContentMacro(DcmItem &dataset,
                                          const OFString &posString,
-                                         const size_t flags,
-                                         OFConsole *logStream);
+                                         const size_t flags);
 
     /** write document content macro
      ** @param  dataset    DICOM dataset to which the data should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeDocumentContentMacro(DcmItem &dataset,
-                                          OFConsole *logStream) const;
+    OFCondition writeDocumentContentMacro(DcmItem &dataset) const;
 
     /** read content sequence
      ** @param  dataset            DICOM dataset from which the data should be read
      *  @param  constraintChecker  checks relationship content constraints of the associated IOD
      *  @param  posString          location of the current content item (e.g. "1.2.3")
      *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readContentSequence(DcmItem &dataset,
                                     const DSRIODConstraintChecker *constraintChecker,
                                     const OFString &posString,
-                                    const size_t flags,
-                                    OFConsole *logStream);
+                                    const size_t flags);
 
     /** write content sequence
      ** @param  dataset       DICOM dataset to which the data should be written
      *  @param  markedItems   optional stack where pointers to all 'marked' content items
      *                        (DICOM datasets/items) are added to during the write process.
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeContentSequence(DcmItem &dataset,
-                                     DcmStack *markedItems,
-                                     OFConsole *logStream) const;
+                                     DcmStack *markedItems) const;
 
     /** render concept name in HTML/XHTML format.
      *  If the optional observation datetime field is valid (not empty) it is also rendered.
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTMLConceptName(STD_NAMESPACE ostream &docStream,
-                                      const size_t flags,
-                                      OFConsole *logStream) const;
+                                      const size_t flags) const;
 
     /** render child nodes in HTML/XHTML format
      ** @param  docStream     output stream to which the main HTML/XHTML document is written
@@ -550,15 +518,13 @@ class DSRDocumentTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTMLChildNodes(STD_NAMESPACE ostream &docStream,
                                      STD_NAMESPACE ostream &annexStream,
                                      const size_t nestingLevel,
                                      size_t &annexNumber,
-                                     const size_t flags,
-                                     OFConsole *logStream) const;
+                                     const size_t flags) const;
 
   // --- static function ---
 
@@ -617,6 +583,9 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
+ *  Revision 1.26  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.25  2008-05-19 09:48:32  joergr
  *  Fixed typo.
  *

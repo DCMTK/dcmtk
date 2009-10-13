@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-24 13:43:11 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,16 @@
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/oftypes.h"
 #include "dcmtk/ofstd/ofcond.h"
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmsrGetLogger();
+
+#define DCMSR_TRACE(msg) OFLOG_TRACE(DCM_dcmsrGetLogger(), msg)
+#define DCMSR_DEBUG(msg) OFLOG_DEBUG(DCM_dcmsrGetLogger(), msg)
+#define DCMSR_INFO(msg)  OFLOG_INFO(DCM_dcmsrGetLogger(), msg)
+#define DCMSR_WARN(msg)  OFLOG_WARN(DCM_dcmsrGetLogger(), msg)
+#define DCMSR_ERROR(msg) OFLOG_ERROR(DCM_dcmsrGetLogger(), msg)
+#define DCMSR_FATAL(msg) OFLOG_FATAL(DCM_dcmsrGetLogger(), msg)
 
 
 /*---------------------*
@@ -169,9 +179,6 @@ class DSRTypes
     /// do not abort when detecting an invalid content item, skip invalid sub-tree instead
     static const size_t RF_skipInvalidContentItems;
 
-    /// print more detailed debug messages (verbose mode)
-    static const size_t RF_verboseDebugMode;
-
     /// show the currently processed content item (e.g. "1.2.3")
     static const size_t RF_showCurrentlyProcessedItem;
     //@}
@@ -293,9 +300,6 @@ class DSRTypes
 
     /// read: validate content of XML document against Schema
     static const size_t XF_validateSchema;
-
-    /// read: output 'libxml' error and warning messages
-    static const size_t XF_enableLibxmlErrorOutput;
 
     /// read/write: template identification element encloses content items
     static const size_t XF_templateElementEnclosesItems;
@@ -1035,13 +1039,10 @@ class DSRTypes
                                                const OFBool allowEmpty = OFTrue);
 
     /** check element value for correct value multipicity and type.
-     *  If the 'stream' parameter is valid a warning message is printed automatically if something
-     *  is wrong.
      ** @param  delem       DICOM element to be checked
      *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
      *                      interpreted as cardinality (number of items) for sequences
      *  @param  type        value type (valid value: "1", "1C", "2", something else)
-     *  @param  stream      optional output stream used for warning messages
      *  @param  searchCond  optional flag indicating the status of a previous 'search' function call
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return OFTrue if element value is correct, OFFalse otherwise
@@ -1049,20 +1050,16 @@ class DSRTypes
     static OFBool checkElementValue(DcmElement &delem,
                                     const OFString &vm,
                                     const OFString &type,
-                                    OFConsole *stream = NULL,
                                     const OFCondition &searchCond = EC_Normal,
                                     const char *moduleName = NULL);
 
     /** get element from dataset and check it for correct value multipicity and type.
-     *  If the 'stream' parameter is valid a warning message is printed automatically if something
-     *  is wrong.  This functions calls the above one to check the element value.
      ** @param  dataset     reference to DICOM dataset from which the element should be retrieved.
      *                      (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  delem       DICOM element used to store the value
      *  @param  vm          value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
      *                      interpreted as cardinality (number of items) for sequences
      *  @param  type        value type (valid value: "1", "1C", "2", something else which is not checked)
-     *  @param  stream      optional output stream used for warning messages
      *  @param  moduleName  optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
      */
@@ -1070,12 +1067,9 @@ class DSRTypes
                                                      DcmElement &delem,
                                                      const OFString &vm,
                                                      const OFString &type,
-                                                     OFConsole *stream = NULL,
                                                      const char *moduleName = NULL);
 
     /** get string value from dataset and check it for correct value multipicity and type.
-     *  If the 'stream' parameter is valid a warning message is printed automatically if something
-     *  is wrong.  This functions calls the above one to check the element value.
      ** @param  dataset      reference to DICOM dataset from which the element should be retrieved.
      *                       (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
      *  @param  tagKey       DICOM tag specifying the attribute from which the string should be retrieved
@@ -1084,7 +1078,6 @@ class DSRTypes
      *  @param  vm           value multiplicity (valid value: "1", "1-n", "2", "2-2n"),
      *                       interpreted as cardinality (number of items) for sequences
      *  @param  type         value type (valid value: "1", "1C", "2", something else which is not checked)
-     *  @param  stream       optional output stream used for warning messages
      *  @param  moduleName   optional module name to be printed (default: "SR document" if NULL)
      ** @return status, EC_Normal if element could be retrieved and value is correct, an error code otherwise
      */
@@ -1093,68 +1086,38 @@ class DSRTypes
                                                          OFString &stringValue,
                                                          const OFString &vm,
                                                          const OFString &type,
-                                                         OFConsole *stream = NULL,
                                                          const char *moduleName = NULL);
 
   // --- output functions ---
 
-    /** print a message
-     ** @param  stream   output stream to which the warning message is printed
-     *  @param  message  message to be printed
-     */
-    static void printMessage(OFConsole *stream,
-                             const char *message);
-
-    /** print a warning message.
-     *  The prefix 'DCMSR - Warning: ' is automatically added to the message text.
-     ** @param  stream   output stream to which the warning message is printed
-     *  @param  message  warning message to be printed
-     */
-    static void printWarningMessage(OFConsole *stream,
-                                    const char *message);
-
-    /** print a error message.
-     *  The prefix 'DCMSR - Error: ' is automatically added to the message text.
-     ** @param  stream   output stream to which the error message is printed
-     *  @param  message  error message to be printed
-     */
-    static void printErrorMessage(OFConsole *stream,
-                                  const char *message);
-
     /** print the warning message that the current content item is invalid/incomplete.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
-     ** @param  stream    output stream to which the warning message is printed (no message if NULL)
      *  @param  action    text describing the current action (e.g. 'Reading'), 'Processing' if NULL
      *  @param  node      pointer to document tree node for which the message should be printed
      *  @param  location  position of the affected content item (e.g. '1.2.3', not printed if NULL)
      */
-    static void printInvalidContentItemMessage(OFConsole *stream,
-                                               const char *action,
+    static void printInvalidContentItemMessage(const char *action,
                                                const DSRDocumentTreeNode *node,
                                                const char *location = NULL);
 
     /** print an error message for the current content item.
      *  The value type (for DEBUG mode also the node ID) is added if the 'node' if specified.
-     ** @param  stream    output stream to which the warning message is printed (no message if NULL)
      *  @param  action    text describing the current action (e.g. 'Reading'), 'Processing' if NULL
      *  @param  result    status used to print more information on the error (no message if EC_Normal)
      *  @param  node      pointer to document tree node for which the message should be printed
      *  @param  location  position of the affected content item (e.g. '1.2.3', not printed if NULL)
      */
-    static void printContentItemErrorMessage(OFConsole *stream,
-                                             const char *action,
+    static void printContentItemErrorMessage(const char *action,
                                              const OFCondition &result,
                                              const DSRDocumentTreeNode *node,
                                              const char *location = NULL);
 
     /** print a warning message that an unknown/unsupported value has been determined
-     ** @param  stream     output stream to which the warning message is printed (no message if NULL)
      *  @param  valueName  name of the unknown/unsupported value
      *  @param  readValue  value that has been read (optional)
      *  @param  action     text describing the current action (default: 'Reading'), 'Processing' if NULL
      */
-    static void printUnknownValueWarningMessage(OFConsole *stream,
-                                                const char *valueName,
+    static void printUnknownValueWarningMessage(const char *valueName,
                                                 const char *readValue = NULL,
                                                 const char *action = "Reading");
 
@@ -1237,6 +1200,9 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
+ *  Revision 1.57  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.56  2009-08-24 13:43:11  joergr
  *  Fixed wrong/misleading comments.
  *

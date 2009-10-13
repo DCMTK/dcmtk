@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,31 +88,25 @@ class DSRNumTreeNode
     /** write content item in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
+                                 const size_t flags) const;
 
 
   protected:
 
     /** read content item (value) from dataset
      ** @param  dataset    DICOM dataset from which the content item should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readContentItem(DcmItem &dataset,
-                                        OFConsole *logStream);
+    virtual OFCondition readContentItem(DcmItem &dataset);
 
     /** write content item (value) to dataset
      ** @param  dataset    DICOM dataset to which the content item should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeContentItem(DcmItem &dataset,
-                                         OFConsole *logStream) const;
+    virtual OFCondition writeContentItem(DcmItem &dataset) const;
 
     /** read content item specific XML data
      ** @param  doc     document containing the XML file content
@@ -129,15 +123,13 @@ class DSRNumTreeNode
      *  @param  annexNumber   reference to the variable where the current annex number is stored.
      *                        Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTMLContentItem(STD_NAMESPACE ostream &docStream,
                                               STD_NAMESPACE ostream &annexStream,
                                               const size_t nestingLevel,
                                               size_t &annexNumber,
-                                              const size_t flags,
-                                              OFConsole *logStream) const;
+                                              const size_t flags) const;
 
 
   private:
@@ -156,6 +148,9 @@ class DSRNumTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.h,v $
+ *  Revision 1.15  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.14  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

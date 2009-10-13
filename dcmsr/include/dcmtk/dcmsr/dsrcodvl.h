@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,23 +155,19 @@ class DSRCodedEntryValue
      *  @param  tagKey     DICOM tag specifying the attribute (= sequence) which should be read
      *  @param  type       value type of the sequence (valid value: "1", "2", something else).
      *                     This parameter is used for checking purpose, any difference is reported.
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readSequence(DcmItem &dataset,
                              const DcmTagKey &tagKey,
-                             const OFString &type,
-                             OFConsole *logStream);
+                             const OFString &type);
 
     /** write code sequence to dataset
      ** @param  dataset    DICOM dataset to which the code sequence should be written
      *  @param  tagKey     DICOM tag specifying the attribute (= sequence) which should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeSequence(DcmItem &dataset,
-                              const DcmTagKey &tagKey,
-                              OFConsole *logStream) const;
+                              const DcmTagKey &tagKey) const;
 
     /** read code from XML document
      ** @param  doc     document containing the XML file content
@@ -184,17 +180,14 @@ class DSRCodedEntryValue
     /** write code in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                         const size_t flags,
-                         OFConsole *logStream) const;
+                         const size_t flags) const;
 
     /** render code in HTML/XHTML format
      ** @param  stream      output stream to which the HTML/XHTML document is written
      *  @param  flags       flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream   pointer to error/warning output stream (output disabled if NULL)
      *  @param  fullCode    optional flag indicating whether to render the full code tuple
      *                      or the code value/meaning only
      *  @param  valueFirst  optional flag indicating whether to render the code value or
@@ -203,7 +196,6 @@ class DSRCodedEntryValue
      */
     OFCondition renderHTML(STD_NAMESPACE ostream &stream,
                            const size_t flags,
-                           OFConsole *logStream,
                            const OFBool fullCode = OFTrue,
                            const OFBool valueFirst = OFFalse) const;
 
@@ -328,21 +320,17 @@ class DSRCodedEntryValue
 
     /** read code from dataset
      ** @param  dataset     DICOM dataset from which the code should be read
-     *  @param  logStream   pointer to error/warning output stream (output disabled if NULL)
      *  @param  moduleName  optional module name (sequence) from which the item is read
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readItem(DcmItem &dataset,
-                         OFConsole *logStream,
                          const char *moduleName = NULL);
 
     /** write code to dataset
      ** @param  dataset    DICOM dataset to which the code should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition writeItem(DcmItem &dataset,
-                          OFConsole *logStream) const;
+    OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified code for validity.
      *  Currently the only check that is performed is that the three string values are not empty.
@@ -377,6 +365,9 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
+ *  Revision 1.20  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

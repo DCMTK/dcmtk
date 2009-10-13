@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,19 +82,18 @@ OFCondition DSRContainerTreeNode::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
-                                                  OFConsole *logStream)
+OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset)
 {
     OFString tmpString;
     /* read ContinuityOfContent */
-    OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, tmpString, "1", "1", logStream, "CONTAINER content item");
+    OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, tmpString, "1", "1", "CONTAINER content item");
     if (result.good())
     {
         ContinuityOfContent = enumeratedValueToContinuityOfContent(tmpString);
         /* check ContinuityOfContent value */
         if (ContinuityOfContent == COC_invalid)
         {
-            printUnknownValueWarningMessage(logStream, "ContinuityOfContent value", tmpString.c_str());
+            printUnknownValueWarningMessage("ContinuityOfContent value", tmpString.c_str());
             result = SR_EC_InvalidValue;
         }
     }
@@ -102,8 +101,7 @@ OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRContainerTreeNode::writeContentItem(DcmItem &dataset,
-                                                   OFConsole * /*logStream*/) const
+OFCondition DSRContainerTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write ContinuityOfContent */
     return putStringValueToDataset(dataset, DCM_ContinuityOfContent, continuityOfContentToEnumeratedValue(ContinuityOfContent));
@@ -121,7 +119,7 @@ OFCondition DSRContainerTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
         ContinuityOfContent = enumeratedValueToContinuityOfContent(doc.getStringFromAttribute(cursor, tmpString, "flag"));
         if (ContinuityOfContent == COC_invalid)
         {
-            printUnknownValueWarningMessage(doc.getLogStream(), "CONTAINER flag", tmpString.c_str());
+            printUnknownValueWarningMessage("CONTAINER flag", tmpString.c_str());
             result = SR_EC_InvalidValue;
         } else
             result = EC_Normal;
@@ -131,14 +129,13 @@ OFCondition DSRContainerTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
 
 
 OFCondition DSRContainerTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                           const size_t flags,
-                                           OFConsole *logStream) const
+                                           const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
     stream << ">" << OFendl;
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -148,8 +145,7 @@ OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
                                                         STD_NAMESPACE ostream & /*annexStream*/,
                                                         const size_t nestingLevel,
                                                         size_t & /*annexNumber*/,
-                                                        const size_t flags,
-                                                        OFConsole *logStream) const
+                                                        const size_t flags) const
 {
     /* section heading (optional) */
     if (nestingLevel > 0)
@@ -159,7 +155,7 @@ OFCondition DSRContainerTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &d
         {
             const size_t section = (nestingLevel > 6) ? 6 : nestingLevel;
             docStream << "<h" << section << ">";
-            getConceptName().renderHTML(docStream, flags, logStream, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /*fullCode*/);
+            getConceptName().renderHTML(docStream, flags, (flags & HF_renderConceptNameCodes) && getConceptName().isValid() /*fullCode*/);
             docStream << "</h" << section << ">" << OFendl;
         }
         /* render optional observation datetime */
@@ -187,23 +183,22 @@ OFCondition DSRContainerTreeNode::renderHTML(STD_NAMESPACE ostream &docStream,
                                              STD_NAMESPACE ostream &annexStream,
                                              const size_t nestingLevel,
                                              size_t &annexNumber,
-                                             const size_t flags,
-                                             OFConsole *logStream) const
+                                             const size_t flags) const
 {
     /* check for validity */
     if (!isValid())
-        printInvalidContentItemMessage(logStream, "Rendering", this);
+        printInvalidContentItemMessage("Rendering", this);
     /* render content item */
-    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
+    OFCondition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags);
     if (result.good())
     {
         /* section body: render child nodes */
         if (ContinuityOfContent == COC_Continuous)
-            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_renderItemsSeparately, logStream);
+            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags & ~HF_renderItemsSeparately);
         else  // might be invalid
-            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, logStream);
+            result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately);
     } else
-        printContentItemErrorMessage(logStream, "Rendering", result, this);
+        printContentItemErrorMessage("Rendering", result, this);
     return result;
 }
 
@@ -223,6 +218,9 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
+ *  Revision 1.27  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.26  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

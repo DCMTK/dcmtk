@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-30 12:38:43 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,12 +90,11 @@ OFCondition DSRReferencedDatetimeList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset,
-                                            OFConsole *logStream)
+OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset)
 {
     /* get string array from dataset */
     DcmDateTime delem(DCM_ReferencedDateTime);
-    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream, "TCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "TCOORD content item");
     if (result.good())
     {
         /* clear internal list */
@@ -113,8 +112,7 @@ OFCondition DSRReferencedDatetimeList::read(DcmItem &dataset,
 }
 
 
-OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
-                                             OFConsole * /*logStream*/) const
+OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
@@ -171,6 +169,9 @@ OFCondition DSRReferencedDatetimeList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
+ *  Revision 1.15  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.14  2008-04-30 12:38:43  meichel
  *  Fixed compile errors due to changes in attribute tag names
  *

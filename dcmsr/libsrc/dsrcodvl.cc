@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,25 +154,23 @@ void DSRCodedEntryValue::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
-                                         OFConsole *logStream,
                                          const char *moduleName)
 {
     /* read BasicCodedEntryAttributes only */
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream, moduleName);
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", moduleName);
     if (result.good())
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", logStream, moduleName);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", moduleName);
     if (result.good())                                             /* conditional (type 1C) */
-        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", logStream, moduleName);
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", moduleName);
     if (result.good())
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream, moduleName);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", moduleName);
     /* tbd: might add check for correct code */
 
     return result;
 }
 
 
-OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
-                                          OFConsole * /*logStream*/) const
+OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset) const
 {
     /* write BasicCodedEntryAttributes only */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeValue, CodeValue);
@@ -188,20 +186,19 @@ OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
 
 OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
                                              const DcmTagKey &tagKey,
-                                             const OFString &type,
-                                             OFConsole *logStream)
+                                             const OFString &type)
 {
     /* read CodeSequence */
     DcmSequenceOfItems dseq(tagKey);
     OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
+    DSRTypes::checkElementValue(dseq, "1", type, result, "content item");
     if (result.good())
     {
         DcmItem *ditem = dseq.getItem(0);
         if (ditem != NULL)
         {
             /* read Code */
-            result = readItem(*ditem, logStream, DcmTag(tagKey).getTagName());
+            result = readItem(*ditem, DcmTag(tagKey).getTagName());
         } else
             result = SR_EC_InvalidDocumentTree;
     }
@@ -210,8 +207,7 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
 
 
 OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
-                                              const DcmTagKey &tagKey,
-                                              OFConsole *logStream) const
+                                              const DcmTagKey &tagKey) const
 {
     OFCondition result = EC_MemoryExhausted;
     /* write CodeSequence */
@@ -228,7 +224,7 @@ OFCondition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
             {
                 /* write Code */
                 if (isValid())
-                    result = writeItem(*ditem, logStream);
+                    result = writeItem(*ditem);
                 if (result.good())
                     dseq->insert(ditem);
                 else
@@ -285,8 +281,7 @@ OFCondition DSRCodedEntryValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRCodedEntryValue::writeXML(STD_NAMESPACE ostream &stream,
-                                         const size_t flags,
-                                         OFConsole * /*logStream*/) const
+                                         const size_t flags) const
 {
     OFString tmpString;
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
@@ -311,7 +306,6 @@ OFCondition DSRCodedEntryValue::writeXML(STD_NAMESPACE ostream &stream,
 
 OFCondition DSRCodedEntryValue::renderHTML(STD_NAMESPACE ostream &stream,
                                            const size_t flags,
-                                           OFConsole * /*logStream*/,
                                            const OFBool fullCode,
                                            const OFBool valueFirst) const
 {
@@ -407,6 +401,9 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
+ *  Revision 1.26  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.25  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *

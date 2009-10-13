@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTemporalCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,12 +123,10 @@ class DSRTemporalCoordinatesValue
     /** write temporal coordinates value in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
+                                 const size_t flags) const;
 
     /** render temporal coordinates value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
@@ -136,14 +134,12 @@ class DSRTemporalCoordinatesValue
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
+                                   const size_t flags) const;
 
     /** get reference to temporal coordinates value
      ** @return reference to temporal coordinates value
@@ -223,20 +219,16 @@ class DSRTemporalCoordinatesValue
      *  Please note that all three lists are (tried to) read from the dataset.  If more than
      *  one list is present a warning messsage is reported.
      ** @param  dataset    DICOM dataset from which the value should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition read(DcmItem &dataset,
-                             OFConsole *logStream);
+    virtual OFCondition read(DcmItem &dataset);
 
     /** write temporal coordinates reference value to dataset.
      *  Please note that only one of the three lists is actually written to the dataset.
      ** @param  dataset    DICOM dataset to which the value should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmItem &dataset,
-                              OFConsole *logStream) const;
+    virtual OFCondition write(DcmItem &dataset) const;
 
     /** check the temporal range type and other data for validity.
      *  The data is valid if the 'temporalRangeType' is valid and at least one of the three
@@ -246,14 +238,12 @@ class DSRTemporalCoordinatesValue
      *  @param  samplePositionList  list of referenced sample positions to be checked
      *  @param  timeOffsetList      list of referenced time offsets to be checked
      *  @param  datetimeList        list of referenced datetime to be checked
-     *  @param  logStream           pointer to error/warning output stream (output disabled if NULL)
      ** @return OFTrue if data is valid, OFFalse otherwise
      */
     OFBool checkData(const DSRTypes::E_TemporalRangeType temporalRangeType,
                      const DSRReferencedSamplePositionList &samplePositionList,
                      const DSRReferencedTimeOffsetList &timeOffsetList,
-                     const DSRReferencedDatetimeList &datetimeList,
-                     OFConsole *logStream = NULL) const;
+                     const DSRReferencedDatetimeList &datetimeList) const;
 
   private:
 
@@ -275,6 +265,9 @@ class DSRTemporalCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.h,v $
+ *  Revision 1.11  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.10  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

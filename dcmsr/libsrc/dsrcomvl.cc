@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,8 +132,7 @@ OFCondition DSRCompositeReferenceValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRCompositeReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
-                                                 const size_t flags,
-                                                 OFConsole * /* logStream */) const
+                                                 const size_t flags) const
 {
     if ((flags & DSRTypes::XF_writeEmptyTags) || !isEmpty())
     {
@@ -149,20 +148,18 @@ OFCondition DSRCompositeReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset,
-                                                 OFConsole *logStream)
+OFCondition DSRCompositeReferenceValue::readItem(DcmItem &dataset)
 {
     /* read ReferencedSOPClassUID */
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", logStream, "ReferencedSOPSequence");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", "ReferencedSOPSequence");
     /* read ReferencedSOPInstanceUID */
     if (result.good())
-        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", logStream, "ReferencedSOPSequence");
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", "ReferencedSOPSequence");
     return result;
 }
 
 
-OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
-                                                  OFConsole * /*logStream */) const
+OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset) const
 {
     /* write ReferencedSOPClassUID */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID);
@@ -174,19 +171,18 @@ OFCondition DSRCompositeReferenceValue::writeItem(DcmItem &dataset,
 
 
 OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
-                                                     const OFString &type,
-                                                     OFConsole *logStream)
+                                                     const OFString &type)
 {
     /* read ReferencedSOPSequence */
     DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
     OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", type, logStream, result, "content item");
+    DSRTypes::checkElementValue(dseq, "1", type, result, "content item");
     if (result.good())
     {
         /* read first item */
         DcmItem *ditem = dseq.getItem(0);
         if (ditem != NULL)
-            result = readItem(*ditem, logStream);
+            result = readItem(*ditem);
         else
             result = SR_EC_InvalidDocumentTree;
     }
@@ -194,8 +190,7 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
 }
 
 
-OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
-                                                      OFConsole *logStream) const
+OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset) const
 {
     OFCondition result = EC_MemoryExhausted;
     /* write ReferencedSOPSequence */
@@ -206,7 +201,7 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
         if (ditem != NULL)
         {
             /* write item */
-            result = writeItem(*ditem, logStream);
+            result = writeItem(*ditem);
             if (result.good())
                 dseq->insert(ditem);
             else
@@ -226,8 +221,7 @@ OFCondition DSRCompositeReferenceValue::writeSequence(DcmItem &dataset,
 OFCondition DSRCompositeReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                    STD_NAMESPACE ostream & /*annexStream*/,
                                                    size_t & /*annexNumber*/,
-                                                   const size_t /*flags*/,
-                                                   OFConsole * /*logStream*/) const
+                                                   const size_t /*flags*/) const
 {
     /* render reference */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
@@ -309,6 +303,9 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
+ *  Revision 1.19  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.18  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *

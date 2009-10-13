@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRUIDRefTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:52 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,31 +87,28 @@ OFCondition DSRUIDRefTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRUIDRefTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                        const size_t flags,
-                                        OFConsole *logStream) const
+                                        const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     writeStringValueToXML(stream, getValue(), "value", (flags & XF_writeEmptyTags) > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset,
-                                               OFConsole *logStream)
+OFCondition DSRUIDRefTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read UID */
-    return DSRStringValue::read(dataset, DCM_UID, logStream);
+    return DSRStringValue::read(dataset, DCM_UID);
 }
 
 
-OFCondition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset,
-                                                OFConsole *logStream) const
+OFCondition DSRUIDRefTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write UID */
-    return DSRStringValue::write(dataset, DCM_UID, logStream);
+    return DSRStringValue::write(dataset, DCM_UID);
 }
 
 
@@ -127,15 +124,14 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
                                                      STD_NAMESPACE ostream & /*annexStream*/,
                                                      const size_t /*nestingLevel*/,
                                                      size_t & /*annexNumber*/,
-                                                     const size_t flags,
-                                                     OFConsole *logStream) const
+                                                     const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render UID */
     if (result.good())
     {
-        result = DSRStringValue::renderHTML(docStream, flags, logStream);
+        result = DSRStringValue::renderHTML(docStream, flags);
         docStream << OFendl;
     }
     return result;
@@ -145,6 +141,9 @@ OFCondition DSRUIDRefTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docS
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
+ *  Revision 1.21  2009-10-13 14:57:52  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.20  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

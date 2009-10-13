@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,33 +84,30 @@ OFCondition DSRImageTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRImageTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                       const size_t flags,
-                                       OFConsole *logStream) const
+                                       const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     stream << "<value>" << OFendl;
-    DSRImageReferenceValue::writeXML(stream, flags, logStream);
+    DSRImageReferenceValue::writeXML(stream, flags);
     stream << "</value>" << OFendl;
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRImageTreeNode::readContentItem(DcmItem &dataset,
-                                              OFConsole *logStream)
+OFCondition DSRImageTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read ReferencedSOPSequence */
-    return DSRImageReferenceValue::readSequence(dataset, "1" /*type*/, logStream);
+    return DSRImageReferenceValue::readSequence(dataset, "1" /*type*/);
 }
 
 
-OFCondition DSRImageTreeNode::writeContentItem(DcmItem &dataset,
-                                               OFConsole *logStream) const
+OFCondition DSRImageTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write ReferencedSOPSequence */
-    return DSRImageReferenceValue::writeSequence(dataset, logStream);
+    return DSRImageReferenceValue::writeSequence(dataset);
 }
 
 
@@ -126,15 +123,14 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
                                                     STD_NAMESPACE ostream &annexStream,
                                                     const size_t /*nestingLevel*/,
                                                     size_t &annexNumber,
-                                                    const size_t flags,
-                                                    OFConsole *logStream) const
+                                                    const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Reference */
     if (result.good())
     {
-        result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags);
         docStream << OFendl;
     }
     return result;
@@ -144,6 +140,9 @@ OFCondition DSRImageTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
+ *  Revision 1.20  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.19  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

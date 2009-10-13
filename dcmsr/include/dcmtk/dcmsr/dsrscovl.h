@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSpatialCoordinatesValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,19 +111,15 @@ class DSRSpatialCoordinatesValue
 
     /** read spatial coordinates value from dataset
      ** @param  dataset    DICOM dataset from which the value should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition read(DcmItem &dataset,
-                             OFConsole *logStream);
+    virtual OFCondition read(DcmItem &dataset);
 
     /** write spatial coordinates reference value to dataset
      ** @param  dataset    DICOM dataset to which the value should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition write(DcmItem &dataset,
-                              OFConsole *logStream) const;
+    virtual OFCondition write(DcmItem &dataset) const;
 
     /** read spatial coordinates value from XML document
      ** @param  doc     document containing the XML file content
@@ -136,12 +132,10 @@ class DSRSpatialCoordinatesValue
     /** write spatial coordinates value in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
+                                 const size_t flags) const;
 
     /** render spatial coordinates value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
@@ -149,14 +143,12 @@ class DSRSpatialCoordinatesValue
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
+                                   const size_t flags) const;
 
     /** get reference to spatial coordinates value
      ** @return reference to spatial coordinates value
@@ -226,12 +218,10 @@ class DSRSpatialCoordinatesValue
      *  ELLIPSE exactly 4.
      ** @param  graphicType      graphic type to be checked
      *  @param  graphicDataList  list of graphic data to be checked
-     *  @param  logStream        pointer to error/warning output stream (output disabled if NULL)
      ** @return OFTrue if graphic type and data are valid, OFFalse otherwise
      */
     OFBool checkData(const DSRTypes::E_GraphicType graphicType,
-                     const DSRGraphicDataList &graphicDataList,
-                     OFConsole *logStream = NULL) const;
+                     const DSRGraphicDataList &graphicDataList) const;
 
 
   private:
@@ -249,6 +239,9 @@ class DSRSpatialCoordinatesValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.h,v $
+ *  Revision 1.13  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-07-17 12:00:09 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,8 +159,7 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
-                                                 const size_t flags,
-                                                 OFConsole *logStream) const
+                                                 const size_t flags) const
 {
     DSRTypes::writeStringValueToXML(stream, NumericValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
     if (!MeasurementUnit.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
@@ -170,7 +169,7 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
             stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
         else
             stream << "<unit>" << OFendl;
-        MeasurementUnit.writeXML(stream, flags, logStream);
+        MeasurementUnit.writeXML(stream, flags);
         stream << "</unit>" << OFendl;
     }
     if (!ValueQualifier.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
@@ -180,46 +179,43 @@ OFCondition DSRNumericMeasurementValue::writeXML(STD_NAMESPACE ostream &stream,
             stream << "<qualifier";     // bracket ">" is closed in the next writeXML() routine
         else
             stream << "<qualifier>" << OFendl;
-        ValueQualifier.writeXML(stream, flags, logStream);
+        ValueQualifier.writeXML(stream, flags);
         stream << "</qualifier>" << OFendl;
     }
     return EC_Normal;
 }
 
 
-OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
-                                                 OFConsole *logStream)
+OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset)
 {
     /* read NumericValue */
-    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", logStream, "MeasuredValueSequence");
+    OFCondition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", "MeasuredValueSequence");
     if (result.good())
     {
         /* read MeasurementUnitsCodeSequence */
-        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /*type*/, logStream);
+        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /*type*/);
     }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset,
-                                                  OFConsole *logStream) const
+OFCondition DSRNumericMeasurementValue::writeItem(DcmItem &dataset) const
 {
     /* write NumericValue */
     OFCondition result = DSRTypes::putStringValueToDataset(dataset, DCM_NumericValue, NumericValue);
     /* write MeasurementUnitsCodeSequence */
     if (result.good())
-        result = MeasurementUnit.writeSequence(dataset, DCM_MeasurementUnitsCodeSequence, logStream);
+        result = MeasurementUnit.writeSequence(dataset, DCM_MeasurementUnitsCodeSequence);
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
-                                                     OFConsole *logStream)
+OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset)
 {
     /* read MeasuredValueSequence */
     DcmSequenceOfItems dseq(DCM_MeasuredValueSequence);
     OFCondition result = DSRTypes::getElementFromDataset(dataset, dseq);
-    DSRTypes::checkElementValue(dseq, "1", "2", logStream, result, "NUM content item");
+    DSRTypes::checkElementValue(dseq, "1", "2", result, "NUM content item");
     if (result.good())
     {
         /* check for empty sequence (allowed!) */
@@ -228,7 +224,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
             /* read first item */
             DcmItem *ditem = dseq.getItem(0);
             if (ditem != NULL)
-                result = readItem(*ditem, logStream);
+                result = readItem(*ditem);
             else
                 result = SR_EC_InvalidDocumentTree;
         }
@@ -236,14 +232,13 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
     if (result.good())
     {
         /* read NumericValueQualifierCodeSequence (optional) */
-        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /*type*/, logStream);
+        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /*type*/);
     }
     return result;
 }
 
 
-OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
-                                                      OFConsole *logStream) const
+OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset) const
 {
     OFCondition result = EC_MemoryExhausted;
     /* write MeasuredValueSequence */
@@ -259,7 +254,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
             if (ditem != NULL)
             {
                 /* write item */
-                result = writeItem(*ditem, logStream);
+                result = writeItem(*ditem);
                 if (result.good())
                     dseq->insert(ditem);
                 else
@@ -277,7 +272,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
     {
         /* write NumericValueQualifierCodeSequence (optional) */
         if (!ValueQualifier.isEmpty())
-            ValueQualifier.writeSequence(dataset, DCM_NumericValueQualifierCodeSequence, logStream);
+            ValueQualifier.writeSequence(dataset, DCM_NumericValueQualifierCodeSequence);
     }
     return result;
 }
@@ -286,8 +281,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
 OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                    STD_NAMESPACE ostream & /*annexStream*/,
                                                    size_t & /*annexNumber*/,
-                                                   const size_t flags,
-                                                   OFConsole *logStream) const
+                                                   const size_t flags) const
 {
     if (isEmpty())
     {
@@ -308,7 +302,7 @@ OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream &docStr
         }
         docStream << DSRTypes::convertToHTMLString(NumericValue, htmlString, flags) << " ";
         /* render full code of the measurement unit (value first?) or code value only */
-        MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, (flags & DSRTypes::HF_useCodeMeaningAsUnit) == 0 /*valueFirst*/);
+        MeasurementUnit.renderHTML(docStream, flags, fullCode, (flags & DSRTypes::HF_useCodeMeaningAsUnit) == 0 /*valueFirst*/);
         if (!fullCode || (flags & DSRTypes::HF_useCodeDetailsTooltip))
         {
             if (flags & DSRTypes::HF_HTML32Compatibility)
@@ -321,7 +315,7 @@ OFCondition DSRNumericMeasurementValue::renderHTML(STD_NAMESPACE ostream &docStr
     {
         /* render optional numeric value qualifier */
         docStream << " [";
-        ValueQualifier.renderHTML(docStream, flags, logStream, (flags & DSRTypes::HF_renderInlineCodes) > 0 /*fullCode*/);
+        ValueQualifier.renderHTML(docStream, flags, (flags & DSRTypes::HF_renderInlineCodes) > 0 /*fullCode*/);
         docStream << "]";
     }
     return EC_Normal;
@@ -438,6 +432,9 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
+ *  Revision 1.26  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.25  2008-07-17 12:00:09  joergr
  *  Replaced call to getSequenceFromDataset() by getElementFromDataset().
  *

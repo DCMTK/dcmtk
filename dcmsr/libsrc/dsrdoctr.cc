@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-19 09:54:41 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,6 @@
 DSRDocumentTree::DSRDocumentTree(const E_DocumentType documentType)
   : DSRTree(),
     DocumentType(DT_invalid),
-    LogStream(NULL),
     CurrentContentItem(),
     ConstraintChecker(NULL)
 {
@@ -79,12 +78,6 @@ OFBool DSRDocumentTree::isValid() const
         }
     }
     return result;
-}
-
-
-void DSRDocumentTree::setLogStream(OFConsole *stream)
-{
-    LogStream = stream;
 }
 
 
@@ -147,26 +140,25 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
     if (result.good())
     {
         if (ConstraintChecker == NULL)
-            printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
+            DCMSR_WARN("Check for relationship content constraints not yet supported");
         else if (ConstraintChecker->isTemplateSupportRequired())
-            printWarningMessage(LogStream, "Check for template constraints not yet supported");
-        if ((LogStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
+            DCMSR_WARN("Check for template constraints not yet supported");
+        if (flags & RF_showCurrentlyProcessedItem)
         {
-            LogStream->lockCerr() << "Processing content item 1" << OFendl;
-            LogStream->unlockCerr();
+            DCMSR_WARN("Processing content item 1");
         }
         /* first try to read value type */
         OFString tmpString;
-        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1", LogStream).good() ||
+        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1").good() ||
             (flags & RF_ignoreContentItemErrors))
         {
             /* root node should always be a container */
             if (definedTermToValueType(tmpString) != VT_Container)
             {
                 if (flags & RF_ignoreContentItemErrors)
-                    printWarningMessage(LogStream, "Root content item should always be a CONTAINER");
+                    DCMSR_WARN("Root content item should always be a CONTAINER");
                 else {
-                    printErrorMessage(LogStream, "Root content item should always be a CONTAINER");
+                    DCMSR_ERROR("Root content item should always be a CONTAINER");
                     result = SR_EC_InvalidDocumentTree;
                 }
             }
@@ -180,7 +172,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                     if (addNode(node))
                     {
                         /* ... and let the node read the rest of the document */
-                        result = node->read(dataset, ConstraintChecker, flags, LogStream);
+                        result = node->read(dataset, ConstraintChecker, flags);
                         /* check and update by-reference relationships (if applicable) */
                         checkByReferenceRelationships(CM_updateNodeID, flags);
                     } else
@@ -189,7 +181,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                     result = EC_MemoryExhausted;
             }
         } else {
-            printErrorMessage(LogStream, "ValueType attribute for root content item is missing");
+            DCMSR_ERROR("ValueType attribute for root content item is missing");
             result = SR_EC_MandatoryAttributeMissing;
         }
     }
@@ -203,9 +195,9 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
     if (ConstraintChecker == NULL)
-        printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
+        DCMSR_WARN("Check for relationship content constraints not yet supported");
     else if (ConstraintChecker->isTemplateSupportRequired())
-        printWarningMessage(LogStream, "Check for template constraints not yet supported");
+        DCMSR_WARN("Check for template constraints not yet supported");
     /* we assume that 'cursor' points to the "content" element */
     if (cursor.valid())
     {
@@ -241,7 +233,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                     {
                         /* set template identification (if any) */
                         if (node->setTemplateIdentification(templateIdentifier, mappingResource).bad())
-                            printWarningMessage(LogStream, "Root content item has invalid/incomplete template identification");
+                            DCMSR_WARN("Root content item has invalid/incomplete template identification");
                     }
                     /* ... and let the node read the rest of the document */
                     result = node->readXML(doc, cursor, DocumentType, flags);
@@ -252,7 +244,7 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
             } else
                 result = EC_MemoryExhausted;
         } else {
-            printErrorMessage(LogStream, "Root content item should always be a CONTAINER");
+            DCMSR_ERROR("Root content item should always be a CONTAINER");
             result = SR_EC_InvalidDocumentTree;
         }
     }
@@ -273,7 +265,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
             /* check and update by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_updatePositionString);
             /* start writing from root node */
-            result = node->write(dataset, markedItems, LogStream);
+            result = node->write(dataset, markedItems);
         }
     }
     return result;
@@ -294,7 +286,7 @@ OFCondition DSRDocumentTree::writeXML(STD_NAMESPACE ostream &stream,
             /* check by-reference relationships (if applicable) */
             checkByReferenceRelationships(CM_resetReferenceTargetFlag);
             /* start writing from root node */
-            result = node->writeXML(stream, flags, LogStream);
+            result = node->writeXML(stream, flags);
         }
     }
     return result;
@@ -317,7 +309,7 @@ OFCondition DSRDocumentTree::renderHTML(STD_NAMESPACE ostream &docStream,
             checkByReferenceRelationships(CM_resetReferenceTargetFlag);
             size_t annexNumber = 1;
             /* start rendering from root node */
-            result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly, LogStream);
+            result = node->renderHTML(docStream, annexStream, 1 /*nestingLevel*/, annexNumber, flags & ~HF_internalUseOnly);
         }
     }
     return result;
@@ -578,11 +570,10 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const size_t mode,
                             size_t refNodeID = 0;
                             /* type cast to directly access member variables of by-reference class */
                             DSRByReferenceTreeNode *refNode = OFconst_cast(DSRByReferenceTreeNode *, OFstatic_cast(const DSRByReferenceTreeNode *, node));
-                            if ((LogStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
+                            if (flags & RF_showCurrentlyProcessedItem)
                             {
                                 OFString posString;
-                                LogStream->lockCerr() << "Updating by-reference relationship in content item " << cursor.getPosition(posString) << OFendl;
-                                LogStream->unlockCerr();
+                                DCMSR_WARN("Updating by-reference relationship in content item " << cursor.getPosition(posString));
                             }
                             /* start searching from root node (be careful with large trees, might be improved later on) */
                             DSRTreeNodeCursor refCursor(getRoot());
@@ -641,24 +632,24 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const size_t mode,
                                                     message += "\" and \"";
                                                     message += refNode->ReferencedContentItem;
                                                     message += "\"";
-                                                    printWarningMessage(LogStream, message.c_str());
+                                                    DCMSR_WARN(message.c_str());
                                                 }
                                             }
                                         } else
-                                            printWarningMessage(LogStream, "Corrupted data structures while checking by-reference relationships");
+                                            DCMSR_WARN("Corrupted data structures while checking by-reference relationships");
                                     } else
-                                        printWarningMessage(LogStream, "By-reference relationship to ancestor content item (loop check)");
+                                        DCMSR_WARN("By-reference relationship to ancestor content item (loop check)");
                                 } else
-                                    printWarningMessage(LogStream, "Source and target content item of by-reference relationship are identical");
+                                    DCMSR_WARN("Source and target content item of by-reference relationship are identical");
                             } else {
                                 if (mode & CM_updateNodeID)
                                 {
                                     OFString message = "Target content item of by-reference relationship (";
                                     message += refNode->ReferencedContentItem;
                                     message += ") does not exist";
-                                    printWarningMessage(LogStream, message.c_str());
+                                    DCMSR_WARN(message.c_str());
                                 } else
-                                    printWarningMessage(LogStream, "Target content item of by-reference relationship does not exist");
+                                    DCMSR_WARN("Target content item of by-reference relationship does not exist");
                             }
                         }
                     } else
@@ -690,6 +681,9 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.33  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.32  2008-05-19 09:54:41  joergr
  *  Added new flag that enables reading of SR documents with unknown/missing
  *  relationship type(s).

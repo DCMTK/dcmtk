@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,12 +93,11 @@ OFCondition DSRReferencedSamplePositionList::print(STD_NAMESPACE ostream &stream
 }
 
 
-OFCondition DSRReferencedSamplePositionList::read(DcmItem &dataset,
-                                                  OFConsole *logStream)
+OFCondition DSRReferencedSamplePositionList::read(DcmItem &dataset)
 {
     /* get element from dataset */
     DcmUnsignedLong delem(DCM_ReferencedSamplePositions);
-    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream, "TCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", "TCOORD content item");
     if (result.good())
     {
         /* clear internal list */
@@ -116,8 +115,7 @@ OFCondition DSRReferencedSamplePositionList::read(DcmItem &dataset,
 }
 
 
-OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
-                                                   OFConsole * /*logStream*/) const
+OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     unsigned long i = 0;
@@ -173,6 +171,9 @@ OFCondition DSRReferencedSamplePositionList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
+ *  Revision 1.15  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.14  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

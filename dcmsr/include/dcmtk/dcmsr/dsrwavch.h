@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:19 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,19 +149,15 @@ class DSRWaveformChannelList
 
     /** read list of waveform channels
      ** @param  dataset    DICOM dataset from which the list should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset,
-                     OFConsole *logStream);
+    OFCondition read(DcmItem &dataset);
 
     /** write list of waveform channels
      ** @param  dataset    DICOM dataset to which the list should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition write(DcmItem &dataset,
-                      OFConsole *logStream) const;
+    OFCondition write(DcmItem &dataset) const;
 
     /** check whether specified value pair is contained in the list
      ** @param  multiplexGroupNumber  multiplex group number to be checked
@@ -204,6 +200,9 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
+ *  Revision 1.15  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.14  2007-11-15 16:33:19  joergr
  *  Fixed coding style to be more consistent.
  *

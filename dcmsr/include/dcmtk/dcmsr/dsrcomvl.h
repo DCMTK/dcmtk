@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,12 +123,10 @@ class DSRCompositeReferenceValue
     /** write reference value in XML format
      ** @param  stream     output stream to which the XML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::XF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition writeXML(STD_NAMESPACE ostream &stream,
-                                 const size_t flags,
-                                 OFConsole *logStream) const;
+                                 const size_t flags) const;
 
     /** read referenced SOP sequence from dataset.
      *  The number of items within the sequence is checked.  If error/warning output are
@@ -137,21 +135,17 @@ class DSRCompositeReferenceValue
      ** @param  dataset    DICOM dataset from which the sequence should be read
      *  @param  type       value type of the sequence (valid value: "1", "2", something else)
      *                     This parameter is used for checking purpose, any difference is reported.
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readSequence(DcmItem &dataset,
-                                     const OFString &type,
-                                     OFConsole *logStream);
+                                     const OFString &type);
 
     /** write referenced SOP sequence to dataset.
      *  If the value is empty an empty sequence (without any items) is written.
      ** @param  dataset    DICOM dataset to which the sequence should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeSequence(DcmItem &dataset,
-                                      OFConsole *logStream) const;
+    virtual OFCondition writeSequence(DcmItem &dataset) const;
 
     /** render composite reference value in HTML/XHTML format
      ** @param  docStream    output stream to which the main HTML/XHTML document is written
@@ -159,14 +153,12 @@ class DSRCompositeReferenceValue
      *  @param  annexNumber  reference to the variable where the current annex number is stored.
      *                       Value is increased automatically by 1 after a new entry has been added.
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
                                    STD_NAMESPACE ostream &annexStream,
                                    size_t &annexNumber,
-                                   const size_t flags,
-                                   OFConsole *logStream) const;
+                                   const size_t flags) const;
 
     /** get SOP class UID
      ** @return current SOP class UID (might be invalid or an empty string)
@@ -245,19 +237,15 @@ class DSRCompositeReferenceValue
 
     /** read reference value from dataset
      ** @param  dataset    DICOM dataset from which the value should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition readItem(DcmItem &dataset,
-                                 OFConsole *logStream);
+    virtual OFCondition readItem(DcmItem &dataset);
 
     /** write reference value to dataset
      ** @param  dataset    DICOM dataset to which the value should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    virtual OFCondition writeItem(DcmItem &dataset,
-                                  OFConsole *logStream) const;
+    virtual OFCondition writeItem(DcmItem &dataset) const;
 
     /** check the specified SOP class UID for validity.
      *  The only check that is currently performed is that the UID is not empty.  Derived
@@ -289,6 +277,9 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
+ *  Revision 1.10  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.9  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

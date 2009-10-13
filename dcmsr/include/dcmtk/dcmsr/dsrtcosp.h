@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:19 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,19 +85,15 @@ class DSRReferencedSamplePositionList
 
     /** read list of referenced sample positions
      ** @param  dataset    DICOM dataset from which the list should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset,
-                     OFConsole *logStream);
+    OFCondition read(DcmItem &dataset);
 
     /** write list of referenced sample positions
      ** @param  dataset    DICOM dataset to which the list should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition write(DcmItem &dataset,
-                      OFConsole *logStream) const;
+    OFCondition write(DcmItem &dataset) const;
 
     /** put list of referenced sample positions as a string.
      *  This function expects the same input format as created by print(), i.e. a comma
@@ -115,6 +111,9 @@ class DSRReferencedSamplePositionList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.h,v $
+ *  Revision 1.11  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.10  2007-11-15 16:33:19  joergr
  *  Fixed coding style to be more consistent.
  *

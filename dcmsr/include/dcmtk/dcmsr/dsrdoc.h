@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 08:32:38 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,14 +94,6 @@ class DSRDocument
      */
     OFBool isFinalized() const;
 
-    /** set the log stream.
-     *  The log stream is used to report warning and error messages.  Unfortunately, the
-     *  stream cannot be used for 'libxml' messages.  Therefore, the error output of 'libxml'
-     *  is disabled by default (see readXML() for details).
-     ** @param  stream  pointer to the log stream (might be NULL = no messages)
-     */
-    void setLogStream(OFConsole *stream);
-
 
   // --- input and output ---
 
@@ -154,8 +146,7 @@ class DSRDocument
     /** read SR document from XML file.
      *  The format (Schema) of the XML document is expected to conform to the output format
      *  of the writeXML() method.  In addition, the document can be validated against an XML
-     *  Schema by setting the flag XF_validateSchema.  For debug output (errors, warnings,
-     *  etc.) from 'libxml' the flag XF_enableLibxmlErrorOutput has to be set.
+     *  Schema by setting the flag XF_validateSchema.
      *  Digital signatures in the XML document are not yet supported.
      *  Please note that the current document is also deleted if the parsing process fails.
      ** @param  filename  name of the file from which the XML document is read ("-" for stdin)
@@ -1053,9 +1044,6 @@ class DSRDocument
     /// SR document tree
     DSRDocumentTree DocumentTree;
 
-    /// output stream for error messages, NULL for no messages
-    OFConsole *LogStream;
-
     /// flag indicating whether is document is finalized or not
     OFBool             FinalizedFlag;
     /// enumerated value: partial, complete
@@ -1184,6 +1172,9 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
+ *  Revision 1.46  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.45  2009-04-21 08:32:38  joergr
  *  Fixed typo.
  *

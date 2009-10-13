@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom structured reporting file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:14:21 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrdoc.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -45,6 +44,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsrdump"
+
+static OFLogger dsrdumpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -58,14 +59,13 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
                             const E_FileReadMode readMode,
                             const E_TransferSyntax xfer,
                             const size_t readFlags,
-                            const size_t printFlags,
-                            const OFBool debugMode)
+                            const size_t printFlags)
 {
     OFCondition result = EC_Normal;
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
         return EC_IllegalParameter;
     }
 
@@ -78,8 +78,8 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
             result = dfile->loadFile(ifname, xfer);
         if (result.bad())
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                 << ") reading file: "<< ifname << OFendl;
+            OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                 << ") reading file: "<< ifname);
         }
     } else
         result = EC_MemoryExhausted;
@@ -90,8 +90,6 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
         DSRDocument *dsrdoc = new DSRDocument();
         if (dsrdoc != NULL)
         {
-            if (debugMode)
-                dsrdoc->setLogStream(&ofConsole);
             result = dsrdoc->read(*dfile->getDataset(), readFlags);
             if (result.good())
             {
@@ -100,8 +98,8 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
             }
             else
             {
-                CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                     << ") parsing file: "<< ifname << OFendl;
+                OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                     << ") parsing file: "<< ifname);
             }
         }
         delete dsrdoc;
@@ -118,14 +116,11 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
 
 int main(int argc, char *argv[])
 {
-    int opt_debugMode = 0;
     size_t opt_readFlags = 0;
     size_t opt_printFlags = DSRTypes::PF_shortenLongItemValues;
     OFBool opt_printFilename = OFFalse;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
-
-    SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM SR file and data set", rcsid);
     OFCommandLine cmd;
@@ -137,9 +132,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                   "-h",  "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                       "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                     "print expanded command line arguments");
-      cmd.addOption("--debug",                  "-d",  "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",          "-dd", "verbose debug mode, print more details");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -178,10 +171,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -199,13 +188,7 @@ int main(int argc, char *argv[])
         }
 
         /* options */
-        if (cmd.findOption("--debug"))
-            opt_debugMode = 2;
-        if (cmd.findOption("--verbose-debug"))
-        {
-            opt_debugMode = 5;
-            opt_readFlags |= DSRTypes::RF_verboseDebugMode;
-        }
+        OFLog::configureFromCommandLine(cmd, app);
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -273,16 +256,15 @@ int main(int argc, char *argv[])
             opt_printFlags |= DSRTypes::PF_printTemplateIdentification;
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dsrdumpLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dsrdumpLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     int errorCount = 0;
@@ -293,10 +275,10 @@ int main(int argc, char *argv[])
         cmd.getParam(i, current);
         if (opt_printFilename)
         {
-            COUT << OFString(79, '-') << OFendl;
-            COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl << OFendl;
+            OFLOG_WARN(dsrdumpLogger, OFString(79, '-'));
+            OFLOG_WARN(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl);
         }
-        if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags, opt_debugMode != 0).bad())
+        if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags).bad())
             errorCount++;
     }
 
@@ -310,6 +292,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
+ * Revision 1.30  2009-10-13 14:57:50  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.29  2008-09-25 14:14:21  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

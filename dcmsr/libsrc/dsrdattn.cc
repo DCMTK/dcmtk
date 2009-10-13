@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDateTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,13 +87,12 @@ OFCondition DSRDateTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRDateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                      const size_t flags,
-                                      OFConsole *logStream) const
+                                      const size_t flags) const
 {
     OFString tmpString;
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     /* output date in ISO 8601 format */
     DcmDate::getISOFormattedDateFromString(getValue(), tmpString);
     writeStringValueToXML(stream, tmpString, "value", (flags & XF_writeEmptyTags) > 0);
@@ -102,19 +101,17 @@ OFCondition DSRDateTreeNode::writeXML(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRDateTreeNode::readContentItem(DcmItem &dataset,
-                                             OFConsole *logStream)
+OFCondition DSRDateTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read Date */
-    return DSRStringValue::read(dataset, DCM_Date, logStream);
+    return DSRStringValue::read(dataset, DCM_Date);
 }
 
 
-OFCondition DSRDateTreeNode::writeContentItem(DcmItem &dataset,
-                                              OFConsole *logStream) const
+OFCondition DSRDateTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write Date */
-    return DSRStringValue::write(dataset, DCM_Date, logStream);
+    return DSRStringValue::write(dataset, DCM_Date);
 }
 
 
@@ -158,11 +155,10 @@ OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
                                                    STD_NAMESPACE ostream & /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
-                                                   const size_t flags,
-                                                   OFConsole *logStream) const
+                                                   const size_t flags) const
 {
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render Date */
     if (result.good())
     {
@@ -193,6 +189,9 @@ OFCondition DSRDateTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
+ *  Revision 1.22  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.21  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for

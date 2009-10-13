@@ -21,9 +21,9 @@
  *
  *  Purpose: Create sample structured reports using the dcmsr API
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:40:03 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:52 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,7 +122,6 @@ int main(int argc, char *argv[])
             /* check whether to create all reports or only selected ones */
             const int count = (strcmp(argv[1], "all") == 0) ? num_reports : argc;
             const char **array = (strcmp(argv[1], "all") == 0) ? all_reports : OFconst_cast(const char **, argv);
-            doc->setLogStream(&ofConsole);
             for (int i = 1; i < count; i++)
             {
                 writeFile = OFTrue;
@@ -1273,6 +1272,9 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
+ *  Revision 1.27  2009-10-13 14:57:52  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.26  2006-08-15 16:40:03  meichel
  *  Updated the code in module dcmsr to correctly compile when
  *    all standard C++ classes remain in namespace std.

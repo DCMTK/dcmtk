@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:30 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,22 +107,18 @@ class DSRStringValue
      *  not conform with the type (= 1) and value multiplicity (= 1).
      ** @param  dataset    DICOM dataset from which the string value should be read
      *  @param  tagKey     DICOM tag specifying the attribute which should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition read(DcmItem &dataset,
-                     const DcmTagKey &tagKey,
-                     OFConsole *logStream);
+                     const DcmTagKey &tagKey);
 
     /** write string value to dataset
      ** @param  dataset    DICOM dataset to which the string value should be written
      *  @param  tagKey     DICOM tag specifying the attribute which should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition write(DcmItem &dataset,
-                      const DcmTagKey &tagKey,
-                      OFConsole *logStream) const;
+                      const DcmTagKey &tagKey) const;
 
     /** read string value from XML document
      ** @param  doc       document containing the XML file content
@@ -137,12 +133,10 @@ class DSRStringValue
     /** render string value in HTML/XHTML format
      ** @param  docStream  output stream to which the main HTML/XHTML document is written
      *  @param  flags      flag used to customize the output (see DSRTypes::HF_xxx)
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition renderHTML(STD_NAMESPACE ostream &docStream,
-                           const size_t flags,
-                           OFConsole *logStream) const;
+                           const size_t flags) const;
 
     /** get string value
      ** @return reference to string value
@@ -187,6 +181,9 @@ class DSRStringValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.h,v $
+ *  Revision 1.15  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.14  2007-11-15 16:33:30  joergr
  *  Added support for output in XHTML 1.1 format.
  *

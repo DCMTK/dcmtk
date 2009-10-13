@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:13:27 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmsr/dsrdoc.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
@@ -46,6 +45,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dsr2xml"
+
+static OFLogger dsr2xmlLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -60,7 +61,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const size_t readFlags,
                              const size_t writeFlags,
                              const char *defaultCharset,
-                             const OFBool debugMode,
                              const OFBool checkAllStrings)
 {
     OFCondition result = EC_IllegalParameter;
@@ -69,8 +69,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
         DSRDocument *dsrdoc = new DSRDocument();
         if (dsrdoc != NULL)
         {
-            if (debugMode)
-                dsrdoc->setLogStream(&ofConsole);
             result = dsrdoc->read(*dset, readFlags);
             if (result.good())
             {
@@ -82,8 +80,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     if (defaultCharset == NULL)
                     {
                       /* the dataset contains non-ASCII characters that really should not be there */
-                      CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                           << "but extended characters used in file: " << ifname << OFendl;
+                      OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                           << "but extended characters used in file: " << ifname);
                       result = EC_IllegalCall;
                     } else {
                         OFString charset(defaultCharset);
@@ -110,8 +108,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 if (result.good())
                     result = dsrdoc->writeXML(out, writeFlags);
             } else {
-                CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                     << ") parsing file: "<< ifname << OFendl;
+                OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                     << ") parsing file: "<< ifname);
             }
         } else
             result = EC_MemoryExhausted;
@@ -127,15 +125,12 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
 
 int main(int argc, char *argv[])
 {
-    int opt_debugMode = 0;
     size_t opt_readFlags = 0;
     size_t opt_writeFlags = 0;
     const char *opt_defaultCharset = NULL;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFBool opt_checkAllStrings = OFFalse;
-
-    SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM SR file and data set to XML", rcsid);
     OFCommandLine cmd;
@@ -148,9 +143,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                        "print expanded command line arguments");
-      cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
-      cmd.addOption("--verbose-debug",          "-dd",    "verbose debug mode, print more details");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -191,10 +184,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -212,13 +201,7 @@ int main(int argc, char *argv[])
         }
 
         /* general options */
-        if (cmd.findOption("--debug"))
-            opt_debugMode = 2;
-        if (cmd.findOption("--verbose-debug"))
-        {
-            opt_debugMode = 5;
-            opt_readFlags |= DSRTypes::RF_verboseDebugMode;
-        }
+        OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
         cmd.beginOptionBlock();
@@ -308,16 +291,15 @@ int main(int argc, char *argv[])
             app.checkDependence("--template-envelope", "--write-template-id", (opt_writeFlags & DSRTypes::XF_writeTemplateIdentification) > 0);
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dsr2xmlLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dsr2xmlLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     int result = 0;
@@ -342,19 +324,19 @@ int main(int argc, char *argv[])
                 if (stream.good())
                 {
                     /* write content in XML format to file */
-                    if (writeFile(stream, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
+                    if (writeFile(stream, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_checkAllStrings).bad())
                         result = 2;
                 } else
                     result = 1;
             } else {
                 /* write content in XML format to standard output */
-                if (writeFile(COUT, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_debugMode != 0, opt_checkAllStrings).bad())
+                if (writeFile(COUT, ifname, dset, opt_readFlags, opt_writeFlags, opt_defaultCharset, opt_checkAllStrings).bad())
                     result = 3;
             }
         } else
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname << OFendl;
+            OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname);
     } else
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dsr2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
 
     return result;
 }
@@ -363,6 +345,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
+ * Revision 1.39  2009-10-13 14:57:49  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.38  2009-04-21 14:13:27  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

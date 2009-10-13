@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:42 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,31 +97,28 @@ OFCondition DSRTextTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRTextTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                      const size_t flags,
-                                      OFConsole *logStream) const
+                                      const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     writeStringValueToXML(stream, getValue(), "value", (flags & XF_writeEmptyTags) > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRTextTreeNode::readContentItem(DcmItem &dataset,
-                                             OFConsole *logStream)
+OFCondition DSRTextTreeNode::readContentItem(DcmItem &dataset)
 {
     /* read TextValue */
-    return DSRStringValue::read(dataset, DCM_TextValue, logStream);
+    return DSRStringValue::read(dataset, DCM_TextValue);
 }
 
 
-OFCondition DSRTextTreeNode::writeContentItem(DcmItem &dataset,
-                                              OFConsole *logStream) const
+OFCondition DSRTextTreeNode::writeContentItem(DcmItem &dataset) const
 {
     /* write TextValue */
-    return DSRStringValue::write(dataset, DCM_TextValue, logStream);
+    return DSRStringValue::write(dataset, DCM_TextValue);
 }
 
 
@@ -137,12 +134,11 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
                                                    STD_NAMESPACE ostream & /*annexStream*/,
                                                    const size_t /*nestingLevel*/,
                                                    size_t & /*annexNumber*/,
-                                                   const size_t flags,
-                                                   OFConsole *logStream) const
+                                                   const size_t flags) const
 {
     OFString htmlString;
     /* render ConceptName */
-    OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
+    OFCondition result = renderHTMLConceptName(docStream, flags);
     /* render TextValue */
     if (flags & HF_renderItemInline)
         docStream << "\"" << convertToHTMLString(getValue(), htmlString, flags) << "\"" << OFendl;
@@ -155,6 +151,9 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream &docStr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
+ *  Revision 1.26  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.25  2007-11-15 16:45:42  joergr
  *  Added support for output in XHTML 1.1 format.
  *

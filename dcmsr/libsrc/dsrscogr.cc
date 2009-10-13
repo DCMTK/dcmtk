@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRGraphicDataList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,12 +99,11 @@ OFCondition DSRGraphicDataList::print(STD_NAMESPACE ostream &stream,
 }
 
 
-OFCondition DSRGraphicDataList::read(DcmItem &dataset,
-                                     OFConsole *logStream)
+OFCondition DSRGraphicDataList::read(DcmItem &dataset)
 {
     /* get floating point string from dataset */
     DcmFloatingPointSingle delem(DCM_GraphicData);
-    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1", logStream, "SCOORD content item");
+    OFCondition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1", "SCOORD content item");
     if (result.good())
     {
         /* clear internal list */
@@ -129,8 +128,7 @@ OFCondition DSRGraphicDataList::read(DcmItem &dataset,
 }
 
 
-OFCondition DSRGraphicDataList::write(DcmItem &dataset,
-                                      OFConsole * /*logStream*/) const
+OFCondition DSRGraphicDataList::write(DcmItem &dataset) const
 {
     OFCondition result = EC_Normal;
     /* fill string with values from list */
@@ -224,6 +222,9 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
+ *  Revision 1.21  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.20  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

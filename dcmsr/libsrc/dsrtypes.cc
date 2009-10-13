@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:27:42 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,8 +76,7 @@ const size_t DSRTypes::RF_acceptUnknownRelationshipType  = 1 <<  1;
 const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  2;
 const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  3;
 const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  4;
-const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  5;
-const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  6;
+const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  5;
 
 /* renderHTML flags */
 const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
@@ -124,8 +123,7 @@ const size_t DSRTypes::XF_templateIdentifierAsAttribute  = 1 << 6;
 const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 7;
 const size_t DSRTypes::XF_addSchemaReference             = 1 << 8;
 const size_t DSRTypes::XF_validateSchema                 = 1 << 9;
-const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 10;
-const size_t DSRTypes::XF_templateElementEnclosesItems   = 1 << 11;
+const size_t DSRTypes::XF_templateElementEnclosesItems   = 1 << 10;
 /* shortcuts */
 const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
                                                            DSRTypes::XF_relationshipTypeAsAttribute |
@@ -791,7 +789,6 @@ OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
 OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const OFString &vm,
                                    const OFString &type,
-                                   OFConsole *stream,
                                    const OFCondition &searchCond,
                                    const char *moduleName)
 {
@@ -859,8 +856,8 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         result = OFFalse;
     } else
         print = OFFalse;
-    if (print && (stream != NULL) && !message.empty())
-        printWarningMessage(stream, message.c_str());
+    if (print && !message.empty())
+        DCMSR_WARN(message);
     return result;
 }
 
@@ -869,11 +866,10 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
                                                     DcmElement &delem,
                                                     const OFString &vm,
                                                     const OFString &type,
-                                                    OFConsole *stream,
                                                     const char *moduleName)
 {
     OFCondition result = getElementFromDataset(dataset, delem);
-    if (!checkElementValue(delem, vm, type, stream, result, moduleName))
+    if (!checkElementValue(delem, vm, type, result, moduleName))
         result = SR_EC_InvalidValue;
     return result;
 }
@@ -884,7 +880,6 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                         OFString &stringValue,
                                                         const OFString &vm,
                                                         const OFString &type,
-                                                        OFConsole *stream,
                                                         const char *moduleName)
 {
     DcmStack stack;
@@ -894,22 +889,18 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         if (delem != NULL)
         {
-            if (checkElementValue(*delem, vm, type, stream, result, moduleName))
+            if (checkElementValue(*delem, vm, type, result, moduleName))
                 result = delem->getOFString(stringValue, 0);
             else
                 result = SR_EC_InvalidValue;
         } else
             result = EC_CorruptedData;
     } else {
-        if ((stream != NULL) && ((type == "1") || (type == "2")))
+        if ((type == "1") || (type == "2"))
         {
-            OFString message = DcmTag(tagKey).getTagName();
-            message += " absent in ";
-            message += (moduleName == NULL) ? "SR document" : moduleName;
-            message += " (type ";
-            message += type;
-            message += ")";
-            printWarningMessage(stream, message.c_str());
+            DCMSR_WARN(DcmTag(tagKey).getTagName() << " absent in "
+                            << ((moduleName == NULL) ? "SR document" : moduleName)
+                            << " (type " << type << ")");
         }
     }
     if (result.bad())
@@ -1257,75 +1248,37 @@ DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType r
 }
 
 
-void DSRTypes::printMessage(OFConsole *stream,
-                            const char *message)
-{
-    if ((stream != NULL) && (message != NULL))
-    {
-        stream->lockCerr() << message << OFendl;
-        stream->unlockCerr();
-    }
-}
-
-
-void DSRTypes::printWarningMessage(OFConsole *stream,
-                                   const char *message)
-{
-    if ((stream != NULL) && (message != NULL))
-    {
-        stream->lockCerr() << "DCMSR - Warning: " << message << OFendl;
-        stream->unlockCerr();
-    }
-}
-
-
-void DSRTypes::printErrorMessage(OFConsole *stream,
-                                 const char *message)
-{
-    if ((stream != NULL) && (message != NULL))
-    {
-        stream->lockCerr() << "DCMSR - Error: " << message << OFendl;
-        stream->unlockCerr();
-    }
-}
-
-
-void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
-                                              const char *action,
+void DSRTypes::printInvalidContentItemMessage(const char *action,
                                               const DSRDocumentTreeNode *node,
                                               const char *location)
 {
-    if (stream != NULL)
+    OFString message;
+    if (action != NULL)
+        message += action;
+    else
+        message += "Processing";
+    message += " invalid/incomplete content item";
+    if (node != NULL)
     {
-        OFString message;
-        if (action != NULL)
-            message += action;
-        else
-            message += "Processing";
-        message += " invalid/incomplete content item";
-        if (node != NULL)
-        {
-            message += " ";
-            message += valueTypeToDefinedTerm(node->getValueType());
-        }
-        if (location != NULL)
-        {
-            message += " \"";
-            message += location;
-            message += "\"";
-        }
-        printWarningMessage(stream, message.c_str());
+        message += " ";
+        message += valueTypeToDefinedTerm(node->getValueType());
     }
+    if (location != NULL)
+    {
+        message += " \"";
+        message += location;
+        message += "\"";
+    }
+    DCMSR_WARN(message);
 }
 
 
-void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
-                                            const char *action,
+void DSRTypes::printContentItemErrorMessage(const char *action,
                                             const OFCondition &result,
                                             const DSRDocumentTreeNode *node,
                                             const char *location)
 {
-    if ((stream != NULL) && result.bad())
+    if (result.bad())
     {
         OFString message;
         if (action != NULL)
@@ -1347,17 +1300,16 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
         message += " (";
         message += result.text();
         message += ")";
-        printErrorMessage(stream, message.c_str());
+        DCMSR_ERROR(message);
     }
 }
 
 
-void DSRTypes::printUnknownValueWarningMessage(OFConsole *stream,
-                                               const char *valueName,
+void DSRTypes::printUnknownValueWarningMessage(const char *valueName,
                                                const char *readValue,
                                                const char *action)
 {
-    if ((stream != NULL) && (valueName != NULL))
+    if (valueName != NULL)
     {
         OFString message;
         if (action != NULL)
@@ -1372,7 +1324,7 @@ void DSRTypes::printUnknownValueWarningMessage(OFConsole *stream,
             message += readValue;
             message += ")";
         }
-        printWarningMessage(stream, message.c_str());
+        DCMSR_WARN(message);
     }
 }
 
@@ -1490,10 +1442,21 @@ OFCondition DSRTypes::appendStream(STD_NAMESPACE ostream &mainStream,
     return result;
 }
 
+OFLogger DCM_dcmsrGetLogger()
+{
+    // We don't just use a global variable, because constructors of globals are
+    // executed in random order. This guarantees that the OFLogger is constructed
+    // before first use.
+    static OFLogger DCM_dcmsrLogger = OFLog::getLogger("dcmtk.dcmsr");
+    return DCM_dcmsrLogger;
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.59  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.58  2009-08-07 14:27:42  joergr
  *  Use new isEmpty() method instead of length in order to determine whether the
  *  element value is empty (e.g. for checking the presence of type 1 attributes).

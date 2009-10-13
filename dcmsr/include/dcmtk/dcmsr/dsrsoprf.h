@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:33:19 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,19 +98,15 @@ class DSRSOPInstanceReferenceList
 
         /** read instance level attributes from dataset
          ** @param  dataset    DICOM dataset from which the list should be read
-         *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition read(DcmItem &dataset,
-                         OFConsole *logStream);
+        OFCondition read(DcmItem &dataset);
 
         /** write series and instance level attributes to dataset
          ** @param  dataset    DICOM dataset to which the list should be written
-         *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition write(DcmItem &dataset,
-                          OFConsole *logStream) const;
+        OFCondition write(DcmItem &dataset) const;
 
         /** read series and instance level attributes from XML document
          ** @param  doc     document containing the XML file content
@@ -196,19 +192,15 @@ class DSRSOPInstanceReferenceList
 
         /** read series and instance level from dataset
          ** @param  dataset    DICOM dataset from which the list should be read
-         *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition read(DcmItem &dataset,
-                         OFConsole *logStream);
+        OFCondition read(DcmItem &dataset);
 
         /** write study, series and instance level attributes to dataset
          ** @param  dataset    DICOM dataset to which the list should be written
-         *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
          ** @return status, EC_Normal if successful, an error code otherwise
          */
-        OFCondition write(DcmItem &dataset,
-                          OFConsole *logStream) const;
+        OFCondition write(DcmItem &dataset) const;
 
         /** read study, series and instance level attributes from XML document
          ** @param  doc     document containing the XML file content
@@ -313,20 +305,16 @@ class DSRSOPInstanceReferenceList
      *  i.e. the structure might look different when written back to a dataset.  However,
      *  the content is identical and this way of storing information saves storage space.
      ** @param  dataset    DICOM dataset from which the data should be read
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition read(DcmItem &dataset,
-                     OFConsole *logStream);
+    OFCondition read(DcmItem &dataset);
 
     /** write list of referenced SOP instances.
      *  Does nothing if list is empty.
      ** @param  dataset    DICOM dataset to which the data should be written
-     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition write(DcmItem &dataset,
-                      OFConsole *logStream) const;
+    OFCondition write(DcmItem &dataset) const;
 
     /** read list of references from XML document.
      *  The hierarchical structure is automatically reorganized in a way that each study,
@@ -554,6 +542,9 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
+ *  Revision 1.13  2009-10-13 14:57:50  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2007-11-15 16:33:19  joergr
  *  Fixed coding style to be more consistent.
  *

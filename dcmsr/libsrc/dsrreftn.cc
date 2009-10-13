@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:43:43 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,28 +88,26 @@ OFCondition DSRByReferenceTreeNode::print(STD_NAMESPACE ostream &stream,
 
 
 OFCondition DSRByReferenceTreeNode::writeXML(STD_NAMESPACE ostream &stream,
-                                             const size_t flags,
-                                             OFConsole *logStream) const
+                                             const size_t flags) const
 {
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " ref=\"" << ReferencedNodeID << "\">" << OFendl;
     /* basically, there should be no child content items but ... */
-    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    result = DSRDocumentTreeNode::writeXML(stream, flags);
     writeXMLItemEnd(stream, flags);
     return result;
 }
 
 
-OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
-                                                    OFConsole *logStream)
+OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset)
 {
     DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
     /* clear before reading */
     ReferencedContentItem.clear();
     ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
-    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream);
+    OFCondition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C");
     if (result.good())
     {
         /* create reference string from unsigned long values */
@@ -128,8 +126,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
 }
 
 
-OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
-                                                     OFConsole * /*logStream*/) const
+OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset) const
 {
     OFCondition result = SR_EC_InvalidValue;
     /* only write references with valid format */
@@ -184,8 +181,7 @@ OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(STD_NAMESPACE ostream 
                                                           STD_NAMESPACE ostream & /*annexStream*/,
                                                           const size_t /*nestingLevel*/,
                                                           size_t & /*annexNumber*/,
-                                                          const size_t /*flags*/,
-                                                          OFConsole * /*logStream*/) const
+                                                          const size_t /*flags*/) const
 {
     /* render reference string */
     docStream << "Content Item <a href=\"#content_item_" << ReferencedNodeID << "\">by-reference</a>" << OFendl;
@@ -218,6 +214,9 @@ OFCondition DSRByReferenceTreeNode::setTemplateIdentification(const OFString & /
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
+ *  Revision 1.18  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.17  2007-11-15 16:43:43  joergr
  *  Fixed coding style to be more consistent.
  *

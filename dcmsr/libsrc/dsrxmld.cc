@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-25 15:37:20 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:52 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,27 +45,61 @@
 #ifdef LIBXML_SCHEMAS_ENABLED
 #include <libxml/xmlschemas.h>
 
-#ifdef HAVE_VPRINTF
-// function required to avoid issue with 'std' namespace
-extern "C" void errorFunction(void *ctx, const char *msg, ...)
+// This function is also used in xml2dcm, try to stay in sync!
+extern "C" void errorFunction(void * /*ctx*/, const char *msg, ...)
 {
+    OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
+
+    if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        return;
+
+#ifdef HAVE_VSNPRINTF
+    // libxml calls us multiple times for one line of log output which would
+    // result in garbled output. To avoid this, we buffer the output in this
+    // string and then output this in one go when we receive a newline.
+    static OFString buffer;
+    va_list ap;
+    char buf[1024];
+
+    va_start(ap, msg);
+#ifdef HAVE_PROTOTYPE_STD__VSNPRINTF
+    std::vsnprintf(buf, 1024, msg, ap);
+#else
+    vsnprintf(buf, 1024, msg, ap);
+#endif
+    va_end(ap);
+
+    // Since we can't do anything about a too small buffer for vsnprintf(), we
+    // ignore it. But we do make sure the buffer is null-terminated!
+    buf[1023] = '\0';
+    buffer += buf;
+
+    // If there is a full line in the buffer...
+    size_t pos = buffer.find('\n');
+    while (pos != OFString_npos)
+    {
+        // ..output it and remove it from the buffer
+        OFLOG_DEBUG(xmlLogger, buffer.substr(0, pos));
+        buffer.erase(0, pos + 1);
+
+        pos = buffer.find('\n');
+    }
+#elif defined(HAVE_VPRINTF)
+    // No vsnprint, but at least vfprintf. Output the messages directly to stderr.
     va_list ap;
     va_start(ap, msg);
 #ifdef HAVE_PROTOTYPE_STD__VFPRINTF
-    std::vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+    std::vfprintf(stderr, msg, ap);
 #else
-    vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+    vfprintf(stderr, msg, ap);
 #endif
     va_end(ap);
-}
+#else
+    // We can only show the most basic part of the message, this will look bad :(
+    printf("%s", msg);
 #endif
-#endif /* LIBXML_SCHEMAS_ENABLED */
-
-// 'libxml' shall be quiet in non-debug mode
-extern "C" void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
-{
-    /* do nothing */
 }
+#endif /* LIBXML_SCHEMAS_ENABLED */
 
 #endif /* WITH_LIBXML */
 
@@ -75,8 +109,7 @@ extern "C" void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
 
 DSRXMLDocument::DSRXMLDocument()
   : Document(NULL),
-    EncodingHandler(NULL),
-    LogStream(NULL)
+    EncodingHandler(NULL)
 {
 }
 
@@ -105,18 +138,6 @@ OFBool DSRXMLDocument::valid() const
 }
 
 
-OFConsole *DSRXMLDocument::getLogStream() const
-{
-    return LogStream;
-}
-
-
-void DSRXMLDocument::setLogStream(OFConsole *stream)
-{
-    LogStream = stream;
-}
-
-
 #ifdef WITH_LIBXML
 OFCondition DSRXMLDocument::read(const OFString &filename,
                                  const size_t flags)
@@ -126,18 +147,12 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
     clear();
     /* substitute default entities (XML mnenonics) */
     xmlSubstituteEntitiesDefault(1);
-    if (flags & XF_enableLibxmlErrorOutput)
-    {
-        /* add line number to debug messages */
-        xmlLineNumbersDefault(1);
-        /* enable libxml warnings and error messages */
-        xmlGetWarningsDefaultValue = 1;
-        initGenericErrorDefaultFunc(NULL);
-    } else {
-        /* disable libxml warnings and error messages */
-        xmlGetWarningsDefaultValue = 0;
-        xmlSetGenericErrorFunc(NULL, noErrorFunction);
-    }
+    /* add line number to debug messages */
+    xmlLineNumbersDefault(1);
+    /* enable libxml warnings and error messages */
+    xmlGetWarningsDefaultValue = 1;
+    xmlSetGenericErrorFunc(NULL, errorFunction);
+
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the given file */
     Document = xmlParseFile(filename.c_str());
@@ -152,31 +167,13 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
 #if 1
             /* create context for Schema validation */
             xmlSchemaParserCtxtPtr context = xmlSchemaNewParserCtxt(DCMSR_XML_XSD_FILE);
-            if (flags & XF_enableLibxmlErrorOutput)
-            {
-#ifdef HAVE_VPRINTF
-                xmlSchemaSetParserErrors(context, errorFunction, errorFunction, stderr);
-#else
-                xmlSchemaSetParserErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
-                                                  OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
-#endif
-            } else
-                xmlSchemaSetParserErrors(context, NULL, NULL, NULL);
+            xmlSchemaSetParserErrors(context, errorFunction, errorFunction, NULL);
             /* parse Schema file */
             xmlSchemaPtr schema = xmlSchemaParse(context);
             if (schema != NULL)
             {
                 xmlSchemaValidCtxtPtr validCtx = xmlSchemaNewValidCtxt(schema);
-                if (flags & XF_enableLibxmlErrorOutput)
-                {
-#ifdef HAVE_VPRINTF
-                    xmlSchemaSetValidErrors(validCtx, errorFunction, errorFunction, stderr);
-#else
-                    xmlSchemaSetValidErrors(validCtx, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
-                                                      OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
-#endif
-                } else
-                    xmlSchemaSetValidErrors(validCtx, NULL, NULL, NULL);
+                xmlSchemaSetValidErrors(validCtx, errorFunction, errorFunction, NULL);
                 /* validate the document */
                 isValid = (xmlSchemaValidateDoc(validCtx, Document) == 0);
                 xmlSchemaFreeValidCtxt(validCtx);
@@ -189,16 +186,7 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
 
             /* create context for Schema validation */
             xmlSchemaValidCtxtPtr context = xmlSchemaNewValidCtxt(NULL);
-            if (flags & XF_enableLibxmlErrorOutput)
-            {
-#ifdef HAVE_VPRINTF
-                xmlSchemaSetValidErrors(context, errorFunction, errorFunction, stderr);
-#else
-                xmlSchemaSetValidErrors(context, OFreinterpret_cast(xmlSchemaValidityErrorFunc, fprintf),
-                                                 OFreinterpret_cast(xmlSchemaValidityWarningFunc, fprintf), stderr);
-#endif
-            } else
-                xmlSchemaSetValidErrors(context, NULL, NULL, NULL);
+            xmlSchemaSetValidErrors(context, errorFunction, errorFunction, NULL);
             /* validate the document */
             isValid = (xmlSchemaValidateDoc(context, Document) == 0);
 #endif
@@ -217,16 +205,16 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
             {
                 result = EC_Normal;
             } else
-                printErrorMessage(LogStream, "Document has wrong type, dcmsr namespace not found");
+                DCMSR_ERROR("Document has wrong type, dcmsr namespace not found");
         } else {
             if (isValid)
-                printErrorMessage(LogStream, "Document is empty");
+                DCMSR_ERROR("Document is empty");
             else
-                printErrorMessage(LogStream, "Document does not validate");
+                DCMSR_ERROR("Document does not validate");
         }
     } else {
         xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
-        printErrorMessage(LogStream, "Could not parse document");
+        DCMSR_ERROR("Could not parse document");
     }
     return result;
 }
@@ -308,11 +296,8 @@ DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &cursor,
             if (required)
             {
                 OFString tmpString;
-                OFString message = "Document of the wrong type, '";
-                message += name;
-                message += "' expected at ";
-                message += getFullNodePath(cursor, tmpString, OFFalse /*omitCurrent*/);
-                DSRTypes::printErrorMessage(LogStream, message.c_str());
+                DCMSR_ERROR("Document of the wrong type, '" << name
+                                << "' expected at " << getFullNodePath(cursor, tmpString, OFFalse /*omitCurrent*/));
             }
         } else {
             /* return new node position */
@@ -368,20 +353,13 @@ OFCondition DSRXMLDocument::checkNode(const DSRXMLCursor &cursor,
             /* check whether node has expected name */
             if (xmlStrcmp(cursor.Node->name, OFreinterpret_cast(const xmlChar *, name)) != 0)
             {
-                OFString message = "Document of the wrong type, was '";
-                message += OFreinterpret_cast(const char *, cursor.Node->name);
-                message += "', '";
-                message += name;
-                message += "' expected";
-                DSRTypes::printErrorMessage(LogStream, message.c_str());
+                DCMSR_ERROR("Document of the wrong type, was '" << OFreinterpret_cast(const char *, cursor.Node->name)
+                                << "', '" << name << "' expected");
                 result = SR_EC_InvalidDocument;
             } else
                 result = EC_Normal;
         } else {
-            OFString message = "Document of the wrong type, '";
-            message += name;
-            message += "' expected";
-            DSRTypes::printErrorMessage(LogStream, message.c_str());
+            DCMSR_ERROR("Document of the wrong type, '" << name << "' expected");
             result = EC_IllegalParameter;
         }
     }
@@ -704,12 +682,7 @@ DSRTypes::E_RelationshipType DSRXMLDocument::getRelationshipTypeFromNode(const D
 void DSRXMLDocument::printUnexpectedNodeWarning(const DSRXMLCursor &cursor) const
 {
     OFString tmpString;
-    /* create message string */
-    OFString message = "Unexpected node '";
-    message += getFullNodePath(cursor, tmpString);
-    message += "', skipping";
-    /* print warning message */
-    printWarningMessage(LogStream, message.c_str());
+    DCMSR_WARN("Unexpected node '" << getFullNodePath(cursor, tmpString) << "', skipping");
 }
 
 
@@ -720,11 +693,7 @@ void DSRXMLDocument::printMissingAttributeError(const DSRXMLCursor &cursor,
     if (name != NULL)
     {
         OFString tmpString;
-        OFString message = "XML attribute '";
-        message += name;
-        message += "' missing/empty in ";
-        message += getFullNodePath(cursor, tmpString);
-        printErrorMessage(LogStream, message.c_str());
+        DCMSR_ERROR("XML attribute '" << name << "' missing/empty in " << getFullNodePath(cursor, tmpString));
     }
 }
 
@@ -736,12 +705,7 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
     if (result.bad())
     {
         OFString tmpString;
-        OFString message = "Parsing node ";
-        message += getFullNodePath(cursor, tmpString);
-        message += " (";
-        message += result.text();
-        message += ")";
-        printErrorMessage(LogStream, message.c_str());
+        DCMSR_ERROR("Parsing node " << getFullNodePath(cursor, tmpString) << " (" << result.text() << ")");
     }
 }
 
@@ -749,6 +713,9 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
+ *  Revision 1.13  2009-10-13 14:57:52  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.12  2008-04-25 15:37:20  joergr
  *  Include header file for XML Schemas only if Schema support is enabled.
  *

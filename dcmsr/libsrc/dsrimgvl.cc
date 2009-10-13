@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageReferenceValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-11-15 16:45:26 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,10 +185,9 @@ OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
 
 
 OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
-                                             const size_t flags,
-                                             OFConsole *logStream) const
+                                             const size_t flags) const
 {
-    OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeXML(stream, flags);
     if ((flags & DSRTypes::XF_writeEmptyTags) || !FrameList.isEmpty())
     {
         stream << "<frames>";
@@ -199,44 +198,42 @@ OFCondition DSRImageReferenceValue::writeXML(STD_NAMESPACE ostream &stream,
     {
         stream << "<pstate>" << OFendl;
         if (PresentationState.isValid())
-            PresentationState.writeXML(stream, flags, logStream);
+            PresentationState.writeXML(stream, flags);
         stream << "</pstate>" << OFendl;
     }
     return result;
 }
 
 
-OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset,
-                                             OFConsole *logStream)
+OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset)
 {
     /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    OFCondition result = DSRCompositeReferenceValue::readItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::readItem(dataset);
     /* read ReferencedFrameNumber (conditional) */
     if (result.good())
-        FrameList.read(dataset, logStream);
+        FrameList.read(dataset);
     /* read ReferencedSOPSequence (Presentation State, optional) */
     if (result.good())
-        PresentationState.readSequence(dataset, "3" /*type*/, logStream);
+        PresentationState.readSequence(dataset, "3" /*type*/);
     return result;
 }
 
 
-OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset,
-                                              OFConsole *logStream) const
+OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset) const
 {
     /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
-    OFCondition result = DSRCompositeReferenceValue::writeItem(dataset, logStream);
+    OFCondition result = DSRCompositeReferenceValue::writeItem(dataset);
     /* write ReferencedFrameNumber (conditional) */
     if (result.good())
     {
         if (!FrameList.isEmpty())
-            result = FrameList.write(dataset, logStream);
+            result = FrameList.write(dataset);
     }
     /* write ReferencedSOPSequence (Presentation State, optional) */
     if (result.good())
     {
         if (PresentationState.isValid())
-            result = PresentationState.writeSequence(dataset, logStream);
+            result = PresentationState.writeSequence(dataset);
     }
     return result;
 }
@@ -245,8 +242,7 @@ OFCondition DSRImageReferenceValue::writeItem(DcmItem &dataset,
 OFCondition DSRImageReferenceValue::renderHTML(STD_NAMESPACE ostream &docStream,
                                                STD_NAMESPACE ostream &annexStream,
                                                size_t &annexNumber,
-                                               const size_t flags,
-                                               OFConsole * /*logStream*/) const
+                                               const size_t flags) const
 {
     /* reference: image */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
@@ -362,6 +358,9 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
+ *  Revision 1.21  2009-10-13 14:57:51  uli
+ *  Switched to logging mechanism provided by the "new" oflog module.
+ *
  *  Revision 1.20  2007-11-15 16:45:26  joergr
  *  Added support for output in XHTML 1.1 format.
  *  Enhanced support for output in valid HTML 3.2 format. Migrated support for
