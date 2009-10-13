@@ -23,9 +23,9 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:40:38 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:26:09 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -634,6 +634,26 @@ class DcmObject
      */
     void setLengthField(Uint32 val) { Length = val; }
 
+public:
+    /** helper class to print a DcmObject to an ostream using operator<<
+     */
+    class PrintHelper
+    {
+      public:
+        /** construct a PrintHelper
+         *  @param dcmobj DcmObject you want to print
+         *  @param flags flags to use for DcmObject::print()
+         *  @param level level to use for DcmObject::print()
+         */
+        explicit PrintHelper(DcmObject &dcmobj, size_t flags = 0, int level = 0)
+          : dcmobj_(dcmobj), flags_(flags), level_(level)
+        {}
+
+        DcmObject &dcmobj_;
+        const size_t flags_;
+        const int level_;
+    };
+
     /* member variables */
 
 protected:
@@ -657,6 +677,16 @@ private:
 
  }; // class DcmObject
 
+/** Print a DcmObject::PrintHelper to an ostream.
+ *  @param stream stream to print to
+ *  @param obj object which will be print()ed
+ *  @return the stream argument
+ */
+static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, DcmObject::PrintHelper obj)
+{
+    obj.dcmobj_.print(stream, obj.flags_, obj.level_);
+    return stream;
+}
 
 #endif // DCOBJECT_H
 
@@ -664,6 +694,10 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.64  2009-10-13 14:26:09  uli
+ * Added the DcmObject::PrintHelper helper class. This class can be used to
+ * print DcmObject instances with oflog's logging macros.
+ *
  * Revision 1.63  2009-08-07 14:40:38  joergr
  * Enhanced isEmpty() method by checking whether the data element value consists
  * of non-significant characters only.

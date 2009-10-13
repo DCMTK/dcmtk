@@ -3,6 +3,10 @@ Changes between releases are documented here.
 
 **** Changes from 2009.10.13 (schlachter)
 
+- Added the DcmObject::PrintHelper helper class. This class can be used to
+  print DcmObject instances with oflog's logging macros.
+  Affects: dcmdata/include/dcmtk/dcmdata/dcobject.h
+
 - Switched to logging mechanism provided by the "new" oflog module.
   Affects: dcmimage/CMakeLists.txt
            dcmimage/apps/Makefile.dep
