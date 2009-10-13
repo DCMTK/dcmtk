@@ -21,9 +21,9 @@
  *
  *  Purpose: DcmQuant
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,6 @@ OFCondition DcmQuant::createPaletteColorImage(
     OFBool floydSteinberg,
     Uint32 numberOfColors,
     OFString& description,
-    OFBool verbose,
     DcmLargestDimensionType largeType,
     DcmRepresentativeColorType repType)
 {
@@ -71,33 +70,21 @@ OFCondition DcmQuant::createPaletteColorImage(
     OFCondition result = EC_Normal;
 
     // Create histogram of the colors, clustered if necessary
-    if (verbose)
-    {
-      ofConsole.lockCerr() << "computing image histogram" << OFendl;
-      ofConsole.unlockCerr();
-    }
+    DCMIMAGE_DEBUG("computing image histogram");
 
     DcmQuantColorTable chv;
     result = chv.computeHistogram(sourceImage, DcmQuantMaxColors);
     if (result.bad()) return result;
 
     unsigned long maxval = chv.getMaxVal();
-    if (verbose)
-    {
-      ofConsole.lockCerr() << "image histogram: found " << chv.getColors() << " colors (at maxval=" << maxval << ")" << OFendl;
-      ofConsole.unlockCerr();
-    }
+    DCMIMAGE_DEBUG("image histogram: found " << chv.getColors() << " colors (at maxval=" << maxval << ")");
 
     // apply median-cut to histogram, making the new colormap.
     unsigned long cols = sourceImage.getWidth();
     unsigned long rows = sourceImage.getHeight();
     unsigned long frames = sourceImage.getFrameCount();
 
-    if (verbose)
-    {
-      ofConsole.lockCerr() << "computing color map using Heckbert's median cut algorithm" << OFendl;
-      ofConsole.unlockCerr();
-    }
+    DCMIMAGE_DEBUG("computing color map using Heckbert's median cut algorithm");
 
     DcmQuantColorTable colormap;
     result = colormap.medianCut(chv, cols * rows * frames, maxval, numberOfColors, largeType, repType);
@@ -107,11 +94,7 @@ OFCondition DcmQuant::createPaletteColorImage(
     // map the colors in the image to their closest match in the
     // new colormap, and write 'em out.
     DcmQuantColorHashTable cht;
-    if (verbose)
-    {
-      ofConsole.lockCerr() << "mapping image data to color table" << OFendl;
-      ofConsole.unlockCerr();
-    }
+    DCMIMAGE_DEBUG("mapping image data to color table");
 
     DcmQuantFloydSteinberg fs;
     if (floydSteinberg)
@@ -167,11 +150,7 @@ OFCondition DcmQuant::createPaletteColorImage(
        }
     }
 
-    if (verbose)
-    {
-      ofConsole.lockCerr() << "creating DICOM image pixel module" << OFendl;
-      ofConsole.unlockCerr();
-    }
+    DCMIMAGE_DEBUG("creating DICOM image pixel module");
 
     // create target image pixel module
     if (result.good()) result = target.putAndInsertUint16(DCM_SamplesPerPixel, 1);
@@ -256,6 +235,9 @@ OFCondition DcmQuant::updateDerivationDescription(DcmItem *dataset, const char *
  *
  * CVS/RCS Log:
  * $Log: diquant.cc,v $
+ * Revision 1.6  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.5  2006-08-15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.

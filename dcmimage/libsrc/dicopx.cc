@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dcmtk/dcmdata/dcdeftag.h"
 
 #include "dcmtk/dcmimage/dicopx.h"
+#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/dimopx.h"
 #include "dcmtk/dcmimgle/diinpx.h"
 #include "dcmtk/dcmimgle/didocu.h"
@@ -60,12 +61,8 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
         {
             if (us != samples)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us
-                                         << ") ... assuming " << samples << " !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_WARN("invalid value for 'SamplesPerPixel' (" << us
+                                         << ") ... assuming " << samples << " !");
             }
             if (docu->getValue(DCM_PlanarConfiguration, us))
             {
@@ -75,30 +72,18 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                     PlanarConfiguration = (us == 1);
                     if ((us != 0) && (us != 1))
                     {
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                        {
-                            ofConsole.lockCerr() << "WARNING: invalid value for 'PlanarConfiguration' (" << us
-                                                 << ") ... assuming 'color-by-pixel' (0) !" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                        DCMIMAGE_WARN("invalid value for 'PlanarConfiguration' (" << us
+                                                 << ") ... assuming 'color-by-pixel' (0) !");
                     }
                 } else {
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: unexpected attribute 'PlanarConfiguration' (" << us
-                                             << ") ... ignoring !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMAGE_WARN("unexpected attribute 'PlanarConfiguration' (" << us
+                                             << ") ... ignoring !");
                 }
             }
             else if (samples > 1)
             {
                 status = EIS_MissingAttribute;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                {
-                    ofConsole.lockCerr() << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_ERROR("mandatory attribute 'PlanarConfiguration' is missing !");
                 return;
             }
             if (pixel != NULL)
@@ -110,11 +95,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             }
         } else {
             status = EIS_MissingAttribute;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMAGE_ERROR("mandatory attribute 'SamplesPerPixel' is missing !");
         }
     }
 }
@@ -140,6 +121,9 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
+ * Revision 1.17  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.16  2006-08-15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.

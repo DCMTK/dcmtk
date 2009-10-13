@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorScaleTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dcmtk/dcmdata/dctypes.h"
 
 #include "dcmtk/dcmimage/dicopx.h"
+#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/discalet.h"
 
 
@@ -90,11 +91,7 @@ class DiColorScaleTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
                 scale(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), interpolate);
             else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                   ofConsole.lockCerr() << "WARNING: could not scale image ... corrupted data." << OFendl;
-                   ofConsole.unlockCerr();
-                }
+                DCMIMAGE_WARN("could not scale image ... corrupted data.");
             }
         }
     }
@@ -129,6 +126,9 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
+ * Revision 1.18  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.17  2006-08-15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.

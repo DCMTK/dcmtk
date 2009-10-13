@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-13 10:05:37 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,12 @@
 #include "dcmtk/dcmimage/dicorot.h"
 #include "dcmtk/dcmimage/dicoopxt.h"
 #include "dcmtk/dcmimgle/diutils.h"
+
+OFLogger DCM_dcmimageGetLogger()
+{
+    static OFLogger DCM_dcmdataLogger = OFLog::getLogger("dcmtk.dcmimage");
+    return DCM_dcmdataLogger;
+}
 
 
 /*----------------*
@@ -132,11 +138,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                     src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, image->BitsPerSample, interpolate);
                 break;
             default:
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_WARN("invalid value for inter-representation !");
         }
         checkInterData(0);
     }
@@ -165,11 +167,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                 InterData = new DiColorFlipTemplate<Uint32>(image->InterData, Columns, Rows, NumberOfFrames, horz, vert);
                 break;
             default:
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_WARN("invalid value for inter-representation !");
         }
         checkInterData(0);
     }
@@ -200,11 +198,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                     NumberOfFrames, degree);
                 break;
             default:
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_WARN("invalid value for inter-representation !");
         }
         checkInterData(0);
     }
@@ -232,11 +226,7 @@ int DiColorImage::checkInterData(const int mode)
         if (ImageStatus == EIS_Normal)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMAGE_ERROR("can't allocate memory for inter-representation !");
         } else
             ImageStatus = EIS_InvalidImage;
     }
@@ -247,13 +237,9 @@ int DiColorImage::checkInterData(const int mode)
         const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: computed (" << count
+            DCMIMAGE_WARN("computed (" << count
                                      << ") and stored (" << InterData->getInputCount() << ") "
-                                     << "pixel count differ !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+                                     << "pixel count differ !");
         }
     }
     return (ImageStatus == EIS_Normal);
@@ -351,29 +337,17 @@ const void *DiColorImage::getData(void *buffer,
                             getBits(), bits, planar, inverse);
                     break;
                 default:
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMAGE_WARN("invalid value for inter-representation !");
             }
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                {
-                    ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_ERROR("can't allocate memory for inter-representation !");
             }
             else
                 return OutputData->getData();
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMAGE_ERROR("given output buffer is too small (only " << size << " bytes) !");
         }
     }
     return NULL;
@@ -433,11 +407,7 @@ int DiColorImage::flip(const int horz,
             }
             break;
         default:
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMAGE_WARN("invalid value for inter-representation !");
     }
     return 1;
 }
@@ -479,11 +449,7 @@ int DiColorImage::rotate(const int degree)
                 }
                 break;
             default:
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_WARN("invalid value for inter-representation !");
         }
     }
     return 1;
@@ -747,6 +713,9 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
+ * Revision 1.41  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.40  2008-05-13 10:05:37  joergr
  * Fixed issue with multi-frame color images: writeImageToDataset() used wrong
  * format for color-by-plane output.

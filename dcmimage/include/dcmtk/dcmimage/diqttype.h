@@ -21,9 +21,9 @@
  *
  *  Purpose: typdefs and constants for the color quantization classes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:55 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,16 @@
 
 #include "dcmtk/config/osconfig.h"
 
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmimageGetLogger();
+
+#define DCMIMAGE_TRACE(msg) OFLOG_TRACE(DCM_dcmimageGetLogger(), msg)
+#define DCMIMAGE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimageGetLogger(), msg)
+#define DCMIMAGE_INFO(msg)  OFLOG_INFO(DCM_dcmimageGetLogger(), msg)
+#define DCMIMAGE_WARN(msg)  OFLOG_WARN(DCM_dcmimageGetLogger(), msg)
+#define DCMIMAGE_ERROR(msg) OFLOG_ERROR(DCM_dcmimageGetLogger(), msg)
+#define DCMIMAGE_FATAL(msg) OFLOG_FATAL(DCM_dcmimageGetLogger(), msg)
 
 /// the basic type for pixel color components
 typedef unsigned char DcmQuantComponent;
@@ -87,6 +97,9 @@ enum DcmRepresentativeColorType
 /*
  * CVS/RCS Log:
  * $Log: diqttype.h,v $
+ * Revision 1.4  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2005-12-08 16:01:55  meichel
  * Changed include path schema for all DCMTK header files
  *

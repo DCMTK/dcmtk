@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "dcmtk/ofstd/ofconsol.h"    /* for ofConsole */
 #include "dcmtk/dcmimage/dicopxt.h"
+#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/diinpx.h"  /* gcc 3.4 needs this */
 
 
@@ -212,11 +213,7 @@ class DiHSVPixelTemplate
                     blue = q;
                     break;
                 default:
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMAGE_WARN("invalid value for 'hi' while converting HSV to RGB !");
             }
         }
     }
@@ -230,6 +227,9 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
+ * Revision 1.21  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.20  2006-08-15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.

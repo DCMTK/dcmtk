@@ -21,9 +21,9 @@
  *
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:48:11 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "dcmtk/dcmimage/diargimg.h"
 #include "dcmtk/dcmimage/diargpxt.h"
+#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/diluptab.h"
 #include "dcmtk/dcmimgle/diinpx.h"
 #include "dcmtk/dcmimgle/didocu.h"
@@ -107,11 +108,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
                                 planeSize, BitsStored);
                         break;
                     default:
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                        {
-                            ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !";
-                            ofConsole.unlockCerr();
-                        }
+                        DCMIMAGE_WARN("invalid value for inter-representation !");
                 }
                 deleteInputData();                          // input data is no longer needed
                 checkInterData();
@@ -123,12 +120,8 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
         else                                                // color depth > 16
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
-                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMAGE_ERROR("invalid value for 'BitsStored' (" << BitsStored << ") "
+                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !");
         }
     }
 }
@@ -147,6 +140,9 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
+ * Revision 1.20  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.19  2007-03-16 11:48:11  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).

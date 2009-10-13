@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:04:12 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #endif
 
 #include "dcmtk/dcmdata/dctk.h"          /* for various dcmdata headers */
-#include "dcmtk/dcmdata/dcdebug.h"       /* for SetDebugLevel */
 #include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 #include "dcmtk/dcmdata/dcrledrg.h"      /* for DcmRLEDecoderRegistration */
@@ -75,6 +74,7 @@
 #endif
 
 #include "dcmtk/ofstd/ofstream.h"
+#include "dcmtk/oflog/oflog.h"
 
 #define OFFIS_OUTFILE_DESCRIPTION "output filename to be written (default: stdout)"
 
@@ -83,6 +83,8 @@
 #else
 # define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
 #endif
+
+static OFLogger dcm2pnmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static const char *consoleDescription = "Convert DICOM images to PGM/PPM"
 #ifdef WITH_LIBPNG
@@ -101,9 +103,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #define SHORTCOL 4
 #define LONGCOL 20
-
-#define OUTPUT CERR
-
 
 /* output file types */
 enum E_FileType
@@ -200,9 +199,7 @@ int main(int argc, char *argv[])
     OFCmdFloat          opt_foregroundDensity = 1.0;
     OFCmdFloat          opt_thresholdDensity  = 0.5;
 
-    int                 opt_verboseMode = 1;              /* default: be more or less quiet */
     int                 opt_imageInfo = 0;                /* default: no info */
-    int                 opt_debugMode = 0;                /* default: no debug */
     int                 opt_suppressOutput = 0;           /* default: create output */
     E_FileType          opt_fileType = EFT_RawPNM;        /* default: 8-bit PGM/PPM */
                                                           /* (binary for file output and ASCII for stdout) */
@@ -214,9 +211,6 @@ int main(int argc, char *argv[])
     for (i = 0; i < 16; i++)
         opt_Overlay[i] = 2;                               /* default: display all overlays if present */
 
-    SetDebugLevel((0));
-    DicomImageClass::setDebugLevel(DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors);
-
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
@@ -226,11 +220,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",                      "print expanded command line arguments");
-     cmd.addOption("--verbose",             "-v",      "verbose mode, print processing details");
-     cmd.addOption("--quiet",               "-q",      "quiet mode, print no warnings and errors");
-     cmd.addOption("--debug",               "-d",      "debug mode, print debug information");
      cmd.addOption("--image-info",          "-im",     "info mode, print image details");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
 
@@ -415,10 +406,6 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -459,18 +446,7 @@ int main(int argc, char *argv[])
 
         /* general options */
 
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--verbose"))
-            opt_verboseMode = 2;
-        if (cmd.findOption("--quiet"))
-        {
-            opt_verboseMode = 0;
-            app.setQuietMode();
-        }
-        cmd.endOptionBlock();
-
-        if (cmd.findOption("--debug"))
-            opt_debugMode = 1;
+        OFLog::configureFromCommandLine(cmd, app);
         if (cmd.findOption("--image-info"))
             opt_imageInfo = 1;
 
@@ -871,37 +847,23 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
     }
 
-    if (opt_verboseMode < 1)
-        DicomImageClass::setDebugLevel(0);
-    else if (opt_debugMode > 0)
-    {
-        app.printIdentifier();
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
-    }
-//    SetDebugLevel(( (int)opt_debugMode ));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcm2pnmLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFOStringStream oss;
-        oss << "no data dictionary loaded, check environment variable: "
-            << DCM_DICT_ENVIRONMENT_VARIABLE << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-        app.printWarning(tmpString);
-        OFSTRINGSTREAM_FREESTR(tmpString)
+        OFLOG_WARN(dcm2pnmLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    if (opt_verboseMode > 1)
-    {
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
-        OUTPUT << "reading DICOM file: " << opt_ifname << OFendl;
-    }
+    OFLOG_INFO(dcm2pnmLogger, "reading DICOM file: " << opt_ifname);
 
     // register RLE decompression codec
-    DcmRLEDecoderRegistration::registerCodecs(OFFalse /*pCreateSOPInstanceUID*/, (opt_debugMode ? OFTrue : OFFalse));
+    DcmRLEDecoderRegistration::registerCodecs();
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
     // register JPEG decompression codecs
-    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, (opt_debugMode ? OFTrue : OFFalse));
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
 #endif
 
     DcmFileFormat *dfile = new DcmFileFormat();
@@ -909,24 +871,26 @@ int main(int argc, char *argv[])
 
     if (cond.bad())
     {
-        OFOStringStream oss;
-        oss << cond.text() << ": reading file: " << opt_ifname << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-        app.printError(tmpString);
-        OFSTRINGSTREAM_FREESTR(tmpString)
+        OFLOG_FATAL(dcm2pnmLogger, cond.text() << ": reading file: " << opt_ifname);
+        return 1;
     }
 
-    if (opt_verboseMode > 1)
-        OUTPUT << "preparing pixel data." << OFendl;
+    OFLOG_INFO(dcm2pnmLogger, "preparing pixel data.");
 
     E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
 
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
-        app.printError("Out of memory");
+    {
+        OFLOG_FATAL(dcm2pnmLogger, "Out of memory");
+        return 1;
+    }
 
     if (di->getStatus() != EIS_Normal)
-        app.printError(DicomImage::getString(di->getStatus()));
+    {
+        OFLOG_FATAL(dcm2pnmLogger, DicomImage::getString(di->getStatus()));
+        return 1;
+    }
 
     /* create & set display function */
     DiDisplayFunction *disp = NULL;
@@ -948,26 +912,21 @@ int main(int argc, char *argv[])
                 disp->setMaxDensityValue(opt_maxDensity);
             if ((di != NULL) && (disp->isValid()))
             {
-                if (opt_verboseMode > 1)
-                {
-                    OUTPUT << "activating "
+                OFLOG_INFO(dcm2pnmLogger, "activating "
                            << ((opt_displayFunction == 1) ? "CIELAB" : "GSDF")
                            << " display function for "
                            << ((deviceType == DiDisplayFunction::EDT_Monitor) ? "softcopy" : "hardcopy")
-                           << " devices." << OFendl;
-                }
+                           << " devices.");
                 if (!di->setDisplayFunction(disp))
-                    app.printWarning("cannot select display function");
+                    OFLOG_WARN(dcm2pnmLogger, "cannot select display function");
             }
         }
     }
 
     if (opt_imageInfo)
     {
-
         /* dump image parameters */
-        if (opt_verboseMode > 1)
-            OUTPUT << "dumping image parameters." << OFendl;
+        OFLOG_INFO(dcm2pnmLogger, "dumping image parameters.");
 
         double minVal = 0.0;
         double maxVal = 0.0;
@@ -1052,24 +1011,26 @@ int main(int argc, char *argv[])
         /* try to select frame */
         if (opt_frame != di->getFirstFrame() + 1)
         {
-            OFOStringStream oss;
-            oss << "cannot select frame no. " << opt_frame << ", invalid frame no." << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            app.printError(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            OFLOG_FATAL(dcm2pnmLogger, "cannot select frame no. " << opt_frame << ", invalid frame no.");
+            return 1;
         }
 
         /* convert to grayscale if necessary */
         if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
         {
-             if (opt_verboseMode > 1)
-                 OUTPUT << "converting image to grayscale." << OFendl;
+             OFLOG_INFO(dcm2pnmLogger, "converting image to grayscale.");
 
              DicomImage *newimage = di->createMonochromeImage();
              if (newimage == NULL)
-                 app.printError("Out of memory or cannot convert to monochrome image");
+             {
+                OFLOG_FATAL(dcm2pnmLogger, "Out of memory or cannot convert to monochrome image");
+                return 1;
+             }
              else if (newimage->getStatus() != EIS_Normal)
-                 app.printError(DicomImage::getString(newimage->getStatus()));
+             {
+                OFLOG_FATAL(dcm2pnmLogger, DicomImage::getString(newimage->getStatus()));
+                return 1;
+             }
              else
              {
                  delete di;
@@ -1085,26 +1046,17 @@ int main(int argc, char *argv[])
             {
                 if ((opt_Overlay[k] == 1) || (k < di->getOverlayCount()))
                 {
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "activating overlay plane " << k + 1 << OFendl;
+                    OFLOG_INFO(dcm2pnmLogger, "activating overlay plane " << k + 1);
                     if (opt_OverlayMode != EMO_Default)
                     {
                         if (!di->showOverlay(k, opt_OverlayMode, opt_foregroundDensity, opt_thresholdDensity))
                         {
-                            OFOStringStream oss;
-                            oss << "cannot display overlay plane " << k + 1 << OFStringStream_ends;
-                            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                            app.printWarning(tmpString);
-                            OFSTRINGSTREAM_FREESTR(tmpString)
+                            OFLOG_WARN(dcm2pnmLogger, "cannot display overlay plane " << k + 1);
                         }
                     } else {
                         if (!di->showOverlay(k)) /* use default values */
                         {
-                            OFOStringStream oss;
-                            oss << "cannot display overlay plane " << k + 1 << OFStringStream_ends;
-                            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                            app.printWarning(tmpString);
-                            OFSTRINGSTREAM_FREESTR(tmpString)
+                            OFLOG_WARN(dcm2pnmLogger, "cannot display overlay plane " << k + 1);
                         }
                     }
                 }
@@ -1117,89 +1069,64 @@ int main(int argc, char *argv[])
             case 1: /* use the n-th VOI window from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
                 {
-                    OFOStringStream oss;
-                    oss << "cannot select VOI window no. " << opt_windowParameter << ", only "
-                        << di->getWindowCount() << " window(s) in file." << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    app.printError(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot select VOI window no. " << opt_windowParameter << ", only "
+                        << di->getWindowCount() << " window(s) in file.");
+                    return 1;
                 }
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window " << opt_windowParameter << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating VOI window " << opt_windowParameter);
                 if (!di->setWindow(opt_windowParameter - 1))
                 {
-                    OFOStringStream oss;
-                    oss << "cannot select VOI window no. " << opt_windowParameter << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    app.printWarning(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
+                    OFLOG_WARN(dcm2pnmLogger, "cannot select VOI window no. " << opt_windowParameter);
                 }
                 break;
             case 2: /* use the n-th VOI look up table from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
                 {
-                    OFOStringStream oss;
-                    oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only "
-                        << di->getVoiLutCount() << " LUT(s) in file." << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    app.printError(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot select VOI LUT no. " << opt_windowParameter << ", only "
+                        << di->getVoiLutCount() << " LUT(s) in file.");
+                    return 1;
                 }
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI LUT " << opt_windowParameter << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating VOI LUT " << opt_windowParameter);
                 if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth ? ELM_IgnoreValue : ELM_UseValue))
                 {
-                    OFOStringStream oss;
-                    oss << "cannot select VOI LUT no. " << opt_windowParameter << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    app.printWarning(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
+                    OFLOG_WARN(dcm2pnmLogger, "cannot select VOI LUT no. " << opt_windowParameter);
                 }
                 break;
             case 3: /* Compute VOI window using min-max algorithm */
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window min-max algorithm" << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating VOI window min-max algorithm");
                 if (!di->setMinMaxWindow(0))
-                    app.printWarning("cannot compute min/max VOI window");
+                    OFLOG_WARN(dcm2pnmLogger, "cannot compute min/max VOI window");
                 break;
             case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%");
                 if (!di->setHistogramWindow(OFstatic_cast(double, opt_windowParameter)/100.0))
-                    app.printWarning("cannot compute histogram VOI window");
+                    OFLOG_WARN(dcm2pnmLogger, "cannot compute histogram VOI window");
                 break;
             case 5: /* Compute VOI window using center r and width s */
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth);
                 if (!di->setWindow(opt_windowCenter, opt_windowWidth))
                 {
-                    OFOStringStream oss;
-                    oss << "cannot set VOI window center=" << opt_windowCenter << " width="
-                        << opt_windowWidth << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    app.printError(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot set VOI window center=" << opt_windowCenter << " width="
+                        << opt_windowWidth);
+                    return 1;
                 }
                 break;
             case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating VOI window min-max algorithm, ignoring extreme values" << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating VOI window min-max algorithm, ignoring extreme values");
                 if (!di->setMinMaxWindow(1))
-                    app.printWarning("cannot compute min/max VOI window");
+                    OFLOG_WARN(dcm2pnmLogger, "cannot compute min/max VOI window");
                 break;
             case 7: /* Compute region of interest VOI window */
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating region of interest VOI window" << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "activating region of interest VOI window");
                 if (!di->setRoiWindow(opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight))
-                    app.printWarning("cannot compute region of interest VOI window");
+                    OFLOG_WARN(dcm2pnmLogger, "cannot compute region of interest VOI window");
                 break;
             default: /* no VOI windowing */
                 if (di->isMonochrome())
                 {
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "disabling VOI window computation" << OFendl;
+                    OFLOG_INFO(dcm2pnmLogger, "disabling VOI window computation");
                     if (! di->setNoVoiTransformation())
-                        app.printWarning("cannot ignore VOI window");
+                        OFLOG_WARN(dcm2pnmLogger, "cannot ignore VOI window");
                 }
                 break;
         }
@@ -1207,42 +1134,37 @@ int main(int argc, char *argv[])
         /* process presentation LUT parameters */
         if (opt_presShape != ESP_Default)
         {
-            if (opt_verboseMode > 1)
-            {
-                if (opt_presShape == ESP_Identity)
-                    OUTPUT << "setting presentation LUT shape to IDENTITY" << OFendl;
-                else if (opt_presShape == ESP_Inverse)
-                    OUTPUT << "setting presentation LUT shape to INVERSE" << OFendl;
-                else if (opt_presShape == ESP_LinOD)
-                    OUTPUT << "setting presentation LUT shape to LIN OD" << OFendl;
-            }
+            if (opt_presShape == ESP_Identity)
+                OFLOG_INFO(dcm2pnmLogger, "setting presentation LUT shape to IDENTITY");
+            else if (opt_presShape == ESP_Inverse)
+                OFLOG_INFO(dcm2pnmLogger, "setting presentation LUT shape to INVERSE");
+            else if (opt_presShape == ESP_LinOD)
+                OFLOG_INFO(dcm2pnmLogger, "setting presentation LUT shape to LIN OD");
             di->setPresentationLutShape(opt_presShape);
         }
 
         /* change polarity */
         if (opt_changePolarity)
         {
-            if (opt_verboseMode > 1)
-                OUTPUT << "setting polarity to REVERSE" << OFendl;
+            OFLOG_INFO(dcm2pnmLogger, "setting polarity to REVERSE");
             di->setPolarity(EPP_Reverse);
         }
 
         /* perform clipping */
         if (opt_useClip && (opt_scaleType == 0))
         {
-             if (opt_verboseMode > 1)
-                 OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << OFendl;
+             OFLOG_INFO(dcm2pnmLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ").");
              DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
              if (newimage == NULL)
              {
-                 OFOStringStream oss;
-                 oss << "clipping to (" << opt_left << "," << opt_top << "," << opt_width << ","
-                     << opt_height << ") failed." << OFStringStream_ends;
-                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                 app.printError(tmpString);
-                 OFSTRINGSTREAM_FREESTR(tmpString)
+                OFLOG_FATAL(dcm2pnmLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width << ","
+                     << opt_height << ") failed.");
+                 return 1;
              } else if (newimage->getStatus() != EIS_Normal)
-                 app.printError(DicomImage::getString(newimage->getStatus()));
+             {
+                 OFLOG_FATAL(dcm2pnmLogger, DicomImage::getString(newimage->getStatus()));
+                 return 1;
+             }
              else
              {
                  delete di;
@@ -1253,36 +1175,29 @@ int main(int argc, char *argv[])
         /* perform rotation */
         if (opt_rotateDegree > 0)
         {
-            if (opt_verboseMode > 1)
-                OUTPUT << "rotating image by " << opt_rotateDegree << " degrees." << OFendl;
+            OFLOG_INFO(dcm2pnmLogger, "rotating image by " << opt_rotateDegree << " degrees.");
             di->rotateImage(opt_rotateDegree);
         }
 
         /* perform flipping */
         if (opt_flipType > 0)
         {
-            if (opt_verboseMode > 1)
-                OUTPUT << "flipping image";
             switch (opt_flipType)
             {
                 case 1:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << " horizontally." << OFendl;
+                    OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally.");
                     di->flipImage(1, 0);
                     break;
                 case 2:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << " vertically." << OFendl;
+                    OFLOG_INFO(dcm2pnmLogger, "flipping image vertically.");
                     di->flipImage(0, 1);
                     break;
                 case 3:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << " horizontally and vertically." << OFendl;
+                    OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally and vertically.");
                     di->flipImage(1, 1);
                     break;
                 default:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << OFendl;
+                    break;
             }
         }
 
@@ -1290,15 +1205,14 @@ int main(int argc, char *argv[])
         if (opt_scaleType > 0)
         {
             DicomImage *newimage;
-            if ((opt_verboseMode > 1) && opt_useClip)
-                OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << OFendl;
+            if (opt_useClip)
+                OFLOG_INFO(dcm2pnmLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ").");
             switch (opt_scaleType)
             {
                 case 1:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, X factor=" << opt_scale_factor
+                    OFLOG_INFO(dcm2pnmLogger, "scaling image, X factor=" << opt_scale_factor
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1307,10 +1221,9 @@ int main(int argc, char *argv[])
                             opt_useAspectRatio);
                     break;
                 case 2:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, Y factor=" << opt_scale_factor
+                    OFLOG_INFO(dcm2pnmLogger, "scaling image, Y factor=" << opt_scale_factor
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1319,10 +1232,9 @@ int main(int argc, char *argv[])
                             opt_useAspectRatio);
                     break;
                 case 3:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, X size=" << opt_scale_size
+                    OFLOG_INFO(dcm2pnmLogger, "scaling image, X size=" << opt_scale_size
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1331,10 +1243,9 @@ int main(int argc, char *argv[])
                             opt_useAspectRatio);
                     break;
                 case 4:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, Y size=" << opt_scale_size
+                    OFLOG_INFO(dcm2pnmLogger, "scaling image, Y size=" << opt_scale_size
                                << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1343,15 +1254,20 @@ int main(int argc, char *argv[])
                             opt_useAspectRatio);
                     break;
                 default:
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "internal error: unknown scaling type" << OFendl;
+                    OFLOG_INFO(dcm2pnmLogger, "internal error: unknown scaling type");
                     newimage = NULL;
                     break;
             }
             if (newimage == NULL)
-                app.printError("Out of memory or cannot scale image");
+            {
+                OFLOG_FATAL(dcm2pnmLogger, "Out of memory or cannot scale image");
+                return 1;
+            }
             else if (newimage->getStatus() != EIS_Normal)
-                app.printError(DicomImage::getString(newimage->getStatus()));
+            {
+                OFLOG_FATAL(dcm2pnmLogger, DicomImage::getString(newimage->getStatus()));
+                return 1;
+            }
             else
             {
                 delete di;
@@ -1391,12 +1307,8 @@ int main(int argc, char *argv[])
 
         if (fcount < opt_frameCount)
         {
-            OFOStringStream oss;
-            oss << "cannot select " << opt_frameCount << " frames, limiting to "
-                << fcount << " frames" << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            app.printWarning(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            OFLOG_WARN(dcm2pnmLogger, "cannot select " << opt_frameCount << " frames, limiting to "
+                << fcount << " frames");
         }
 
         for (unsigned int frame = 0; frame < fcount; frame++)
@@ -1408,22 +1320,17 @@ int main(int argc, char *argv[])
                     sprintf(ofname, "%s.%d.%s", opt_ofname, frame, ofext);
                 else
                     strcpy(ofname, opt_ofname);
-                if (opt_verboseMode > 1)
-                     OUTPUT << "writing frame " << (opt_frame + frame) << " to " << ofname << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "writing frame " << (opt_frame + frame) << " to " << ofname);
                 ofile = fopen(ofname, "wb");
                 if (ofile == NULL)
                 {
-                    OFOStringStream oss;
-                    oss << "cannot create file " << ofname << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    app.printError(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot create file " << ofname);
+                    return 1;
                 }
             } else {
                 /* output to stdout */
                 ofile = stdout;
-                if (opt_verboseMode > 1)
-                     OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "writing frame " << (opt_frame + frame) << " to stdout");
             }
 
             /* finally create output image file */
@@ -1505,13 +1412,15 @@ int main(int argc, char *argv[])
                 fclose(ofile);
 
             if (!result)
-                app.printError("cannot write frame");
+            {
+                OFLOG_FATAL(dcm2pnmLogger, "cannot write frame");
+                return 1;
+            }
         }
     }
 
     /* done, now cleanup. */
-    if (opt_verboseMode > 1)
-         OUTPUT << "cleaning up memory." << OFendl;
+    OFLOG_INFO(dcm2pnmLogger, "cleaning up memory.");
     delete di;
     delete disp;
 
@@ -1529,6 +1438,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.94  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.93  2009-04-21 14:04:12  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

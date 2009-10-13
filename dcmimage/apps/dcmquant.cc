@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:28:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #endif
 
 #include "dcmtk/dcmdata/dctk.h"          /* for various dcmdata headers */
-#include "dcmtk/dcmdata/dcdebug.h"       /* for SetDebugLevel */
 #include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 #include "dcmtk/dcmimgle/dcmimage.h"     /* for DicomImage */
@@ -71,6 +70,8 @@
 #define OFFIS_CONSOLE_APPLICATION "dcmquant"
 #endif
 
+static OFLogger dcmquantLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -85,7 +86,6 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
 
-    OFBool opt_verbose = OFFalse;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_FileWriteMode opt_writeMode = EWM_fileformat;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
@@ -122,9 +122,6 @@ int main(int argc, char *argv[])
     const char *        opt_ifname = NULL;
     const char *        opt_ofname = NULL;
 
-    SetDebugLevel((0));
-    DicomImageClass::setDebugLevel(DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors);
-
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
@@ -134,8 +131,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",                      "print expanded command line arguments");
-     cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
 
@@ -219,10 +215,6 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-          app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -250,7 +242,7 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
+      OFLog::configureFromCommandLine(cmd, app);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -375,17 +367,20 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
     }
 
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmquantLogger, rcsid << OFendl);
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcmquantLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
     // register global decompression codecs
-    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, OFFalse);
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
 #endif
 
     // ======================================================================
@@ -393,7 +388,7 @@ int main(int argc, char *argv[])
 
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "Error: invalid filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dcmquantLogger, "invalid filename: <empty string>");
         return 1;
     }
 
@@ -403,13 +398,11 @@ int main(int argc, char *argv[])
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-        CERR << "Error: " << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcmquantLogger, error.text() << ": reading file: " <<  opt_ifname);
         return 1;
     }
 
-    if (opt_verbose)
-        COUT << "load all data into memory" << OFendl;
+    OFLOG_INFO(dcmquantLogger, "load all data into memory");
 
     /* make sure that pixel data is loaded before output file is created */
     dataset->loadAllDataIntoMemory();
@@ -419,41 +412,42 @@ int main(int argc, char *argv[])
 
     if (opt_oxfer == EXS_Unknown)
     {
-        if (opt_verbose)
-            COUT << "set output transfer syntax to input transfer syntax" << OFendl;
+        OFLOG_INFO(dcmquantLogger, "set output transfer syntax to input transfer syntax");
         opt_oxfer = dataset->getOriginalXfer();
     }
 
-    if (opt_verbose)
-        COUT << "check if new output transfer syntax is possible" << OFendl;
+    OFLOG_INFO(dcmquantLogger, "check if new output transfer syntax is possible");
 
     DcmXfer opt_oxferSyn(opt_oxfer);
     dataset->chooseRepresentation(opt_oxfer, NULL);
 
     if (dataset->canWriteXfer(opt_oxfer))
     {
-        if (opt_verbose)
-            COUT << "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written" << OFendl;
+        OFLOG_INFO(dcmquantLogger, "output transfer syntax " << opt_oxferSyn.getXferName()
+                 << " can be written");
     } else {
-        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!" << OFendl;
+        OFLOG_FATAL(dcmquantLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName()
+             << " possible!");
         return 1;
     }
 
     // ======================================================================
     // image processing starts here
 
-    if (opt_verbose)
-        CERR << "preparing pixel data." << OFendl;
+    OFLOG_INFO(dcmquantLogger, "preparing pixel data.");
 
     // create DicomImage object
     DicomImage di(dataset, opt_oxfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
-    if (di.getStatus() != EIS_Normal) app.printError(DicomImage::getString(di.getStatus()));
+    if (di.getStatus() != EIS_Normal)
+    {
+        OFLOG_FATAL(dcmquantLogger, DicomImage::getString(di.getStatus()));
+        return 1;
+    }
 
     if (di.isMonochrome())
     {
-      app.printError("cannot convert monochrome image to palette color");
+      OFLOG_FATAL(dcmquantLogger, "cannot convert monochrome image to palette color");
+      return 1;
     }
 
     OFString derivationDescription;
@@ -461,7 +455,7 @@ int main(int argc, char *argv[])
     // create palette color image
     error = DcmQuant::createPaletteColorImage(
       di, *dataset, opt_palette_ow, opt_entries_word, opt_palette_fs, opt_palette_col,
-      derivationDescription, opt_verbose, opt_largeType, opt_repType);
+      derivationDescription, opt_largeType, opt_repType);
 
     // update image type
     if (error.good()) error = DcmCodec::updateImageType(dataset);
@@ -480,16 +474,14 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: " << error.text()
-             << ": converting image: " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcmquantLogger, error.text() << ": converting image: " <<  opt_ifname);
         return 1;
     }
 
     // ======================================================================
     // write back output file
 
-    if (opt_verbose)
-        COUT << "write converted DICOM file" << OFendl;
+    OFLOG_INFO(dcmquantLogger, "write converted DICOM file");
 
     // update file meta information with new SOP Instance UID
     if ((opt_uidcreation || opt_secondarycapture) && (opt_writeMode == EWM_fileformat))
@@ -500,13 +492,11 @@ int main(int argc, char *argv[])
 
     if (error.bad())
     {
-        CERR << "Error: " << error.text()
-             << ": writing file: " <<  opt_ofname << OFendl;
+        OFLOG_FATAL(dcmquantLogger, error.text() << ": writing file: " <<  opt_ofname);
         return 1;
     }
 
-    if (opt_verbose)
-        COUT << "conversion successful" << OFendl;
+    OFLOG_INFO(dcmquantLogger, "conversion successful");
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
     // deregister global decompression codecs
@@ -520,6 +510,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
+ * Revision 1.19  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.18  2009-08-21 09:28:02  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

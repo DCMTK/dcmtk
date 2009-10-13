@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmQuantFloydSteinberg
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:01:56 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,6 @@ public:
    *    Valid range is [2..65536].
    *  @param description description string suitable for use as
    *    Derivation Description returned in this parameter
-   *  @param verbose verbose mode, print information to console
    *  @param largeType algorithm used for determining the largest dimension
    *    in the Median Cut algorithm
    *  @param repType algorithm for choosing a representative color for each
@@ -80,7 +79,6 @@ public:
     OFBool floydSteinberg,
     Uint32 numberOfColors,
     OFString& description,
-    OFBool verbose,
     DcmLargestDimensionType largeType = DcmLargestDimensionType_default,
     DcmRepresentativeColorType repType = DcmRepresentativeColorType_default);
 
@@ -101,6 +99,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: diquant.h,v $
+ * Revision 1.6  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.5  2005-12-08 16:01:56  meichel
  * Changed include path schema for all DCMTK header files
  *

@@ -1,6 +1,36 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.13 (schlachter)
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmimage/CMakeLists.txt
+           dcmimage/apps/Makefile.dep
+           dcmimage/apps/Makefile.in
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/apps/dcmquant.cc
+           dcmimage/apps/dcmscale.cc
+           dcmimage/docs/dcm2pnm.man
+           dcmimage/docs/dcmquant.man
+           dcmimage/docs/dcmscale.man
+           dcmimage/include/dcmtk/dcmimage/dicoflt.h
+           dcmimage/include/dcmtk/dcmimage/dicorot.h
+           dcmimage/include/dcmtk/dcmimage/dicosct.h
+           dcmimage/include/dcmtk/dcmimage/dihsvpxt.h
+           dcmimage/include/dcmtk/dcmimage/dipalpxt.h
+           dcmimage/include/dcmtk/dcmimage/diqttype.h
+           dcmimage/include/dcmtk/dcmimage/diquant.h
+           dcmimage/include/dcmtk/dcmimage/diyf2pxt.h
+           dcmimage/include/dcmtk/dcmimage/diyp2pxt.h
+           dcmimage/libsrc/Makefile.dep
+           dcmimage/libsrc/Makefile.in
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dicopx.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimage/libsrc/diquant.cc
+           dcmjpeg/apps/Makefile.dep
+
 **** Changes from 2009.10.12 (riesmeier)
 
 - Changed prefix of UIDs created for series and studies (now using constants
@@ -10,6 +40,7 @@ Changes between releases are documented here.
 
 - Fixed wrong wording.
   Affects: dcmdata/docs/dcmodify.man
+           dcmdata/docs/img2dcm.man
 
 **** Changes from 2009.10.07 (schlachter)
 

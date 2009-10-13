@@ -13,13 +13,15 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc \
-	-L$(dcmimgledir)/libsrc
-LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
+LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include \
+                -I$(dcmdatadir)/include -I$(dcmimgledir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc \
+          -L$(dcmdatadir)/libsrc -L$(dcmimgledir)/libsrc
+LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -loflog -lofstd $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
 
 objs = dcm2pnm.o dcmquant.o dcmscale.o
 progs = dcm2pnm dcmquant dcmscale

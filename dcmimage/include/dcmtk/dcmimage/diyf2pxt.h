@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:35:01 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "dcmtk/ofstd/ofconsol.h"
 #include "dcmtk/dcmimage/dicopxt.h"
+#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/diinpx.h"  /* gcc 3.4 needs this */
 
 
@@ -74,12 +75,8 @@ class DiYBR422PixelTemplate
             if (this->PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                {
-                    ofConsole.lockCerr() << "ERROR: invalid value for 'PlanarConfiguration' ("
-                                         << this->PlanarConfiguration << ") ! " << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMAGE_ERROR("invalid value for 'PlanarConfiguration' ("
+                                         << this->PlanarConfiguration << ") ! ");
             }
             else
                 convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), bits, rgb);
@@ -177,6 +174,9 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
+ * Revision 1.21  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.20  2006-08-15 16:35:01  meichel
  * Updated the code in module dcmimage to correctly compile when
  *   all standard C++ classes remain in namespace std.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:28:12 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,12 +42,13 @@
 #endif
 
 #include "dcmtk/dcmdata/dctk.h"          /* for various dcmdata headers */
-#include "dcmtk/dcmdata/dcdebug.h"       /* for SetDebugLevel */
 #include "dcmtk/dcmdata/cmdlnarg.h"      /* for prepareCmdLineArgs */
 #include "dcmtk/dcmdata/dcuid.h"         /* for dcmtk version name */
 
 #include "dcmtk/ofstd/ofconapp.h"        /* for OFConsoleApplication */
 #include "dcmtk/ofstd/ofcmdln.h"         /* for OFCommandLine */
+
+#include "dcmtk/oflog/oflog.h"           /* for OFLogger */
 
 #include "dcmtk/dcmimgle/dcmimage.h"     /* for DicomImage */
 #include "dcmtk/dcmimage/diregist.h"     /* include to support color images */
@@ -70,6 +71,8 @@
 #define OFFIS_CONSOLE_APPLICATION "dcmscale"
 #endif
 
+static OFLogger dcmscaleLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -84,8 +87,6 @@ int main(int argc, char *argv[])
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
 
-    OFBool opt_debug = OFFalse;
-    OFBool opt_verbose = OFFalse;
     OFBool opt_uidCreation = OFTrue;
     E_FileReadMode opt_readMode = ERM_autoDetect;
     E_FileWriteMode opt_writeMode = EWM_fileformat;
@@ -120,9 +121,6 @@ int main(int argc, char *argv[])
     const char *opt_ifname = NULL;
     const char *opt_ofname = NULL;
 
-    SetDebugLevel((0));
-    DicomImageClass::setDebugLevel(DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors);
-
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
@@ -132,9 +130,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",       "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",                       "print expanded command line arguments");
-     cmd.addOption("--verbose",             "-v",       "verbose mode, print processing details");
-     cmd.addOption("--debug",               "-d",       "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
      cmd.addSubGroup("input file format:");
@@ -205,10 +201,6 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-          app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -238,10 +230,7 @@ int main(int argc, char *argv[])
 
       /* general options */
 
-      if (cmd.findOption("--debug"))
-          opt_debug = OFTrue;
-      if (cmd.findOption("--verbose"))
-          opt_verbose = OFTrue;
+      OFLog::configureFromCommandLine(cmd, app);
 
       /* input options */
 
@@ -387,41 +376,41 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
     }
 
-    if (opt_debug)
-    {
-        app.printIdentifier();
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
-    }
-    if (opt_verbose)
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmscaleLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcmscaleLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // register RLE decompression codec
-    DcmRLEDecoderRegistration::registerCodecs(OFFalse /*pCreateSOPInstanceUID*/, opt_debug);
+    DcmRLEDecoderRegistration::registerCodecs();
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
     // register global decompression codecs
-    DJDecoderRegistration::registerCodecs(opt_decompCSconversion, EUC_default, EPC_default, opt_debug);
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
 #endif
 
     // ======================================================================
     // read input file
 
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
-        app.printError("invalid input filename: <empty string>");
+    {
+        OFLOG_FATAL(dcmscaleLogger, "invalid input filename: <empty string>");
+        return 1;
+    }
 
     /* no clipping/scaling */
     if (!opt_scaleType && !opt_useClip)
-        app.printError("nothing to do");
+    {
+        OFLOG_FATAL(dcmscaleLogger, "nothing to do");
+        return 1;
+    }
 
-    if (opt_verbose)
-        COUT << "open input file " << opt_ifname << OFendl;
+    OFLOG_INFO(dcmscaleLogger, "open input file " << opt_ifname);
 
     DcmFileFormat fileformat;
     DcmDataset *dataset = fileformat.getDataset();
@@ -429,13 +418,11 @@ int main(int argc, char *argv[])
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
     if (error.bad())
     {
-        CERR << "Error: " << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcmscaleLogger, error.text() << ": reading file: " <<  opt_ifname);
         return 1;
     }
 
-    if (opt_verbose)
-        COUT << "load all data into memory" << OFendl;
+    OFLOG_INFO(dcmscaleLogger, "load all data into memory");
 
     /* make sure that pixel data is loaded before output file is created */
     dataset->loadAllDataIntoMemory();
@@ -445,48 +432,50 @@ int main(int argc, char *argv[])
 
     if (opt_oxfer == EXS_Unknown)
     {
-        if (opt_verbose)
-            COUT << "set output transfer syntax to input transfer syntax" << OFendl;
+        OFLOG_INFO(dcmscaleLogger, "set output transfer syntax to input transfer syntax");
         opt_oxfer = dataset->getOriginalXfer();
     }
 
-    if (opt_verbose)
-        COUT << "check if new output transfer syntax is possible" << OFendl;
+    OFLOG_INFO(dcmscaleLogger, "check if new output transfer syntax is possible");
 
     DcmXfer opt_oxferSyn(opt_oxfer);
     dataset->chooseRepresentation(opt_oxfer, NULL);
 
     if (dataset->canWriteXfer(opt_oxfer))
     {
-        if (opt_verbose)
-            COUT << "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written" << OFendl;
+        OFLOG_INFO(dcmscaleLogger, "output transfer syntax " << opt_oxferSyn.getXferName()
+                 << " can be written");
     } else {
-        CERR << "Error: no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!" << OFendl;
+        OFLOG_FATAL(dcmscaleLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName()
+             << " possible!");
         return 1;
     }
 
     // ======================================================================
     // image processing starts here
 
-    if (opt_verbose)
-        COUT << "preparing pixel data" << OFendl;
+    OFLOG_INFO(dcmscaleLogger, "preparing pixel data");
 
     const unsigned long flags = (opt_scaleType > 0) ? CIF_MayDetachPixelData : 0;
     // create DicomImage object
     DicomImage *di = new DicomImage(dataset, opt_oxfer, flags);
     if (di == NULL)
-        app.printError("memory exhausted");
+    {
+        OFLOG_FATAL(dcmscaleLogger, "memory exhausted");
+        return 1;
+    }
     if (di->getStatus() != EIS_Normal)
-        app.printError(DicomImage::getString(di->getStatus()));
+    {
+        OFLOG_FATAL(dcmscaleLogger, DicomImage::getString(di->getStatus()));
+        return 1;
+    }
 
     DicomImage *newimage = NULL;
     OFString derivationDescription;
 
-    if (opt_verbose && opt_useClip)
-        COUT << "clipping image to (" << opt_left << "," << opt_top
-             << "," << opt_width << "," << opt_height << ")" << OFendl;
+    if (opt_useClip)
+        OFLOG_INFO(dcmscaleLogger, "clipping image to (" << opt_left << "," << opt_top
+             << "," << opt_width << "," << opt_height << ")");
     // perform clipping (without scaling)
     if (opt_scaleType <= 0)
     {
@@ -502,10 +491,9 @@ int main(int argc, char *argv[])
         switch (opt_scaleType)
         {
             case 1:
-                if (opt_verbose)
-                    COUT << "scaling image, X factor=" << opt_scale_factor
+                OFLOG_INFO(dcmscaleLogger, "scaling image, X factor=" << opt_scale_factor
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -514,10 +502,9 @@ int main(int argc, char *argv[])
                         opt_useAspectRatio);
                 break;
             case 2:
-                if (opt_verbose)
-                    COUT << "scaling image, Y factor=" << opt_scale_factor
+                OFLOG_INFO(dcmscaleLogger, "scaling image, Y factor=" << opt_scale_factor
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -526,10 +513,9 @@ int main(int argc, char *argv[])
                         opt_useAspectRatio);
                 break;
             case 3:
-                if (opt_verbose)
-                    COUT << "scaling image, X size=" << opt_scale_size
+                OFLOG_INFO(dcmscaleLogger, "scaling image, X size=" << opt_scale_size
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -538,10 +524,9 @@ int main(int argc, char *argv[])
                         opt_useAspectRatio);
                 break;
             case 4:
-                if (opt_verbose)
-                    COUT << "scaling image, Y size=" << opt_scale_size
+                OFLOG_INFO(dcmscaleLogger, "scaling image, Y size=" << opt_scale_size
                          << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << OFendl;
+                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -558,14 +543,23 @@ int main(int argc, char *argv[])
             derivationDescription = "Scaled image";
     }
     if (opt_scaleType > 4)
-        CERR << "internal error: unknown scaling type" << OFendl;
+        OFLOG_ERROR(dcmscaleLogger, "internal error: unknown scaling type");
     else if (newimage == NULL)
-        app.printError("cannot create new image");
+    {
+        OFLOG_FATAL(dcmscaleLogger, "cannot create new image");
+        return 1;
+    }
     else if (newimage->getStatus() != EIS_Normal)
-        app.printError(DicomImage::getString(newimage->getStatus()));
+    {
+        OFLOG_FATAL(dcmscaleLogger, DicomImage::getString(newimage->getStatus()));
+        return 1;
+    }
     /* write scaled image to dataset (update attributes of Image Pixel Module) */
     else if (!newimage->writeImageToDataset(*dataset))
-        app.printError("cannot write new image to dataset");
+    {
+        OFLOG_FATAL(dcmscaleLogger, "cannot write new image to dataset");
+        return 1;
+    }
     delete newimage;
 
     /* cleanup original image */
@@ -634,21 +628,18 @@ int main(int argc, char *argv[])
     // ======================================================================
     // write back output file
 
-    if (opt_verbose)
-        COUT << "create output file " << opt_ofname << OFendl;
+    OFLOG_INFO(dcmscaleLogger, "create output file " << opt_ofname);
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
         OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
 
     if (error.bad())
     {
-        CERR << "Error: " << error.text()
-             << ": writing file: " <<  opt_ofname << OFendl;
+        OFLOG_FATAL(dcmscaleLogger, error.text() << ": writing file: " <<  opt_ofname);
         return 1;
     }
 
-    if (opt_verbose)
-        COUT << "conversion successful" << OFendl;
+    OFLOG_INFO(dcmscaleLogger, "conversion successful");
 
     // deregister RLE decompression codec
     DcmRLEDecoderRegistration::cleanup();
@@ -664,6 +655,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.23  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.22  2009-08-21 09:28:12  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

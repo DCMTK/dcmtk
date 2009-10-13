@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomPaletteImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2007-03-16 11:48:11 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-13 14:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dcmtk/dcmimgle/didocu.h"
 #include "dcmtk/dcmimage/dipalimg.h"
 #include "dcmtk/dcmimage/dipalpxt.h"
+#include "dcmtk/dcmimage/diqttype.h"
 #include "dcmtk/dcmimgle/diluptab.h"
 #include "dcmtk/dcmimgle/diinpx.h"
 
@@ -73,11 +74,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                     (Document->getValue(DCM_SegmentedGreenPaletteColorLookupTableData, dummy) > 0) ||
                     (Document->getValue(DCM_SegmentedBluePaletteColorLookupTableData, dummy) > 0))
                 {
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: segmented palettes not yet supported ... ignoring!" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMAGE_WARN("segmented palettes not yet supported ... ignoring!");
                 }
                 /* read data from non-segmented palettes (if present) */
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
@@ -98,12 +95,8 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 }
                 if ((BitsPerSample < 1) || (BitsPerSample > MAX_TABLE_ENTRY_SIZE))
                 {
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: invalid value for 'BitsPerSample' (" << BitsPerSample
-                                             << ") computed from color palettes !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMAGE_WARN("invalid value for 'BitsPerSample' (" << BitsPerSample
+                                             << ") computed from color palettes !");
                 }
                 switch (InputData->getRepresentation())
                 {
@@ -132,11 +125,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                             InterData = new DiPalettePixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     default:
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                        {
-                            ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                        DCMIMAGE_WARN("invalid value for inter-representation !");
                 }
                 deleteInputData();
                 checkInterData();
@@ -148,13 +137,9 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
         else
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
+            DCMIMAGE_ERROR("invalid value for 'BitsStored' (" << BitsStored << ") "
                                      << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE
-                                     << " bits !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+                                     << " bits !");
         }
     }
 }
@@ -173,6 +158,9 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
+ * Revision 1.21  2009-10-13 14:08:33  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.20  2007-03-16 11:48:11  joergr
  * Introduced new flag that allows to select how to handle the BitsPerTableEntry
  * value in the LUT descriptor (use, ignore or check).
