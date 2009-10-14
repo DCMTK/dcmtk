@@ -21,9 +21,9 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:26:37 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -382,9 +382,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmscaleLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmscaleLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // register RLE decompression codec
@@ -444,10 +443,10 @@ int main(int argc, char *argv[])
     if (dataset->canWriteXfer(opt_oxfer))
     {
         OFLOG_INFO(dcmscaleLogger, "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written");
+            << " can be written");
     } else {
         OFLOG_FATAL(dcmscaleLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!");
+            << " possible");
         return 1;
     }
 
@@ -475,7 +474,7 @@ int main(int argc, char *argv[])
 
     if (opt_useClip)
         OFLOG_INFO(dcmscaleLogger, "clipping image to (" << opt_left << "," << opt_top
-             << "," << opt_width << "," << opt_height << ")");
+            << "," << opt_width << "," << opt_height << ")");
     // perform clipping (without scaling)
     if (opt_scaleType <= 0)
     {
@@ -492,8 +491,8 @@ int main(int argc, char *argv[])
         {
             case 1:
                 OFLOG_INFO(dcmscaleLogger, "scaling image, X factor=" << opt_scale_factor
-                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                    << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                    << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -503,8 +502,8 @@ int main(int argc, char *argv[])
                 break;
             case 2:
                 OFLOG_INFO(dcmscaleLogger, "scaling image, Y factor=" << opt_scale_factor
-                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                    << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                    << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -514,8 +513,8 @@ int main(int argc, char *argv[])
                 break;
             case 3:
                 OFLOG_INFO(dcmscaleLogger, "scaling image, X size=" << opt_scale_size
-                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                    << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                    << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -525,8 +524,8 @@ int main(int argc, char *argv[])
                 break;
             case 4:
                 OFLOG_INFO(dcmscaleLogger, "scaling image, Y size=" << opt_scale_size
-                         << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                         << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                    << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                    << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                         OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -655,6 +654,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
+ * Revision 1.24  2009-10-14 10:26:37  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.23  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

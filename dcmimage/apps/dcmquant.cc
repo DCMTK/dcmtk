@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:26:37 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -373,9 +373,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmquantLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmquantLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
@@ -424,10 +423,10 @@ int main(int argc, char *argv[])
     if (dataset->canWriteXfer(opt_oxfer))
     {
         OFLOG_INFO(dcmquantLogger, "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written");
+            << " can be written");
     } else {
         OFLOG_FATAL(dcmquantLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!");
+            << " possible");
         return 1;
     }
 
@@ -510,6 +509,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
+ * Revision 1.20  2009-10-14 10:26:37  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.19  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

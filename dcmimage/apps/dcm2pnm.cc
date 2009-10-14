@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 09:54:44 $
- *  CVS/RCS Revision: $Revision: 1.95 $
+ *  Update Date:      $Date: 2009-10-14 10:26:37 $
+ *  CVS/RCS Revision: $Revision: 1.96 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -932,7 +932,7 @@ int main(int argc, char *argv[])
     if (opt_imageInfo)
     {
         /* dump image parameters */
-        OFLOG_INFO(dcm2pnmLogger, "dumping image parameters:");
+        OFLOG_INFO(dcm2pnmLogger, "dumping image parameters");
 
         double minVal = 0.0;
         double maxVal = 0.0;
@@ -1052,14 +1052,10 @@ int main(int argc, char *argv[])
                     if (opt_OverlayMode != EMO_Default)
                     {
                         if (!di->showOverlay(k, opt_OverlayMode, opt_foregroundDensity, opt_thresholdDensity))
-                        {
                             OFLOG_WARN(dcm2pnmLogger, "cannot display overlay plane " << k + 1);
-                        }
                     } else {
                         if (!di->showOverlay(k)) /* use default values */
-                        {
                             OFLOG_WARN(dcm2pnmLogger, "cannot display overlay plane " << k + 1);
-                        }
                     }
                 }
             }
@@ -1077,9 +1073,7 @@ int main(int argc, char *argv[])
                 }
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window " << opt_windowParameter);
                 if (!di->setWindow(opt_windowParameter - 1))
-                {
                     OFLOG_WARN(dcm2pnmLogger, "cannot select VOI window no. " << opt_windowParameter);
-                }
                 break;
             case 2: /* use the n-th VOI look up table from the image file */
                 if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
@@ -1090,9 +1084,7 @@ int main(int argc, char *argv[])
                 }
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI LUT " << opt_windowParameter);
                 if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth ? ELM_IgnoreValue : ELM_UseValue))
-                {
                     OFLOG_WARN(dcm2pnmLogger, "cannot select VOI LUT no. " << opt_windowParameter);
-                }
                 break;
             case 3: /* Compute VOI window using min-max algorithm */
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window min-max algorithm");
@@ -1159,7 +1151,7 @@ int main(int argc, char *argv[])
              DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
              if (newimage == NULL)
              {
-                OFLOG_FATAL(dcm2pnmLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width
+                 OFLOG_FATAL(dcm2pnmLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width
                      << "," << opt_height << ") failed.");
                  return 1;
              } else if (newimage->getStatus() != EIS_Normal)
@@ -1440,6 +1432,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.96  2009-10-14 10:26:37  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.95  2009-10-14 09:54:44  joergr
  * Output image details in verbose mode to new log stream (instead of CERR).
  * Moved option --image-info to a new sub section in the syntax usage.
