@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 09:45:31 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -793,10 +793,9 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const char *moduleName)
 {
     OFBool result = OFTrue;
-    OFBool print = OFTrue;
     DcmTag tag = delem.getTag();
-    OFString message = tag.getTagName();
-    OFString module = (moduleName == NULL) ? "SR document" : moduleName;
+    const OFString tagName = tag.getTagName();
+    const OFString module = (moduleName == NULL) ? "SR document" : moduleName;
     unsigned long vmNum;
     OFString vmText;
     /* special case: sequence of items */
@@ -811,11 +810,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     /* NB: type 1C and 2C cannot be checked, assuming to be optional = type 3 */
     if (((type == "1") || (type == "2")) && searchCond.bad())
     {
-        message += " absent in ";
-        message += module;
-        message += " (type ";
-        message += type;
-        message += ")";
+        DCMSR_WARN(tagName << " absent in " << module << " (type " << type << ")");
         result = OFFalse;
     }
     else if (delem.isEmpty(OFTrue /*normalize*/))
@@ -823,41 +818,16 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         /* however, type 1C should never be present with empty value */
         if (((type == "1") || (type == "1C")) && searchCond.good())
         {
-            message += " empty in ";
-            message += module;
-            message += " (type ";
-            message += type;
-            message += ")";
+            DCMSR_WARN(tagName << " empty in " << module << " (type " << type << ")");
             result = OFFalse;
-        } else {
-            /* empty value is ok for type 2 and 3 */
-            print = OFFalse;
         }
     }
-    else if ((vm == "1") && (vmNum != 1))
+    else if (((vm == "1") && (vmNum != 1)) ||
+             ((vm == "2") && (vmNum != 2)) || ((vm == "2-2n") && ((vmNum % 2) != 0)))
     {
-        message += vmText;
-        message += " != 1 in ";
-        message += module;
+        DCMSR_WARN(tagName << vmText << " != " << vm << " in " << module);
         result = OFFalse;
     }
-    else if ((vm == "2") && (vmNum != 2))
-    {
-        message += vmText;
-        message += " != 2 in ";
-        message += module;
-        result = OFFalse;
-    }
-    else if ((vm == "2-2n") && ((vmNum % 2) != 0))
-    {
-        message += vmText;
-        message += " != 2-2n in ";
-        message += module;
-        result = OFFalse;
-    } else
-        print = OFFalse;
-    if (print && !message.empty())
-        DCMSR_WARN(message);
     return result;
 }
 
@@ -898,9 +868,9 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
     } else {
         if ((type == "1") || (type == "2"))
         {
-            DCMSR_WARN(DcmTag(tagKey).getTagName() << " absent in "
-                            << ((moduleName == NULL) ? "SR document" : moduleName)
-                            << " (type " << type << ")");
+            const OFString tagName = DcmTag(tagKey).getTagName();
+            const OFString module = (moduleName == NULL) ? "RT object" : moduleName;
+            DCMSR_WARN(tagName << " absent in " << module << " (type " << type << ")");
         }
     }
     if (result.bad())
@@ -1454,6 +1424,10 @@ OFLogger DCM_dcmsrGetLogger()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
+ *  Revision 1.60  2009-10-14 09:45:31  joergr
+ *  Slightly modified output of some log messages (avoid creation of temporary
+ *  strings).
+ *
  *  Revision 1.59  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.14 (riesmeier)
+
+- Slightly modified output of some log messages (avoid creation of temporary
+  strings).
+  Affects: dcmsr/libsrc/dsrdoctr.cc
+           dcmsr/libsrc/dsrtypes.cc
+
 **** Changes from 2009.10.13 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.
