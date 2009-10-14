@@ -57,9 +57,6 @@ bitmap-out  output filename to be written (default: stdout)
 
   -lc   --log-config  [f]ilename: string
           use config file f for the logger
-
-  -im   --image-info
-          info mode, print image details
 \endverbatim
 
 \subsection input_options input options
@@ -337,8 +334,15 @@ other transformations:
 
 \subsection output_options output options
 \verbatim
+general:
+
+  -im   --image-info
+          print image details (requires verbose mode)
+
   -o    --no-output
           do not create any output (useful with -im)
+
+image format:
 
   +op   --write-raw-pnm
           write 8-bit binary PGM/PPM (default for files)
