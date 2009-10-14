@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorScaleTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ class DiColorScaleTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
                 scale(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), interpolate);
             else {
-                DCMIMAGE_WARN("could not scale image ... corrupted data.");
+                DCMIMAGE_WARN("could not scale image ... corrupted data");
             }
         }
     }
@@ -126,6 +126,9 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
+ * Revision 1.19  2009-10-14 10:25:13  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.18  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

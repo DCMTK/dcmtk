@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:23:56 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             if (us != samples)
             {
                 DCMIMAGE_WARN("invalid value for 'SamplesPerPixel' (" << us
-                                         << ") ... assuming " << samples << " !");
+                    << ") ... assuming " << samples);
             }
             if (docu->getValue(DCM_PlanarConfiguration, us))
             {
@@ -73,17 +73,17 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                     if ((us != 0) && (us != 1))
                     {
                         DCMIMAGE_WARN("invalid value for 'PlanarConfiguration' (" << us
-                                                 << ") ... assuming 'color-by-pixel' (0) !");
+                            << ") ... assuming 'color-by-pixel' (0)");
                     }
                 } else {
                     DCMIMAGE_WARN("unexpected attribute 'PlanarConfiguration' (" << us
-                                             << ") ... ignoring !");
+                        << ") ... ignoring");
                 }
             }
             else if (samples > 1)
             {
                 status = EIS_MissingAttribute;
-                DCMIMAGE_ERROR("mandatory attribute 'PlanarConfiguration' is missing !");
+                DCMIMAGE_ERROR("mandatory attribute 'PlanarConfiguration' is missing");
                 return;
             }
             if (pixel != NULL)
@@ -95,7 +95,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             }
         } else {
             status = EIS_MissingAttribute;
-            DCMIMAGE_ERROR("mandatory attribute 'SamplesPerPixel' is missing !");
+            DCMIMAGE_ERROR("mandatory attribute 'SamplesPerPixel' is missing");
         }
     }
 }
@@ -121,6 +121,9 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
+ * Revision 1.18  2009-10-14 10:23:56  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.17  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

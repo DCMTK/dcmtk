@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorFlipTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:25:13 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ class DiColorFlipTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
                 flip(OFstatic_cast(const T **, OFconst_cast(void *, pixel->getData())), horz, vert);
             else {
-                DCMIMAGE_WARN("could not flip image ... corrupted data.");
+                DCMIMAGE_WARN("could not flip image ... corrupted data");
             }
         }
     }
@@ -123,6 +123,9 @@ class DiColorFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoflt.h,v $
+ * Revision 1.13  2009-10-14 10:25:13  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.12  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

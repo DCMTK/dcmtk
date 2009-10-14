@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:25:14 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,7 @@ class DiHSVPixelTemplate
                     blue = q;
                     break;
                 default:
-                    DCMIMAGE_WARN("invalid value for 'hi' while converting HSV to RGB !");
+                    DCMIMAGE_WARN("invalid value for 'hi' while converting HSV to RGB");
             }
         }
     }
@@ -227,6 +227,9 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
+ * Revision 1.22  2009-10-14 10:25:14  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.21  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

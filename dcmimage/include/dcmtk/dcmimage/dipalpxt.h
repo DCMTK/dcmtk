@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:25:14 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,8 +75,7 @@ class DiPalettePixelTemplate
             if (this->PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
-                DCMIMAGE_ERROR("invalid value for 'PlanarConfiguration' ("
-                                         << this->PlanarConfiguration << ") ! ");
+                DCMIMAGE_ERROR("invalid value for 'PlanarConfiguration' (" << this->PlanarConfiguration << ")");
             }
             else
                 convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), palette);
@@ -134,6 +133,9 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
+ * Revision 1.21  2009-10-14 10:25:14  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.20  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

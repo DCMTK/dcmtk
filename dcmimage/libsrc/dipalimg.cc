@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomPaletteImage (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:23:56 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,7 +74,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                     (Document->getValue(DCM_SegmentedGreenPaletteColorLookupTableData, dummy) > 0) ||
                     (Document->getValue(DCM_SegmentedBluePaletteColorLookupTableData, dummy) > 0))
                 {
-                    DCMIMAGE_WARN("segmented palettes not yet supported ... ignoring!");
+                    DCMIMAGE_WARN("segmented palettes not yet supported ... ignoring");
                 }
                 /* read data from non-segmented palettes (if present) */
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
@@ -96,7 +96,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 if ((BitsPerSample < 1) || (BitsPerSample > MAX_TABLE_ENTRY_SIZE))
                 {
                     DCMIMAGE_WARN("invalid value for 'BitsPerSample' (" << BitsPerSample
-                                             << ") computed from color palettes !");
+                        << ") computed from color palettes");
                 }
                 switch (InputData->getRepresentation())
                 {
@@ -125,7 +125,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                             InterData = new DiPalettePixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     default:
-                        DCMIMAGE_WARN("invalid value for inter-representation !");
+                        DCMIMAGE_WARN("invalid value for inter-representation");
                 }
                 deleteInputData();
                 checkInterData();
@@ -138,8 +138,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
         {
             ImageStatus = EIS_InvalidValue;
             DCMIMAGE_ERROR("invalid value for 'BitsStored' (" << BitsStored << ") "
-                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE
-                                     << " bits !");
+                << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits");
         }
     }
 }
@@ -158,6 +157,9 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
+ * Revision 1.22  2009-10-14 10:23:56  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.21  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

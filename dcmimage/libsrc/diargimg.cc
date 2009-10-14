@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2007, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DiARGBImage (Source) - UNTESTED !!!
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:23:56 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
                                 planeSize, BitsStored);
                         break;
                     default:
-                        DCMIMAGE_WARN("invalid value for inter-representation !");
+                        DCMIMAGE_WARN("invalid value for inter-representation");
                 }
                 deleteInputData();                          // input data is no longer needed
                 checkInterData();
@@ -121,7 +121,7 @@ DiARGBImage::DiARGBImage(const DiDocument *docu,
         {
             ImageStatus = EIS_InvalidValue;
             DCMIMAGE_ERROR("invalid value for 'BitsStored' (" << BitsStored << ") "
-                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !");
+                << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits");
         }
     }
 }
@@ -140,6 +140,9 @@ DiARGBImage::~DiARGBImage()
  *
  * CVS/RCS Log:
  * $Log: diargimg.cc,v $
+ * Revision 1.21  2009-10-14 10:23:56  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.20  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
