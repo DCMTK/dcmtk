@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 09:28:06 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,9 +144,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
         else if (ConstraintChecker->isTemplateSupportRequired())
             DCMSR_WARN("Check for template constraints not yet supported");
         if (flags & RF_showCurrentlyProcessedItem)
-        {
             DCMSR_WARN("Processing content item 1");
-        }
         /* first try to read value type */
         OFString tmpString;
         if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1").good() ||
@@ -627,12 +625,8 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const size_t mode,
                                                 if ((ConstraintChecker != NULL) && !ConstraintChecker->checkContentRelationship(parentNode->getValueType(),
                                                     relationshipType, targetNode->getValueType(), OFTrue /*byReference*/))
                                                 {
-                                                    OFString message = "Invalid by-reference relationship between item \"";
-                                                    message += posString;
-                                                    message += "\" and \"";
-                                                    message += refNode->ReferencedContentItem;
-                                                    message += "\"";
-                                                    DCMSR_WARN(message.c_str());
+                                                    DCMSR_WARN("Invalid by-reference relationship between item \"" << posString
+                                                        << "\" and \"" << refNode->ReferencedContentItem << "\"");
                                                 }
                                             }
                                         } else
@@ -644,10 +638,8 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const size_t mode,
                             } else {
                                 if (mode & CM_updateNodeID)
                                 {
-                                    OFString message = "Target content item of by-reference relationship (";
-                                    message += refNode->ReferencedContentItem;
-                                    message += ") does not exist";
-                                    DCMSR_WARN(message.c_str());
+                                    DCMSR_WARN("Target content item of by-reference relationship ("
+                                        << refNode->ReferencedContentItem << ") does not exist");
                                 } else
                                     DCMSR_WARN("Target content item of by-reference relationship does not exist");
                             }
@@ -681,6 +673,10 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.34  2009-10-14 09:28:06  joergr
+ *  Slightly modified output of some log messages (avoid creation of temporary
+ *  strings).
+ *
  *  Revision 1.33  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
