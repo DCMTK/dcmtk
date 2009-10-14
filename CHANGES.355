@@ -8,6 +8,13 @@ Changes between releases are documented here.
   Affects: dcmsr/libsrc/dsrdoctr.cc
            dcmsr/libsrc/dsrtypes.cc
 
+- Output image details in verbose mode to new log stream (instead of CERR).
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Moved option --image-info to a new sub section in the syntax usage.
+  Affects: dcmimage/docs/dcm2pnm.man
+           dcmjpeg/docs/dcmj2pnm.man
+
 **** Changes from 2009.10.13 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.

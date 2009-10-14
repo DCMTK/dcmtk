@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:08:33 $
- *  CVS/RCS Revision: $Revision: 1.94 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 09:54:44 $
+ *  CVS/RCS Revision: $Revision: 1.95 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,8 +145,8 @@ int main(int argc, char *argv[])
     int                 opt_useAspectRatio = 1;           /* default: use aspect ratio for scaling */
     OFCmdUnsignedInt    opt_useInterpolation = 1;         /* default: use interpolation method '1' for scaling */
     int                 opt_useClip = 0;                  /* default: don't clip */
-    OFCmdSignedInt      opt_left=0, opt_top=0;            /* clip region (origin) */
-    OFCmdUnsignedInt    opt_width=0, opt_height=0;        /* clip region (extension) */
+    OFCmdSignedInt      opt_left = 0, opt_top = 0;        /* clip region (origin) */
+    OFCmdUnsignedInt    opt_width = 0, opt_height = 0;    /* clip region (extension) */
     int                 opt_rotateDegree = 0;             /* default: no rotation */
     int                 opt_flipType = 0;                 /* default: no flipping */
     int                 opt_scaleType = 0;                /* default: no scaling */
@@ -220,7 +220,6 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--image-info",          "-im",     "info mode, print image details");
      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
@@ -380,28 +379,31 @@ int main(int argc, char *argv[])
       cmd.addOption("--clip-region",        "+C",   4, "[l]eft [t]op [w]idth [h]eight: integer",
                                                        "clip image region (l, t, w, h)");
 
-    cmd.addGroup("output options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--no-output",           "-o",      "do not create any output (useful with -im)");
-     cmd.addOption("--write-raw-pnm",       "+op",     "write 8-bit binary PGM/PPM (default for files)");
-     cmd.addOption("--write-8-bit-pnm",     "+opb",    "write 8-bit ASCII PGM/PPM (default for stdout)");
-     cmd.addOption("--write-16-bit-pnm",    "+opw",    "write 16-bit ASCII PGM/PPM");
-     cmd.addOption("--write-n-bit-pnm",     "+opn", 1, "[n]umber: integer",
+    cmd.addGroup("output options:");
+     cmd.addSubGroup("general:");
+      cmd.addOption("--image-info",         "-im",     "print image details (requires verbose mode)");
+      cmd.addOption("--no-output",          "-o",      "do not create any output (useful with -im)");
+     cmd.addSubGroup("image format:");
+      cmd.addOption("--write-raw-pnm",      "+op",     "write 8-bit binary PGM/PPM (default for files)");
+      cmd.addOption("--write-8-bit-pnm",    "+opb",    "write 8-bit ASCII PGM/PPM (default for stdout)");
+      cmd.addOption("--write-16-bit-pnm",   "+opw",    "write 16-bit ASCII PGM/PPM");
+      cmd.addOption("--write-n-bit-pnm",    "+opn", 1, "[n]umber: integer",
                                                        "write n-bit ASCII PGM/PPM (1..32)");
-     cmd.addOption("--write-bmp",           "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
-     cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
-     cmd.addOption("--write-24-bit-bmp",    "+obt",    "write 24-bit truecolor BMP");
-     cmd.addOption("--write-32-bit-bmp",    "+obr",    "write 32-bit truecolor BMP");
+      cmd.addOption("--write-bmp",          "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
+      cmd.addOption("--write-8-bit-bmp",    "+obp",    "write 8-bit palette BMP (monochrome only)");
+      cmd.addOption("--write-24-bit-bmp",   "+obt",    "write 24-bit truecolor BMP");
+      cmd.addOption("--write-32-bit-bmp",   "+obr",    "write 32-bit truecolor BMP");
 #ifdef WITH_LIBTIFF
-     cmd.addOption("--write-tiff",          "+ot",     "write 8-bit (monochrome) or 24-bit (color) TIFF");
+      cmd.addOption("--write-tiff",         "+ot",     "write 8-bit (monochrome) or 24-bit (color) TIFF");
 #endif
 #ifdef WITH_LIBPNG
-     cmd.addOption("--write-png",           "+on",     "write 8-bit (monochrome) or 24-bit (color) PNG");
+      cmd.addOption("--write-png",          "+on",     "write 8-bit (monochrome) or 24-bit (color) PNG");
 #endif
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-     cmd.addOption("--write-jpeg",          "+oj",     "write 8-bit lossy JPEG (baseline)");
+      cmd.addOption("--write-jpeg",         "+oj",     "write 8-bit lossy JPEG (baseline)");
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
-     cmd.addOption("--write-pastel-pnm",    "+op",     "write 8-bit binary PPM with pastel colors\n(early experimental version)");
+      cmd.addOption("--write-pastel-pnm",   "+op",     "write 8-bit binary PPM with pastel colors\n(early experimental version)");
 #endif
 
     if (app.parseCommandLine(cmd, argc, argv))
@@ -447,8 +449,6 @@ int main(int argc, char *argv[])
         /* general options */
 
         OFLog::configureFromCommandLine(cmd, app);
-        if (cmd.findOption("--image-info"))
-            opt_imageInfo = 1;
 
         /* input options: input file format */
 
@@ -806,6 +806,12 @@ int main(int argc, char *argv[])
 
         /* output options */
 
+        if (cmd.findOption("--image-info"))
+        {
+            app.checkDependence("--image-info", "verbose mode", dcm2pnmLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
+            opt_imageInfo = 1;
+        }
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-output"))
             opt_suppressOutput = 1;
@@ -875,7 +881,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    OFLOG_INFO(dcm2pnmLogger, "preparing pixel data.");
+    OFLOG_INFO(dcm2pnmLogger, "preparing pixel data");
 
     E_TransferSyntax xfer = dfile->getDataset()->getOriginalXfer();
 
@@ -913,10 +919,10 @@ int main(int argc, char *argv[])
             if ((di != NULL) && (disp->isValid()))
             {
                 OFLOG_INFO(dcm2pnmLogger, "activating "
-                           << ((opt_displayFunction == 1) ? "CIELAB" : "GSDF")
-                           << " display function for "
-                           << ((deviceType == DiDisplayFunction::EDT_Monitor) ? "softcopy" : "hardcopy")
-                           << " devices.");
+                    << ((opt_displayFunction == 1) ? "CIELAB" : "GSDF")
+                    << " display function for "
+                    << ((deviceType == DiDisplayFunction::EDT_Monitor) ? "softcopy" : "hardcopy")
+                    << " devices");
                 if (!di->setDisplayFunction(disp))
                     OFLOG_WARN(dcm2pnmLogger, "cannot select display function");
             }
@@ -926,7 +932,7 @@ int main(int argc, char *argv[])
     if (opt_imageInfo)
     {
         /* dump image parameters */
-        OFLOG_INFO(dcm2pnmLogger, "dumping image parameters.");
+        OFLOG_INFO(dcm2pnmLogger, "dumping image parameters:");
 
         double minVal = 0.0;
         double maxVal = 0.0;
@@ -956,53 +962,49 @@ int main(int argc, char *argv[])
         char aspectRatio[30];
         OFStandard::ftoa(aspectRatio, sizeof(aspectRatio), di->getHeightWidthRatio(), OFStandard::ftoa_format_f, 0, 2);
 
-        CERR << "filename            : " << opt_ifname << OFendl
-             << "transfer syntax     : " << XferText << OFendl
-             << "SOP class           : " << SOPClassText << OFendl
-             << "SOP instance UID    : " << SOPInstanceUID << OFendl << OFendl
-             << "columns x rows      : " << di->getWidth() << " x " << di->getHeight() << OFendl
-             << "bits per sample     : " << di->getDepth() << OFendl
-             << "color model         : " << colorModel << OFendl;
-        CERR << "pixel aspect ratio  : " << aspectRatio << OFendl
-             << "number of frames    : " << di->getFrameCount() << OFendl << OFendl;
+        OFLOG_INFO(dcm2pnmLogger, "  filename            : " << opt_ifname << OFendl
+            << "  transfer syntax     : " << XferText << OFendl
+            << "  SOP class           : " << SOPClassText << OFendl
+            << "  SOP instance UID    : " << SOPInstanceUID << OFendl
+            << "  columns x rows      : " << di->getWidth() << " x " << di->getHeight() << OFendl
+            << "  bits per sample     : " << di->getDepth() << OFendl
+            << "  color model         : " << colorModel << OFendl
+            << "  pixel aspect ratio  : " << aspectRatio << OFendl
+            << "  number of frames    : " << di->getFrameCount());
 
         /* dump VOI windows */
         unsigned long count;
         OFString explStr;
         count = di->getWindowCount();
-        CERR << "VOI windows in file : " << di->getWindowCount() << OFendl;
+        OFLOG_INFO(dcm2pnmLogger, "  VOI windows in file : " << di->getWindowCount());
         for (i = 0; i < count; i++)
         {
-            CERR << " - ";
             if (di->getVoiWindowExplanation(i, explStr) == NULL)
-                CERR << "<no explanation>";
+                OFLOG_INFO(dcm2pnmLogger, "  - <no explanation>");
             else
-                CERR << explStr;
-            CERR << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "  - " << explStr);
         }
 
         /* dump VOI LUTs */
         count = di->getVoiLutCount();
-        CERR << "VOI LUTs in file    : " << count << OFendl;
+        OFLOG_INFO(dcm2pnmLogger, "  VOI LUTs in file    : " << count);
         for (i = 0; i < count; i++)
         {
-            CERR << " - ";
             if (di->getVoiLutExplanation(i, explStr) == NULL)
-                 CERR << "<no explanation>";
+                OFLOG_INFO(dcm2pnmLogger, "  - <no explanation>");
             else
-                CERR << explStr;
-            CERR << OFendl;
+                OFLOG_INFO(dcm2pnmLogger, "  - " << explStr);
         }
 
-        CERR << "Overlays in file    : " << di->getOverlayCount() << OFendl << OFendl;
+        OFLOG_INFO(dcm2pnmLogger, "  overlays in file    : " << di->getOverlayCount());
 
         if (minmaxValid)
         {
           char minmaxText[30];
           OFStandard::ftoa(minmaxText, sizeof(minmaxText), maxVal, OFStandard::ftoa_format_f, 0, 0);
-          CERR << "maximum pixel value : " << minmaxText << OFendl;
+          OFLOG_INFO(dcm2pnmLogger, "  maximum pixel value : " << minmaxText);
           OFStandard::ftoa(minmaxText, sizeof(minmaxText), minVal, OFStandard::ftoa_format_f, 0, 0);
-          CERR << "minimum pixel value : " << minmaxText << OFendl;
+          OFLOG_INFO(dcm2pnmLogger, "  minimum pixel value : " << minmaxText);
         }
     }
 
@@ -1016,9 +1018,9 @@ int main(int argc, char *argv[])
         }
 
         /* convert to grayscale if necessary */
-        if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
+        if ((opt_convertToGrayscale) && (!di->isMonochrome()))
         {
-             OFLOG_INFO(dcm2pnmLogger, "converting image to grayscale.");
+             OFLOG_INFO(dcm2pnmLogger, "converting image to grayscale");
 
              DicomImage *newimage = di->createMonochromeImage();
              if (newimage == NULL)
@@ -1106,8 +1108,7 @@ int main(int argc, char *argv[])
                 OFLOG_INFO(dcm2pnmLogger, "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth);
                 if (!di->setWindow(opt_windowCenter, opt_windowWidth))
                 {
-                    OFLOG_FATAL(dcm2pnmLogger, "cannot set VOI window center=" << opt_windowCenter << " width="
-                        << opt_windowWidth);
+                    OFLOG_FATAL(dcm2pnmLogger, "cannot set VOI window center=" << opt_windowCenter << " width=" << opt_windowWidth);
                     return 1;
                 }
                 break;
@@ -1153,12 +1154,13 @@ int main(int argc, char *argv[])
         /* perform clipping */
         if (opt_useClip && (opt_scaleType == 0))
         {
-             OFLOG_INFO(dcm2pnmLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ").");
+             OFLOG_INFO(dcm2pnmLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width
+                 << "," << opt_height << ")");
              DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
              if (newimage == NULL)
              {
-                OFLOG_FATAL(dcm2pnmLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width << ","
-                     << opt_height << ") failed.");
+                OFLOG_FATAL(dcm2pnmLogger, "clipping to (" << opt_left << "," << opt_top << "," << opt_width
+                     << "," << opt_height << ") failed.");
                  return 1;
              } else if (newimage->getStatus() != EIS_Normal)
              {
@@ -1175,7 +1177,7 @@ int main(int argc, char *argv[])
         /* perform rotation */
         if (opt_rotateDegree > 0)
         {
-            OFLOG_INFO(dcm2pnmLogger, "rotating image by " << opt_rotateDegree << " degrees.");
+            OFLOG_INFO(dcm2pnmLogger, "rotating image by " << opt_rotateDegree << " degrees");
             di->rotateImage(opt_rotateDegree);
         }
 
@@ -1185,15 +1187,15 @@ int main(int argc, char *argv[])
             switch (opt_flipType)
             {
                 case 1:
-                    OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally.");
+                    OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally");
                     di->flipImage(1, 0);
                     break;
                 case 2:
-                    OFLOG_INFO(dcm2pnmLogger, "flipping image vertically.");
+                    OFLOG_INFO(dcm2pnmLogger, "flipping image vertically");
                     di->flipImage(0, 1);
                     break;
                 case 3:
-                    OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally and vertically.");
+                    OFLOG_INFO(dcm2pnmLogger, "flipping image horizontally and vertically");
                     di->flipImage(1, 1);
                     break;
                 default:
@@ -1206,13 +1208,13 @@ int main(int argc, char *argv[])
         {
             DicomImage *newimage;
             if (opt_useClip)
-                OFLOG_INFO(dcm2pnmLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ").");
+                OFLOG_INFO(dcm2pnmLogger, "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")");
             switch (opt_scaleType)
             {
                 case 1:
                     OFLOG_INFO(dcm2pnmLogger, "scaling image, X factor=" << opt_scale_factor
-                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1222,8 +1224,8 @@ int main(int argc, char *argv[])
                     break;
                 case 2:
                     OFLOG_INFO(dcm2pnmLogger, "scaling image, Y factor=" << opt_scale_factor
-                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1233,8 +1235,8 @@ int main(int argc, char *argv[])
                     break;
                 case 3:
                     OFLOG_INFO(dcm2pnmLogger, "scaling image, X size=" << opt_scale_size
-                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1244,8 +1246,8 @@ int main(int argc, char *argv[])
                     break;
                 case 4:
                     OFLOG_INFO(dcm2pnmLogger, "scaling image, Y size=" << opt_scale_size
-                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
-                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
+                        << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                        << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no"));
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                             OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
@@ -1420,7 +1422,7 @@ int main(int argc, char *argv[])
     }
 
     /* done, now cleanup. */
-    OFLOG_INFO(dcm2pnmLogger, "cleaning up memory.");
+    OFLOG_INFO(dcm2pnmLogger, "cleaning up memory");
     delete di;
     delete disp;
 
@@ -1438,6 +1440,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
+ * Revision 1.95  2009-10-14 09:54:44  joergr
+ * Output image details in verbose mode to new log stream (instead of CERR).
+ * Moved option --image-info to a new sub section in the syntax usage.
+ *
  * Revision 1.94  2009-10-13 14:08:33  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
