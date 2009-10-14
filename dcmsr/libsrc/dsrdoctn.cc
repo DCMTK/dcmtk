@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:49:32 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,9 +206,9 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 } else {
                     /* create new node failed */
                     DCMSR_ERROR("Cannot add \"" << relationshipTypeToReadableName(relationshipType) << " "
-                            << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
-                            << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
-                            << documentTypeToReadableName(documentType));
+                        << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
+                        << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
+                        << documentTypeToReadableName(documentType));
                 }
             }
             /* proceed with next node */
@@ -510,8 +510,8 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                 if (TemplateIdentifier != expectedTemplateIdentifier)
                 {
                     DCMSR_WARN("Incorrect value for TemplateIdentifier ("
-                            << ((TemplateIdentifier.empty()) ? "<empty>" : TemplateIdentifier) << "), "
-                            << expectedTemplateIdentifier << " expected");
+                        << ((TemplateIdentifier.empty()) ? "<empty>" : TemplateIdentifier) << "), "
+                        << expectedTemplateIdentifier << " expected");
                 }
             } else if (!MappingResource.empty())
                 printUnknownValueWarningMessage("MappingResource", MappingResource.c_str());
@@ -521,9 +521,9 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     else if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
     {
         DCMSR_WARN("ContentTemplateSequence missing or empty, TemplateIdentifier "
-                << expectedTemplateIdentifier
-                /* DICOM Content Mapping Resource is currently hard-coded (see above) */
-               <<  " (DCMR) expected");
+            << expectedTemplateIdentifier
+            /* DICOM Content Mapping Resource is currently hard-coded (see above) */
+            <<  " (DCMR) expected");
     }
     /* read ContentSequence */
     if (result.good())
@@ -542,7 +542,7 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
     if (DigitalSignatures.card() > 0)
     {
         addElementToDataset(result, dataset, new DcmSequenceOfItems(DigitalSignatures));
-        DCMSR_WARN("Writing possibly incorrect digital signature - same as read from dataset.");
+        DCMSR_WARN("Writing possibly incorrect digital signature - same as read from dataset");
     }
     /* add to mark stack */
     if (MarkFlag && (markedItems != NULL))
@@ -699,9 +699,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         location += ".";
                     location += numberToString(OFstatic_cast(size_t, i + 1), buffer);
                     if (flags & RF_showCurrentlyProcessedItem)
-                    {
                         DCMSR_INFO("Processing content item " << location);
-                    }
                     /* read RelationshipType */
                     result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, tmpString, "1", "1");
                     if (result.good() || (flags & RF_acceptUnknownRelationshipType))
@@ -752,9 +750,9 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                         /* determine document type */
                                         const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
                                         DCMSR_ERROR("Cannot add \"" << relationshipTypeToReadableName(relationshipType) << " "
-                                                << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
-                                                << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
-                                                << documentTypeToReadableName(documentType));
+                                            << valueTypeToDefinedTerm(valueType /*target item*/) << "\" to "
+                                            << valueTypeToDefinedTerm(ValueType /*source item*/) << " in "
+                                            << documentTypeToReadableName(documentType));
                                     }
                                 } else {
                                     /* unknown/unsupported value type */
@@ -770,7 +768,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         printContentItemErrorMessage("Reading", result, newNode, location.c_str());
                         /* print current data set (item) that caused the error */
                         DCMSR_DEBUG(OFString(31, '-') << " DICOM DATA SET " << OFString(31, '-') << OFendl
-                                << DcmObject::PrintHelper(*ditem, 0, 1) << OFString(78, '-'));
+                            << DcmObject::PrintHelper(*ditem, 0, 1) << OFString(78, '-'));
                     }
                 } else
                     result = SR_EC_InvalidDocumentTree;
@@ -1115,6 +1113,9 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.50  2009-10-14 10:49:32  joergr
+ *  Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  *  Revision 1.49  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

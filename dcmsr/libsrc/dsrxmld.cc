@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003-2008, OFFIS
+ *  Copyright (C) 2003-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:52 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:49:33 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,7 +297,7 @@ DSRXMLCursor DSRXMLDocument::getNamedNode(const DSRXMLCursor &cursor,
             {
                 OFString tmpString;
                 DCMSR_ERROR("Document of the wrong type, '" << name
-                                << "' expected at " << getFullNodePath(cursor, tmpString, OFFalse /*omitCurrent*/));
+                    << "' expected at " << getFullNodePath(cursor, tmpString, OFFalse /*omitCurrent*/));
             }
         } else {
             /* return new node position */
@@ -354,7 +354,7 @@ OFCondition DSRXMLDocument::checkNode(const DSRXMLCursor &cursor,
             if (xmlStrcmp(cursor.Node->name, OFreinterpret_cast(const xmlChar *, name)) != 0)
             {
                 DCMSR_ERROR("Document of the wrong type, was '" << OFreinterpret_cast(const char *, cursor.Node->name)
-                                << "', '" << name << "' expected");
+                    << "', '" << name << "' expected");
                 result = SR_EC_InvalidDocument;
             } else
                 result = EC_Normal;
@@ -713,6 +713,9 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
+ *  Revision 1.14  2009-10-14 10:49:33  joergr
+ *  Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  *  Revision 1.13  2009-10-13 14:57:52  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

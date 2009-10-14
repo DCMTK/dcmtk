@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:49:32 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -302,7 +302,7 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset,
             if (getStringValueFromElement(modality, tmpString) != documentTypeToModality(documentType))
             {
                 DCMSR_ERROR("Modality does not match '" << documentTypeToModality(documentType) << "' for "
-                        << documentTypeToReadableName(documentType));
+                    << documentTypeToReadableName(documentType));
             }
         }
     }
@@ -576,9 +576,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     setSpecificCharacterSet(doc.getStringFromNodeContent(cursor, tmpString));
                     const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
                     if ((strcmp(encString, "?") == 0) || doc.setEncodingHandler(encString).bad())
-                    {
                         DCMSR_WARN("Character set '" << tmpString << "' not supported");
-                    }
                 } else {
                     /* only one "charset" node allowed */
                     doc.printUnexpectedNodeWarning(cursor);
@@ -1299,9 +1297,8 @@ OFCondition DSRDocument::renderHTML(STD_NAMESPACE ostream &stream,
                             stream << c;
                         stream << "//-->" << OFendl;
                         stream << "</style>" << OFendl;
-                    } else {
+                    } else
                         DCMSR_WARN("Could not open CSS file \"" << styleSheet << "\" ... ignoring");
-                    }
                 } else {
                     /* just add a reference to the CSS file (might be an URL) */
                     stream << "<link rel=\"stylesheet\" type=\"text/css\" href=\"" << styleSheet << "\"";
@@ -2356,6 +2353,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
+ *  Revision 1.65  2009-10-14 10:49:32  joergr
+ *  Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  *  Revision 1.64  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

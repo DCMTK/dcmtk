@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:49:32 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,9 +227,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::readXML(const DSRXMLDocum
         } while (cursor.valid());
         /* report a warning message if no "value" element found */
         if (result.bad())
-        {
             DCMSR_WARN("Series \"" << SeriesUID << "\" empty in reference list ... ignoring");
-        }
     }
     return result;
 }
@@ -536,9 +534,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::readXML(const DSRXMLDocume
         }
         /* report a warning message if no "value" element found */
         if (result.bad())
-        {
             DCMSR_WARN("Study \"" << StudyUID << "\" empty in reference list ... ignoring");
-        }
     }
     return result;
 }
@@ -1369,6 +1365,9 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
+ *  Revision 1.17  2009-10-14 10:49:32  joergr
+ *  Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  *  Revision 1.16  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of an XML document to a DICOM structured
  *            reporting file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:51:56 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,8 +275,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(xml2dsrLogger, "no data dictionary loaded, "
-             << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(xml2dsrLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* check for compatible libxml version */
@@ -379,6 +379,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dsr.cc,v $
+ * Revision 1.14  2009-10-14 10:51:56  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.13  2009-10-13 14:57:50  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

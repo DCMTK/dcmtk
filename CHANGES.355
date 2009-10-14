@@ -30,6 +30,15 @@ Changes between releases are documented here.
            dcmimage/libsrc/dicoimg.cc
            dcmimage/libsrc/dicopx.cc
            dcmimage/libsrc/dipalimg.cc
+           dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsr2xml.cc
+           dcmsr/apps/dsrdump.cc
+           dcmsr/apps/xml2dsr.cc
+           dcmsr/libsrc/dsrcsidl.cc
+           dcmsr/libsrc/dsrdoc.cc
+           dcmsr/libsrc/dsrdoctn.cc
+           dcmsr/libsrc/dsrsoprf.cc
+           dcmsr/libsrc/dsrxmld.cc
 
 **** Changes from 2009.10.13 (schlachter)
 

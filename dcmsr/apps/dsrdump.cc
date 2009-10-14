@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2008, OFFIS
+ *  Copyright (C) 2000-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom structured reporting file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:51:56 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
         if (result.bad())
         {
             OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                 << ") reading file: "<< ifname);
+                << ") reading file: " << ifname);
         }
     } else
         result = EC_MemoryExhausted;
@@ -99,7 +99,7 @@ static OFCondition dumpFile(STD_NAMESPACE ostream &out,
             else
             {
                 OFLOG_FATAL(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                     << ") parsing file: "<< ifname);
+                    << ") parsing file: " << ifname);
             }
         }
         delete dsrdoc;
@@ -262,9 +262,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dsrdumpLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dsrdumpLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     int errorCount = 0;
@@ -292,6 +291,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
+ * Revision 1.31  2009-10-14 10:51:56  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.30  2009-10-13 14:57:50  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

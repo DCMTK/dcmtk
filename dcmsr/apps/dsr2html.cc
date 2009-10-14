@@ -22,9 +22,9 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:49 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:51:56 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
         if (result.bad())
         {
             OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                 << ") reading file: "<< ifname);
+                << ") reading file: " << ifname);
         }
     } else
         result = EC_MemoryExhausted;
@@ -106,7 +106,7 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
                     {
                         /* the dataset contains non-ASCII characters that really should not be there */
                         OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": (0008,0005) Specific Character Set absent "
-                             << "but extended characters used in file: " << ifname);
+                            << "but extended characters used in file: " << ifname);
                         result = EC_IllegalCall;
                     } else {
                         OFString charset(defaultCharset);
@@ -133,7 +133,7 @@ static OFCondition renderFile(STD_NAMESPACE ostream &out,
                 if (result.good()) result = dsrdoc->renderHTML(out, renderFlags, cssName);
             } else {
                 OFLOG_FATAL(dsr2htmlLogger, OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                     << ") parsing file: "<< ifname);
+                    << ") parsing file: " << ifname);
             }
         }
         delete dsrdoc;
@@ -393,9 +393,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dsr2htmlLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dsr2htmlLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     int result = 0;
@@ -424,6 +423,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.34  2009-10-14 10:51:56  joergr
+ * Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  * Revision 1.33  2009-10-13 14:57:49  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

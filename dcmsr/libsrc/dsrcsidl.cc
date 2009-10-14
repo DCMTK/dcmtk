@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-14 10:49:32 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,7 +146,7 @@ OFCondition DSRCodingSchemeIdentificationList::write(DcmItem &dataset) const
                 else if (!item->CodingSchemeExternalID.empty())
                 {
                     DCMSR_WARN("Both CodingSchemeUID and CodingSchemeExternalID present for \""
-                            << item->CodingSchemeDesignator << "\", the latter will be ignored");
+                        << item->CodingSchemeDesignator << "\", the latter will be ignored");
                 }
                 putStringValueToDataset(*ditem, DCM_CodingSchemeName, item->CodingSchemeName, OFFalse /*allowEmpty*/);
                 putStringValueToDataset(*ditem, DCM_CodingSchemeVersion, item->CodingSchemeVersion, OFFalse /*allowEmpty*/);
@@ -276,7 +276,7 @@ OFCondition DSRCodingSchemeIdentificationList::addItem(const OFString &codingSch
             }
         } else {
             DCMSR_WARN("CodingSchemeDesignator \"" << codingSchemeDesignator
-                    << "\" already exists in CodingSchemeIdentificationSequence ... overwriting");
+                << "\" already exists in CodingSchemeIdentificationSequence ... overwriting");
             /* gotoItem() was successful, set item pointer */
             item = OFstatic_cast(ItemStruct *, *Iterator);
         }
@@ -570,6 +570,9 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
+ *  Revision 1.15  2009-10-14 10:49:32  joergr
+ *  Fixed minor issues in log output. Also updated copyright date (if required).
+ *
  *  Revision 1.14  2009-10-13 14:57:51  uli
  *  Switched to logging mechanism provided by the "new" oflog module.
  *
