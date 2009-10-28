@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:17 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ class DiRotateTemplate
                 else if (degree == 270)
                     rotateLeft(OFstatic_cast(T **, pixel->getDataArrayPtr()));
             } else {
-                DCMIMGLE_WARN("could not rotate image ... corrupted data.");
+                DCMIMGLE_WARN("could not rotate image ... corrupted data");
             }
         }
     }
@@ -363,6 +363,9 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
+ * Revision 1.19  2009-10-28 14:38:17  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.18  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:17 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ class DiMonoRotateTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames)
                 rotate(OFstatic_cast(const T *, pixel->getData()), degree);
             else {
-                DCMIMGLE_WARN("could not rotate image ... corrupted data.");
+                DCMIMGLE_WARN("could not rotate image ... corrupted data");
             }
         }
     }
@@ -128,6 +128,9 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
+ * Revision 1.14  2009-10-28 14:38:17  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.13  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

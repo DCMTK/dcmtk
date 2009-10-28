@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:17 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@ OFLogger DCM_dcmimgleGetLogger();
 #define DCMIMGLE_WARN(msg)  OFLOG_WARN(DCM_dcmimgleGetLogger(), msg)
 #define DCMIMGLE_ERROR(msg) OFLOG_ERROR(DCM_dcmimgleGetLogger(), msg)
 #define DCMIMGLE_FATAL(msg) OFLOG_FATAL(DCM_dcmimgleGetLogger(), msg)
+
 
 /*---------------------*
  *  const definitions  *
@@ -418,6 +419,9 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.36  2009-10-28 14:38:17  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.35  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

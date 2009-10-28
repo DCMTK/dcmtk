@@ -1,6 +1,37 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.28 (riesmeier)
+
+- Fixed minor issues in log output.
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmimgle/libsrc/diutils.cc
+           dcmimgle/include/dcmtk/dcmimgle/diflipt.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoflt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimorot.h
+           dcmimgle/include/dcmtk/dcmimgle/dimosct.h
+           dcmimgle/include/dcmtk/dcmimgle/dirotat.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+
 **** Changes from 2009.10.28 (schlachter)
 
 - Switched to logging mechanism provided by the "new" oflog module.

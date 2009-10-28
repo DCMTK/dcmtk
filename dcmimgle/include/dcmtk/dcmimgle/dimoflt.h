@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:16 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ class DiMonoFlipTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
                 flip(OFstatic_cast(const T *, pixel->getData()), horz, vert);
             else {
-                DCMIMGLE_WARN("could not flip image ... corrupted data.");
+                DCMIMGLE_WARN("could not flip image ... corrupted data");
             }
         }
     }
@@ -128,6 +128,9 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
+ * Revision 1.13  2009-10-28 14:38:16  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.12  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

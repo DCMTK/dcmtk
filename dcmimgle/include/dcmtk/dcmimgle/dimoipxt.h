@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:16 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,9 +112,7 @@ class DiMonoInputPixelTemplate
             lut = new T3[ocnt];
             if (lut != NULL)
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO("using optimized routine with additional LUT");
-#endif
+                DCMIMGLE_DEBUG("using optimized routine with additional LUT");
                 result = 1;
             }
         }
@@ -142,9 +140,7 @@ class DiMonoInputPixelTemplate
                     this->Data = new T3[this->Count];
                 if (this->Data != NULL)
                 {
-#ifdef DEBUG
-                    DCMIMGLE_INFO("using modality routine 'modlut()'");
-#endif
+                    DCMIMGLE_DEBUG("using modality routine 'modlut()'");
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
@@ -226,9 +222,7 @@ class DiMonoInputPixelTemplate
                             *(q++) = OFstatic_cast(T3, *(p++));
                     }
                 } else {
-#ifdef DEBUG
-                    DCMIMGLE_INFO("using modality routine 'rescale()'");
-#endif
+                    DCMIMGLE_DEBUG("using modality routine 'rescale()'");
                     T3 *lut = NULL;
                     register const T1 *p = pixel + input->getPixelStart();
                     const unsigned long ocnt = OFstatic_cast(unsigned long, input->getAbsMaxRange());  // number of LUT entries
@@ -287,6 +281,9 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
+ * Revision 1.37  2009-10-28 14:38:16  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.36  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

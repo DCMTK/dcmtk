@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:17 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,8 +282,7 @@ class DiMonoPixelTemplate
                         ++quant[OFstatic_cast(Uint32, Data[i] - MinValue[0])];      // count values
 #ifdef DEBUG
                     else
-                        DCMIMGLE_WARN("invalid value (" << Data[i] << ") in "
-                                         << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! ");
+                        DCMIMGLE_WARN("invalid value (" << Data[i] << ") in DiMonoPixelTemplate<T>::getHistogramWindow()");
 #endif
                 }
                 const Uint32 threshvalue = OFstatic_cast(Uint32, thresh * OFstatic_cast(double, Count));
@@ -436,6 +435,9 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
+ * Revision 1.31  2009-10-28 14:38:17  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.30  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

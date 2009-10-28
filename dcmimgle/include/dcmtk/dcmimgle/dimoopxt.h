@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:16 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,7 +119,7 @@ class DiMonoOutputPixelTemplate
                 color(buffer, pixel, frame, frames);
 #else
             {
-                DCMIMGLE_ERROR("pastel color output not supported !");
+                DCMIMGLE_ERROR("pastel color output not supported");
             }
 #endif
             else
@@ -272,11 +272,9 @@ class DiMonoOutputPixelTemplate
             dlut = disp->getLookupTable(bits);
             if ((dlut != NULL) && (dlut->isValid()))                          // LUT is valid
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO("using display transformation");
-#endif
+                DCMIMGLE_DEBUG("using display transformation");
             } else {
-                DCMIMGLE_WARN("can't create display LUT ... ignoring display transformation !");
+                DCMIMGLE_WARN("can't create display LUT ... ignoring display transformation");
                 dlut = NULL;
             }
         }
@@ -296,9 +294,7 @@ class DiMonoOutputPixelTemplate
             lut = new T3[ocnt];
             if (lut != NULL)
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO("using optimized routine with additional LUT");
-#endif
+                DCMIMGLE_DEBUG("using optimized routine with additional LUT");
                 result = 1;
             }
         }
@@ -345,9 +341,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO("using VOI routine 'voilut()'");
-#endif
+                DCMIMGLE_DEBUG("using VOI routine 'voilut()'");
                 const DiDisplayLUT *dlut = NULL;
                 const double minvalue = vlut->getMinValue();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
@@ -357,9 +351,7 @@ class DiMonoOutputPixelTemplate
                     T3 value;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-#ifdef DEBUG
-                        DCMIMGLE_INFO("using presentation LUT transformation");
-#endif
+                        DCMIMGLE_DEBUG("using presentation LUT transformation");
                         createDisplayLUT(dlut, disp, plut->getBits());
                         const Uint32 value2 = OFstatic_cast(Uint32, (minvalue / OFstatic_cast(double, vlut->getAbsMaxRange())) * plut->getCount());
                         if (dlut != NULL)                                               // perform display transformation
@@ -396,9 +388,7 @@ class DiMonoOutputPixelTemplate
                     T3 *lut = NULL;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-#ifdef DEBUG
-                        DCMIMGLE_INFO("using presentation LUT transformation");
-#endif
+                        DCMIMGLE_DEBUG("using presentation LUT transformation");
                         createDisplayLUT(dlut, disp, plut->getBits());
                         register Uint32 value2;                                         // presentation LUT is always unsigned
                         const Uint32 pcnt = plut->getCount();
@@ -626,9 +616,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO("using VOI routine 'nowindow()'");
-#endif
+                DCMIMGLE_DEBUG("using VOI routine 'nowindow()'");
                 const double absmin = inter->getAbsMinimum();
                 const double absmax = inter->getAbsMaximum();
                 const double outrange = OFstatic_cast(double, high) - OFstatic_cast(double, low) + 1;
@@ -639,9 +627,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-#ifdef DEBUG
-                    DCMIMGLE_INFO("using presentation LUT transformation");
-#endif
+                    DCMIMGLE_DEBUG("using presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value;                                            // presentation LUT is always unsigned
                     const double gradient1 = OFstatic_cast(double, plut->getCount()) / inter->getAbsMaxRange();
@@ -784,9 +770,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];                                             // create new output buffer
             if (Data != NULL)
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO("using VOI routine 'window()'");
-#endif
+                DCMIMGLE_DEBUG("using VOI routine 'window()'");
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
@@ -801,9 +785,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-#ifdef DEBUG
-                    DCMIMGLE_INFO("using presentation LUT transformation");
-#endif
+                    DCMIMGLE_DEBUG("using presentation LUT transformation");
                     createDisplayLUT(dlut, disp, plut->getBits());
                     register Uint32 value2;                                           // presentation LUT is always unsigned
                     const Uint32 pcnt = plut->getCount();
@@ -1095,7 +1077,7 @@ class DiMonoOutputPixelTemplate
                                     break;
                                 }
                                 default: /* e.g. EMO_Default */
-                                    DCMIMGLE_WARN("unhandled overlay mode (" << OFstatic_cast(int, plane->getMode()) << ") !");
+                                    DCMIMGLE_WARN("unhandled overlay mode (" << OFstatic_cast(int, plane->getMode()) << ")");
                             }
                         }
                     }
@@ -1131,6 +1113,9 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
+ * Revision 1.49  2009-10-28 14:38:16  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.48  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

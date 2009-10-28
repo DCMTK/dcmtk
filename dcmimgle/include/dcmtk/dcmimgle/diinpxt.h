@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:38:16 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -368,18 +368,15 @@ class DiInputPixelTemplate
             Data = new T2[Count];
             if (Data != NULL)
             {
-#ifdef DEBUG
-                DCMIMGLE_INFO(bitsAllocated << " " << bitsStored << " " << highBit << " " << this->isSigned());
-#endif
+                DCMIMGLE_TRACE("Bits Allocated: " << bitsAllocated << ", Bits Stored: " << bitsStored
+                    << ", High Bit: " << highBit << ", " << (this->isSigned() ? "signed" : "unsigned"));
                 register const T1 *p = pixel;
                 register T2 *q = Data;
                 if (bitsof_T1 == bitsAllocated)                                             // case 1: equal 8/16 bit
                 {
                     if (bitsStored == bitsAllocated)
                     {
-#ifdef DEBUG
-                        DCMIMGLE_INFO("convert pixelData: case 1a (single copy)");
-#endif
+                        DCMIMGLE_DEBUG("convert pixelData: case 1a (single copy)");
                         for (i = Count; i != 0; --i)
                             *(q++) = OFstatic_cast(T2, *(p++));
                     }
@@ -395,17 +392,13 @@ class DiInputPixelTemplate
                         const Uint16 shift = highBit + 1 - bitsStored;
                         if (shift == 0)
                         {
-#ifdef DEBUG
-                            DCMIMGLE_INFO("convert pixelData: case 1b (mask & sign)");
-#endif
+                            DCMIMGLE_DEBUG("convert pixelData: case 1b (mask & sign)");
                             for (i = length_T1; i != 0; --i)
                                 *(q++) = expandSign(OFstatic_cast(T2, *(p++) & mask), sign, smask);
                         }
                         else /* shift > 0 */
                         {
-#ifdef DEBUG
-                            DCMIMGLE_INFO("convert pixelData: case 1c (shift & mask & sign)");
-#endif
+                            DCMIMGLE_DEBUG("convert pixelData: case 1c (shift & mask & sign)");
                             for (i = length_T1; i != 0; --i)
                                 *(q++) = expandSign(OFstatic_cast(T2, (*(p++) >> shift) & mask), sign, smask);
                         }
@@ -423,9 +416,7 @@ class DiInputPixelTemplate
                     {
                         if (times == 2)
                         {
-#ifdef DEBUG
-                            DCMIMGLE_INFO("convert pixelData: case 2a (simple mask)");
-#endif
+                            DCMIMGLE_DEBUG("convert pixelData: case 2a (simple mask)");
                             for (i = length_T1; i != 0; --i, ++p)
                             {
                                 *(q++) = OFstatic_cast(T2, *p & mask);
@@ -434,9 +425,7 @@ class DiInputPixelTemplate
                         }
                         else
                         {
-#ifdef DEBUG
-                            DCMIMGLE_INFO("convert pixelData: case 2b (mask)");
-#endif
+                            DCMIMGLE_DEBUG("convert pixelData: case 2b (mask)");
                             for (i = length_T1; i != 0; --i)
                             {
                                 value = *(p++);
@@ -450,9 +439,7 @@ class DiInputPixelTemplate
                     }
                     else
                     {
-#ifdef DEBUG
-                        DCMIMGLE_INFO("convert pixelData: case 2c (shift & mask & sign)");
-#endif
+                        DCMIMGLE_DEBUG("convert pixelData: case 2c (shift & mask & sign)");
                         const T2 sign = 1 << (bitsStored - 1);
                         T2 smask = 0;
                         for (i = bitsStored; i < bitsof_T2; ++i)
@@ -472,9 +459,7 @@ class DiInputPixelTemplate
                 else if ((bitsof_T1 < bitsAllocated) && (bitsAllocated % bitsof_T1 == 0)    // case 3: multiplicant of 8/16
                     && (bitsStored == bitsAllocated))
                 {
-#ifdef DEBUG
-                    DCMIMGLE_INFO("convert pixelData: case 3 (multi copy)");
-#endif
+                    DCMIMGLE_DEBUG("convert pixelData: case 3 (multi copy)");
                     const Uint16 times = bitsAllocated / bitsof_T1;
                     register Uint16 j;
                     register Uint16 shift;
@@ -493,9 +478,7 @@ class DiInputPixelTemplate
                 }
                 else                                                                        // case 4: anything else
                 {
-#ifdef DEBUG
-                    DCMIMGLE_INFO("convert pixelData: case 4 (general)");
-#endif
+                    DCMIMGLE_DEBUG("convert pixelData: case 4 (general)");
                     register T2 value = 0;
                     register Uint16 bits = 0;
                     register Uint32 skip = highBit + 1 - bitsStored;
@@ -570,6 +553,9 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
+ * Revision 1.36  2009-10-28 14:38:16  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.35  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
