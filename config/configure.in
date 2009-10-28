@@ -231,7 +231,9 @@ AC_CHECK_FUNCS(getuid geteuid setuid getpwnam getgrnam)
 AC_CHECK_FUNCS(sleep fork)
 AC_CHECK_FUNCS(_findfirst)
 AC_CHECK_FUNCS(strlcpy strlcat)
+AC_CHECK_FUNCS(vsnprintf)
 AC_FUNC_FSEEKO
+
 
 dnl -------------------------------------------------------
 dnl Checks for libcs library functions needed by oflog
@@ -812,10 +814,12 @@ if test "$ac_use_std_includes" = "yes"; then
    AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
    AC_CHECK_IOS_NOCREATE(std::ios, fstream)
    AC_CHECK_PROTOTYPE(std::vfprintf, cstdarg)
+   AC_CHECK_PROTOTYPE(std::vsnprintf, cstdarg)
 else
    AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream.h)
    AC_CHECK_IOS_NOCREATE(ios, fstream.h)
    AC_CHECK_PROTOTYPE(std::vfprintf, stdarg.h)
+   AC_CHECK_PROTOTYPE(std::vsnprintf, stdarg.h)
 fi
 
 AC_CHECK_CLASS_TEMPLATE

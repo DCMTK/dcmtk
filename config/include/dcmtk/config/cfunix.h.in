@@ -502,6 +502,9 @@ typedef unsigned short ushort;
 /* Define if your system has a prototype for std::vfprintf in stdarg.h */
 #undef HAVE_PROTOTYPE_STD__VFPRINTF
 
+/* Define if your system has a prototype for std::vsnprintf in stdarg.h */
+#undef HAVE_PROTOTYPE_STD__VSNPRINTF
+
 /* Define if your system has a prototype for strcasecmp in string.h */
 #undef HAVE_PROTOTYPE_STRCASECMP
 
@@ -741,6 +744,9 @@ typedef unsigned short ushort;
 
 /* Define to 1 if you have the `vprintf' function. */
 #undef HAVE_VPRINTF
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
 
 /* Define to 1 if you have the `wait3' system call. Deprecated, you should no
    longer depend upon `wait3'. */
