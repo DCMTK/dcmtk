@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:49:33 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 08:42:40 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,8 +46,9 @@
 #include <libxml/xmlschemas.h>
 
 // This function is also used in xml2dcm, try to stay in sync!
-extern "C" void errorFunction(void * /*ctx*/, const char *msg, ...)
+extern "C" void errorFunction(void * ctx, const char *msg, ...)
 {
+    OFString &buffer = *OFstatic_cast(OFString*, ctx);
     OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
 
     if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
@@ -55,9 +56,9 @@ extern "C" void errorFunction(void * /*ctx*/, const char *msg, ...)
 
 #ifdef HAVE_VSNPRINTF
     // libxml calls us multiple times for one line of log output which would
-    // result in garbled output. To avoid this, we buffer the output in this
-    // string and then output this in one go when we receive a newline.
-    static OFString buffer;
+    // result in garbled output. To avoid this, we buffer the output in a local
+    // string in the caller which we get through our 'ctx' parameter. Then, we
+    // output this string on one go when we receive a newline.
     va_list ap;
     char buf[1024];
 
@@ -97,6 +98,12 @@ extern "C" void errorFunction(void * /*ctx*/, const char *msg, ...)
 #else
     // We can only show the most basic part of the message, this will look bad :(
     printf("%s", msg);
+#endif
+
+#ifndef HAVE_VSNPRINTF
+    // Only the vsnprintf() branch above uses 'buffer' which means the compiler
+    // would warn about an unused variable if HAVE_VSNPRINTF is undefined.
+    buffer += "";
 #endif
 }
 #endif /* LIBXML_SCHEMAS_ENABLED */
@@ -143,6 +150,8 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
                                  const size_t flags)
 {
     OFCondition result = SR_EC_InvalidDocument;
+    /* temporary buffer needed for errorFunction - more detailed explanation there */
+    OFString tmpErrorString;
     /* first remove any possibly existing document from memory */
     clear();
     /* substitute default entities (XML mnenonics) */
@@ -151,7 +160,7 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
     xmlLineNumbersDefault(1);
     /* enable libxml warnings and error messages */
     xmlGetWarningsDefaultValue = 1;
-    xmlSetGenericErrorFunc(NULL, errorFunction);
+    xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
 
     xmlGenericError(xmlGenericErrorContext, "--- libxml parsing ------\n");
     /* build an XML tree from the given file */
@@ -167,13 +176,13 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
 #if 1
             /* create context for Schema validation */
             xmlSchemaParserCtxtPtr context = xmlSchemaNewParserCtxt(DCMSR_XML_XSD_FILE);
-            xmlSchemaSetParserErrors(context, errorFunction, errorFunction, NULL);
+            xmlSchemaSetParserErrors(context, errorFunction, errorFunction, &tmpErrorString);
             /* parse Schema file */
             xmlSchemaPtr schema = xmlSchemaParse(context);
             if (schema != NULL)
             {
                 xmlSchemaValidCtxtPtr validCtx = xmlSchemaNewValidCtxt(schema);
-                xmlSchemaSetValidErrors(validCtx, errorFunction, errorFunction, NULL);
+                xmlSchemaSetValidErrors(validCtx, errorFunction, errorFunction, &tmpErrorString);
                 /* validate the document */
                 isValid = (xmlSchemaValidateDoc(validCtx, Document) == 0);
                 xmlSchemaFreeValidCtxt(validCtx);
@@ -186,7 +195,7 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
 
             /* create context for Schema validation */
             xmlSchemaValidCtxtPtr context = xmlSchemaNewValidCtxt(NULL);
-            xmlSchemaSetValidErrors(context, errorFunction, errorFunction, NULL);
+            xmlSchemaSetValidErrors(context, errorFunction, errorFunction, &tmpErrorString);
             /* validate the document */
             isValid = (xmlSchemaValidateDoc(context, Document) == 0);
 #endif
@@ -216,6 +225,11 @@ OFCondition DSRXMLDocument::read(const OFString &filename,
         xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
         DCMSR_ERROR("Could not parse document");
     }
+
+    /* Reset to default function because we used a local string as context for
+     * the error function.
+     */
+    xmlSetGenericErrorFunc(NULL, NULL);
     return result;
 }
 #else /* WITH_LIBXML */
@@ -713,6 +727,10 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
+ *  Revision 1.15  2009-10-28 08:42:40  uli
+ *  Use a local variable for buffering libxml error messages instead of a
+ *  static one.
+ *
  *  Revision 1.14  2009-10-14 10:49:33  joergr
  *  Fixed minor issues in log output. Also updated copyright date (if required).
  *

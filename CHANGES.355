@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.28 (schlachter)
+
+- Use a local variable for buffering libxml error messages instead of a
+  static one.
+  Affects: dcmsr/libsrc/dsrxmld.cc
+
 **** Changes from 2009.10.14 (riesmeier)
 
 - Slightly modified output of some log messages (avoid creation of temporary
