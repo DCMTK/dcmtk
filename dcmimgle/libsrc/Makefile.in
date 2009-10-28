@@ -13,9 +13,10 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include
+LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include -I$(dcmdatadir)/include
 LOCALDEFS =
 
 # Special defines for the Library, define them in LOCALDEFS

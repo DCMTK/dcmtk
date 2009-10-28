@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,11 +67,7 @@ DiGSDFunction::DiGSDFunction(const char *filename,
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
     }
 }
 
@@ -91,11 +87,7 @@ DiGSDFunction::DiGSDFunction(const double *val_tab,             // UNTESTED !!
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
     }
 }
 
@@ -116,11 +108,7 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
     }
 }
 
@@ -140,11 +128,7 @@ DiGSDFunction::DiGSDFunction(const double val_min,
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
     }
 }
 
@@ -460,6 +444,9 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
+ * Revision 1.33  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.32  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

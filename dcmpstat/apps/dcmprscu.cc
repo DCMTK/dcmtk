@@ -21,9 +21,9 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -799,7 +799,7 @@ int main(int argc, char *argv[])
     }
 
     SetDebugLevel((opt_debugMode));
-    DicomImageClass::setDebugLevel(opt_debugMode);
+    //DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -1237,6 +1237,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
+ * Revision 1.26  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.25  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

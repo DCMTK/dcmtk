@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,21 +67,13 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
     if ((Count > 0) && (Bits > 0))
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: new GSDF LUT with " << Bits << " bits output and "
-                                 << Count << " entries created !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("new GSDF LUT with " << Bits << " bits output and "
+                                 << Count << " entries created !");
 #endif
         if (jnd_min >= jnd_max)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: invalid JND range for GSDF LUT creation ("
-                                     << jnd_min << " - " << jnd_max << ") !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("invalid JND range for GSDF LUT creation ("
+                                     << jnd_min << " - " << jnd_max << ") !");
         }
         /* create the lookup table */
         Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt,
@@ -224,12 +216,8 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                         (*stream) << OFendl;
                                     }
                                 } else {
-                                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                                    {
-                                        ofConsole.lockCerr() << "WARNING: can't write curve data, "
-                                                             << "wrong DISPLAY file or GSDF LUT !" << OFendl;
-                                        ofConsole.unlockCerr();
-                                    }
+                                    DCMIMGLE_WARN("can't write curve data, "
+                                                             << "wrong DISPLAY file or GSDF LUT !");
                                 }
                             }
                             status = 1;
@@ -251,6 +239,9 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
+ * Revision 1.23  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.22  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

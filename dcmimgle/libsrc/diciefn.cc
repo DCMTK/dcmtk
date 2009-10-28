@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2006, OFFIS
+ *  Copyright (C) 1998-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,11 +51,7 @@ DiCIELABFunction::DiCIELABFunction(const char *filename,
 {
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
     }
 }
 
@@ -69,11 +65,7 @@ DiCIELABFunction::DiCIELABFunction(const double *val_tab,             // UNTESTE
 {
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
     }
 }
 
@@ -88,11 +80,7 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
 {
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
     }
 }
 
@@ -106,11 +94,7 @@ DiCIELABFunction::DiCIELABFunction(const double val_min,
 {
     if (!Valid)
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
     }
 }
 
@@ -271,6 +255,9 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
+ * Revision 1.23  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.22  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

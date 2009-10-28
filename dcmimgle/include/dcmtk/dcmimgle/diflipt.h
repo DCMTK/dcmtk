@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,11 +87,7 @@ class DiFlipTemplate
                 else if (vert)
                     flipVert(OFstatic_cast(T **, pixel->getDataArrayPtr()));
             } else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                   ofConsole.lockCerr() << "WARNING: could not flip image ... corrupted data." << OFendl;
-                   ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("could not flip image ... corrupted data.");
             }
         }
     }
@@ -355,6 +351,9 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
+ * Revision 1.20  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.19  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 12:20:34 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,27 +42,15 @@
 #define INCLUDE_CMATH
 #include "dcmtk/ofstd/ofstdinc.h"
 
-
-/*-------------------*
- *  initializations  *
- *-------------------*/
-
-const int DicomImageClass::DL_NoMessages     = 0x0;
-const int DicomImageClass::DL_Errors         = 0x1;
-const int DicomImageClass::DL_Warnings       = 0x2;
-const int DicomImageClass::DL_Informationals = 0x4;
-const int DicomImageClass::DL_DebugMessages  = 0x8;
-
-#ifdef DEBUG
- OFGlobal<int> DicomImageClass::DebugLevel(DicomImageClass::DL_DebugMessages);
-#else
- OFGlobal<int> DicomImageClass::DebugLevel(DicomImageClass::DL_NoMessages);
-#endif
-
-
 /*------------------------*
  *  function definitions  *
  *------------------------*/
+
+OFLogger DCM_dcmimgleGetLogger()
+{
+    static OFLogger DCM_dcmimgleLogger = OFLog::getLogger("dcmtk.dcmimgle");
+    return DCM_dcmimgleLogger;
+}
 
 unsigned int DicomImageClass::rangeToBits(double minvalue,
                                           double maxvalue)
@@ -127,21 +115,13 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
 #ifdef DEBUG
         if (-minvalue > maxval(MAX_BITS - 1, 0))
         {
-            if (checkDebugLevel(DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS
-                                     << " bit " << "representation after modality transformation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS
+                                     << " bit " << "representation after modality transformation !");
         }
         if (maxvalue > maxval(MAX_BITS - 1))
         {
-            if (checkDebugLevel(DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS
-                                     << " bit " << "representation after modality transformation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS
+                                     << " bit " << "representation after modality transformation !");
         }
 #endif
         return EPR_Sint32;
@@ -153,12 +133,8 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
 #ifdef DEBUG
     if (maxvalue > maxval(MAX_BITS))
     {
-        if (checkDebugLevel(DL_Warnings))
-        {
-            ofConsole.lockCerr() << "WARNING: maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS
-                                 << " bit " << "representation after modality transformation !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_WARN("maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS
+                                 << " bit " << "representation after modality transformation !");
     }
 #endif
     return EPR_Uint32;
@@ -169,6 +145,9 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.17  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.16  2009-04-20 12:20:34  joergr
  * Added new helper function getRepresentationBits().
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 08:19:51 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,16 @@
 #define INCLUDE_LIBC
 #include "dcmtk/ofstd/ofstdinc.h"
 
+#include "dcmtk/oflog/oflog.h"
+
+OFLogger DCM_dcmimgleGetLogger();
+
+#define DCMIMGLE_TRACE(msg) OFLOG_TRACE(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_DEBUG(msg) OFLOG_DEBUG(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_INFO(msg)  OFLOG_INFO(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_WARN(msg)  OFLOG_WARN(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_ERROR(msg) OFLOG_ERROR(DCM_dcmimgleGetLogger(), msg)
+#define DCMIMGLE_FATAL(msg) OFLOG_FATAL(DCM_dcmimgleGetLogger(), msg)
 
 /*---------------------*
  *  const definitions  *
@@ -398,52 +408,6 @@ class DicomImageClass
     static EP_Representation determineRepresentation(double minvalue,
                                                      double maxvalue);
 
-    /** set the debug level to the specified value
-     *
-     ** @param  level  debug level to be set
-     */
-    static void setDebugLevel(const int level)
-    {
-        DebugLevel.set(level);
-    }
-
-    /** get the current debug level
-     *
-     ** @return  current debug level
-     */
-    static int getDebugLevel()
-    {
-        return DebugLevel.get();
-    }
-
-    /** check whether specified debug level is set
-     *
-     ** @param  level  debug levelto be checked
-     *
-     ** @return true if debug level is set, false (0) otherwise
-     */
-    static int checkDebugLevel(const int level)
-    {
-        return DebugLevel.get() & level;
-    }
-
-
-    /// debug level: display no messages
-    static const int DL_NoMessages;
-    /// debug level: display error messages
-    static const int DL_Errors;
-    /// debug level: display warning messages
-    static const int DL_Warnings;
-    /// debug level: display informational messages
-    static const int DL_Informationals;
-    /// debug level: display debug messages
-    static const int DL_DebugMessages;
-
-
-  private:
-
-    /// debug level defining the verboseness of the image toolkit
-    static OFGlobal<int> DebugLevel;
 };
 
 
@@ -454,6 +418,9 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
+ * Revision 1.35  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.34  2009-04-21 08:19:51  joergr
  * Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way
  * the internal representation of monochrome images is determined.

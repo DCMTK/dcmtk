@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeModality (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 08:27:30 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,18 +82,10 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                 Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
                 checkRescaling(pixel);
             } else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "INFO: processing XA or XRF image ... ignoring possible modality transform !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_INFO("processing XA or XRF image ... ignoring possible modality transform !");
             }
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-            {
-                ofConsole.lockCerr() << "INFO: configuration flag set ... ignoring possible modality transform !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_INFO("configuration flag set ... ignoring possible modality transform !");
         }
         determineRepresentation(docu);
     }
@@ -202,11 +194,7 @@ int DiMonoModality::Init(const DiDocument *docu,
         Uint16 us;
         if (docu->getValue(DCM_SamplesPerPixel, us) && (us != 1))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("invalid value for 'SamplesPerPixel' (" << us << ") ... assuming 1 !");
         }
         return 1;
     }
@@ -237,22 +225,14 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
     {
         if (LookupTable)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: redundant values for 'RescaleSlope/Intercept'"
-                                     << " ... using modality LUT transformation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("redundant values for 'RescaleSlope/Intercept'"
+                                     << " ... using modality LUT transformation !");
             Rescaling = 0;
         } else {
             if (RescaleSlope == 0)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'RescaleSlope' (" << RescaleSlope
-                                         << ") ... ignoring modality transformation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("invalid value for 'RescaleSlope' (" << RescaleSlope
+                                         << ") ... ignoring modality transformation !");
                 Rescaling = 0;
             } else {
                 if (RescaleSlope < 0)                                       // negative slope value
@@ -289,6 +269,9 @@ void DiMonoModality::determineRepresentation(const DiDocument *docu)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
+ * Revision 1.26  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.25  2009-04-21 08:27:30  joergr
  * Added new compatibility flag CIF_UseAbsolutePixelRange which changes the way
  * the internal representation of monochrome images is determined.

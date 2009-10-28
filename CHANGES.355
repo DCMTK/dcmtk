@@ -3,6 +3,50 @@ Changes between releases are documented here.
 
 **** Changes from 2009.10.28 (schlachter)
 
+- Switched to logging mechanism provided by the "new" oflog module.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/CMakeLists.txt
+           dcmimgle/apps/Makefile.dep
+           dcmimgle/apps/Makefile.in
+           dcmimgle/apps/dcmdspfn.cc
+           dcmimgle/docs/dcmdspfn.man
+           dcmimgle/include/dcmtk/dcmimgle/diflipt.h
+           dcmimgle/include/dcmtk/dcmimgle/diinpxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoflt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoipxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimoopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimopxt.h
+           dcmimgle/include/dcmtk/dcmimgle/dimorot.h
+           dcmimgle/include/dcmtk/dcmimgle/dimosct.h
+           dcmimgle/include/dcmtk/dcmimgle/dirotat.h
+           dcmimgle/include/dcmtk/dcmimgle/discalet.h
+           dcmimgle/include/dcmtk/dcmimgle/diutils.h
+           dcmimgle/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diciefn.cc
+           dcmimgle/libsrc/dicielut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/digsdfn.cc
+           dcmimgle/libsrc/digsdlut.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmimgle/libsrc/diutils.cc
+           dcmjpeg/apps/Makefile.dep
+           dcmjpeg/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmprscu.cc
+           dcmpstat/apps/dcmpsprt.cc
+           dcmpstat/libsrc/Makefile.dep
+
 - Add a check for vsnprintf() to configure. This is used in dcmsr.
   Affects: config/configure
            config/configure.in

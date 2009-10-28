@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-02-06 13:39:10 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,11 +59,7 @@ DiDocument::DiDocument(const char *filename,
 
         if (FileFormat->loadFile(filename).bad())
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't read file '" << filename << "' !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("can't read file '" << filename << "' !");
             delete FileFormat;
             FileFormat = NULL;
         } else {
@@ -128,18 +124,10 @@ void DiDocument::convertPixelData()
             if (DcmXfer(Xfer).isEncapsulated())
                 Xfer = EXS_LittleEndianExplicit;
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: cannot change to unencapsulated representation for pixel data !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("cannot change to unencapsulated representation for pixel data !");
         }
     } else {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: no pixel data found in DICOM dataset !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("no pixel data found in DICOM dataset !");
     }
 }
 
@@ -387,6 +375,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.21  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.20  2008-02-06 13:39:10  joergr
  * Added check of the return value of DcmElement::getXXX() methods.
  *

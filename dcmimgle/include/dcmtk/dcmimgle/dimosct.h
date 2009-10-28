@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 13:12:48 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,11 +95,7 @@ class DiMonoScaleTemplate
                 scale(OFstatic_cast(const T *, pixel->getData()), pixel->getBits(), interpolate, pvalue);
                 this->determineMinMax();
             } else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                   ofConsole.lockCerr() << "WARNING: could not scale image ... corrupted data." << OFendl;
-                   ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("could not scale image ... corrupted data.");
             }
         }
     }
@@ -146,6 +142,9 @@ class DiMonoScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dimosct.h,v $
+ * Revision 1.17  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.16  2008-05-20 13:12:48  joergr
  * Fixed issue with signed pixel data in bicubic interpolation algorithm.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,11 +76,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 if (InterData == NULL)
                 {
                     ImageStatus = EIS_MemoryFailure;
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                    {
-                        ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMGLE_ERROR("can't allocate memory for inter-representation !");
                 }
                 else if (InterData->getData() == NULL)
                     ImageStatus = EIS_InvalidImage;
@@ -88,23 +84,15 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
             else
             {
                 ImageStatus = EIS_InvalidValue;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                {
-                    ofConsole.lockCerr() << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or "
-                                         << "'Columns' (" << Columns << ") !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_ERROR("invalid value for 'Rows' (" << Rows << ") and/or "
+                                         << "'Columns' (" << Columns << ") !");
             }
         }
     }
     else
     {
         ImageStatus = EIS_InvalidDocument;
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: this DICOM document is invalid !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("this DICOM document is invalid !");
     }
 }
 
@@ -122,6 +110,9 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
+ * Revision 1.15  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.14  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

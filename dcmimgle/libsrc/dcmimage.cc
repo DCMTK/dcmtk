@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-20 15:27:51 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,19 +246,10 @@ void DicomImage::Init()
                         if (PhotometricInterpretation == EPI_Unknown)
                         {
                             ImageStatus = EIS_InvalidValue;
-                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                            {
-                                ofConsole.lockCerr() << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << OFendl;
-                                ofConsole.unlockCerr();
-                            }
+                            DCMIMGLE_ERROR("invalid value for 'PhotometricInterpretation' (" << str << ") !");
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
-                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                            {
-                                ofConsole.lockCerr() << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << OFendl
-                                                     << "       library 'dcmimage' required to handle color images !" << OFendl;
-                                ofConsole.unlockCerr();
-                            }
+                            DCMIMGLE_ERROR("unsupported value for 'PhotometricInterpretation' (" << str << ") !");
                         }
                     }
             }
@@ -271,11 +262,7 @@ void DicomImage::Init()
         else
         {
             ImageStatus = EIS_MissingAttribute;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("mandatory attribute 'PhotometricInterpretation' is missing !");
         }
     }
     else
@@ -290,11 +277,7 @@ int DicomImage::checkDataDictionary()
     if (!dcmDataDict.isDictionaryLoaded())
     {
         ImageStatus = EIS_NoDataDictionary;
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: can't load data dictionary !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("can't load data dictionary !");
     }
     return ImageStatus == EIS_Normal;
 }
@@ -462,11 +445,7 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
             (top_pos < 0) || (OFstatic_cast(unsigned long, top_pos + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("combined clipping & scaling outside image boundaries not yet supported !");
         }
         else if ((scale_width > 0) && (scale_height > 0))
         {
@@ -827,6 +806,9 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.31  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.30  2008-05-20 15:27:51  joergr
  * Added more checks on parameters for combined scaling and clipping.
  *

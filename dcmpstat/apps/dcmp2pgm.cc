@@ -25,9 +25,9 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 16:30:24 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -436,7 +436,7 @@ int main(int argc, char *argv[])
     const char *opt_cfgName    = NULL;                    /* config read file name */
 
     SetDebugLevel(( 0 ));
-    DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
+    //DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Read DICOM image and presentation state and render bitmap", rcsid);
     OFCommandLine cmd;
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
     if (opt_debugMode)
         app.printIdentifier();
     SetDebugLevel((opt_debugMode));
-    DicomImageClass::setDebugLevel(opt_debugMode);
+    //DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -592,6 +592,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
+ * Revision 1.40  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.39  2008-09-25 16:30:24  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

@@ -25,9 +25,9 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 09:55:51 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt          opt_reflection = (OFCmdUnsignedInt)-1;
 
     SetDebugLevel(( 0 ));
-    DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
+    //DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Read DICOM images and presentation states and render print job", rcsid);
     OFCommandLine cmd;
@@ -458,7 +458,7 @@ int main(int argc, char *argv[])
     if (opt_debugMode)
         app.printIdentifier();
     SetDebugLevel((opt_debugMode));
-    DicomImageClass::setDebugLevel(opt_debugMode);
+    //DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -710,6 +710,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
+ * Revision 1.42  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.41  2009-06-04 09:55:51  joergr
  * Added note on --pstate that this option can be specified multiple times.
  * Added new flag that can be used to avoid wrong warning messages (in debug

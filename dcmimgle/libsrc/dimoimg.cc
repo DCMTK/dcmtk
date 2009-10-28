@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 07:48:48 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -563,11 +563,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     OutputData(NULL),
     OverlayData(NULL)
 {
-    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-    {
-        ofConsole.lockCerr() << "ERROR in DiMonoImage copy-constructor !!!" << OFendl;
-        ofConsole.unlockCerr();
-    }
+    DCMIMGLE_ERROR("ERROR in DiMonoImage copy-constructor !!!");
     abort();
 }
 
@@ -704,12 +700,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
                     PresLutShape = ESP_Inverse;
                 else
                 {
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: unknown value for 'PresentationLUTShape' ("
-                                             << str << ") ... ignoring !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMGLE_WARN("unknown value for 'PresentationLUTShape' (" << str << ") ... ignoring !");
                 }
             }
         }
@@ -900,11 +891,7 @@ int DiMonoImage::checkInterData(const int mode)
         if (ImageStatus == EIS_Normal)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("can't allocate memory for inter-representation !");
         } else
             ImageStatus = EIS_InvalidImage;
     }
@@ -915,13 +902,9 @@ int DiMonoImage::checkInterData(const int mode)
         const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: computed (" << count
+            DCMIMGLE_WARN("computed (" << count
                                      << ") and stored (" << InterData->getInputCount() << ") "
-                                     << "pixel count differ !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+                                     << "pixel count differ !");
         }
     }
     return (ImageStatus == EIS_Normal);
@@ -1483,12 +1466,8 @@ const void *DiMonoImage::getData(void *buffer,
             {
                 if (!createLinODPresentationLut(4096, 16))  // create presentation LUT converting linOD data (on demand)
                 {
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                       ofConsole.lockCerr() << "WARNING: could not create presentation LUT for LinOD conversion" << OFendl
-                                            << "         ... ignoring presentation LUT shape LinOD !" << OFendl;
-                       ofConsole.unlockCerr();
-                    }
+                    DCMIMGLE_WARN("could not create presentation LUT for LinOD conversion" << OFendl
+                                            << "         ... ignoring presentation LUT shape LinOD !");
                 }
             }
             if (Polarity == EPP_Reverse)                    // swap high and low value
@@ -1500,12 +1479,8 @@ const void *DiMonoImage::getData(void *buffer,
             DiDisplayFunction *disp = DisplayFunction;
             if ((disp != NULL) && (disp->isValid()) && (disp->getMaxDDLValue() != DicomImageClass::maxval(bits)))
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                   ofConsole.lockCerr() << "WARNING: selected display function doesn't fit to requested output depth ("
-                                        << bits << ")" << OFendl << "         ... ignoring display transformation !" << OFendl;
-                   ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("selected display function doesn't fit to requested output depth ("
+                                        << bits << ")" << OFendl << "         ... ignoring display transformation !");
                 disp = NULL;
             }
             const int samples = (bits == MI_PastelColor) ? 3 : 1;
@@ -1533,20 +1508,12 @@ const void *DiMonoImage::getData(void *buffer,
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                {
-                    ofConsole.lockCerr() << "ERROR: can't allocate memory for output-representation !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_ERROR("can't allocate memory for output-representation !");
             }
             else
                 return OutputData->getData();           // points to beginning of output data
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("given output buffer is too small (only " << size << " bytes) !");
         }
     }
     return NULL;
@@ -2153,6 +2120,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.77  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.76  2009-08-26 07:48:48  joergr
  * Added parentheses around + or - in operand of & in order to avoid warnings
  * reported by gcc 4.3.2.

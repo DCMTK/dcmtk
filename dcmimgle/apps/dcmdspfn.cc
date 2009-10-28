@@ -21,9 +21,9 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:05:12 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:39 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,14 +48,13 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdspfn"
 
+static OFLogger dcmdspfnLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define SHORTCOL 3
 #define LONGCOL  15
-
-#define OUTPUT CERR
-
 
 // ********************************************
 
@@ -67,8 +66,6 @@ int main(int argc, char *argv[])
 
     const char *opt_ifname = NULL;
     const char *opt_ofname = NULL;
-    int opt_verboseMode = 1;
-    int opt_debugMode = 0;
     int opt_outputMode = 0;
     OFCmdUnsignedInt opt_ddlCount = 256;
     OFCmdSignedInt opt_polyOrder = -1;
@@ -86,10 +83,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:");
      cmd.addOption("--help",          "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                 "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",               "print expanded command line arguments");
-     cmd.addOption("--verbose",       "-v",     "verbose mode, print processing details");
-     cmd.addOption("--quiet",         "-q",     "quiet mode, print no warnings and errors");
-     cmd.addOption("--debug",         "-d",     "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("input options: (mutually exclusive)");
      cmd.addOption("--monitor-file",  "+Im", 1, "[f]ilename: string",
@@ -131,10 +125,6 @@ int main(int argc, char *argv[])
         if (cmd.getArgCount() == 0)
             app.printUsage();
 
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options */
         if (cmd.hasExclusiveOption())
         {
@@ -146,18 +136,7 @@ int main(int argc, char *argv[])
            }
         }
 
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--verbose"))
-            opt_verboseMode = 2;
-        if (cmd.findOption("--quiet"))
-        {
-            opt_verboseMode = 0;
-            app.setQuietMode();
-        }
-        cmd.endOptionBlock();
-
-        if (cmd.findOption("--debug"))
-            opt_debugMode = 1;
+        OFLog::configureFromCommandLine(cmd, app);
 
         if (cmd.findOption("--ambient-light"))
             app.checkValue(cmd.getValueAndCheckMin(opt_ambLight, 0));
@@ -233,33 +212,18 @@ int main(int argc, char *argv[])
             ++opt_outputMode;
     }
 
-    /* init verbose and debug mode */
-    if (opt_verboseMode == 0)
-        DicomImageClass::setDebugLevel(0);
-    else {
-        DicomImageClass::setDebugLevel(DicomImageClass::DL_Errors |
-                                       DicomImageClass::DL_Warnings);
-        if (opt_verboseMode == 2)
-            DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
-                                           DicomImageClass::DL_Informationals);
-        if (opt_debugMode > 0)
-        {
-            DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
-                                           DicomImageClass::DL_DebugMessages);
-            app.printIdentifier();
-        }
-    }
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmdspfnLogger, rcsid << OFendl);
 
     if (opt_outputMode > 0)
     {
-        if ((opt_verboseMode > 1) && (opt_ifname != NULL))
-            OUTPUT << "reading LUT file: " << opt_ifname << OFendl;
+        if (opt_ifname != NULL)
+            OFLOG_INFO(dcmdspfnLogger, "reading LUT file: " << opt_ifname);
 
         /* Grayscale Standard Display Function */
         if (cmd.findOption("--gsdf"))
         {
-            if (opt_verboseMode > 1)
-                OUTPUT << "creating GSDF display curve ..." << OFendl;
+            OFLOG_INFO(dcmdspfnLogger, "creating GSDF display curve ...");
             app.checkValue(cmd.getValue(opt_ofname));
             DiGSDFunction *disp = NULL;
             if (opt_ifname != NULL)
@@ -271,14 +235,12 @@ int main(int argc, char *argv[])
             {
                 if (opt_ambLight >= 0)
                 {
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "setting ambient light value ..." << OFendl;
+                    OFLOG_INFO(dcmdspfnLogger, "setting ambient light value ...");
                     disp->setAmbientLightValue(opt_ambLight);
                 }
                 if (opt_illum >= 0)
                 {
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "setting illumination value ..." << OFendl;
+                    OFLOG_INFO(dcmdspfnLogger, "setting illumination value ...");
                     disp->setIlluminationValue(opt_illum);
                 }
                 /* Dmin/max only suppoted for printers */
@@ -286,31 +248,32 @@ int main(int argc, char *argv[])
                 {
                     if (opt_Dmin >= 0)
                     {
-                        if (opt_verboseMode > 1)
-                            OUTPUT << "setting minimum optical density value ..." << OFendl;
+                        OFLOG_INFO(dcmdspfnLogger, "setting minimum optical density value ...");
                         disp->setMinDensityValue(opt_Dmin);
                     }
                     if (opt_Dmax >= 0)
                     {
-                        if (opt_verboseMode > 1)
-                            OUTPUT << "setting maximum optical density value ..." << OFendl;
+                        OFLOG_INFO(dcmdspfnLogger, "setting maximum optical density value ...");
                         disp->setMaxDensityValue(opt_Dmax);
                     }
                 }
-                if (opt_verboseMode > 1)
-                    OUTPUT << "writing output file: " << opt_ofname << OFendl;
+                OFLOG_INFO(dcmdspfnLogger, "writing output file: " << opt_ofname);
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
-                    app.printError("can't write output file");
-            } else
-                app.printError("can't create display curve");
+                {
+                    OFLOG_FATAL(dcmdspfnLogger, "can't write output file");
+                    return 1;
+                }
+            } else {
+                OFLOG_FATAL(dcmdspfnLogger, "can't create display curve");
+                return 1;
+            }
             delete disp;
         }
 
         /* CIELAB display function */
         if (cmd.findOption("--cielab"))
         {
-            if (opt_verboseMode > 1)
-                OUTPUT << "creating CIELAB display curve ..." << OFendl;
+            OFLOG_INFO(dcmdspfnLogger, "creating CIELAB display curve ...");
             app.checkValue(cmd.getValue(opt_ofname));
             DiCIELABFunction *disp = NULL;
             if (opt_ifname != NULL)
@@ -322,8 +285,7 @@ int main(int argc, char *argv[])
             {
                 if (opt_ambLight >= 0)
                 {
-                    if (opt_verboseMode > 1)
-                        OUTPUT << "setting ambient light value ..." << OFendl;
+                    OFLOG_INFO(dcmdspfnLogger, "setting ambient light value ...");
                     disp->setAmbientLightValue(opt_ambLight);
                 }
                 /* Dmin/max only suppoted for printers */
@@ -331,27 +293,28 @@ int main(int argc, char *argv[])
                 {
                     if (opt_Dmin >= 0)
                     {
-                        if (opt_verboseMode > 1)
-                            OUTPUT << "setting minimum optical density value ..." << OFendl;
+                        OFLOG_INFO(dcmdspfnLogger, "setting minimum optical density value ...");
                         disp->setMinDensityValue(opt_Dmin);
                     }
                     if (opt_Dmax >= 0)
                     {
-                        if (opt_verboseMode > 1)
-                            OUTPUT << "setting maximum optical density value ..." << OFendl;
+                        OFLOG_INFO(dcmdspfnLogger, "setting maximum optical density value ...");
                         disp->setMaxDensityValue(opt_Dmax);
                     }
                 }
-                if (opt_verboseMode > 1)
-                    OUTPUT << "writing output file: " << opt_ofname << OFendl;
+                OFLOG_INFO(dcmdspfnLogger, "writing output file: " << opt_ofname);
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
-                    app.printError("can't write output file");
-            } else
-                app.printError("can't create display curve");
+                {
+                    OFLOG_FATAL(dcmdspfnLogger, "can't write output file");
+                    return 1;
+                }
+            } else {
+                OFLOG_FATAL(dcmdspfnLogger, "can't create display curve");
+                return 1;
+            }
         }
     } else {
-        if (opt_verboseMode > 0)
-            OUTPUT << "nothing to do, no output file specified" << OFendl;
+        OFLOG_WARN(dcmdspfnLogger, "nothing to do, no output file specified");
     }
     return 0;
 }
@@ -361,6 +324,9 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
+ * Revision 1.25  2009-10-28 09:53:39  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.24  2009-04-21 14:05:12  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

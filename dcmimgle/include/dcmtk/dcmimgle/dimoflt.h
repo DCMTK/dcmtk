@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,11 +80,7 @@ class DiMonoFlipTemplate
             if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
                 flip(OFstatic_cast(const T *, pixel->getData()), horz, vert);
             else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                   ofConsole.lockCerr() << "WARNING: could not flip image ... corrupted data." << OFendl;
-                   ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("could not flip image ... corrupted data.");
             }
         }
     }
@@ -132,6 +128,9 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
+ * Revision 1.12  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.11  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomLookupTable (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-26 10:08:10 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,12 +107,8 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), FirstEntry, 1);  // can be SS or US (will be type casted later)
         if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'FirstInputValueMapped' in lookup table (" << FirstEntry
-                                     << ") ... assuming " << first << " !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table (" << FirstEntry
+                                     << ") ... assuming " << first << " !");
             FirstEntry = OFstatic_cast(Uint16, first);
         }
         DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 2);           // bits per entry (only informational)
@@ -125,17 +121,9 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         if (status != NULL)
         {
             *status = EIS_MissingAttribute;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: incomplete or missing 'LookupTableDescriptor' !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' !");
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !");
         }
      }
 }
@@ -187,17 +175,9 @@ void DiLookupTable::Init(const DiDocument *docu,
         if (status != NULL)
         {
             *status = EIS_MissingAttribute;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: incomplete or missing 'LookupTableDescriptor' !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' !");
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !");
         }
     }
 }
@@ -219,11 +199,7 @@ void DiLookupTable::checkTable(unsigned long count,
             {
                 OriginalBitsAllocated = 8;
 #ifdef DEBUG
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "INFO: lookup table uses 8 bits allocated ... converting to 16 bits." << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_INFO("lookup table uses 8 bits allocated ... converting to 16 bits.");
 #endif
                 DataBuffer = new Uint16[Count];                               // create new LUT
                 if ((DataBuffer != NULL) && (Data != NULL))
@@ -233,12 +209,8 @@ void DiLookupTable::checkTable(unsigned long count,
                     if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering
                     {
 #ifdef DEBUG
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                        {
-                            ofConsole.lockCerr() << "INFO: local machine has big endian byte ordering"
-                                                 << " ... swapping 8 bit LUT entries." << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                        DCMIMGLE_INFO("local machine has big endian byte ordering"
+                                                 << " ... swapping 8 bit LUT entries.");
 #endif
                         for (i = count; i != 0; --i)                          // copy 8 bit entries to new 16 bit LUT (swap hi/lo byte)
                         {
@@ -253,12 +225,8 @@ void DiLookupTable::checkTable(unsigned long count,
                 }
                 Data = DataBuffer;
             } else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'NumberOfTableEntries' (" << Count << ") "
-                                         << "... assuming " << count << " !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("invalid value for 'NumberOfTableEntries' (" << Count << ") "
+                                         << "... assuming " << count << " !");
                 Count = count;
             }
         }
@@ -314,17 +282,9 @@ void DiLookupTable::checkTable(unsigned long count,
         if (status != NULL)
         {
             *status = EIS_InvalidValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: empty 'LookupTableData' attribute !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("empty 'LookupTableData' attribute !");
         } else {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: empty 'LookupTableData' attribute ... ignoring LUT !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("empty 'LookupTableData' attribute ... ignoring LUT !");
         }
     }
 }
@@ -353,31 +313,19 @@ void DiLookupTable::checkBits(const Uint16 bits,
         {
             if (descripMode == ELM_IgnoreValue)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "INFO: ignoring value for 'BitsPerTableEntry' (" << bits
-                                         << ") ... using " << Bits << " instead !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_INFO("ignoring value for 'BitsPerTableEntry' (" << bits
+                                         << ") ... using " << Bits << " instead !");
             } else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits
+                DCMIMGLE_WARN("unsuitable value for 'BitsPerTableEntry' (" << bits
                                          << ") ... valid range " << MIN_TABLE_ENTRY_SIZE << "-"
-                                         << MAX_TABLE_ENTRY_SIZE << ", using " << Bits << " !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                                         << MAX_TABLE_ENTRY_SIZE << ", using " << Bits << " !");
             }
         }
     }
     else if ((descripMode == ELM_CheckValue) && (bits == wrongBits))
     {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-        {
-            ofConsole.lockCerr() << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits << ") "
-                                 << "... assuming " << rightBits << " !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_WARN("unsuitable value for 'BitsPerTableEntry' (" << bits << ") "
+                                 << "... assuming " << rightBits << " !");
         Bits = rightBits;
     } else {
         /* assuming that the descriptor value is correct! */
@@ -617,6 +565,9 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
+ * Revision 1.36  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.35  2009-02-26 10:08:10  joergr
  * Enhanced warning message text.
  *

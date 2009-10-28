@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-03 11:46:22 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,12 +83,8 @@ DiImage::DiImage(const DiDocument *docu,
         {
             if (sl < 1)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'NumberOfFrames' (" << sl << ") "
-                                         << "... assuming 1 !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("invalid value for 'NumberOfFrames' (" << sl << ") "
+                                         << "... assuming 1 !");
                 NumberOfFrames = 1;
             } else
                 NumberOfFrames = OFstatic_cast(Uint32, sl);
@@ -99,22 +95,14 @@ DiImage::DiImage(const DiDocument *docu,
         {
             if (us <= FirstFrame)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << us << ")" << OFendl
-                                         << "         ... assuming first frame !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("invalid value for 'RepresentativeFrameNumber' (" << us << ")" << OFendl
+                                         << "         ... assuming first frame !");
                 RepresentativeFrame = FirstFrame;
             }
             else if (us > NumberOfFrames)
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << us << ")" << OFendl
-                                         << "         ... assuming last frame !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("invalid value for 'RepresentativeFrameNumber' (" << us << ")" << OFendl
+                                         << "         ... assuming last frame !");
                 RepresentativeFrame = NumberOfFrames - 1;
             }
             else
@@ -138,24 +126,16 @@ DiImage::DiImage(const DiDocument *docu,
             if (((Document->getValue(DCM_HighBit, HighBit) == 0) || ((HighBit == 0) && (BitsStored > 1))) && ok)
             {
                 HighBit = BitsStored - 1;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: missing value for 'HighBit' "
-                                         << "... assuming " << HighBit << " !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("missing value for 'HighBit' "
+                                         << "... assuming " << HighBit << " !");
             }
             ok &= (Document->getValue(DCM_PixelRepresentation, us) > 0);
             BitsPerSample = BitsStored;
             hasSignedRepresentation = (us == 1);
             if ((us != 0) && (us != 1))
             {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'PixelRepresentation' (" << us << ") "
-                                         << "... assuming 'unsigned' (0) !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("invalid value for 'PixelRepresentation' (" << us << ") "
+                                         << "... assuming 'unsigned' (0) !");
             }
             if (!(Document->getFlags() & CIF_UsePresentationState))
             {
@@ -164,12 +144,8 @@ DiImage::DiImage(const DiDocument *docu,
                 {
                     if (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) < 2)
                     {
-                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                        {
-                            ofConsole.lockCerr() << "WARNING: missing second value for 'PixelSpacing' ... "
-                                                 << "assuming 'Width' = " << PixelWidth << " !" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                        DCMIMGLE_WARN("missing second value for 'PixelSpacing' ... "
+                                                 << "assuming 'Width' = " << PixelWidth << " !");
                     }
                 } else {
                     hasImagerPixelSpacing = (Document->getValue(DCM_ImagerPixelSpacing, PixelHeight, 0) > 0);
@@ -177,12 +153,8 @@ DiImage::DiImage(const DiDocument *docu,
                     {
                         if (Document->getValue(DCM_ImagerPixelSpacing, PixelWidth, 1) < 2)
                         {
-                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                            {
-                                ofConsole.lockCerr() << "WARNING: missing second value for 'ImagerPixelSpacing' ... "
-                                                     << "assuming 'Width' = " << PixelWidth << " !" << OFendl;
-                                ofConsole.unlockCerr();
-                            }
+                            DCMIMGLE_WARN("missing second value for 'ImagerPixelSpacing' ... "
+                                                     << "assuming 'Width' = " << PixelWidth << " !");
                         }
                     } else {
                         hasNominalScannedPixelSpacing = (Document->getValue(DCM_NominalScannedPixelSpacing, PixelHeight, 0) > 0);
@@ -190,12 +162,8 @@ DiImage::DiImage(const DiDocument *docu,
                         {
                             if (Document->getValue(DCM_NominalScannedPixelSpacing, PixelWidth, 1) < 2)
                             {
-                                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                                {
-                                    ofConsole.lockCerr() << "WARNING: missing second value for 'NominalScannedPixelSpacing' ... "
-                                                         << "assuming 'Width' = " << PixelWidth << " !" << OFendl;
-                                    ofConsole.unlockCerr();
-                                }
+                                DCMIMGLE_WARN("missing second value for 'NominalScannedPixelSpacing' ... "
+                                                         << "assuming 'Width' = " << PixelWidth << " !");
                             }
                         } else {
                             Sint32 sl2;
@@ -205,12 +173,8 @@ DiImage::DiImage(const DiDocument *docu,
                                 PixelHeight = sl2;
                                 if (Document->getValue(DCM_PixelAspectRatio, sl2, 1) < 2)
                                 {
-                                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                                    {
-                                        ofConsole.lockCerr() << "WARNING: missing second value for 'PixelAspectRatio' ... "
-                                                             << "assuming 'Width' = " << PixelWidth << " !" << OFendl;
-                                        ofConsole.unlockCerr();
-                                    }
+                                    DCMIMGLE_WARN("missing second value for 'PixelAspectRatio' ... "
+                                                             << "assuming 'Width' = " << PixelWidth << " !");
                                 } else
                                     PixelWidth = sl2;
                             } else {
@@ -234,27 +198,15 @@ DiImage::DiImage(const DiDocument *docu,
                     ImageStatus = EIS_InvalidValue;
             } else {
                 ImageStatus = EIS_MissingAttribute;
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                {
-                    ofConsole.lockCerr() << "ERROR: one or more mandatory attributes are missing in image pixel module !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_ERROR("one or more mandatory attributes are missing in image pixel module !");
             }
         } else {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ") !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ") !");
         }
     } else {
         ImageStatus = EIS_InvalidDocument;
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: this DICOM document is invalid !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("this DICOM document is invalid !");
     }
 }
 
@@ -486,44 +438,28 @@ void DiImage::checkPixelExtension()
     {
         if (PixelHeight == 0)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'PixelHeight' (" << PixelHeight << ") "
-                                     << "... assuming 1 !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("invalid value for 'PixelHeight' (" << PixelHeight << ") "
+                                     << "... assuming 1 !");
             /* according to the standard, a value of 0 would be valid in case number of rows is 1 */
             PixelHeight = 1;
         }
         else if (PixelHeight < 0)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: negative value for 'PixelHeight' (" << PixelHeight << ") "
-                                     << "... assuming " << -PixelHeight << " !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("negative value for 'PixelHeight' (" << PixelHeight << ") "
+                                     << "... assuming " << -PixelHeight << " !");
             PixelHeight = -PixelHeight;
         }
         if (PixelWidth == 0)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'PixelWidth' (" << PixelWidth << ") "
-                                     << "... assuming 1 !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("invalid value for 'PixelWidth' (" << PixelWidth << ") "
+                                     << "... assuming 1 !");
             /* according to the standard, a value of 0 would be valid in case number of columns is 1 */
             PixelWidth = 1;
         }
         else if (PixelWidth < 0)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: negative value for 'PixelWidth' (" << PixelWidth << ") "
-                                     << "... assuming " << -PixelWidth << " !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("negative value for 'PixelWidth' (" << PixelWidth << ") "
+                                     << "... assuming " << -PixelWidth << " !");
             PixelHeight = -PixelHeight;
         }
     }
@@ -544,12 +480,8 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
             (BitsStored > OFstatic_cast(Uint16, HighBit + 1)))
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: invalid values for 'BitsAllocated' (" << BitsAllocated << "), "
-                                     << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ") !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("invalid values for 'BitsAllocated' (" << BitsAllocated << "), "
+                                     << "'BitsStored' (" << BitsStored << ") and/or 'HighBit' (" << HighBit << ") !");
             return;
         }
         else if ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8))
@@ -563,12 +495,8 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
         else if ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 16))
         {
             // report a warning message on this standard violation
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-            {
-                ofConsole.lockCerr() << "WARNING: invalid value for 'BitsAllocated' (" << BitsAllocated
-                                     << "), > 8 for OB encoded 'PixelData' !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_WARN("invalid value for 'BitsAllocated' (" << BitsAllocated
+                                     << "), > 8 for OB encoded 'PixelData' !");
             if (hasSignedRepresentation)
                 InputData = new DiInputPixelTemplate<Uint8, Sint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
             else
@@ -598,43 +526,27 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
         else    /* BitsStored > 32 !! */
         {
             ImageStatus = EIS_NotSupportedValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
-                                     << "... exceeds " << MAX_BITS << " bit !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("invalid value for 'BitsStored' (" << BitsStored << ") "
+                                     << "... exceeds " << MAX_BITS << " bit !");
             return;
         }
         if (InputData == NULL)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't allocate memory for input-representation !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("can't allocate memory for input-representation !");
         }
         else if (InputData->getPixelStart() >= InputData->getCount())
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: start offset (" << InputData->getPixelStart()
-                                     << ") exceeds number of pixels stored (" << InputData->getCount() << ") " << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("start offset (" << InputData->getPixelStart()
+                                     << ") exceeds number of pixels stored (" << InputData->getCount() << ") ");
         }
     }
     else
     {
         ImageStatus = EIS_NotSupportedValue;
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-        {
-            ofConsole.lockCerr() << "ERROR: 'PixelData' has an other value representation than OB "
-                                 << "(with 'BitsAllocated' <= 16) or OW !" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_ERROR("'PixelData' has an other value representation than OB "
+                                 << "(with 'BitsAllocated' <= 16) or OW !");
     }
 }
 
@@ -650,11 +562,7 @@ int DiImage::detachPixelData()
             /* insert new, empty PixelData element */
             dataset->putAndInsertUint16Array(DCM_PixelData, NULL, 0, OFTrue /*replaceOld*/);
 #ifdef DEBUG
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-            {
-                ofConsole.lockCerr() << "INFO: detach pixel data" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_INFO("detach pixel data");
 #endif
             return 1;
         }
@@ -893,6 +801,9 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
+ * Revision 1.41  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.40  2009-04-03 11:46:22  joergr
  * Do not write PixelAspectRatio for square pixels (width == height).
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomScaleTemplates (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-05-21 10:12:27 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,24 +207,16 @@ class DiScaleTemplate
         if ((src != NULL) && (dest != NULL))
         {
 #ifdef DEBUG
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_DebugMessages))
-            {
-                ofConsole.lockCout() << "Col/Rows: " << Columns << " " << Rows << OFendl
-                                     << "Left/Top: " << Left << " " << Top << OFendl
-                                     << "Src  X/Y: " << this->Src_X << " " << this->Src_Y << OFendl
-                                     << "Dest X/Y: " << this->Dest_X << " " << this->Dest_Y << OFendl;
-                ofConsole.unlockCout();
-            }
+            DCMIMGLE_DEBUG("Col/Rows: " << Columns << " " << Rows << OFendl
+                        << "Left/Top: " << Left << " " << Top << OFendl
+                        << "Src  X/Y: " << this->Src_X << " " << this->Src_Y << OFendl
+                        << "Dest X/Y: " << this->Dest_X << " " << this->Dest_Y);
 #endif
             if ((Left + OFstatic_cast(signed long, this->Src_X) <= 0) || (Top + OFstatic_cast(signed long, this->Src_Y) <= 0) ||
                 (Left >= OFstatic_cast(signed long, Columns)) || (Top >= OFstatic_cast(signed long, Rows)))
             {                                                                         // no image to be displayed
 #ifdef DEBUG
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "INFO: clipping area is fully outside the image boundaries !" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_INFO("clipping area is fully outside the image boundaries !");
 #endif
                 fillPixel(dest, value);                                               // ... fill bitmap
             }
@@ -285,11 +277,7 @@ class DiScaleTemplate
                    T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using clip image to specified area algorithm" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using clip image to specified area algorithm");
 #endif
         const unsigned long x_feed = Columns - this->Src_X;
         const unsigned long y_feed = OFstatic_cast(unsigned long, Rows - this->Src_Y) * OFstatic_cast(unsigned long, Columns);
@@ -325,11 +313,7 @@ class DiScaleTemplate
                          const T value)
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using clip image to specified area and add border algorithm" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using clip image to specified area and add border algorithm");
 #endif
         const Uint16 s_left = (Left > 0) ? OFstatic_cast(Uint16, Left) : 0;
         const Uint16 s_top = (Top > 0) ? OFstatic_cast(Uint16, Top) : 0;
@@ -406,11 +390,7 @@ class DiScaleTemplate
                         T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using replicate pixel scaling algorithm without interpolation" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using replicate pixel scaling algorithm without interpolation");
 #endif
         const Uint16 x_factor = this->Dest_X / this->Src_X;
         const Uint16 y_factor = this->Dest_Y / this->Src_Y;
@@ -458,11 +438,7 @@ class DiScaleTemplate
                        T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using suppress pixel scaling algorithm without interpolation" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using suppress pixel scaling algorithm without interpolation");
 #endif
         const unsigned int x_divisor = this->Src_X / this->Dest_X;
         const unsigned long x_feed = OFstatic_cast(unsigned long, this->Src_Y / this->Dest_Y) * OFstatic_cast(unsigned long, Columns) - this->Src_X;
@@ -501,11 +477,7 @@ class DiScaleTemplate
                     T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using free scaling algorithm without interpolation" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using free scaling algorithm without interpolation");
 #endif
         const Uint16 xmin = (this->Dest_X < this->Src_X) ? this->Dest_X : this->Src_X;  // minimum width
         const Uint16 ymin = (this->Dest_Y < this->Src_Y) ? this->Dest_Y : this->Src_Y;  // minimum height
@@ -586,20 +558,12 @@ class DiScaleTemplate
                           T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using scaling algorithm with interpolation from pbmplus toolkit" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using scaling algorithm with interpolation from pbmplus toolkit");
 #endif
         if ((this->Src_X != Columns) || (this->Src_Y != Rows))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-               ofConsole.lockCerr() << "ERROR: interpolated scaling and clipping at the same time not implemented" << OFendl
-                                    << "       ... ignoring clipping region !" << OFendl;
-               ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("interpolated scaling and clipping at the same time not implemented" << OFendl
+                                    << "       ... ignoring clipping region !");
             this->Src_X = Columns;            // temporarily removed 'const' for 'Src_X' in class 'DiTransTemplate'
             this->Src_Y = Rows;               //                             ... 'Src_Y' ...
         }
@@ -627,11 +591,7 @@ class DiScaleTemplate
 
         if ((xtemp == NULL) || (xvalue == NULL))
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffers for interpolation scaling !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("can't allocate temporary buffers for interpolation scaling !");
             clearPixel(dest);
         } else {
             for (int j = 0; j < this->Planes; ++j)
@@ -763,11 +723,7 @@ class DiScaleTemplate
                      T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using expand pixel scaling algorithm with interpolation from c't magazine" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using expand pixel scaling algorithm with interpolation from c't magazine");
 #endif
         const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
         const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
@@ -867,11 +823,7 @@ class DiScaleTemplate
                      T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using reduce pixel scaling algorithm with interpolation from c't magazine" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using reduce pixel scaling algorithm with interpolation from c't magazine");
 #endif
         const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
         const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
@@ -962,11 +914,7 @@ class DiScaleTemplate
                        T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using magnification algorithm with bilinear interpolation contributed by Eduard Stanescu" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using magnification algorithm with bilinear interpolation contributed by Eduard Stanescu");
 #endif
         const double x_factor = OFstatic_cast(double, this->Src_X) / OFstatic_cast(double, this->Dest_X);
         const double y_factor = OFstatic_cast(double, this->Src_Y) / OFstatic_cast(double, this->Dest_Y);
@@ -987,11 +935,7 @@ class DiScaleTemplate
         T *pTemp = new T[OFstatic_cast(unsigned long, this->Src_Y) * OFstatic_cast(unsigned long, this->Dest_X)];
         if (pTemp == NULL)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffer for interpolation scaling !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("can't allocate temporary buffer for interpolation scaling !");
             clearPixel(dest);
         } else {
 
@@ -1092,11 +1036,7 @@ class DiScaleTemplate
                       T *dest[])
     {
 #ifdef DEBUG
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-        {
-            ofConsole.lockCerr() << "INFO: using magnification algorithm with bicubic interpolation contributed by Eduard Stanescu" << OFendl;
-            ofConsole.unlockCerr();
-        }
+        DCMIMGLE_INFO("using magnification algorithm with bicubic interpolation contributed by Eduard Stanescu");
 #endif
         const double minVal = (isSigned()) ? -OFstatic_cast(double, DicomImageClass::maxval(this->Bits - 1, 0)) : 0.0;
         const double maxVal = OFstatic_cast(double, DicomImageClass::maxval(this->Bits - isSigned()));
@@ -1121,11 +1061,7 @@ class DiScaleTemplate
         T *pTemp = pT = pCurrTemp = new T[OFstatic_cast(unsigned long, this->Src_Y) * OFstatic_cast(unsigned long, this->Dest_X)];
         if (pTemp == NULL)
         {
-            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-            {
-                ofConsole.lockCerr() << "ERROR: can't allocate temporary buffer for interpolation scaling !" << OFendl;
-                ofConsole.unlockCerr();
-            }
+            DCMIMGLE_ERROR("can't allocate temporary buffer for interpolation scaling !");
             clearPixel(dest);
         } else {
 
@@ -1287,6 +1223,9 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
+ * Revision 1.31  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.30  2008-05-21 10:12:27  joergr
  * Fixed bug in c't scaling algorithm (expandPixel) which could cause a crash
  * (possible integer underflow/overflow).

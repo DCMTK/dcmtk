@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:27:30 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -281,12 +281,9 @@ class DiMonoPixelTemplate
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
                         ++quant[OFstatic_cast(Uint32, Data[i] - MinValue[0])];      // count values
 #ifdef DEBUG
-                    else if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: invalid value (" << Data[i] << ") in "
-                                             << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    else
+                        DCMIMGLE_WARN("invalid value (" << Data[i] << ") in "
+                                         << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! ");
 #endif
                 }
                 const Uint32 threshvalue = OFstatic_cast(Uint32, thresh * OFstatic_cast(double, Count));
@@ -439,6 +436,9 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
+ * Revision 1.30  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.29  2009-09-28 13:27:30  joergr
  * Moved general purpose definition file from module dcmdata to ofstd, and
  * added new defines in order to make the usage easier.

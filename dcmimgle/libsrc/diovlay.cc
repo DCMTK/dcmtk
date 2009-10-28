@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlay (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-11-18 10:57:10 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:41 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,11 +234,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 }
                 if (Data->Count != overlay->Data->Count)            // assertion!
                 {
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                    {
-                        ofConsole.lockCerr() << "WARNING: different number of overlay planes for scaled and unscaled image !" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMGLE_WARN("different number of overlay planes for scaled and unscaled image !");
                 }
                 if (overlay->Data->DataBuffer != NULL)              // existing data buffer
                     temp = overlay->Data->DataBuffer;               // point to input buffer
@@ -611,6 +607,9 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
+ * Revision 1.28  2009-10-28 09:53:41  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.27  2008-11-18 10:57:10  joergr
  * Fixed issue with incorrectly encoded overlay planes (wrong values for
  * OverlayBitsAllocated and OverlayBitPosition).

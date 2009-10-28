@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:11 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,11 +89,7 @@ class DiRotateTemplate
                 else if (degree == 270)
                     rotateLeft(OFstatic_cast(T **, pixel->getDataArrayPtr()));
             } else {
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-                {
-                   ofConsole.lockCerr() << "WARNING: could not rotate image ... corrupted data." << OFendl;
-                   ofConsole.unlockCerr();
-                }
+                DCMIMGLE_WARN("could not rotate image ... corrupted data.");
             }
         }
     }
@@ -367,6 +363,9 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
+ * Revision 1.18  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.17  2006-08-15 16:30:11  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.

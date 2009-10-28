@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2008, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-04-09 11:02:08 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-10-28 09:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,11 +113,7 @@ class DiMonoInputPixelTemplate
             if (lut != NULL)
             {
 #ifdef DEBUG
-                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                {
-                    ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << OFendl;
-                    ofConsole.unlockCerr();
-                }
+                DCMIMGLE_INFO("using optimized routine with additional LUT");
 #endif
                 result = 1;
             }
@@ -147,11 +143,7 @@ class DiMonoInputPixelTemplate
                 if (this->Data != NULL)
                 {
 #ifdef DEBUG
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                    {
-                        ofConsole.lockCerr() << "INFO: using modality routine 'modlut()'" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMGLE_INFO("using modality routine 'modlut()'");
 #endif
                     register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
@@ -235,11 +227,7 @@ class DiMonoInputPixelTemplate
                     }
                 } else {
 #ifdef DEBUG
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
-                    {
-                        ofConsole.lockCerr() << "INFO: using modality routine 'rescale()'" << OFendl;
-                        ofConsole.unlockCerr();
-                    }
+                    DCMIMGLE_INFO("using modality routine 'rescale()'");
 #endif
                     T3 *lut = NULL;
                     register const T1 *p = pixel + input->getPixelStart();
@@ -299,6 +287,9 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
+ * Revision 1.36  2009-10-28 09:53:40  uli
+ * Switched to logging mechanism provided by the "new" oflog module.
+ *
  * Revision 1.35  2008-04-09 11:02:08  joergr
  * Fixed wrong use of variable in "for" loop which might cause a crash.
  *
