@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -377,11 +377,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 if ((DDLValue == NULL) || (LODValue == NULL))
                                     return 0;
                             } else {
-                                DCMIMGLE_ERROR("invalid or missing value for maximum DDL value in DISPLAY file !");
+                                DCMIMGLE_ERROR("invalid or missing value for maximum DDL value in DISPLAY file");
                                 return 0;                                   // abort
                             }
                         } else {
-                            DCMIMGLE_ERROR("missing keyword 'max' for maximum DDL value in DISPLAY file !");
+                            DCMIMGLE_ERROR("missing keyword 'max' for maximum DDL value in DISPLAY file");
                             return 0;                                       // abort
                         }
                     }
@@ -394,11 +394,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> AmbientLight;
                             if (AmbientLight < 0)
                             {
-                                DCMIMGLE_WARN("invalid value for ambient light in DISPLAY file ... ignoring !");
+                                DCMIMGLE_WARN("invalid value for ambient light in DISPLAY file ... ignoring");
                                 AmbientLight = 0;
                             }
                         } else {
-                            DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
+                            DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring");
                             return 0;                                       // abort
                         }
                     }
@@ -411,11 +411,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> Illumination;
                             if (Illumination < 0)
                             {
-                                DCMIMGLE_WARN("invalid value for illumination in DISPLAY file ... ignoring !");
+                                DCMIMGLE_WARN("invalid value for illumination in DISPLAY file ... ignoring");
                                 Illumination = 0;
                             }
                         } else {
-                            DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
+                            DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring");
                             return 0;                                       // abort
                         }
                     }
@@ -428,11 +428,11 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> Order;
                             if (Order < 0)
                             {
-                                DCMIMGLE_WARN("invalid value for polynomial order in DISPLAY file ... ignoring !");
+                                DCMIMGLE_WARN("invalid value for polynomial order in DISPLAY file ... ignoring");
                                 Order = 0;
                             }
                         } else {
-                            DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
+                            DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring");
                             return 0;                                       // abort
                         }
                     } else {
@@ -442,20 +442,16 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> LODValue[ValueCount];                   // read luminance/OD value
                             if (file.fail())
                             {
-                                DCMIMGLE_WARN("missing luminance/OD value in DISPLAY file ... "
-                                                         << "ignoring last entry !");
+                                DCMIMGLE_WARN("missing luminance/OD value in DISPLAY file ... ignoring last entry");
                             }
                             else if (DDLValue[ValueCount] > MaxDDLValue)
                             {
-                                DCMIMGLE_WARN("DDL value (" << DDLValue[ValueCount]
-                                                         << ") exceeds maximum value ("
-                                                         << MaxDDLValue << ") in DISPLAY file ..." << OFendl
-                                                         << "         ... ignoring value !");
+                                DCMIMGLE_WARN("DDL value (" << DDLValue[ValueCount] << ") exceeds maximum value ("
+                                    << MaxDDLValue << ") in DISPLAY file ... ignoring value");
                             } else
                                 ++ValueCount;
                         } else {
-                            DCMIMGLE_WARN("too many values in DISPLAY file ... "
-                                                     << "ignoring last line(s) !");
+                            DCMIMGLE_WARN("too many values in DISPLAY file ... ignoring last line(s)");
                             return 2;
                         }
                     }
@@ -464,10 +460,10 @@ int DiDisplayFunction::readConfigFile(const char *filename)
             if ((MaxDDLValue > 0) && (ValueCount > 0))
                 return ((DDLValue != NULL) && (LODValue != NULL));
             else {
-                DCMIMGLE_WARN("invalid DISPLAY file ... ignoring !");
+                DCMIMGLE_WARN("invalid DISPLAY file ... ignoring");
             }
         } else {
-            DCMIMGLE_WARN("can't open DISPLAY file ... ignoring !");
+            DCMIMGLE_WARN("can't open DISPLAY file ... ignoring");
         }
     }
     return 0;
@@ -513,7 +509,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                     ++i;
                 if (i < ValueCount)
                 {
-                    DCMIMGLE_WARN("OD values (ordered by DDLs) don't descend monotonously !");
+                    DCMIMGLE_WARN("OD values (ordered by DDLs) don't descend monotonously");
                 }
             } else {
                 /* softcopy device: check for monotonous ascending luminance values */
@@ -521,7 +517,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                     ++i;
                 if (i < ValueCount)
                 {
-                    DCMIMGLE_WARN("luminance values (ordered by DDLs) don't ascend monotonously !");
+                    DCMIMGLE_WARN("luminance values (ordered by DDLs) don't ascend monotonously");
                 }
             }
             status = (ValueCount > 0);
@@ -626,8 +622,7 @@ int DiDisplayFunction::checkMinMaxDensity() const
 {
     if ((MinDensity >= 0) && (MaxDensity >= 0) && (MinDensity >= MaxDensity))
     {
-        DCMIMGLE_WARN("invalid optical density range (Dmin = " << MinDensity
-                                 << ", Dmax = " << MaxDensity << ") !");
+        DCMIMGLE_WARN("invalid optical density range (Dmin = " << MinDensity << ", Dmax = " << MaxDensity << ")");
         return 0;
     }
     return 1;
@@ -698,6 +693,9 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
+ * Revision 1.47  2009-10-28 14:26:01  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.46  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

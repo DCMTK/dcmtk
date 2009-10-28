@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomLookupTable (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,8 +107,8 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), FirstEntry, 1);  // can be SS or US (will be type casted later)
         if ((first >= 0) && (FirstEntry != OFstatic_cast(Uint16, first)))
         {
-            DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table (" << FirstEntry
-                                     << ") ... assuming " << first << " !");
+            DCMIMGLE_WARN("invalid value for 'FirstInputValueMapped' in lookup table ("
+                << FirstEntry << ") ... assuming " << first);
             FirstEntry = OFstatic_cast(Uint16, first);
         }
         DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &descriptor), us, 2);           // bits per entry (only informational)
@@ -121,9 +121,9 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         if (status != NULL)
         {
             *status = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' !");
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor'");
         } else {
-            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !");
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT");
         }
      }
 }
@@ -175,9 +175,9 @@ void DiLookupTable::Init(const DiDocument *docu,
         if (status != NULL)
         {
             *status = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor' !");
+            DCMIMGLE_ERROR("incomplete or missing 'LookupTableDescriptor'");
         } else {
-            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT !");
+            DCMIMGLE_WARN("incomplete or missing 'LookupTableDescriptor' ... ignoring LUT");
         }
     }
 }
@@ -198,9 +198,7 @@ void DiLookupTable::checkTable(unsigned long count,
             if (count == ((Count + 1) >> 1))                                  // bits allocated 8, ignore padding
             {
                 OriginalBitsAllocated = 8;
-#ifdef DEBUG
-                DCMIMGLE_INFO("lookup table uses 8 bits allocated ... converting to 16 bits.");
-#endif
+                DCMIMGLE_DEBUG("lookup table uses 8 bits allocated ... converting to 16 bits");
                 DataBuffer = new Uint16[Count];                               // create new LUT
                 if ((DataBuffer != NULL) && (Data != NULL))
                 {
@@ -208,10 +206,7 @@ void DiLookupTable::checkTable(unsigned long count,
                     register Uint16 *q = DataBuffer;
                     if (gLocalByteOrder == EBO_BigEndian)                     // local machine has big endian byte ordering
                     {
-#ifdef DEBUG
-                        DCMIMGLE_INFO("local machine has big endian byte ordering"
-                                                 << " ... swapping 8 bit LUT entries.");
-#endif
+                        DCMIMGLE_DEBUG("local machine has big endian byte ordering ... swapping 8 bit LUT entries");
                         for (i = count; i != 0; --i)                          // copy 8 bit entries to new 16 bit LUT (swap hi/lo byte)
                         {
                             *(q++) = *(p + 1);                                // copy low byte ...
@@ -225,8 +220,7 @@ void DiLookupTable::checkTable(unsigned long count,
                 }
                 Data = DataBuffer;
             } else {
-                DCMIMGLE_WARN("invalid value for 'NumberOfTableEntries' (" << Count << ") "
-                                         << "... assuming " << count << " !");
+                DCMIMGLE_WARN("invalid value for 'NumberOfTableEntries' (" << Count << ") ... assuming " << count);
                 Count = count;
             }
         }
@@ -282,9 +276,9 @@ void DiLookupTable::checkTable(unsigned long count,
         if (status != NULL)
         {
             *status = EIS_InvalidValue;
-            DCMIMGLE_ERROR("empty 'LookupTableData' attribute !");
+            DCMIMGLE_ERROR("empty 'LookupTableData' attribute");
         } else {
-            DCMIMGLE_WARN("empty 'LookupTableData' attribute ... ignoring LUT !");
+            DCMIMGLE_WARN("empty 'LookupTableData' attribute ... ignoring LUT");
         }
     }
 }
@@ -313,19 +307,16 @@ void DiLookupTable::checkBits(const Uint16 bits,
         {
             if (descripMode == ELM_IgnoreValue)
             {
-                DCMIMGLE_INFO("ignoring value for 'BitsPerTableEntry' (" << bits
-                                         << ") ... using " << Bits << " instead !");
+                DCMIMGLE_INFO("ignoring value for 'BitsPerTableEntry' (" << bits << ") ... using " << Bits << " instead");
             } else {
-                DCMIMGLE_WARN("unsuitable value for 'BitsPerTableEntry' (" << bits
-                                         << ") ... valid range " << MIN_TABLE_ENTRY_SIZE << "-"
-                                         << MAX_TABLE_ENTRY_SIZE << ", using " << Bits << " !");
+                DCMIMGLE_WARN("unsuitable value for 'BitsPerTableEntry' (" << bits << ") ... valid range "
+                    << MIN_TABLE_ENTRY_SIZE << "-" << MAX_TABLE_ENTRY_SIZE << ", using " << Bits);
             }
         }
     }
     else if ((descripMode == ELM_CheckValue) && (bits == wrongBits))
     {
-        DCMIMGLE_WARN("unsuitable value for 'BitsPerTableEntry' (" << bits << ") "
-                                 << "... assuming " << rightBits << " !");
+        DCMIMGLE_WARN("unsuitable value for 'BitsPerTableEntry' (" << bits << ") ... assuming " << rightBits);
         Bits = rightBits;
     } else {
         /* assuming that the descriptor value is correct! */
@@ -565,6 +556,9 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
+ * Revision 1.37  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.36  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

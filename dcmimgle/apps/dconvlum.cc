@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2006, OFFIS
+ *  Copyright (C) 1999-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 16:30:09 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:24:10 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,15 +98,15 @@ int main(int argc, char *argv[])
                     ++i;
                 }
                 if (i <= maxddl)
-                    CERR << "ERROR: can't convert input file ... error in line #" << i << " !" << OFendl;
+                    CERR << "ERROR: can't convert input file ... error in line #" << i << OFendl;
                 else {
                     output << OFendl << "# eof of file";
                     return 0;                                                       // everything is OK
                 }
              } else
-                CERR << "ERROR: can't create output file !" << OFendl;
+                CERR << "ERROR: can't create output file" << OFendl;
         } else
-            CERR << "ERROR: can't open input file !" << OFendl;
+            CERR << "ERROR: can't open input file" << OFendl;
     } else {
         /* print usage */
         CERR << rcsid << OFendl << OFendl;
@@ -124,7 +124,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.22  2006-08-15 16:30:09  meichel
+ * Revision 1.23  2009-10-28 14:24:10  joergr
+ * Fixed minor issues in log output.
+ *
+ * Revision 1.22  2006/08/15 16:30:09  meichel
  * Updated the code in module dcmimgle to correctly compile when
  *   all standard C++ classes remain in namespace std.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -563,7 +563,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     OutputData(NULL),
     OverlayData(NULL)
 {
-    DCMIMGLE_ERROR("ERROR in DiMonoImage copy-constructor !!!");
+    DCMIMGLE_FATAL("using unimplemented copy constructor in class DiMonoImage ... aborting");
     abort();
 }
 
@@ -700,7 +700,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
                     PresLutShape = ESP_Inverse;
                 else
                 {
-                    DCMIMGLE_WARN("unknown value for 'PresentationLUTShape' (" << str << ") ... ignoring !");
+                    DCMIMGLE_WARN("unknown value for 'PresentationLUTShape' (" << str << ") ... ignoring");
                 }
             }
         }
@@ -891,7 +891,7 @@ int DiMonoImage::checkInterData(const int mode)
         if (ImageStatus == EIS_Normal)
         {
             ImageStatus = EIS_MemoryFailure;
-            DCMIMGLE_ERROR("can't allocate memory for inter-representation !");
+            DCMIMGLE_ERROR("can't allocate memory for inter-representation");
         } else
             ImageStatus = EIS_InvalidImage;
     }
@@ -902,9 +902,7 @@ int DiMonoImage::checkInterData(const int mode)
         const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
-            DCMIMGLE_WARN("computed (" << count
-                                     << ") and stored (" << InterData->getInputCount() << ") "
-                                     << "pixel count differ !");
+            DCMIMGLE_WARN("computed (" << count << ") and stored (" << InterData->getInputCount() << ") pixel count differ");
         }
     }
     return (ImageStatus == EIS_Normal);
@@ -1466,8 +1464,7 @@ const void *DiMonoImage::getData(void *buffer,
             {
                 if (!createLinODPresentationLut(4096, 16))  // create presentation LUT converting linOD data (on demand)
                 {
-                    DCMIMGLE_WARN("could not create presentation LUT for LinOD conversion" << OFendl
-                                            << "         ... ignoring presentation LUT shape LinOD !");
+                    DCMIMGLE_WARN("could not create presentation LUT for LinOD conversion ... ignoring presentation LUT shape LinOD");
                 }
             }
             if (Polarity == EPP_Reverse)                    // swap high and low value
@@ -1479,8 +1476,8 @@ const void *DiMonoImage::getData(void *buffer,
             DiDisplayFunction *disp = DisplayFunction;
             if ((disp != NULL) && (disp->isValid()) && (disp->getMaxDDLValue() != DicomImageClass::maxval(bits)))
             {
-                DCMIMGLE_WARN("selected display function doesn't fit to requested output depth ("
-                                        << bits << ")" << OFendl << "         ... ignoring display transformation !");
+                DCMIMGLE_WARN("selected display function doesn't fit to requested output depth (" << bits
+                    << ") ... ignoring display transformation");
                 disp = NULL;
             }
             const int samples = (bits == MI_PastelColor) ? 3 : 1;
@@ -1508,12 +1505,12 @@ const void *DiMonoImage::getData(void *buffer,
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
-                DCMIMGLE_ERROR("can't allocate memory for output-representation !");
+                DCMIMGLE_ERROR("can't allocate memory for output-representation");
             }
             else
                 return OutputData->getData();           // points to beginning of output data
         } else {
-            DCMIMGLE_ERROR("given output buffer is too small (only " << size << " bytes) !");
+            DCMIMGLE_ERROR("given output buffer is too small (only " << size << " bytes)");
         }
     }
     return NULL;
@@ -2120,6 +2117,9 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
+ * Revision 1.78  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.77  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

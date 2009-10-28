@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCIELABLUT (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,14 +61,10 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
-#ifdef DEBUG
-        DCMIMGLE_INFO("new CIELAB LUT with " << Bits << " bits output and "
-                                 << Count << " entries created !");
-#endif
+        DCMIMGLE_DEBUG("new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created");
         if (val_min >= val_max)
         {
-            DCMIMGLE_ERROR("invalid value range for CIELAB LUT creation ("
-                                     << val_min << " - " << val_max << ") !");
+            DCMIMGLE_ERROR("invalid value range for CIELAB LUT creation (" << val_min << " - " << val_max << ")");
         }
         /* create the lookup table */
         Valid = createLUT(ddl_tab, val_tab, ddl_cnt, val_min, val_max, lum_min, lum_max,
@@ -202,7 +198,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                             (*stream) << OFendl;
                         }
                     } else {
-                        DCMIMGLE_WARN("can't write curve data, wrong DISPLAY file or CIELAB LUT !");
+                        DCMIMGLE_WARN("can't write curve data, wrong DISPLAY file or CIELAB LUT");
                     }
                 }
                 status = 1;
@@ -218,6 +214,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
+ * Revision 1.25  2009-10-28 14:26:01  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.24  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

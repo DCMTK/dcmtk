@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlay (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
                 }
                 if (Data->Count != overlay->Data->Count)            // assertion!
                 {
-                    DCMIMGLE_WARN("different number of overlay planes for scaled and unscaled image !");
+                    DCMIMGLE_WARN("different number of overlay planes for scaled and unscaled image");
                 }
                 if (overlay->Data->DataBuffer != NULL)              // existing data buffer
                     temp = overlay->Data->DataBuffer;               // point to input buffer
@@ -607,6 +607,9 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
+ * Revision 1.29  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.28  2009-10-28 09:53:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

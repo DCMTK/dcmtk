@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFLUT (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,14 +66,10 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
-#ifdef DEBUG
-        DCMIMGLE_INFO("new GSDF LUT with " << Bits << " bits output and "
-                                 << Count << " entries created !");
-#endif
+        DCMIMGLE_DEBUG("new GSDF LUT with " << Bits << " bits output and " << Count << " entries created");
         if (jnd_min >= jnd_max)
         {
-            DCMIMGLE_ERROR("invalid JND range for GSDF LUT creation ("
-                                     << jnd_min << " - " << jnd_max << ") !");
+            DCMIMGLE_ERROR("invalid JND range for GSDF LUT creation (" << jnd_min << " - " << jnd_max << ")");
         }
         /* create the lookup table */
         Valid = createLUT(ddl_tab, val_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt,
@@ -216,8 +212,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                         (*stream) << OFendl;
                                     }
                                 } else {
-                                    DCMIMGLE_WARN("can't write curve data, "
-                                                             << "wrong DISPLAY file or GSDF LUT !");
+                                    DCMIMGLE_WARN("can't write curve data, wrong DISPLAY file or GSDF LUT");
                                 }
                             }
                             status = 1;
@@ -239,6 +234,9 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
+ * Revision 1.24  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.23  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: Utilities (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,12 +116,12 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
         if (-minvalue > maxval(MAX_BITS - 1, 0))
         {
             DCMIMGLE_WARN("minimum pixel value (" << minvalue << ") exceeds signed " << MAX_BITS
-                                     << " bit " << "representation after modality transformation !");
+                << " bit " << "representation after modality transformation");
         }
         if (maxvalue > maxval(MAX_BITS - 1))
         {
             DCMIMGLE_WARN("maximum pixel value (" << maxvalue << ") exceeds signed " << MAX_BITS
-                                     << " bit " << "representation after modality transformation !");
+                << " bit " << "representation after modality transformation");
         }
 #endif
         return EPR_Sint32;
@@ -134,7 +134,7 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
     if (maxvalue > maxval(MAX_BITS))
     {
         DCMIMGLE_WARN("maximum pixel value (" << maxvalue << ") exceeds unsigned " << MAX_BITS
-                                 << " bit " << "representation after modality transformation !");
+            << " bit " << "representation after modality transformation");
     }
 #endif
     return EPR_Uint32;
@@ -145,6 +145,9 @@ EP_Representation DicomImageClass::determineRepresentation(double minvalue,
  *
  * CVS/RCS Log:
  * $Log: diutils.cc,v $
+ * Revision 1.18  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.17  2009-10-28 09:53:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

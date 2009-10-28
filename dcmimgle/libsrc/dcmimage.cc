@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,10 +246,10 @@ void DicomImage::Init()
                         if (PhotometricInterpretation == EPI_Unknown)
                         {
                             ImageStatus = EIS_InvalidValue;
-                            DCMIMGLE_ERROR("invalid value for 'PhotometricInterpretation' (" << str << ") !");
+                            DCMIMGLE_ERROR("invalid value for 'PhotometricInterpretation' (" << str << ")");
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
-                            DCMIMGLE_ERROR("unsupported value for 'PhotometricInterpretation' (" << str << ") !");
+                            DCMIMGLE_ERROR("unsupported value for 'PhotometricInterpretation' (" << str << ")");
                         }
                     }
             }
@@ -262,7 +262,7 @@ void DicomImage::Init()
         else
         {
             ImageStatus = EIS_MissingAttribute;
-            DCMIMGLE_ERROR("mandatory attribute 'PhotometricInterpretation' is missing !");
+            DCMIMGLE_ERROR("mandatory attribute 'PhotometricInterpretation' is missing");
         }
     }
     else
@@ -277,7 +277,7 @@ int DicomImage::checkDataDictionary()
     if (!dcmDataDict.isDictionaryLoaded())
     {
         ImageStatus = EIS_NoDataDictionary;
-        DCMIMGLE_ERROR("can't load data dictionary !");
+        DCMIMGLE_ERROR("can't load data dictionary");
     }
     return ImageStatus == EIS_Normal;
 }
@@ -445,7 +445,7 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
             (top_pos < 0) || (OFstatic_cast(unsigned long, top_pos + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
-            DCMIMGLE_ERROR("combined clipping & scaling outside image boundaries not yet supported !");
+            DCMIMGLE_ERROR("combined clipping & scaling outside image boundaries not yet supported");
         }
         else if ((scale_width > 0) && (scale_height > 0))
         {
@@ -806,6 +806,9 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
+ * Revision 1.32  2009-10-28 14:26:01  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.31  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

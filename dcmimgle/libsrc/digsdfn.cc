@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ DiGSDFunction::DiGSDFunction(const char *filename,
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring");
     }
 }
 
@@ -87,7 +87,7 @@ DiGSDFunction::DiGSDFunction(const double *val_tab,             // UNTESTED !!
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring");
     }
 }
 
@@ -108,7 +108,7 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring");
     }
 }
 
@@ -128,7 +128,7 @@ DiGSDFunction::DiGSDFunction(const double val_min,
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring");
     }
 }
 
@@ -444,6 +444,9 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
+ * Revision 1.34  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.33  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

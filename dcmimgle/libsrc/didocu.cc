@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ DiDocument::DiDocument(const char *filename,
 
         if (FileFormat->loadFile(filename).bad())
         {
-            DCMIMGLE_ERROR("can't read file '" << filename << "' !");
+            DCMIMGLE_ERROR("can't read file '" << filename << "'");
             delete FileFormat;
             FileFormat = NULL;
         } else {
@@ -124,10 +124,10 @@ void DiDocument::convertPixelData()
             if (DcmXfer(Xfer).isEncapsulated())
                 Xfer = EXS_LittleEndianExplicit;
         } else {
-            DCMIMGLE_ERROR("cannot change to unencapsulated representation for pixel data !");
+            DCMIMGLE_ERROR("cannot change to unencapsulated representation for pixel data");
         }
     } else {
-        DCMIMGLE_ERROR("no pixel data found in DICOM dataset !");
+        DCMIMGLE_ERROR("no pixel data found in DICOM dataset");
     }
 }
 
@@ -375,6 +375,9 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
+ * Revision 1.22  2009-10-28 14:26:01  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.21  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

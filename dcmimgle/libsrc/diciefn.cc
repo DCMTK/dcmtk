@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:40 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ DiCIELABFunction::DiCIELABFunction(const char *filename,
 {
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY file ... ignoring");
     }
 }
 
@@ -65,7 +65,7 @@ DiCIELABFunction::DiCIELABFunction(const double *val_tab,             // UNTESTE
 {
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring");
     }
 }
 
@@ -80,7 +80,7 @@ DiCIELABFunction::DiCIELABFunction(const Uint16 *ddl_tab,             // UNTESTE
 {
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring");
     }
 }
 
@@ -94,7 +94,7 @@ DiCIELABFunction::DiCIELABFunction(const double val_min,
 {
     if (!Valid)
     {
-        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring !");
+        DCMIMGLE_ERROR("invalid DISPLAY values ... ignoring");
     }
 }
 
@@ -255,6 +255,9 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
+ * Revision 1.24  2009-10-28 14:26:01  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.23  2009-10-28 09:53:40  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

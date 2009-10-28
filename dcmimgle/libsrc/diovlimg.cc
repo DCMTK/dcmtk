@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayImage (Source)
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 if (InterData == NULL)
                 {
                     ImageStatus = EIS_MemoryFailure;
-                    DCMIMGLE_ERROR("can't allocate memory for inter-representation !");
+                    DCMIMGLE_ERROR("can't allocate memory for inter-representation");
                 }
                 else if (InterData->getData() == NULL)
                     ImageStatus = EIS_InvalidImage;
@@ -84,15 +84,14 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
             else
             {
                 ImageStatus = EIS_InvalidValue;
-                DCMIMGLE_ERROR("invalid value for 'Rows' (" << Rows << ") and/or "
-                                         << "'Columns' (" << Columns << ") !");
+                DCMIMGLE_ERROR("invalid value for 'Rows' (" << Rows << ") and/or 'Columns' (" << Columns << ")");
             }
         }
     }
     else
     {
         ImageStatus = EIS_InvalidDocument;
-        DCMIMGLE_ERROR("this DICOM document is invalid !");
+        DCMIMGLE_ERROR("this DICOM document is invalid");
     }
 }
 
@@ -110,6 +109,9 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
+ * Revision 1.16  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.15  2009-10-28 09:53:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *

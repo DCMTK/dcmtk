@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-28 09:53:41 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-10-28 14:26:02 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,8 +110,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         {
             if (docu->getValue(tag, Top, 1) < 2)
             {
-                DCMIMGLE_WARN("missing second value for 'OverlayOrigin' ... "
-                                     << "assuming 'Top' = " << Top << " !");
+                DCMIMGLE_WARN("missing second value for 'OverlayOrigin' ... assuming 'Top' = " << Top);
             }
         }
 #else
@@ -120,8 +119,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         {
             if (docu->getValue(tag, Left, 1) < 2)
             {
-                DCMIMGLE_WARN("missing second value for 'OverlayOrigin' ... "
-                                     << "assuming 'Left' = " << Left << " !");
+                DCMIMGLE_WARN("missing second value for 'OverlayOrigin' ... assuming 'Left' = " << Left);
             }
         }
 #endif
@@ -155,21 +153,18 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
             /* check for correct value of BitsAllocated */
             if (BitsAllocated != alloc)                             // see correction proposal 87
             {
-                DCMIMGLE_WARN("invalid value for 'OverlayBitsAllocated' (" << BitsAllocated
-                                         << ") ... assuming " << alloc << " !");
+                DCMIMGLE_WARN("invalid value for 'OverlayBitsAllocated' (" << BitsAllocated << ") ... assuming " << alloc);
                 BitsAllocated = alloc;
             }
             /* check for correct value of BitPosition */
             if (BitPosition >= BitsAllocated)
             {
-                DCMIMGLE_WARN("invalid value for 'OverlayBitPosition' (" << BitPosition
-                                         << ") ... assuming " << (BitsAllocated - 1) << " !");
+                DCMIMGLE_WARN("invalid value for 'OverlayBitPosition' (" << BitPosition << ") ... assuming " << (BitsAllocated - 1));
                 BitPosition = BitsAllocated - 1;
             }
             if (EmbeddedData && (BitPosition <= high) && (BitPosition + stored > high))
             {
-                DCMIMGLE_WARN("invalid value for 'OverlayBitPosition' (" << BitPosition
-                                         << "), refers to bit position within stored pixel value !");
+                DCMIMGLE_WARN("invalid value for 'OverlayBitPosition' (" << BitPosition << "), refers to bit position within stored pixel value");
                 Data = NULL;    // invalid plane
             }
             /* expected length of overlay data */
@@ -177,7 +172,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                                           OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, BitsAllocated) + 7) / 8;
             if ((Data != NULL) && ((length == 0) || (length < expLen)))
             {
-                DCMIMGLE_ERROR("overlay data length is too short !");
+                DCMIMGLE_ERROR("overlay data length is too short");
                 Valid = 0;
                 Data = NULL;
             } else
@@ -234,7 +229,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
         const unsigned long expLen = (OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns) + 7) / 8;
         if ((length == 0) || (length < expLen))
         {
-            DCMIMGLE_ERROR("overlay data length is too short !");
+            DCMIMGLE_ERROR("overlay data length is too short");
             /* Valid = 0;  =>  This is the default. */
             Data = NULL;
         } else
@@ -593,6 +588,9 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
+ * Revision 1.34  2009-10-28 14:26:02  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.33  2009-10-28 09:53:41  uli
  * Switched to logging mechanism provided by the "new" oflog module.
  *
