@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:49:32 $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  Update Date:      $Date: 2009-10-30 10:09:50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -579,10 +579,20 @@ OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* skip reading ValueType, already done somewhere else */
 
-    /* read ConceptNameCodeSequence (might be empty) */
-    ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/);
-    /* read ContentItem (depending on ValueType) */
-    result = readContentItem(dataset);
+    /* read ConceptNameCodeSequence */
+    if (RelationshipType == RT_isRoot)
+    {
+        /* the concept name is required for the root container */
+        result = ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1" /*type*/);
+    } else {
+        /* the concept name might be empty for all other content items */
+        ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/);
+    }
+    if (result.good() || (flags & RF_ignoreContentItemErrors))
+    {
+        /* read ContentItem (depending on ValueType) */
+        result = readContentItem(dataset);
+    }
     /* check for validity, after reading */
     if (result.bad() || !isValid())
     {
@@ -1113,6 +1123,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
+ *  Revision 1.51  2009-10-30 10:09:50  joergr
+ *  Added check on the presence of the Concept Name Code Sequence for the root
+ *  CONTAINER.
+ *
  *  Revision 1.50  2009-10-14 10:49:32  joergr
  *  Fixed minor issues in log output. Also updated copyright date (if required).
  *
