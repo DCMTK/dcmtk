@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 09:28:06 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2009-10-30 10:08:55 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
         else if (ConstraintChecker->isTemplateSupportRequired())
             DCMSR_WARN("Check for template constraints not yet supported");
         if (flags & RF_showCurrentlyProcessedItem)
-            DCMSR_WARN("Processing content item 1");
+            DCMSR_INFO("Processing content item 1");
         /* first try to read value type */
         OFString tmpString;
         if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, tmpString, "1", "1").good() ||
@@ -673,6 +673,9 @@ void DSRDocumentTree::resetReferenceTargetFlag()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
+ *  Revision 1.35  2009-10-30 10:08:55  joergr
+ *  Output processing details in verbose mode and not as a warning message.
+ *
  *  Revision 1.34  2009-10-14 09:28:06  joergr
  *  Slightly modified output of some log messages (avoid creation of temporary
  *  strings).
