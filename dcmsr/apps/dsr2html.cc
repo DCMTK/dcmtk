@@ -23,8 +23,8 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-14 10:51:56 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2009-10-30 10:08:34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,7 +278,10 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
 
         if (cmd.findOption("--processing-details"))
+        {
+            app.checkDependence("--processing-details", "verbose mode", dsr2htmlLogger.isEnabledFor(OFLogger::INFO_LOG_LEVEL));
             opt_readFlags |= DSRTypes::RF_showCurrentlyProcessedItem;
+        }
         if (cmd.findOption("--unknown-relationship"))
             opt_readFlags |= DSRTypes::RF_acceptUnknownRelationshipType;
         if (cmd.findOption("--ignore-constraints"))
@@ -423,6 +426,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
+ * Revision 1.35  2009-10-30 10:08:34  joergr
+ * Option --processing-details now requires verbose mode.
+ *
  * Revision 1.34  2009-10-14 10:51:56  joergr
  * Fixed minor issues in log output. Also updated copyright date (if required).
  *
