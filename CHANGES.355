@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.10.30 (riesmeier)
+
+- Added check on the presence of the Concept Name Code Sequence for the root
+  CONTAINER.
+  Affects: dcmsr/libsrc/dsrdoctn.cc
+
+- Output processing details in verbose mode and not as a warning message.
+  Affects: dcmsr/libsrc/dsrdoctr.cc
+
+- Option --processing-details now requires verbose mode.
+  Affects: dcmsr/apps/dsr2html.cc
+           dcmsr/apps/dsrdump.cc
+
 **** Changes from 2009.10.28 (riesmeier)
 
 - Fixed minor issues in log output.
