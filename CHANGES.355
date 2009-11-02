@@ -1,6 +1,22 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.02 (riesmeier)
+
+- Added missing oflog include directory.
+  Affects: dcmpstat/CMakeLists.txt
+
+- Added missing oflog related link libraries and directory.
+  Affects: dcmdata/apps/CMakeLists.txt
+           dcmimage/apps/CMakeLists.txt
+           dcmimgle/apps/CMakeLists.txt
+           dcmpstat/apps/CMakeLists.txt
+           dcmsr/apps/CMakeLists.txt
+           dcmsr/tests/CMakeLists.txt
+
+- Fixed private tags from Circle Cardiovascular Imaging cmr42 3.0.
+  Affects: dcmdata/data/private.dic
+
 **** Changes from 2009.10.30 (riesmeier)
 
 - Added check on the presence of the Concept Name Code Sequence for the root
