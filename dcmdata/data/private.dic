@@ -22,8 +22,8 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2009-09-18 16:10:02 $
-#  CVS/RCS Revision: $Revision: 1.3 $
+#  Update Date:      $Date: 2009-11-02 15:42:35 $
+#  CVS/RCS Revision: $Revision: 1.4 $
 #  Status:           $State: Exp $
 #
 #
@@ -143,9 +143,9 @@
 (0029,"CARDIO-D.R. 1.0",02)	DS	ConvolutionKernelCoefficients	1-n
 (0029,"CARDIO-D.R. 1.0",03)	DS	EdgeEnhancementGain	1
 
-(0025,"CMR42 CIRCLECVI",10)	LO	WorkspaceID	1
-(0025,"CMR42 CIRCLECVI",20)	LO	WorkspaceTimeString	1
-(0025,"CMR42 CIRCLECVI",30)	OB	WorkspaceStream	1
+(0025,"CMR42 CIRCLECVI",1010)	LO	WorkspaceID	1
+(0025,"CMR42 CIRCLECVI",1020)	LO	WorkspaceTimeString	1
+(0025,"CMR42 CIRCLECVI",1030)	OB	WorkspaceStream	1
 
 (0009,"DCMTK_ANONYMIZER",00)	SQ	AnonymizerUIDMap	1
 (0009,"DCMTK_ANONYMIZER",10)	UI	AnonymizerUIDKey	1
