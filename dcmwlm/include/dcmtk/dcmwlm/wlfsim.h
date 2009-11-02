@@ -1,6 +1,6 @@
 /*
 *
-*  Copyright (C) 1996-2006, OFFIS
+*  Copyright (C) 1996-2009, OFFIS
 *
 *  This software and supporting documentation were developed by
 *
@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: uli $
-*  Update Date:      $Date: 2009-09-30 08:40:34 $
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2009-11-02 15:50:25 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/dcmtk/dcmwlm/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.14 $
+*  CVS/RCS Revision: $Revision: 1.15 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #include "dcmtk/ofstd/oftypes.h"   /* for OFBool */
 
 template <class T> class OFOrderedSet;
-class WlmSuperiorSequenceInfoType;
+struct WlmSuperiorSequenceInfoType;
 class DcmDataset;
 class DcmTagKey;
 class OFConsole;
@@ -485,6 +485,10 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
+** Revision 1.15  2009-11-02 15:50:25  joergr
+** Changed forward declaration from "class" to "struct" in order to avoid
+** warning messages reported by VisualStudio 2008.
+**
 ** Revision 1.14  2009-09-30 08:40:34  uli
 ** Make dcmwlm's include headers self-sufficient by including all
 ** needed headers directly.

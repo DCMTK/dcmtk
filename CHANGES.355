@@ -17,6 +17,10 @@ Changes between releases are documented here.
 - Fixed private tags from Circle Cardiovascular Imaging cmr42 3.0.
   Affects: dcmdata/data/private.dic
 
+- Changed forward declaration from "class" to "struct" in order to avoid
+  warning messages reported by VisualStudio 2008.
+  Affects: dcmwlm/include/dcmtk/dcmwlm/wlfsim.h
+
 **** Changes from 2009.10.30 (riesmeier)
 
 - Added check on the presence of the Concept Name Code Sequence for the root
