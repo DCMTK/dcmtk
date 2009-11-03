@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.03 (riesmeier)
+
+- Switched to old behavior: Output input filename to COUT and not to the log
+  stream.
+  Affects: dcmsr/apps/dsrdump.cc
+
 **** Changes from 2009.11.02 (riesmeier)
 
 - Added missing oflog include directory.

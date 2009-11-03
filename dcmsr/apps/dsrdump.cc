@@ -22,8 +22,8 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-30 10:08:34 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2009-11-03 09:13:54 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,8 +277,9 @@ int main(int argc, char *argv[])
         cmd.getParam(i, current);
         if (opt_printFilename)
         {
-            OFLOG_WARN(dsrdumpLogger, OFString(79, '-'));
-            OFLOG_WARN(dsrdumpLogger, OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl);
+            if (i > 1)
+                COUT << OFString(79, '-') << OFendl;
+            COUT << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << OFendl << OFendl;
         }
         if (dumpFile(COUT, current, opt_readMode, opt_ixfer, opt_readFlags, opt_printFlags).bad())
             errorCount++;
@@ -294,6 +295,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
+ * Revision 1.33  2009-11-03 09:13:54  joergr
+ * Switched to old behavior: Output input filename to COUT and not to the log
+ * stream.
+ *
  * Revision 1.32  2009-10-30 10:08:34  joergr
  * Option --processing-details now requires verbose mode.
  *
