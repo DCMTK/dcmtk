@@ -21,10 +21,10 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-08-10 11:27:00 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -663,6 +663,9 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
+ * Revision 1.12  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.11  2009-08-10 11:27:00  meichel
  * Added working implementation of DcmRLECodecDecoder::decodeFrame().
  *

@@ -23,10 +23,10 @@
  *  Generate a builtin data dictionary which can be compiled into
  *  the dcmdata library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-15 14:30:26 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -358,6 +358,9 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
+** Revision 1.30  2009-11-04 09:58:11  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.29  2009-01-15 14:30:26  joergr
 ** Changed formatting of comment header.
 **

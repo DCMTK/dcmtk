@@ -45,9 +45,9 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-21 14:02:49 $
- *  CVS/RCS Revision: $Revision: 1.89 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.90 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,6 @@
 #include "dcmtk/ofstd/ofstd.h"         /* for class OFStandard */
 #include "dcmtk/ofstd/ofconapp.h"      /* for class OFConsoleApplication */
 #include "dcmtk/ofstd/ofcond.h"        /* for class OFCondition */
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
 #include "dcmtk/dcmimage/diregist.h"   /* include to support color images */
@@ -93,6 +92,8 @@
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
+static OFLogger dcmgpdirLogger = OFLog::getLogger("dcmtk.dcmdata." OFFIS_CONSOLE_APPLICATION);
+
 #define SHORTCOL 4
 #define LONGCOL 23
 
@@ -100,7 +101,6 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    int opt_debug = 0;
     OFBool opt_write = OFTrue;
     OFBool opt_append = OFFalse;
     OFBool opt_update = OFFalse;
@@ -129,8 +129,6 @@ int main(int argc, char *argv[])
     /* DICOMDIR interface (checks for JPEG/RLE availability) */
     DicomDirInterface ddir;
 
-    SetDebugLevel(( 0 ));
-
     /* set-up command line parameters and options */
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
@@ -142,10 +140,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                     "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--verbose",                  "-v",     "verbose mode, print processing details");
-     cmd.addOption("--arguments",                          "print expanded command line arguments");
-     cmd.addOption("--quiet",                    "-q",     "quiet mode, print no warnings and errors");
-     cmd.addOption("--debug",                    "-d",     "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("DICOMDIR identifiers:");
@@ -238,10 +233,6 @@ int main(int argc, char *argv[])
         if (cmd.getArgCount() == 0)
             app.printUsage();
 
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -265,18 +256,7 @@ int main(int argc, char *argv[])
         }
 
         /* general options */
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--verbose"))
-            ddir.enableVerboseMode();
-        if (cmd.findOption("--quiet"))
-        {
-            ddir.enableVerboseMode(OFFalse);
-            app.setQuietMode();
-        }
-        cmd.endOptionBlock();
-
-        if (cmd.findOption("--debug"))
-            opt_debug = 5;
+        OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
         if (cmd.findOption("--output-file"))
@@ -476,14 +456,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    /* set debug mode and stream for log messages */
-    SetDebugLevel((opt_debug));
-    if (!app.quietMode())
-    {
-        ddir.setLogStream(&ofConsole);
-        if (opt_debug)
-            app.printIdentifier();
-    }
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmgpdirLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -502,8 +476,8 @@ int main(int argc, char *argv[])
     OFString pathname;
     const char *param = NULL;
     const int count = cmd.getParamCount();
-    if (opt_recurse && ddir.verboseMode())
-        COUT << "determining input files ..." << OFendl;
+    if (opt_recurse)
+        OFLOG_INFO(dcmgpdirLogger, "determining input files ...");
     /* no parameters? */
     if (count == 0)
     {
@@ -574,7 +548,7 @@ int main(int argc, char *argv[])
             /* evaluate result of file checking/adding procedure */
             if (goodFiles == 0)
             {
-                app.printWarning("no good files: DICOMDIR not created", "error");
+                OFLOG_ERROR(dcmgpdirLogger, "no good files: DICOMDIR not created");
                 result = EC_IllegalCall;
             }
             else if (!badFiles.empty())
@@ -585,12 +559,12 @@ int main(int argc, char *argv[])
                 last = badFiles.end();
                 while (iter != last)
                 {
-                    oss << OFendl << OFString(strlen(OFFIS_CONSOLE_APPLICATION) + 2, ' ') << (*iter);
+                    oss << OFendl << "  " << (*iter);
                     ++iter;
                 }
                 oss << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                app.printWarning(tmpString);
+                OFLOG_WARN(dcmgpdirLogger, tmpString);
                 OFSTRINGSTREAM_FREESTR(tmpString)
             }
             /* write DICOMDIR file */
@@ -621,6 +595,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
+ * Revision 1.90  2009-11-04 09:58:06  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.89  2009-04-21 14:02:49  joergr
  * Fixed minor inconsistencies in manpage / syntax usage.
  *

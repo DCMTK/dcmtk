@@ -21,10 +21,10 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:46:16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -435,6 +435,9 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
+ * Revision 1.13  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.12  2008-05-29 10:46:16  meichel
  * Implemented new method DcmPixelData::getUncompressedFrame
  *   that permits frame-wise access to compressed and uncompressed

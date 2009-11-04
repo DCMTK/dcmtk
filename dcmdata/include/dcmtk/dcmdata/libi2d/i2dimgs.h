@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *           image files
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ public:
 
   /** Constructor
    */
-  I2DImgSource() : m_logStream(NULL), m_debug(OFFalse), m_imageFile() {}
+  I2DImgSource() : m_imageFile() {}
 
   /** Returns identifier for the image input format the plugin imports.
    *  @return A short identifier (e. g. "JPEG")
@@ -115,52 +115,12 @@ public:
    *  @return The filename of the image input file
    */
   OFString getImageFile() { return m_imageFile; };
-  
-  /** Sets the log stream
-   *  The log stream is used to report any warnings and error messages.
-   *  @param stream - [out] pointer to the log stream (might be NULL = no messages)
-   *  @return none
-   */
-  void setLogStream(OFConsole *stream)
-  {
-    m_logStream= stream;
-  }
-
-  /** Sets the debug mode
-   *  @param debugMode - [in] New status for debug mode
-   *  @return none
-   */
-  void setDebugMode(const OFBool& debugMode) { m_debug = debugMode; };
-
-  /** Prints a message to the given stream.
-   ** @param  stream - [out] output stream to which the message is printed
-   *  @param  message1 - [in] first part of message to be printed
-   *  @param  message2 - [in] second part of message to be printed
-   *  @return none
-   */
-  static void printMessage(OFConsole *stream,
-                           const OFString& message1,
-                           const OFString& message2 = "")
-  {
-    if (stream != NULL)
-    {
-        stream->lockCerr() << message1 << message2 << OFendl;
-        stream->unlockCerr();
-    }
-  }
 
   /** Virtual Destructor
    */
   virtual ~I2DImgSource() {}
 
 protected:
-
-  /// stream where warning/error message are sent to.
-  /// can be NULL (default, no output).
-  OFConsole *m_logStream;
-
-  /// debug mode status
-  OFBool m_debug;
 
   /// The input file
   OFString m_imageFile;
@@ -172,6 +132,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dimgs.h,v $
+ * Revision 1.7  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.6  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

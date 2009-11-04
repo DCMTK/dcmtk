@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,15 +32,14 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2djpgs.h"
+#include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 #include "dcmtk/dcmdata/dcerror.h"
-
 
 I2DJpegSource::I2DJpegSource() : m_jpegFileMap(), jpegFile(),
   m_disableProgrTs(OFFalse), m_disableExtSeqTs(OFFalse), m_insistOnJFIF(OFFalse),
   m_keepAPPn(OFFalse), m_lossyCompressed(OFTrue)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Plugin instantiated");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Plugin instantiated");
 }
 
 
@@ -51,8 +50,7 @@ OFString I2DJpegSource::inputFormat() const
 
 OFCondition I2DJpegSource::openFile(const OFString &filename)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Opening JPEG file: ", filename);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Opening JPEG file: " << filename);
   OFCondition cond;
   if (filename.length() == 0)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "No JPEG filename specified");
@@ -104,8 +102,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
                                          Uint32& length,
                                          E_TransferSyntax &ts)
 {
-  if (m_debug)
-   printMessage(m_logStream, "I2DJpegSource: Importing JPEG pixel data");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Importing JPEG pixel data");
   OFCondition cond = openFile(m_imageFile);
   // return error if file is not open
   if (cond.bad())
@@ -180,8 +177,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   {
     if (!m_insistOnJFIF)
     {
-      if (m_debug)
-        printMessage(m_logStream, "I2DJpegSource: Ignoring missing JFIF header");
+      DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Ignoring missing JFIF header");
     }
     else
     {
@@ -195,8 +191,7 @@ OFCondition I2DJpegSource::readPixelData(Uint16& rows,
   {
     if (!m_insistOnJFIF)
     {
-      if (m_debug)
-        printMessage(m_logStream, "I2DJpegSource: Ignoring errors while evaluating JFIF data");
+      DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Ignoring errors while evaluating JFIF data");
     }
     else
     {
@@ -265,8 +260,7 @@ OFCondition I2DJpegSource::getSOFImageParameters( const JPEGFileMapEntry& entry,
                                                   Uint16& samplesPerPixel,
                                                   Uint16& bitsPerSample)
 {
-  if (m_debug)
-   printMessage(m_logStream, "I2DJpegSource: Checking for JPEG SOF image parameters");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Checking for JPEG SOF image parameters");
   if ( (entry.marker < E_JPGMARKER_SOF0) || (entry.marker > E_JPGMARKER_SOF15) )
     return EC_IllegalCall;
   Uint16 length;
@@ -304,19 +298,11 @@ OFCondition I2DJpegSource::getSOFImageParameters( const JPEGFileMapEntry& entry,
   samplesPerPixel = num_components;
   bitsPerSample = data_precision;
 
-  if (m_debug)
-  {
-    char buf[100];
-    printMessage(m_logStream, "I2DJpegSource: JPEG SOF image parameters:");
-    sprintf(buf, "%u", image_width);
-    printMessage(m_logStream, "I2DJpegSource:   Image Width: ", buf);
-    sprintf(buf, "%u", image_height);
-    printMessage(m_logStream, "I2DJpegSource:   Image Height: ", buf);
-    sprintf(buf, "%u", num_components);
-    printMessage(m_logStream, "I2DJpegSource:   Number of Components: ", buf);
-    sprintf(buf, "%u", data_precision);
-    printMessage(m_logStream, "I2DJpegSource:   Data Precision: ", buf);
-  }
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: JPEG SOF image parameters:");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Image Width: " << image_width);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Image Height: " << image_height);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Number of Components: " << num_components);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Data Precision: " << data_precision);
 
   if (length != OFstatic_cast(unsigned int, 8 + num_components * 3))
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "Bogus SOF marker length");
@@ -332,8 +318,7 @@ OFCondition I2DJpegSource::getJFIFImageParameters( const JPEGFileMapEntry& entry
                                                    Uint16& pixelAspectV,
                                                    Uint16& unit)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Examing JFIF information");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examing JFIF information");
   if (entry.marker != E_JPGMARKER_APP0)
     return EC_IllegalCall;
   Uint16 jv, pah, pav, unt;
@@ -388,19 +373,11 @@ OFCondition I2DJpegSource::getJFIFImageParameters( const JPEGFileMapEntry& entry
   pixelAspectV = pav;
   unit = unt;
 
-  if (m_debug)
-  {
-    char buf[100];
-    printMessage(m_logStream, "I2DJpegSource: JPEG JFIF image parameters:", buf);
-    sprintf(buf, "%u", jfifVersion);
-    printMessage(m_logStream, "I2DJpegSource:   JFIF version: ", buf);
-    sprintf(buf, "%u", pixelAspectH);
-    printMessage(m_logStream, "I2DJpegSource:   Horizontal Pixel Aspect Ratio ", buf);
-    sprintf(buf, "%u", pixelAspectV);
-    printMessage(m_logStream, "I2DJpegSource:   Vertical Pixel Aspect Ratio: ", buf);
-    sprintf(buf, "%u", unit);
-    printMessage(m_logStream, "I2DJpegSource:   Units: ", buf);
-  }
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: JPEG JFIF image parameters:");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   JFIF version: " << jfifVersion);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Horizontal Pixel Aspect Ratio " << pixelAspectH);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Vertical Pixel Aspect Ratio: " << pixelAspectV);
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Units: " << unit);
 
   return EC_Normal;
 }
@@ -409,8 +386,7 @@ OFCondition I2DJpegSource::getJFIFImageParameters( const JPEGFileMapEntry& entry
 OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
                                           Uint32& pixLength)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Copying JPEG data from JPEG file");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Copying JPEG data from JPEG file");
   /* Calculate length of total stream as found in the file
    * Therefore, look at byte positions from SOI and EOI marker */
 
@@ -429,7 +405,7 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
   if ( ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, 4294967294UL) ) ||
        ( OFstatic_cast(unsigned long, filesize) > OFstatic_cast(unsigned long, OFstatic_cast(size_t, -1) ) ) )
   {
-    printMessage(m_logStream, "I2DJpegSource: JPEG file length longer than 2^32 bytes (or larger than size_t capacity), aborting");
+    DCMDATA_LIBI2D_ERROR("I2DJpegSource: JPEG file length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
   }
 
@@ -484,8 +460,7 @@ OFCondition I2DJpegSource::copyJPEGStream(char*& pixelData,
 OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
                                                 Uint32& pixLength)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Extracting JPEG data from JPEG file");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Extracting JPEG data from JPEG file");
   OFCondition cond;
   int marker = 0;
   Uint16 length;
@@ -550,7 +525,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
   if ( ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, 4294967294UL) ) ||
        ( OFstatic_cast(unsigned long, rawStreamSize) > OFstatic_cast(unsigned long, OFstatic_cast(size_t, -1) ) ) )
   {
-    printMessage(m_logStream, "I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
+    DCMDATA_LIBI2D_ERROR("I2DJpegSource: Raw JPEG stream length longer than 2^32 bytes (or larger than size_t capacity), aborting");
     return EC_MemoryExhausted;
   }
   pixelData = new char[OFstatic_cast(size_t, rawStreamSize)];
@@ -601,8 +576,7 @@ OFCondition I2DJpegSource::extractRawJPEGStream(char*& pixelData,
 
 OFCondition I2DJpegSource::createJPEGFileMap()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Examing JPEG file and creating map of JPEG markers");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Examing JPEG file and creating map of JPEG markers");
   E_JPGMARKER marker;
   JPEGFileMapEntry *entry = NULL;
   OFBool lastWasSOSMarker = OFFalse;
@@ -650,8 +624,7 @@ OFCondition I2DJpegSource::createJPEGFileMap()
         skipVariable();
     }
   } /* end loop */
-  if (m_debug)
-    debugDumpJPEGFileMap();
+  debugDumpJPEGFileMap();
   return cond;
 }
 
@@ -786,8 +759,7 @@ OFCondition I2DJpegSource::nextMarker(const OFBool& lastWasSOSMarker,
   }
 
   if (discarded_bytes != 0) {
-
-    printMessage(m_logStream, "Warning: garbage data found in JPEG file");
+    DCMDATA_LIBI2D_WARN("garbage data found in JPEG file");
   }
   result = (E_JPGMARKER)c;
   return EC_Normal;
@@ -843,8 +815,7 @@ OFCondition I2DJpegSource::skipVariable()
 
 OFCondition I2DJpegSource::isJPEGEncodingSupported(const E_JPGMARKER& jpegEncoding) const
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Checking whether JPEG encoding is supported: ", jpegMarkerToString(jpegEncoding));
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Checking whether JPEG encoding is supported: " << jpegMarkerToString(jpegEncoding));
   switch (jpegEncoding)
   {
     case E_JPGMARKER_SOF0: // Baseline
@@ -888,22 +859,20 @@ E_TransferSyntax I2DJpegSource::associatedTS(const E_JPGMARKER& jpegEncoding)
 
 void I2DJpegSource::debugDumpJPEGFileMap() const
 {
-  printMessage(m_logStream,"I2DJpegSource: Dumping JPEG marker file map: ");
+  if (!DCM_dcmdataLibi2dGetLogger().isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+    return;
+
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Dumping JPEG marker file map: ");
   if (m_keepAPPn)
-    printMessage(m_logStream, "I2DJpegSource: Keep APPn option enabled, any markers after SOFn marker will not be dumped");
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Keep APPn option enabled, any markers after SOFn marker will not be dumped");
   OFListConstIterator(JPEGFileMapEntry*) it= m_jpegFileMap.begin();
   while (it != m_jpegFileMap.end())
   {
-    if (m_logStream)
-    {
-      m_logStream->lockCerr()
-		  << "I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8)
-		  << STD_NAMESPACE setfill('0')
-		  /* need to cast bytePos to unsigned long to keep VC6 happy */
-		  << OFstatic_cast(unsigned long, (*it)->bytePos)
-		  <<" | Marker: " << jpegMarkerToString( (*it)->marker) << OFendl << STD_NAMESPACE dec;
-      m_logStream->unlockCerr();
-    }
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8)
+                       << STD_NAMESPACE setfill('0')
+                       /* need to cast bytePos to unsigned long to keep VC6 happy */
+                       << OFstatic_cast(unsigned long, (*it)->bytePos)
+                       <<" | Marker: " << jpegMarkerToString( (*it)->marker));
     it++;
   }
 }
@@ -929,8 +898,7 @@ void I2DJpegSource::closeFile()
 // close file and free dynamically allocated memory
 I2DJpegSource::~I2DJpegSource()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DJpegSource: Closing JPEG file and cleaning up memory");
+  DCMDATA_LIBI2D_DEBUG("I2DJpegSource: Closing JPEG file and cleaning up memory");
   closeFile();
   clearMap();
 }
@@ -939,6 +907,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.12  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.11  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

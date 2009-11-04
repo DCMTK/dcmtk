@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-24 12:20:41 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:05 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -48,6 +47,8 @@
 #define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM file and data set to XML"
 
 #define DOCUMENT_TYPE_DEFINITION_FILE "dcm2xml.dtd"
+
+static OFLogger dcm2xmlLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -62,8 +63,7 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                              const char *dtdFilename,
                              const char *defaultCharset,
                              const size_t writeFlags,
-                             const OFBool checkAllStrings,
-                             const OFBool quietMode)
+                             const OFBool checkAllStrings)
 {
     OFCondition result = EC_IllegalParameter;
     if ((ifname != NULL) && (dfile != NULL))
@@ -98,8 +98,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 encString = "ISO-8859-7";
             else if (csetString == "ISO_IR 138")
                 encString = "ISO-8859-8";
-            else if (!csetString.empty() && !quietMode)
-                CERR << "Warning: (0008,0005) Specific Character Set '" << csetString << "' not supported" << OFendl;
+            else if (!csetString.empty())
+                OFLOG_WARN(dcm2xmlLogger, "(0008,0005) Specific Character Set '" << csetString << "' not supported");
         } else {
             /* SpecificCharacterSet is not present in the dataset */
             if (dset->containsExtendedCharacters(checkAllStrings))
@@ -107,11 +107,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 if (defaultCharset == NULL)
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
-                    if (!quietMode)
-                    {
-                        CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
-                             << "but extended characters used in file: " << ifname << OFendl;
-                    }
+                    OFLOG_WARN(dcm2xmlLogger,  OFFIS_CONSOLE_APPLICATION << ": (0008,0005) Specific Character Set absent "
+                             << "but extended characters used in file: " << ifname);
                     return EC_IllegalCall;
                 } else {
                     OFString charset(defaultCharset);
@@ -196,9 +193,9 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                     while (dtdFile.get(c))
                         out << c;
                 }
-                else if (!quietMode)
+                else
                 {
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: cannot open DTD file: " << dtdFilename << OFendl;
+                    OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": cannot open DTD file: " << dtdFilename);
                 }
                 out << "]";
             } else { /* reference DTD */
@@ -222,8 +219,6 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
 
 int main(int argc, char *argv[])
 {
-    int opt_debugMode = 0;
-    OFBool opt_quietMode = OFFalse;
     size_t opt_writeFlags = 0;
     OFBool opt_loadIntoMemory = OFFalse;
     OFBool opt_checkAllStrings = OFFalse;
@@ -232,10 +227,7 @@ int main(int argc, char *argv[])
     E_TransferSyntax opt_ixfer = EXS_Unknown;
     OFCmdUnsignedInt opt_maxReadLength = 4096; // default is 4 KB
     const char *opt_dtdFilename = DEFAULT_SUPPORT_DATA_DIR DOCUMENT_TYPE_DEFINITION_FILE;
-    OFOStringStream errorStream;
     OFString optStr;
-
-    SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
@@ -248,9 +240,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                      "print expanded command line arguments");
-      cmd.addOption("--quiet",                "-q",     "quiet mode, print no warnings and errors");
-      cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -296,10 +286,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -317,15 +303,7 @@ int main(int argc, char *argv[])
         }
 
         /* general options */
-        if (cmd.findOption("--quiet"))
-        {
-          opt_quietMode = OFTrue;
-          app.setQuietMode();
-          /* redirect error output to a dummy stream */
-          ofConsole.setCerr(&errorStream);
-        }
-        if (cmd.findOption("--debug"))
-            opt_debugMode = 5;
+        OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
         cmd.beginOptionBlock();
@@ -428,26 +406,22 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcm2xmlLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded() && !opt_quietMode)
+    if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcm2xmlLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure document type definition file exists */
     if ((opt_writeFlags & DCMTypes::XF_embedDocumentType) && !OFStandard::fileExists(opt_dtdFilename))
     {
-        if (!opt_quietMode)
-        {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": warning: DTD file \"" << opt_dtdFilename
-                 << "\" does not exist ... adding reference instead" << OFendl;
-        }
+        OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": DTD file \"" << opt_dtdFilename
+                 << "\" does not exist ... adding reference instead");
         opt_writeFlags &= ~DCMTypes::XF_embedDocumentType;
     }
 
@@ -473,20 +447,20 @@ int main(int argc, char *argv[])
                 {
                     /* write content in XML format to file */
                     if (writeFile(stream, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
-                                  opt_defaultCharset, opt_writeFlags, opt_checkAllStrings, opt_quietMode).bad())
+                                  opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
                         result = 2;
                 } else
                     result = 1;
             } else {
                 /* write content in XML format to standard output */
                 if (writeFile(COUT, ifname, &dfile, opt_readMode, opt_loadIntoMemory, opt_dtdFilename,
-                              opt_defaultCharset, opt_writeFlags, opt_checkAllStrings, opt_quietMode).bad())
+                              opt_defaultCharset, opt_writeFlags, opt_checkAllStrings).bad())
                     result = 3;
             }
-        } else if (!opt_quietMode)
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << status.text() << ") reading file: "<< ifname << OFendl;
-    } else if (!opt_quietMode)
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
+        } else
+            OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": (" << status.text() << ") reading file: "<< ifname);
+    } else
+        OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
 
     return result;
 }
@@ -495,6 +469,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.37  2009-11-04 09:58:05  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.36  2009-04-24 12:20:41  joergr
  * Fixed minor inconsistencies regarding layout/formatting in syntax usage.
  *

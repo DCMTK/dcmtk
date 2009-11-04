@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: singleton class that registers RLE decoder.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:33 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrledrg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,11 @@ DcmRLECodecDecoder *DcmRLEDecoderRegistration::codec          = NULL;
 
 void DcmRLEDecoderRegistration::registerCodecs(
     OFBool pCreateSOPInstanceUID,
-    OFBool pVerbose,
     OFBool pReverseDecompressionByteOrder)
 {
   if (! registered)
   {
     cp = new DcmRLECodecParameter(
-      pVerbose,
       pCreateSOPInstanceUID,
       0, OFTrue, OFFalse,
       pReverseDecompressionByteOrder);
@@ -85,6 +83,9 @@ void DcmRLEDecoderRegistration::cleanup()
 /*
  * CVS/RCS Log
  * $Log: dcrledrg.cc,v $
+ * Revision 1.4  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2005-12-08 15:41:33  meichel
  * Changed include path schema for all DCMTK header files
  *

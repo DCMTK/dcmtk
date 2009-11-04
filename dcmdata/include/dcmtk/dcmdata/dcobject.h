@@ -24,8 +24,8 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-10-13 14:26:09 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -694,6 +694,9 @@ static inline STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream &stream, D
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
+ * Revision 1.65  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.64  2009-10-13 14:26:09  uli
  * Added the DcmObject::PrintHelper helper class. This class can be used to
  * print DcmObject instances with oflog's logging macros.

@@ -21,10 +21,10 @@
  *
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:50:56 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +102,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
+** Revision 1.21  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.20  2006-08-15 15:50:56  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.

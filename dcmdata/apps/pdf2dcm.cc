@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-10-12 09:35:43 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,13 +60,14 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofdatime.h"
 #include "dcmtk/dcmdata/dccodec.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "pdf2dcm"
+
+static OFLogger pdf2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -147,8 +148,7 @@ OFCondition createHeader(
 
 OFCondition insertPDFFile(
   DcmItem *dataset,
-  const char *filename,
-  OFBool opt_verbose)
+  const char *filename)
 {
     size_t fileSize = 0;
     struct stat fileStat;
@@ -157,23 +157,20 @@ OFCondition insertPDFFile(
     if (0 == stat(filename, &fileStat)) fileSize = OFstatic_cast(size_t, fileStat.st_size);
     else
     {
-      ofConsole.lockCerr() << "file " << filename << " not found" << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " not found");
       return EC_IllegalCall;
     }
 
     if (fileSize == 0)
     {
-      ofConsole.lockCerr() << "file " << filename << " is empty" << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " is empty");
       return EC_IllegalCall;
     }
 
     FILE *pdffile = fopen(filename, "rb");
     if (pdffile == NULL)
     {
-      ofConsole.lockCerr() << "unable to read file " << filename << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "unable to read file " << filename);
       return EC_IllegalCall;
     }
 
@@ -181,8 +178,7 @@ OFCondition insertPDFFile(
     if (fileSize < buflen) buflen = fileSize;
     if (buflen != fread(buf, 1, buflen, pdffile))
     {
-      ofConsole.lockCerr() << "read error in file " << filename << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "read error in file " << filename);
       fclose(pdffile);
       return EC_IllegalCall;
     }
@@ -190,8 +186,7 @@ OFCondition insertPDFFile(
     // check magic word for PDF file
     if (0 != strncmp("%PDF-", buf, 5))
     {
-      ofConsole.lockCerr() << "file " << filename << " is not a PDF file." << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " is not a PDF file.");
       fclose(pdffile);
       return EC_IllegalCall;
     }
@@ -211,22 +206,16 @@ OFCondition insertPDFFile(
 
     if (! found)
     {
-      ofConsole.lockCerr() << "file " << filename << ": unable to decode PDF version number." << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": unable to decode PDF version number.");
       fclose(pdffile);
       return EC_IllegalCall;
     }
 
-    if (opt_verbose)
-    {
-      ofConsole.lockCout() << "file " << filename << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB" << OFendl;
-      ofConsole.unlockCout();
-    }
+    OFLOG_INFO(pdf2dcmLogger, "file " << filename << ": PDF " << version << ", " << (fileSize + 1023) / 1024 << "kB");
 
     if (0 != fseek(pdffile, 0, SEEK_SET))
     {
-      ofConsole.lockCerr() << "file " << filename << ": seek error." << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": seek error.");
       fclose(pdffile);
       return EC_IllegalCall;
     }
@@ -247,8 +236,7 @@ OFCondition insertPDFFile(
         // read PDF content
         if (fileSize != fread(bytes, 1, fileSize, pdffile))
         {
-          ofConsole.lockCerr() << "read error in file " << filename << OFendl;
-          ofConsole.unlockCerr();
+          OFLOG_ERROR(pdf2dcmLogger, "read error in file " << filename);
           result = EC_IllegalCall;
         }
       }
@@ -282,8 +270,7 @@ void createIdentifiers(
     OFCondition cond = dfile.loadFile(opt_seriesFile, EXS_Unknown, EGL_noChange);
     if (cond.bad())
     {
-      ofConsole.lockCerr() << "warning: " << cond.text() << ": reading file: "<< opt_seriesFile << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_WARN(pdf2dcmLogger, cond.text() << ": reading file: "<< opt_seriesFile);
     }
     else
     {
@@ -339,13 +326,9 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  SetDebugLevel(( 0 ));
-
   const char *opt_ifname = NULL;
   const char *opt_ofname = NULL;
 
-  int opt_debugMode = 0;
-  OFBool opt_verbose = OFFalse;
   E_TransferSyntax opt_oxfer = EXS_LittleEndianExplicit;
   E_GrpLenEncoding opt_oglenc = EGL_withoutGL;
   E_EncodingType opt_oenctype = EET_ExplicitLength;
@@ -380,9 +363,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                      "print expanded command line arguments");
-   cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
+   OFLog::addOptions(cmd);
 
    cmd.addGroup("DICOM document options:");
     cmd.addSubGroup("burned-in annotation:");
@@ -421,10 +402,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-          app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -448,8 +425,7 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      OFLog::configureFromCommandLine(cmd, app);
 
       dcmEnableUnknownVRGeneration.set(OFTrue);
       dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
@@ -538,24 +514,19 @@ int main(int argc, char *argv[])
       }
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(pdf2dcmLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-    {
-        ofConsole.lockCerr() << "Warning: no data dictionary loaded, "
+      OFLOG_WARN(pdf2dcmLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
-        ofConsole.unlockCerr();
-    }
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
 
     // read raw file
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        ofConsole.lockCerr() << "invalid filename: <empty string>" << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_FATAL(pdf2dcmLogger, "invalid filename: <empty string>");
         return 1;
     }
 
@@ -576,20 +547,15 @@ int main(int argc, char *argv[])
     createIdentifiers(opt_readSeriesInfo, opt_seriesFile, studyUID, seriesUID, patientsName, patientID, patientsBirthDate, patientsSex, incrementedInstance);
     if (opt_increment) opt_instance = incrementedInstance;
 
-    if (opt_verbose)
-    {
-      ofConsole.lockCout() << "creating encapsulated PDF object" << OFendl;
-      ofConsole.unlockCout();
-    }
+    OFLOG_INFO(pdf2dcmLogger, "creating encapsulated PDF object");
 
     DcmFileFormat fileformat;
 
-    OFCondition result = insertPDFFile(fileformat.getDataset(), opt_ifname, opt_verbose);
+    OFCondition result = insertPDFFile(fileformat.getDataset(), opt_ifname);
     if (result.bad())
     {
-         ofConsole.lockCerr() << "unable to create PDF DICOM encapsulation" << OFendl;
-         ofConsole.unlockCerr();
-    	 return 10;
+        OFLOG_ERROR(pdf2dcmLogger, "unable to create PDF DICOM encapsulation");
+        return 10;
     }
     if (result.bad()) return 10;
 
@@ -601,66 +567,42 @@ int main(int argc, char *argv[])
 
     if (result.bad())
     {
-         ofConsole.lockCerr() << "unable to create DICOM header" << OFendl
-             << "Error: " << result.text() << OFendl;
-         ofConsole.unlockCerr();
-    	 return 10;
+        OFLOG_ERROR(pdf2dcmLogger, "unable to create DICOM header"
+            << "Error: " << result.text());
+        return 10;
     }
 
-    if (opt_verbose)
-    {
-      ofConsole.lockCout() << "writing encapsulated PDF object as file " << opt_ofname << OFendl;
-      ofConsole.unlockCout();
-    }
+    OFLOG_INFO(pdf2dcmLogger, "writing encapsulated PDF object as file " << opt_ofname);
 
     OFCondition error = EC_Normal;
 
-    if (opt_verbose)
-    {
-      ofConsole.lockCout() << "Check if new output transfer syntax is possible" << OFendl;
-      ofConsole.unlockCout();
-    }
+    OFLOG_INFO(pdf2dcmLogger, "Check if new output transfer syntax is possible");
 
     DcmXfer opt_oxferSyn(opt_oxfer);
 
     fileformat.getDataset()->chooseRepresentation(opt_oxfer, NULL);
     if (fileformat.getDataset()->canWriteXfer(opt_oxfer))
     {
-        if (opt_verbose)
-        {
-            ofConsole.lockCout() << "Output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written" << OFendl;
-            ofConsole.unlockCout();
-        }
+        OFLOG_INFO(pdf2dcmLogger, "Output transfer syntax " << opt_oxferSyn.getXferName()
+                << " can be written");
     } else {
-        ofConsole.lockCerr() << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-             << " possible!" << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_ERROR(pdf2dcmLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
+                << " possible!");
         return 1;
     }
 
-    if (opt_verbose)
-    {
-      ofConsole.lockCout() << "write converted DICOM file with metaheader" << OFendl;
-      ofConsole.unlockCout();
-    }
+    OFLOG_INFO(pdf2dcmLogger, "write converted DICOM file with metaheader");
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
               opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
 
     if (error.bad())
     {
-        ofConsole.lockCerr() << "Error: " << error.text()
-             << ": writing file: " << opt_ofname << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_ERROR(pdf2dcmLogger, error.text() << ": writing file: " << opt_ofname);
         return 1;
     }
 
-    if (opt_verbose)
-    {
-        ofConsole.lockCout() << "conversion successful" << OFendl;
-        ofConsole.unlockCout();
-    }
+    OFLOG_INFO(pdf2dcmLogger, "conversion successful");
 
     return 0;
 }
@@ -669,6 +611,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.15  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.14  2009-10-12 09:35:43  joergr
 ** Changed prefix of UIDs created for series and studies (now using constants
 ** SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used

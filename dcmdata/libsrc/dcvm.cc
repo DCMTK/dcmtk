@@ -21,10 +21,10 @@
  *
  *  Purpose: functions to derive VM from string
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:43 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,9 @@ char * getFirstValueFromString(const char * & s)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvm.cc,v $
+** Revision 1.9  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.8  2005-12-08 15:41:43  meichel
 ** Changed include path schema for all DCMTK header files
 **

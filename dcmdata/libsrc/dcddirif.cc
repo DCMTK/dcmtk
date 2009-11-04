@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-26 07:46:22 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -904,11 +904,9 @@ static OFString &alternativeStudyTime(DcmItem *dataset,
 
 // constructor
 DicomDirInterface::DicomDirInterface()
-  : LogStream(NULL),
-    DicomDir(NULL),
+  : DicomDir(NULL),
     ImagePlugin(NULL),
     ApplicationProfile(AP_Default),
-    VerboseMode(OFFalse),
     BackupMode(OFTrue),
     AbortMode(OFFalse),
     MapFilenamesMode(OFFalse),
@@ -983,13 +981,12 @@ void DicomDirInterface::createDicomDirBackup(const char *filename)
         BackupFilename = OFString(filename) + FNAME_BACKUP_EXTENSION;
         /* delete old backup file (if any) */
         deleteDicomDirBackup();
-        if (VerboseMode)
-            printMessage("creating DICOMDIR backup: ", BackupFilename.c_str());
+        DCMDATA_INFO("creating DICOMDIR backup: " << BackupFilename);
         /* create backup file */
         if (copyFile(filename, BackupFilename.c_str()))
             BackupCreated = OFTrue;
         else
-            printErrorMessage("cannot create backup of: ", filename);
+            DCMDATA_ERROR("cannot create backup of: " << filename);
     }
 }
 
@@ -1000,13 +997,10 @@ void DicomDirInterface::deleteDicomDirBackup()
     /* if a backup of the DICOMDIR exists */
     if (OFStandard::fileExists(BackupFilename))
     {
-        if (VerboseMode)
-        {
-            if (BackupCreated)
-                printMessage("deleting DICOMDIR backup: ", BackupFilename.c_str());
-            else
-                printMessage("deleting old DICOMDIR backup: ", BackupFilename.c_str());
-        }
+        if (BackupCreated)
+            DCMDATA_INFO("deleting DICOMDIR backup: " << BackupFilename);
+        else
+            DCMDATA_INFO("deleting old DICOMDIR backup: " << BackupFilename);
         /* delete the backup file */
         unlink(BackupFilename.c_str());
     }
@@ -1039,16 +1033,8 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
         result = selectApplicationProfile(profile);
         if (result.good())
         {
-            if (VerboseMode)
-            {
-                /* create message */
-                OFOStringStream oss;
-                oss << "creating DICOMDIR file using " << getProfileName(ApplicationProfile)
-                    << " profile: " << filename << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                printMessage(tmpString);
-                OFSTRINGSTREAM_FREESTR(tmpString)
-            }
+            DCMDATA_INFO("creating DICOMDIR file using " << getProfileName(ApplicationProfile)
+                      << " profile: " << filename);
             /* finally, create a new DICOMDIR object */
             DicomDir = new DcmDicomDir(filename, filesetID);
             if (DicomDir != NULL)
@@ -1081,16 +1067,8 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
             result = selectApplicationProfile(profile);
             if (result.good())
             {
-                if (VerboseMode)
-                {
-                    /* create message */
-                    OFOStringStream oss;
-                    oss << "appending to DICOMDIR file using " << getProfileName(ApplicationProfile)
-                        << " profile: " << filename << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    printMessage(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
-                }
+                DCMDATA_INFO("appending to DICOMDIR file using " << getProfileName(ApplicationProfile)
+                          << " profile: " << filename);
                 /* finally, create a DICOMDIR object based on the existing file */
                 DicomDir = new DcmDicomDir(filename);
                 if (DicomDir != NULL)
@@ -1120,7 +1098,7 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
             /* report an error */
-            printFileErrorMessage(result, "cannot append to", filename);
+            DCMDATA_ERROR(result.text() << ": cannot append to file: " << filename);
         }
     }
     return result;
@@ -1147,16 +1125,8 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
             result = selectApplicationProfile(profile);
             if (result.good())
             {
-                if (VerboseMode)
-                {
-                    /* create message */
-                    OFOStringStream oss;
-                    oss << "updating DICOMDIR file using " << getProfileName(ApplicationProfile)
-                        << " profile: " << filename << OFStringStream_ends;
-                    OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                    printMessage(tmpString);
-                    OFSTRINGSTREAM_FREESTR(tmpString)
-                }
+                DCMDATA_INFO("updating DICOMDIR file using " << getProfileName(ApplicationProfile)
+                          << " profile: " << filename);
                 /* finally, create a DICOMDIR object based on the existing file */
                 DicomDir = new DcmDicomDir(filename);
                 if (DicomDir != NULL)
@@ -1186,7 +1156,7 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
             /*  error code 18 is reserved for file read error messages (see dcerror.cc) */
             result = makeOFCondition(OFM_dcmdata, 18, OF_error, text);
             /* report an error */
-            printFileErrorMessage(result, "cannot update", filename);
+            DCMDATA_ERROR(result.text() << ": cannot update file: " << filename);
         }
     }
     return result;
@@ -1201,8 +1171,7 @@ OFCondition DicomDirInterface::writeDicomDir(const E_EncodingType encodingType,
     /* check whether DICOMDIR object is valid */
     if (isDicomDirValid())
     {
-        if (VerboseMode)
-            printMessage("writing file: ", DicomDir->getDirFileName());
+        DCMDATA_INFO("writing file: " << DicomDir->getDirFileName());
         /* write DICOMDIR as Little Endian Explicit as required by the standard */
         result = DicomDir->write(DICOMDIR_DEFAULT_TRANSFERSYNTAX, encodingType, groupLength);
         /* delete backup copy in case the new file could be written without any errors */
@@ -1210,7 +1179,7 @@ OFCondition DicomDirInterface::writeDicomDir(const E_EncodingType encodingType,
             deleteDicomDirBackup();
         else {
             /* report an error */
-            printFileErrorMessage(result, "writing", DicomDir->getDirFileName());
+            DCMDATA_ERROR(result.text() << ": writing file: " << DicomDir->getDirFileName());
         }
     }
     return result;
@@ -1227,7 +1196,7 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
     {
         if (!allowEmpty)
         {
-            printErrorMessage("<empty string> not allowed as filename");
+            DCMDATA_ERROR("<empty string> not allowed as filename");
             result = OFFalse;
         }
     } else {
@@ -1236,37 +1205,23 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
         if ((filename[0] == PATH_SEPARATOR) /* absolute path? */ ||
             locateInvalidFilenameChars(filename, invalidChar, MapFilenamesMode))
         {
-            /* create error message */
-            OFOStringStream oss;
-            oss << "invalid character(s) in filename: " << filename << OFendl;
-            oss << OFString(7 /*Error: */ + 34 /*message*/ + invalidChar, ' ') << "^" << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printErrorMessage(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMDATA_ERROR("invalid character(s) in filename: " << filename << OFendl
+                    << OFString(34 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
         /* ensure that the maximum number of components is not being exceeded */
         if (componentCount(filename) > MAX_FNAME_COMPONENTS)
         {
-            /* create error message */
-            OFOStringStream oss;
-            oss << "too many path components (max " << MAX_FNAME_COMPONENTS << ") in filename: "
-                << filename << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printErrorMessage(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMDATA_ERROR("too many path components (max " << MAX_FNAME_COMPONENTS
+                    << ") in filename: " << filename);
             result = OFFalse;
         }
         /* ensure that each component is not too large */
         if (isComponentTooLarge(filename, MAX_FNAME_COMPONENT_SIZE, MapFilenamesMode))
         {
             /* create error message */
-            OFOStringStream oss;
-            oss << "component too large (max " << MAX_FNAME_COMPONENT_SIZE << " characters) in filename: "
-                << filename << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printErrorMessage(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMDATA_ERROR("component too large (max " << MAX_FNAME_COMPONENT_SIZE
+                    << " characters) in filename: " << filename);
             result = OFFalse;
         }
     }
@@ -1295,7 +1250,7 @@ OFBool DicomDirInterface::isCharsetValid(const char *charset)
                  (strcmp(charset, "ISO_IR 13")  == 0) ||
                  (strcmp(charset, "ISO_IR 192") == 0);
         if (!result)
-            printErrorMessage("unknown character set for fileset descriptor: ", charset);
+            DCMDATA_ERROR("unknown character set for fileset descriptor: " << charset);
     }
     return result;
 }
@@ -1313,7 +1268,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
         OFString mediaSOPClassUID;
         if (metainfo->findAndGetOFStringArray(DCM_MediaStorageSOPClassUID, mediaSOPClassUID).bad())
         {
-            printErrorMessage("MediaStorageSOPClassUID missing in metainfo-header: ", filename);
+            DCMDATA_ERROR("MediaStorageSOPClassUID missing in metainfo-header: " << filename);
             result = EC_TagNotFound;
         } else {
             /* check if the SOP Class is a known storage SOP class (an image, overlay, curve, etc.) */
@@ -1500,13 +1455,8 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 OFString sopClassName = dcmFindNameOfUID(mediaSOPClassUID.c_str());
                 if (sopClassName.empty())
                     sopClassName = mediaSOPClassUID;
-                /* create error message */
-                OFOStringStream oss;
-                oss << "invalid SOP class (" << sopClassName << ") for " << getProfileName(ApplicationProfile)
-                    << " profile: " << filename << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                printErrorMessage(tmpString);
-                OFSTRINGSTREAM_FREESTR(tmpString)
+                DCMDATA_ERROR("invalid SOP class (" << sopClassName << ") for " << getProfileName(ApplicationProfile)
+                           << " profile: " << filename);
                 result = EC_ApplicationProfileViolated;
             }
             if (result.good())
@@ -1515,7 +1465,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 OFString transferSyntax;
                 if (metainfo->findAndGetOFStringArray(DCM_TransferSyntaxUID, transferSyntax).bad())
                 {
-                    printErrorMessage("TransferSyntaxUID missing in metainfo-header: ", filename);
+                    DCMDATA_ERROR("TransferSyntaxUID missing in metainfo-header: " << filename);
                     result = EC_TagNotFound;
                 }
                 /* is transfer syntax supported */
@@ -1526,7 +1476,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     {
                         if (!RLESupport && IconImageMode)
                         {
-                            printErrorMessage("RLE compression not supported: ", filename);
+                            DCMDATA_ERROR("RLE compression not supported: "  << filename);
                             result = EC_CannotChangeRepresentation;
                         }
                     }
@@ -1536,7 +1486,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     {
                         if (!JPEGSupport && IconImageMode)
                         {
-                            printErrorMessage("JPEG compression not supported: ", filename);
+                            DCMDATA_ERROR("JPEG compression not supported: " << filename);
                             result = EC_CannotChangeRepresentation;
                         }
                     }
@@ -1546,7 +1496,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     {
                         if (!JP2KSupport && IconImageMode)
                         {
-                            printErrorMessage("JPEG 2000 compression not supported: ", filename);
+                            DCMDATA_ERROR("JPEG 2000 compression not supported: " << filename);
                             result = EC_CannotChangeRepresentation;
                         }
                     }
@@ -1584,10 +1534,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
-                                    printErrorMessage(tmpString);
+                                    DCMDATA_ERROR(tmpString);
                                     result = EC_ApplicationProfileViolated;
                                 } else
-                                    printWarningMessage(tmpString);
+                                    DCMDATA_WARN(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
                             }
                             break;
@@ -1610,10 +1560,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                     OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                     if (TransferSyntaxCheck)
                                     {
-                                        printErrorMessage(tmpString);
+                                        DCMDATA_ERROR(tmpString);
                                         result = EC_ApplicationProfileViolated;
                                     } else
-                                        printWarningMessage(tmpString);
+                                        DCMDATA_WARN(tmpString);
                                     OFSTRINGSTREAM_FREESTR(tmpString)
                                 }
                             }
@@ -1633,10 +1583,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
-                                    printErrorMessage(tmpString);
+                                    DCMDATA_ERROR(tmpString);
                                     result = EC_ApplicationProfileViolated;
                                 } else
-                                    printWarningMessage(tmpString);
+                                    DCMDATA_WARN(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
                             }
                             break;
@@ -1662,10 +1612,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
-                                    printErrorMessage(tmpString);
+                                    DCMDATA_ERROR(tmpString);
                                     result = EC_ApplicationProfileViolated;
                                 } else
-                                    printWarningMessage(tmpString);
+                                    DCMDATA_WARN(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
                             }
                             break;
@@ -1691,10 +1641,10 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                                 OFSTRINGSTREAM_GETSTR(oss, tmpString)
                                 if (TransferSyntaxCheck)
                                 {
-                                    printErrorMessage(tmpString);
+                                    DCMDATA_ERROR(tmpString);
                                     result = EC_ApplicationProfileViolated;
                                 } else
-                                    printWarningMessage(tmpString);
+                                    DCMDATA_WARN(tmpString);
                                 OFSTRINGSTREAM_FREESTR(tmpString)
                             }
                         }
@@ -1732,13 +1682,8 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
             dataset->tagExistsWithValue(DcmTagKey(grp, DCM_OverlayBitPosition.getElement())) &&
             !dataset->tagExistsWithValue(DcmTagKey(grp, DCM_OverlayData.getElement())))
         {
-            /* create error message */
-            OFOStringStream oss;
-            oss << "embedded overlay data present in group 0x" << STD_NAMESPACE hex << grp
-                << ", file: " << filename << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printErrorMessage(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMDATA_ERROR("embedded overlay data present in group 0x" << STD_NAMESPACE hex << grp
+                       << ", file: " << filename);
             result = EC_ApplicationProfileViolated;
         }
     }
@@ -1806,12 +1751,8 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
                 dataset->tagExistsWithValue(DcmTagKey(grp, DCM_OverlayBitPosition.getElement())))
             {
                 /* create error message */
-                OFOStringStream oss;
-                oss << "overlay group 0x" << STD_NAMESPACE hex << grp
-                    << " present in file: " << filename << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                printErrorMessage(tmpString);
-                OFSTRINGSTREAM_FREESTR(tmpString)
+                DCMDATA_ERROR("overlay group 0x" << STD_NAMESPACE hex << grp
+                           << " present in file: " << filename);
                 result = EC_ApplicationProfileViolated;
             }
         }
@@ -2445,8 +2386,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
     /* create fully qualified pathname of the DICOM file to be added */
     OFString pathname;
     OFStandard::combineDirAndFilename(pathname, directory, filename, OFTrue /*allowEmptyDirName*/);
-    if (VerboseMode)
-        printMessage("checking file: ", pathname.c_str());
+    DCMDATA_INFO("checking file: " << pathname);
     /* check filename */
     if (isFilenameValid(filename))
     {
@@ -2458,13 +2398,13 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
             if ((metainfo == NULL) || (metainfo->card() == 0))
             {
-                printErrorMessage("file not part 10 format (no metainfo-header): ", filename);
+                DCMDATA_ERROR("file not part 10 format (no metainfo-header): " << filename);
                 result = EC_InvalidStream;
             }
             DcmDataset *dataset = fileformat.getDataset();
             if (dataset == NULL)
             {
-                printErrorMessage("file contains no data (no dataset): ", filename);
+                DCMDATA_ERROR("file contains no data (no dataset): " << filename);
                 result = EC_CorruptedData;
             }
             /* only proceed if previous checks have been passed */
@@ -2481,7 +2421,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
             }
         } else {
             /* report an error */
-            printFileErrorMessage(result, "reading", filename);
+            DCMDATA_ERROR(result.text() << ": reading file: " << filename);
         }
     }
     return result;
@@ -2512,7 +2452,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
                     {
                         if (InventPatientIDMode)
                         {
-                            printWarningMessage("PatientsName inconsistent for PatientID: ", patientID.c_str());
+                            DCMDATA_WARN("PatientsName inconsistent for PatientID: " << patientID);
                             /* remove current patient ID, will be replaced later */
                             dataset->putAndInsertString(DCM_PatientID, "");
                             result = OFFalse;
@@ -2540,7 +2480,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
                             result = compare(getStringFromFile(hostFilename.c_str(), DCM_StudyInstanceUID, recordString),
                                              getStringFromDataset(dataset, DCM_StudyInstanceUID, datasetString));
                         } else
-                            printErrorMessage("cannot locate referenced file: ", refFilename.c_str());
+                            DCMDATA_ERROR("cannot locate referenced file: " << refFilename);
                     }
                 }
                 break;
@@ -2577,7 +2517,7 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
                                  getStringFromDataset(dataset, DCM_SOPInstanceUID, datasetString));
                 break;
             default:
-                printErrorMessage("record type not yet implemented");
+                DCMDATA_ERROR("record type not yet implemented");
                 break;
         }
     }
@@ -2644,7 +2584,7 @@ DcmDirectoryRecord *DicomDirInterface::buildPatientRecord(DcmDirectoryRecord *re
             record = NULL;
         }
     } else
-        printErrorMessage("out of memory (creating patient record)");
+        DCMDATA_ERROR("out of memory (creating patient record)");
     return record;
 }
 
@@ -2678,7 +2618,7 @@ DcmDirectoryRecord *DicomDirInterface::buildStudyRecord(DcmDirectoryRecord *reco
             record = NULL;
         }
     } else
-        printErrorMessage("out of memory (creating study record)");
+        DCMDATA_ERROR("out of memory (creating study record)");
     return record;
 }
 
@@ -2726,7 +2666,7 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmDirectoryRecord *rec
             record = NULL;
         }
     } else
-        printErrorMessage("out of memory (creating series record)");
+        DCMDATA_ERROR("out of memory (creating series record)");
     return record;
 }
 
@@ -3480,9 +3420,9 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
                 {
                     /* report error or warning */
                     if (iconRequired)
-                        printErrorMessage("cannot create IconImageSequence");
+                        DCMDATA_ERROR("cannot create IconImageSequence");
                     else
-                        printWarningMessage("cannot create IconImageSequence");
+                        DCMDATA_WARN("cannot create IconImageSequence");
                 }
             }
         } else {
@@ -3492,7 +3432,7 @@ DcmDirectoryRecord *DicomDirInterface::buildImageRecord(DcmDirectoryRecord *reco
             record = NULL;
         }
     } else
-        printErrorMessage("out of memory (creating image record)");
+        DCMDATA_ERROR("out of memory (creating image record)");
     return record;
 }
 
@@ -3526,7 +3466,7 @@ DcmDirectoryRecord *DicomDirInterface::buildHangingProtocolRecord(DcmDirectoryRe
             record = NULL;
         }
     } else
-        printErrorMessage("out of memory (creating patient record)");
+        DCMDATA_ERROR("out of memory (creating patient record)");
     return record;
 }
 
@@ -3583,13 +3523,13 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                                         result = ImagePlugin->scaleData(pgmData, pgmWidth, pgmHeight, pixel, width, height);
                                     }
                                     if (!result)
-                                        printErrorMessage("cannot scale external icon, no image support available");
+                                        DCMDATA_ERROR("cannot scale external icon, no image support available");
                                     corrupt = OFFalse;
                                 }
                                 /* free memory */
                                 delete[] pgmData;
                             } else {
-                                printFileErrorMessage(EC_MemoryExhausted, "cannot allocate memory for pgm pixel data", NULL /*filename*/);
+                                DCMDATA_ERROR(EC_MemoryExhausted.text() << "cannot allocate memory for pgm pixel data");
                                 /* avoid double reporting of error message */
                                 corrupt = OFFalse;
                             }
@@ -3597,12 +3537,12 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                     }
                 }
                 if (corrupt)
-                    printErrorMessage("corrupt file format for external icon (not pgm binary)");
+                    DCMDATA_ERROR("corrupt file format for external icon (not pgm binary)");
             } else
-                printErrorMessage("wrong file format for external icon (pgm required)");
+                DCMDATA_ERROR("wrong file format for external icon (pgm required)");
             fclose(file);
         } else
-            printErrorMessage("cannot open file for external icon: ", filename.c_str());
+            DCMDATA_ERROR("cannot open file for external icon: " << filename);
     }
     return result;
 }
@@ -3726,7 +3666,7 @@ OFCondition DicomDirInterface::addIconImage(DcmDirectoryRecord *record,
                     /* try to create icon from dataset */
                     iconOk = getIconFromDataset(dataset, pixel, count, width, height);
                     if (!iconOk)
-                        printWarningMessage("cannot create monochrome icon from image file, using default");
+                        DCMDATA_WARN("cannot create monochrome icon from image file, using default");
                 }
                 /* could not create icon so far: use default icon (if specified) */
                 if (!iconOk && !DefaultIcon.empty())
@@ -3876,12 +3816,8 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
             if ((recordType != ERT_Patient) && (recordType != ERT_Study) && (recordType != ERT_Series))
             {
                 /* create warning message */
-                OFOStringStream oss;
-                oss << "file " << sourceFilename << ": directory record for this "
-                    << "SOP instance already exists" << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                printWarningMessage(tmpString);
-                OFSTRINGSTREAM_FREESTR(tmpString)
+                DCMDATA_WARN("file " << sourceFilename << ": directory record for this "
+                          << "SOP instance already exists");
             }
             /* perform consistency check */
             if (ConsistencyCheck)
@@ -3917,12 +3853,8 @@ OFBool DicomDirInterface::checkReferencedSOPInstance(DcmDirectoryRecord *record,
             !compare(refFileID, referencedFileID))
         {
             /* create error message */
-            OFOStringStream oss;
-            oss << "file " << sourceFilename << ": SOP instance already referenced "
-                << "with different file ID (" << refFileID << ")" << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printErrorMessage(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMDATA_ERROR("file " << sourceFilename << ": SOP instance already referenced "
+                    << "with different file ID (" << refFileID << ")");
             result = OFFalse;
         }
         /* check SOP class UID */
@@ -4061,8 +3993,7 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
         result = loadAndCheckDicomFile(filename, directory, fileformat);
         if (result.good())
         {
-            if (VerboseMode)
-                printMessage("adding file: ", pathname.c_str());
+            DCMDATA_INFO("adding file: " << pathname);
             /* start creating the DICOMDIR directory structure */
             DcmDirectoryRecord *rootRecord = &(DicomDir->getRootRecord());
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
@@ -4089,7 +4020,7 @@ OFCondition DicomDirInterface::addDicomFile(const char *filename,
                     if (compare(sopClass, UID_DetachedPatientManagementMetaSOPClass))
                     {
                         result = patientRecord->assignToSOPFile(fileID.c_str(), pathname.c_str());
-                        printFileErrorMessage(result, "cannot assign patient record to", pathname.c_str());
+                        DCMDATA_ERROR(result.text() << ": cannot assign patient record to file: " << pathname);
                     } else {
                         /* add a study record below the current patient record */
                         DcmDirectoryRecord *studyRecord = addRecord(patientRecord, ERT_Study, dataset, fileID, pathname);;
@@ -4198,18 +4129,6 @@ OFCondition DicomDirInterface::setDefaultIcon(const char *filename)
 {
     DefaultIcon = filename;
     return EC_Normal;
-}
-
-
-// enable/disable the verbose mode
-OFBool DicomDirInterface::enableVerboseMode(const OFBool newMode)
-{
-    /* save current mode */
-    OFBool oldMode = VerboseMode;
-    /* set new mode */
-    VerboseMode = newMode;
-    /* return old mode */
-    return oldMode;
 }
 
 
@@ -4358,78 +4277,23 @@ OFBool DicomDirInterface::addImageSupport(DicomDirImagePlugin *plugin)
 }
 
 
-// set the log stream used for verbose and error messages
-void DicomDirInterface::setLogStream(OFConsole *stream)
-{
-    /* store log stream */
-    LogStream = stream;
-}
-
-
-// print a message to the console (stdout)
-void DicomDirInterface::printMessage(const char *message,
-                                     const char *suffix)
-{
-    if ((LogStream != NULL) && (message != NULL))
-    {
-        LogStream->lockCout() << message;
-        if (suffix != NULL)
-            LogStream->getCout() << suffix;
-        LogStream->getCout() << OFendl;
-        LogStream->unlockCout();
-    }
-}
-
-
-// print an warning message to the console (stderr)
-void DicomDirInterface::printWarningMessage(const char *message,
-                                            const char *suffix)
-{
-    if ((LogStream != NULL) && (message != NULL))
-    {
-        LogStream->lockCerr() << "Warning: " << message;
-        if (suffix != NULL)
-            LogStream->getCerr() << suffix;
-        LogStream->getCerr() << OFendl;
-        LogStream->unlockCerr();
-    }
-}
-
-
-// print an error message to the console (stderr)
-void DicomDirInterface::printErrorMessage(const char *message,
-                                          const char *suffix)
-{
-    if ((LogStream != NULL) && (message != NULL))
-    {
-        LogStream->lockCerr() << "Error: " << message;
-        if (suffix != NULL)
-            LogStream->getCerr() << suffix;
-        LogStream->getCerr() << OFendl;
-        LogStream->unlockCerr();
-    }
-}
-
-
 // print an error message to the console (stderr) that the value of the given tag is unexpected
 void DicomDirInterface::printUnexpectedValueMessage(const DcmTagKey &key,
                                                     const char *filename,
                                                     const OFBool errorMsg)
 {
-    if (LogStream != NULL)
+    OFString s;
+    if (filename != NULL)
     {
-        LogStream->lockCerr();
-        if (errorMsg)
-            LogStream->getCerr() << "Error";
-        else
-            LogStream->getCerr() << "Warning";
-        LogStream->getCerr() << ": attribute " << DcmTag(key).getTagName() << " " << key
-                             << " has other value than expected";
-        if (filename != NULL)
-            LogStream->getCerr() << " in file: " << filename;
-        LogStream->getCerr() << OFendl;
-        LogStream->unlockCerr();
+        s = " in file: ";
+        s += filename;
     }
+    if (errorMsg)
+        DCMDATA_ERROR("attribute " << DcmTag(key).getTagName() << " " << key
+                   << " has other value than expected" << s);
+    else
+        DCMDATA_WARN("attribute " << DcmTag(key).getTagName() << " " << key
+                  << " has other value than expected" << s);
 }
 
 
@@ -4438,18 +4302,15 @@ void DicomDirInterface::printRequiredAttributeMessage(const DcmTagKey &key,
                                                       const char *filename,
                                                       const OFBool emptyMsg)
 {
-    if (LogStream != NULL)
+    OFString s(emptyMsg ? "empty" : "missing");
+    OFString t;
+    if (filename != NULL)
     {
-        LogStream->lockCerr() << "Error: required attribute " << DcmTag(key).getTagName() << " " << key << " ";
-        if (emptyMsg)
-            LogStream->getCerr() << "empty";    /* "has no value"? */
-        else
-            LogStream->getCerr() << "missing";
-        if (filename != NULL)
-            LogStream->getCerr() << " in file: " << filename;
-        LogStream->getCerr() << OFendl;
-        LogStream->unlockCerr();
+        t = " in file: ";
+        t += filename;
     }
+    DCMDATA_ERROR("required attribute " << DcmTag(key).getTagName() << " " << key << " "
+            << s << t);
 }
 
 
@@ -4458,14 +4319,18 @@ void DicomDirInterface::printAttributeErrorMessage(const DcmTagKey &key,
                                                    const OFCondition &error,
                                                    const char *operation)
 {
-    if ((LogStream != NULL) && (error.bad()))
+    if (!error.bad())
+        return;
+
+    OFString s;
+    if (operation != NULL)
     {
-        LogStream->lockCerr() << "Error: " << error.text() << ": ";
-        if (operation != NULL)
-            LogStream->getCerr() << "cannot " << operation << " ";
-        LogStream->getCerr() << DcmTag(key).getTagName() << " " << key << OFendl;
-        LogStream->unlockCerr();
+        s = "cannot ";
+        s += operation;
+        s += " ";
     }
+    DCMDATA_ERROR(error.text() << ": " << s
+        << DcmTag(key).getTagName() << " " << key);
 }
 
 
@@ -4474,32 +4339,19 @@ void DicomDirInterface::printRecordErrorMessage(const OFCondition &error,
                                                 const E_DirRecType recordType,
                                                 const char *operation)
 {
-    if ((LogStream != NULL) && (error.bad()))
-    {
-        LogStream->lockCerr() << "Error: " << error.text() << ": ";
-        if (operation != NULL)
-            LogStream->getCerr() << "cannot " << operation << " ";
-        LogStream->getCerr() << recordTypeToName(recordType) << " directory record" << OFendl;
-        LogStream->unlockCerr();
-    }
-}
+    if (!error.bad())
+        return;
 
-
-// print the given error status to the console (stderr)
-void DicomDirInterface::printFileErrorMessage(const OFCondition &error,
-                                              const char *operation,
-                                              const char *filename)
-{
-    if ((LogStream != NULL) && error.bad())
+    OFString s;
+    if (operation != NULL)
     {
-        LogStream->lockCerr() << "Error: " << error.text() << ": ";
-        if (operation != NULL)
-            LogStream->getCerr() << operation << " ";  /* "reading", "writing", etc. */
-        if (filename != NULL)
-            LogStream->getCerr() << "file: " << filename;
-        LogStream->getCerr() << OFendl;
-        LogStream->unlockCerr();
+        s = "cannot ";
+        s += operation;
+        s+= " ";
     }
+
+    DCMDATA_ERROR(error.text() << ": " << s
+            << recordTypeToName(recordType) << " directory record");
 }
 
 
@@ -4594,11 +4446,8 @@ OFBool DicomDirInterface::copyFile(const char *fromFilename,
                     {
                         /* create error message */
                         OFOStringStream oss;
-                        oss << "Error: copying files: " << fromFilename << " to "
-                            << toFilename << OFStringStream_ends;
-                        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                        printErrorMessage(tmpString);
-                        OFSTRINGSTREAM_FREESTR(tmpString)
+                        DCMDATA_ERROR("copying files: " << fromFilename
+                                   << " to " << toFilename);
                         /* abort loop */
                         result = OFFalse;
                     }
@@ -4606,11 +4455,11 @@ OFBool DicomDirInterface::copyFile(const char *fromFilename,
                 /* close output file */
                 fclose(toFile);
             } else
-                printErrorMessage("Error: copying files, cannot create: ", toFilename);
+                DCMDATA_ERROR("copying files, cannot create: " << toFilename);
             /* close input file */
             fclose(fromFile);
         } else
-            printErrorMessage("Error: copying files, cannot open: ", fromFilename);
+            DCMDATA_ERROR("copying files, cannot open: " << fromFilename);
     }
     return result;
 }
@@ -4656,7 +4505,7 @@ OFBool DicomDirInterface::warnAboutInconsistentAttributes(DcmDirectoryRecord *re
         }
     }
     if (!result & abortCheck)
-        printErrorMessage("aborting on first inconsistent file: ", sourceFilename.c_str());
+        DCMDATA_ERROR("aborting on first inconsistent file: " << sourceFilename);
     /* return OFTrue in case of any inconsistency */
     return !result;
 }
@@ -4673,18 +4522,14 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
         if (!DcmCodeString::checkVR(filesetID, &invalidChar, OFFalse /*checkLength*/))
         {
             /* create error message */
-            OFOStringStream oss;
-            oss << "invalid character(s) in fileset ID: " << filesetID << OFendl;
-            oss << OFString(7 /*Error: */ + 36 /*message*/ + invalidChar, ' ') << "^" << OFStringStream_ends;
-            OFSTRINGSTREAM_GETSTR(oss, tmpString)
-            printErrorMessage(tmpString);
-            OFSTRINGSTREAM_FREESTR(tmpString)
+            DCMDATA_ERROR("invalid character(s) in fileset ID: " << filesetID << OFendl
+                    << OFString(7 /*Error: */ + 36 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
         /* ensure that fileset ID is not too large */
         if (isComponentTooLarge(filesetID, OFstatic_cast(size_t, DcmVR(EVR_CS).getMaxValueLength()), MapFilenamesMode))
         {
-            printErrorMessage("fileset ID too large: ", filesetID.c_str());
+            DCMDATA_ERROR("fileset ID too large: " << filesetID);
             result = OFFalse;
         }
     } else
@@ -4853,12 +4698,9 @@ OFString &DicomDirInterface::getStringComponentFromDataset(DcmItem *dataset,
     {
         /* get string value component from dataset and report if tag or component is missing */
         OFCondition status = dataset->findAndGetOFString(key, result, pos, searchIntoSub);
-        if ((LogStream != NULL) && (status.bad()))
-        {
-            LogStream->lockCerr() << "Error: " << status.text() << ": cannot retrieve value " << (pos + 1);
-            LogStream->getCerr() << " of " << DcmTag(key).getTagName() << " " << key << OFendl;
-            LogStream->unlockCerr();
-        }
+        if (status.bad())
+            DCMDATA_ERROR(status.text() << ": cannot retrieve value " << (pos + 1)
+                    << " of " << DcmTag(key).getTagName() << " " << key);
     }
     return result;
 }
@@ -4874,15 +4716,14 @@ OFString &DicomDirInterface::getStringFromFile(const char *filename,
     if (filename != NULL)
     {
         DcmFileFormat fileformat;
-        if (VerboseMode)
-            printMessage("investigating file: ", filename);
+        DCMDATA_INFO("investigating file: " << filename);
         /* load specified file */
         OFCondition status = fileformat.loadFile(filename);
         /* retrieve string value from dataset */
         if (status.good())
             getStringFromDataset(fileformat.getDataset(), key, result, searchIntoSub);
         else
-            printFileErrorMessage(status, "reading", filename);
+            DCMDATA_ERROR(status.text() << ": reading file: " << filename);
     }
     return result;
 }
@@ -4913,17 +4754,11 @@ void DicomDirInterface::copyElement(DcmItem *dataset,
                     DcmTag tag(key);
                     /* check for correct VR in the dataset */
                     if (delem->getVR() != tag.getEVR())
-                    {
                         /* create warning message */
-                        OFOStringStream oss;
-                        oss << "file " << sourceFilename << ": possibly wrong VR: "
-                            << tag.getTagName() << " " << key << " with "
-                            << DcmVR(delem->getVR()).getVRName() << " found, expected "
-                            << tag.getVRName() << " instead" << OFStringStream_ends;
-                        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                        printWarningMessage(tmpString);
-                        OFSTRINGSTREAM_FREESTR(tmpString)
-                    }
+                        DCMDATA_WARN("file " << sourceFilename << ": possibly wrong VR: "
+                                << tag.getTagName() << " " << key << " with "
+                                << DcmVR(delem->getVR()).getVRName() << " found, expected "
+                                << tag.getVRName() << " instead");
                 } else
                     delete delem;
             } else if (status == EC_TagNotFound)
@@ -4954,12 +4789,8 @@ void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
             if (printWarning && (defaultValue != NULL))
             {
                 /* create warning message */
-                OFOStringStream oss;
-                oss << "file " << sourceFilename << ": " << DcmTag(key).getTagName() << " " << key
-                    << " missing, using alternative: " << defaultValue << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                printWarningMessage(tmpString);
-                OFSTRINGSTREAM_FREESTR(tmpString)
+                DCMDATA_WARN("file " << sourceFilename << ": " << DcmTag(key).getTagName() << " " << key
+                          << " missing, using alternative: " << defaultValue);
             }
             /* put default value */
             status = record->putAndInsertString(key, defaultValue);
@@ -5005,9 +4836,9 @@ OFBool DicomDirInterface::compareStringAttributes(DcmItem *dataset,
             oss << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(oss, tmpString)
             if (errorMsg)
-                printErrorMessage(tmpString);
+                DCMDATA_ERROR(tmpString);
             else
-                printWarningMessage(tmpString);
+                DCMDATA_WARN(tmpString);
             OFSTRINGSTREAM_FREESTR(tmpString)
         }
     }
@@ -5041,19 +4872,14 @@ OFBool DicomDirInterface::compareSequenceAttributes(DcmItem *dataset,
                 if (originFilename.empty())
                     originFilename = "<unknown>";
                 /* create warning message */
-                OFOStringStream oss;
-                oss << "file inconsistent with existing DICOMDIR record" << OFendl;
-                oss << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
-                    << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl;
-                oss << "    Reason: " << reason << OFendl;
-                oss << "    Existing Record (origin: " << originFilename << ") defines: " << OFendl;
-                seq1->print(oss, 0, 4 /*indent*/);
-                oss << "    File (" << sourceFilename << ") defines:" << OFendl;
-                seq2->print(oss, 0, 4 /*indent*/);
-                oss << OFStringStream_ends;
-                OFSTRINGSTREAM_GETSTR(oss, tmpString)
-                printWarningMessage(tmpString);
-                OFSTRINGSTREAM_FREESTR(tmpString)
+                DCMDATA_WARN("file inconsistent with existing DICOMDIR record" << OFendl
+                    << "  " << recordTypeToName(record->getRecordType()) << " Record [Key: "
+                    << DcmTag(uniqueKey).getTagName() << " " << uniqueKey << "=\"" << uniqueString << "\"]" << OFendl
+                    << "    Reason: " << reason << OFendl
+                    << "    Existing Record (origin: " << originFilename << ") defines: " << OFendl
+                    << DcmObject::PrintHelper(*seq1, 0, 4 /* indent */)
+                    << "    File (" << sourceFilename << ") defines:" << OFendl
+                    << DcmObject::PrintHelper(*seq2, 0, 4 /* indent */));
             }
         }
     }
@@ -5082,13 +4908,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
         }
         record->putAndInsertString(key, buffer);
         /* create warning message */
-        OFOStringStream oss;
-        oss << recordTypeToName(record->getRecordType()) << " Record (origin: "
-            << record->getRecordsOriginFile() << ") inventing " << DcmTag(key).getTagName()
-            << ": " << buffer << OFStringStream_ends;
-        OFSTRINGSTREAM_GETSTR(oss, tmpString)
-        printWarningMessage(tmpString);
-        OFSTRINGSTREAM_FREESTR(tmpString)
+        DCMDATA_WARN(recordTypeToName(record->getRecordType()) << " Record (origin: "
+                << record->getRecordsOriginFile() << ") inventing " << DcmTag(key).getTagName()
+                << ": " << buffer);
     }
 }
 
@@ -5096,6 +4918,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.31  2009-11-04 09:58:09  uli
+ *  Switched to logging mechanism provided by the "new" oflog module
+ *
  *  Revision 1.30  2009-08-26 07:46:22  joergr
  *  Added parentheses around && within || in order to avoid warnings reported by
  *  gcc 4.3.2.

@@ -21,10 +21,10 @@
  *
  *  Purpose: functions to derive VM from string
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvm.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,9 @@ char * getFirstValueFromString(const char * & s);
 /*
 ** CVS/RCS Log:
 ** $Log: dcvm.h,v $
+** Revision 1.8  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.7  2007-11-29 14:30:35  meichel
 ** Updated doxygen API documentation
 **

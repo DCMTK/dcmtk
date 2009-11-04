@@ -21,10 +21,10 @@
  *
  *  Purpose: zlib compression filter for output streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 16:06:10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -369,6 +369,9 @@ void dcostrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmz.cc,v $
+ * Revision 1.7  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.6  2007-02-19 16:06:10  meichel
  * Class DcmOutputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.

@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-29 12:55:17 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -518,6 +518,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.h,v $
+** Revision 1.8  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.7  2009-09-29 12:55:17  uli
 ** Include only the needed headers in dcpath.h and dcpath.cc
 **

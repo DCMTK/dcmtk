@@ -22,9 +22,9 @@
  *  Purpose: Test program for testing path features of DcmItem
  *           and DcmSequenceOfItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-04-20 16:03:12 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:11 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,16 +35,14 @@
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
-#include "dcmtk/dcmdata/dcdebug.h" /* For SetDebugLevel() */
 #include "dcmtk/dcmdata/dcpath.h"
 
 #define OFFIS_CONSOLE_APPLICATION "tstpath"
 
+static OFLogger tstpathLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
-
-static int opt_debugMode = 0;
-static OFBool opt_verbose = OFFalse;
 
 static void testPathInsertionsWithoutWildcard(const OFString& path,
                                               DcmDataset *dset,
@@ -52,12 +50,13 @@ static void testPathInsertionsWithoutWildcard(const OFString& path,
                                               const OFBool& expectFailed = OFFalse,
                                               const OFBool& createIfNecessary = OFTrue)
 {
-  if (opt_verbose) COUT << "Path: " << path; COUT.flush();
+  OFLOG_INFO(tstpathLogger, "Path: " << path);
   DcmPathProcessor proc;
   OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
   {
-    if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
+    if (!expectFailed)
+        OFLOG_ERROR(tstpathLogger, " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text());
     return;
   }
 
@@ -67,15 +66,18 @@ static void testPathInsertionsWithoutWildcard(const OFString& path,
   if (numResults != 1)
   {
     // non-wildcard insertion should ALWAYS only return one result
-    CERR << "...FAILED! Returned path list does contain more than one result but no wildcard was specified" << OFendl;
+    OFLOG_ERROR(tstpathLogger, "...FAILED! Returned path list does contain more than one result but no wildcard was specified");
     return;
   }
   DcmPath* oneResult = * (results.begin());
 
   if (oneResult->size() != expectedNumObjects)
   {
-    if (!expectFailed || opt_verbose) CERR << "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements" << OFendl;
-    if (!expectFailed) return;
+    if (!expectFailed)
+    {
+        OFLOG_ERROR(tstpathLogger, "...FAILED! Returned object list does not contain " << expectedNumObjects << " but only " << oneResult->size() << "elements");
+        return;
+    }
   }
   else
   {
@@ -84,15 +86,14 @@ static void testPathInsertionsWithoutWildcard(const OFString& path,
     {
       if (*it == NULL)
       {
-        CERR << " ...FAILED! Path insertion failed: One of the created objects is NULL" << OFendl;
+        OFLOG_ERROR(tstpathLogger, " ...FAILED! Path insertion failed: One of the created objects is NULL");
         return;
       }
       it++;
     }
   }
 
-  if (opt_verbose)
-    COUT << " ...OK" << OFendl;
+  OFLOG_INFO(tstpathLogger, " ...OK");
 }
 
 
@@ -102,12 +103,13 @@ static void testPathInsertionsWithWildcard(const OFString& path,
                                            const OFBool& expectFailed = OFFalse,
                                            const OFBool& createIfNecessary = OFTrue)
 {
-  if (opt_verbose) COUT << "Path: " << path; COUT.flush();
+  OFLOG_INFO(tstpathLogger, "Path: " << path);
   DcmPathProcessor proc;
   OFCondition result = proc.findOrCreatePath(dset, path, createIfNecessary);
   if (result.bad())
   {
-    if (!expectFailed || opt_verbose) CERR << " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text() << OFendl;
+    if (!expectFailed)
+        OFLOG_ERROR(tstpathLogger, " ...FAILED! Path " << (createIfNecessary ? "insertion" : "lookup") << " failed: " << result.text());
     return;
   }
 
@@ -116,8 +118,7 @@ static void testPathInsertionsWithWildcard(const OFString& path,
   Uint32 numResults = proc.getResults(results);
   if ( (numResults != expectedNumResults) && !expectFailed )
   {
-
-    CERR << " ...FAILED!: Expected " << expectedNumResults << " but " << numResults << " results were returned" << OFendl;
+    OFLOG_ERROR(tstpathLogger, " ...FAILED!: Expected " << expectedNumResults << " but " << numResults << " results were returned");
     return;
   }
   // check results
@@ -131,7 +132,7 @@ static void testPathInsertionsWithWildcard(const OFString& path,
       {
         if (*it == NULL)
         {
-          if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the result paths contains NULL" << OFendl;
+          OFLOG_INFO(tstpathLogger, " ...FAILED! Path insertion failed: One of the result paths contains NULL");
           return;
         }
         it++;
@@ -139,13 +140,12 @@ static void testPathInsertionsWithWildcard(const OFString& path,
     }
     else
     {
-      if (opt_verbose) CERR << " ...FAILED! Path insertion failed: One of the returned path is NULL" << OFendl;
+      OFLOG_INFO(tstpathLogger, " ...FAILED! Path insertion failed: One of the returned path is NULL");
       return;
     }
     oneResult++;
   }
-  if (opt_verbose)
-    COUT << " ...OK" << OFendl;
+  OFLOG_INFO(tstpathLogger, " ...OK");
 }
 
 int main(int argc, char *argv[])
@@ -155,25 +155,18 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  SetDebugLevel(( 0 ));
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Tests DcmItem/DcmSequenceOfItem's path access features", rcsid);
   OFCommandLine cmd;
 
   cmd.addGroup("general options:");
    cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",       "print expanded command line arguments");
-   cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
-   cmd.addOption("--debug",     "-d", "debug mode, print debug information");
+   OFLog::addOptions(cmd);
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
-    /* check whether to print the command line arguments */
-    if (cmd.findOption("--arguments"))
-      app.printArguments();
-
     /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
@@ -185,23 +178,17 @@ int main(int argc, char *argv[])
           return 0;
        }
     }
-
-    /* command line parameters */
-
-    if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-    if (cmd.findOption("--debug")) opt_debugMode = 5;
   }
 
-  if (opt_debugMode)
-      app.printIdentifier();
-  SetDebugLevel((opt_debugMode));
+  /* command line parameters */
+  OFLog::configureFromCommandLine(cmd, app);
 
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-      CERR << "Warning: no data dictionary loaded, "
+      OFLOG_WARN(tstpathLogger, "no data dictionary loaded, "
            << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+           << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   DcmFileFormat dcmff;
@@ -216,8 +203,8 @@ int main(int argc, char *argv[])
   /* Test insertions using no wildcards                                    */
   /* ********************************************************************* */
 
-  if (opt_verbose) COUT << "These insertions should work:" << OFendl;
-  if (opt_verbose) COUT << "=============================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "These insertions should work:\n"
+                         << "=============================");
   path = "PatientID";
   testPathInsertionsWithoutWildcard(path, dset, 1);
   path = "ContentSequence";
@@ -231,8 +218,8 @@ int main(int argc, char *argv[])
   path = "ContentSequence[5].ContentSequence[3].ConceptNameCodeSequence[0].(0008,0104)";
   testPathInsertionsWithoutWildcard(path, dset, 7);
 
-  if (opt_verbose) COUT << OFendl << "These insertions should NOT work (wrong syntax):" << OFendl;
-  if (opt_verbose) COUT           << "================================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nThese insertions should NOT work (wrong syntax):\n"
+                           << "================================================");
 
   path = "ContentSequences";
   testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue);
@@ -245,8 +232,8 @@ int main(int argc, char *argv[])
   path = "(0040,A730)[a].ContentSequence[3].ConceptNameCodeSequence[0].CodeValue";
   testPathInsertionsWithoutWildcard(path, dset, 7, OFTrue);
 
-  if (opt_verbose) COUT << OFendl << "These find routines should work:" << OFendl;
-  if (opt_verbose) COUT           << "================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nThese find routines should work\n:"
+                           << "================================");
 
   path = "PatientID";
   testPathInsertionsWithoutWildcard(path, dset, 1, OFFalse, OFFalse /* do not create */);
@@ -261,8 +248,8 @@ int main(int argc, char *argv[])
   path = "ContentSequence[5].ContentSequence[3].ConceptNameCodeSequence[0].(0008,0104)";
   testPathInsertionsWithoutWildcard(path, dset, 7, OFFalse, OFFalse /* do not create */);
 
-  if (opt_verbose) COUT << OFendl << "These find routines should NOT work:" << OFendl;
-  if (opt_verbose) COUT           << "====================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nThese find routines should NOT work:\n"
+                            << "====================================");
 
   path = "PatientsName"; // was never inserted
   testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */);
@@ -271,19 +258,18 @@ int main(int argc, char *argv[])
   path = "ConceptNameCodeSequence"; // should not exist on main level
   testPathInsertionsWithoutWildcard(path, dset, 1, OFTrue, OFFalse /* do not create */);
 
-  if (opt_verbose) COUT << OFendl << OFendl << "Checking dataset length:" << OFendl;
-  if (opt_verbose) COUT           << "====================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nChecking dataset length:"
+                           << "========================");
   Uint32 length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
-  if (opt_verbose) COUT << "Checking whether length of encoded dataset matches pre-calculated length";
+  OFLOG_INFO(tstpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
   if (length == precalculatedLength)
   {
-    if (opt_verbose)
-      COUT << " ...OK" << OFendl;
+    OFLOG_INFO(tstpathLogger, " ...OK");
   }
   else
   {
-    CERR << " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << OFendl;
-    CERR << "Please check dump and adapt test in case of false alarm:" << OFendl;
+    OFLOG_ERROR(tstpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << "\n"
+            << "Please check dump and adapt test in case of false alarm:\n");
     CERR << "Dump of assembled test object:" << OFendl;
     dset->print(CERR);
     CERR << OFendl;
@@ -296,33 +282,32 @@ int main(int argc, char *argv[])
   /* Test insertions using wildcards                                       */
   /* ********************************************************************* */
 
-  if (opt_verbose) COUT << OFendl << OFendl << "These wildcard insertions should work:" << OFendl;
-  if (opt_verbose) COUT           << "====================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nThese wildcard insertions should work:\n"
+                           << "======================================");
   path = "ContentSequence[*].ContentSequence[*].PatientsName";
   testPathInsertionsWithWildcard(path, dset, 4, OFFalse /* should work*/, OFTrue /*do create*/);
   path = "ContentSequence[*].ContentSequence[0].PatientID";
   testPathInsertionsWithWildcard(path, dset, 6, OFFalse /* should work*/, OFTrue /*do create*/);
 
-  if (opt_verbose) COUT << OFendl << OFendl << "Testing wildcard insertions should NOT work:" << OFendl;
-  if (opt_verbose) COUT           << "====================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nTesting wildcard insertions should NOT work:\n"
+                           << "============================================");
   path = "SourceImageSequence[*]";
   testPathInsertionsWithWildcard(path, dset, 0, OFTrue /* should fail*/, OFTrue /*do create*/);
   path = "ContentSequence[*].SourceImageSequence[*]";
   testPathInsertionsWithWildcard(path, dset, 0, OFTrue /* should fail*/, OFTrue /*do create*/);
 
-  if (opt_verbose) COUT << OFendl << OFendl << "Checking dataset length:" << OFendl;
-  if (opt_verbose) COUT           << "====================================" << OFendl;
+  OFLOG_INFO(tstpathLogger, "\nChecking dataset length:\n"
+                           << "========================");
   length = dset->calcElementLength(EXS_LittleEndianExplicit,EET_ExplicitLength);
-  if (opt_verbose) COUT << "Checking whether length of encoded dataset matches pre-calculated length";
+  OFLOG_INFO(tstpathLogger, "Checking whether length of encoded dataset matches pre-calculated length");
   if (length == precalculatedLength2)
   {
-    if (opt_verbose)
-      COUT << " ...OK" << OFendl;
+    OFLOG_INFO(tstpathLogger, " ...OK");
   }
   else
   {
-    CERR << " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << OFendl;
-    CERR << "Please check dump and adapt test in case of false alarm:" << OFendl;
+    OFLOG_ERROR(tstpathLogger, " ...FAILED: Length is " << length << ". Should be " << precalculatedLength << "\n"
+            << "Please check dump and adapt test in case of false alarm:");
     CERR << "Dump of assembled test object:" << OFendl;
     dset->print(CERR);
     CERR << OFendl;
@@ -337,6 +322,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpath.cc,v $
+ * Revision 1.8  2009-11-04 09:58:11  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.7  2009-04-20 16:03:12  joergr
  * Fixed typo.
  *

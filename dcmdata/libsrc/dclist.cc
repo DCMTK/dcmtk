@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: generic list class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:17 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dclist.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 
 // *****************************************
@@ -277,6 +276,9 @@ DcmObject *DcmList::seek_to(unsigned long absolute_position)
 /*
  * CVS/RCS Log:
  * $Log: dclist.cc,v $
+ * Revision 1.15  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.14  2005-12-08 15:41:17  meichel
  * Changed include path schema for all DCMTK header files
  *

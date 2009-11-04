@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DcmOutputBufferStream and related classes,
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 16:06:10 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,8 +109,7 @@ DcmOutputBufferStream::~DcmOutputBufferStream()
 #ifdef DEBUG
   if (! isFlushed())
   {
-    ofConsole.lockCerr() << "Warning: closing unflushed DcmOutputBufferStream, loss of data!" << OFendl;
-    ofConsole.unlockCerr();
+    DCMDATA_WARN("closing unflushed DcmOutputBufferStream, loss of data!");
   }
 #endif
 }
@@ -124,6 +123,9 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, offile_off_t& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
+ * Revision 1.7  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.6  2007-02-19 16:06:10  meichel
  * Class DcmOutputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.

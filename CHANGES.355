@@ -1,6 +1,153 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.04 (schlachter)
+
+- Switched to logging mechanism provided by the "new" oflog module.
+  Removed: dcmdata/libsrc/dcdebug.cc
+  Affects: dcmdata/CMakeLists.txt
+           dcmdata/apps/Makefile.dep
+           dcmdata/apps/Makefile.in
+           dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dcmodify.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/mdfconen.cc
+           dcmdata/apps/mdfconen.h
+           dcmdata/apps/mdfdsman.cc
+           dcmdata/apps/mdfdsman.h
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/data/private.dic
+           dcmdata/docs/dcm2pdf.man
+           dcmdata/docs/dcm2xml.man
+           dcmdata/docs/dcmconv.man
+           dcmdata/docs/dcmcrle.man
+           dcmdata/docs/dcmdrle.man
+           dcmdata/docs/dcmdump.man
+           dcmdata/docs/dcmgpdir.man
+           dcmdata/docs/dcmodify.man
+           dcmdata/docs/dump2dcm.man
+           dcmdata/docs/img2dcm.man
+           dcmdata/docs/pdf2dcm.man
+           dcmdata/docs/xml2dcm.man
+           dcmdata/include/dcmtk/dcmdata/cmdlnarg.h
+           dcmdata/include/dcmtk/dcmdata/dccodec.h
+           dcmdata/include/dcmtk/dcmdata/dcddirif.h
+           dcmdata/include/dcmtk/dcmdata/dcdebug.h
+           dcmdata/include/dcmtk/dcmdata/dcdicdir.h
+           dcmdata/include/dcmtk/dcmdata/dcdicent.h
+           dcmdata/include/dcmtk/dcmdata/dcfcache.h
+           dcmdata/include/dcmtk/dcmdata/dcistrma.h
+           dcmdata/include/dcmtk/dcmdata/dcistrmf.h
+           dcmdata/include/dcmtk/dcmdata/dclist.h
+           dcmdata/include/dcmtk/dcmdata/dcobject.h
+           dcmdata/include/dcmtk/dcmdata/dcofsetl.h
+           dcmdata/include/dcmtk/dcmdata/dcostrma.h
+           dcmdata/include/dcmtk/dcmdata/dcostrmb.h
+           dcmdata/include/dcmtk/dcmdata/dcostrmf.h
+           dcmdata/include/dcmtk/dcmdata/dcovlay.h
+           dcmdata/include/dcmtk/dcmdata/dcpath.h
+           dcmdata/include/dcmtk/dcmdata/dcpcache.h
+           dcmdata/include/dcmtk/dcmdata/dcrleccd.h
+           dcmdata/include/dcmtk/dcmdata/dcrlecce.h
+           dcmdata/include/dcmtk/dcmdata/dcrlecp.h
+           dcmdata/include/dcmtk/dcmdata/dcrledec.h
+           dcmdata/include/dcmtk/dcmdata/dcrledrg.h
+           dcmdata/include/dcmtk/dcmdata/dcrleerg.h
+           dcmdata/include/dcmtk/dcmdata/dcrlerp.h
+           dcmdata/include/dcmtk/dcmdata/dcswap.h
+           dcmdata/include/dcmtk/dcmdata/dctag.h
+           dcmdata/include/dcmtk/dcmdata/dctk.h
+           dcmdata/include/dcmtk/dcmdata/dctypes.h
+           dcmdata/include/dcmtk/dcmdata/dcvm.h
+           dcmdata/include/dcmtk/dcmdata/dcvrat.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfd.h
+           dcmdata/include/dcmtk/dcmdata/dcvrfl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrof.h
+           dcmdata/include/dcmtk/dcmdata/dcvrsl.h
+           dcmdata/include/dcmtk/dcmdata/dcvrss.h
+           dcmdata/include/dcmtk/dcmdata/dcvrul.h
+           dcmdata/include/dcmtk/dcmdata/dcvrulup.h
+           dcmdata/include/dcmtk/dcmdata/dcvrus.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2d.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dbmps.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dimgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2djpgs.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2doutpl.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplnsc.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplsc.h
+           dcmdata/include/dcmtk/dcmdata/libi2d/i2dplvlp.h
+           dcmdata/libi2d/Makefile.dep
+           dcmdata/libi2d/Makefile.in
+           dcmdata/libi2d/i2d.cc
+           dcmdata/libi2d/i2dbmps.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libi2d/i2dplnsc.cc
+           dcmdata/libi2d/i2dplsc.cc
+           dcmdata/libi2d/i2dplvlp.cc
+           dcmdata/libsrc/CMakeLists.txt
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/cmdlnarg.cc
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdicent.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdictbi.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcistrma.cc
+           dcmdata/libsrc/dcistrmb.cc
+           dcmdata/libsrc/dcistrmz.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dclist.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcostrma.cc
+           dcmdata/libsrc/dcostrmb.cc
+           dcmdata/libsrc/dcostrmf.cc
+           dcmdata/libsrc/dcostrmz.cc
+           dcmdata/libsrc/dcpath.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcrleccd.cc
+           dcmdata/libsrc/dcrlecce.cc
+           dcmdata/libsrc/dcrlecp.cc
+           dcmdata/libsrc/dcrledrg.cc
+           dcmdata/libsrc/dcrleerg.cc
+           dcmdata/libsrc/dcrlerp.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcstack.cc
+           dcmdata/libsrc/dcswap.cc
+           dcmdata/libsrc/dctagkey.cc
+           dcmdata/libsrc/dctypes.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dcvm.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrof.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmdata/libsrc/vrscan.cc
+           dcmdata/tests/Makefile.dep
+           dcmdata/tests/Makefile.in
+           dcmdata/tests/tstpath.cc
+           dcmdata/tests/tstpread.cc
+
 **** Changes from 2009.11.03 (riesmeier)
 
 - Switched to old behavior: Output input filename to COUT and not to the log
@@ -500,7 +647,7 @@ Changes between releases are documented here.
   added new defines in order to make the usage easier.
   Added:   ofstd/include/dcmtk/ofstd/ofdefine.h
   Removed: dcmdata/include/dcmtk/dcmdata/dcdefine.h
-  Affecte: dcmdata/apps/Makefile.dep
+  Affects: dcmdata/apps/Makefile.dep
            dcmdata/include/dcmtk/dcmdata/dctk.h
            dcmdata/libi2d/Makefile.dep
            dcmdata/libsrc/dcdicdir.cc

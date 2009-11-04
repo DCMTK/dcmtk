@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: codec parameter for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-06-23 12:09:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,6 @@ class DcmRLECodecParameter: public DcmCodecParameter
 public:
 
   /** constructor.
-   *  @param pVerbose verbose mode flag
    *  @param pCreateSOPInstanceUID true if a new SOP instance UID should be assigned
    *    upon compression/decompression
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
@@ -55,7 +54,6 @@ public:
    *    images with more than one byte per sample.
    */
   DcmRLECodecParameter(
-    OFBool pVerbose = OFFalse,
     OFBool pCreateSOPInstanceUID = OFFalse,
     Uint32 pFragmentSize = 0,
     OFBool pCreateOffsetTable = OFTrue,
@@ -111,14 +109,6 @@ public:
     return createInstanceUID;
   }
 
-  /** returns verbose mode flag
-   *  @return verbose mode flag
-   */
-  OFBool isVerbose() const
-  {
-    return verboseMode;
-  }
-
   /** returns reverse decompression byte order mode
    *  @return reverse decompression byte order mode
    */
@@ -149,9 +139,6 @@ private:
    *  decompress certain incorrectly encoded RLE images
    */
   OFBool reverseDecompressionByteOrder;
-
-  /// verbose mode flag. If true, warning messages are printed to console
-  OFBool verboseMode;
 };
 
 
@@ -160,6 +147,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrlecp.h,v $
+ * Revision 1.5  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.4  2008-06-23 12:09:13  joergr
  * Fixed inconsistencies in Doxygen API documentation.
  *

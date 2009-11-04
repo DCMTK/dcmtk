@@ -21,10 +21,10 @@
  *
  *  Purpose: RLE decompressor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:36 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcrledec.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,6 +278,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrledec.h,v $
+ * Revision 1.5  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.4  2005-12-08 16:28:36  meichel
  * Changed include path schema for all DCMTK header files
  *

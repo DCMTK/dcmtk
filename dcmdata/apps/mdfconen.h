@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:11:55 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,18 +148,6 @@ protected:
      */
     OFCondition restoreFile(const char *filename);
 
-    /** The function handles three strings, that are directly printed
-     *  after another. The whole message is then terminated by \n
-     *  @param condition message is printed, if condition is true
-     *  @param s1 first message string
-     *  @param s2 second message string
-     *  @param s3 third message string
-     */
-    void debugMsg(const OFBool &condition,
-                  const OFString &s1,
-                  const OFString &s2,
-                  const OFString &s3);
-
 private:
 
     /// helper class for console applications
@@ -170,12 +158,6 @@ private:
 
     /// dataset manager that is used for modify operations
     MdfDatasetManager *ds_man;
-
-    /// verbose mode
-    OFBool verbose_option;
-
-    /// debug mode
-    OFBool debug_option;
 
     /// ignore errors option
     OFBool ignore_errors_option;
@@ -244,6 +226,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
+** Revision 1.17  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.16  2009-01-15 16:11:55  onken
 ** Reworked dcmodify to work with the new DcmPath classes for supporting
 ** wildcard paths and automatic insertion of missing attributes and items.

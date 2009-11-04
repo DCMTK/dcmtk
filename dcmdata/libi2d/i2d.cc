@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,12 +41,21 @@
 #include "dcmtk/dcmdata/dcpixseq.h"  /* for DcmPixelSequence */
 #include "dcmtk/dcmdata/dcpath.h"    /* for override keys */
 
+OFLogger DCM_dcmdataLibi2dGetLogger()
+{
+    // We don't just use a global variable, because constructors of globals are
+    // executed in random order. This guarantees that the OFLogger is constructed
+    // before first use.
+    static OFLogger DCM_dcmdata_libi2dLogger = OFLog::getLogger("dcmtk.dcmdata.libi2d");
+    return DCM_dcmdata_libi2dLogger;
+}
+
 
 Image2Dcm::Image2Dcm() : m_overrideKeys(), m_templateFile(""),
   m_readStudyLevel(OFFalse), m_readSeriesLevel(OFFalse), m_studySeriesFile(),
   m_incInstNoFromFile(OFFalse), m_disableAttribChecks(OFFalse),
   m_inventMissingType2Attribs(OFTrue), m_inventMissingType1Attribs(OFFalse),
-  m_insertLatin1(OFTrue), m_debug(OFFalse), m_logStream(NULL)
+  m_insertLatin1(OFTrue)
 {
 
 }
@@ -62,8 +71,7 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
     return EC_IllegalParameter;
 
   OFCondition cond;
-  if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Starting conversion of file: ", inputPlug->getImageFile());
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Starting conversion of file: " << inputPlug->getImageFile());
 
   // If specified, copy DICOM template file to export file
   if (m_templateFile.length() != 0)
@@ -133,7 +141,8 @@ OFCondition Image2Dcm::convert(I2DImgSource *inputPlug,
       if (cond.bad()) return makeOFCondition(OFM_dcmdata, 18, OF_error, "Unable to write attribute Lossy Image Compression and/or Lossy Image Compression Method to result dataset");
     }
   }
-  else if (m_debug) printMessage(m_logStream, "Image2Dcm: Warning: No information regarding lossy compression available");
+  else
+    DCMDATA_LIBI2D_DEBUG("Image2Dcm: No information regarding lossy compression available");
 
   // Insert SOP Class specific attributes (and values)
   cond = outPlug->convert(*resultDset);
@@ -205,8 +214,7 @@ void Image2Dcm::cleanupTemplate(DcmDataset *targetDset)
 
 OFCondition Image2Dcm::applyStudyOrSeriesFromFile(DcmDataset *targetDset)
 {
-  if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Applying study and/or series information from file");
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Applying study and/or series information from file");
   if ( (!m_readSeriesLevel && !m_readStudyLevel) || (m_studySeriesFile.length() == 0) )
     return EC_IllegalCall;
   DcmFileFormat dcmff;
@@ -332,8 +340,7 @@ OFCondition Image2Dcm::incrementInstanceNumber(DcmDataset *targetDset)
   // Read and increment Instance Number if desired
   if (m_incInstNoFromFile)
   {
-    if (m_debug)
-      printMessage(m_logStream, "Image2Dcm: Trying to read and increment Instance Number");
+    DCMDATA_LIBI2D_DEBUG("Image2Dcm: Trying to read and increment instance number");
     Sint32 instanceNumber;
     if ( targetDset->findAndGetSint32(DCM_InstanceNumber, instanceNumber).good() )
     {
@@ -356,8 +363,7 @@ OFCondition Image2Dcm::generateUIDs(DcmDataset *dset)
   OFString value;
   OFCondition cond;
 
-  if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Generate and insert new UIDs if necessary");
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Generate and insert new UIDs if necessary");
   // Generate and write Series Instance UID if not already present
   if (!m_readSeriesLevel)
   {
@@ -412,8 +418,7 @@ OFCondition Image2Dcm::insertEncapsulatedPixelData(DcmDataset* dset, char *pixDa
   OFCondition cond;
   DcmPixelSequence *pixelSequence = NULL;
 
-  if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Store imported pixel data to DICOM file");
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Store imported pixel data to DICOM file");
   // create initial pixel sequence
   pixelSequence = new DcmPixelSequence(DcmTag(DCM_PixelData, EVR_OB));
   if (pixelSequence == NULL)
@@ -457,8 +462,6 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
                                               DcmDataset* dset,
                                               E_TransferSyntax& outputTS)
 {
-  imgSource->setDebugMode(m_debug);
-
   Uint16 samplesPerPixel, rows, cols, bitsAlloc, bitsStored, highBit, pixelRepr, planConf;
   Uint16 pixAspectH =1; Uint16 pixAspectV = 1;
   OFString photoMetrInt;
@@ -483,8 +486,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
     delete[] pixData;
   }
 
-  if (m_debug)
-    printMessage(m_logStream, "Image2Dcm: Inserting Image Pixel Module information");
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Inserting Image Pixel module information");
 
   cond = dset->putAndInsertUint16(DCM_SamplesPerPixel, samplesPerPixel);
   if (cond.bad())
@@ -538,8 +540,7 @@ OFCondition Image2Dcm::readAndInsertPixelData(I2DImgSource* imgSource,
 
 OFString Image2Dcm::isValid(DcmDataset& dset) const
 {
-  if (m_debug)
-   printMessage(m_logStream, "Image2Dcm: Checking validity of DICOM output dataset");
+  DCMDATA_LIBI2D_DEBUG("Image2Dcm: Checking validity of DICOM output dataset");
   OFString dummy, err; OFCondition cond;
   // General Patient module attributes
   err += checkAndInventType2Attrib(DCM_PatientsName, &dset);
@@ -688,13 +689,8 @@ OFString Image2Dcm::checkAndInventType1Attrib(const DcmTagKey& key,
         {
           if (elem->putString(defaultValue.c_str()).good())
           {
-            if (m_debug)
-            {
-              OFString msg = "Image2Dcm: Inserting missing type 1 attribute ";
-              msg += tag.getTagName(); msg += " with value "; msg += defaultValue;
-              printMessage(m_logStream, msg);
-              return err;
-            }
+            DCMDATA_LIBI2D_DEBUG("Image2Dcm: Inserting missing type 1 attribute " << tag.getTagName()
+                << " with value " << defaultValue);
           } else wasError = OFTrue;
         } else wasError = OFTrue;
     } else wasError = OFTrue;
@@ -717,8 +713,7 @@ OFString Image2Dcm::checkAndInventType2Attrib(const DcmTagKey& key,
     if (m_inventMissingType2Attribs)
     {
       DcmTag tag(key);
-      if (m_debug)
-        printMessage(m_logStream, "Image2Dcm: Inserting missing type 2 attribute: ", tag.getTagName());
+      DCMDATA_LIBI2D_DEBUG("Image2Dcm: Inserting missing type 2 attribute: " << tag.getTagName());
       targetDset->insertEmptyElement(tag);
     }
     else
@@ -733,14 +728,16 @@ OFString Image2Dcm::checkAndInventType2Attrib(const DcmTagKey& key,
 
 Image2Dcm::~Image2Dcm()
 {
-  if (m_debug)
-    printMessage(m_logStream,"Image2Dcm: Freeing memory");
+  DCMDATA_LIBI2D_DEBUG("Freeing memory");
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: i2d.cc,v $
+ * Revision 1.11  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.10  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

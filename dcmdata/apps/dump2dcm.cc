@@ -21,9 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:25:13 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,6 @@
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/dcmdata/dcuid.h"     /* for dcmtk version name */
@@ -127,6 +126,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dump2dcm"
+
+static OFLogger dump2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -216,7 +217,7 @@ getLine(char *line, int maxLineLen, FILE *f, const unsigned long lineNumber)
         int c = fgetc(f);
         while(c != '\n' && c != EOF)
             c = fgetc(f);
-        CERR << "line " << lineNumber << " too long." << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, "line " << lineNumber << " too long.");
     }
 
     /* strip any trailing white space */
@@ -463,16 +464,16 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         /* read element value from binary file (requires even length) */
         ec = elem->createValueFromTempFile(fileStream.newFactory(), fileLen, EBO_LittleEndian);
         if (ec.bad())
-            CERR << "ERROR: cannot process binary data file: " << filename << OFendl;
+            OFLOG_ERROR(dump2dcmLogger, "cannot process binary data file: " << filename);
     } else {
-        CERR << "ERROR: cannot open binary data file: " << filename << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, "cannot open binary data file: " << filename);
         ec = EC_InvalidTag;
     }
 #else
     FILE *f = NULL;
     if ((f = fopen(filename, "rb")) == NULL)
     {
-        CERR << "ERROR: cannot open binary data file: " << filename << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, "cannot open binary data file: " << filename);
         return EC_InvalidTag;
     }
 
@@ -498,8 +499,8 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         /* read binary file into the buffer */
         if (fread(buf, 1, OFstatic_cast(size_t, len), f) != len)
         {
-            CERR << "ERROR: error reading binary data file: " << filename << ": ";
-            perror(NULL);
+            OFLOG_ERROR(dump2dcmLogger, "error reading binary data file: " << filename
+                    << ": " << strerror(errno));
             ec = EC_CorruptedData;
         }
         else if (evr == EVR_OW)
@@ -509,9 +510,9 @@ putFileContentsIntoElement(DcmElement *elem, const char *filename)
         }
     }
     else if (ec == EC_MemoryExhausted)
-        CERR << "ERROR: out of memory reading binary data file: " << filename << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, "out of memory reading binary data file: " << filename);
     else
-        CERR << "ERROR: illegal call processing binary data file: " << filename << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, "illegal call processing binary data file: " << filename);
 
     fclose(f);
 #endif
@@ -548,9 +549,9 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
            (tagvr != EVR_ox || (vr != EVR_OB && vr != EVR_OW)) &&
            (tagvr != EVR_na || vr != EVR_pixelItem))
         {
-            CERR << "Warning: Tag " << tag << " with wrong VR '"
+            OFLOG_WARN(dump2dcmLogger, "Tag " << tag << " with wrong VR '"
                  << dcmvr.getVRName() << "' found, correct is '"
-                 << tag.getVR().getVRName() << "'" << OFendl;
+                 << tag.getVR().getVRName() << "'");
         }
 
         if (vr != EVR_UNKNOWN)
@@ -733,8 +734,8 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
         // parse tag an the line
         if (!parseTag(parse, tagkey))
         {
-            CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "no Tag found (line " << lineNumber << ")"<< OFendl;
+            OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
+                 << "no Tag found (line " << lineNumber << ")");
             errorOnThisLine = OFTrue;
         }
 
@@ -745,8 +746,8 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
         // parse optional value
         if (!errorOnThisLine && !parseValue(parse, value, vr, tagkey))
         {
-            CERR << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "incorrect value specification (line " << lineNumber << ")"<< OFendl;
+            OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
+                 << "incorrect value specification (line " << lineNumber << ")");
             errorOnThisLine = OFTrue;
         }
 
@@ -781,8 +782,8 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
             if (l_error != EC_Normal)
             {
                 errorOnThisLine = OFTrue;
-                CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
-                     << l_error.text() << " (line " << lineNumber << ")"<< OFendl;
+                OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
+                     << l_error.text() << " (line " << lineNumber << ")");
             }
 
         }
@@ -795,13 +796,13 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
     // test blocking structure
     if (metaheader && metaheaderStack.card() != 1)
     {
-        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader" << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader");
         errorsEncountered++;
     }
 
     if (datasetStack.card() != 1)
     {
-        CERR << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset" << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset");
         errorsEncountered++;
     }
 
@@ -809,7 +810,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
 
     if (errorsEncountered)
     {
-        CERR << errorsEncountered << " Errors found in " <<  ifname << OFendl;
+        OFLOG_ERROR(dump2dcmLogger, errorsEncountered << " Errors found in " <<  ifname);
         return !stopOnErrors;
     }
     else
@@ -825,8 +826,6 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(( 0 ));
-
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert ASCII dump to DICOM file", rcsid);
     OFCommandLine cmd;
 
@@ -839,9 +838,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                   "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
      cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-     cmd.addOption("--arguments",                        "print expanded command line arguments");
-     cmd.addOption("--verbose",                "-v",     "verbose mode, print processing details");
-     cmd.addOption("--debug",                  "-d",     "debug mode, print debug information");
+     OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
       cmd.addSubGroup("input file format:");
@@ -894,7 +891,6 @@ int main(int argc, char *argv[])
                                                          "0=uncompressed, 1=fastest, 9=best compression");
 #endif
 
-    int opt_debugMode = 0;
     const char *opt_ifname = NULL;
     const char *opt_ofname = NULL;
     E_TransferSyntax opt_xfer = EXS_Unknown;
@@ -905,7 +901,6 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_filepad = 0;
     OFCmdUnsignedInt opt_itempad = 0;
     OFCmdUnsignedInt opt_linelength = DCM_DumpMaxLineSize;
-    OFBool opt_verboseMode = OFFalse;
     OFBool opt_stopOnErrors = OFTrue;
     OFBool opt_metaInfo = OFTrue;
     OFBool opt_generateUIDs = OFFalse;
@@ -915,10 +910,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-          app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -940,8 +931,7 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
-      if (cmd.findOption("--verbose")) opt_verboseMode = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      OFLog::configureFromCommandLine(cmd, app);
 
       /* input options */
 
@@ -1041,35 +1031,33 @@ int main(int argc, char *argv[])
 #endif
     }
 
+    /* print resource identifier */
+    OFLOG_DEBUG(dump2dcmLogger, rcsid << OFendl);
+
     DcmFileFormat fileformat;
     DcmMetaInfo *metaheader = (opt_metaInfo) ? fileformat.getMetaInfo() : NULL;
     DcmDataset *dataset = fileformat.getDataset();
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dump2dcmLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open input dump file
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "Error: invalid input filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dump2dcmLogger, "invalid input filename: <empty string>");
         return 1;
     }
-    if (opt_verboseMode)
-        COUT << "reading dump file: " << opt_ifname << OFendl;
+    OFLOG_INFO(dump2dcmLogger, "reading dump file: " << opt_ifname);
 
     FILE *dumpfile = fopen(opt_ifname, "r");
     if (!dumpfile)
     {
-        CERR << "Error: input file does not exist: " << opt_ifname << OFendl;
+        OFLOG_FATAL(dump2dcmLogger, "input file does not exist: " << opt_ifname);
         return 1;
     }
 
@@ -1085,20 +1073,17 @@ int main(int argc, char *argv[])
             char uid[100];
             if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
             {
-                if (opt_verboseMode)
-                    COUT << "generating new Study Instance UID" << OFendl;
+                OFLOG_INFO(dump2dcmLogger, "generating new Study Instance UID");
                 dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
             }
             if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
             {
-                if (opt_verboseMode)
-                    COUT << "generating new Series Instance UID" << OFendl;
+                OFLOG_INFO(dump2dcmLogger, "generating new Series Instance UID");
                 dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
             }
             if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
             {
-                if (opt_verboseMode)
-                    COUT << "generating new SOP Instance UID" << OFendl;
+                OFLOG_INFO(dump2dcmLogger, "generating new SOP Instance UID");
                 dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
                 /* make sure that the file meta information is updated correspondingly */
                 if (opt_writeMode == EWM_fileformat)
@@ -1107,8 +1092,7 @@ int main(int argc, char *argv[])
         }
 
         // write into file format or dataset
-        if (opt_verboseMode)
-            COUT << "writing DICOM file" << OFendl;
+        OFLOG_INFO(dump2dcmLogger, "writing DICOM file");
 
         /* determine transfer syntax to write the file */
         if (opt_xfer == EXS_Unknown)
@@ -1117,7 +1101,7 @@ int main(int argc, char *argv[])
             /* check whether output xfer is still unknown */
             if (opt_xfer == EXS_Unknown)
             {
-                CERR << "Warning: output transfer syntax unknown, assuming --write-xfer-little" << OFendl;
+                OFLOG_WARN(dump2dcmLogger, "output transfer syntax unknown, assuming --write-xfer-little");
                 opt_xfer = EXS_LittleEndianExplicit;
             }
         }
@@ -1127,7 +1111,7 @@ int main(int argc, char *argv[])
             /* check whether pixel data is compressed */
             if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).isEncapsulated())
             {
-                CERR << "Warning: encapsulated pixel data require file format, ignoring --write-dataset" << OFendl;
+                OFLOG_WARN(dump2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
                 opt_writeMode = EWM_fileformat;
             }
             OFCondition l_error = fileformat.saveFile(opt_ofname, opt_xfer, opt_enctype, opt_glenc, opt_padenc,
@@ -1135,15 +1119,14 @@ int main(int argc, char *argv[])
 
             if (l_error == EC_Normal)
             {
-                if (opt_verboseMode)
-                    COUT << "dump successfully converted." << OFendl;
+                OFLOG_INFO(dump2dcmLogger, "dump successfully converted.");
             } else {
-                CERR << "Error: " << l_error.text() << ": writing file: "  << opt_ofname << OFendl;
+                OFLOG_ERROR(dump2dcmLogger, l_error.text() << ": writing file: "  << opt_ofname);
                 status = 1;
             }
         } else {
-            CERR << "Error: no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
-                 << " possible!" << OFendl;
+            OFLOG_ERROR(dump2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
+                 << " possible!");
             status = 2;
         }
     }
@@ -1156,6 +1139,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.65  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.64  2009-08-21 09:25:13  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the

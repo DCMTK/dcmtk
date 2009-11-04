@@ -21,10 +21,10 @@
  *
  *  Purpose: Definition of the class DcmTag
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:44 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dctag.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -227,6 +227,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
+** Revision 1.22  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.21  2005-12-08 16:28:44  meichel
 ** Changed include path schema for all DCMTK header files
 **

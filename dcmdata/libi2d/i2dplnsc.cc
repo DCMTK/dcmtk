@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements conversion from image into new DICOM SC IODs
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,12 +35,12 @@
 #include "dcmtk/dcmdata/libi2d/i2dplnsc.h"
 #include "dcmtk/dcmdata/dcdeftag.h"        /* for DCM_ defines */
 #include "dcmtk/dcmdata/dcuid.h"           /* for UID_ defines */
+#include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
 
 I2DOutputPlugNewSC::I2DOutputPlugNewSC()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugNewSC: Output plugin for new Multiframe Secondary Capture SOPs initialized");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugNewSC: Output plugin for new Multiframe Secondary Capture SOPs initialized");
 }
 
 
@@ -62,8 +62,7 @@ void I2DOutputPlugNewSC::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
 
 OFCondition I2DOutputPlugNewSC::convert(DcmDataset &dataset) const
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugNewSC: Inserting new Multiframe SC specific attributes");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugNewSC: Inserting new Multiframe SC specific attributes");
 
   // Find out which of the new SC SOP Class UIDs to use
   OFString sopUID, photInt; Uint16 bitsAllocated;
@@ -92,8 +91,7 @@ OFString I2DOutputPlugNewSC::isValid(DcmDataset& dataset) const
   if (!m_doAttribChecking)
     return err;
 
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugNewSC: Checking new Multiframe SC specific attributes");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugNewSC: Checking new Multiframe SC specific attributes");
   // WSD="Workstation", found in most Secondary Capture files
   err += checkAndInventType1Attrib(DCM_ConversionType, &dataset, "WSD");
   // As a default we do not expect the image to have burnt in annotations
@@ -276,6 +274,9 @@ I2DOutputPlugNewSC::~I2DOutputPlugNewSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplnsc.cc,v $
+ * Revision 1.4  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2009-09-30 08:05:26  uli
  * Stop including dctk.h in libi2d's header files.
  *

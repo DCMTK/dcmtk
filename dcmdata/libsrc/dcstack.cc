@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:37 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,10 +34,9 @@
 
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
-
+#include "dcmtk/ofstd/ofcast.h"
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dcstack.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 
 // ************************************************
@@ -278,6 +277,9 @@ OFBool DcmStack::operator==(const DcmStack& arg) const
 /*
  * CVS/RCS Log:
  * $Log: dcstack.cc,v $
+ * Revision 1.19  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.18  2005-12-08 15:41:37  meichel
  * Changed include path schema for all DCMTK header files
  *

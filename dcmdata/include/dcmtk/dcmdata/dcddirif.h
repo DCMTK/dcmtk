@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-15 10:16:40 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -318,14 +318,6 @@ class DicomDirInterface
      */
     OFCondition setDefaultIcon(const char *filename);
 
-    /** get current status of the verbose mode
-     *  @return OFTrue if mode is enabled, OFFalse otherwise
-     */
-    OFBool verboseMode() const
-    {
-        return VerboseMode;
-    }
-
     /** get current status of the "abort on first error" mode.
      *  See enableAbortMode() for more details.
      *  @return OFTrue if mode is enabled, OFFalse otherwise
@@ -424,15 +416,6 @@ class DicomDirInterface
     {
         return ConsistencyCheck;
     }
-
-    /** enable/disable the verbose mode.
-     *  If the mode is enabled messages like "creating DICOMDIR file ..." or
-     *  "adding file ..." are reported to the log stream (see setLogStream).
-     *  Default: off, no messages
-     *  @param newMode enable mode if OFTrue, disable if OFFalse
-     *  @return previously stored value
-     */
-    OFBool enableVerboseMode(const OFBool newMode = OFTrue);
 
     /** enable/disable the "abort on first error" mode.
      *  If the mode is enabled addDicomFile() reports an error message and
@@ -551,12 +534,6 @@ class DicomDirInterface
      *  @return OFTrue if successful, OFFalse otherwise
      */
     OFBool addImageSupport(DicomDirImagePlugin *plugin);
-
-    /** set the log stream.
-     *  The log stream is used to report any warnings, debug and error messages.
-     ** @param stream pointer to the log stream (initial: NULL = no messages)
-     */
-    void setLogStream(OFConsole *stream);
 
     /* -- static function -- */
 
@@ -1071,29 +1048,6 @@ class DicomDirInterface
      */
     void deleteDicomDirBackup();
 
-    /** print a message on the log stream (stdout)
-     *  @param message message to be printed
-     *  @param suffix optional message suffix
-     */
-    void printMessage(const char *message,
-                      const char *suffix = NULL);
-
-    /** print a warning message on the log stream (stderr).
-     *  The prefix "Warning: " is printed automatically.
-     *  @param message warning message to be printed
-     *  @param suffix optional message suffix
-     */
-    void printWarningMessage(const char *message,
-                             const char *suffix = NULL);
-
-    /** print an error message on the log stream (stderr).
-     *  The prefix "Error: " is printed automatically.
-     *  @param message error message to be printed
-     *  @param suffix optional message suffix
-     */
-    void printErrorMessage(const char *message,
-                           const char *suffix = NULL);
-
     /** print a message that the value of a given tag is unexpected.
      *  The output format is: "{Error|Warning}: attribute <key.tagName()> <key>
      *  has other value than expected[ in file: <filename>]"
@@ -1403,9 +1357,6 @@ class DicomDirInterface
 
   private:
 
-    /// output stream for error messages, NULL for no messages
-    OFConsole *LogStream;
-
     /// pointer to the current DICOMDIR object
     DcmDicomDir *DicomDir;
 
@@ -1415,8 +1366,6 @@ class DicomDirInterface
     /// currently selected application profile
     E_ApplicationProfile ApplicationProfile;
 
-    /// print verbose messages
-    OFBool VerboseMode;
     /// create DICOMDIR backup
     OFBool BackupMode;
     /// abort on first inconsistent record
@@ -1491,6 +1440,9 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
+ * Revision 1.15  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.14  2009-01-15 10:16:40  joergr
  * Added check whether (possibly required) JPEG 2000 decoder is registered.
  *

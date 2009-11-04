@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files from comandline
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2009-09-04 13:53:09 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 #endif
 
+static OFLogger mdfconenLogger = OFLog::getLogger("dcmtk.dcmdata.mdfconen");
 
 OFBool MdfJob::operator==(const MdfJob& j) const
 {
@@ -63,8 +64,7 @@ OFBool MdfJob::operator==(const MdfJob& j) const
 
 MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
                                    const char *application_name)
-  : app(NULL), cmd(NULL), ds_man(NULL), verbose_option(OFFalse),
-    debug_option(OFFalse), ignore_errors_option(OFFalse),
+  : app(NULL), cmd(NULL), ds_man(NULL), ignore_errors_option(OFFalse),
     update_metaheader_uids_option(OFTrue), no_backup_option(OFFalse),
     read_mode_option(ERM_autoDetect), input_xfer_option(EXS_Unknown),
     output_dataset_option(OFFalse), output_xfer_option(EXS_Unknown),
@@ -92,9 +92,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
     cmd->addGroup("general options:", LONGCOL, SHORTCOL + 2);
         cmd->addOption("--help",                    "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
         cmd->addOption("--version",                            "print version information and exit", OFCommandLine::AF_Exclusive);
-        cmd->addOption("--arguments",                          "print expanded command line arguments");
-        cmd->addOption("--verbose",                 "-v",      "verbose mode, print verbose output");
-        cmd->addOption("--debug",                   "-d",      "debug mode, print debug information");
+        OFLog::addOptions(*cmd);
         cmd->addOption("--ignore-errors",           "-ie",     "continue with file, if modify error occurs");
         cmd->addOption("--no-backup",               "-nb",     "don't backup files (DANGEROUS)");
     cmd->addGroup("input options:");
@@ -177,10 +175,6 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         if (cmd->getArgCount() == 0)
             app->printUsage();
 
-        /* check whether to print the command line arguments */
-        if (cmd->findOption("--arguments"))
-            app->printArguments();
-
         /* check exclusive options first */
         if (cmd->hasExclusiveOption())
         {
@@ -212,7 +206,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         //if no files are given: return with error message
         if (files->empty())
         {
-            debugMsg(OFTrue, "Error: no dicom files given!", "", "");
+            OFLOG_ERROR(mdfconenLogger, "no dicom files given!");
             delete app;
             delete cmd;
             exit(1);
@@ -220,22 +214,19 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 
         // make sure data dictionary is loaded
         if (!dcmDataDict.isDictionaryLoaded())
-            debugMsg(OFTrue, "Warning: no data dictionary loaded, ",
-                "check environment variable: ", DCM_DICT_ENVIRONMENT_VARIABLE);
+            OFLOG_WARN(mdfconenLogger, "no data dictionary loaded, "
+                << "check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
+
+    /* print resource identifier */
+    OFLOG_DEBUG(mdfconenLogger, rcsid << OFendl);
 }
 
 
 void MdfConsoleEngine::parseNonJobOptions()
 {
     // catch "general" options
-    if (cmd->findOption("--verbose"))
-        verbose_option = OFTrue;
-    if (cmd->findOption("--debug"))
-    {
-        app->printIdentifier();
-        debug_option = OFTrue;
-    }
+    OFLog::configureFromCommandLine(*cmd, *app);
     if (cmd->findOption("--ignore-errors"))
         ignore_errors_option = OFTrue;
     if (cmd->findOption("--no-meta-uid"))
@@ -467,11 +458,8 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
 {
     OFCondition result;
     int count=0; int error_count=0;
-    if (verbose_option)
-    {
-         debugMsg(verbose_option, OFString("Executing (option|path|value): ")
-            + job.option + "|" + job.path + "|" + job.value,"","");
-    }
+    OFLOG_INFO(mdfconenLogger,  "Executing (option|path|value): "
+            << job.option << "|" << job.path << "|" << job.value);
     //start modify operation based on job option
     if (job.option=="i")
       result=ds_man->modifyOrInsertPath(job.path, job.value, OFFalse, update_metaheader_uids_option, ignore_missing_tags_option, no_reservation_checks);
@@ -496,15 +484,15 @@ int MdfConsoleEngine::executeJob(const MdfJob &job,
     else
     {
         error_count++;
-        debugMsg(OFTrue, "Error: no valid option: ", job.option, "");
+        OFLOG_ERROR(mdfconenLogger, "no valid option: " << job.option);
     }
     //if modify operation failed
     if (result.bad() && error_count == 0)
     {
         if (filename != NULL)
-          debugMsg(OFTrue, "Error: modifying tag in file ", OFString(filename) + ": ", result.text());
+            OFLOG_ERROR(mdfconenLogger, "modifying tag in file " << OFString(filename) << ": " << result.text());
         else
-          debugMsg(OFTrue, "Error: modifying tag: ", result.text(), "");
+            OFLOG_ERROR(mdfconenLogger, "modifying tag: " << result.text());
         error_count++;
     }
     return error_count;
@@ -549,14 +537,14 @@ int MdfConsoleEngine::startProvidingService()
                                           itempad_option, output_dataset_option);
                 if (result.bad())
                 {
-                    debugMsg(OFTrue, "Error: couldn't save file: ", result.text(),"");
+                    OFLOG_ERROR(mdfconenLogger, "couldn't save file: " << result.text());
                     errors++;
                     if (!no_backup_option)
                     {
                       result=restoreFile(filename);
                       if (result.bad())
                       {
-                          debugMsg(OFTrue, "Error: couldn't restore file!", "", "");
+                          OFLOG_ERROR(mdfconenLogger, "couldn't restore file!");
                           errors++;
                       }
                     }
@@ -568,7 +556,7 @@ int MdfConsoleEngine::startProvidingService()
                 result=restoreFile(filename);
                 if (result.bad())
                 {
-                    debugMsg(OFTrue, "Error: couldn't restore file!", "", "");
+                    OFLOG_ERROR(mdfconenLogger, "couldn't restore file!");
                     errors++;
                 }
             }
@@ -577,12 +565,12 @@ int MdfConsoleEngine::startProvidingService()
         else
         {
             errors++;
-            debugMsg(OFTrue, "Error: unable to load file ", filename, "");
+            OFLOG_ERROR(mdfconenLogger, "unable to load file " << filename);
         }
         file_it++;
         // output separator line if required
         if ((file_it != file_last) || (errors > 0))
-          debugMsg(verbose_option, "------------------------------------", "", "");
+          OFLOG_INFO(mdfconenLogger, "------------------------------------");
     }
     return errors;
 }
@@ -593,9 +581,9 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     OFCondition result;
     //free memory
     delete ds_man;
-    ds_man = new MdfDatasetManager(verbose_option, debug_option);
+    ds_man = new MdfDatasetManager();
     ds_man->setModifyUNValues(!ignore_un_modifies);
-    debugMsg(verbose_option, "Processing file: ", filename, "");
+    OFLOG_INFO(mdfconenLogger, "Processing file: " << filename);
     //load file into dataset manager
     result=ds_man->loadFile(filename, read_mode_option, input_xfer_option);
     if (result.good() && !no_backup_option)
@@ -643,7 +631,7 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
         result=remove(filename);
         if (result!=0)
         {
-            debugMsg(OFTrue, "Error: unable to delete original filename for restoring backup!", "", "");
+            OFLOG_ERROR(mdfconenLogger, "unable to delete original filename for restoring backup!");
             return EC_IllegalCall;
         }
     }
@@ -652,27 +640,14 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
     //error renaming backup file
     if (result!=0)
     {
-        debugMsg(OFTrue, "Error: renaming backup file to original", "", "");
+        OFLOG_ERROR(mdfconenLogger, "renaming backup file to original");
         return EC_IllegalCall;
     }
     //successfully restored, throw out message:
     else
-        debugMsg(verbose_option, "Renamed backup file to original", "", "");
+        OFLOG_INFO(mdfconenLogger, "Renamed backup file to original");
     //you only get to this point, if restoring was completely successful
     return EC_Normal;
-}
-
-
-void MdfConsoleEngine::debugMsg(const OFBool &condition,
-                                const OFString &s1,
-                                const OFString &s2,
-                                const OFString &s3)
-{
-    if (condition)
-    {
-        ofConsole.lockCerr() << s1 << s2 << s3 << OFendl;
-        ofConsole.unlockCerr();
-    }
 }
 
 
@@ -689,6 +664,9 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
+** Revision 1.32  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.31  2009-09-04 13:53:09  meichel
 ** Minor const iterator related changes needed to compile with VC6 with HAVE_STL
 **

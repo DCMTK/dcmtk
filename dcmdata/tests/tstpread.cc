@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Test application for partial element access API
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 15:43:22 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:11 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #endif
 
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
@@ -55,6 +54,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "tstpread"
+
+static OFLogger tstpreadLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -105,18 +106,23 @@ OFCondition sequentialNonOverlappingRead(DcmElement *delem, DcmFileCache *dcache
 
       if (0 != memcmp(target, buffer+offset, bytes_to_read))
       {
-        CERR << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
-        CERR << "Expected: ";
+        OFOStringStream str;
+        str << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
+        str << "Expected: ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          CERR << std::hex << (int) (buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << (int) (buffer[offset+i]) << " ";
         }
-        CERR << OFendl << "Found   : ";
+        str << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          CERR << std::hex << (int) (target[i]) << " ";
+          str << STD_NAMESPACE hex << (int) (target[i]) << " ";
         }
-        CERR << OFendl;
+        str << OFStringStream_ends;
+
+        OFSTRINGSTREAM_GETSTR(str, c_str)
+        OFLOG_ERROR(tstpreadLogger, c_str);
+        OFSTRINGSTREAM_FREESTR(c_str)
         delete[] target;
         return EC_IllegalCall;
       }
@@ -150,18 +156,22 @@ OFCondition sequentialOverlappingRead(DcmElement *delem, DcmFileCache *dcache, u
 
       if (0 != memcmp(target, buffer+offset, bytes_to_read))
       {
-        CERR << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
-        CERR << "Expected: ";
+        OFOStringStream str;
+        str << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
+        str << "Expected: ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          CERR << std::hex << (int) (buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << (int) (buffer[offset+i]) << " ";
         }
-        CERR << OFendl << "Found   : ";
+        str << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          CERR << std::hex << (int) (target[i]) << " ";
+          str << STD_NAMESPACE hex << (int) (target[i]) << " ";
         }
-        CERR << OFendl;
+        str << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(str, c_str)
+        OFLOG_ERROR(tstpreadLogger, c_str);
+        OFSTRINGSTREAM_FREESTR(c_str)
         delete[] target;
         return EC_IllegalCall;
       }
@@ -197,18 +207,22 @@ OFCondition randomRead(DcmElement *delem, DcmFileCache *dcache, unsigned char *b
 
       if (0 != memcmp(target, buffer+offset, bytes_to_read))
       {
-        CERR << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
-        CERR << "Expected: ";
+        OFOStringStream str;
+        str << "Error: unexpected sequence of " << bytes_to_read << " bytes found at offset " << offset << OFendl;
+        str << "Expected: ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          CERR << std::hex << (int) (buffer[offset+i]) << " ";
+          str << STD_NAMESPACE hex << (int) (buffer[offset+i]) << " ";
         }
-        CERR << OFendl << "Found   : ";
+        str << OFendl << "Found   : ";
         for (Uint32 i=0; i<bytes_to_read; ++i)
         {
-          CERR << std::hex << (int) (target[i]) << " ";
+          str << STD_NAMESPACE hex << (int) (target[i]) << " ";
         }
-        CERR << OFendl;
+        str << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(str, c_str)
+        OFLOG_ERROR(tstpreadLogger, c_str);
+        OFSTRINGSTREAM_FREESTR(c_str)
         delete[] target;
         return EC_IllegalCall;
       }
@@ -323,28 +337,18 @@ int main(int argc, char *argv[])
   GUSISetup(GUSIwithInternetSockets);
 #endif
 
-  SetDebugLevel(( 0 ));
-  int opt_debugMode = 0;
-  OFBool opt_verbose = OFFalse;
-
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
   OFCommandLine cmd;
 
   cmd.addGroup("general options:");
    cmd.addOption("--help",      "-h", "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",         "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",       "print expanded command line arguments");
-   cmd.addOption("--verbose",   "-v", "verbose mode, print processing details");
-   cmd.addOption("--debug",     "-d", "debug mode, print debug information");
+   OFLog::addOptions(cmd);
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -360,27 +364,20 @@ int main(int argc, char *argv[])
             return 0;
          }
       }
-
-      /* command line parameters */
-
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* command line parameters */
+    OFLog::configureFromCommandLine(cmd, app);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(tstpreadLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    if (opt_verbose)
-        COUT << "Creating test dataset" << OFendl;
+    OFLOG_INFO(tstpreadLogger, "Creating test dataset");
 
     DcmFileFormat dfile;
 
@@ -395,79 +392,74 @@ int main(int argc, char *argv[])
     createTestDataset(dfile.getDataset(), buffer);
     OFCondition cond = EC_Normal;
 
-    if (opt_verbose)
-        COUT << "Writing test files" << OFendl;
+    OFLOG_INFO(tstpreadLogger, "Writing test files");
 
     cond = dfile.saveFile("test_be.dcm", EXS_BigEndianExplicit);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
     cond = dfile.saveFile("test_le.dcm", EXS_LittleEndianExplicit);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 #ifdef WITH_ZLIB
     cond = dfile.saveFile("test_df.dcm", EXS_DeflatedLittleEndianExplicit);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 #endif
 
-    if (opt_verbose)
-        COUT << "Opening test files" << OFendl;
+    OFLOG_INFO(tstpreadLogger, "Opening test files");
 
     DcmFileFormat dfile_be;
     DcmFileFormat dfile_le;
     DcmFileFormat dfile_df;
 
     cond = dfile_be.loadFile("test_be.dcm");
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
     cond = dfile_le.loadFile("test_le.dcm");
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
 #ifdef WITH_ZLIB
     cond = dfile_df.loadFile("test_df.dcm");
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 #endif
 
     // testing sequential, non overlapping reads of partial element values
-    if (opt_verbose)
-        COUT << "Testing sequential, non overlapping reads of partial element values" << OFendl;
+    OFLOG_INFO(tstpreadLogger, "Testing sequential, non overlapping reads of partial element values");
 
     cond = sequentialNonOverlappingRead(dfile_be.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
     cond = sequentialNonOverlappingRead(dfile_le.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
 #ifdef WITH_ZLIB
     cond = sequentialNonOverlappingRead(dfile_df.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 #endif
 
     // testing random reads of partial element values
-    if (opt_verbose)
-        COUT << "Testing random reads of partial element values" << OFendl;
+    OFLOG_INFO(tstpreadLogger, "Testing random reads of partial element values");
 
     cond = randomRead(dfile_be.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
     cond = randomRead(dfile_le.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
 #ifdef WITH_ZLIB
     cond = randomRead(dfile_df.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 #endif
 
     // testing overlapping reads of partial element values
-    if (opt_verbose)
-        COUT << "Testing overlapping reads of partial element values" << OFendl;
+    OFLOG_INFO(tstpreadLogger, "Testing overlapping reads of partial element values");
 
     cond = sequentialOverlappingRead(dfile_be.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
     cond = sequentialOverlappingRead(dfile_le.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 
 #ifdef WITH_ZLIB
     cond = sequentialOverlappingRead(dfile_df.getDataset(), buffer);
-    if (cond.bad()) { CERR << "Error: " << cond.text() << OFendl; return 10; }
+    if (cond.bad()) { OFLOG_FATAL(tstpreadLogger, cond.text()); return 10; }
 #endif
 
     delete[] buffer;
@@ -478,6 +470,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: tstpread.cc,v $
+ * Revision 1.4  2009-11-04 09:58:11  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2008-09-25 15:43:22  joergr
  * Added support for printing the expanded command line arguments.
  * Always output the resource identifier of the command line tool in debug mode.

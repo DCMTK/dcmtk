@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: singleton class that registers RLE encoder.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:39 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcrleerg.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,6 @@ public:
    *  been performed before.
    *  @param pCreateSOPInstanceUID flag indicating whether or not
    *    a new SOP Instance UID should be assigned upon compression.
-   *  @param pVerbose verbose mode flag
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @param pCreateOffsetTable create offset table during image compression?
    *  @param pConvertToSC flag indicating whether image should be converted to 
@@ -60,7 +59,6 @@ public:
    */
   static void registerCodecs(
     OFBool pCreateSOPInstanceUID = OFFalse,
-    OFBool pVerbose = OFFalse,
     Uint32 pFragmentSize = 0,
     OFBool pCreateOffsetTable = OFTrue,
     OFBool pConvertToSC = OFFalse);
@@ -100,6 +98,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleerg.h,v $
+ * Revision 1.5  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.4  2005-12-08 16:28:39  meichel
  * Changed include path schema for all DCMTK header files
  *

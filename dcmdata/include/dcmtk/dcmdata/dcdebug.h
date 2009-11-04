@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Print debug information
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,59 +33,8 @@
 #ifndef DCDEBUG_H
 #define DCDEBUG_H
 
-#include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dcmtk/ofstd/ofstream.h"
-#include "dcmtk/ofstd/ofglobal.h"
-
-/** global variable maintaining an application-wide debug level
- */
-extern OFGlobal<int> DcmDebugLevel; /* default 0 */
-
-#ifdef DEBUG
-
-/** fprint-like function for debug output
- *  @param text fprint-like format string
- *  @param ... parameter list
- */
-void DCM_dcmdata_debug_print(const char* text, ... );
-
-/// Macro for setting the the debug level
-#define SetDebugLevel(level) DcmDebugLevel.set(level);
-
-/** Macro that prints a debug message in param if lev <= DcmDebugLevel. 
- *  param must be a printf parameter list in brackets!
- */
-#define DCM_dcmdataDebug(lev, param) \
-  { \
-    if ((lev) <= DcmDebugLevel.get()) \
-    { \
-      ofConsole.lockCerr() << __FILE__ << ", LINE " << __LINE__ << ":"; \
-      DCM_dcmdata_debug_print param ; \
-      ofConsole.unlockCerr(); \
-    } \
-  }
-
-/** Macro that prints a debug message in param if lev <= DcmDebugLevel
- *  and condition cond is true. 
- *  param must be a printf parameter list in brackets!
- */
-#define DCM_dcmdataCDebug(lev, cond, param) \
-  { \
-    if ((lev) <= DcmDebugLevel.get() && (cond)) \
-    { \
-      ofConsole.lockCerr() << __FILE__ << ", LINE " << __LINE__ << ":"; \
-      DCM_dcmdata_debug_print param ; \
-      ofConsole.unlockCerr(); \
-    } \
-  }
-
-#else  // DEBUG
-
-#define SetDebugLevel(param)
-#define DCM_dcmdataDebug(lev, param)
-#define DCM_dcmdataCDebug(lev, cond, param)
-
-#endif // DEBUG
+#warning Remove dcdebug.h as soon as nothing uses it anymore (= soon!)
+#define SetDebugLevel(param) { int SetDebugLevel_was_removed; }
 
 #endif // DCDEBUG_H
 
@@ -93,6 +42,9 @@ void DCM_dcmdata_debug_print(const char* text, ... );
 /*
  * CVS/RCS Log:
  * $Log: dcdebug.h,v $
+ * Revision 1.15  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.14  2007-11-29 14:30:35  meichel
  * Updated doxygen API documentation
  *

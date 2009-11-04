@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2007, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-25 12:54:57 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,6 @@
 #include "dcmtk/dcmdata/dcdatset.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcvrus.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcpixel.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
@@ -265,11 +264,8 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
                     case EXS_BigEndianImplicit:
                         Xfer = checkTransferSyntax(inStream);
                         if( xfer != EXS_Unknown && Xfer != xfer )
-                        {
-                            ofConsole.lockCerr() << "Warning: dcdatset: wrong transfer syntax specified, "
-                                                 << "detecting from dataset" << OFendl;
-                            ofConsole.unlockCerr();
-                        }
+                            DCMDATA_WARN("dcdatset: wrong transfer syntax specified, "
+                                      << "detecting from dataset");
                         break;
                     default:
                         Xfer = xfer;
@@ -326,7 +322,7 @@ OFCondition DcmDataset::read(DcmInputStream &inStream,
     }
 
     /* dump information if required */
-    DCM_dcmdataDebug(3, ("DcmDataset::read: At End: errorFlag = %s", errorFlag.text()));
+    DCMDATA_TRACE("DcmDataset::read: At End: errorFlag = " << errorFlag.text());
 
     /* return result flag */
     return errorFlag;
@@ -646,6 +642,9 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
+** Revision 1.46  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.45  2009-08-25 12:54:57  joergr
 ** Added new methods which remove all data elements with an invalid group number
 ** from the meta information header, dataset and/or fileformat.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Base class for converter from image file to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,18 @@
 
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/dcdatset.h"
+#include "dcmtk/oflog/oflog.h"
+
+
+OFLogger DCM_dcmdataLibi2dGetLogger();
+
+#define DCMDATA_LIBI2D_TRACE(msg) OFLOG_TRACE(DCM_dcmdataLibi2dGetLogger(), msg)
+#define DCMDATA_LIBI2D_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataLibi2dGetLogger(), msg)
+#define DCMDATA_LIBI2D_INFO(msg)  OFLOG_INFO(DCM_dcmdataLibi2dGetLogger(), msg)
+#define DCMDATA_LIBI2D_WARN(msg)  OFLOG_WARN(DCM_dcmdataLibi2dGetLogger(), msg)
+#define DCMDATA_LIBI2D_ERROR(msg) OFLOG_ERROR(DCM_dcmdataLibi2dGetLogger(), msg)
+#define DCMDATA_LIBI2D_FATAL(msg) OFLOG_FATAL(DCM_dcmdataLibi2dGetLogger(), msg)
+
 
 class I2DOutputPlug
 {
@@ -45,8 +57,7 @@ public:
    *  @return none
    */
   I2DOutputPlug() : m_doAttribChecking(OFTrue), m_inventMissingType2Attribs(OFTrue),
-                    m_inventMissingType1Attribs(OFTrue), m_debug(OFFalse),
-                    m_logStream(NULL)
+                    m_inventMissingType1Attribs(OFTrue)
   {};
 
   /** Virtual function that returns a short name of the plugin.
@@ -77,39 +88,6 @@ public:
    *  @return none
    */
   virtual ~I2DOutputPlug() {};
-
-  /** Sets the log stream
-   *  The log stream is used to report any warnings and error messages.
-   *  @param stream - [out] pointer to the log stream (might be NULL = no messages)
-   *  @return none
-   */
-  void setLogStream(OFConsole *stream)
-  {
-    m_logStream = stream;
-  }
-
-  /** Sets the debug mode
-   *  @param debugMode - [in] New status for debug mode
-   *  @return none
-   */
-  virtual void setDebugMode(const OFBool& debugMode) { m_debug = debugMode; };
-
-  /** Prints a message to the given stream.
-   ** @param  stream - [out] output stream to which the message is printed
-   *  @param  message1 - [in] first part of message to be printed
-   *  @param  message2 - [in] second part of message to be printed
-   *  @return none
-   */
-  static void printMessage(OFConsole *stream,
-                           const OFString& message1,
-                           const OFString& message2 = "")
-  {
-    if (stream != NULL)
-    {
-        stream->lockCerr() << message1 << message2 << OFendl;
-        stream->unlockCerr();
-    }
-  }
 
   /** Enable/Disable basic validity checks for output dataset
    *  @param doChecks - [in] OFTrue enables checking, OFFalse turns it off.
@@ -172,11 +150,7 @@ protected:
           {
             if (elem->putString(defaultValue.c_str()).good())
             {
-              if (m_debug)
-              {
-                COUT << "I2DOutputPlug: Inserting missing type 1 attribute: " << tag.getTagName() << " with value " << defaultValue << OFendl;
-                return err;
-              }
+              DCMDATA_LIBI2D_DEBUG("I2DOutputPlug: Inserting missing type 1 attribute: " << tag.getTagName() << " with value " << defaultValue);
             } else wasError = OFTrue;
           } else wasError = OFTrue;
       } else wasError = OFTrue;
@@ -220,11 +194,7 @@ protected:
             }
             if (result.good())
             {
-              if (m_debug)
-              {
-                COUT << "I2DOutputPlug: Inserting missing type 2 attribute: " << tag.getTagName() << " with value " << (defaultValue.empty() ? "<empty>" : defaultValue) << OFendl;
-                return err;
-              }
+              DCMDATA_LIBI2D_DEBUG("I2DOutputPlug: Inserting missing type 2 attribute: " << tag.getTagName() << " with value " << (defaultValue.empty() ? "<empty>" : defaultValue));
             } else wasError = OFTrue;
           } else wasError = OFTrue;
         } else wasError = OFTrue;
@@ -254,13 +224,6 @@ protected:
   /// predefined value. Default: disabled (OFFalse)
   OFBool m_inventMissingType1Attribs;
 
-  /// debug mode status
-  OFBool m_debug;
-
-  /// stream where warning/error message are sent to.
-  /// can be NULL (default, no output).
-  OFConsole *m_logStream;
-
 };
 
 #endif // #ifndef I2DOUTPL_H
@@ -268,6 +231,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2doutpl.h,v $
+ * Revision 1.8  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.7  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

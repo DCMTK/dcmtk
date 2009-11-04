@@ -21,10 +21,10 @@
  *
  *  Purpose: file cache facility for DcmElement::getPartialValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-07-11 08:50:23 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcfcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcfcache.h,v $
+ * Revision 1.2  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.1  2007-07-11 08:50:23  meichel
  * Initial release of new method DcmElement::getPartialValue which gives access
  *   to partial attribute values without loading the complete attribute value

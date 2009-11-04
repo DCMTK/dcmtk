@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmOtherFloat
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 10:31:32 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,6 +95,9 @@ unsigned long DcmOtherFloat::getVM()
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.cc,v $
+ * Revision 1.4  2009-11-04 09:58:11  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2008-07-17 10:31:32  onken
  * Implemented copyFrom() method for complete DcmObject class hierarchy, which
  * permits setting an instance's value from an existing object. Implemented

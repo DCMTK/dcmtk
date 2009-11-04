@@ -22,8 +22,8 @@
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 #define SHORTCOL 4
 #define LONGCOL 21
 
+static OFLogger img2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static OFCondition evaluateFromFileOptions(OFCommandLine& cmd,
                                            Image2Dcm& converter)
@@ -101,9 +102,7 @@ static void addCmdLineOptions(OFCommandLine& cmd)
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
     cmd.addOption("--help",                  "-h",      "print this help text and exit", OFCommandLine::AF_Exclusive);
     cmd.addOption("--version",                          "print version information and exit", OFCommandLine::AF_Exclusive);
-    cmd.addOption("--arguments",                        "print expanded command line arguments");
-    cmd.addOption("--verbose",               "-v",      "verbose mode, print processing details");
-    cmd.addOption("--debug",                 "-d",      "debug mode, print debug information");
+    OFLog::addOptions(cmd);
 
   cmd.addGroup("input options:", LONGCOL, SHORTCOL + 2);
     cmd.addSubGroup("general:");
@@ -166,10 +165,6 @@ static OFCondition startConversion(OFCommandLine& cmd,
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert standard image formats into DICOM format", rcsid);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
   {
-    /* check whether to print the command line arguments */
-    if (cmd.findOption("--arguments"))
-      app.printArguments();
-
     /* check exclusive options first */
     if (cmd.hasExclusiveOption())
     {
@@ -180,6 +175,9 @@ static OFCondition startConversion(OFCommandLine& cmd,
       }
     }
   }
+
+  /* print resource identifier */
+  OFLOG_DEBUG(img2dcmLogger, rcsid << OFendl);
 
   // Main class for controlling conversion
   Image2Dcm i2d;
@@ -205,25 +203,14 @@ static OFCondition startConversion(OFCommandLine& cmd,
   E_TransferSyntax writeXfer;
 
   // Parse rest of command line options
-  OFBool dMode = OFFalse;
-  OFBool vMode = OFFalse;
-  if (cmd.findOption("--verbose"))
-    vMode = OFTrue;
-  if (cmd.findOption("--debug"))
-  {
-    app.printIdentifier();
-    dMode = OFTrue;
-    vMode = OFTrue;
-    i2d.setDebugMode(OFTrue);
-    i2d.setLogStream(&ofConsole);
-  }
+  OFLog::configureFromCommandLine(cmd, app);
 
   OFString pixDataFile, outputFile, tempStr;
   cmd.getParam(1, tempStr);
 
   if (tempStr.length() == 0)
   {
-    CERR << "Error: No image input filename specified" << OFendl;
+    OFLOG_ERROR(img2dcmLogger, "No image input filename specified");
     return EC_IllegalCall;
   }
   else
@@ -232,14 +219,12 @@ static OFCondition startConversion(OFCommandLine& cmd,
   cmd.getParam(2, tempStr);
   if (tempStr.length() == 0)
   {
-    CERR << "Error: No DICOM output filename specified" << OFendl;
+    OFLOG_ERROR(img2dcmLogger, "No DICOM output filename specified");
     return EC_IllegalCall;
   }
   else
     outputFile = tempStr;
 
-  if (vMode)
-    COUT << OFFIS_CONSOLE_APPLICATION ": Instantiating input plugin: ";
   if (cmd.findOption("--input-format"))
   {
     app.checkValue(cmd.getValue(tempStr));
@@ -264,12 +249,9 @@ static OFCondition startConversion(OFCommandLine& cmd,
   {
     inputPlug = new I2DJpegSource();
   }
-  if (vMode)
-    COUT << inputPlug->inputFormat() << OFendl;
+  OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiated input plugin: " << inputPlug->inputFormat());
 
  // Find out which plugin to use
-  if (vMode)
-    COUT << OFFIS_CONSOLE_APPLICATION ": Instantiating output plugin: ";
   cmd.beginOptionBlock();
   if (cmd.findOption("--sec-capture"))
     outPlug = new I2DOutputPlugSC();
@@ -283,11 +265,7 @@ static OFCondition startConversion(OFCommandLine& cmd,
   if (!outPlug) // default is the old Secondary Capture object
     outPlug = new I2DOutputPlugSC();
   if (outPlug == NULL) return EC_MemoryExhausted;
-  if (vMode)
-    COUT << outPlug->ident() << OFendl;
-
-  outPlug->setDebugMode(dMode);
-  outPlug->setLogStream(&ofConsole);
+  OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Instantiatiated output plugin: " << outPlug->ident());
 
   cmd.beginOptionBlock();
   if (cmd.findOption("--write-file"))    writeMode = EWM_fileformat;
@@ -398,27 +376,23 @@ static OFCondition startConversion(OFCommandLine& cmd,
       jpgSource->setKeepAPPn(OFTrue);
   }
   inputPlug->setImageFile(pixDataFile);
-  inputPlug->setDebugMode(dMode);
-  inputPlug->setLogStream(&ofConsole);
 
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-      CERR << "Warning: no data dictionary loaded, "
+      OFLOG_WARN(img2dcmLogger, "no data dictionary loaded, "
            << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+           << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   DcmDataset *resultObject = NULL;
-  if (vMode)
-    COUT << OFFIS_CONSOLE_APPLICATION ": Starting image conversion" << OFendl;
+  OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Starting image conversion");
   cond = i2d.convert(inputPlug, outPlug, resultObject, writeXfer);
 
   // Save
   if (cond.good())
   {
-    if (vMode)
-      COUT << OFFIS_CONSOLE_APPLICATION ": Saving output DICOM to file " << outputFile << OFendl;
+    OFLOG_INFO(img2dcmLogger, OFFIS_CONSOLE_APPLICATION ": Saving output DICOM to file " << outputFile);
     DcmFileFormat dcmff(resultObject);
     cond = dcmff.saveFile(outputFile.c_str(), writeXfer, lengthEnc, grpLengthEnc, padEnc, filepad, itempad, writeMode);
   }
@@ -446,7 +420,7 @@ int main(int argc, char *argv[])
   OFCondition cond = startConversion(cmd, argc, argv);
   if (cond.bad())
   {
-    CERR << "Error converting file: " << cond.text() << OFendl;
+    OFLOG_FATAL(img2dcmLogger, "Error converting file: " << cond.text());
     return 1;
   }
 
@@ -458,6 +432,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.17  2009-11-04 09:58:06  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.16  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

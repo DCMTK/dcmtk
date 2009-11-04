@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:30:59 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,6 @@ int mkstemp(char *);
 #include "dcmtk/dcmdata/dcuid.h"
 #include "dcmtk/dcmdata/dcdirrec.h"
 #include "dcmtk/dcmdata/dcxfer.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcostrmf.h"    /* for class DcmOutputFileStream */
@@ -235,8 +234,7 @@ DcmDataset& DcmDicomDir::getDataset()
     if ( localDataset == NULL )
     {
         errorFlag = EC_CorruptedData;
-        ofConsole.lockCerr() << "Error: DcmDicomDir::getDataset(): missing Dataset in DICOMDIR File. Must create new DICOMDIR file." << OFendl;
-        ofConsole.unlockCerr();
+        DCMDATA_ERROR("DcmDicomDir::getDataset(): missing Dataset in DICOMDIR File. Must create new DICOMDIR file.");
         if ( DirFile != NULL )
             delete DirFile;
         DirFile = new DcmFileFormat();
@@ -264,8 +262,7 @@ DcmSequenceOfItems& DcmDicomDir::getDirRecSeq( DcmDataset &dset )
         errorFlag = EC_CorruptedData;
         if ( !mustCreateNewDir )
         {
-          ofConsole.lockCerr() << "Warning: DcmDicomDir::getDirRecSeq(): missing Directory Record Sequence. Must create new one." << OFendl;
-          ofConsole.unlockCerr();
+            DCMDATA_WARN("DcmDicomDir::getDirRecSeq(): missing Directory Record Sequence. Must create new one.");
         }
         DcmTag dirSeqTag( DCM_DirectoryRecordSequence );    // (0004,1220)
         localDirRecSeq = new DcmSequenceOfItems( dirSeqTag );
@@ -291,12 +288,13 @@ DcmUnsignedLongOffset* DcmDicomDir::lookForOffsetElem( DcmObject *obj,
             {
                 offElem = OFstatic_cast(DcmUnsignedLongOffset *, stack.top());
 #ifdef DEBUG
-Uint32 l_uint = 0;
-offElem->getUint32(l_uint);
-DCM_dcmdataDebug(4, ( "DcmDicomDir::lookForOffsetElem() Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
-           offElem->getGTag(), offElem->getETag(),
-           l_uint, offElem,
-           offElem->getNextRecord() ));
+                Uint32 l_uint = 0;
+                offElem->getUint32(l_uint);
+                DCMDATA_TRACE("DcmDicomDir::lookForOffsetElem() Offset-Element(0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << offElem->getGTag() << ",0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << offElem->getETag() << ") offs=0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << l_uint << " p="
+                    << OFstatic_cast(void *, offElem) << " l=" << offElem->getNextRecord());
 #endif
             }
         }
@@ -328,8 +326,11 @@ OFCondition DcmDicomDir::resolveGivenOffsets( DcmObject *startPoint,
               l_error = offElem->getUint32(offset);
               if (offset == itOffsets[ i ].fileOffset )
               {
-DCM_dcmdataDebug(3, ( "DcmDicomDir::resolveGivenOffset() Offset-Element(0x%4.4hx,0x%4.4hx) with offset 0x%8.8lx found",
-        offElem->getGTag(), offElem->getETag(), offset));
+                  DCMDATA_DEBUG("DcmDicomDir::resolveGivenOffset() Offset-Element(0x"
+                      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << offElem->getGTag() << ",0x"
+                      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << offElem->getETag()
+                      << ") with offset 0x"
+                      << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << offset << " found");
 
                   offElem->setNextRecord( itOffsets[ i ].item );
                   break;
@@ -359,8 +360,8 @@ OFCondition DcmDicomDir::resolveAllOffsets( DcmDataset &dset )   // inout
         long filePos = rec->getFileOffset();
         itOffsets[ i ].item = rec;
         itOffsets[ i ].fileOffset = OFstatic_cast(Uint32, filePos);
-DCM_dcmdataDebug(3, ( "DcmDicomDir::resolveAllOffsets() Item-Offset[%d]=0x%8.8lx", i, filePos ));
-
+        DCMDATA_DEBUG("DcmDicomDir::resolveAllOffsets() Item-Offset[" << i << "]=0x"
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << filePos);
     }
     resolveGivenOffsets( &dset, itOffsets, maxitems,
         DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
@@ -422,9 +423,11 @@ OFCondition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
         if ( offElem != NULL )
             nextRec = OFstatic_cast(DcmDirectoryRecord *, offElem->getNextRecord());
 
-DCM_dcmdataDebug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) p=%p has lower=%p and next=%p Record",
-           startRec->getGTag(), startRec->getETag(),
-           startRec, lowerRec, nextRec ));
+        DCMDATA_DEBUG("DcmDicomDir::moveRecordToTree() Record(0x"
+           << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << startRec->getGTag() << ",0x"
+           << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << startRec->getGTag()
+           << ") p=" << OFstatic_cast(void *, startRec) << " has lower=" << OFstatic_cast(void *, lowerRec)
+           << " and next=" << OFstatic_cast(void *, nextRec) << " Record");
 
         linkMRDRtoRecord( startRec );
 
@@ -434,14 +437,12 @@ DCM_dcmdataDebug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) 
              DcmItem *dit = fromDirSQ.remove( startRec );
              if ( dit == NULL )
              {
-               ofConsole.lockCerr() << "Error: DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence" << OFendl;
-               ofConsole.unlockCerr();
+                 DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence");
              }
         }
         else
         {
-           ofConsole.lockCerr() << "Error: DcmDicomDir::moveRecordToTree() cannot insert DirRecord (=NULL?)" << OFendl;
-           ofConsole.unlockCerr();
+            DCMDATA_ERROR("DcmDicomDir::moveRecordToTree() cannot insert DirRecord (=NULL?)");
         }
         moveRecordToTree( lowerRec, fromDirSQ, startRec );
         moveRecordToTree( nextRec, fromDirSQ, toRecord );
@@ -529,15 +530,14 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
         if ( sublength==DCM_UndefinedLength )
         {
             DcmVR subvr( dO->getVR() );
-            ofConsole.lockCerr() << "Warning:DcmDicomDir::lengthUntilSQ() subelem \"" << subvr.getVRName() << "\" has undefined Length" << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_WARN("DcmDicomDir::lengthUntilSQ() subelem \"" << subvr.getVRName() << "\" has undefined Length");
         }
 
         if ( dO->getVR() == EVR_SQ  && enctype == EET_UndefinedLength )
             templen += 8;           // for ItemDelimitationItem
 
     }
-DCM_dcmdataDebug(4, ( "DcmDicomDir::lengthUntilSQ() Length of Dataset until SQ=%ld", templen ));
+    DCMDATA_TRACE("DcmDicomDir::lengthUntilSQ() Length of Dataset until SQ=" << templen);
 
     return templen;
 }
@@ -654,7 +654,7 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
         unsigned long lastIndex = record->cardSub();
         for (unsigned long i = lastIndex; i > 0; i-- )
         {
-            DCM_dcmdataDebug(3, ( "DcmDicomDir::copyRecordPtrToSQ() testing subRecord no %ld of %ld:", i, lastIndex ));
+            DCMDATA_DEBUG("DcmDicomDir::copyRecordPtrToSQ() testing subRecord no " << i << " of " << lastIndex << ":");
 
             DcmDirectoryRecord *subRecord = record->getSub( i-1 );
 
@@ -670,11 +670,13 @@ OFCondition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
                 uloP->setNextRecord( nextRec );
                 subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
-Uint32 l_uint = 0;
-uloP->getUint32(l_uint);
-DCM_dcmdataDebug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
-           uloP->getGTag(), uloP->getETag(),
-           l_uint, uloP, nextRec ));
+                Uint32 l_uint = 0;
+                uloP->getUint32(l_uint);
+                DCMDATA_TRACE("DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << uloP->getGTag() << ",0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << uloP->getETag() << ") offs=0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << l_uint << " p="
+                    << OFstatic_cast(void *, uloP) << " next=" << OFstatic_cast(void *, nextRec));
 #endif
                 copyRecordPtrToSQ( subRecord, toDirSQ, firstRec, lastRec );
 
@@ -685,10 +687,12 @@ DCM_dcmdataDebug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4
                 uloP->setNextRecord( *firstRec );
                 subRecord->insert( uloP, OFTrue );
 #ifdef DEBUG
-uloP->getUint32(l_uint);
-DCM_dcmdataDebug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
-           uloP->getGTag(), uloP->getETag(),
-           l_uint, uloP, *firstRec ));
+                uloP->getUint32(l_uint);
+                DCMDATA_TRACE("DcmDicomDir::copyRecordPtrToSQ() Lower Offset-Element(0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << uloP->getGTag() << ",0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << uloP->getETag() << ") offs=0x"
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(8) << l_uint << " p="
+                    << OFstatic_cast(void *, uloP) << " lower=" << OFstatic_cast(void *, *firstRec));
 #endif
 
                 /* insert at begining */
@@ -724,8 +728,8 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     unsigned long numUnresItems = localDirRecSeq.card();
     for (unsigned long i = numUnresItems; i > 0; i-- )
     {
-        DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no %ld of %ld to unresRecs-SQ:",
-           i, numUnresItems ));
+        DCMDATA_DEBUG("DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record no "
+                << i << " of " << numUnresItems << "d to unresRecs-SQ:");
 
         unresRecs.insert( localDirRecSeq.getItem(i-1), 0 );
     }
@@ -748,8 +752,8 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     unsigned long numMRDRItems = getMRDRSequence().card();
     for (unsigned long j = numMRDRItems; j > 0; j-- )
     {
-        DCM_dcmdataDebug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
-           j, numUnresItems ));
+        DCMDATA_DEBUG("DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no " << j << " of "
+                << numUnresItems << " to localDirRecSeq:");
 
         localDirRecSeq.insert( getMRDRSequence().getItem(j-1), 0 );
     }
@@ -761,8 +765,7 @@ OFCondition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
     if ( convertAllPointer( dset, beginOfDataSet, oxfer, enctype ) == EC_InvalidVR )
         if ( convertAllPointer( dset, beginOfDataSet, oxfer, enctype ) == EC_InvalidVR )
         {
-            ofConsole.lockCerr() << "ERROR: dcdicdir: there are some Offsets incorrect in file " << dicomDirFileName << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_ERROR("dcdicdir: there are some Offsets incorrect in file " << dicomDirFileName);
             l_error = EC_CorruptedData;
         }
     return l_error;
@@ -880,8 +883,9 @@ DcmDirectoryRecord* DcmDicomDir::recurseMatchFile( DcmDirectoryRecord* startRec,
 
             if ( subName != NULL && !strcmp( filename, subName ) )
             {
-DCM_dcmdataDebug(2, ( "DcmDicomDir::recurseMatchFile() Record p=%p with matching filename [%s] found.",
-           subRecord, subName ));
+                DCMDATA_DEBUG("DcmDicomDir::recurseMatchFile() Record p="
+                        << OFstatic_cast(void *, subRecord) << " with matching filename ["
+                        << subName << "] found.");
 
                 retRec = subRecord;
                 break;
@@ -912,8 +916,9 @@ DcmDirectoryRecord* DcmDicomDir::searchMatchFile( DcmSequenceOfItems& recSeq,
 
             if ( subName != NULL && !strcmp( filename, subName ) )
             {
-DCM_dcmdataDebug(2, ( "DcmDicomDir::searchMatchFile() Record p=%p with matching filename [%s] found.",
-           record, subName ));
+                DCMDATA_DEBUG("DcmDicomDir::searchMatchFile() Record p="
+                        << OFstatic_cast(void *, record) << " with matching filename ["
+                        << subName << "] found.");
 
                 retRec = record;
                 break;
@@ -944,8 +949,9 @@ DcmDirectoryRecord* DcmDicomDir::matchFilename( char *filename )
             }
         }
     }
-DCM_dcmdataCDebug(2, retRec==NULL, ("DcmDicomDir::matchFilename() No Record with matching filename [%s] found.",
-                         filename ));
+    if (retRec == NULL)
+        DCMDATA_DEBUG("DcmDicomDir::matchFilename() No Record with matching filename ["
+                << filename << "] found.");
     return retRec;
 }
 
@@ -970,18 +976,20 @@ DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( char *filename )
             {
                 delete newMRDR;
                 newMRDR = NULL;
-                ofConsole.lockCerr() << "Error: Internal error, can't Create MRDR." << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_ERROR("Internal error, can't Create MRDR.");
             }
-DCM_dcmdataCDebug(1, newMRDR!=NULL, ("DcmDicomDir::matchOrCreateMRDR() New MRDR p=%p with matching filename [%s] created,"
-                          " original Record p=%p with same filename modified.",
-                          newMRDR, filename, matchRec ));
+            if (newMRDR != NULL)
+                DCMDATA_INFO("DcmDicomDir::matchOrCreateMRDR() New MRDR p="
+                        << OFstatic_cast(void *, newMRDR) << " with matching filename ["
+                        << filename << "] created, original Record p="
+                        << OFstatic_cast(void *, matchRec) << " with same filename modified.");
 
             modified = OFTrue;
         }
     }
-DCM_dcmdataCDebug(1, newMRDR==NULL, ("DcmDicomDir::matchOrCreateMRDR() No MRDR with matching filename [%s] found.",
-                          filename ));
+    if (newMRDR == NULL)
+        DCMDATA_INFO("DcmDicomDir::matchOrCreateMRDR() No MRDR with matching filename ["
+                << filename << "] found.");
 
     return newMRDR;
 }
@@ -997,8 +1005,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 {
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
     {
-      ofConsole.lockCerr() << "Error: DcmDicomDir::write(): wrong TransferSyntax used - only LittleEndianExplicit allowed!" << OFendl;
-      ofConsole.unlockCerr();
+        DCMDATA_ERROR("DcmDicomDir::write(): wrong TransferSyntax used - only LittleEndianExplicit allowed!");
     }
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
@@ -1021,8 +1028,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     int tempfilefd = mkstemp(tempfile);
     if (tempfilefd < 0)
     {
-        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << tempfile << OFendl;
-        ofConsole.unlockCerr();
+        DCMDATA_ERROR("cannot create DICOMDIR temporary file: " << tempfile);
         delete[] tempfile;
         const char *text = strerror(errno);
         if (text == NULL) text = "(unknown error code)";
@@ -1033,8 +1039,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     FILE *f = fdopen(tempfilefd, "wb");
     if (f == NULL)
     {
-        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << tempfile << OFendl;
-        ofConsole.unlockCerr();
+        DCMDATA_ERROR("cannot create DICOMDIR temporary file: " << tempfile);
         delete[] tempfile;
         const char *text = strerror(errno);
         if (text == NULL) text = "(unknown error code)";
@@ -1054,8 +1059,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     if (! outStream->good())
     {
-        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << tempfile << OFendl;
-        ofConsole.unlockCerr();
+        DCMDATA_ERROR("cannot create DICOMDIR temporary file: " << tempfile);
         errorFlag = outStream->status();
         delete[] tempfile;
         delete outStream;
@@ -1188,8 +1192,10 @@ OFCondition DcmDicomDir::countMRDRRefs( DcmDirectoryRecord *startRec,
                         ++refCounter[ j ].fileOffset;       // Reference counter
                         break;
                     }
-DCM_dcmdataDebug(3, ( "DcmDicomDir::countMRDRRefs() MRDR p=%p found, which is %ld times referenced and %ld times"
-           " counted.", refMRDR, refMRDR->numberOfReferences, j ));
+                DCMDATA_DEBUG("DcmDicomDir::countMRDRRefs() MRDR p="
+                        << OFstatic_cast(void *, refMRDR) << " found, which is "
+                        << refMRDR->numberOfReferences << " times referenced and "
+                        << j << " times counted.");
 
             }
             countMRDRRefs( subRecord, refCounter, numCounters );
@@ -1226,9 +1232,10 @@ OFCondition DcmDicomDir::checkMRDRRefCounter( DcmDirectoryRecord *startRec,
                         ++refCounter[ j ].fileOffset;       // reference counter
                         break;
                     }
-DCM_dcmdataDebug(3, ( "DcmDicomDir::checkMRDRRefCounter() MRDR p=%p found, which is %ld times referenced and %ld times"
-           " counted.", refMRDR, refMRDR->numberOfReferences, j ));
-
+                DCMDATA_DEBUG("DcmDicomDir::checkMRDRRefCounter() MRDR p="
+                        << OFstatic_cast(void *, refMRDR) << " found, which is "
+                        << refMRDR->numberOfReferences << " times referenced and "
+                        << j << " times counted.");
             }
             OFCondition err1 = checkMRDRRefCounter( subRecord, refCounter, numCounters );
             if ( l_error == EC_Normal && err1 != EC_Normal )
@@ -1303,10 +1310,10 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
         Uint32 refNum = refMRDR->lookForNumberOfReferences();   // friend
         if ( refCounter[k].fileOffset != refNum )
         {
-DCM_dcmdataDebug(1, ( "DcmDicomDir::verify() Error: Refcounter of MRDR p=%p has incorrect value=%ld (must be"
-           " %ld)", refMRDR, refNum, refCounter[k].fileOffset ));
-DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
-          ( "but internal record class value numberOfReferences is correct" ));
+            DCMDATA_INFO("DcmDicomDir::verify() Error: Refcounter of MRDR p=" << OFstatic_cast(void *, refMRDR) <<
+                    " has incorrect value=" << refNum << " (must be " << refCounter[k].fileOffset << "d)");
+            if (refCounter[k].fileOffset==refMRDR->numberOfReferences)
+                DCMDATA_INFO("but internal record class value numberOfReferences is correct");
 
             if ( autocorrect )             // correct reference counter, friend
                 refMRDR->setNumberOfReferences( refCounter[k].fileOffset );
@@ -1333,6 +1340,9 @@ DCM_dcmdataCDebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
+** Revision 1.55  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.54  2009-09-28 13:30:59  joergr
 ** Moved general purpose definition file from module dcmdata to ofstd, and
 ** added new defines in order to make the usage easier.

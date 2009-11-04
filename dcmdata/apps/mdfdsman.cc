@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:25:13 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,14 +43,12 @@
 #define INCLUDE_CSTDIO
 #include "dcmtk/ofstd/ofstdinc.h"
 
+static OFLogger mdfdsmanLogger = OFLog::getLogger("dcmtk.dcmdata.mdfdsman");
 
-MdfDatasetManager::MdfDatasetManager(const OFBool verbose,
-                                     const OFBool debug)
+MdfDatasetManager::MdfDatasetManager()
 : current_file(""),
   dfile(NULL),
   dset(NULL),
-  verbose_option(verbose),
-  debug_option(debug),
   ignore_un_modifies(OFFalse)
 {
 }
@@ -68,7 +66,7 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name,
     dset = dfile->getDataset();
 
     //load file into attribute dfile
-    debugMsg(verbose_option,"Loading file into dataset manager: ", file_name, "");
+    OFLOG_INFO(mdfdsmanLogger, "Loading file into dataset manager: " << file_name);
     cond=dfile->loadFile(file_name, xfer, EGL_noChange, DCM_MaxReadLength, readMode);
     //if there are errors:
     if (cond.bad())
@@ -79,7 +77,7 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name,
     else
     {
         //get dataset from file
-        debugMsg(verbose_option,"Getting dataset from loaded file: ", file_name, "");
+        OFLOG_INFO(mdfdsmanLogger, "Getting dataset from loaded file: " << file_name);
         dset=dfile->getDataset();
         /*load also pixeldata into memory:
          *Without this command pixeldata wouldn't be included into the file,
@@ -394,14 +392,10 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     DcmStack result_stack;
     DcmObject *elem;
     // get references to all matching tags in dataset and store them in stack
-    debugMsg(debug_option,"Looking for occurences of: ", key.toString(),"");
+    OFLOG_DEBUG(mdfdsmanLogger, "Looking for occurences of: " << key.toString());
     result=dset->findAndGetElements(key, result_stack);
     // if there are elements found, modify metaheader if necessary
-    if (debug_option)
-    {
-        ofConsole.lockCerr() << "Found " << result_stack.card() << " occurences" << OFendl;
-        ofConsole.unlockCerr();
-    }
+    OFLOG_DEBUG(mdfdsmanLogger, "Found " << result_stack.card() << " occurences");
     // as long there are matching elements left on the stack
     while( result_stack.card() > 0 && result.good() )
     {
@@ -411,7 +405,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
         if (elem->isLeaf())
         {
             // and put new value to element
-            debugMsg(debug_option, "Accessing existing tag for modify operation","","");
+            OFLOG_DEBUG(mdfdsmanLogger, "Accessing existing tag for modify operation");
             result=startModify(OFstatic_cast(DcmElement*,elem),value);
             if (result.good()) count++;
         }
@@ -552,7 +546,7 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
         /* check whether pixel data is compressed */
         if (opt_dataset && DcmXfer(opt_xfer).isEncapsulated())
         {
-            debugMsg(OFTrue, "Warning: encapsulated pixel data require file format, ignoring --write-dataset", "","");
+            OFLOG_WARN(mdfdsmanLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
             opt_dataset = OFFalse;
         }
         /* write DICOM file */
@@ -563,12 +557,12 @@ OFCondition MdfDatasetManager::saveFile(const char *file_name,
                                  (opt_dataset) ? EWM_dataset : EWM_fileformat);
 
     } else {
-        debugMsg(debug_option, "Error: no conversion to transfer syntax ",
-                 DcmXfer(opt_xfer).getXferName(), " possible! ");
+        OFLOG_DEBUG(mdfdsmanLogger, "no conversion to transfer syntax " <<
+                 DcmXfer(opt_xfer).getXferName() << " possible! ");
         result = EC_CannotChangeRepresentation;
     }
     //save file
-    debugMsg(verbose_option,"Saving current dataset to file: ", file_name,"");
+    OFLOG_INFO(mdfdsmanLogger, "Saving current dataset to file: " << file_name);
     return result;
 }
 
@@ -588,7 +582,7 @@ OFCondition MdfDatasetManager::startModify(DcmElement *elem,
     DcmEVR vr = elem->getTag().getEVR();
     if ( ignore_un_modifies && ((vr == EVR_UN) || (vr == EVR_UNKNOWN) || (vr == EVR_UNKNOWN2B)))
     {
-      debugMsg(debug_option, "Warning: Will not write value to attribute having VR=UN: ", elem->getTag().toString(), "");
+      OFLOG_DEBUG(mdfdsmanLogger, "Will not write value to attribute having VR=UN: " << elem->getTag().toString());
       return EC_Normal;
     }
     // start putString function being defined on all VRs
@@ -640,19 +634,6 @@ OFBool MdfDatasetManager::isTagInDictionary(const DcmTagKey &search_key)
 }
 
 
-void MdfDatasetManager::debugMsg(const OFBool &condition,
-                                 const OFString &s1,
-                                 const OFString &s2,
-                                 const OFString &s3)
-{
-    if (condition)
-    {
-        ofConsole.lockCerr() << s1 << s2 << s3 << OFendl;
-        ofConsole.unlockCerr();
-    }
-}
-
-
 void MdfDatasetManager::setModifyUNValues(OFBool modifyUNValues)
 {
   ignore_un_modifies = !modifyUNValues;
@@ -669,6 +650,9 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
+** Revision 1.26  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.25  2009-08-21 09:25:13  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2007-2008, OFFIS
+ *  Copyright (C) 2007-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: Exctract PDF file from DICOM encapsulated PDF storage object
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2008-09-25 14:38:48 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:05 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,6 @@ END_EXTERN_C
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcuid.h"       /* for dcmtk version name */
 #include "dcmtk/ofstd/ofstd.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #ifdef WITH_ZLIB
@@ -62,6 +61,8 @@ END_EXTERN_C
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcm2pdf"
+
+static OFLogger dcm2pdfLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -102,12 +103,8 @@ static OFString replaceChars(const OFString &srcstr, const OFString &pattern, co
 
 int main(int argc, char *argv[])
 {
-  SetDebugLevel(( 0 ));
-
   const char *opt_ifname = NULL;
   const char *opt_ofname = NULL;
-  int opt_debugMode = 0;
-  OFBool opt_verbose = OFFalse;
   const char    *opt_execString = NULL;
   E_FileReadMode opt_readMode = ERM_autoDetect;
   E_TransferSyntax opt_ixfer = EXS_Unknown;
@@ -123,9 +120,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
    cmd.addOption("--help",                 "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
    cmd.addOption("--version",                        "print version information and exit", OFCommandLine::AF_Exclusive);
-   cmd.addOption("--arguments",                      "print expanded command line arguments");
-   cmd.addOption("--verbose",              "-v",     "verbose mode, print processing details");
-   cmd.addOption("--debug",                "-d",     "debug mode, print debug information");
+   OFLog::addOptions(cmd);
 
   cmd.addGroup("input options:");
     cmd.addSubGroup("input file format:");
@@ -163,10 +158,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-          app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -190,8 +181,7 @@ int main(int argc, char *argv[])
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
-      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
-      if (cmd.findOption("--debug")) opt_debugMode = 5;
+      OFLog::configureFromCommandLine(cmd, app);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_readMode = ERM_autoDetect;
@@ -281,40 +271,32 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--exec")) app.checkValue(cmd.getValue(opt_execString));
     }
 
-    if (opt_debugMode)
-        app.printIdentifier();
-    SetDebugLevel((opt_debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcm2pdfLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-    {
-        ofConsole.lockCerr() << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcm2pdfLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
-        ofConsole.unlockCerr();
-    }
-
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << "Error: invalid filename: <empty string>" << OFendl;
+        OFLOG_FATAL(dcm2pdfLogger, "invalid filename: <empty string>");
         return 1;
     }
 
     DcmFileFormat fileformat;
     DcmDataset * dataset = fileformat.getDataset();
 
-    if (opt_verbose)
-        COUT << "open input file " << opt_ifname << OFendl;
+    OFLOG_INFO(dcm2pdfLogger, "open input file " << opt_ifname);
 
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_readMode);
 
     if (error.bad())
     {
-        CERR << "Error: "
-             << error.text()
-             << ": reading file: " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcm2pdfLogger, error.text() << ": reading file: " << opt_ifname);
         return 1;
     }
 
@@ -322,7 +304,7 @@ int main(int argc, char *argv[])
     error = dataset->findAndGetOFString(DCM_SOPClassUID, sopClass);
     if (error.bad() || sopClass != UID_EncapsulatedPDFStorage)
     {
-        CERR << "Error: not an Encapsulated PDF Storage object: " <<  opt_ifname << OFendl;
+        OFLOG_FATAL(dcm2pdfLogger, "not an Encapsulated PDF Storage object: " << opt_ifname);
         return 1;
     }
 
@@ -330,7 +312,7 @@ int main(int argc, char *argv[])
     error = dataset->findAndGetElement(DCM_EncapsulatedDocument, delem);
     if (error.bad() || delem == NULL)
     {
-        CERR << "Error: attribute (0042,0011) Encapsulated Document missing." << OFendl;
+        OFLOG_FATAL(dcm2pdfLogger, "attribute (0042,0011) Encapsulated Document missing.");
         return 1;
     }
 
@@ -339,7 +321,7 @@ int main(int argc, char *argv[])
     error = delem->getUint8Array(pdfDocument);
     if (error.bad() || pdfDocument == NULL || len == 0)
     {
-        CERR << "Error: attribute (0042,0011) Encapsulated Document empty or wrong VR." << OFendl;
+        OFLOG_FATAL(dcm2pdfLogger, "attribute (0042,0011) Encapsulated Document empty or wrong VR.");
         return 1;
     }
 
@@ -355,26 +337,20 @@ int main(int argc, char *argv[])
     FILE *pdffile = fopen(opt_ofname, "wb");
     if (pdffile == NULL)
     {
-      ofConsole.lockCerr() << "Error: unable to create file " << opt_ofname << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_FATAL(dcm2pdfLogger, "unable to create file " << opt_ofname);
       return 1;
     }
 
     if (len != fwrite(pdfDocument, 1, len, pdffile))
     {
-      ofConsole.lockCerr() << "Error: write error in file " << opt_ofname << OFendl;
-      ofConsole.unlockCerr();
+      OFLOG_FATAL(dcm2pdfLogger, "write error in file " << opt_ofname);
       fclose(pdffile);
       return 1;
     }
 
     fclose(pdffile);
 
-    if (opt_verbose)
-    {
-        ofConsole.lockCout() << "conversion successful\n";
-        ofConsole.unlockCout();
-    }
+    OFLOG_INFO(dcm2pdfLogger, "conversion successful");
 
     if (opt_execString)
     {
@@ -392,6 +368,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pdf.cc,v $
+ * Revision 1.5  2009-11-04 09:58:05  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.4  2008-09-25 14:38:48  joergr
  * Moved output of resource identifier in order to avoid printing the same
  * information twice.

@@ -22,8 +22,8 @@
  *  Purpose: Class for conversion of image file into DICOM SC Image Storage
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,6 +84,9 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: i2dplvlp.h,v $
+ * Revision 1.4  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

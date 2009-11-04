@@ -23,8 +23,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,12 +34,12 @@
 #include "dcmtk/config/osconfig.h"
 #include "dcmtk/dcmdata/libi2d/i2dbmps.h"
 #include "dcmtk/dcmdata/dcerror.h"
+#include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 
 
 I2DBmpSource::I2DBmpSource() : bmpFile()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DBmpSource: Plugin instantiated");
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Plugin instantiated");
 }
 
 
@@ -51,8 +51,7 @@ OFString I2DBmpSource::inputFormat() const
 
 OFCondition I2DBmpSource::openFile(const OFString &filename)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DBmpSource: Opening BMP file: ", filename);
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Opening BMP file: " << filename);
   OFCondition cond;
   if (filename.length() == 0)
     return makeOFCondition(OFM_dcmdata, 18, OF_error, "No BMP filename specified");
@@ -80,8 +79,7 @@ OFCondition I2DBmpSource::readPixelData(Uint16& rows,
                                         Uint32& length,
                                         E_TransferSyntax &ts)
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DBmpSource: Importing BMP pixel data");
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Importing BMP pixel data");
   OFCondition cond = openFile(m_imageFile);
   // return error if file is not open
   if (cond.bad())
@@ -161,12 +159,7 @@ OFCondition I2DBmpSource::readFileHeader(Uint32 &offset)
   if (readDWord(offset) != 0)
     return EC_EndOfStream;
 
-  if (m_debug)
-  {
-    char buf[100];
-    sprintf(buf, "%u", (unsigned int) offset);
-    printMessage(m_logStream, "I2DBmpSource: BMP data at file offset: ", buf);
-  }
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP data at file offset: " << offset);
 
   return EC_Normal;
 }
@@ -213,12 +206,7 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
   if (readWord(tmp_word) != 0)
     return EC_EndOfStream;
   bpp = tmp_word;
-  if (m_debug)
-  {
-    char buf[100];
-    sprintf(buf, "%i", (int) bpp);
-    printMessage(m_logStream, "I2DBmpSource: BMP bpp: ", buf);
-  }
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP bpp: " << (int) bpp);
 
   /* Compression info */
   if (readDWord(tmp_dword) != 0)
@@ -235,18 +223,9 @@ OFCondition I2DBmpSource::readBitmapHeader(Uint16 &width,
    *  DWord: Used colors count, 0 for our supported bpp values.
    */
 
-  if (m_debug)
-  {
-    char buf[100];
-    sprintf(buf, "%u", (unsigned int) width);
-    printMessage(m_logStream, "I2DBmpSource: BMP width: ", buf);
-
-    sprintf(buf,"%u", (unsigned int) height);
-    printMessage(m_logStream, "I2DBmpSource: BMP height: ", buf);
-
-    sprintf(buf,"%u", (unsigned int) height);
-    printMessage(m_logStream, "I2DBmpSource: BMP stored as top down: ", isTopDown ? "Yes" : "No");
-  }
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP width: " << width);
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP height: " << height);
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: BMP stored as top down: " << (isTopDown ? "Yes" : "No"));
 
   return EC_Normal;
 }
@@ -287,8 +266,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
 
   length = width * height * 3;
 
-  if (m_debug)
-    printMessage(m_logStream, "I2DBmpSource: Starting to read bitmap data");
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Starting to read bitmap data");
 
   row_data = new char[row_length];
   pixData = new char[length];
@@ -333,8 +311,7 @@ OFCondition I2DBmpSource::readBitmapData(const Uint16 width,
     }
   }
 
-  if (m_debug)
-    printMessage(m_logStream, "I2DBmpSource: Done reading bitmap data");
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Done reading bitmap data");
 
   delete[] row_data;
 
@@ -444,14 +421,16 @@ void I2DBmpSource::closeFile()
 // close file and free dynamically allocated memory
 I2DBmpSource::~I2DBmpSource()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DBmpSource: Closing BMP file and cleaning up memory");
+  DCMDATA_LIBI2D_DEBUG("I2DBmpSource: Closing BMP file and cleaning up memory");
   closeFile();
 }
 
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.cc,v $
+ * Revision 1.4  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

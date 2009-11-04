@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2006, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,7 +163,7 @@ DcmVRDict_checker::DcmVRDict_checker()
             error_found = OFTrue;
             // we can't use ofConsole here because this piece of code
             // might be called before ofConsole is initialized.
-            CERR << "DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName << OFendl;
+            DCMDATA_FATAL("DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName);
             abort();
         }
     }
@@ -370,6 +370,9 @@ OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
+ * Revision 1.35  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.34  2006-08-15 15:49:54  meichel
  * Updated all code in module dcmdata to correctly compile when
  *   all standard C++ classes remain in namespace std.

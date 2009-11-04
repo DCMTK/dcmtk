@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2008, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: handling of transfer syntaxes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-04-23 06:39:34 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:11 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcuid.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTRING
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -582,6 +581,9 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
+ * Revision 1.29  2009-11-04 09:58:11  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.28  2008-04-23 06:39:34  meichel
  * Added new method DcmXfer::isRetired that returns true for
  *   retired transfer syntaxes.

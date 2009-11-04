@@ -21,10 +21,10 @@
  *
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-15 14:30:12 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -352,6 +352,9 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
+** Revision 1.27  2009-11-04 09:58:11  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.26  2009-01-15 14:30:12  joergr
 ** Added type cast to integer variable in order to avoid compiler warning.
 ** Changed formatting of comment header.

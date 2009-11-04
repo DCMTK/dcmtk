@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Class to control conversion of image format to DICOM
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,39 +129,6 @@ public:
   void setValidityChecking(OFBool doChecks,
                            OFBool insertMissingType2 = OFTrue,
                            OFBool inventMissingType1 = OFTrue);
-
-  /** Sets the log stream
-   *  The log stream is used to report any warnings and error messages.
-   *  @param stream - [out] pointer to the log stream (might be NULL = no messages)
-   *  @return none
-   */
-  void setLogStream(OFConsole *stream)
-  {
-    m_logStream = stream;
-  }
-
-  /** Sets the debug mode
-   *  @param debugMode - [in] New status for debug mode
-   *  @return none
-   */
-  void setDebugMode(const OFBool& debugMode) { m_debug = debugMode; };
-
-  /** Prints a message to the given stream.
-   ** @param  stream - [out] output stream to which the message is printed
-   *  @param  message1 - [in] first part of message to be printed
-   *  @param  message2 - [in] second part of message to be printed
-   *  @return none
-   */
-  static void printMessage(OFConsole *stream,
-                           const OFString& message1,
-                           const OFString& message2 = "")
-  {
-    if (stream != NULL)
-    {
-        stream->lockCerr() << message1 << message2 << OFendl;
-        stream->unlockCerr();
-    }
-  }
 
   /** Destructor, frees plugin memory
    *  @return none
@@ -299,14 +266,6 @@ private:
   /// for attribute "Specific Character Set". Insertion takes place after
   /// loading (optional) template file.
   OFBool m_insertLatin1;
-
-  /// If true, debug output is enabled
-  OFBool m_debug;
-
-  /// stream where warning/error message are sent to.
-  /// can be NULL (default, no output).
-  OFConsole *m_logStream;
-
 };
 
 #endif // I2D_H
@@ -314,6 +273,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: i2d.h,v $
+ * Revision 1.10  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.9  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

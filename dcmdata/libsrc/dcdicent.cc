@@ -21,10 +21,10 @@
  *
  *  Purpose: a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,6 +188,9 @@ STD_NAMESPACE ostream& operator<<(STD_NAMESPACE ostream& s, const DcmDictEntry& 
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
+** Revision 1.16  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.15  2006-08-15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.

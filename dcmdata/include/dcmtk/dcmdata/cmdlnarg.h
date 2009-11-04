@@ -22,10 +22,10 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/cmdlnarg.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,9 @@ void prepareCmdLineArgs(int& argc, char** argv, const char* progname = "aProgram
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.h,v $
+** Revision 1.9  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.8  2007-11-29 14:30:35  meichel
 ** Updated doxygen API documentation
 **

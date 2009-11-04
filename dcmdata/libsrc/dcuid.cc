@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:30:59 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -962,8 +962,7 @@ static long gethostid(void)
 {
     char buf[128];
     if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-       ofConsole.lockCerr() << "sysinfo: " << strerror(errno) << OFendl;
-       ofConsole.unlockCerr();
+       DCMDATA_FATAL("sysinfo: " << strerror(errno));
        exit(1);
     }
 #ifdef HAVE_STRTOUL
@@ -1371,8 +1370,7 @@ addUIDComponent(char* uid, const char* s)
     /* copy into UID as much of the contents of s as possible */
     if (OFStandard::strlcat(uid, s, maxUIDLen + 1) >= maxUIDLen + 1) // maxUIDLen+1 because strlcat() wants the size of the buffer, not the permitted number of characters.
     {
-        ofConsole.lockCerr() << "Truncated UID in dcmGenerateUniqueIdentifier(), SITE_UID_ROOT too long?" << OFendl;
-        ofConsole.unlockCerr();
+        DCMDATA_WARN("Truncated UID in dcmGenerateUniqueIdentifier(), SITE_UID_ROOT too long?");
     }
     stripTrailing(uid, '.');
 }
@@ -1432,6 +1430,9 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
+** Revision 1.72  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.71  2009-09-28 13:30:59  joergr
 ** Moved general purpose definition file from module dcmdata to ofstd, and
 ** added new defines in order to make the usage easier.

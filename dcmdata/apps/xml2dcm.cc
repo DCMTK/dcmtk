@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:25:13 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,11 +36,9 @@
 #include "dcmtk/dcmdata/dctk.h"
 #include "dcmtk/dcmdata/dcpxitem.h"   /* for class DcmPixelItem */
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/dcmdata/dcostrmz.h"   /* for dcmZlibCompressionLevel */
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDARG
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -55,6 +53,9 @@
 // currently not used since DTD is always retrieved from XML document
 //#define DOCUMENT_TYPE_DEFINITION_FILE "dcm2xml.dtd"
 
+static OFLogger xml2dcmLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
+static OFLogger xmlLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION ".libxml");
+
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
@@ -67,26 +68,66 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 // stores pointer to character encoding handler
 static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
 
-
-#ifdef HAVE_VPRINTF
-// function required to avoid issue with 'std' namespace
-extern "C" void errorFunction(void *ctx, const char *msg, ...)
+// This function is also used in dcmsr, try to stay in sync!
+extern "C" void errorFunction(void * ctx, const char *msg, ...)
 {
+    OFString &buffer = *OFstatic_cast(OFString*, ctx);
+    OFLogger xmlLogger = OFLog::getLogger("dcmtk.dcmsr.libxml");
+
+    if (!xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
+        return;
+
+#ifdef HAVE_VSNPRINTF
+    // libxml calls us multiple times for one line of log output which would
+    // result in garbled output. To avoid this, we buffer the output in a local
+    // string in the caller which we get through our 'ctx' parameter. Then, we
+    // output this string on one go when we receive a newline.
+    va_list ap;
+    char buf[1024];
+
+    va_start(ap, msg);
+#ifdef HAVE_PROTOTYPE_STD__VSNPRINTF
+    std::vsnprintf(buf, 1024, msg, ap);
+#else
+    vsnprintf(buf, 1024, msg, ap);
+#endif
+    va_end(ap);
+
+    // Since we can't do anything about a too small buffer for vsnprintf(), we
+    // ignore it. But we do make sure the buffer is null-terminated!
+    buf[1023] = '\0';
+    buffer += buf;
+
+    // If there is a full line in the buffer...
+    size_t pos = buffer.find('\n');
+    while (pos != OFString_npos)
+    {
+        // ..output it and remove it from the buffer
+        OFLOG_DEBUG(xmlLogger, buffer.substr(0, pos));
+        buffer.erase(0, pos + 1);
+
+        pos = buffer.find('\n');
+    }
+#elif defined(HAVE_VPRINTF)
+    // No vsnprint, but at least vfprintf. Output the messages directly to stderr.
     va_list ap;
     va_start(ap, msg);
 #ifdef HAVE_PROTOTYPE_STD__VFPRINTF
-    std::vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+    std::vfprintf(stderr, msg, ap);
 #else
-    vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+    vfprintf(stderr, msg, ap);
 #endif
     va_end(ap);
-}
+#else
+    // We can only show the most basic part of the message, this will look bad :(
+    printf("%s", msg);
 #endif
 
-// libxml shall be quiet in non-debug mode
-extern "C" void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
-{
-    /* do nothing */
+#ifndef HAVE_VSNPRINTF
+    // Only the vsnprintf() branch above uses 'buffer' which means the compiler
+    // would warn about an unused variable if HAVE_VSNPRINTF is undefined.
+    buffer += "";
+#endif
 }
 
 
@@ -122,11 +163,11 @@ static OFCondition checkNode(xmlNodePtr current,
         /* check whether node has expected name */
         if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, name)) != 0)
         {
-            CERR << "Error: document of the wrong type, was '" << current->name << "', '" << name << "' expected" << OFendl;
+            OFLOG_ERROR(xml2dcmLogger, "document of the wrong type, was '" << current->name << "', '" << name << "' expected");
             result = EC_IllegalCall;
         }
     } else {
-        CERR << "Error: document of the wrong type, '" << name << "' expected" << OFendl;
+        OFLOG_ERROR(xml2dcmLogger, "document of the wrong type, '" << name << "' expected");
         result = EC_IllegalCall;
     }
     return result;
@@ -156,8 +197,8 @@ static OFCondition createNewElement(xmlNodePtr current,
             DcmEVR dcmEVR = dcmVR.getEVR();
             if (dcmEVR == EVR_UNKNOWN)
             {
-                CERR << "Warning: invalid 'vr' attribute (" << elemVR
-                     << ") for " << dcmTag << ", using unknown VR" << OFendl;
+                OFLOG_WARN(xml2dcmLogger, "invalid 'vr' attribute (" << elemVR
+                     << ") for " << dcmTag << ", using unknown VR");
             }
             /* check for correct vr */
             const DcmEVR tagEVR = dcmTag.getEVR();
@@ -166,15 +207,15 @@ static OFCondition createNewElement(xmlNodePtr current,
                 ((tagEVR != EVR_xs) || ((dcmEVR != EVR_US) && (dcmEVR != EVR_SS))) &&
                 ((tagEVR != EVR_ox) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
             {
-                CERR << "Warning: tag " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
-                     << "), correct is " << dcmTag.getVR().getVRName() << OFendl;
+                OFLOG_WARN(xml2dcmLogger, "tag " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
+                     << "), correct is " << dcmTag.getVR().getVRName());
             }
             if (dcmEVR != EVR_UNKNOWN)
                 dcmTag.setVR(dcmVR);
             /* create DICOM element */
             result = newDicomElement(newElem, dcmTag);
         } else {
-            CERR << "Warning: invalid 'tag' attribute (" << elemTag << "), ignoring node" << OFendl;
+            OFLOG_WARN(xml2dcmLogger, "invalid 'tag' attribute (" << elemTag << "), ignoring node");
             result = EC_InvalidTag;
         }
         if (result.bad())
@@ -204,7 +245,7 @@ static OFCondition putElementContent(xmlNodePtr current,
         xmlChar *attrVal = xmlGetProp(current, OFreinterpret_cast(const xmlChar *, "binary"));
         /* check whether node content is present */
         if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "hidden")) == 0)
-            CERR << "Warning: content of node " << element->getTag() << " is 'hidden', empty element inserted" << OFendl;
+            OFLOG_WARN(xml2dcmLogger, "content of node " << element->getTag() << " is 'hidden', empty element inserted");
         /* check whether node content is base64 encoded */
         else if (xmlStrcmp(attrVal, OFreinterpret_cast(const xmlChar *, "base64")) == 0)
         {
@@ -257,7 +298,7 @@ static OFCondition putElementContent(xmlNodePtr current,
                         {
                             const char *text = strerror(errno);
                             if (text == NULL) text = "(unknown error code)";
-                            CERR << "Error: error reading binary data file: " << filename << ": " << text << OFendl;
+                            OFLOG_ERROR(xml2dcmLogger, "error reading binary data file: " << filename << ": " << text);
                             result = EC_CorruptedData;
                         }
                         else if (dcmEVR == EVR_OW)
@@ -268,11 +309,11 @@ static OFCondition putElementContent(xmlNodePtr current,
                     }
                     fclose(f);
                 } else {
-                    CERR << "Error: cannot open binary data file: " << filename << OFendl;
+                    OFLOG_ERROR(xml2dcmLogger, "cannot open binary data file: " << filename);
                     result = EC_InvalidTag;
                 }
             } else
-                CERR << "Warning: filename for element " << element->getTag() << " is missing, empty element inserted" << OFendl;
+                OFLOG_ERROR(xml2dcmLogger, "filename for element " << element->getTag() << " is missing, empty element inserted");
         } else {
             OFString dicomVal;
             /* convert character set from UTF8 (for specific VRs only) */
@@ -332,7 +373,7 @@ static OFCondition parseElement(DcmItem *dataset,
             else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
                 encString = "ISO-8859-8";
             else if (xmlStrlen(elemVal) > 0)
-                CERR << "Warning: character set '" << elemVal << "' not supported" << OFendl;
+                OFLOG_ERROR(xml2dcmLogger, "character set '" << elemVal << "' not supported");
             if (encString != NULL)
             {
                 /* find appropriate encoding handler */
@@ -385,7 +426,7 @@ static OFCondition parseSequence(DcmSequenceOfItems *sequence,
                     parseDataSet(newItem, current->xmlChildrenNode, xfer);
                 }
             } else if (!xmlIsBlankNode(current))
-                CERR << "Warning: unexpected node '" << current->name << "', 'item' expected, skipping" << OFendl;
+                OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', 'item' expected, skipping");
             /* proceed with next node */
             current = current->next;
         }
@@ -418,7 +459,7 @@ static OFCondition parsePixelSequence(DcmPixelSequence *sequence,
                     putElementContent(current, newItem);
                 }
             } else if (!xmlIsBlankNode(current))
-                CERR << "Warning: unexpected node '" << current->name << "', 'pixel-item' expected, skipping" << OFendl;
+                OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', 'pixel-item' expected, skipping");
             /* proceed with next node */
             current = current->next;
         }
@@ -444,7 +485,7 @@ static OFCondition parseMetaHeader(DcmMetaInfo *metainfo,
             if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "element")) == 0)
                 parseElement(metainfo, current);
             else if (!xmlIsBlankNode(current))
-                CERR << "Warning: unexpected node '" << current->name << "', 'element' expected, skipping" << OFendl;
+                OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', 'element' expected, skipping");
             /* proceed with next node */
             current = current->next;
         }
@@ -497,7 +538,7 @@ static OFCondition parseDataSet(DcmItem *dataset,
                 }
             }
         } else if (!xmlIsBlankNode(current))
-            CERR << "Warning: unexpected node '" << current->name << "', skipping" << OFendl;
+            OFLOG_WARN(xml2dcmLogger, "unexpected node '" << current->name << "', skipping");
         /* proceed with next node */
         current = current->next;
     }
@@ -505,37 +546,24 @@ static OFCondition parseDataSet(DcmItem *dataset,
 }
 
 
-static OFCondition validateXmlDocument(xmlDocPtr doc,
-                                       const OFBool verbose,
-                                       const OFBool debug)
+static OFCondition validateXmlDocument(xmlDocPtr doc)
 {
     OFCondition result = EC_Normal;
-    if (verbose)
-        COUT << "validating XML document ..." << OFendl;
+    OFLOG_INFO(xml2dcmLogger, "validating XML document ...");
     xmlGenericError(xmlGenericErrorContext, "--- libxml validating ---\n");
+    /* temporary buffer needed for errorFunction - more detailed explanation there */
+    OFString tmpErrorString;
     /* create context for document validation */
     xmlValidCtxt cvp;
-    if (debug)
-    {
-        cvp.userData = OFstatic_cast(void *, stderr);
-#ifdef HAVE_VPRINTF
-        cvp.error = errorFunction;
-        cvp.warning = errorFunction;
-#else
-        cvp.error = OFreinterpret_cast(xmlValidityErrorFunc, fprintf);
-        cvp.warning = OFreinterpret_cast(xmlValidityWarningFunc, fprintf);
-#endif
-    } else {
-        cvp.userData = NULL;
-        cvp.error = NULL;
-        cvp.warning = NULL;
-    }
+    cvp.userData = &tmpErrorString;
+    cvp.error = errorFunction;
+    cvp.warning = errorFunction;
     /* validate the document */
     const int valid = xmlValidateDocument(&cvp, doc);
     xmlGenericError(xmlGenericErrorContext, "-------------------------\n");
     if (!valid)
     {
-        CERR << "Error: document does not validate" << OFendl;
+        OFLOG_ERROR(xml2dcmLogger, "document does not validate");
         result = EC_IllegalCall;
     }
     return result;
@@ -547,9 +575,7 @@ static OFCondition readXmlFile(const char *ifname,
                                E_TransferSyntax &xfer,
                                const OFBool metaInfo,
                                const OFBool checkNamespace,
-                               const OFBool validateDocument,
-                               const OFBool verbose,
-                               const OFBool debug)
+                               const OFBool validateDocument)
 {
     OFCondition result = EC_Normal;
     xfer = EXS_Unknown;
@@ -561,7 +587,7 @@ static OFCondition readXmlFile(const char *ifname,
     {
         /* validate document */
         if (validateDocument)
-            result = validateXmlDocument(doc, verbose, debug);
+            result = validateXmlDocument(doc);
         if (result.good())
         {
             /* check whether the document is of the right kind */
@@ -574,14 +600,12 @@ static OFCondition readXmlFile(const char *ifname,
                     /* check whether to parse a "file-format" or "data-set" */
                     if (xmlStrcmp(current->name, OFreinterpret_cast(const xmlChar *, "file-format")) == 0)
                     {
-                        if (verbose)
-                        {
-                            COUT << "parsing file-format ..." << OFendl;
-                            if (metaInfo)
-                                COUT << "parsing meta-header ..." << OFendl;
-                            else
-                                COUT << "skipping meta-header ..." << OFendl;
-                        }
+                        OFLOG_INFO(xml2dcmLogger, "parsing file-format ...");
+                        if (metaInfo)
+                            OFLOG_INFO(xml2dcmLogger, "parsing meta-header ...");
+                        else
+                            OFLOG_INFO(xml2dcmLogger, "skipping meta-header ...");
+
                         current = current->xmlChildrenNode;
                         /* ignore blank (empty or whitespace only) nodes */
                         while ((current != NULL) && xmlIsBlankNode(current))
@@ -599,8 +623,7 @@ static OFCondition readXmlFile(const char *ifname,
                     /* there should always be a "data-set" node */
                     if (result.good())
                     {
-                        if (verbose)
-                            COUT << "parsing data-set ..." << OFendl;
+                        OFLOG_INFO(xml2dcmLogger, "parsing data-set ...");
                         /* parse "data-set" */
                         result = checkNode(current, "data-set");
                         if (result.good())
@@ -615,23 +638,26 @@ static OFCondition readXmlFile(const char *ifname,
                             xmlFree(xferUID);
                         }
                     }
-                    if (result.bad())
+                    if (result.bad() && xmlLogger.isEnabledFor(OFLogger::DEBUG_LOG_LEVEL))
                     {
                         /* dump XML document for debugging purposes */
-                        if (debug)
-                            xmlDocDump(stderr, doc);
+                        xmlChar *str;
+                        int size;
+                        xmlDocDumpFormatMemory(doc, &str, &size, 1);
+                        OFLOG_DEBUG(xmlLogger, str);
+                        xmlFree(str);
                     }
                 } else {
-                    CERR << "Error: document has wrong type, dcmtk namespace not found" << OFendl;
+                    OFLOG_ERROR(xml2dcmLogger, "document has wrong type, dcmtk namespace not found");
                     result = EC_IllegalCall;
                 }
             } else {
-                CERR << "Error: document is empty: " << ifname << OFendl;
+                OFLOG_ERROR(xml2dcmLogger, "document is empty: " << ifname);
                 result = EC_IllegalCall;
             }
         }
     } else {
-        CERR << "Error: could not parse document: " << ifname << OFendl;
+        OFLOG_ERROR(xml2dcmLogger, "could not parse document: " << ifname);
         result = EC_IllegalCall;
     }
     /* free allocated memory */
@@ -646,8 +672,6 @@ static OFCondition readXmlFile(const char *ifname,
 
 int main(int argc, char *argv[])
 {
-    int opt_debug = 0;
-    OFBool opt_verbose = OFFalse;
     OFBool opt_metaInfo = OFTrue;
     OFBool opt_namespace = OFFalse;
     OFBool opt_validate = OFFalse;
@@ -661,8 +685,6 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_filepad = 0;
     OFCmdUnsignedInt opt_itempad = 0;
 
-    SetDebugLevel(( 0 ));
-
     /* set-up command line parameters and options */
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
@@ -675,9 +697,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                       "print expanded command line arguments");
-      cmd.addOption("--verbose",               "-v",     "verbose mode, print processing details");
-      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -731,10 +751,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-        /* check whether to print the command line arguments */
-        if (cmd.findOption("--arguments"))
-            app.printArguments();
-
         /* check exclusive options first */
         if (cmd.hasExclusiveOption())
         {
@@ -751,11 +767,7 @@ int main(int argc, char *argv[])
         }
 
         /* general options */
-
-        if (cmd.findOption("--verbose"))
-            opt_verbose = OFTrue;
-        if (cmd.findOption("--debug"))
-            opt_debug = 5;
+        OFLog::configureFromCommandLine(cmd, app);
 
         /* input options */
 
@@ -870,34 +882,29 @@ int main(int argc, char *argv[])
 #endif
     }
 
-    if (opt_debug)
-        app.printIdentifier();
-    SetDebugLevel((opt_debug));
+    /* print resource identifier */
+    OFLOG_DEBUG(xml2dcmLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(xml2dcmLogger, "no data dictionary loaded, "
              << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE << OFendl;
+             << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* check for compatible libxml version */
     LIBXML_TEST_VERSION
+    /* temporary buffer needed for errorFunction - more detailed explanation there */
+    OFString tmpErrorString;
     /* initialize the XML library (only required for MT-safety) */
     xmlInitParser();
     /* substitute default entities (XML mnenonics) */
     xmlSubstituteEntitiesDefault(1);
-    if (opt_debug)
-    {
-        /* add line number to debug messages */
-        xmlLineNumbersDefault(1);
-        xmlGetWarningsDefaultValue = 1;
-    } else {
-        /* disable libxml warnings and error messages in non-debug mode */
-        xmlGetWarningsDefaultValue = 0;
-        xmlSetGenericErrorFunc(NULL, noErrorFunction);
-    }
+    /* add line number to debug messages */
+    xmlLineNumbersDefault(1);
+    xmlGetWarningsDefaultValue = 1;
+    xmlSetGenericErrorFunc(&tmpErrorString, errorFunction);
 
     OFCondition result = EC_Normal;
     const char *opt_ifname = NULL;
@@ -908,12 +915,12 @@ int main(int argc, char *argv[])
     /* check filenames */
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>" << OFendl;
+        OFLOG_ERROR(xml2dcmLogger, OFFIS_CONSOLE_APPLICATION << ": invalid input filename: <empty string>");
         result = EC_IllegalParameter;
     }
     if ((opt_ofname == NULL) || (strlen(opt_ofname) == 0))
     {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>" << OFendl;
+        OFLOG_ERROR(xml2dcmLogger, OFFIS_CONSOLE_APPLICATION << ": invalid output filename: <empty string>");
         result = EC_IllegalParameter;
     }
 
@@ -921,11 +928,10 @@ int main(int argc, char *argv[])
     {
         DcmFileFormat fileformat;
         E_TransferSyntax xfer;
-        if (opt_verbose)
-            COUT << "reading XML input file: " << opt_ifname << OFendl;
+        OFLOG_INFO(xml2dcmLogger, "reading XML input file: " << opt_ifname);
         /* read XML file and feed data into DICOM fileformat */
         result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace,
-                             opt_validate, opt_verbose, opt_debug != 0);
+                             opt_validate);
         if (result.good())
         {
             DcmDataset *dataset = fileformat.getDataset();
@@ -935,25 +941,21 @@ int main(int argc, char *argv[])
                 char uid[100];
                 if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_StudyInstanceUID))
                 {
-                    if (opt_verbose)
-                        COUT << "generating new Study Instance UID" << OFendl;
+                    OFLOG_INFO(xml2dcmLogger, "generating new Study Instance UID");
                     dataset->putAndInsertString(DCM_StudyInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
                 }
                 if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SeriesInstanceUID))
                 {
-                    if (opt_verbose)
-                        COUT << "generating new Series Instance UID" << OFendl;
+                    OFLOG_INFO(xml2dcmLogger, "generating new Series Instance UID");
                     dataset->putAndInsertString(DCM_SeriesInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
                 }
                 if (opt_overwriteUIDs || !dataset->tagExistsWithValue(DCM_SOPInstanceUID))
                 {
-                    if (opt_verbose)
-                        COUT << "generating new SOP Instance UID" << OFendl;
+                    OFLOG_INFO(xml2dcmLogger, "generating new SOP Instance UID");
                     dataset->putAndInsertString(DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
                 }
             }
-            if (opt_verbose)
-                COUT << "writing DICOM output file: " << opt_ofname << OFendl;
+            OFLOG_INFO(xml2dcmLogger, "writing DICOM output file: " << opt_ofname);
             /* determine transfer syntax to write the file */
             if ((opt_xfer == EXS_Unknown) && (xfer != EXS_Unknown))
                 opt_xfer = xfer;
@@ -963,17 +965,17 @@ int main(int argc, char *argv[])
                 /* check whether pixel data is compressed */
                 if ((opt_writeMode == EWM_dataset) && DcmXfer(xfer).isEncapsulated())
                 {
-                    CERR << "Warning: encapsulated pixel data require file format, ignoring --write-dataset" << OFendl;
+                    OFLOG_ERROR(xml2dcmLogger, "encapsulated pixel data require file format, ignoring --write-dataset");
                     opt_writeMode = EWM_fileformat;
                 }
                 /* write DICOM file */
                 result = fileformat.saveFile(opt_ofname, opt_xfer, opt_enctype, opt_glenc, opt_padenc,
                     OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad), opt_writeMode);
                 if (result.bad())
-                    CERR << "Error: " << result.text() << ": writing file: "  << opt_ofname << OFendl;
+                    OFLOG_ERROR(xml2dcmLogger, result.text() << ": writing file: "  << opt_ofname);
             } else {
-                CERR << "Error: no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
-                     << " possible!" << OFendl;
+                OFLOG_ERROR(xml2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
+                     << " possible!");
                 result = EC_CannotChangeRepresentation;
             }
         }
@@ -1002,6 +1004,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.28  2009-11-04 09:58:06  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.27  2009-08-21 09:25:13  joergr
  * Added parameter 'writeMode' to save/write methods which allows for specifying
  * whether to write a dataset or fileformat as well as whether to update the

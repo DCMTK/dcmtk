@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 15:02:43 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,9 +143,8 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
                 // check for odd offset values, should never happen at this point
                 if (current & 1)
                 {
-                    ofConsole.lockCerr() << "DcmPixelItem: odd frame size (" << current << ") found for frame #" << (idx + 1)
-                                         << ", cannot create offset table" << OFendl;
-                    ofConsole.unlockCerr();
+                    DCMDATA_WARN("DcmPixelItem: odd frame size (" << current << ") found for frame #" << (idx + 1)
+                              << ", cannot create offset table");
                     result = EC_InvalidBasicOffsetTable;
                 } else {
                     array[idx++] = current;
@@ -382,6 +381,9 @@ OFCondition DcmPixelItem::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
+** Revision 1.39  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.38  2009-09-15 15:02:43  joergr
 ** Enhanced implementation of writeXML() by writing hex numbers directly to the
 ** output stream instead of creating a temporary string first.

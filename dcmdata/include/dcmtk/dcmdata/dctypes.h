@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 10:45:06 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/oftypes.h"
+#include "dcmtk/oflog/oflog.h"
 
 #define INCLUDE_CSTDLIB
 #include "dcmtk/ofstd/ofstdinc.h"
@@ -46,6 +47,19 @@ BEGIN_EXTERN_C
 #include <sys/types.h>
 #endif
 END_EXTERN_C
+
+/*
+** Logging
+*/
+
+OFLogger DCM_dcmdataGetLogger();
+
+#define DCMDATA_TRACE(msg) OFLOG_TRACE(DCM_dcmdataGetLogger(), msg)
+#define DCMDATA_DEBUG(msg) OFLOG_DEBUG(DCM_dcmdataGetLogger(), msg)
+#define DCMDATA_INFO(msg)  OFLOG_INFO(DCM_dcmdataGetLogger(), msg)
+#define DCMDATA_WARN(msg)  OFLOG_WARN(DCM_dcmdataGetLogger(), msg)
+#define DCMDATA_ERROR(msg) OFLOG_ERROR(DCM_dcmdataGetLogger(), msg)
+#define DCMDATA_FATAL(msg) OFLOG_FATAL(DCM_dcmdataGetLogger(), msg)
 
 /*
 ** Macro Definitions
@@ -197,6 +211,9 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
+ * Revision 1.31  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.30  2009-08-21 10:45:06  joergr
  * Added new 'writeMode' which does not update the the meta header. This could
  * be useful for tools like dump2dcm and xml2dcm.

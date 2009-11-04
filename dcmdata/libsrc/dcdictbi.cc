@@ -21,9 +21,9 @@
  *
  *  Purpose:
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-03 10:04:09 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,10 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.15  2009-09-03 10:04:09  joergr
+ * Revision 1.16  2009-11-04 09:58:09  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
+ * Revision 1.8  2009-09-03 10:04:09  joergr
  * Updated copyright date and made .cc and .nul files more consistent.
  *
  * Revision 1.14  2008-07-17 10:31:31  onken

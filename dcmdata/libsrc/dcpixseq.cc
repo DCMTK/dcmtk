@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-02-04 17:58:28 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,6 @@
 #include "dcmtk/dcmdata/dcpxitem.h"
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcvr.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #include "dcmtk/dcmdata/dcdeftag.h"
 
@@ -204,8 +203,10 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
     {
         itemList->seek_to(where);
         itemList->insert(item);
-        DCM_dcmdataCDebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where));
-        DCM_dcmdataCDebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted"));
+        if (where < itemList->card())
+            DCMDATA_DEBUG("DcmPixelSequence::insert() item at position " << where << " inserted");
+        if (where >= itemList->card())
+            DCMDATA_DEBUG("DcmPixelSequence::insert() item at last position inserted");
     } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -392,6 +393,9 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
+** Revision 1.45  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.44  2009-02-04 17:58:28  joergr
 ** Uncommented name of unused parameter in order to avoid compiler warnings.
 **

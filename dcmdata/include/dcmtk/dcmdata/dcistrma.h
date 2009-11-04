@@ -21,10 +21,10 @@
  *
  *  Purpose: base classes for input streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:41 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcistrma.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,6 +277,9 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcistrma.h,v $
+ * Revision 1.4  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2007-02-19 15:45:41  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:11:55 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #define OFFIS_CONSOLE_APPLICATION "dcmodify"
 
+static OFLogger dcmodifyLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 int main(int argc, char *argv[])
 {
@@ -43,9 +44,9 @@ int main(int argc, char *argv[])
   MdfConsoleEngine engine(argc, argv, OFFIS_CONSOLE_APPLICATION);
   error_count = engine.startProvidingService();
   if (error_count == 1)
-    CERR << "There was 1 error" << OFendl;
+    OFLOG_ERROR(dcmodifyLogger, "There was 1 error");
   else if (error_count > 1)
-    CERR << "There were " << error_count << " errors" << OFendl;
+    OFLOG_ERROR(dcmodifyLogger, "There were " << error_count << " errors");
   return(error_count);
 }
 
@@ -53,6 +54,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
+** Revision 1.11  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.10  2009-01-15 16:11:55  onken
 ** Reworked dcmodify to work with the new DcmPath classes for supporting
 ** wildcard paths and automatic insertion of missing attributes and items.

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcdicdir.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -242,6 +242,9 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
+** Revision 1.23  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.22  2007-11-29 14:30:19  meichel
 ** Write methods now handle large raw data elements (such as pixel data)
 **   without loading everything into memory. This allows very large images to

@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-06-04 16:50:18 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,6 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/ofstd/ofstream.h"
 #include "dcmtk/dcmdata/dctk.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/cmdlnarg.h"
 #include "dcmtk/ofstd/ofconapp.h"
 #include "dcmtk/ofstd/ofstd.h"
@@ -54,6 +53,8 @@
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
+
+static OFLogger dcmdumpLogger = OFLog::getLogger("dcmtk.apps." OFFIS_CONSOLE_APPLICATION);
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -75,7 +76,6 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
 // ********************************************
 
-static OFBool quietMode = OFFalse;
 static OFBool printFilename = OFFalse;
 static OFBool printFileSearch = OFFalse;
 static OFBool printAllInstances = OFTrue;
@@ -98,8 +98,7 @@ static DcmTagKey parseTagKey(const char *tagName)
       const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
       const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
       if (dicent == NULL) {
-        if (!quietMode)
-          CERR << "error: unrecognized tag name: '" << tagName << "'" << OFendl;
+        OFLOG_WARN(dcmdumpLogger, "unrecognized tag name: '" << tagName << "'");
         dcmDataDict.unlock();
         return DCM_UndefinedTagKey;
       } else {
@@ -116,8 +115,7 @@ static DcmTagKey parseTagKey(const char *tagName)
 static OFBool addPrintTagName(const char *tagName)
 {
   if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-    if (!quietMode)
-      CERR << "error: too many print tag options (max: " << MAX_PRINT_TAG_NAMES << ")" << OFendl;
+    OFLOG_WARN(dcmdumpLogger, "too many print tag options (max: " << MAX_PRINT_TAG_NAMES << ")");
     return OFFalse;
   }
 
@@ -129,8 +127,7 @@ static OFBool addPrintTagName(const char *tagName)
     const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
     if (dicent == NULL) {
-      if (!quietMode)
-        CERR << "error: unrecognized tag name: '" << tagName << "'" << OFendl;
+      OFLOG_WARN(dcmdumpLogger, "unrecognized tag name: '" << tagName << "'");
       dcmDataDict.unlock();
       return OFFalse;
     } else {
@@ -155,7 +152,6 @@ static OFBool addPrintTagName(const char *tagName)
 
 int main(int argc, char *argv[])
 {
-    int debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
     size_t printFlags = DCMTypes::PF_shortenLongTagValues;
     E_FileReadMode readMode = ERM_autoDetect;
@@ -165,7 +161,6 @@ int main(int argc, char *argv[])
     OFBool recurse = OFFalse;
     const char *scanPattern = NULL;
     const char *pixelDirectory = NULL;
-    OFOStringStream errorStream;
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -179,8 +174,6 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(( 0 ));
-
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Dump DICOM file and data set", rcsid);
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -191,9 +184,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                  "-h",     "print this help text and exit", OFCommandLine::AF_Exclusive);
       cmd.addOption("--version",                         "print version information and exit", OFCommandLine::AF_Exclusive);
-      cmd.addOption("--arguments",                       "print expanded command line arguments");
-      cmd.addOption("--quiet",                 "-q",     "quiet mode, print no warnings and errors");
-      cmd.addOption("--debug",                 "-d",     "debug mode, print debug information");
+      OFLog::addOptions(cmd);
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
@@ -285,10 +276,6 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::PF_ExpandWildcards))
     {
-      /* check whether to print the command line arguments */
-      if (cmd.findOption("--arguments"))
-        app.printArguments();
-
       /* check exclusive options first */
       if (cmd.hasExclusiveOption())
       {
@@ -306,15 +293,7 @@ int main(int argc, char *argv[])
       }
 
       /* options */
-
-      if (cmd.findOption("--quiet"))
-      {
-        quietMode = OFTrue;
-        app.setQuietMode();
-        /* redirect error output to a dummy stream */
-        ofConsole.setCerr(&errorStream);
-      }
-      if (cmd.findOption("--debug")) debugMode = 5;
+      OFLog::configureFromCommandLine(cmd, app);
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) readMode = ERM_autoDetect;
@@ -563,16 +542,15 @@ int main(int argc, char *argv[])
         app.checkValue(cmd.getValue(pixelDirectory));
     }
 
-    if (debugMode)
-      app.printIdentifier();
-    SetDebugLevel((debugMode));
+    /* print resource identifier */
+    OFLOG_DEBUG(dcmdumpLogger, rcsid << OFendl);
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded() && !quietMode)
+    if (!dcmDataDict.isDictionaryLoaded())
     {
-      CERR << "Warning: no data dictionary loaded, "
+        OFLOG_WARN(dcmdumpLogger, "no data dictionary loaded, "
            << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE;
+           << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure the pixel data directory exists and is writable */
@@ -580,12 +558,12 @@ int main(int argc, char *argv[])
     {
       if (!OFStandard::dirExists(pixelDirectory))
       {
-        app.printWarning("directory specified for --write-pixel does not exist, ignoring this option");
+        OFLOG_WARN(dcmdumpLogger, "directory specified for --write-pixel does not exist, ignoring this option");
         pixelDirectory = NULL;
       }
       else if (!OFStandard::isWriteable(pixelDirectory))
       {
-        app.printWarning("directory specified for --write-pixel is not writeable, ignoring this option");
+        OFLOG_WARN(dcmdumpLogger, "directory specified for --write-pixel is not writeable, ignoring this option");
         pixelDirectory = NULL;
       }
     }
@@ -605,8 +583,8 @@ int main(int argc, char *argv[])
       {
         if (scanDir)
           OFStandard::searchDirectoryRecursively(paramString, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
-        else if (debugMode && !quietMode)
-          CERR << "Warning: ignoring directory because option --scan-directories is not set: " << paramString << OFendl;
+        else
+          OFLOG_INFO(dcmdumpLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
       } else
         inputFiles.push_back(paramString);
     }
@@ -681,8 +659,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        if (!quietMode)
-            CERR << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << OFendl;
+        OFLOG_INFO(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
         return 1;
     }
 
@@ -692,11 +669,8 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
     if (cond.bad())
     {
-        if (!quietMode)
-        {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error: " << cond.text()
-                 << ": reading file: "<< ifname << OFendl;
-        }
+        OFLOG_WARN(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text()
+                 << ": reading file: "<< ifname);
         result = 1;
         if (stopOnErrors) return result;
     }
@@ -733,12 +707,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             else if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
                 searchKey.set(group, elem);
             else {
-                if (!quietMode)
-                {
-                    CERR << "Internal ERROR in File " << __FILE__ << ", Line "
+                OFLOG_WARN(dcmdumpLogger, "Internal ERROR in File " << __FILE__ << ", Line "
                          << __LINE__ << OFendl
-                         << "-- Named tag inconsistency" << OFendl;
-                }
+                         << "-- Named tag inconsistency");
                 abort();
             }
 
@@ -774,6 +745,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.79  2009-11-04 09:58:06  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.78  2009-06-04 16:50:18  joergr
  * Added new command line option that allows for ignoring the value of File Meta
  * Information Group Length (0002,0000).

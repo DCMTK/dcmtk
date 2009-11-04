@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,8 +320,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
             * (where PDVs always have even length).
             * Everything else generates a warning.
             */
-           ofConsole.lockCerr() << "zlib: " << count-1 << " pending input bytes in buffer." << OFendl;
-           ofConsole.unlockCerr();
+           DCMDATA_WARN("zlib: " << count-1 << " pending input bytes in buffer.");
          }
        }
 #endif
@@ -366,8 +365,7 @@ offile_off_t DcmZLibInputFilter::decompress(const void *buf, offile_off_t buflen
                 * (where PDVs always have even length).
                 * Everything else generates a warning.
                 */
-               ofConsole.lockCerr() << "zlib: " << count-1 << " pending input bytes in buffer." << OFendl;
-               ofConsole.unlockCerr();
+               DCMDATA_WARN("zlib: " << count-1 << " pending input bytes in buffer.");
              }
           }
 #endif
@@ -436,6 +434,9 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
+ * Revision 1.9  2009-11-04 09:58:09  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.8  2007-02-19 15:45:31  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.

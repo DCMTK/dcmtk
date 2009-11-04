@@ -21,10 +21,10 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:38 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcswap.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,6 +150,9 @@ Uint16 swapShort(const Uint16 toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.cc,v $
+ * Revision 1.16  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.15  2005-12-08 15:41:38  meichel
  * Changed include path schema for all DCMTK header files
  *

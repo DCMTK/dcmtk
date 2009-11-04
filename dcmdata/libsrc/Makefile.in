@@ -13,10 +13,11 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
 
-LOCALINCLUDES = -I$(ofstddir)/include
-LIBDIRS = -L$(ofstddir)/libsrc
-LOCALLIBS = -lofstd
+LOCALINCLUDES = -I$(ofstddir)/include -I$(oflogdir)/include
+LIBDIRS = -L$(ofstddir)/libsrc -L$(oflogdir)/libsrc
+LOCALLIBS = -loflog -lofstd
 LOCALDEFS =
 
 # clear environment variable in the scope of this makefile
@@ -34,7 +35,7 @@ privatedic = $(top_srcdir)/data/private.dic
 dictobjs = dctagkey.o dcdicent.o dcdict.o dcdictbi.o dcvr.o dchashdi.o
 objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
-	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
+	dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
 	dccodec.o dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
@@ -47,6 +48,10 @@ objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	vrscan.o
 support_objs = mkdeftag.o mkdictbi.o dcdictzz.o
 support_progs = mkdeftag mkdictbi
+
+# Extra objects needed by support_progs
+support_progs_objs = cmdlnarg.o dcdebug.o
+
 library = libdcmdata.$(LIBEXT)
 
 
@@ -65,10 +70,10 @@ $(library): $(objs)
 	$(RANLIB) $@
 
 mkdeftag: mkdeftag.o $(dictobjs) cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
 mkdictbi: mkdictbi.o $(dictobjs) cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(support_progs_objs) $(LOCALLIBS) $(LIBS)
 
 
 # Generate a new include file of defined tags

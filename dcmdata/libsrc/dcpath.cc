@@ -23,8 +23,8 @@
  *           sequences and leaf elements via string-based path access.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-29 12:55:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -934,6 +934,9 @@ OFCondition DcmPathProcessor::checkPrivateTagReservation(DcmItem *item /* in */,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpath.cc,v $
+** Revision 1.11  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.10  2009-09-29 12:55:25  uli
 ** Include only the needed headers in dcpath.h and dcpath.cc
 **

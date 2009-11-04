@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2006, OFFIS
+ *  Copyright (C) 1996-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,8 +112,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     int fderr = dup(fileno(stdout));
     if (fderr != fileno(stderr))
     {
-        ofConsole.lockCerr() << "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno) << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_ERROR(dcmdataLog, "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno));
     }
 
 #ifndef NO_IOS_BASE_ASSIGN    
@@ -128,13 +127,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
-        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno) << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_ERROR(dcmdataLog, "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno));
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
-        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_ERROR(dcmdataLog, "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno));
     }
 #endif /* __BORLANDC__ */
 #endif
@@ -150,6 +147,9 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.20  2009-11-04 09:58:08  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.19  2006-08-15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.

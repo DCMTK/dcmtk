@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2005, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: singleton class that registers RLE decoder.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:37 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,14 +49,12 @@ public:
    *  been performed before.
    *  @param pCreateSOPInstanceUID flag indicating whether or not
    *    a new SOP Instance UID should be assigned upon decompression.
-   *  @param pVerbose verbose mode flag
    *  @param pReverseDecompressionByteOrder flag indicating whether the byte order should
    *    be reversed upon decompression. Needed to correctly decode some incorrectly encoded
    *    images with more than one byte per sample.
    */   
   static void registerCodecs(
     OFBool pCreateSOPInstanceUID = OFFalse,
-    OFBool pVerbose = OFFalse,
     OFBool pReverseDecompressionByteOrder = OFFalse);
 
   /** deregisters decoder.
@@ -94,6 +92,9 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrledrg.h,v $
+ * Revision 1.7  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.6  2005-12-08 16:28:37  meichel
  * Changed include path schema for all DCMTK header files
  *

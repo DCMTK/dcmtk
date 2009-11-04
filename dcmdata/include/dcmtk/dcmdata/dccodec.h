@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2008-05-29 10:46:13 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -495,6 +495,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
+** Revision 1.20  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.19  2008-05-29 10:46:13  meichel
 ** Implemented new method DcmPixelData::getUncompressedFrame
 **   that permits frame-wise access to compressed and uncompressed

@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.54 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.55 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 #include "dcmtk/ofstd/ofstd.h"
 #include "dcmtk/dcmdata/dcbytstr.h"
 #include "dcmtk/dcmdata/dcvr.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -405,9 +404,8 @@ Uint8 *DcmByteString::newValueField()
                * equal to the maximum length, because we are not able then to make this value even (+1)
                * which would an overflow on some systems as well as being illegal in DICOM
                */
-                ofConsole.lockCerr() << "DcmByteString: " << getTagName() << " " << getTag().getXTag()
-                    << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded" << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_WARN("DcmByteString: " << getTagName() << " " << getTag().getXTag()
+                          << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
                 errorFlag = EC_CorruptedData;
                 return NULL;
         }
@@ -516,9 +514,11 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
         delete[] tempstr;
     }
     /* report a debug message if an error occurred */
-    DCM_dcmdataCDebug(3, errorFlag.bad(),
-            ("DcmByteString::verify: Illegal values in Tag=(0x%4.4x,0x%4.4x) VM=%d",
-            getGTag(), getETag(), getVM() ));
+    if (errorFlag.bad())
+        DCMDATA_DEBUG("DcmByteString::verify: Illegal values in Tag=(0x"
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << getGTag() << ",0x"
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << getETag()
+                << ") VM=" << getVM());
     return errorFlag;
 }
 
@@ -728,6 +728,9 @@ OFCondition DcmByteString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.55  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.54  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

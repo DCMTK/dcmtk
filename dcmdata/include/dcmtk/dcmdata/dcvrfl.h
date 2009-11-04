@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrfl.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,6 +183,9 @@ class DcmFloatingPointSingle
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.h,v $
+** Revision 1.23  2009-11-04 09:58:07  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.22  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

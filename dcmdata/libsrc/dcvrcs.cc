@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmCodeString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrcs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,6 +147,9 @@ OFCondition DcmCodeString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrcs.cc,v $
+** Revision 1.20  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.19  2009-08-07 14:35:49  joergr
 ** Enhanced isEmpty() method by checking whether the data element value consists
 ** of non-significant characters only.

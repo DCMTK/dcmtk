@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:30:59 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,6 @@
 #include "dcmtk/dcmdata/dcitem.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcvrul.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcdeftag.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
@@ -230,8 +229,8 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         if (inStream.eos() && getTransferredBytes() != preambleLen)
         {   // file too short, no preamble
             inStream.putback();
-            DCM_dcmdataDebug(4, ("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (%d) < %d bytes",
-                preambleLen, DCM_PreambleLen + DCM_MagicLen));
+            DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (" << preambleLen
+                    << ") < " << DCM_PreambleLen + DCM_MagicLen << " bytes");
             retval = OFFalse;
             this -> setPreamble();
             fPreambleTransferState = ERW_ready;
@@ -265,15 +264,18 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
             newxfer = tmpxferSyn.getXfer();   // use determined xfer
             if (xferSyn.getXfer() != EXS_Unknown)
             {
-                ofConsole.lockCerr() << "DcmMetaInfo: TransferSyntax of MetaInfo is other than expected" << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_WARN("DcmMetaInfo: TransferSyntax of MetaInfo is other than expected");
             }
         } else
             newxfer = xferSyn.getXfer();
     }
-    DCM_dcmdataCDebug(4, retval==OFTrue, ("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x%8.8x]", (Uint32)(*filePreamble)));
-    DCM_dcmdataCDebug(4, retval==OFFalse, ("DcmMetaInfo::checkAndReadPreamble() No Preambel found!"));
-    DCM_dcmdataDebug(4, ("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = %s", DcmXfer(newxfer).getXferName()));
+    if (retval == OFTrue)
+        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x"
+                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
+                << (Uint32)(*filePreamble) << "]");
+    else
+        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preambel found!");
+    DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = " << DcmXfer(newxfer).getXferName());
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
 
@@ -335,15 +337,14 @@ OFCondition DcmMetaInfo::readGroupLength(DcmInputStream &inStream,
             if (l_error.good() && newTag.getXTag() == xtag && elementList->get() != NULL && newValueLength > 0)
             {
                 l_error = (OFstatic_cast(DcmUnsignedLong *, elementList->get()))->getUint32(headerLen);
-                DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() Group Length of File Meta Header = %d", headerLen + bytesRead));
+                DCMDATA_TRACE("DcmMetaInfo::readGroupLength() Group Length of File Meta Header = " << headerLen + bytesRead);
             } else {
                 l_error = EC_CorruptedData;
-                ofConsole.lockCerr() << "DcmMetaInfo: No Group Length available in Meta Information Header" << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_WARN("DcmMetaInfo: No Group Length available in Meta Information Header");
             }
         }
     }
-    DCM_dcmdataDebug(4, ("DcmMetaInfo::readGroupLength() returns error = %s", l_error.text()));
+    DCMDATA_TRACE("DcmMetaInfo::readGroupLength() returns error = " << l_error.text());
     return l_error;
 }
 
@@ -401,8 +402,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                         /* FileMetaInformationGroupLength (0002,0000) is present but should be ignored  */
                         if (dcmIgnoreFileMetaInformationGroupLength.get())
                         {
-                            ofConsole.lockCerr() << "DcmMetaInfo: Ignoring Group Length of Meta Information Header" << OFendl;
-                            ofConsole.unlockCerr();
+                            DCMDATA_WARN("DcmMetaInfo: Ignoring Group Length of Meta Information Header");
                             setLengthField(DCM_UndefinedLength);
                         } else
                             setLengthField(headerLength + getTransferredBytes());
@@ -445,9 +445,8 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                         /* check for valid meta-header elements */
                         if (newTag.getGroup() != 0x0002)
                         {
-                            ofConsole.lockCerr() << "DcmMetaInfo: Invalid Element " << newTag
-                                                 << " found in Meta Information Header" << OFendl;
-                            ofConsole.unlockCerr();
+                            DCMDATA_WARN("DcmMetaInfo: Invalid Element " << newTag
+                                      << " found in Meta Information Header");
                         }
                     } else {
                         errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
@@ -470,8 +469,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             {
                 if (getLengthField() != DCM_UndefinedLength && getTransferredBytes() != getLengthField())
                 {
-                    ofConsole.lockCerr() << "DcmMetaInfo: Group Length of Meta Information Header has incorrect value" << OFendl;
-                    ofConsole.unlockCerr();
+                    DCMDATA_WARN("DcmMetaInfo: Group Length of Meta Information Header has incorrect value");
                 }
                 setTransferState(ERW_ready);          // MetaInfo is complete
             }
@@ -590,6 +588,9 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.49  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.48  2009-09-28 13:30:59  joergr
 ** Moved general purpose definition file from module dcmdata to ofstd, and
 ** added new defines in order to make the usage easier.

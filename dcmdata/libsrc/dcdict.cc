@@ -21,9 +21,9 @@
  *
  *  Purpose: loadable DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:31:29 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,6 @@
 #include "dcmtk/dcmdata/dcdict.h"
 #include "dcmtk/ofstd/ofdefine.h"
 #include "dcmtk/dcmdata/dcdicent.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
@@ -287,8 +286,7 @@ parseTagPart(char *s, unsigned int& l, unsigned int& h,
             r = DcmDictRange_Unspecified;
             break;
         default:
-            ofConsole.lockCerr() << "DcmDataDictionary: Unknown range restrictor: " << restrictor << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_ERROR("DcmDataDictionary: Unknown range restrictor: " << restrictor);
             ok = OFFalse;
             break;
         }
@@ -465,15 +463,13 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     /* first, check whether 'fileName' really points to a file (and not to a directory or the like) */
     if (!OFStandard::fileExists(fileName) || (f = fopen(fileName, "r")) == NULL) {
         if (errorIfAbsent) {
-            ofConsole.lockCerr() << "DcmDataDictionary: Cannot open file: " << fileName << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_ERROR("DcmDataDictionary: Cannot open file: " << fileName);
         }
         return OFFalse;
     }
 
 #ifdef DEBUG
-    ofConsole.lockCerr() << "DcmDataDictionary: Loading file: " << fileName << OFendl;
-    ofConsole.unlockCerr();
+    DCMDATA_INFO("DcmDataDictionary: Loading file: " << fileName);
 #endif
 
     while (getLine(lineBuf, DCM_MAXDICTLINESIZE, f)) {
@@ -504,15 +500,13 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 0:
         case 1:
         case 2:
-            ofConsole.lockCerr() << "DcmDataDictionary: "<< fileName << ": "
-                 << "too few fields (line " << lineNumber << ")" << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_ERROR("DcmDataDictionary: "<< fileName << ": "
+                 << "too few fields (line " << lineNumber << ")");
             errorOnThisLine = OFTrue;
             break;
         default:
-            ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                 << "too many fields (line " << lineNumber << "): " << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_ERROR("DcmDataDictionary: " << fileName << ": "
+                 << "too many fields (line " << lineNumber << "): ");
             errorOnThisLine = OFTrue;
             break;
         case 5:
@@ -522,9 +516,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 4:
             /* the VM field is present */
             if (!parseVMField(lineFields[3], vmMin, vmMax)) {
-                ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                     << "bad VM field (line " << lineNumber << "): " << lineFields[3] << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_ERROR("DcmDataDictionary: " << fileName << ": "
+                     << "bad VM field (line " << lineNumber << "): " << lineFields[3]);
                 errorOnThisLine = OFTrue;
             }
             /* drop through to next case label */
@@ -532,9 +525,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             if (!parseWholeTagField(lineFields[0], key, upperKey,
                  groupRestriction, elementRestriction, privCreator))
             {
-                ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                     << "bad Tag field (line " << lineNumber << "): " << lineFields[0] << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_ERROR("DcmDataDictionary: " << fileName << ": "
+                     << "bad Tag field (line " << lineNumber << "): " << lineFields[0]);
                 errorOnThisLine = OFTrue;
             } else {
                 /* all is OK */
@@ -550,9 +542,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             /* check the VR Field */
             vr.setVR(vrName);
             if (vr.getEVR() == EVR_UNKNOWN) {
-                ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
-                     << "bad VR field (line " << lineNumber << "): " << vrName << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_ERROR("DcmDataDictionary: " << fileName << ": "
+                     << "bad VR field (line " << lineNumber << "): " << vrName);
                 errorOnThisLine = OFTrue;
             }
         }
@@ -672,8 +663,7 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
                 DcmDictEntry *old = *iter;
                 *iter = e;
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-                ofConsole.lockCerr() << "replacing " << *old << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_INFO("replacing " << *old);
 #endif
                 delete old;
                 inserted = OFTrue;
@@ -852,6 +842,9 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.41  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.40  2009-09-28 13:31:29  joergr
 ** Moved general purpose definition file from module dcmdata to ofstd, and
 ** added new defines in order to make the usage easier.

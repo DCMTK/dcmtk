@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2006, OFFIS
+ *  Copyright (C) 1997-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2006-08-15 15:49:54 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -429,8 +429,7 @@ DcmHashDict::put(DcmDictEntry* e)
     if (old != NULL) {
         /* an old entry has been replaced */
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-        ofConsole.lockCerr() << "replacing " << *old << OFendl;
-        ofConsole.unlockCerr();
+        OFLOG_WARN(dcmdataLog, "replacing " << *old);
 #endif
         delete old;
     } else {
@@ -537,6 +536,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.22  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.21  2006-08-15 15:49:54  meichel
 ** Updated all code in module dcmdata to correctly compile when
 **   all standard C++ classes remain in namespace std.

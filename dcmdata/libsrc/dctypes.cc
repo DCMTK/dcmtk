@@ -21,9 +21,9 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-01-06 16:27:07 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,14 @@
 
 #include "dcmtk/dcmdata/dctypes.h"
 
+OFLogger DCM_dcmdataGetLogger()
+{
+    // We don't just use a global variable, because constructors of globals are
+    // executed in random order. This guarantees that the OFLogger is constructed
+    // before first use.
+    static OFLogger DCM_dcmdataLogger = OFLog::getLogger("dcmtk.dcmdata");
+    return DCM_dcmdataLogger;
+}
 
 /* print flags */
 const size_t DCMTypes::PF_shortenLongTagValues = 1 << 0;
@@ -54,6 +62,9 @@ const size_t DCMTypes::XF_omitDataElementName  = 1 << 5;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
+ * Revision 1.11  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.10  2009-01-06 16:27:07  joergr
  * Reworked print() output format for option PF_showTreeStructure.
  *

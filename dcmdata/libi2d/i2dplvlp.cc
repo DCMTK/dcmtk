@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements conversion from image into DICOM Visible Light Photography IOD
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,8 +39,7 @@
 
 I2DOutputPlugVLP::I2DOutputPlugVLP()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugVLP: Output plugin for VLP initialized");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugVLP: Output plugin for VLP initialized");
 }
 
 OFString I2DOutputPlugVLP::ident()
@@ -56,8 +55,7 @@ void I2DOutputPlugVLP::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
 
 OFCondition I2DOutputPlugVLP::convert(DcmDataset &dataset) const
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugVLP: Inserting VLP specific attributes");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugVLP: Inserting VLP specific attributes");
   OFCondition cond;
   cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, UID_VLPhotographicImageStorage);
   if (cond.bad())
@@ -78,8 +76,7 @@ OFString I2DOutputPlugVLP::isValid(DcmDataset& dataset) const
   if (!m_doAttribChecking)
     return err;
 
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugVLP: Checking VLP specific attributes for validity");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugVLP: Checking VLP specific attributes for validity");
   // Acquisition Context Module
   err = checkAndInventType2Attrib(DCM_AcquisitionContextSequence, &dataset);
 
@@ -102,6 +99,9 @@ I2DOutputPlugVLP::~I2DOutputPlugVLP()
 /*
  * CVS/RCS Log:
  * $Log: i2dplvlp.cc,v $
+ * Revision 1.4  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2009-09-30 08:05:26  uli
  * Stop including dctk.h in libi2d's header files.
  *

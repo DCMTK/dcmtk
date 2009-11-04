@@ -21,9 +21,9 @@
  *
  *  Purpose: include most dcmdata files that are usually required
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:29:38 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,6 +112,9 @@
 /*
  * CVS/RCS Log:
  * $Log: dctk.h,v $
+ * Revision 1.17  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.16  2009-09-28 13:29:38  joergr
  * Moved general purpose definition file from module dcmdata to ofstd, and
  * added new defines in order to make the usage easier.

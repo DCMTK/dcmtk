@@ -21,10 +21,10 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-11-29 14:30:35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcswap.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,6 +103,9 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
+ * Revision 1.17  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.16  2007-11-29 14:30:35  meichel
  * Updated doxygen API documentation
  *

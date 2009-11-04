@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM files
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2009-01-15 16:11:55 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:06 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,11 +50,8 @@ class MdfDatasetManager
 {
 public:
     /** Constructor, initializes member-variables
-     *  @param verbose enables/disables verbose messages (off per default)
-     *  @param debug enables/disables debug messages (off per default)
      */
-    MdfDatasetManager(const OFBool verbose=OFFalse,
-                      const OFBool debug=OFFalse);
+    MdfDatasetManager();
 
     /** Destructor
      */
@@ -218,17 +215,6 @@ protected:
      */
     OFBool isTagInDictionary(const DcmTagKey &search_key);
 
-    /** The function handles three strings, that are directly printed
-     *  after another. The whole message is then terminated by \n
-     *  @param condition message is printed, if condition is true
-     *  @param s1 first message string
-     *  @param s2 second message string
-     *  @param s3 third message string
-     */
-    void debugMsg(const OFBool &condition,
-                  const OFString &s1,
-                  const OFString &s2,
-                  const OFString &s3);
 private:
 
     /// name of file, that is loaded currently
@@ -239,12 +225,6 @@ private:
 
     /// will hold the dataset, that should be modified
     DcmDataset *dset;
-
-    /// verbose mode
-    OFBool verbose_option;
-
-    /// enable debug messages
-    OFBool debug_option;
 
     /// if enabled, no value modifications on attributes having VR of UN
     /// are not executed
@@ -265,6 +245,9 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
+** Revision 1.20  2009-11-04 09:58:06  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.19  2009-01-15 16:11:55  onken
 ** Reworked dcmodify to work with the new DcmPath classes for supporting
 ** wildcard paths and automatic insertion of missing attributes and items.

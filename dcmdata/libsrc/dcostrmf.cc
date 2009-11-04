@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-23 16:30:12 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,8 +153,7 @@ DcmOutputFileStream::~DcmOutputFileStream()
 #ifdef DEBUG
   if (! isFlushed())
   {
-    ofConsole.lockCerr() << "Warning: closing unflushed DcmOutputFileStream, loss of data!" << OFendl;
-    ofConsole.unlockCerr();
+    DCMDATA_WARN("closing unflushed DcmOutputFileStream, loss of data!");
   }
 #endif
 }
@@ -163,6 +162,9 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
+ * Revision 1.11  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.10  2007-02-23 16:30:12  meichel
  * Fixed bug in DcmFileConsumer::avail introduced when converting
  *   the return type to offile_off_t, which is signed.

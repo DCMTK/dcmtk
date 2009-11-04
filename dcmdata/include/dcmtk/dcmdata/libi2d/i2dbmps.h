@@ -22,8 +22,8 @@
  *  Purpose: Class to extract pixel data and meta information from BMP file
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:25 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,6 +199,9 @@ protected:
 /*
  * CVS/RCS Log:
  * $Log: i2dbmps.h,v $
+ * Revision 1.3  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.2  2009-09-30 08:05:25  uli
  * Stop including dctk.h in libi2d's header files.
  *

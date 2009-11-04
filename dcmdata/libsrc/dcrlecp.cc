@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2005, OFFIS
+ *  Copyright (C) 1994-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: codec parameter for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:31 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "dcmtk/dcmdata/dcrlecp.h"
 
 DcmRLECodecParameter::DcmRLECodecParameter(
-    OFBool pVerbose,
     OFBool pCreateSOPInstanceUID,
     Uint32 pFragmentSize,
     OFBool pCreateOffsetTable,
@@ -47,7 +46,6 @@ DcmRLECodecParameter::DcmRLECodecParameter(
 , convertToSC(pConvertToSC)
 , createInstanceUID(pCreateSOPInstanceUID)
 , reverseDecompressionByteOrder(pReverseDecompressionByteOrder)
-, verboseMode(pVerbose)
 {
 }
 
@@ -59,7 +57,6 @@ DcmRLECodecParameter::DcmRLECodecParameter(const DcmRLECodecParameter& arg)
 , convertToSC(arg.convertToSC)
 , createInstanceUID(arg.createInstanceUID)
 , reverseDecompressionByteOrder(arg.reverseDecompressionByteOrder)
-, verboseMode(arg.verboseMode)
 {
 }
 
@@ -81,6 +78,9 @@ const char *DcmRLECodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: dcrlecp.cc,v $
+ * Revision 1.4  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2005-12-08 15:41:31  meichel
  * Changed include path schema for all DCMTK header files
  *

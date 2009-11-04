@@ -21,10 +21,10 @@
  *
  *  Purpose: representation parameter for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 15:41:35 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlerp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,9 @@ OFBool DcmRLERepresentationParameter::operator==(const DcmRepresentationParamete
 /*
  * CVS/RCS Log
  * $Log: dcrlerp.cc,v $
+ * Revision 1.3  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.2  2005-12-08 15:41:35  meichel
  * Changed include path schema for all DCMTK header files
  *

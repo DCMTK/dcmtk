@@ -21,10 +21,10 @@
  *
  *  Purpose: definition of class DcmOffsetList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-12-08 16:28:23 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcofsetl.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,9 @@ typedef OFList<Uint32> DcmOffsetList;
 /*
  * CVS/RCS Log
  * $Log: dcofsetl.h,v $
+ * Revision 1.3  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.2  2005-12-08 16:28:23  meichel
  * Changed include path schema for all DCMTK header files
  *

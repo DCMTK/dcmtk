@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -132,6 +132,9 @@ class DcmUnsignedLongOffset
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
+** Revision 1.20  2009-11-04 09:58:08  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.19  2008-07-17 11:19:49  onken
 ** Updated copyFrom() documentation.
 **

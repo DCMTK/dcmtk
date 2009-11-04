@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2007, OFFIS
+ *  Copyright (C) 2002-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DcmInputBufferStream and related classes,
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2007-02-19 15:45:31 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -306,8 +306,7 @@ DcmInputBufferStream::~DcmInputBufferStream()
 #ifdef DEBUG
   if ((!eos()) && (avail() > 0))
   {
-    ofConsole.lockCerr() << "Warning: closing unflushed DcmInputBufferStream, loss of data!" << OFendl;
-    ofConsole.unlockCerr();
+      DCMDATA_WARN("closing unflushed DcmInputBufferStream, loss of data!");
   }
 #endif
 }
@@ -342,6 +341,9 @@ void DcmInputBufferStream::setEos()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.cc,v $
+ * Revision 1.7  2009-11-04 09:58:09  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.6  2007-02-19 15:45:31  meichel
  * Class DcmInputStream and related classes are now safe for use with
  *   large files (2 GBytes or more) if supported by compiler and operating system.

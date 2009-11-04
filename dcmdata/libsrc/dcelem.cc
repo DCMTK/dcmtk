@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-28 13:34:08 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,6 @@
 #include "dcmtk/dcmdata/dcelem.h"
 #include "dcmtk/dcmdata/dcobject.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 #include "dcmtk/dcmdata/dcfcache.h"    /* for class DcmFileCache */
@@ -567,10 +566,9 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                     else if (readStream->eos())
                     {
                         errorFlag = EC_InvalidStream; // premature end of stream
-                        ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
-                                             << " larger (" << getLengthField() << ") than remaining bytes ("
-                                             << getTransferredBytes() << ") in file, premature end of stream" << OFendl;
-                        ofConsole.unlockCerr();
+                        DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
+                                   << " larger (" << getLengthField() << ") than remaining bytes ("
+                                   << getTransferredBytes() << ") in file, premature end of stream");
                     }
                     else
                         errorFlag = EC_StreamNotifyClient;
@@ -603,10 +601,9 @@ Uint8 *DcmElement::newValueField()
              * equal to the maximum length, because we are not able then to make this value even (+1)
              * which would an overflow on some systems as well as being illegal in DICOM
              */
-              ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
-                                   << " has odd, maximum length (" << DCM_UndefinedLength
-                                   << ") and therefore is not loaded" << OFendl;
-              ofConsole.unlockCerr();
+              DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
+                         << " has odd, maximum length (" << DCM_UndefinedLength
+                         << ") and therefore is not loaded");
               errorFlag = EC_CorruptedData;
               return NULL;
         }
@@ -1016,9 +1013,8 @@ OFCondition DcmElement::read(DcmInputStream &inStream,
                                 errorFlag = EC_StreamNotifyClient;
                             /* Print an error message when too few bytes are available in the file in order to
                              * distinguish this problem from any other generic "InvalidStream" problem. */
-                            ofConsole.lockCerr() << "DcmElement: " << getTagName() << " " << getTag().getXTag()
-                                                 << " larger (" << getLengthField() << ") than remaining bytes in file" << OFendl;
-                            ofConsole.unlockCerr();
+                            DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
+                                       << " larger (" << getLengthField() << ") than remaining bytes in file");
                         }
                     }
                 }
@@ -1676,6 +1672,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.76  2009-11-04 09:58:09  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.75  2009-09-28 13:34:08  joergr
 ** Moved general purpose definition file from module dcmdata to ofstd, and
 ** added new defines in order to make the usage easier.

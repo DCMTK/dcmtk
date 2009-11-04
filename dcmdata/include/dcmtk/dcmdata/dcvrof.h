@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmOtherFloat
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2008-07-17 11:19:49 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/dcmtk/dcmdata/dcvrof.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,9 @@ class DcmOtherFloat
 /*
  * CVS/RCS Log:
  * $Log: dcvrof.h,v $
+ * Revision 1.6  2009-11-04 09:58:07  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.5  2008-07-17 11:19:49  onken
  * Updated copyFrom() documentation.
  *

@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-07 14:35:49 $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,6 @@
 #include "dcmtk/dcmdata/dcvr.h"
 #include "dcmtk/dcmdata/dcxfer.h"
 #include "dcmtk/dcmdata/dcswap.h"
-#include "dcmtk/dcmdata/dcdebug.h"
 #include "dcmtk/dcmdata/dcistrma.h"    /* for class DcmInputStream */
 #include "dcmtk/dcmdata/dcostrma.h"    /* for class DcmOutputStream */
 
@@ -159,7 +158,6 @@ OFCondition DcmObject::writeXML(STD_NAMESPACE ostream& /*out*/,
 {
     return EC_IllegalCall;
 }
-
 
 // ***********************************************************
 // ****** protected methods **********************************
@@ -481,6 +479,9 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.64  2009-11-04 09:58:10  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.63  2009-08-07 14:35:49  joergr
  * Enhanced isEmpty() method by checking whether the data element value consists
  * of non-significant characters only.

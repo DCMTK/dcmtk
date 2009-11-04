@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmOtherByteOtherWord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-15 15:02:31 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: uli $
+ *  Update Date:      $Date: 2009-11-04 09:58:10 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,12 +226,10 @@ void DcmOtherByteOtherWord::printPixel(STD_NAMESPACE ostream&out,
                 }
                 fclose(file);
             } else {
-                ofConsole.lockCerr() << "Warning: can't open output file for pixel data: " << fname << OFendl;
-                ofConsole.unlockCerr();
+                DCMDATA_WARN("can't open output file for pixel data: " << fname);
             }
         } else {
-            ofConsole.lockCerr() << "Warning: output file for pixel data already exists: " << fname << OFendl;
-            ofConsole.unlockCerr();
+            DCMDATA_WARN("output file for pixel data already exists: " << fname);
         }
     } else
         DcmOtherByteOtherWord::print(out, flags, level, pixelFileName, pixelCounter);
@@ -526,7 +524,7 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
         const size_t count = OFstatic_cast(size_t, getLength() / sizeof(Uint16));
         if ((uint16Vals != NULL) && (count > 0))
         {
-            OFStringStream stream;
+            OFOStringStream stream;
             /* output first value in hexadecimal format */
             stream << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                    << STD_NAMESPACE setw(4) << *(uint16Vals++);
@@ -547,7 +545,7 @@ OFCondition DcmOtherByteOtherWord::getOFStringArray(OFString &stringVal,
         const size_t count = OFstatic_cast(size_t, getLength());
         if ((uint8Vals != NULL) && (count > 0))
         {
-            OFStringStream stream;
+            OFOStringStream stream;
             /* output first value in hexadecimal format */
             stream << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, *(uint8Vals++));
@@ -733,6 +731,9 @@ OFCondition DcmOtherByteOtherWord::writeXML(STD_NAMESPACE ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
+** Revision 1.58  2009-11-04 09:58:10  uli
+** Switched to logging mechanism provided by the "new" oflog module
+**
 ** Revision 1.57  2009-09-15 15:02:31  joergr
 ** Enhanced implementation of writeXML() by writing hex numbers directly to the
 ** output stream instead of creating a temporary string first.

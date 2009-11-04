@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2007, OFFIS
+ *  Copyright (C) 2001-2009, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Implements conversion from image into DICOM SC IOD
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-09-30 08:05:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2009-11-04 09:58:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,14 +33,14 @@
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcmtk/dcmdata/libi2d/i2dplsc.h"
+#include "dcmtk/dcmdata/libi2d/i2doutpl.h"
 #include "dcmtk/dcmdata/dcdeftag.h"        /* for DCM_ defines */
 #include "dcmtk/dcmdata/dcuid.h"           /* for UID_ defines */
 
 
 I2DOutputPlugSC::I2DOutputPlugSC()
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugSC: Output plugin for Secondary Capture initialized");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugSC: Output plugin for Secondary Capture initialized");
 }
 
 OFString I2DOutputPlugSC::ident()
@@ -56,8 +56,7 @@ void I2DOutputPlugSC::supportedSOPClassUIDs(OFList<OFString> suppSOPs)
 
 OFCondition I2DOutputPlugSC::convert(DcmDataset &dataset) const
 {
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugSC: Inserting SC specific attributes");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugSC: Inserting SC specific attributes");
   OFCondition cond;
   cond = dataset.putAndInsertOFStringArray(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 
@@ -72,8 +71,7 @@ OFString I2DOutputPlugSC::isValid(DcmDataset& dataset) const
   if (!m_doAttribChecking)
     return err;
 
-  if (m_debug)
-    printMessage(m_logStream, "I2DOutputPlugSC: Checking SC specific attributes");
+  DCMDATA_LIBI2D_DEBUG("I2DOutputPlugSC: Checking SC specific attributes");
   err += checkAndInventType1Attrib(DCM_ConversionType, &dataset, "WSD"); // WSD="Workstation"
 
   return err;
@@ -88,6 +86,9 @@ I2DOutputPlugSC::~I2DOutputPlugSC()
 /*
  * CVS/RCS Log:
  * $Log: i2dplsc.cc,v $
+ * Revision 1.4  2009-11-04 09:58:08  uli
+ * Switched to logging mechanism provided by the "new" oflog module
+ *
  * Revision 1.3  2009-09-30 08:05:26  uli
  * Stop including dctk.h in libi2d's header files.
  *
