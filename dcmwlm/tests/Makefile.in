@@ -13,13 +13,15 @@ configdir = @top_srcdir@/@configdir@
 include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
+oflogdir = $(top_srcdir)/../oflog
 dcmdatadir = $(top_srcdir)/../dcmdata
 dcmnetdir = $(top_srcdir)/../dcmnet
 
-LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include -I$(ofstddir)/include
+LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include \
+	-I$(oflogdir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(dcmdatadir)/libsrc \
-	-L$(ofstddir)/libsrc
-LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
+	-L$(oflogdir)/libsrc -L$(ofstddir)/libsrc
+LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -loflog -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 
 objs = wltest.o
 progs = wltest

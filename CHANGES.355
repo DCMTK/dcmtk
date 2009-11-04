@@ -3,6 +3,42 @@ Changes between releases are documented here.
 
 **** Changes from 2009.11.04 (schlachter)
 
+- Updated Makefile dependencies.
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/tests/Makefile.dep
+           dcmqrdb/apps/Makefile.dep
+           dcmqrdb/libsrc/Makefile.dep
+           dcmsign/apps/Makefile.dep
+           dcmsign/libsrc/Makefile.dep
+           dcmtls/libsrc/Makefile.dep
+           dcmwlm/apps/Makefile.dep
+           dcmwlm/libsrc/Makefile.dep
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/wwwapps/Makefile.dep
+
+- Added missing oflog include directory and library.
+  Affects: dcmnet/CMakeLists.txt
+           dcmnet/apps/CMakeLists.txt
+           dcmnet/apps/Makefile.in
+           dcmnet/libsrc/Makefile.in
+           dcmpstat/tests/Makefile.in
+           dcmqrdb/CMakeLists.txt
+           dcmqrdb/apps/CMakeLists.txt
+           dcmqrdb/apps/Makefile.in
+           dcmqrdb/libsrc/Makefile.in
+           dcmsign/libsrc/Makefile.in
+           dcmtls/CMakeLists.txt
+           dcmtls/libsrc/Makefile.in
+           dcmwlm/CMakeLists.txt
+           dcmwlm/apps/CMakeLists.txt
+           dcmwlm/apps/Makefile.in
+           dcmwlm/libsrc/Makefile.in
+           dcmwlm/tests/Makefile.in
+           dcmwlm/wwwapps/Makefile.in
+
 - Switched to logging mechanism provided by the "new" oflog module.
   Removed: dcmdata/libsrc/dcdebug.cc
   Affects: dcmdata/CMakeLists.txt

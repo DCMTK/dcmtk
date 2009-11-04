@@ -6,201 +6,6 @@ dcmmkcrv.o: dcmmkcrv.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
-  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
-  ../../ofstd/include/dcmtk/ofstd/offile.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvm.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
-  ../../ofstd/include/dcmtk/ofstd/oftime.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
-  ../../ofstd/include/dcmtk/ofstd/oftime.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
-  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h
-dcmmklut.o: dcmmklut.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
-  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
-  ../../ofstd/include/dcmtk/ofstd/offile.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvm.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
-  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
-  ../../ofstd/include/dcmtk/ofstd/oftime.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
-  ../../ofstd/include/dcmtk/ofstd/oftime.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
-  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dicrvfit.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/digsdfn.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
@@ -211,9 +16,15 @@ dcmmklut.o: dcmmklut.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/streams.h \
   ../../oflog/include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
   ../../oflog/include/dcmtk/oflog/config.h \
   ../../oflog/include/dcmtk/oflog/appender.h \
@@ -225,6 +36,7 @@ dcmmklut.o: dcmmklut.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/tstring.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
   ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
   ../../oflog/include/dcmtk/oflog/loglevel.h \
@@ -248,6 +60,242 @@ dcmmklut.o: dcmmklut.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/loggingmacros.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h
+dcmmklut.o: dcmmklut.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../oflog/include/dcmtk/oflog/logger.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/config/defines.h \
+  ../../oflog/include/dcmtk/oflog/helpers/thread-config.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/appender.h \
+  ../../oflog/include/dcmtk/oflog/layout.h \
+  ../../oflog/include/dcmtk/oflog/helpers/logloguser.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/ndc.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../oflog/include/dcmtk/oflog/helpers/sleep.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/spi/filter.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggerfactory.h \
+  ../../oflog/include/dcmtk/oflog/loggingmacros.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
+  ../../ofstd/include/dcmtk/ofstd/offile.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvm.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdefine.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicent.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdeftag.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcobject.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dclist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcstack.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcelem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcitem.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrui.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcbytstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpcache.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcmetinf.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdatset.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcfilefo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdicdir.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdirrec.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrulup.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrul.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixseq.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcofsetl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrae.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvras.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrcs.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrda.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrds.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrdt.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdatime.h \
+  ../../ofstd/include/dcmtk/ofstd/ofdate.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvris.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrtm.h \
+  ../../ofstd/include/dcmtk/ofstd/oftime.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcchrstr.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlo.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrlt.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpn.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsh.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrst.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrut.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrobow.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcpixel.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrpobw.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcovlay.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrat.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrss.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrus.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrsl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrfl.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrfd.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcvrof.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dicrvfit.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/digsdfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/digsdlut.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofstd.h \
@@ -270,6 +318,58 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../oflog/include/dcmtk/oflog/logger.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/config/defines.h \
+  ../../oflog/include/dcmtk/oflog/helpers/thread-config.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/appender.h \
+  ../../oflog/include/dcmtk/oflog/layout.h \
+  ../../oflog/include/dcmtk/oflog/helpers/logloguser.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/ndc.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../oflog/include/dcmtk/oflog/helpers/sleep.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/spi/filter.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggerfactory.h \
+  ../../oflog/include/dcmtk/oflog/loggingmacros.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -280,11 +380,9 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
@@ -421,6 +519,38 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h
+dcmprscp.o: dcmprscp.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/dcmpstat/dvpsdef.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/dcmpstat/dviface.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../include/dcmtk/dcmpstat/dvpscf.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
@@ -433,6 +563,8 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
   ../../oflog/include/dcmtk/oflog/config.h \
   ../../oflog/include/dcmtk/oflog/appender.h \
@@ -470,37 +602,6 @@ dcmp2pgm.o: dcmp2pgm.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
-  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h
-dcmprscp.o: dcmprscp.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../include/dcmtk/dcmpstat/dvpsdef.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../include/dcmtk/dcmpstat/dviface.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../include/dcmtk/dcmpstat/dvpscf.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -511,11 +612,9 @@ dcmprscp.o: dcmprscp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
@@ -638,9 +737,6 @@ dcmprscp.o: dcmprscp.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/dcmpstat/dvpsprt.h ../include/dcmtk/dcmpstat/dvpspll.h \
   ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
   ../include/dcmtk/dcmpstat/dvpsspl.h \
@@ -679,6 +775,58 @@ dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../oflog/include/dcmtk/oflog/logger.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/config/defines.h \
+  ../../oflog/include/dcmtk/oflog/helpers/thread-config.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/appender.h \
+  ../../oflog/include/dcmtk/oflog/layout.h \
+  ../../oflog/include/dcmtk/oflog/helpers/logloguser.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/ndc.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../oflog/include/dcmtk/oflog/helpers/sleep.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/spi/filter.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggerfactory.h \
+  ../../oflog/include/dcmtk/oflog/loggingmacros.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -689,11 +837,9 @@ dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
@@ -811,9 +957,6 @@ dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/dcmimage.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofcast.h \
@@ -831,6 +974,53 @@ dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmimgle/include/dcmtk/dcmimgle/diutils.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
+  ../include/dcmtk/dcmpstat/dvpspr.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
+  ../include/dcmtk/dcmpstat/dvpssp.h ../include/dcmtk/dcmpstat/dvpspll.h \
+  ../include/dcmtk/dcmpstat/dvpsibl.h ../include/dcmtk/dcmpstat/dvpsabl.h \
+  ../include/dcmtk/dcmpstat/dvpspr.h ../include/dcmtk/dcmpstat/dvpshlp.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \
+  ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
+  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h
+dcmpschk.o: dcmpschk.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
@@ -878,52 +1068,6 @@ dcmprscu.o: dcmprscu.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/loggingmacros.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
-  ../include/dcmtk/dcmpstat/dvpspr.h \
-  ../../dcmnet/include/dcmtk/dcmnet/dimse.h \
-  ../include/dcmtk/dcmpstat/dvpssp.h ../include/dcmtk/dcmpstat/dvpspll.h \
-  ../include/dcmtk/dcmpstat/dvpsibl.h ../include/dcmtk/dcmpstat/dvpsabl.h \
-  ../include/dcmtk/dcmpstat/dvpspr.h ../include/dcmtk/dcmpstat/dvpshlp.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstd.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h \
-  ../../dcmtls/include/dcmtk/dcmtls/tlstrans.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmnet/include/dcmtk/dcmnet/dcmtrans.h \
-  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../dcmtls/include/dcmtk/dcmtls/tlslayer.h \
-  ../../dcmnet/include/dcmtk/dcmnet/dcmlayer.h
-dcmpschk.o: dcmpschk.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctk.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
@@ -1043,19 +1187,69 @@ dcmpsmk.o: dcmpsmk.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../oflog/include/dcmtk/oflog/logger.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/config/defines.h \
+  ../../oflog/include/dcmtk/oflog/helpers/thread-config.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/appender.h \
+  ../../oflog/include/dcmtk/oflog/layout.h \
+  ../../oflog/include/dcmtk/oflog/helpers/logloguser.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/ndc.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../oflog/include/dcmtk/oflog/helpers/sleep.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/spi/filter.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggerfactory.h \
+  ../../oflog/include/dcmtk/oflog/loggingmacros.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
@@ -1144,9 +1338,6 @@ dcmpsmk.o: dcmpsmk.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
   ../../dcmnet/include/dcmtk/dcmnet/dul.h \
   ../../config/include/dcmtk/config/osconfig.h \
@@ -1185,6 +1376,58 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../oflog/include/dcmtk/oflog/logger.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/config/defines.h \
+  ../../oflog/include/dcmtk/oflog/helpers/thread-config.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/appender.h \
+  ../../oflog/include/dcmtk/oflog/layout.h \
+  ../../oflog/include/dcmtk/oflog/helpers/logloguser.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/ndc.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../oflog/include/dcmtk/oflog/helpers/sleep.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/spi/filter.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggerfactory.h \
+  ../../oflog/include/dcmtk/oflog/loggingmacros.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1195,11 +1438,9 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcswap.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcxfer.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcvr.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcistrma.h \
   ../../ofstd/include/dcmtk/ofstd/offile.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcostrma.h \
@@ -1337,6 +1578,36 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofglobal.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
+  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
+  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h
+dcmpsrcv.o: dcmpsrcv.cc ../../config/include/dcmtk/config/osconfig.h \
+  ../../config/include/dcmtk/config/cfunix.h \
+  ../include/dcmtk/dcmpstat/dvpsdef.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../include/dcmtk/dcmpstat/dvpscf.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../oflog/include/dcmtk/oflog/logger.h \
   ../../oflog/include/dcmtk/oflog/config.h \
@@ -1349,6 +1620,8 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../ofstd/include/dcmtk/ofstd/ofstream.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
   ../../oflog/include/dcmtk/oflog/config.h \
   ../../oflog/include/dcmtk/oflog/appender.h \
@@ -1386,35 +1659,6 @@ dcmpsprt.o: dcmpsprt.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
   ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimopx.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dipixel.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimomod.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/diluptab.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctagkey.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dibaslut.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/dimoopx.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didispfn.h \
-  ../../dcmimgle/include/dcmtk/dcmimgle/didislut.h \
-  ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcuid.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dcdebug.h
-dcmpsrcv.o: dcmpsrcv.cc ../../config/include/dcmtk/config/osconfig.h \
-  ../../config/include/dcmtk/config/cfunix.h \
-  ../include/dcmtk/dcmpstat/dvpsdef.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../include/dcmtk/dcmpstat/dvpscf.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcast.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
-  ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
-  ../../config/include/dcmtk/config/osconfig.h \
-  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1428,8 +1672,6 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmnet/include/dcmtk/dcmnet/cond.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
@@ -1470,9 +1712,6 @@ dcmpsrcv.o: dcmpsrcv.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdba.h \
@@ -1575,6 +1814,58 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmdata/include/dcmtk/dcmdata/dctypes.h \
   ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../oflog/include/dcmtk/oflog/oflog.h \
+  ../../config/include/dcmtk/config/osconfig.h \
+  ../../oflog/include/dcmtk/oflog/logger.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/config/defines.h \
+  ../../oflog/include/dcmtk/oflog/helpers/thread-config.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstream.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
+  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
+  ../../oflog/include/dcmtk/oflog/spi/appenderattachable.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/appender.h \
+  ../../oflog/include/dcmtk/oflog/layout.h \
+  ../../oflog/include/dcmtk/oflog/helpers/logloguser.h \
+  ../../oflog/include/dcmtk/oflog/config.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/streams.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../ofstd/include/dcmtk/ofstd/ofmap.h \
+  ../../ofstd/include/dcmtk/ofstd/oflist.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../oflog/include/dcmtk/oflog/loglevel.h \
+  ../../oflog/include/dcmtk/oflog/ndc.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../oflog/include/dcmtk/oflog/helpers/sleep.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
+  ../../ofstd/include/dcmtk/ofstd/ofstack.h \
+  ../../oflog/include/dcmtk/oflog/tstring.h \
+  ../../oflog/include/dcmtk/oflog/helpers/timehelper.h \
+  ../../oflog/include/dcmtk/oflog/helpers/threads.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/spi/filter.h \
+  ../../oflog/include/dcmtk/oflog/helpers/pointer.h \
+  ../../oflog/include/dcmtk/oflog/helpers/property.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggingevent.h \
+  ../../ofstd/include/dcmtk/ofstd/ofaptr.h \
+  ../../oflog/include/dcmtk/oflog/spi/loggerfactory.h \
+  ../../oflog/include/dcmtk/oflog/loggingmacros.h \
+  ../../ofstd/include/dcmtk/ofstd/oftypes.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
+  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
+  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../include/dcmtk/dcmpstat/dvpstyp.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
@@ -1588,7 +1879,6 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcdict.h \
   ../../ofstd/include/dcmtk/ofstd/ofthread.h \
-  ../../ofstd/include/dcmtk/ofstd/ofstring.h \
   ../../dcmdata/include/dcmtk/dcmdata/dchashdi.h \
   ../../ofstd/include/dcmtk/ofstd/oflist.h \
   ../../dcmnet/include/dcmtk/dcmnet/diutil.h \
@@ -1597,7 +1887,6 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../ofstd/include/dcmtk/ofstd/ofstdinc.h \
   ../../dcmnet/include/dcmtk/dcmnet/cond.h \
   ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
-  ../../ofstd/include/dcmtk/ofstd/ofthread.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcerror.h \
   ../../ofstd/include/dcmtk/ofstd/ofcond.h \
   ../../dcmnet/include/dcmtk/dcmnet/dcompat.h \
@@ -1634,9 +1923,6 @@ dcmpssnd.o: dcmpssnd.cc ../../config/include/dcmtk/config/osconfig.h \
   ../../dcmnet/include/dcmtk/dcmnet/assoc.h \
   ../../dcmdata/include/dcmtk/dcmdata/cmdlnarg.h \
   ../../ofstd/include/dcmtk/ofstd/ofconapp.h \
-  ../../ofstd/include/dcmtk/ofstd/ofcmdln.h \
-  ../../ofstd/include/dcmtk/ofstd/oflist.h \
-  ../../ofstd/include/dcmtk/ofstd/ofconsol.h \
   ../include/dcmtk/dcmpstat/dvpshlp.h \
   ../../dcmdata/include/dcmtk/dcmdata/dcsequen.h \
   ../../dcmqrdb/include/dcmtk/dcmqrdb/dcmqrdbi.h \

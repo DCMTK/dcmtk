@@ -2,7 +2,7 @@
 INCLUDE_DIRECTORIES(${dcmtls_SOURCE_DIR}/include ${OPENSSL_INCDIR})
 
 # declare directories containing used libraries
-LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${ofstd_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmtls_BINARY_DIR} ${ZLIB_LIBDIR} ${OPENSSL_LIBDIR})
+LINK_DIRECTORIES(${dcmnet_BINARY_DIR} ${ofstd_BINARY_DIR} ${oflog_BINARY_DIR} ${dcmdata_BINARY_DIR} ${dcmtls_BINARY_DIR} ${ZLIB_LIBDIR} ${OPENSSL_LIBDIR})
 
 # declare executables
 FOREACH(PROGRAM echoscu findscu movescu storescp storescu termscu)
@@ -19,7 +19,7 @@ ENDIF(WITH_OPENSSL)
 
 # make sure executables are linked to the corresponding libraries
 FOREACH(PROGRAM echoscu findscu movescu storescp storescu termscu)
-  TARGET_LINK_LIBRARIES(${PROGRAM} netapi32 wsock32 ofstd dcmdata dcmnet ${ZLIB_LIBS})
+  TARGET_LINK_LIBRARIES(${PROGRAM} netapi32 wsock32 ofstd oflog dcmdata dcmnet ${ZLIB_LIBS})
 ENDFOREACH(PROGRAM)
 FOREACH(PROGRAM echoscu findscu storescp storescu)
   TARGET_LINK_LIBRARIES(${PROGRAM} dcmtls ${OPENSSL_LIBS})
