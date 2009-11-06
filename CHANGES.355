@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.06 (riesmeier)
+
+- Changed documentation on log level "trace".
+  Affects: oflog/include/dcmtk/oflog/oflog.h
+
 **** Changes from 2009.11.04 (schlachter)
 
 - Updated Makefile dependencies.

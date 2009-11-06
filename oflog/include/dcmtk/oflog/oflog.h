@@ -22,8 +22,8 @@
  *  Purpose: Simplify the usage of log4cplus to other modules (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-09-16 10:04:26 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2009-11-06 09:41:22 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ public:
 
     /// these are the log levels that you can feed to isEnabledFor()
     enum LogLevel {
-        /// trace: used to "trace" entry and exiting of methods
+        /// trace: output more details on the internal application state, a kind of "verbose debug"
         TRACE_LOG_LEVEL = log4cplus::TRACE_LOG_LEVEL,
         /// debug: fine-grained informational events that are most useful to debug an application
         DEBUG_LOG_LEVEL = log4cplus::DEBUG_LOG_LEVEL,
@@ -135,6 +135,9 @@ class OFLog
  *
  * CVS/RCS Log:
  * $Log: oflog.h,v $
+ * Revision 1.5  2009-11-06 09:41:22  joergr
+ * Changed documentation on log level "trace".
+ *
  * Revision 1.4  2009-09-16 10:04:26  joergr
  * Changed OFLogger's copy constructor: use "const &" for the parameter.
  * Added missing documentation on parameters.
@@ -147,7 +150,6 @@ class OFLog
  *
  * Revision 1.1  2009-08-19 11:54:00  joergr
  * Added new module "oflog" which is based on log4cplus.
- *
  *
  *
  */
