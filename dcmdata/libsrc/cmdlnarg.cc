@@ -23,8 +23,8 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:08 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2009-11-10 12:38:29 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     int fderr = dup(fileno(stdout));
     if (fderr != fileno(stderr))
     {
-        OFLOG_ERROR(dcmdataLog, "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno));
+        DCMDATA_ERROR("INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno));
     }
 
 #ifndef NO_IOS_BASE_ASSIGN    
@@ -127,11 +127,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* make sure the buffering is removed */
     if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
     {
-        OFLOG_ERROR(dcmdataLog, "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno));
+        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno));
     }
     if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
     {
-        OFLOG_ERROR(dcmdataLog, "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno));
+        DCMDATA_ERROR("INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno));
     }
 #endif /* __BORLANDC__ */
 #endif
@@ -147,6 +147,9 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.21  2009-11-10 12:38:29  uli
+** Fix compilation on windows.
+**
 ** Revision 1.20  2009-11-04 09:58:08  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

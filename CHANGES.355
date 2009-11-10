@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.10 (schlachter)
+
+- Fix compilation on windows.
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dchashdi.cc
+
 **** Changes from 2009.11.06 (riesmeier)
 
 - Changed documentation on log level "trace".

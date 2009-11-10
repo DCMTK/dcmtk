@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
+ *  Update Date:      $Date: 2009-11-10 12:38:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -429,7 +429,7 @@ DcmHashDict::put(DcmDictEntry* e)
     if (old != NULL) {
         /* an old entry has been replaced */
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-        OFLOG_WARN(dcmdataLog, "replacing " << *old);
+        DCMDATA_WARN("replacing " << *old);
 #endif
         delete old;
     } else {
@@ -536,6 +536,9 @@ DcmHashDict::loadSummary(STD_NAMESPACE ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
+** Revision 1.23  2009-11-10 12:38:29  uli
+** Fix compilation on windows.
+**
 ** Revision 1.22  2009-11-04 09:58:09  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

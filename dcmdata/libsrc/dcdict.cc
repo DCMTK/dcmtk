@@ -22,8 +22,8 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2009-11-10 12:38:29 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -663,7 +663,7 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
                 DcmDictEntry *old = *iter;
                 *iter = e;
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
-                DCMDATA_INFO("replacing " << *old);
+                DCMDATA_WARN("replacing " << *old);
 #endif
                 delete old;
                 inserted = OFTrue;
@@ -842,6 +842,9 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
+** Revision 1.42  2009-11-10 12:38:29  uli
+** Fix compilation on windows.
+**
 ** Revision 1.41  2009-11-04 09:58:09  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
