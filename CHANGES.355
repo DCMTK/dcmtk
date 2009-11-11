@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.11 (riesmeier)
+
+- Fixed incorrect description of command line option.
+  Affects: dcmdata/docs/dcmdump.man
+
 **** Changes from 2009.11.10 (schlachter)
 
 - Fix compilation on windows.
