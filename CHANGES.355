@@ -1,6 +1,13 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.12 (riesmeier)
+
+- Fixed issue with --accept-all command line option which caused the other
+  --prefer-xxx options to be ignored under certain conditions.
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+
 **** Changes from 2009.11.11 (riesmeier)
 
 - Fixed incorrect description of command line option.

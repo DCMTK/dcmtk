@@ -22,8 +22,8 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2009-08-21 09:47:34 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Update Date:      $Date: 2009-11-12 10:13:01 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -446,24 +446,33 @@ main(int argc, char *argv[])
       if (cmd.findOption("--move")) app.checkValue(cmd.getValue(opt_moveDestination));
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--prefer-uncompr")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_Unknown;
-      if (cmd.findOption("--prefer-little")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_LittleEndianExplicit;
-      if (cmd.findOption("--prefer-big")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_BigEndianExplicit;
-      if (cmd.findOption("--prefer-lossless")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg8")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
-      if (cmd.findOption("--prefer-jpeg12")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
-      if (cmd.findOption("--prefer-j2k-lossless")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
-      if (cmd.findOption("--prefer-j2k-lossy")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_JPEG2000;
-      if (cmd.findOption("--prefer-jls-lossless")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGLSLossless;
-      if (cmd.findOption("--prefer-jls-lossy")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_JPEGLSLossy;
-      if (cmd.findOption("--prefer-mpeg2")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_MPEG2MainProfileAtMainLevel;
-      if (cmd.findOption("--prefer-rle")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_RLELossless;
+      if (cmd.findOption("--prefer-uncompr"))
+      {
+          opt_acceptAllXfers = OFFalse;
+          opt_in_networkTransferSyntax = EXS_Unknown;
+      }
+      if (cmd.findOption("--prefer-little")) opt_in_networkTransferSyntax = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--prefer-big")) opt_in_networkTransferSyntax = EXS_BigEndianExplicit;
+      if (cmd.findOption("--prefer-lossless")) opt_in_networkTransferSyntax = EXS_JPEGProcess14SV1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg8")) opt_in_networkTransferSyntax = EXS_JPEGProcess1TransferSyntax;
+      if (cmd.findOption("--prefer-jpeg12")) opt_in_networkTransferSyntax = EXS_JPEGProcess2_4TransferSyntax;
+      if (cmd.findOption("--prefer-j2k-lossless")) opt_in_networkTransferSyntax = EXS_JPEG2000LosslessOnly;
+      if (cmd.findOption("--prefer-j2k-lossy")) opt_in_networkTransferSyntax = EXS_JPEG2000;
+      if (cmd.findOption("--prefer-jls-lossless")) opt_networkTransferSyntax = EXS_JPEGLSLossless;
+      if (cmd.findOption("--prefer-jls-lossy")) opt_networkTransferSyntax = EXS_JPEGLSLossy;
+      if (cmd.findOption("--prefer-mpeg2")) opt_networkTransferSyntax = EXS_MPEG2MainProfileAtMainLevel;
+      if (cmd.findOption("--prefer-rle")) opt_in_networkTransferSyntax = EXS_RLELossless;
 #ifdef WITH_ZLIB
-      if (cmd.findOption("--prefer-deflated")) opt_acceptAllXfers = OFFalse; opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
+      if (cmd.findOption("--prefer-deflated")) opt_networkTransferSyntax = EXS_DeflatedLittleEndianExplicit;
 #endif
-      if (cmd.findOption("--implicit")) opt_acceptAllXfers = OFFalse; opt_in_networkTransferSyntax = EXS_LittleEndianImplicit;
-      if (cmd.findOption("--accept-all")) opt_acceptAllXfers = OFTrue;  opt_networkTransferSyntax = EXS_Unknown;
+      if (cmd.findOption("--implicit")) opt_in_networkTransferSyntax = EXS_LittleEndianImplicit;
+      if (cmd.findOption("--accept-all"))
+      {
+          opt_acceptAllXfers = OFTrue;
+          opt_networkTransferSyntax = EXS_Unknown;
+      }
       cmd.endOptionBlock();
+      if (opt_in_networkTransferSyntax != EXS_Unknown) opt_acceptAllXfers = OFFalse;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--propose-uncompr")) opt_out_networkTransferSyntax = EXS_Unknown;
@@ -1570,6 +1579,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
+** Revision 1.77  2009-11-12 10:13:01  joergr
+** Fixed issue with --accept-all command line option which caused the other
+** --prefer-xxx options to be ignored under certain conditions.
+**
 ** Revision 1.76  2009-08-21 09:47:34  joergr
 ** Added parameter 'writeMode' to save/write methods which allows for specifying
 ** whether to write a dataset or fileformat as well as whether to update the
