@@ -21,9 +21,9 @@
  *
  *  Purpose: Exctract PDF file from DICOM encapsulated PDF storage object
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:05 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -276,9 +276,10 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-        OFLOG_WARN(dcm2pdfLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+    {
+        OFLOG_WARN(dcm2pdfLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
 
     // open inputfile
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
@@ -368,6 +369,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pdf.cc,v $
+ * Revision 1.6  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.5  2009-11-04 09:58:05  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

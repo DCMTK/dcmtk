@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert PDF file to DICOM format
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,7 +186,7 @@ OFCondition insertPDFFile(
     // check magic word for PDF file
     if (0 != strncmp("%PDF-", buf, 5))
     {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " is not a PDF file.");
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << " is not a PDF file");
       fclose(pdffile);
       return EC_IllegalCall;
     }
@@ -206,7 +206,7 @@ OFCondition insertPDFFile(
 
     if (! found)
     {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": unable to decode PDF version number.");
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": unable to decode PDF version number");
       fclose(pdffile);
       return EC_IllegalCall;
     }
@@ -215,7 +215,7 @@ OFCondition insertPDFFile(
 
     if (0 != fseek(pdffile, 0, SEEK_SET))
     {
-      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": seek error.");
+      OFLOG_ERROR(pdf2dcmLogger, "file " << filename << ": seek error");
       fclose(pdffile);
       return EC_IllegalCall;
     }
@@ -519,9 +519,10 @@ int main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
-      OFLOG_WARN(pdf2dcmLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+    {
+        OFLOG_WARN(pdf2dcmLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
+    }
 
     // read raw file
     if ((opt_ifname == NULL) || (strlen(opt_ifname) == 0))
@@ -567,8 +568,7 @@ int main(int argc, char *argv[])
 
     if (result.bad())
     {
-        OFLOG_ERROR(pdf2dcmLogger, "unable to create DICOM header"
-            << "Error: " << result.text());
+        OFLOG_ERROR(pdf2dcmLogger, "unable to create DICOM header: " << result.text());
         return 10;
     }
 
@@ -583,18 +583,16 @@ int main(int argc, char *argv[])
     fileformat.getDataset()->chooseRepresentation(opt_oxfer, NULL);
     if (fileformat.getDataset()->canWriteXfer(opt_oxfer))
     {
-        OFLOG_INFO(pdf2dcmLogger, "Output transfer syntax " << opt_oxferSyn.getXferName()
-                << " can be written");
+        OFLOG_INFO(pdf2dcmLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
-        OFLOG_ERROR(pdf2dcmLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
-                << " possible!");
+        OFLOG_ERROR(pdf2dcmLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
         return 1;
     }
 
     OFLOG_INFO(pdf2dcmLogger, "write converted DICOM file with metaheader");
 
-    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc,
-              opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+    error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc,
+        OFstatic_cast(Uint32, opt_filepad), OFstatic_cast(Uint32, opt_itempad));
 
     if (error.bad())
     {
@@ -611,6 +609,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: pdf2dcm.cc,v $
+** Revision 1.16  2009-11-13 13:20:23  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.15  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

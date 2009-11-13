@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements utility for converting standard image formats to DICOM
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@
 
 #define OFFIS_CONSOLE_APPLICATION "img2dcm"
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
 #define SHORTCOL 4
 #define LONGCOL 21
 
@@ -380,9 +381,8 @@ static OFCondition startConversion(OFCommandLine& cmd,
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-      OFLOG_WARN(img2dcmLogger, "no data dictionary loaded, "
-           << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE);
+      OFLOG_WARN(img2dcmLogger, "no data dictionary loaded, check environment variable: "
+          << DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
   DcmDataset *resultObject = NULL;
@@ -432,6 +432,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: img2dcm.cc,v $
+ * Revision 1.18  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.17  2009-11-04 09:58:06  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

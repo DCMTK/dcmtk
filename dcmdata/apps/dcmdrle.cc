@@ -21,9 +21,9 @@
  *
  *  Purpose: Decompress RLE-compressed DICOM file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -256,9 +256,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmdrleLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmdrleLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open inputfile
@@ -291,7 +290,7 @@ int main(int argc, char *argv[])
     {
         OFLOG_FATAL(dcmdrleLogger, error.text() << ": decompressing file: " <<  opt_ifname);
         if (error == EC_CannotChangeRepresentation)
-            OFLOG_FATAL(dcmdrleLogger, "Input transfer syntax " << original_xfer.getXferName() << " not supported");
+            OFLOG_FATAL(dcmdrleLogger, "input transfer syntax " << original_xfer.getXferName() << " not supported");
         return 1;
     }
 
@@ -329,6 +328,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmdrle.cc,v $
+ * Revision 1.22  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.21  2009-11-04 09:58:06  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

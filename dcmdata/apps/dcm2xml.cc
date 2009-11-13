@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:05 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,8 +107,8 @@ static OFCondition writeFile(STD_NAMESPACE ostream &out,
                 if (defaultCharset == NULL)
                 {
                     /* the dataset contains non-ASCII characters that really should not be there */
-                    OFLOG_WARN(dcm2xmlLogger,  OFFIS_CONSOLE_APPLICATION << ": (0008,0005) Specific Character Set absent "
-                             << "but extended characters used in file: " << ifname);
+                    OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": (0008,0005) Specific Character Set absent "
+                        << "but extended characters used in file: " << ifname);
                     return EC_IllegalCall;
                 } else {
                     OFString charset(defaultCharset);
@@ -412,16 +412,15 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcm2xmlLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcm2xmlLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure document type definition file exists */
     if ((opt_writeFlags & DCMTypes::XF_embedDocumentType) && !OFStandard::fileExists(opt_dtdFilename))
     {
         OFLOG_WARN(dcm2xmlLogger, OFFIS_CONSOLE_APPLICATION << ": DTD file \"" << opt_dtdFilename
-                 << "\" does not exist ... adding reference instead");
+            << "\" does not exist ... adding reference instead");
         opt_writeFlags &= ~DCMTypes::XF_embedDocumentType;
     }
 
@@ -469,6 +468,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
+ * Revision 1.38  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.37  2009-11-04 09:58:05  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

@@ -1,6 +1,33 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2009.11.13 (riesmeier)
+
+- Fixed minor issues in log output.
+  Affects: dcmdata/apps/dcm2pdf.cc
+           dcmdata/apps/dcm2xml.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmcrle.cc
+           dcmdata/apps/dcmdrle.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/img2dcm.cc
+           dcmdata/apps/pdf2dcm.cc
+           dcmdata/apps/xml2dcm.cc
+           dcmdata/libi2d/i2djpgs.cc
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcddirif.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+
 **** Changes from 2009.11.12 (riesmeier)
 
 - Fixed issue with --accept-all command line option which caused the other

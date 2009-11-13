@@ -21,9 +21,9 @@
  *
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,9 +275,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmcrleLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmcrleLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open inputfile
@@ -317,7 +316,7 @@ int main(int argc, char *argv[])
         /* check for DICOMDIR files */
         if (sopClass == UID_MediaStorageDirectoryStorage)
         {
-            CERR << "Error: DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!" << OFendl;
+            OFLOG_FATAL(dcmcrleLogger, "DICOMDIR files (Media Storage Directory Storage SOP Class) cannot be compressed!");
             return 1;
         }
     }
@@ -331,7 +330,7 @@ int main(int argc, char *argv[])
     {
         OFLOG_INFO(dcmcrleLogger, "Output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
-        OFLOG_ERROR(dcmcrleLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
+        OFLOG_FATAL(dcmcrleLogger, "No conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
         return 1;
     }
 
@@ -359,6 +358,9 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
+ * Revision 1.21  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.20  2009-11-04 09:58:06  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

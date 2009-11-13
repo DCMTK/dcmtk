@@ -21,9 +21,9 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.79 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.80 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -548,9 +548,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmdumpLogger, "no data dictionary loaded, "
-           << "check environment variable: "
-           << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmdumpLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* make sure the pixel data directory exists and is writable */
@@ -584,7 +583,7 @@ int main(int argc, char *argv[])
         if (scanDir)
           OFStandard::searchDirectoryRecursively(paramString, inputFiles, scanPattern, "" /*dirPrefix*/, recurse);
         else
-          OFLOG_INFO(dcmdumpLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
+          OFLOG_WARN(dcmdumpLogger, "ignoring directory because option --scan-directories is not set: " << paramString);
       } else
         inputFiles.push_back(paramString);
     }
@@ -633,10 +632,10 @@ static void printResult(STD_NAMESPACE ostream &out,
              * very helpful to distinguish instances.
              */
             if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item) {
-                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                    << "(" << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getGTag())
-                    << "," << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getETag())
-                    << ")." << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
+                out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "(" 
+                    << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getGTag()) << ","
+                    << STD_NAMESPACE setw(4) << OFstatic_cast(unsigned, dobj->getETag()) << ")."
+                    << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
             }
         }
     }
@@ -659,7 +658,7 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        OFLOG_INFO(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
+        OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>");
         return 1;
     }
 
@@ -669,8 +668,8 @@ static int dumpFile(STD_NAMESPACE ostream &out,
     OFCondition cond = dfile.loadFile(ifname, xfer, EGL_noChange, maxReadLength, readMode);
     if (cond.bad())
     {
-        OFLOG_WARN(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text()
-                 << ": reading file: "<< ifname);
+        OFLOG_ERROR(dcmdumpLogger, OFFIS_CONSOLE_APPLICATION << ": " << cond.text()
+            << ": reading file: "<< ifname);
         result = 1;
         if (stopOnErrors) return result;
     }
@@ -707,9 +706,8 @@ static int dumpFile(STD_NAMESPACE ostream &out,
             else if (sscanf(tagName, "%x,%x", &group, &elem) == 2)
                 searchKey.set(group, elem);
             else {
-                OFLOG_WARN(dcmdumpLogger, "Internal ERROR in File " << __FILE__ << ", Line "
-                         << __LINE__ << OFendl
-                         << "-- Named tag inconsistency");
+                OFLOG_FATAL(dcmdumpLogger, "Internal ERROR in File " << __FILE__ << ", Line "
+                    << __LINE__ << OFendl << " -- Named tag inconsistency");
                 abort();
             }
 
@@ -745,6 +743,9 @@ static int dumpFile(STD_NAMESPACE ostream &out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
+ * Revision 1.80  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.79  2009-11-04 09:58:06  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

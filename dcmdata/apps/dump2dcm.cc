@@ -21,9 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -217,7 +217,7 @@ getLine(char *line, int maxLineLen, FILE *f, const unsigned long lineNumber)
         int c = fgetc(f);
         while(c != '\n' && c != EOF)
             c = fgetc(f);
-        OFLOG_ERROR(dump2dcmLogger, "line " << lineNumber << " too long.");
+        OFLOG_ERROR(dump2dcmLogger, "line " << lineNumber << " too long");
     }
 
     /* strip any trailing white space */
@@ -550,8 +550,8 @@ insertIntoSet(DcmStack &stack, const E_TransferSyntax xfer, const DcmTagKey &tag
            (tagvr != EVR_na || vr != EVR_pixelItem))
         {
             OFLOG_WARN(dump2dcmLogger, "Tag " << tag << " with wrong VR '"
-                 << dcmvr.getVRName() << "' found, correct is '"
-                 << tag.getVR().getVRName() << "'");
+                << dcmvr.getVRName() << "' found, correct is '"
+                << tag.getVR().getVRName() << "'");
         }
 
         if (vr != EVR_UNKNOWN)
@@ -735,7 +735,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
         if (!parseTag(parse, tagkey))
         {
             OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "no Tag found (line " << lineNumber << ")");
+                << "no Tag found (line " << lineNumber << ")");
             errorOnThisLine = OFTrue;
         }
 
@@ -747,7 +747,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
         if (!errorOnThisLine && !parseValue(parse, value, vr, tagkey))
         {
             OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
-                 << "incorrect value specification (line " << lineNumber << ")");
+                << "incorrect value specification (line " << lineNumber << ")");
             errorOnThisLine = OFTrue;
         }
 
@@ -783,7 +783,7 @@ readDumpFile(DcmMetaInfo *metaheader, DcmDataset *dataset,
             {
                 errorOnThisLine = OFTrue;
                 OFLOG_ERROR(dump2dcmLogger, OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
-                     << l_error.text() << " (line " << lineNumber << ")");
+                    << l_error.text() << " (line " << lineNumber << ")");
             }
 
         }
@@ -1041,9 +1041,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dump2dcmLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dump2dcmLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open input dump file
@@ -1119,14 +1118,13 @@ int main(int argc, char *argv[])
 
             if (l_error == EC_Normal)
             {
-                OFLOG_INFO(dump2dcmLogger, "dump successfully converted.");
+                OFLOG_INFO(dump2dcmLogger, "dump successfully converted");
             } else {
                 OFLOG_ERROR(dump2dcmLogger, l_error.text() << ": writing file: "  << opt_ofname);
                 status = 1;
             }
         } else {
-            OFLOG_ERROR(dump2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
-                 << " possible!");
+            OFLOG_ERROR(dump2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName() << " possible!");
             status = 2;
         }
     }
@@ -1139,6 +1137,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
+** Revision 1.66  2009-11-13 13:20:23  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.65  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

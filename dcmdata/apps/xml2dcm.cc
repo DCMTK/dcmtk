@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert XML document to DICOM file or data set
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -198,7 +198,7 @@ static OFCondition createNewElement(xmlNodePtr current,
             if (dcmEVR == EVR_UNKNOWN)
             {
                 OFLOG_WARN(xml2dcmLogger, "invalid 'vr' attribute (" << elemVR
-                     << ") for " << dcmTag << ", using unknown VR");
+                    << ") for " << dcmTag << ", using unknown VR");
             }
             /* check for correct vr */
             const DcmEVR tagEVR = dcmTag.getEVR();
@@ -208,7 +208,7 @@ static OFCondition createNewElement(xmlNodePtr current,
                 ((tagEVR != EVR_ox) || ((dcmEVR != EVR_OB) && (dcmEVR != EVR_OW))))
             {
                 OFLOG_WARN(xml2dcmLogger, "tag " << dcmTag << " has wrong VR (" << dcmVR.getVRName()
-                     << "), correct is " << dcmTag.getVR().getVRName());
+                    << "), correct is " << dcmTag.getVR().getVRName());
             }
             if (dcmEVR != EVR_UNKNOWN)
                 dcmTag.setVR(dcmVR);
@@ -888,9 +888,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(xml2dcmLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(xml2dcmLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* check for compatible libxml version */
@@ -930,8 +929,7 @@ int main(int argc, char *argv[])
         E_TransferSyntax xfer;
         OFLOG_INFO(xml2dcmLogger, "reading XML input file: " << opt_ifname);
         /* read XML file and feed data into DICOM fileformat */
-        result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace,
-                             opt_validate);
+        result = readXmlFile(opt_ifname, fileformat, xfer, opt_metaInfo, opt_namespace, opt_validate);
         if (result.good())
         {
             DcmDataset *dataset = fileformat.getDataset();
@@ -974,8 +972,7 @@ int main(int argc, char *argv[])
                 if (result.bad())
                     OFLOG_ERROR(xml2dcmLogger, result.text() << ": writing file: "  << opt_ofname);
             } else {
-                OFLOG_ERROR(xml2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName()
-                     << " possible!");
+                OFLOG_ERROR(xml2dcmLogger, "no conversion to transfer syntax " << DcmXfer(opt_xfer).getXferName() << " possible!");
                 result = EC_CannotChangeRepresentation;
             }
         }
@@ -1004,6 +1001,9 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
+ * Revision 1.29  2009-11-13 13:20:23  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.28  2009-11-04 09:58:06  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

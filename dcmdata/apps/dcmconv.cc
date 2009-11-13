@@ -21,9 +21,9 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:06 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:20:23 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,8 +79,7 @@ static DcmTagKey parseTagKey(const char *tagName)
       OFLOG_ERROR(dcmconvLogger, "unrecognised tag name: '" << tagName << "'");
       dcmDataDict.unlock();
       return DCM_UndefinedTagKey;
-    } else
-    {
+    } else {
       return dicent->getKey();
     }
     dcmDataDict.unlock();
@@ -455,9 +454,8 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-        OFLOG_WARN(dcmconvLogger, "no data dictionary loaded, "
-             << "check environment variable: "
-             << DCM_DICT_ENVIRONMENT_VARIABLE);
+        OFLOG_WARN(dcmconvLogger, "no data dictionary loaded, check environment variable: "
+            << DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     // open inputfile
@@ -486,7 +484,7 @@ int main(int argc, char *argv[])
 
     if (opt_noInvalidGroups)
     {
-        COUT << "remove all elements with an invalid group number" << OFendl;
+        OFLOG_INFO(dcmconvLogger, "remove all elements with an invalid group number");
         fileformat.removeInvalidGroups();
     }
 
@@ -504,8 +502,7 @@ int main(int argc, char *argv[])
 
     if (dataset->canWriteXfer(opt_oxfer))
     {
-        OFLOG_INFO(dcmconvLogger, "output transfer syntax " << opt_oxferSyn.getXferName()
-                 << " can be written");
+        OFLOG_INFO(dcmconvLogger, "output transfer syntax " << opt_oxferSyn.getXferName() << " can be written");
     } else {
         OFLOG_FATAL(dcmconvLogger, "no conversion to transfer syntax " << opt_oxferSyn.getXferName() << " possible!");
         return 1;
@@ -531,6 +528,9 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
+** Revision 1.70  2009-11-13 13:20:23  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.69  2009-11-04 09:58:06  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

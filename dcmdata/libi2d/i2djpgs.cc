@@ -21,9 +21,9 @@
  *
  *  Purpose: Class to extract pixel data and meta information from JPEG file
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:08 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:23:30 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -868,11 +868,10 @@ void I2DJpegSource::debugDumpJPEGFileMap() const
   OFListConstIterator(JPEGFileMapEntry*) it= m_jpegFileMap.begin();
   while (it != m_jpegFileMap.end())
   {
-    DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Byte Position: 0x" << STD_NAMESPACE hex << STD_NAMESPACE setw(8)
-                       << STD_NAMESPACE setfill('0')
-                       /* need to cast bytePos to unsigned long to keep VC6 happy */
-                       << OFstatic_cast(unsigned long, (*it)->bytePos)
-                       <<" | Marker: " << jpegMarkerToString( (*it)->marker));
+    DCMDATA_LIBI2D_DEBUG("I2DJpegSource:   Byte Position: 0x"
+        << STD_NAMESPACE hex << STD_NAMESPACE setw(8) << STD_NAMESPACE setfill('0')
+        /* need to cast bytePos to unsigned long to keep VC6 happy */
+        << OFstatic_cast(unsigned long, (*it)->bytePos) <<" | Marker: " << jpegMarkerToString( (*it)->marker));
     it++;
   }
 }
@@ -907,6 +906,9 @@ I2DJpegSource::~I2DJpegSource()
 /*
  * CVS/RCS Log:
  * $Log: i2djpgs.cc,v $
+ * Revision 1.13  2009-11-13 13:23:30  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.12  2009-11-04 09:58:08  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *
