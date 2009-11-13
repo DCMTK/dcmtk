@@ -28,6 +28,9 @@ Changes between releases are documented here.
            dcmdata/libsrc/dcpxitem.cc
            dcmdata/libsrc/dcsequen.cc
 
+- Fixed wrong header include (now, "oflog.h" instead of "ofconsol.h" required).
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+
 **** Changes from 2009.11.12 (riesmeier)
 
 - Fixed issue with --accept-all command line option which caused the other

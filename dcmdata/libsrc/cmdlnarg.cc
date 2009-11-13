@@ -22,9 +22,9 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-10 12:38:29 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 14:41:54 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
 
 #include "dcmtk/config/osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcmtk/dcmdata/cmdlnarg.h"
-#include "dcmtk/ofstd/ofconsol.h"
+#include "dcmtk/dcmdata/dctypes.h"
 
 /*
 ** prepareCmdLineArgs 
@@ -147,6 +147,9 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
+** Revision 1.22  2009-11-13 14:41:54  joergr
+** Fixed wrong header include (now, "oflog.h" instead of "ofconsol.h" required).
+**
 ** Revision 1.21  2009-11-10 12:38:29  uli
 ** Fix compilation on windows.
 **
