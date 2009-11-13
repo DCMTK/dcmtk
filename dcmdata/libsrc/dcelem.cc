@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
- *  CVS/RCS Revision: $Revision: 1.76 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:11:20 $
+ *  CVS/RCS Revision: $Revision: 1.77 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,8 +567,8 @@ OFCondition DcmElement::loadValue(DcmInputStream *inStream)
                     {
                         errorFlag = EC_InvalidStream; // premature end of stream
                         DCMDATA_ERROR("DcmElement: " << getTagName() << " " << getTag().getXTag()
-                                   << " larger (" << getLengthField() << ") than remaining bytes ("
-                                   << getTransferredBytes() << ") in file, premature end of stream");
+                            << " larger (" << getLengthField() << ") than remaining bytes ("
+                            << getTransferredBytes() << ") in file, premature end of stream");
                     }
                     else
                         errorFlag = EC_StreamNotifyClient;
@@ -1326,7 +1326,7 @@ OFCondition DcmElement::getPartialValue(void *targetBuffer,
   // if the user has only requested zero bytes, we immediately return
   if (numBytes == 0) return EC_Normal;
 
-  // offset must always be less then attribute length (unless offset,
+  // offset must always be less than attribute length (unless offset,
   // attribute length and numBytes are all zero, a case that was
   // handled above).
   if (offset >= getLengthField()) return EC_InvalidOffset;
@@ -1672,6 +1672,9 @@ OFCondition DcmElement::checkVM(const unsigned long vmNum,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
+** Revision 1.77  2009-11-13 13:11:20  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.76  2009-11-04 09:58:09  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

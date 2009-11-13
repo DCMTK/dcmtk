@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:11:20 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -405,7 +405,7 @@ Uint8 *DcmByteString::newValueField()
                * which would an overflow on some systems as well as being illegal in DICOM
                */
                 DCMDATA_WARN("DcmByteString: " << getTagName() << " " << getTag().getXTag()
-                          << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
+                    << " has odd, maximum length (" << DCM_UndefinedLength << ") and therefore is not loaded");
                 errorFlag = EC_CorruptedData;
                 return NULL;
         }
@@ -515,10 +515,12 @@ OFCondition DcmByteString::verify(const OFBool autocorrect)
     }
     /* report a debug message if an error occurred */
     if (errorFlag.bad())
-        DCMDATA_DEBUG("DcmByteString::verify: Illegal values in Tag=(0x"
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << getGTag() << ",0x"
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4) << getETag()
-                << ") VM=" << getVM());
+    {
+        DCMDATA_DEBUG("DcmByteString::verify: Illegal values in Tag ("
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+            << STD_NAMESPACE setw(4) << getGTag() << ","
+            << STD_NAMESPACE setw(4) << getETag() << ") VM=" << getVM());
+    }
     return errorFlag;
 }
 
@@ -728,6 +730,9 @@ OFCondition DcmByteString::checkValue(const OFString &value,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
+** Revision 1.56  2009-11-13 13:11:20  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.55  2009-11-04 09:58:09  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

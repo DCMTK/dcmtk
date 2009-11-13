@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:11:20 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,18 +262,19 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 ((currVers[1] & version[1] & 0xff) == version[1]))
             {
                 DCMDATA_DEBUG("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x"
-                        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << currVers[1]
-                        << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(2) << currVers[0]);
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
+                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]));
             } else {
                 currVers[0] = OFstatic_cast(Uint8, currVers[0] | version[0]); // direct manipulation
                 currVers[1] = OFstatic_cast(Uint8, currVers[1] | version[1]); // of data
                 DCMDATA_WARN ("dcfilefo: unknown Version of MetaHeader detected: 0x"
-                          << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
-                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
-                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0]) << " supported: 0x"
-                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
-                          << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0])
-                          << STD_NAMESPACE dec << STD_NAMESPACE setfill(' '));
+                    << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[1])
+                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, currVers[0])
+                    << " supported: 0x"
+                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[1])
+                    << STD_NAMESPACE setw(2) << OFstatic_cast(int, version[0]));
             }
         }
         else if (xtag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
@@ -295,7 +296,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 else if (elem->getLength() == 0)
                 {
                     OFstatic_cast(DcmUniqueIdentifier *, elem)->putString(UID_PrivateGenericFileSOPClass);
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass");
+                    DCMDATA_DEBUG("DcmFileFormat::checkValue() No SOPClassUID in Dataset, using PrivateGenericFileSOPClass");
                 }
             }
         }
@@ -337,13 +338,13 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 char * uidtmp = NULL;
                 OFstatic_cast(DcmUniqueIdentifier *, elem)->getString(uidtmp);
                 if (uidtmp != NULL)
-                    DCMDATA_DEBUG("DcmFileFormat::checkValue() found old transfer-syntax: [" << uidtmp << "]");
+                    DCMDATA_DEBUG("DcmFileFormat::checkValue() found old TransferSyntaxUID [" << uidtmp << "]");
 #endif
                 DcmXfer dcXfer(oxfer);
                 const char *uid = dcXfer.getXferID();
                 elem->putString(uid);
-                DCMDATA_DEBUG("DcmFileFormat::checkValue() use new transfer-syntax ["
-                        << dcXfer.getXferName() << "] on writing following Dataset");
+                DCMDATA_DEBUG("DcmFileFormat::checkValue() use new TransferSyntaxUID ["
+                    << dcXfer.getXferName() << "] on writing following Dataset");
             }
         }
         else if (xtag == DCM_ImplementationClassUID)        // (0002,0012)
@@ -381,7 +382,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmApplicationEntity(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_ERROR("dcfilefo: I don't know how to handle DCM_SourceApplicationEntityTitle!");
+            DCMDATA_ERROR("dcfilefo: don't know how to handle SourceApplicationEntityTitle");
         }
         else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
         {
@@ -390,7 +391,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmUniqueIdentifier(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_ERROR("dcfilefo: I don't know how to handle DCM_PrivateInformationCreatorUID!");
+            DCMDATA_ERROR("dcfilefo: don't know how to handle PrivateInformationCreatorUID");
         }
         else if (xtag == DCM_PrivateInformation)            // (0002,0102)
         {
@@ -399,9 +400,9 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 elem = new DcmOtherByteOtherWord(tag);
                 metainfo->insert(elem, OFTrue);
             }
-            DCMDATA_WARN("dcfilefo: I don't know how to handle DCM_PrivateInformation!");
+            DCMDATA_WARN("dcfilefo: don't know how to handle PrivateInformation");
         } else {
-            DCMDATA_WARN("dcfilefo: I don't know how to handle " << tag.getTagName());
+            DCMDATA_WARN("dcfilefo: don't know how to handle " << tag.getTagName());
         }
 
         /* if at this point elem still equals NULL, something is fishy */
@@ -480,13 +481,13 @@ OFCondition DcmFileFormat::validateMetaInfo(const E_TransferSyntax oxfer,
             checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer, writeMode);
 
             /* dump some information if required */
-            DCMDATA_DEBUG("DcmFileFormat: found " << metinf->card() << "d Elements in DcmMetaInfo 'metinf'.");
+            DCMDATA_DEBUG("DcmFileFormat: found " << metinf->card() << " Elements in DcmMetaInfo 'metinf'");
 
             /* calculate new GroupLength for meta header */
             if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
                 META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
             {
-                DCMDATA_ERROR("DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted.");
+                DCMDATA_ERROR("DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted");
             }
         }
     } else {
@@ -516,8 +517,8 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
             xferUI->getString(xferid);
             DcmXfer localXfer(xferid);      // decode to E_TransferSyntax
             newxfer = localXfer.getXfer();
-            DCMDATA_TRACE("DcmFileFormat::lookForXfer() detected xfer=" << newxfer << "=["
-                    << localXfer.getXferName() << "] in MetaInfo");
+            DCMDATA_TRACE("DcmFileFormat::lookForXfer() detected transfer syntax = " << newxfer << " ["
+                << localXfer.getXferName() << "] in MetaInfo");
         }
     }
     return newxfer;
@@ -719,9 +720,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
         /* in case the transfer syntax which shall be used is indeed the */
         /* BigEndianImplicit transfer syntax dump some error information */
         if (outxfer == EXS_BigEndianImplicit)
-        {
-            DCMDATA_ERROR("DcmFileFormat::write() illegal TransferSyntax(BI) used");
-        }
+            DCMDATA_ERROR("DcmFileFormat::write() illegal TransferSyntax (BigEndianImplicit) used");
     }
     /* return result value */
     return errorFlag;
@@ -858,8 +857,8 @@ DcmItem *DcmFileFormat::remove(DcmItem* /*item*/)
 
 OFCondition DcmFileFormat::clear()
 {
-  getMetaInfo()->clear();
-  return getDataset()->clear();
+    getMetaInfo()->clear();
+    return getDataset()->clear();
 }
 
 
@@ -915,6 +914,9 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
+** Revision 1.56  2009-11-13 13:11:20  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.55  2009-11-04 09:58:09  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **

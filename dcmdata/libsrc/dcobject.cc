@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:11:21 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,8 +205,8 @@ void DcmObject::printInfoLineStart(STD_NAMESPACE ostream &out,
         out << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << "("
             << STD_NAMESPACE setw(4) << tag->getGTag() << ","
             << STD_NAMESPACE setw(4) << tag->getETag() << ") "
-            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ')
-            << vr.getVRName() << " ";
+            << vr.getVRName() << " "
+            << STD_NAMESPACE dec << STD_NAMESPACE setfill(' ');
     }
 }
 
@@ -239,9 +239,7 @@ void DcmObject::printInfoLineEnd(STD_NAMESPACE ostream &out,
             out << "u/l";   // means "undefined/length"
         else
             out << STD_NAMESPACE setw(3) << length;
-        out << ","
-            << STD_NAMESPACE setw(2) << vm << " "
-            << tag->getTagName() << OFendl;
+        out << "," << STD_NAMESPACE setw(2) << vm << " " << tag->getTagName() << OFendl;
     }
 }
 
@@ -479,6 +477,9 @@ OFBool DcmObject::isEmpty(const OFBool /*normalize*/)
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
+ * Revision 1.65  2009-11-13 13:11:21  joergr
+ * Fixed minor issues in log output.
+ *
  * Revision 1.64  2009-11-04 09:58:10  uli
  * Switched to logging mechanism provided by the "new" oflog module
  *

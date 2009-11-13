@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:09 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:11:20 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1034,7 +1034,7 @@ OFCondition DicomDirInterface::createNewDicomDir(const E_ApplicationProfile prof
         if (result.good())
         {
             DCMDATA_INFO("creating DICOMDIR file using " << getProfileName(ApplicationProfile)
-                      << " profile: " << filename);
+                << " profile: " << filename);
             /* finally, create a new DICOMDIR object */
             DicomDir = new DcmDicomDir(filename, filesetID);
             if (DicomDir != NULL)
@@ -1068,7 +1068,7 @@ OFCondition DicomDirInterface::appendToDicomDir(const E_ApplicationProfile profi
             if (result.good())
             {
                 DCMDATA_INFO("appending to DICOMDIR file using " << getProfileName(ApplicationProfile)
-                          << " profile: " << filename);
+                    << " profile: " << filename);
                 /* finally, create a DICOMDIR object based on the existing file */
                 DicomDir = new DcmDicomDir(filename);
                 if (DicomDir != NULL)
@@ -1126,7 +1126,7 @@ OFCondition DicomDirInterface::updateDicomDir(const E_ApplicationProfile profile
             if (result.good())
             {
                 DCMDATA_INFO("updating DICOMDIR file using " << getProfileName(ApplicationProfile)
-                          << " profile: " << filename);
+                    << " profile: " << filename);
                 /* finally, create a DICOMDIR object based on the existing file */
                 DicomDir = new DcmDicomDir(filename);
                 if (DicomDir != NULL)
@@ -1206,14 +1206,14 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
             locateInvalidFilenameChars(filename, invalidChar, MapFilenamesMode))
         {
             DCMDATA_ERROR("invalid character(s) in filename: " << filename << OFendl
-                    << OFString(34 /*message*/ + invalidChar, ' ') << "^");
+                << OFString(34 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
         /* ensure that the maximum number of components is not being exceeded */
         if (componentCount(filename) > MAX_FNAME_COMPONENTS)
         {
             DCMDATA_ERROR("too many path components (max " << MAX_FNAME_COMPONENTS
-                    << ") in filename: " << filename);
+                << ") in filename: " << filename);
             result = OFFalse;
         }
         /* ensure that each component is not too large */
@@ -1221,7 +1221,7 @@ OFBool DicomDirInterface::isFilenameValid(const char *filename,
         {
             /* create error message */
             DCMDATA_ERROR("component too large (max " << MAX_FNAME_COMPONENT_SIZE
-                    << " characters) in filename: " << filename);
+                << " characters) in filename: " << filename);
             result = OFFalse;
         }
     }
@@ -1456,7 +1456,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                 if (sopClassName.empty())
                     sopClassName = mediaSOPClassUID;
                 DCMDATA_ERROR("invalid SOP class (" << sopClassName << ") for " << getProfileName(ApplicationProfile)
-                           << " profile: " << filename);
+                     << " profile: " << filename);
                 result = EC_ApplicationProfileViolated;
             }
             if (result.good())
@@ -1476,7 +1476,7 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     {
                         if (!RLESupport && IconImageMode)
                         {
-                            DCMDATA_ERROR("RLE compression not supported: "  << filename);
+                            DCMDATA_ERROR("RLE compression not supported: " << filename);
                             result = EC_CannotChangeRepresentation;
                         }
                     }
@@ -1683,7 +1683,7 @@ OFCondition DicomDirInterface::checkBasicCardiacAttributes(DcmItem *dataset,
             !dataset->tagExistsWithValue(DcmTagKey(grp, DCM_OverlayData.getElement())))
         {
             DCMDATA_ERROR("embedded overlay data present in group 0x" << STD_NAMESPACE hex << grp
-                       << ", file: " << filename);
+                << ", file: " << filename);
             result = EC_ApplicationProfileViolated;
         }
     }
@@ -1752,7 +1752,7 @@ OFCondition DicomDirInterface::checkXrayAngiographicAttributes(DcmItem *dataset,
             {
                 /* create error message */
                 DCMDATA_ERROR("overlay group 0x" << STD_NAMESPACE hex << grp
-                           << " present in file: " << filename);
+                    << " present in file: " << filename);
                 result = EC_ApplicationProfileViolated;
             }
         }
@@ -2398,7 +2398,7 @@ OFCondition DicomDirInterface::loadAndCheckDicomFile(const char *filename,
             DcmMetaInfo *metainfo = fileformat.getMetaInfo();
             if ((metainfo == NULL) || (metainfo->card() == 0))
             {
-                DCMDATA_ERROR("file not part 10 format (no metainfo-header): " << filename);
+                DCMDATA_ERROR("file not in part 10 format (no metainfo-header): " << filename);
                 result = EC_InvalidStream;
             }
             DcmDataset *dataset = fileformat.getDataset();
@@ -3529,7 +3529,7 @@ OFBool DicomDirInterface::getIconFromFile(const OFString &filename,
                                 /* free memory */
                                 delete[] pgmData;
                             } else {
-                                DCMDATA_ERROR(EC_MemoryExhausted.text() << "cannot allocate memory for pgm pixel data");
+                                DCMDATA_ERROR(EC_MemoryExhausted.text() << ": cannot allocate memory for pgm pixel data");
                                 /* avoid double reporting of error message */
                                 corrupt = OFFalse;
                             }
@@ -3816,8 +3816,7 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
             if ((recordType != ERT_Patient) && (recordType != ERT_Study) && (recordType != ERT_Series))
             {
                 /* create warning message */
-                DCMDATA_WARN("file " << sourceFilename << ": directory record for this "
-                          << "SOP instance already exists");
+                DCMDATA_WARN("file " << sourceFilename << ": directory record for this SOP instance already exists");
             }
             /* perform consistency check */
             if (ConsistencyCheck)
@@ -3854,7 +3853,7 @@ OFBool DicomDirInterface::checkReferencedSOPInstance(DcmDirectoryRecord *record,
         {
             /* create error message */
             DCMDATA_ERROR("file " << sourceFilename << ": SOP instance already referenced "
-                    << "with different file ID (" << refFileID << ")");
+                << "with different file ID (" << refFileID << ")");
             result = OFFalse;
         }
         /* check SOP class UID */
@@ -4282,18 +4281,20 @@ void DicomDirInterface::printUnexpectedValueMessage(const DcmTagKey &key,
                                                     const char *filename,
                                                     const OFBool errorMsg)
 {
-    OFString s;
+    OFString str;
     if (filename != NULL)
     {
-        s = " in file: ";
-        s += filename;
+        str = " in file: ";
+        str += filename;
     }
     if (errorMsg)
+    {
         DCMDATA_ERROR("attribute " << DcmTag(key).getTagName() << " " << key
-                   << " has other value than expected" << s);
-    else
+            << " has other value than expected" << str);
+    } else {
         DCMDATA_WARN("attribute " << DcmTag(key).getTagName() << " " << key
-                  << " has other value than expected" << s);
+            << " has other value than expected" << str);
+    }
 }
 
 
@@ -4302,15 +4303,14 @@ void DicomDirInterface::printRequiredAttributeMessage(const DcmTagKey &key,
                                                       const char *filename,
                                                       const OFBool emptyMsg)
 {
-    OFString s(emptyMsg ? "empty" : "missing");
-    OFString t;
+    OFString str;
     if (filename != NULL)
     {
-        t = " in file: ";
-        t += filename;
+        str = " in file: ";
+        str += filename;
     }
     DCMDATA_ERROR("required attribute " << DcmTag(key).getTagName() << " " << key << " "
-            << s << t);
+        << (emptyMsg ? "empty" : "missing") << str);
 }
 
 
@@ -4319,18 +4319,17 @@ void DicomDirInterface::printAttributeErrorMessage(const DcmTagKey &key,
                                                    const OFCondition &error,
                                                    const char *operation)
 {
-    if (!error.bad())
-        return;
-
-    OFString s;
-    if (operation != NULL)
+    if (error.bad())
     {
-        s = "cannot ";
-        s += operation;
-        s += " ";
+        OFString str;
+        if (operation != NULL)
+        {
+            str = "cannot ";
+            str += operation;
+            str += " ";
+        }
+        DCMDATA_ERROR(error.text() << ": " << str << DcmTag(key).getTagName() << " " << key);
     }
-    DCMDATA_ERROR(error.text() << ": " << s
-        << DcmTag(key).getTagName() << " " << key);
 }
 
 
@@ -4339,19 +4338,17 @@ void DicomDirInterface::printRecordErrorMessage(const OFCondition &error,
                                                 const E_DirRecType recordType,
                                                 const char *operation)
 {
-    if (!error.bad())
-        return;
-
-    OFString s;
-    if (operation != NULL)
+    if (error.bad())
     {
-        s = "cannot ";
-        s += operation;
-        s+= " ";
+        OFString str;
+        if (operation != NULL)
+        {
+            str = "cannot ";
+            str += operation;
+            str += " ";
+        }
+        DCMDATA_ERROR(error.text() << ": " << str << recordTypeToName(recordType) << " directory record");
     }
-
-    DCMDATA_ERROR(error.text() << ": " << s
-            << recordTypeToName(recordType) << " directory record");
 }
 
 
@@ -4446,8 +4443,7 @@ OFBool DicomDirInterface::copyFile(const char *fromFilename,
                     {
                         /* create error message */
                         OFOStringStream oss;
-                        DCMDATA_ERROR("copying files: " << fromFilename
-                                   << " to " << toFilename);
+                        DCMDATA_ERROR("copying files: " << fromFilename << " to " << toFilename);
                         /* abort loop */
                         result = OFFalse;
                     }
@@ -4523,7 +4519,7 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
         {
             /* create error message */
             DCMDATA_ERROR("invalid character(s) in fileset ID: " << filesetID << OFendl
-                    << OFString(7 /*Error: */ + 36 /*message*/ + invalidChar, ' ') << "^");
+                << OFString(7 /*Error: */ + 36 /*message*/ + invalidChar, ' ') << "^");
             result = OFFalse;
         }
         /* ensure that fileset ID is not too large */
@@ -4699,8 +4695,10 @@ OFString &DicomDirInterface::getStringComponentFromDataset(DcmItem *dataset,
         /* get string value component from dataset and report if tag or component is missing */
         OFCondition status = dataset->findAndGetOFString(key, result, pos, searchIntoSub);
         if (status.bad())
+        {
             DCMDATA_ERROR(status.text() << ": cannot retrieve value " << (pos + 1)
-                    << " of " << DcmTag(key).getTagName() << " " << key);
+                << " of " << DcmTag(key).getTagName() << " " << key);
+        }
     }
     return result;
 }
@@ -4754,11 +4752,13 @@ void DicomDirInterface::copyElement(DcmItem *dataset,
                     DcmTag tag(key);
                     /* check for correct VR in the dataset */
                     if (delem->getVR() != tag.getEVR())
+                    {
                         /* create warning message */
                         DCMDATA_WARN("file " << sourceFilename << ": possibly wrong VR: "
-                                << tag.getTagName() << " " << key << " with "
-                                << DcmVR(delem->getVR()).getVRName() << " found, expected "
-                                << tag.getVRName() << " instead");
+                            << tag.getTagName() << " " << key << " with "
+                            << DcmVR(delem->getVR()).getVRName() << " found, expected "
+                            << tag.getVRName() << " instead");
+                    }
                 } else
                     delete delem;
             } else if (status == EC_TagNotFound)
@@ -4789,8 +4789,8 @@ void DicomDirInterface::copyStringWithDefault(DcmItem *dataset,
             if (printWarning && (defaultValue != NULL))
             {
                 /* create warning message */
-                DCMDATA_WARN("file " << sourceFilename << ": " << DcmTag(key).getTagName() << " " << key
-                          << " missing, using alternative: " << defaultValue);
+                DCMDATA_WARN("file " << sourceFilename << ": " << DcmTag(key).getTagName() << " "
+                    << key << " missing, using alternative: " << defaultValue);
             }
             /* put default value */
             status = record->putAndInsertString(key, defaultValue);
@@ -4909,8 +4909,8 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
         record->putAndInsertString(key, buffer);
         /* create warning message */
         DCMDATA_WARN(recordTypeToName(record->getRecordType()) << " Record (origin: "
-                << record->getRecordsOriginFile() << ") inventing " << DcmTag(key).getTagName()
-                << ": " << buffer);
+            << record->getRecordsOriginFile() << ") inventing " << DcmTag(key).getTagName()
+            << ": " << buffer);
     }
 }
 
@@ -4918,6 +4918,9 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
+ *  Revision 1.32  2009-11-13 13:11:20  joergr
+ *  Fixed minor issues in log output.
+ *
  *  Revision 1.31  2009-11-04 09:58:09  uli
  *  Switched to logging mechanism provided by the "new" oflog module
  *

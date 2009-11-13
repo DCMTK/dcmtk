@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmMetaInfo
  *
- *  Last Update:      $Author: uli $
- *  Update Date:      $Date: 2009-11-04 09:58:10 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2009-11-13 13:11:21 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,8 +229,8 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         if (inStream.eos() && getTransferredBytes() != preambleLen)
         {   // file too short, no preamble
             inStream.putback();
-            DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short (" << preambleLen
-                    << ") < " << DCM_PreambleLen + DCM_MagicLen << " bytes");
+            DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preamble available: File too short ("
+                << preambleLen << ") < " << DCM_PreambleLen + DCM_MagicLen << " bytes");
             retval = OFFalse;
             this -> setPreamble();
             fPreambleTransferState = ERW_ready;
@@ -263,18 +263,17 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmInputStream &inStream,
         {
             newxfer = tmpxferSyn.getXfer();   // use determined xfer
             if (xferSyn.getXfer() != EXS_Unknown)
-            {
                 DCMDATA_WARN("DcmMetaInfo: TransferSyntax of MetaInfo is other than expected");
-            }
         } else
             newxfer = xferSyn.getXfer();
     }
     if (retval == OFTrue)
-        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() found Preamble=[0x"
-                << STD_NAMESPACE hex << STD_NAMESPACE setfill('0') << STD_NAMESPACE setw(4)
-                << (Uint32)(*filePreamble) << "]");
-    else
-        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preambel found!");
+    {
+        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() Preamble = 0x"
+            << STD_NAMESPACE hex << STD_NAMESPACE setfill('0')
+            << STD_NAMESPACE setw(4) << OFstatic_cast(Uint32, *filePreamble));
+    } else
+        DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() No Preambel found");
     DCMDATA_TRACE("DcmMetaInfo::checkAndReadPreamble() TransferSyntax = " << DcmXfer(newxfer).getXferName());
     return retval;
 } // DcmMetaInfo::checkAndReadPreamble
@@ -444,10 +443,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
                             lastElementComplete = OFTrue;
                         /* check for valid meta-header elements */
                         if (newTag.getGroup() != 0x0002)
-                        {
-                            DCMDATA_WARN("DcmMetaInfo: Invalid Element " << newTag
-                                      << " found in Meta Information Header");
-                        }
+                            DCMDATA_WARN("DcmMetaInfo: Invalid Element " << newTag << " found in Meta Information Header");
                     } else {
                         errorFlag = elementList->get()->read(inStream, xfer, glenc, maxReadLength);
                         if (errorFlag.good())
@@ -468,9 +464,7 @@ OFCondition DcmMetaInfo::read(DcmInputStream &inStream,
             if (errorFlag.good())
             {
                 if (getLengthField() != DCM_UndefinedLength && getTransferredBytes() != getLengthField())
-                {
                     DCMDATA_WARN("DcmMetaInfo: Group Length of Meta Information Header has incorrect value");
-                }
                 setTransferState(ERW_ready);          // MetaInfo is complete
             }
         }
@@ -588,6 +582,9 @@ OFCondition DcmMetaInfo::write(
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
+** Revision 1.50  2009-11-13 13:11:21  joergr
+** Fixed minor issues in log output.
+**
 ** Revision 1.49  2009-11-04 09:58:10  uli
 ** Switched to logging mechanism provided by the "new" oflog module
 **
